@@ -6,7 +6,7 @@
 struct KeyboardSettings {
     size_t pageSize=9;
     int textSize=16;
-    bool emojiSuggestions=true,typoCorrection=false;
+    bool emojiSuggestions=true,typoCorrection=false,neuralRanking=false;
     uint32_t fuzzyPinyin=0;
     CandidatePalette palette;
     std::wstring dictationKey;
@@ -28,6 +28,7 @@ inline KeyboardSettings readKeyboardSettings(const std::wstring &path) {
         field=value.get(L"candidateSize");
         if (field && field->type==Json::String) { if (field->string==L"small") settings.textSize=14; else if (field->string==L"large") settings.textSize=20; }
         field=value.get(L"emojiSuggestions"); if (field && field->type==Json::Boolean) settings.emojiSuggestions=field->boolean;
+        field=value.get(L"neuralRanking"); if (field && field->type==Json::Boolean) settings.neuralRanking=field->boolean;
         field=value.get(L"typoCorrection"); if (field && field->type==Json::Boolean) settings.typoCorrection=field->boolean;
         field=value.get(L"fuzzyPinyin");
         if (field && field->type==Json::Number && field->number<=ARION_FUZZY_MASK &&

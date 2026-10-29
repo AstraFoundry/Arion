@@ -115,3 +115,28 @@ func TestCustomShortcutRoundTrip(t *testing.T) {
 		t.Fatalf("restart: %+v %v %v", loaded, repairs, err)
 	}
 }
+
+func TestKeyboardNeuralPreferenceIsExplicitAndIndependent(t *testing.T) {
+	store := Store{Path: filepath.Join(t.TempDir(), "preferences.json")}
+	p, _, err := store.Load()
+	if err != nil || p.Keyboard.NeuralRanking {
+		t.Fatalf("default ranking must be off: %v", err)
+	}
+	p.Polish = false
+	p.Keyboard.NeuralRanking = true
+	if err = store.Save(p); err != nil {
+		t.Fatal(err)
+	}
+	loaded, _, err := store.Load()
+	if err != nil || !loaded.Keyboard.NeuralRanking || loaded.Polish {
+		t.Fatalf("ranking did not persist independently: %+v %v", loaded, err)
+	}
+	loaded.Keyboard.NeuralRanking = false
+	if err = store.Save(loaded); err != nil {
+		t.Fatal(err)
+	}
+	loaded, _, err = store.Load()
+	if err != nil || loaded.Keyboard.NeuralRanking {
+		t.Fatalf("disable did not persist: %v", err)
+	}
+}

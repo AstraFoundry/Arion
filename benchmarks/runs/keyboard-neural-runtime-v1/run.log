@@ -1,0 +1,5 @@
+=== RUN   TestLocalKeyboardWorker
+    keyboard_native_test.go:41: production deadline result: elapsed=473.252584ms error=<nil> result={Identity:{SessionID:synthetic Generation:1} Revision:1 Candidates:[{ID:c1 Score:<nil>} {ID:c0 Score:<nil>}] Template:ime-choice-v2 Decision:model}
+--- PASS: TestLocalKeyboardWorker (8.95s)
+PASS
+ok  	arion.local/desktop/infrastructure/rewriting	10.349s

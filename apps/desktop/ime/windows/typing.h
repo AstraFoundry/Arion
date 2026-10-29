@@ -39,7 +39,10 @@ class Typing {
     int textSize=16;
     CandidatePalette palette;
     bool settingsChanged=false,spellingChanged=false;
-    bool emojiSuggestions=true,emojiInComposition=false,typoCorrection=false;
+    bool emojiSuggestions=true,emojiInComposition=false,typoCorrection=false,neuralRanking=false;
+    uint64_t rankingRevision=0;
+    std::vector<size_t> rankingSlots;
+    std::vector<std::string> rankingIDs;
     uint32_t fuzzyPinyin=0;
     std::wstring optionsPath;
     std::function<bool(TfEditCookie,ITfRange*)> safe;
@@ -249,6 +252,42 @@ private:
         return hr;
     }
 public:
+    std::function<void(const std::string&,uint64_t)> rankingChanged;
+    void freezeRanking() {
+        rankingSlots.clear(); rankingIDs.clear(); ++rankingRevision;
+        if (neuralRanking && rankingChanged) rankingChanged({},rankingRevision);
+    }
+    void requestRanking() {
+        auto before=previousContext();
+        if (!neuralRanking || !rankingChanged || !composition || ascii || menu.page || menu.expanded ||
+            menu.highlight || menu.count<2 || before.empty() || before.size()>2048) return;
+        const char *input=runtime.api()->get_input(session);
+        if (!input || !*input || std::strlen(input)>256 || runtime.api()->get_caret_pos(session)!=std::strlen(input) || !runtime.han(menu.texts[0])) return;
+        std::string candidates;
+        for (size_t i=0;i<std::min(menu.count,size_t{27});++i) {
+            const auto &item=menu.metadata[i];
+            if (item.emoji || item.start!=menu.metadata[0].start || item.end!=menu.metadata[0].end || item.end<=item.start || !runtime.han(menu.texts[i])) continue;
+            auto id="c"+std::to_string(menu.indices[i]);
+            if (!candidates.empty()) candidates+=",";
+            candidates+="{\"id\":"+::quoted(wide(id))+",\"text\":"+::quoted(wide(menu.texts[i]))+",\"source\":"+::quoted(wide(item.type))+",\"start\":"+std::to_string(item.start)+",\"end\":"+std::to_string(item.end)+"}";
+            rankingSlots.push_back(i); rankingIDs.push_back(id);
+        }
+        if (rankingIDs.size()<2) { rankingSlots.clear();rankingIDs.clear();return; }
+        rankingChanged("\"input\":"+::quoted(wide(input))+",\"before\":"+::quoted(wide(before))+",\"candidates\":["+candidates+"]",rankingRevision);
+    }
+    HRESULT applyRanking(TfEditCookie cookie,const WireMessage &message) {
+        KeyboardLease lease(runtime);
+        if (!session || generation!=runtime.generation() || !neuralRanking || rankingIDs.empty() || message.revision!=rankingRevision || !same(cookie)) return S_FALSE;
+        if (!message.rankingOK) { freezeRanking(); return S_FALSE; }
+        if (message.rankedIDs.size()!=rankingIDs.size()) return S_FALSE;
+        auto selected=std::find(rankingIDs.begin(),rankingIDs.end(),message.rankedIDs[0]);
+        if (selected==rankingIDs.end()) return S_FALSE;
+        size_t chosen=static_cast<size_t>(selected-rankingIDs.begin());
+        auto expected=rankingIDs; auto id=expected[chosen]; expected.erase(expected.begin()+chosen); expected.insert(expected.begin(),id);
+        if (expected!=message.rankedIDs || !arion_menu_promote_slots(&menu,rankingSlots.data(),rankingSlots.size(),chosen)) return S_FALSE;
+        freezeRanking(); ++revision;
+        show(); return S_OK;
+    }
     uint64_t revision=0;
     std::string rankingFailure;
     std::wstring modeFailure,recoveryText;
@@ -283,6 +322,8 @@ public:
     bool isEnglishPunctuation() const { return englishPunctuation; }
     void options(const std::wstring &path) { optionsPath=path; KeyboardOptions value; if (readKeyboardOptions(path,value)) { fullWidth=value.fullWidth; englishPunctuation=value.englishPunctuation; } else modeFailure=nativeCopy(NativeCopy::OptionsFailed); }
     void configure(const KeyboardSettings &settings) {
+        if (neuralRanking!=settings.neuralRanking) freezeRanking();
+        neuralRanking=settings.neuralRanking;
         spellingChanged=spellingChanged || typoCorrection!=settings.typoCorrection || fuzzyPinyin!=settings.fuzzyPinyin;
         settingsChanged=settingsChanged || pageSize!=settings.pageSize || textSize!=settings.textSize || emojiSuggestions!=settings.emojiSuggestions || typoCorrection!=settings.typoCorrection || fuzzyPinyin!=settings.fuzzyPinyin || memcmp(&palette,&settings.palette,sizeof(palette))!=0;
         pageSize=settings.pageSize; textSize=settings.textSize; palette=settings.palette;
@@ -295,7 +336,7 @@ public:
         ITfRange *range=nullptr,*expected=nullptr; TF_SELECTION selected{}; ULONG count=0; bool valid=false;
         if (SUCCEEDED(composition->GetRange(&range)) && position(cookie,range,caret,&expected) && SUCCEEDED(context->GetSelection(cookie,TF_DEFAULT_SELECTION,1,&selected,&count)) && count==1) {
             LONG start=1,end=1; std::wstring current;
-            valid=SUCCEEDED(selected.range->CompareStart(cookie,expected,TF_ANCHOR_START,&start)) && SUCCEEDED(selected.range->CompareEnd(cookie,expected,TF_ANCHOR_START,&end)) && !start && !end && read(cookie,range,current) && current==lastText;
+            valid=safe(cookie,range) && SUCCEEDED(selected.range->CompareStart(cookie,expected,TF_ANCHOR_START,&start)) && SUCCEEDED(selected.range->CompareEnd(cookie,expected,TF_ANCHOR_START,&end)) && !start && !end && read(cookie,range,current) && current==lastText;
         }
         if (count) selected.range->Release();
         if (expected) expected->Release();
@@ -303,6 +344,7 @@ public:
         return valid;
     }
     void cancel(TfEditCookie cookie) {
+        freezeRanking();
         KeyboardLease lease(runtime);
         if (composition) {
             ITfRange *range=nullptr;
@@ -314,6 +356,7 @@ public:
         emojiInComposition=false;
     }
     void invalidate() {
+        freezeRanking();
         KeyboardLease lease(runtime);
         if (composition) { revoke(composition,lastText,original); composition->Release(); composition=nullptr; }
         if (session && runtime.api() && generation==runtime.generation()) arion_pinyin_destroy_session(runtime.api(),session);
@@ -358,11 +401,13 @@ public:
         if (command.kind==TypingCommand::Inspect) {
             if (composition && !same(cookie)) invalidate();
             else if (settingsChanged) {
+                freezeRanking();
                 applyCandidatePreferences();
                 if (composition) { ++revision; if (buildMenu()) show(); else { healthy=false; cancel(cookie); return E_FAIL; } }
             }
             settingsChanged=false; return S_OK;
         }
+        freezeRanking();
         if (command.kind!=TypingCommand::Key && command.kind!=TypingCommand::ToggleASCII && command.kind!=TypingCommand::ShiftASCII && command.kind!=TypingCommand::TogglePunctuation && command.kind!=TypingCommand::ToggleWidth && command.revision!=revision) return S_FALSE;
         if (composition && !same(cookie)) { invalidate(); return S_FALSE; }
         if (settingsChanged) {
@@ -421,7 +466,9 @@ public:
                 }
             }
         }
-        hr=publish(cookie); if (FAILED(hr)) { if (recoveryText.empty()) recoveryText=lastText; healthy=false; cancel(cookie); runtime.failure="keyboard composition unavailable"; }
+        hr=publish(cookie);
+        if (SUCCEEDED(hr) && command.kind==TypingCommand::Key && ((command.key.symbol>='a' && command.key.symbol<='z') || (command.key.symbol>='A' && command.key.symbol<='Z') || command.key.symbol==0xff08 || command.key.symbol==0xffff)) requestRanking();
+        if (FAILED(hr)) { if (recoveryText.empty()) recoveryText=lastText; healthy=false; cancel(cookie); runtime.failure="keyboard composition unavailable"; }
         return hr;
     }
 };

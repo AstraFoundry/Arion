@@ -148,6 +148,32 @@ int main(int argc, const char *argv[]) {
             [results addObject:result];
             NSLog(@"%@: %@", [result[@"passed"] boolValue] ? @"PASS" : @"FAIL", name);
         };
+        run(@"local neural promotion preserves commit and rejects stale replies", @"RNK-A02 RNK-A03 RNK-A07", ^{
+            require(!typing.neuralRanking, @"neural ranking defaults off");
+            __block NSDictionary *request=nil;
+            __block NSUInteger epoch=0;
+            typing.rankingChanged=^(NSDictionary *snapshot,NSUInteger revision) { request=snapshot; epoch=revision; };
+            typing.neuralRanking=YES;
+            type(typing,@"nihao"); press(typing,@" ",49);
+            type(typing,@"xian");
+            require(request!=nil && [request[@"candidates"] count]>=2, @"native snapshot contains actual comparable candidates");
+            NSArray *original=request[@"candidates"];
+            NSMutableArray *order=[original mutableCopy];
+            NSDictionary *selected=order[1]; [order removeObjectAtIndex:1]; [order insertObject:selected atIndex:0];
+            NSDictionary *reply=@{@"activation":@"test",@"revision":@(epoch),@"status":@"ok",
+                @"rankResult":@{@"session_id":@"test",@"generation":@1,@"revision":@(epoch),@"candidates":order}};
+            [typing applyRankingMessage:reply activation:@"test"];
+            require([typing.snapshot.candidates[0] isEqual:selected[@"text"]], @"existing candidate is promoted");
+            press(typing,@" ",49);
+            require([editor.view.string hasSuffix:selected[@"text"]] && editor.insertions==2, @"Space commits promoted engine candidate once");
+            type(typing,@"xian");
+            NSArray *before=typing.snapshot.candidates.copy;
+            [typing applyRankingMessage:reply activation:@"test"];
+            require([typing.snapshot.candidates isEqual:before], @"previous revision cannot reorder new composition");
+            press(typing,@"\x1b",53);
+            [typing applyRankingMessage:reply activation:@"test"];
+            require(!typing.composing && editor.insertions==2, @"canceled reply cannot insert text");
+        });
         run(@"real full-Pinyin commit", @"KBD-A01", ^{
             type(typing, @"nihao");
             require(typing.composing && editor.view.hasMarkedText, @"engine preedit becomes AppKit marked text");

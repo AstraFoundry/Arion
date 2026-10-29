@@ -80,6 +80,21 @@ static int check_ranges(void *context,const char *const *texts,size_t count,cons
 }
 
 int main(void) {
+    char *rank_texts[]={"first","english","second","emoji","third"};
+    size_t rank_indices[]={10,11,12,13,14};
+    ArionCandidateMetadata rank_metadata[5]={0};
+    for (size_t i=0;i<5;++i) rank_metadata[i].end=4;
+    rank_metadata[3].emoji=1;
+    ArionPinyinMenu ranked={0};
+    ranked.texts=rank_texts; ranked.indices=rank_indices; ranked.metadata=rank_metadata; ranked.count=5;
+    size_t slots[]={0,2,4};
+    assert(arion_menu_promote_slots(&ranked,slots,3,2));
+    assert(rank_indices[0]==14 && rank_indices[1]==11 && rank_indices[2]==10 && rank_indices[3]==13 && rank_indices[4]==12);
+    ranked.highlight=1;
+    assert(!arion_menu_promote_slots(&ranked,slots,3,1));
+    ranked.highlight=0; rank_metadata[2].end=2;
+    assert(!arion_menu_promote_slots(&ranked,slots,3,1));
+    assert(rank_indices[0]==14);
     size_t position = 99;
     assert(arion_pinyin_utf16_position(text, 7, &position) && position == 3);
     assert(arion_pinyin_utf16_position(text, 3, &position) && position == 1);

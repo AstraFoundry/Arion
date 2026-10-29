@@ -197,3 +197,5 @@ extern "C" int arion_keyboard_publish_personal(uintptr_t session,uint64_t revisi
     if (!runtime || !failure.empty()) return 0;
     return arion_personal_vocabulary_publish(session,revision,terms,count);
 }
+
+extern "C" int arion_keyboard_contains_han(const char *text,size_t length) { return text ? arion::ime::rankingContainsHan(std::string(text,length)) : -1; }

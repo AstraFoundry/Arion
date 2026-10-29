@@ -149,6 +149,7 @@ type KeyboardPreferences struct {
 	// to Chinese Pinyin candidates. The OS renders the characters.
 	EmojiSuggestions bool `json:"emojiSuggestions"`
 	TypoCorrection   bool `json:"typoCorrection"`
+	NeuralRanking    bool `json:"neuralRanking"`
 	// FuzzyPinyin is a stable bit set shared with the native keyboard ABI.
 	FuzzyPinyin uint32 `json:"fuzzyPinyin"`
 }

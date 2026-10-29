@@ -1,0 +1,137 @@
+package imebridge
+
+import (
+	"arion.local/core/contracts"
+	"arion.local/core/domain"
+	"context"
+	"sync/atomic"
+	"testing"
+	"time"
+)
+
+type keyboardRankFunc func(context.Context, contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error)
+
+func (f keyboardRankFunc) RankKeyboard(c context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+	return f(c, r)
+}
+func rankRequest(rev uint64) message {
+	r := &contracts.KeyboardRankRequest{Identity: contracts.Identity{SessionID: "editor", Generation: 1}, Revision: rev, Input: "xian", Before: "这条", Candidates: []domain.KeyboardCandidate{
+		{Candidate: domain.Candidate{ID: "c0", Text: "西安", Source: "phrase"}, End: 4},
+		{Candidate: domain.Candidate{ID: "c1", Text: "线", Source: "phrase"}, End: 4}}}
+	return message{Op: "keyboard_rank", Activation: "editor", Revision: rev, RankRequest: r}
+}
+func rankAnswer(r contracts.KeyboardRankRequest) contracts.KeyboardRankResult {
+	return contracts.KeyboardRankResult{Identity: r.Identity, Revision: r.Revision, Candidates: []domain.RankedCandidate{{ID: "c1"}, {ID: "c0"}}}
+}
+func rankingHost(t *testing.T, f keyboardRankFunc) (*IME, *host) {
+	t.Helper()
+	m := New("", nil, nil)
+	t.Cleanup(m.Close)
+	m.RequireClientVerification(func(PeerIdentity, ClientHello) error { return nil })
+	if err := m.ConfigureKeyboardRanking(f); err != nil {
+		t.Fatal(err)
+	}
+	alive := new(atomic.Bool)
+	alive.Store(true)
+	h, _ := verifiedHost(t, m, message{Op: "hello", Build: "ranking-test", Capabilities: []string{rankingCapability}}, alive)
+	wait(t, func() bool { return m.ConnectedBuild() != "" })
+	h.send(t, message{Op: "activate", Activation: "editor"})
+	wait(t, m.ActiveClient)
+	return m, h
+}
+func TestKeyboardRankingBoundToVerifiedSnapshot(t *testing.T) {
+	_, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	h.send(t, rankRequest(1))
+	r := h.read(t)
+	if r.Op != "keyboard_ranked" || r.Activation != "editor" || r.Revision != 1 || r.Status != "ok" || r.RankResult == nil || r.RankResult.Candidates[0].ID != "c1" {
+		t.Fatal(r)
+	}
+}
+func TestKeyboardRankingInvalidationCancelsBackend(t *testing.T) {
+	for _, mode := range []string{"freeze", "focus", "update", "disable", "close"} {
+		t.Run(mode, func(t *testing.T) {
+			started, cancelled := make(chan struct{}), make(chan struct{})
+			m, h := rankingHost(t, func(ctx context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+				close(started)
+				<-ctx.Done()
+				close(cancelled)
+				return rankAnswer(r), nil
+			})
+			h.send(t, rankRequest(1))
+			select {
+			case <-started:
+			case <-time.After(time.Second):
+				t.Fatal("not started")
+			}
+			switch mode {
+			case "freeze":
+				h.send(t, message{Op: "keyboard_freeze", Activation: "editor", Revision: 2})
+			case "focus":
+				h.send(t, message{Op: "deactivate", Activation: "editor"})
+			case "update":
+				m.BeginUpdate()
+			case "disable":
+				if err := m.ConfigureKeyboardRanking(nil); err != nil {
+					t.Fatal(err)
+				}
+			case "close":
+				m.Close()
+			}
+			select {
+			case <-cancelled:
+			case <-time.After(time.Second):
+				t.Fatal("inference not cancelled")
+			}
+		})
+	}
+}
+func TestKeyboardRankingLatestRevisionWins(t *testing.T) {
+	started, release := make(chan struct{}), make(chan struct{})
+	_, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		if r.Revision == 1 {
+			close(started)
+			<-release
+		}
+		return rankAnswer(r), nil
+	})
+	h.send(t, rankRequest(1))
+	<-started
+	h.send(t, rankRequest(3))
+	h.send(t, rankRequest(2))
+	close(release)
+	if r := h.read(t); r.Revision != 3 || r.Status != "ok" {
+		t.Fatal(r)
+	}
+}
+
+func TestKeyboardRankingRejectsForeignActivationAndMalformedIdentity(t *testing.T) {
+	var calls atomic.Int32
+	_, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		calls.Add(1)
+		return rankAnswer(r), nil
+	})
+	foreign := rankRequest(1)
+	foreign.Activation = "foreign"
+	h.send(t, foreign)
+	malformed := rankRequest(2)
+	malformed.RankRequest.Generation = 2
+	h.send(t, malformed)
+	h.send(t, rankRequest(3))
+	if r := h.read(t); r.Revision != 3 || r.Status != "ok" || calls.Load() != 1 {
+		t.Fatalf("unsafe admission: %+v, calls %d", r, calls.Load())
+	}
+}
+
+func TestKeyboardRankingRejectsInventedCandidate(t *testing.T) {
+	_, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		result := rankAnswer(r)
+		result.Candidates[0].ID = "invented"
+		return result, nil
+	})
+	h.send(t, rankRequest(1))
+	if r := h.read(t); r.Status != "unavailable" || r.RankResult != nil {
+		t.Fatal(r)
+	}
+}

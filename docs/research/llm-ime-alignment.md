@@ -2,7 +2,7 @@
 
 ## Decision and current scope
 
-Implement a separate, bounded candidate-selection task over the existing LLM transport. Keep Rime conversion and the native personal context ranker as the immediate path. The new Go components and actual local inference evaluation are implemented; the installed IMK host, preferences and bootstrap do not yet invoke them. This is an experimental adapter, not an enabled product feature or competitor-equivalent model.
+Implement a separate, bounded candidate-selection task over the existing LLM transport. Keep Rime conversion and the native personal context ranker as the immediate path. The Go selector is connected to native snapshots and an explicit default-off setting under [ADR 031](../decisions/031-local-keyboard-neural-ranking.md). It reuses only the local polishing worker; this does not claim competitor-equivalent quality.
 
 The [measured pilot](../../benchmarks/results/llm-ime-alignment-v1/README.md) improves authored top-1 from 56/100 to 68/100 after a no-context abstention gate, but breaks eight previously correct cases. Actual resident model calls take approximately 404 ms p50 / 515 ms p95. These results do not authorize enabling automatic promotion by default. Generic LLM selection and IME-specific LM scoring remain different approaches.
 
@@ -12,10 +12,10 @@ The [measured pilot](../../benchmarks/results/llm-ime-alignment-v1/README.md) im
 | --- | --- | --- |
 | Native dictionary/phonetic candidate producer | Pinned Rime; preserve actual commits, partial choices and suffix | Existing |
 | Local personalized ranking | Confirmed context-pair counts before model enhancement | Existing; not replaced |
-| Model scores/selects existing candidates | General chat model selects one eligible ID; stable promotion retains every producer ID | Implemented experimental Go adapter |
+| Model scores/selects existing candidates | General chat model selects one eligible ID; stable promotion retains every producer ID | Implemented local opt-in adapter |
 | Independent model task and state | Dedicated prompt; shared resident worker, separate operation; erase native slot before/after generic completion | Implemented |
 | Conditional enhancement | No context means explicit abstention; bounded deadline; latest pending snapshot replaces old work | Implemented |
-| Native asynchronous fusion | Immediate local menu, revision-scoped apply on main thread, freeze on navigation/ownership changes | Integration design below; not wired |
+| Native asynchronous fusion | Immediate local menu, revision-scoped apply on main thread, freeze on navigation/ownership changes | Connected under ADR 031; installed-host acceptance remains separate |
 | Generated/remote candidate fusion | Would require independent provenance, phonetic alignment and selection/commit rules | Excluded from this experiment |
 
 Competitor artifacts establish client call paths, not their model checkpoints, active configuration or measured quality. See [candidate-ranking evidence](context-ranking.md).
@@ -116,6 +116,6 @@ See the [commands, source snapshots and verification procedure](../../benchmarks
 
 ## Residual scope after bilingual integration
 
-The main branch already includes typo/fuzzy settings, approved personal readings, encrypted delivery, actual native candidate ranges and ranked bilingual input (ADR 017, ADR 030). This change retains only the Go selector's exact-range eligibility and no-comparable-candidate abstention, corresponding scheduler regressions, and [span-aware reproduction](../../benchmarks/reproduction/llm-ime-alignment-v2/README.md). It does not replace the main English lexicon or candidate admission policy.
+The main branch already includes typo/fuzzy settings, approved personal readings, encrypted delivery, actual native candidate ranges and ranked bilingual input (ADR 017, ADR 030). The rebased change retains exact-range eligibility and no-comparable-candidate abstention, adds default-off native integration under ADR 031, and preserves [span-aware reproduction](../../benchmarks/reproduction/llm-ime-alignment-v2/README.md). It does not replace the main English lexicon or candidate admission policy.
 
 The v2 bundles preserve the original PR 45 execution/source bytes. They are historical evidence, not measurements of the integrated main producer. Replaying their hashes and reports does not establish current inference quality, installed IMK/TSF dispatch or independent held-out acceptance. Model-backed native dispatch, English personal learning and automatic bilingual sentence disambiguation remain separate product work.

@@ -73,7 +73,7 @@ static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel 
     ArionCandidateSize size = ArionCandidateSizeMedium;
     ArionCandidateAppearance appearance = ArionCandidateAppearanceSystem;
     NSColor *lightFill = nil, *lightText = nil, *darkFill = nil, *darkText = nil;
-    BOOL emojiSuggestions = YES, typoCorrection = NO;
+    BOOL emojiSuggestions = YES, typoCorrection = NO, neuralRanking = NO;
     uint32_t fuzzyPinyin = 0;
     NSString *dictationKey = nil;
     NSData *data = [NSData dataWithContentsOfFile:[applicationSupport() stringByAppendingPathComponent:@"keyboard.json"]];
@@ -97,6 +97,8 @@ static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel 
         }
         value = settings[@"emojiSuggestions"];
         if ([value isKindOfClass:NSNumber.class]) emojiSuggestions = [value boolValue];
+        value = settings[@"neuralRanking"];
+        if ([value isKindOfClass:NSNumber.class]) neuralRanking = [value boolValue];
         value = settings[@"typoCorrection"];
         if ([value isKindOfClass:NSNumber.class]) typoCorrection = [value boolValue];
         value = settings[@"fuzzyPinyin"];
@@ -109,6 +111,7 @@ static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel 
     typing.pageSize = pageSize;
     typing.emojiSuggestions = emojiSuggestions;
     typing.typoCorrection = typoCorrection;
+ typing.neuralRanking = neuralRanking;
     typing.fuzzyPinyin = fuzzyPinyin;
     panel.size = size;
     panel.appearance = appearance;
@@ -202,7 +205,7 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
     self.fd = fd;
     self.connection = NSUUID.UUID.UUIDString;
     [self writeMessage:@{@"op": @"hello", @"build": hostBuildIdentity, @"protocol":@1,
-        @"capabilities":@[@"keyboard-vocabulary-v1"]}];
+        @"capabilities":@[@"keyboard-vocabulary-v1",@"keyboard-ranking-v1"]}];
     if (self.fd < 0) { close(reader); return NO; }
     NSString *connection = self.connection;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -214,6 +217,7 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
 - (void)disconnect {
     if (self.fd >= 0) { shutdown(self.fd, SHUT_RDWR); close(self.fd); }
     self.fd = -1;
+    [self.active.typing freezeRanking];
     self.connection = nil;
     if (self.peerCode) { CFRelease(self.peerCode); self.peerCode=NULL; }
     if (self.peerRequirement) { CFRelease(self.peerRequirement); self.peerRequirement=NULL; }
@@ -292,6 +296,20 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
         self.typing = [[ArionTyping alloc] initWithEngine:ArionKeyboardEngine.shared];
         __weak ArionInputController *weakSelf = self;
         self.typing.changed = ^{ [weakSelf refreshCandidates]; };
+        self.typing.rankingChanged = ^(NSDictionary *snapshot, NSUInteger revision) {
+            ArionInputController *controller=weakSelf;
+            ArionBridge *bridge=[ArionBridge shared];
+            NSString *activation=controller.composition.activation;
+            if (bridge.fd<0 || bridge.active!=controller || !activation.length || controller.composition.session.length) return;
+            NSMutableDictionary *message=[@{@"op":snapshot?@"keyboard_rank":@"keyboard_freeze",
+                @"activation":activation,@"revision":@(revision)} mutableCopy];
+            if (snapshot) {
+                NSMutableDictionary *request=[snapshot mutableCopy];
+                request[@"session_id"]=activation; request[@"generation"]=@1; request[@"revision"]=@(revision);
+                message[@"rankRequest"]=request;
+            }
+            [bridge send:message];
+        };
         self.typing.modeChanged = ^(ArionTypingSwitch change) {
             ArionInputController *controller = weakSelf;
             if ([ArionBridge shared].active != controller) return;
@@ -386,6 +404,10 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
 }
 
 - (void)apply:(NSDictionary *)message {
+    if ([message[@"op"] isEqual:@"keyboard_ranked"]) {
+        if (!self.composition.session.length) [self.typing applyRankingMessage:message activation:self.composition.activation];
+        return;
+    }
     if ([message[@"op"] isEqual:@"vocabulary_query"] || [message[@"op"] isEqual:@"vocabulary_publish"]) {
         NSDictionary *ack=[self.typing applyVocabularyMessage:message activation:self.composition.activation blocked:self.composition.live];
         if (ack) [[ArionBridge shared] send:ack];

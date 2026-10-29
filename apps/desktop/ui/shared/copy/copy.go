@@ -5,6 +5,11 @@ package copy
 type Key string
 
 const (
+	KbdNeuralRanking          Key = "KbdNeuralRanking"
+	KbdNeuralDetail           Key = "KbdNeuralDetail"
+	KbdNeuralReady            Key = "KbdNeuralReady"
+	KbdNeuralUnavailable      Key = "KbdNeuralUnavailable"
+	KbdNeuralMissing          Key = "KbdNeuralMissing"
 	FormatVocabReadingVariant Key = "FormatVocabReadingVariant"
 	IMECancelSetup            Key = "IMECancelSetup"
 	KeyboardResetLearning     Key = "KeyboardResetLearning"

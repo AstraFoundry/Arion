@@ -1,0 +1,30 @@
+{
+  "apps/desktop/infrastructure/rewriting/keyboard_native_test.go": {
+    "sha256": "65888d42808da54e7f0ed28fbb0d2066ac0d4854f324c5df16d3c4bc03f1a77e",
+    "bytes": 1990
+  },
+  "apps/desktop/infrastructure/rewriting/rewriting.go": {
+    "sha256": "4f325c9a2df2ba7586885ed44b5ce9207b5e1bd5e0a8a7300f55c658c5e8da2c",
+    "bytes": 9784
+  },
+  "packages/core/application/keyboard_ranking.go": {
+    "sha256": "fcaad9c28ef75ef564e1d475fe82001ee431a3686e31c46e3e33efb5e7c26264",
+    "bytes": 4448
+  },
+  "apps/desktop/infrastructure/llm/ranking/ranking.go": {
+    "sha256": "405d54dc15713ff3f4fc8957eeaa10967f1ea60f2e1872c4bdf2ddaa3435bd92",
+    "bytes": 6308
+  },
+  "apps/desktop/resources/darwin-arm64/llm/arion-llm": {
+    "sha256": "9729300b9d7b3f1900a362ce5bd24e7e5edefd738ecbf8bc3b6a30480ad1392a",
+    "bytes": 14628482
+  },
+  "apps/desktop/resources/darwin-arm64/llm/llama-server": {
+    "sha256": "981b460a278e9a0c880cef32d6fab42785a119084456b16845304cf38c32cf69",
+    "bytes": 49984
+  },
+  ".workspace/rewrite-small-models-v1/Qwen3.5-2B-Q4_K_M.gguf": {
+    "sha256": "aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223",
+    "bytes": 1280835840
+  }
+}

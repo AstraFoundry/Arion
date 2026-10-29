@@ -145,10 +145,11 @@ class Service final : public ITfTextInputProcessorEx, public ITfThreadMgrEventSi
     }
     void send(const wchar_t *op) {
         std::string text = "{\"op\":" + ::quoted(op) + ",\"activation\":" + ::quoted(activation) + ",\"session\":" + ::quoted(session) + ",\"build\":" + ::quoted(build) + ",\"client\":\"Windows editor\",\"text\":\"\"}\n";
-        if (std::wcscmp(op,L"hello")==0) text.insert(1,"\"protocol\":"+std::to_string(WireProtocol)+","+(keyboard.api()?"\"capabilities\":[\"keyboard-vocabulary-v1\"],":""));
+        if (std::wcscmp(op,L"hello")==0) text.insert(1,"\"protocol\":"+std::to_string(WireProtocol)+","+(keyboard.api()?"\"capabilities\":[\"keyboard-vocabulary-v1\",\"keyboard-ranking-v1\"],":""));
         transport.send(std::move(text));
     }
     void disconnect() {
+        if (typing) typing->freezeRanking();
         transport.disconnect();
     }
     void refreshSettings(bool force=false) {
@@ -305,6 +306,7 @@ class Service final : public ITfTextInputProcessorEx, public ITfThreadMgrEventSi
     }
     void receive(const WireMessage &message) {
         if (!focused || !context || message.activation != activation || activation.empty()) return;
+        if (message.op==L"keyboard_ranked") { if (session.empty()) request(message); return; }
         if (message.op==L"vocabulary_query" || message.op==L"vocabulary_publish") {
             uint64_t version=0;
             const char *status=session.empty()?typing->vocabulary(message,version):"busy";
@@ -380,6 +382,12 @@ public:
                 auto value=new LearnCommit{commit,previous,generation};
                 if (!PostMessageW(window,Learn,0,reinterpret_cast<LPARAM>(value))) delete value;
             },[this](TfEditCookie cookie,NativeCopy mode) { showMode(cookie,mode); });
+        typing->rankingChanged=[this](const std::string &snapshot,uint64_t revision) {
+            if (!transport.connected() || activation.empty() || !session.empty()) return;
+            std::string text="{\"op\":\""+std::string(snapshot.empty()?"keyboard_freeze":"keyboard_rank")+"\",\"activation\":"+::quoted(activation)+",\"revision\":"+std::to_string(revision);
+            if (!snapshot.empty()) text+=",\"rankRequest\":{\"session_id\":"+::quoted(activation)+",\"generation\":1,\"revision\":"+std::to_string(revision)+","+snapshot+"}";
+            transport.send(text+"}\n");
+        };
         candidates.onAction([this](const CandidateAction &action) {
             TypingCommand command; command.revision=action.revision; command.engineIndex=action.index;
             command.kind=action.kind==CandidateAction::Select?TypingCommand::Choose:action.kind==CandidateAction::Previous?TypingCommand::Previous:TypingCommand::Next;
@@ -395,6 +403,11 @@ public:
         copy->Release(); return SUCCEEDED(hr) && result.size() < (1u << 20);
     }
     HRESULT edit(ITfContext *target, TfEditCookie cookie, const WireMessage &message) {
+        if (message.op==L"keyboard_ranked") {
+            if (target!=context || !focused || message.activation!=activation || !session.empty()) return S_FALSE;
+            mutating=true; HRESULT result=typing->applyRanking(cookie,message); mutating=false;
+            if (result==S_OK) queueLayout(); return result;
+        }
         if (target != context || !focused || message.activation != activation || session.empty() || message.session != session) return S_FALSE;
         if (message.op == L"mark" && message.revision != revision) return S_FALSE;
         if (message.op==L"inspect") { if (composition && !sameOwned(cookie)) invalidate(); return S_OK; }
