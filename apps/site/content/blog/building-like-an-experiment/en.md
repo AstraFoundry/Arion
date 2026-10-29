@@ -1,5 +1,5 @@
 ---
-title: "When every demo works: why we build our voice input method like an experiment"
+title: Why we build our voice input method like an experiment
 description: When models and coding agents make prototypes cheap, the scarce thing is knowing whether a change helped. Starting from three experiments that contradicted our intuition, here is how Arion uses held-out sets, ablations and written rules to decide what ships.
 date: 2026-10-27
 category: engineering
