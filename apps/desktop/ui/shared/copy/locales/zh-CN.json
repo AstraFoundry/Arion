@@ -613,5 +613,10 @@
   "KbdFuzzyENENG": "en / eng",
   "KbdFuzzyINING": "in / ing",
   "KbdFuzzyIANIANG": "ian / iang",
-  "KbdFuzzyUANUANG": "uan / uang"
+  "KbdFuzzyUANUANG": "uan / uang",
+  "KbdNeuralRanking": "本地智能排序",
+  "KbdNeuralDetail": "根据刚刚输入的内容，用本地模型调整中文候选顺序。建议可能不准确。",
+  "KbdNeuralReady": "本地模型已就绪，听写期间暂停。",
+  "KbdNeuralUnavailable": "本地模型不可用，继续使用常规排序。",
+  "KbdNeuralMissing": "下载本地模型后即可使用智能排序。"
 }

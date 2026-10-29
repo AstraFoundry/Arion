@@ -2,6 +2,8 @@
 #import <Cocoa/Cocoa.h>
 #import "keyboard.h"
 #import "learning.h"
+#include "../../../apps/desktop/ime/shared/spelling_options.h"
+#include "../../../apps/desktop/ime/shared/emoji.h"
 #include <mach/mach_time.h>
 #include <sys/resource.h>
 
@@ -42,7 +44,9 @@ int main(int argc, const char *argv[]) {
             NSData *bytes = [NSData dataWithContentsOfFile:inputFile];
             NSDictionary *request = bytes ? [NSJSONSerialization JSONObjectWithData:bytes options:0 error:&error] : nil;
             require([request isKindOfClass:NSDictionary.class] && error == nil, @"Read reference-free request");
-            require([[NSSet setWithArray:request.allKeys] isEqual:[NSSet setWithArray:@[@"id", @"input", @"warmups"]]], @"Reject extra driver request fields");
+            NSMutableArray *fields = [NSMutableArray arrayWithArray:@[@"id", @"input", @"warmups"]];
+            if (request[@"spelling"]) [fields addObject:@"spelling"];
+            require([[NSSet setWithArray:request.allKeys] isEqual:[NSSet setWithArray:fields]], @"Reject extra driver request fields");
             require([request[@"id"] isKindOfClass:NSString.class] && [request[@"input"] isKindOfClass:NSString.class] && [request[@"warmups"] isKindOfClass:NSArray.class], @"Validate request fields");
             NSString *input = request[@"input"];
             require(input.length > 0 && [input rangeOfCharacterFromSet:[[NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyz'"] invertedSet]].location == NSNotFound, @"Input must contain raw ASCII Pinyin only");
@@ -55,6 +59,18 @@ int main(int argc, const char *argv[]) {
             require([engine startWithData:data userDirectory:user error:&error] && error == nil, @"Initialize actual pinned production engine");
             session = [engine createSession];
             require(session != 0, @"Create engine session");
+            if (request[@"spelling"]) {
+                NSDictionary *options = request[@"spelling"];
+                require([options isKindOfClass:NSDictionary.class] && [[NSSet setWithArray:options.allKeys] isEqual:[NSSet setWithArray:@[@"typo", @"fuzzy"]]], @"Validate spelling controls");
+                NSNumber *typo = options[@"typo"], *fuzzy = options[@"fuzzy"];
+                require([typo isKindOfClass:NSNumber.class] && CFGetTypeID((__bridge CFTypeRef)typo) == CFBooleanGetTypeID(), @"Typo control must be Boolean");
+                require([fuzzy isKindOfClass:NSNumber.class] && CFGetTypeID((__bridge CFTypeRef)fuzzy) != CFBooleanGetTypeID() && fuzzy.doubleValue == fuzzy.unsignedIntValue && fuzzy.unsignedIntValue <= ARION_FUZZY_MASK, @"Validate fuzzy mask");
+                arion_spelling_apply(engine.api, session, typo.boolValue, fuzzy.unsignedIntValue);
+                require(!!engine.api->get_option(session,"arion_typo") == typo.boolValue, @"Verify actual typo option");
+                for (unsigned i=0; i<ARION_FUZZY_COUNT; ++i)
+                    require(!!engine.api->get_option(session,arion_fuzzy_options[i]) == !!(fuzzy.unsignedIntValue & (1u<<i)), @"Verify actual fuzzy options");
+                result[@"spelling"] = options;
+            }
             result[@"startupToSessionMs"] = @(elapsed(startup));
             uint64_t warmupStart = mach_absolute_time();
             NSMutableArray *warmups = [NSMutableArray array];
@@ -74,6 +90,20 @@ int main(int argc, const char *argv[]) {
             result[@"steps"] = steps;
             NSDictionary *before = steps.lastObject[@"snapshot"];
             result[@"beforeConfirmation"] = before;
+            // Inspect only candidates already materialized by the final snapshot.
+            // Keep this observation outside the key-processing timer.
+            uint64_t rangeStart = mach_absolute_time();
+            require([before[@"page"] unsignedIntegerValue] == 0, @"Final typing snapshot must be the first page");
+            NSMutableArray *ranges = [NSMutableArray array];
+            NSArray<NSString *> *page = before[@"candidates"];
+            for (NSUInteger index = 0; index < page.count; ++index) {
+                ArionCandidateMetadata metadata{};
+                require(arion_candidate_metadata(session,index,&metadata), @"Read first-page consumed-input ranges");
+                [ranges addObject:@{@"index":@(index), @"text":page[index], @"start":@(metadata.start), @"end":@(metadata.end), @"type":@(metadata.type)}];
+            }
+            result[@"candidateRangeVersion"] = @1;
+            result[@"candidateRanges"] = ranges;
+            result[@"candidateRangeInspectionMs"] = @(elapsed(rangeStart));
             NSMutableArray *confirmations = [NSMutableArray array];
             NSMutableString *committed = [NSMutableString string];
             for (NSDictionary *record in steps) {

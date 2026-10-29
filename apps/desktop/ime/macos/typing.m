@@ -33,6 +33,9 @@ static BOOL containsHan(NSString *text) {
 @property NSEventModifierFlags lastModifierFlags;
 @property ArionShiftTap shiftTap;
 @property BOOL emojiInComposition;
+@property(copy) NSArray<NSDictionary *> *rankingCandidates;
+@property(copy) NSArray<NSNumber *> *rankingSlots;
+@property NSUInteger rankingRevision;
 @end
 
 static int sharedMenuMetadata(void *context, uintptr_t session, size_t index, ArionCandidateMetadata *metadata) {
@@ -121,6 +124,7 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
     self.previousCommit = nil;
 }
 - (void)cancel {
+    [self freezeRanking];
     arion_shift_reset(&_shiftTap);
     if (self.engineGeneration == self.engine.generation) [self.engine clear:self.session];
     BOOL clear = self.composing;
@@ -297,6 +301,7 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
         NSBeep();
         return YES;
     }
+    if (handled && ((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') || key == 0xff08 || key == 0xffff)) [self requestRanking];
     // A key the host handles (Return, arrows, Delete) may move its caret away
     // from the last commit, which then stops being context.
     if (!handled && !wasComposing) self.previousCommit = nil;
@@ -407,6 +412,7 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
 // Shows the current page and makes the engine's highlight match Arion's, so
 // a key the engine resolves itself (punctuation) commits the same candidate.
 - (BOOL)publishMenu {
+    [self freezeRanking];
     ArionKeyboardSnapshot *base = self.engineSnapshot;
     if (!base) return NO;
     if (!arion_menu_prepare(&_menu, self.engine.api, self.session)) return NO;
@@ -495,9 +501,61 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
         }
         return YES;
     }
+    [self freezeRanking];
     arion_menu_dispose(&_menu);
 
     if (self.changed) self.changed();
     return YES;
+}
+- (void)setNeuralRanking:(BOOL)enabled {
+    if (_neuralRanking == enabled) return;
+    [self freezeRanking];
+    _neuralRanking = enabled;
+}
+- (void)freezeRanking {
+    self.rankingCandidates = nil; self.rankingSlots = nil;
+    self.rankingRevision++;
+    if (self.neuralRanking && self.rankingChanged) self.rankingChanged(nil, self.rankingRevision);
+}
+- (void)requestRanking {
+    if (!self.neuralRanking || !self.rankingChanged || !self.composing || self.ascii ||
+        _menu.page || _menu.highlight || _menu.expanded || _menu.count < 2 || !self.context.length || [self.context lengthOfBytesUsingEncoding:NSUTF8StringEncoding]>2048) return;
+    const char *input = self.engine.api->get_input(self.session);
+    if (!input || !*input || strlen(input) > 256 || self.engine.api->get_caret_pos(self.session) != strlen(input)) return;
+    if (!containsHan(@(_menu.texts[0]))) return;
+    NSMutableArray *candidates = [NSMutableArray array], *slots = [NSMutableArray array];
+    for (size_t i=0; i<MIN(_menu.count,27); ++i) {
+        ArionCandidateMetadata item = _menu.metadata[i];
+        if (item.emoji || item.start != _menu.metadata[0].start || item.end != _menu.metadata[0].end ||
+            item.end <= item.start || !containsHan(@(_menu.texts[i]))) continue;
+        [slots addObject:@(i)];
+        [candidates addObject:@{@"id":[NSString stringWithFormat:@"c%zu",_menu.indices[i]],
+            @"text":@(_menu.texts[i]),@"source":@(item.type),@"start":@(item.start),@"end":@(item.end)}];
+    }
+    if (candidates.count<2) return;
+    self.rankingCandidates = candidates; self.rankingSlots = slots;
+    self.rankingChanged(@{@"input":@(input),@"before":self.context,@"candidates":candidates},self.rankingRevision);
+}
+- (void)applyRankingMessage:(NSDictionary *)message activation:(NSString *)activation {
+    uint64_t revision=0, generation=0, resultRevision=0;
+    if (!self.live || !self.composing || !self.neuralRanking || !self.rankingCandidates || ![message[@"activation"] isEqual:activation] ||
+        !vocabularyInteger(message[@"revision"],&revision) || revision!=self.rankingRevision) return;
+    NSDictionary *result=message[@"rankResult"];
+    if (![message[@"status"] isEqual:@"ok"] || ![result isKindOfClass:NSDictionary.class] ||
+        ![result[@"session_id"] isEqual:activation] || !vocabularyInteger(result[@"generation"],&generation) || generation!=1 ||
+        !vocabularyInteger(result[@"revision"],&resultRevision) || resultRevision!=revision) { [self freezeRanking]; return; }
+    NSArray *order=result[@"candidates"];
+    if (![order isKindOfClass:NSArray.class] || order.count!=self.rankingCandidates.count) return;
+    for (id item in order) if (![item isKindOfClass:NSDictionary.class] || ![item[@"id"] isKindOfClass:NSString.class]) return;
+    NSUInteger chosen=NSNotFound;
+    for (NSUInteger i=0;i<self.rankingCandidates.count;++i)
+        if ([self.rankingCandidates[i][@"id"] isEqual:order[0][@"id"]]) chosen=i;
+    if (chosen==NSNotFound) return;
+    NSMutableArray *expected=[self.rankingCandidates mutableCopy];
+    NSDictionary *selected=expected[chosen]; [expected removeObjectAtIndex:chosen]; [expected insertObject:selected atIndex:0];
+    for (NSUInteger i=0;i<order.count;++i) if (![order[i][@"id"] isEqual:expected[i][@"id"]]) return;
+    size_t slots[27]; for (NSUInteger i=0;i<self.rankingSlots.count;++i) slots[i]=self.rankingSlots[i].unsignedIntegerValue;
+    if (![self verify] || !arion_menu_promote_slots(&_menu,slots,self.rankingSlots.count,chosen)) return;
+    [self publishMenu];
 }
 @end

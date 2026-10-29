@@ -18,6 +18,8 @@ import (
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/llm/client"
+	"arion.local/desktop/infrastructure/llm/engine"
+	"arion.local/desktop/infrastructure/llm/prompt"
 	"arion.local/desktop/infrastructure/provision"
 	"arion.local/models"
 )
@@ -99,11 +101,15 @@ type Service struct {
 	threads int
 	diag    io.Writer
 
-	mu        sync.Mutex
-	status    Status
-	client    *client.Client
-	cancel    context.CancelFunc
-	listeners []func(Status)
+	mu                sync.Mutex
+	status            Status
+	client            *client.Client
+	cancel            context.CancelFunc
+	listeners         []func(Status)
+	rankingCancel     context.CancelFunc
+	rankingEpoch      uint64
+	speechJobs        int
+	keyboardSuspended bool
 }
 
 // New prepares the service; it starts nothing.
@@ -237,6 +243,9 @@ func (s *Service) fail(err error) error {
 // Disable stops provisioning or the worker; the model stays installed.
 func (s *Service) Disable() {
 	s.mu.Lock()
+	if s.rankingCancel != nil {
+		s.rankingCancel()
+	}
 	if s.cancel != nil {
 		s.cancel()
 	}
@@ -262,6 +271,12 @@ func (s *Service) Ready() bool {
 // Rewrite satisfies ports.Rewriter.
 func (s *Service) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.RewriteResult, error) {
 	s.mu.Lock()
+	s.speechJobs++
+	if s.rankingCancel != nil {
+		s.rankingCancel()
+	}
+	defer func() { s.mu.Lock(); s.speechJobs--; s.mu.Unlock() }()
+
 	c := s.client
 	installed := s.status.Installed && s.store != nil
 	s.mu.Unlock()
@@ -277,15 +292,7 @@ func (s *Service) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.
 		return ports.RewriteResult{}, domain.Fail(domain.CodeModelMissing, "rewrite model not running")
 	}
 	result, err := c.Rewrite(ctx, req)
-	if err != nil && !c.Alive() {
-		// The worker died: report it once instead of failing every session.
-		s.mu.Lock()
-		if s.client == c {
-			s.client = nil
-		}
-		s.mu.Unlock()
-		s.set(func(st *Status) { st.State, st.Failure = Failed, domain.CodeModelUnsupported })
-	}
+	s.observeWorkerFailure(c, err)
 	return result, err
 }
 
@@ -300,3 +307,61 @@ func (s *Service) End(id contracts.Identity) {
 }
 
 var _ ports.Rewriter = (*Service)(nil)
+
+// Complete reuses the resident local worker at lower priority than polishing.
+// Keyboard requests never provision a model or select a cloud provider.
+func (s *Service) Complete(ctx context.Context, req prompt.ChatRequest) (engine.Result, error) {
+	s.mu.Lock()
+	if s.keyboardSuspended || s.speechJobs != 0 || s.client == nil || !s.client.Alive() {
+		s.mu.Unlock()
+		return engine.Result{}, domain.Fail(domain.CodeModelMissing, "local keyboard model unavailable")
+	}
+	if s.rankingCancel != nil {
+		s.rankingCancel()
+	}
+	ctx, cancel := context.WithCancel(ctx)
+	s.rankingEpoch++
+	epoch, c := s.rankingEpoch, s.client
+	s.rankingCancel = cancel
+	s.mu.Unlock()
+	defer func() {
+		cancel()
+		s.mu.Lock()
+		if s.rankingEpoch == epoch {
+			s.rankingCancel = nil
+		}
+		s.mu.Unlock()
+	}()
+	result, err := c.Complete(ctx, req)
+	s.observeWorkerFailure(c, err)
+	return result, err
+}
+
+// SuspendKeyboard cancels low-priority completion before audio work begins.
+func (s *Service) SuspendKeyboard(suspended bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.keyboardSuspended = suspended
+	if suspended && s.rankingCancel != nil {
+		s.rankingCancel()
+	}
+}
+
+func (s *Service) observeWorkerFailure(c *client.Client, err error) {
+	if err == nil || c.Alive() {
+		return
+	}
+	s.mu.Lock()
+	if s.client != c {
+		s.mu.Unlock()
+		return
+	}
+	s.client = nil
+	s.status.State, s.status.Failure = Failed, domain.CodeModelUnsupported
+	status := s.status
+	listeners := append([]func(Status){}, s.listeners...)
+	s.mu.Unlock()
+	for _, listener := range listeners {
+		listener(status)
+	}
+}

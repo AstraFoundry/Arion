@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 for (const [args, cwd] of [
   [['--test', 'scripts/lib/reset-desktop.test.mjs', 'scripts/lib/markdown-anchors.test.mjs', 'scripts/lib/release.test.mjs', 'scripts/lib/workflow-check.test.mjs', 'scripts/lib/doc-consistency.test.mjs'], root],
+  [['--test', 'benchmarks/reproduction/imk-quality-v1/candidate-ranges.test.mjs', 'benchmarks/reproduction/llm-ime-alignment-v2/requests.test.mjs', 'benchmarks/reproduction/llm-ime-alignment-v2/report.test.mjs', 'benchmarks/reproduction/llm-ime-alignment-v2/evidence.test.mjs'], root],
   [['scripts/check-go.mjs', 'core'], root],
   [['scripts/check-go.mjs', 'sync'], root],
   [['scripts/check-go.mjs', 'updates'], root],

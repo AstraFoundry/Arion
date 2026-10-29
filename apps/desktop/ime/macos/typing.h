@@ -31,6 +31,11 @@ typedef NS_ENUM(NSInteger, ArionTypingSwitch) {
 // Context ranking and its learning (上下文调频). Always on in the input
 // method; tests turn it off to read the engine's own order.
 @property BOOL contextRanking;
+@property(nonatomic) BOOL neuralRanking;
+// Nil snapshot freezes inference; callbacks run on the native owner thread.
+@property(copy) void (^rankingChanged)(NSDictionary *snapshot, NSUInteger revision);
+- (void)freezeRanking;
+- (void)applyRankingMessage:(NSDictionary *)message activation:(NSString *)activation;
 @property BOOL emojiSuggestions;
 @property(nonatomic) BOOL typoCorrection;
 @property(nonatomic) uint32_t fuzzyPinyin;

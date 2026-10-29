@@ -111,8 +111,20 @@ static bool vocabularyWireCases() {
     if (!require(parseWire(R"({"op":"mark","activation":"a","session":"s","revision":5,"text":"\ud83d\ude00"})",message) && utf8(message.text)==u8"😀","voice Unicode survives shared parser")) return false;
     return true;
 }
+static bool rankingWireCases() {
+    WireMessage message;
+    if (!require(parseWire(R"({"op":"keyboard_ranked","activation":"a","revision":4,"status":"ok","rankResult":{"session_id":"a","generation":1,"revision":4,"candidates":[{"id":"c1"},{"id":"c0"}]}})",message) && message.rankingOK && message.rankedIDs.size()==2 && message.rankedIDs[0]=="c1","decode scoped ranking permutation")) return false;
+    const char *invalid[]={
+        R"({"op":"keyboard_ranked","activation":"a","revision":true,"status":"unavailable"})",
+        R"({"op":"keyboard_ranked","activation":"a","revision":4,"status":"ok"})",
+        R"({"op":"keyboard_ranked","activation":"a","revision":4,"status":"ok","rankResult":{"session_id":"b","generation":1,"revision":4,"candidates":[{"id":"c1"},{"id":"c0"}]}})",
+        R"({"op":"keyboard_ranked","activation":"a","revision":4,"status":"ok","rankResult":{"session_id":"a","generation":1,"revision":3,"candidates":[{"id":"c1"},{"id":"c0"}]}})"
+    };
+    for (auto input:invalid) if (!require(!parseWire(input,message),"reject unbound ranking result")) return false;
+    return require(parseWire(R"({"op":"keyboard_ranked","activation":"a","revision":5,"status":"unavailable"})",message) && !message.rankingOK && message.rankedIDs.empty(),"unavailable result clears previous proposal");
+}
 int main() {
-    if (!vocabularyWireCases()) return 1;
+    if (!vocabularyWireCases() || !rankingWireCases()) return 1;
     if (!ordinaryHost()) {
         HANDLE diagnostic = nullptr; TOKEN_ELEVATION elevation{}; DWORD size = 0;
         bool opened = OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &diagnostic) != FALSE;

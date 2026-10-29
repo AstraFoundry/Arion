@@ -23,6 +23,7 @@ ARION_KEYBOARD_EXPORT int arion_keyboard_reset_learning(char *error,size_t capac
 ARION_KEYBOARD_EXPORT uint64_t arion_keyboard_generation(void);
 ARION_KEYBOARD_EXPORT int arion_keyboard_order(const char *const *candidates,size_t count,const unsigned char *eligible,const char *previous,size_t *indices,char *error,size_t capacity);
 ARION_KEYBOARD_EXPORT int arion_keyboard_learn(const char *commit,const char *previous,char *error,size_t capacity);
+ARION_KEYBOARD_EXPORT int arion_keyboard_contains_han(const char *text,size_t length);
 ARION_KEYBOARD_EXPORT int arion_keyboard_context(const char *commit,char *context,size_t capacity);
 ARION_KEYBOARD_EXPORT int arion_keyboard_candidate_metadata(uintptr_t session,size_t index,ArionCandidateMetadata *metadata);
 ARION_KEYBOARD_EXPORT int arion_keyboard_refresh_emoji(uintptr_t session);

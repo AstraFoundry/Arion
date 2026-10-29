@@ -14,27 +14,33 @@ import (
 	"sync"
 	"time"
 
+	"arion.local/core/application"
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 )
 
 type message struct {
-	Capabilities       []string               `json:"capabilities,omitempty"`
-	Request            uint64                 `json:"request,omitempty"`
-	VocabularyRevision uint64                 `json:"vocabularyRevision,omitempty"`
-	Terms              *[]domain.KeyboardTerm `json:"terms,omitempty"`
-	Status             string                 `json:"status,omitempty"`
-	Build              string                 `json:"build,omitempty"`
-	Protocol           int                    `json:"protocol,omitempty"`
-	Op                 string                 `json:"op"`
-	Activation         string                 `json:"activation"`
-	Session            string                 `json:"session,omitempty"`
-	Client             string                 `json:"client,omitempty"`
-	Text               string                 `json:"text"`
-	Revision           uint64                 `json:"revision,omitempty"`
+	RankRequest        *contracts.KeyboardRankRequest `json:"rankRequest,omitempty"`
+	RankResult         *contracts.KeyboardRankResult  `json:"rankResult,omitempty"`
+	Capabilities       []string                       `json:"capabilities,omitempty"`
+	Request            uint64                         `json:"request,omitempty"`
+	VocabularyRevision uint64                         `json:"vocabularyRevision,omitempty"`
+	Terms              *[]domain.KeyboardTerm         `json:"terms,omitempty"`
+	Status             string                         `json:"status,omitempty"`
+	Build              string                         `json:"build,omitempty"`
+	Protocol           int                            `json:"protocol,omitempty"`
+	Op                 string                         `json:"op"`
+	Activation         string                         `json:"activation"`
+	Session            string                         `json:"session,omitempty"`
+	Client             string                         `json:"client,omitempty"`
+	Text               string                         `json:"text"`
+	Revision           uint64                         `json:"revision,omitempty"`
 }
 
 type IME struct {
+	ranking            *application.KeyboardRanking
+	rankingCapable     bool
+	rankingRevision    uint64
 	vocabularyCapable  bool
 	vocabularyDelivery *vocabularyDelivery
 	vocabularyRequest  uint64
@@ -127,6 +133,7 @@ func (m *IME) Listen() error {
 
 // invalidateLocked wakes any pending commit and revokes its capability.
 func (m *IME) invalidateLocked() bool {
+	m.invalidateRankingLocked()
 	m.invalidateVocabularyLocked()
 	had := m.token != ""
 	m.identity = contracts.Identity{}
@@ -154,6 +161,10 @@ func (m *IME) leave(had bool) {
 func (m *IME) Close() {
 	m.mu.Lock()
 	m.closed = true
+	if m.ranking != nil {
+		m.ranking.Close()
+		m.ranking = nil
+	}
 	if m.vocabularyDelivery != nil {
 		m.vocabularyDelivery.stop()
 	}
@@ -232,13 +243,18 @@ func (m *IME) serve(conn net.Conn) {
 		m.conn.Close()
 	}
 	had := m.invalidateLocked()
+	m.rankingRevision = 0
 	m.activation, m.client, m.build = "", "", hello.Build
 	if hello.Op == "activate" {
 		m.activation, m.client = hello.Activation, hello.Client
 	}
 	m.conn = conn
 	m.vocabularyCapable = false
+	m.rankingCapable = false
 	for _, capability := range hello.Capabilities {
+		if capability == rankingCapability {
+			m.rankingCapable = true
+		}
 		if capability == vocabularyCapability {
 			m.vocabularyCapable = true
 		}
@@ -265,6 +281,8 @@ func (m *IME) serve(conn net.Conn) {
 			break
 		}
 		switch msg.Op {
+		case "keyboard_rank", "keyboard_freeze":
+			m.receiveRankingLocked(msg)
 		case "vocabulary_state", "vocabulary_published":
 			m.receiveVocabularyLocked(msg)
 		case "begun":
@@ -275,6 +293,7 @@ func (m *IME) serve(conn net.Conn) {
 		case "activate":
 			if msg.Activation != "" && msg.Activation != m.activation {
 				had = m.invalidateLocked()
+				m.rankingRevision = 0
 				m.activation = msg.Activation
 				m.client = msg.Client
 				m.notifyLocked()
@@ -399,6 +418,7 @@ func (m *IME) Capture(ctx context.Context, id contracts.Identity) (contracts.Tar
 		return contracts.TargetSnapshot{}, err
 	}
 	m.invalidateVocabularyLocked()
+	m.invalidateRankingLocked()
 	m.identity = id
 	m.token = contracts.TargetToken("ime:" + m.activation + ":" + id.SessionID)
 	if acknowledged != nil {

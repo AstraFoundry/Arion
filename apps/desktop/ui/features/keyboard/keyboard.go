@@ -364,3 +364,35 @@ func status(s runtime.InputMethodState) copy.Key {
 	}
 	return copy.IMEUnsupported
 }
+
+// Neural configures only the resident local model; cloud polishing is unrelated.
+func Neural(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
+	enabled := store.State.Preferences.Keyboard.NeuralRanking
+	model := store.State.Polish
+	kit.Card(c, tokens).Children(func() {
+		kit.Row(c, tokens, messages.Text(copy.KbdNeuralRanking), messages.Text(copy.KbdNeuralDetail), func() {
+			if ui.Switch(c.Key("neural-ranking"), &enabled).Label(messages.Text(copy.KbdNeuralRanking)).Changed() {
+				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Keyboard.NeuralRanking = enabled })
+			}
+		})
+		if enabled {
+			ui.Column(c).Padding(0, 16, 12, 16).Gap(8).Children(func() {
+				key := copy.KbdNeuralUnavailable
+				if model.State == runtime.PolishReady {
+					key = copy.KbdNeuralReady
+				} else if model.State == runtime.PolishLoading {
+					key = copy.PolishLoading
+				} else if !model.Installed && model.State != runtime.PolishUnsupported {
+					key = copy.KbdNeuralMissing
+				}
+				ui.Text(c, messages.Text(key)).FontSize(theme.Caption).TextColor(tokens.Muted)
+				if !model.Installed && model.State != runtime.PolishUnsupported {
+					if kit.Button(c.Key("ranking-download"), tokens, kit.Outline, messages.Text(copy.PolishDownload), model.State != runtime.PolishProvisioning).Clicked() {
+						store.Actions.DownloadPolish()
+					}
+				}
+			})
+		}
+	})
+}

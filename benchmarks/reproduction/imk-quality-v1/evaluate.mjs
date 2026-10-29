@@ -1,10 +1,11 @@
 // Model-free scoring only. Targets never enter the native driver protocol.
+import { candidateCoverage } from './candidate-ranges.mjs';
 import { readFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-const hash = file => createHash('sha256').update(readFileSync(file)).digest('hex');
-const read = file => JSON.parse(readFileSync(file, 'utf8'));
+export const hash = file => createHash('sha256').update(readFileSync(file)).digest('hex');
+export const read = file => JSON.parse(readFileSync(file, 'utf8'));
 const normalize = text => text.normalize('NFKC').toLowerCase().replace(/[\p{P}\p{S}]/gu, ' ').replace(/\s+/g, ' ').trim();
 export const percentile = (values, probability) => {
   if (!values.length) return null;
@@ -32,6 +33,9 @@ function aggregate(rows) {
     firstCandidateExactCount: total('top1'), firstCandidateExact: total('top1') / count,
     firstPageOracleHits: total('oracle'), firstPageOracleRecallAt9: total('oracle') / count,
     firstPageMRRAt9: total('reciprocalRank') / count,
+    ...(rows[0]?.fullInputRecall === undefined ? {} : { fullInputOracleHits: total('fullInputRecall'),
+      fullInputOracleRecallAt9: total('fullInputRecall') / count, partialOnlyOracleHits: total('partialOnlyRecall'),
+      fullInputTop1Count: total('fullInputTop1') }),
     characterErrors: total('errors'), referenceCharacters: total('units'), corpusCER: total('errors') / total('units'),
     unfinishedConfirmationCount: rows.filter(row => row.terminal !== 'empty-preedit').length };
 }
@@ -80,7 +84,7 @@ export function evaluate(directory, corpusFile) {
       terminal: actual.terminal, timings: { keys: actual.steps.map(step => step.keyToSnapshotMs), firstKey: actual.steps[0].keyToSnapshotMs,
         confirmations: actual.confirmations.map(step => step.keyToSnapshotMs), startup: actual.startupToSessionMs,
         warmup: actual.warmupMs, typing: actual.inputKeysToFinalSnapshotMs, teardown: actual.teardownMs, childWall: record.childWallMs },
-      peakRSSBytes: actual.peakRSSBytes });
+      ...candidateCoverage(actual, metadata, fixture.reference, normalize), peakRSSBytes: actual.peakRSSBytes });
   }
   const strata = {};
   for (const stratum of ['cold-process', 'warm-process']) {

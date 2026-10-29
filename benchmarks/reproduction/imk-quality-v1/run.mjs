@@ -1,7 +1,7 @@
 // Real engine benchmark. Preparation and timed execution are explicit separate steps.
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync, appendFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, appendFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,18 +20,29 @@ const corpusFile = path.join(root, 'benchmarks/corpora/imk-quality-v1/corpus.jso
 const corpus = json(corpusFile);
 const runtime = path.join(root, 'apps/desktop/resources/darwin/keyboard');
 const binary = path.join(build, 'driver');
+const files = directory => readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
+  const file = path.join(directory, entry.name);
+  return entry.isDirectory() ? files(file) : [file];
+}).sort();
+const runtimeHashes = () => Object.fromEntries(files(runtime).map(file => [path.relative(runtime, file), hash(file)]));
 const required = ['benchmarks/reproduction/imk-quality-v1/driver.mm', 'benchmarks/reproduction/imk-quality-v1/run.mjs',
-  'benchmarks/reproduction/imk-quality-v1/evaluate.mjs', 'benchmarks/corpora/imk-quality-v1/corpus.json', 'benchmarks/corpora/imk-quality-v1/provenance.json',
+  'benchmarks/reproduction/imk-quality-v1/evaluate.mjs', 'benchmarks/reproduction/imk-quality-v1/candidate-ranges.mjs', 'benchmarks/corpora/imk-quality-v1/corpus.json', 'benchmarks/corpora/imk-quality-v1/provenance.json',
   'apps/desktop/ime/macos/keyboard.m', 'apps/desktop/ime/macos/keyboard.h', 'apps/desktop/ime/macos/learning.mm',
+  'apps/desktop/ime/macos/ranking.m', 'apps/desktop/ime/macos/ranking.h',
   'apps/desktop/ime/macos/learning.h', 'apps/desktop/ime/macos/learning_crypto.swift', 'scripts/lib/build-ime-learning.mjs',
   'scripts/keyboard-runtime.json', 'apps/desktop/resources/darwin/keyboard/runtime.json'];
+required.push(...files(path.join(root, 'apps/desktop/ime/shared'))
+  .filter(file => /\.(?:h|c|cpp|inc|yaml)$/.test(file))
+  .map(file => path.relative(root, file)));
 const command = (name, args) => execFileSync(name, args, { cwd: root, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 }).trim();
 const probe = (name, args) => {
   const result = spawnSync(name, args, { encoding: 'utf8' });
   return { status: result.status, stdout: result.stdout, stderr: result.stderr, error: result.error?.message ?? null };
 };
 const metadata = () => ({
+  candidateRangeVersion: 1,
   corpusSha256: hash(corpusFile), runtimeManifestSha256: hash(path.join(runtime, 'runtime.json')),
+  runtimeFileHashes: runtimeHashes(),
   nativeLibrarySha256: hash(path.join(runtime, 'lib/librime.1.dylib')), nativeExecutableSha256: hash(binary),
   architecture: { host: 'arm64', runner: process.arch, executable: command('lipo', ['-archs', binary]), translation: 'none' },
   hardware: { model: command('sysctl', ['-n', 'hw.model']), cpu: command('sysctl', ['-n', 'machdep.cpu.brand_string']),
@@ -64,7 +75,7 @@ if (mode === 'prepare') {
   try {
     const learning = buildIMELearning({ root, outputDir: build, arch: 'arm64', testing: true });
     const target = learning.target, native = path.join(root, 'apps/desktop/ime/macos'), objects = [];
-    for (const [file, objcxx] of [[path.join(native, 'keyboard.m'), false], [path.join(root, required[0]), true]]) {
+    for (const [file, objcxx] of [[path.join(native, 'keyboard.m'), false], [path.join(native, 'ranking.m'), false], [path.join(root, required[0]), true]]) {
       const object = path.join(build, `native-${objects.length}.o`);
       compile([objcxx ? 'clang++' : 'clang', ...(objcxx ? ['-std=c++17'] : []), '-target', target, '-O2', '-fobjc-arc',
         '-Wall', '-Wextra', '-Werror', '-DARION_LEARNING_TESTING', '-DGLOG_USE_GLOG_EXPORT', '-I', native,
@@ -86,6 +97,7 @@ if (mode === 'prepare') {
   if (json(path.join(build, 'status.json')).status !== 'prepared' || hash(binary) !== frozen.nativeExecutableSha256) throw new Error('Prepared native executable changed.');
   for (const [name, expected] of Object.entries(frozen.sourceHashes)) if (hash(path.join(root, name)) !== expected) throw new Error(`Frozen source changed: ${name}`);
   if (hash(path.join(runtime, 'lib/librime.1.dylib')) !== frozen.nativeLibrarySha256) throw new Error('Pinned native runtime changed.');
+  if (JSON.stringify(runtimeHashes()) !== JSON.stringify(frozen.runtimeFileHashes)) throw new Error('Frozen runtime/data closure changed.');
   mkdirSync(out, { recursive: true });
   for (const name of ['requests', 'raw', 'profiles']) mkdirSync(path.join(out, name));
   save(path.join(out, 'status.json'), { status: 'running' });
@@ -119,6 +131,7 @@ if (mode === 'prepare') {
       if (index.length % 100 === 0) console.log(`Completed ${index.length}/600 actual native processes.`);
     }
     for (const [name, expected] of Object.entries(frozen.sourceHashes)) if (hash(path.join(root, name)) !== expected) throw new Error(`Source changed during timed execution: ${name}`);
+    if (JSON.stringify(runtimeHashes()) !== JSON.stringify(frozen.runtimeFileHashes)) throw new Error('Runtime/data changed during timed execution.');
     save(path.join(out, 'status.json'), { status: 'completed', completedProcesses: index.length, finalLoadAverage: os.loadavg() });
     save(path.join(out, 'report.json'), evaluate(out, corpusFile));
     console.log(`Completed600 real runs and independent scoring: ${out}`);

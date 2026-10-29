@@ -166,3 +166,25 @@ int arion_menu_engine_index(const ArionPinyinMenu *menu,size_t index,size_t row,
     if (at>=menu->count) return 0;
     *engine_index=menu->indices[at]; return 1;
 }
+
+int arion_menu_promote_slots(ArionPinyinMenu *menu, const size_t *slots, size_t count, size_t chosen) {
+    if (!menu || !menu->texts || !menu->indices || !menu->metadata || !slots || count < 2 || count > 27 || chosen >= count ||
+        menu->page || menu->expanded || menu->highlight || slots[0] != 0) return 0;
+    for (size_t i = 0; i < count; ++i) {
+        if (slots[i] >= menu->count || (i && slots[i] <= slots[i-1]) ||
+            menu->metadata[slots[i]].emoji ||
+            menu->metadata[slots[i]].start != menu->metadata[0].start ||
+            menu->metadata[slots[i]].end != menu->metadata[0].end ||
+            menu->metadata[slots[i]].end <= menu->metadata[slots[i]].start) return 0;
+    }
+    char *text = menu->texts[slots[chosen]];
+    size_t index = menu->indices[slots[chosen]];
+    ArionCandidateMetadata metadata = menu->metadata[slots[chosen]];
+    for (size_t i = chosen; i > 0; --i) {
+        menu->texts[slots[i]] = menu->texts[slots[i-1]];
+        menu->indices[slots[i]] = menu->indices[slots[i-1]];
+        menu->metadata[slots[i]] = menu->metadata[slots[i-1]];
+    }
+    menu->texts[0] = text; menu->indices[0] = index; menu->metadata[0] = metadata;
+    return 1;
+}

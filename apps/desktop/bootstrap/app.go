@@ -441,7 +441,12 @@ func (a *App) ready() {
 			a.diagnostics.Session(e)
 		}
 	})
-	a.core.Subscribe(func(e contracts.Event) { a.post(func() { a.apply(e) }) })
+	a.core.Subscribe(func(e contracts.Event) {
+		if e.Kind == contracts.SessionStateChanged {
+			a.rewriter.SuspendKeyboard(e.State != domain.Idle && !domain.IsTerminal(e.State))
+		}
+		a.post(func() { a.apply(e) })
+	})
 	if a.harness != nil {
 		a.core.Subscribe(a.harness.observe)
 		if err := a.harness.serve(a.opts.E2EControl); err != nil {
@@ -467,6 +472,7 @@ func (a *App) ready() {
 	a.state.InputMethod = arion.InputMethodUnsupported
 	if a.ime != nil {
 		mygo.App.OnQuit(a.ime.Close)
+		a.configureKeyboardRanking()
 		if err := a.ime.Listen(); err != nil {
 			a.record("ime_listen", err)
 		}
@@ -855,7 +861,7 @@ func (a *App) startPolish(download bool) {
 		}
 		a.rewriter.Disable()
 		a.rewriter.Refresh()
-		if p := a.preferences(); ctx.Err() == nil && p.Polish && p.PolishEngine == application.PolishLocal {
+		if p := a.preferences(); ctx.Err() == nil && ((p.Polish && p.PolishEngine == application.PolishLocal) || p.Keyboard.NeuralRanking) {
 			if download {
 				_ = a.rewriter.Download(ctx)
 			} else {

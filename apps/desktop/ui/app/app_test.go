@@ -1806,3 +1806,35 @@ func TestDictationHidesDeliveryInternals(t *testing.T) {
 		}
 	}
 }
+
+func TestKeyboardNeuralSettings(t *testing.T) {
+	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		for _, mode := range []string{"off", "missing", "loading", "ready", "unavailable"} {
+			t.Run(string(language)+"/"+mode, func(t *testing.T) {
+				state, _, store := fixture()
+				state.Preferences.UILanguage = language
+				state.Preferences.Keyboard.NeuralRanking = mode != "off"
+				state.Polish.Installed = mode != "missing"
+				state.Polish.State = map[string]runtime.PolishState{"off": runtime.PolishOff, "missing": runtime.PolishOff, "loading": runtime.PolishLoading, "ready": runtime.PolishReady, "unavailable": runtime.PolishFailed}[mode]
+				tt := ui.NewTester(func(c *ui.Context) {
+					tokens := theme.Apply(c)
+					ui.Column(c).Padding(16).Gap(12).Children(func() { keyboardui.Neural(c, store, tokens) })
+				}, 600, 260)
+				settle(tt)
+				if !hasText(tt, store.Copy().Text(copy.KbdNeuralRanking)) {
+					t.Fatal("missing ranking control")
+				}
+				snapshot(t, tt, "keyboard-neural-"+mode+"-"+string(language))
+				row, ok := tt.Find(store.Copy().Text(copy.KbdNeuralRanking))
+				if !ok {
+					t.Fatal("missing ranking row")
+				}
+				tt.ClickAt(560, row.Y+row.H)
+				settle(tt)
+				if state.Preferences.Keyboard.NeuralRanking != (mode == "off") {
+					t.Fatal("ranking preference did not toggle")
+				}
+			})
+		}
+	}
+}

@@ -42,6 +42,7 @@ Write an ADR when the decision:
 - [028: Separate Windows keyboard and voice host admission](028-windows-keyboard-host-admission.md) — elevated local typing with unchanged ordinary voice IPC.
 - [029: Spoken self-repair collapses before polish](029-spoken-self-repair.md) — `speech-spans-v3` drops a clear revision to the final span; `cleanup-rules-v2` keeps the speaker's wording and names an ASR mishear fix a correction.
 - [030: Shared vocabulary delivery over verified input-method transport](030-keyboard-vocabulary-transport.md) — complete encrypted projections, authenticated capability admission and restart-safe acknowledgement.
+- [031: Opt-in local keyboard neural ranking](031-local-keyboard-neural-ranking.md) — default-off local completion, verified revision ownership and voice priority.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

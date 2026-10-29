@@ -145,7 +145,10 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 			a.record("keyboard_settings", err)
 		}
 	}
-	if next.Polish != before.Polish || next.PolishEngine != before.PolishEngine {
+	if next.Keyboard.NeuralRanking != before.Keyboard.NeuralRanking {
+		a.configureKeyboardRanking()
+	}
+	if next.Polish != before.Polish || next.PolishEngine != before.PolishEngine || next.Keyboard.NeuralRanking != before.Keyboard.NeuralRanking {
 		a.startPolish(false)
 	}
 	if next.CloudModel != before.CloudModel {
