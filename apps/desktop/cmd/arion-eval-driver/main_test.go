@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"arion.local/desktop/infrastructure/provision"
 )
 
 func TestHelloAttestsRelativeAndAbsoluteArtifactPaths(t *testing.T) {
@@ -15,7 +17,7 @@ func TestHelloAttestsRelativeAndAbsoluteArtifactPaths(t *testing.T) {
 	if err := os.WriteFile(filename, []byte("engine-bytes"), 0600); err != nil {
 		t.Fatal(err)
 	}
-	expected, err := hashFile(filename)
+	expected, err := provision.HashFile(filename)
 	if err != nil {
 		t.Fatal(err)
 	}

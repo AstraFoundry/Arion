@@ -51,7 +51,6 @@ const (
 	inputKeyboard    = 1
 	keyeventfUnicode = 0x0004
 	keyeventfKeyUp   = 0x0002
-	keyeventfNone    = 0
 	vkControl        = 0x11
 	vkV              = 0x56
 	cfUnicodeText    = 13

@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import crypto from "node:crypto";
 import os from "node:os";
 import { buildPrompt } from "./diagnostic/prompt.mjs";
 import { Worker } from "./diagnostic/worker.mjs";
@@ -8,7 +7,8 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { distribution, tokens } from "./src/metrics.mjs";
 import { shuffle } from "./src/statistics.mjs";
-import { hashFile } from "./src/manifest.mjs";
+import { hashFile, readJson as read, sha256 as hash } from "./src/manifest.mjs";
+import { parseFlags, requireFlags } from "./diagnostic/flags.mjs";
 import { diagnosticMetrics } from "./diagnostic/metrics.mjs";
 export { diagnosticMetrics } from "./diagnostic/metrics.mjs";
 
@@ -16,14 +16,7 @@ const root = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
 );
-const hash = (bytes) => crypto.createHash("sha256").update(bytes).digest("hex");
-const read = async (p) => JSON.parse(await fs.readFile(p, "utf8"));
-const flags = Object.fromEntries(
-  Array.from({ length: (process.argv.length - 3) / 2 }, (_, i) => [
-    process.argv[3 + i * 2].replace(/^--/, ""),
-    process.argv[4 + i * 2],
-  ]),
-);
+const flags = parseFlags(process.argv.slice(3));
 const promptFile = path.resolve(
   flags.prompts ?? path.join(root, "tools/evaluation/diagnostic/prompts.json"),
 );
@@ -35,8 +28,7 @@ export function makePrompt(sample, variant) {
 }
 
 async function run() {
-  for (const key of ["corpus", "models", "python", "out"])
-    if (!flags[key]) throw new Error(`--${key} required`);
+  requireFlags(flags, ["corpus", "models", "python", "out"]);
   const configPath = path.resolve(
     flags.config ?? "benchmarks/configs/qwen-diagnostic.json",
   );

@@ -30,15 +30,18 @@ func (s *Store) Begin(ctx context.Context) (domain.Tx, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &pgTx{tx: tx}, nil
+	return &pgTx{transaction{tx: tx}}, nil
 }
 
-type pgTx struct {
+// transaction ends a pgx transaction once for both repositories: a call
+// after a successful Commit or any Rollback does nothing, and rolling back
+// a transaction the driver already closed is not an error.
+type transaction struct {
 	tx   pgx.Tx
 	done bool
 }
 
-func (t *pgTx) Commit(ctx context.Context) error {
+func (t *transaction) Commit(ctx context.Context) error {
 	if t.done {
 		return nil
 	}
@@ -49,7 +52,7 @@ func (t *pgTx) Commit(ctx context.Context) error {
 	return nil
 }
 
-func (t *pgTx) Rollback(ctx context.Context) error {
+func (t *transaction) Rollback(ctx context.Context) error {
 	if t.done {
 		return nil
 	}
@@ -60,6 +63,8 @@ func (t *pgTx) Rollback(ctx context.Context) error {
 	}
 	return err
 }
+
+type pgTx struct{ transaction }
 
 func (t *pgTx) Group(ctx context.Context, id string) (domain.Group, error) {
 	var group domain.Group

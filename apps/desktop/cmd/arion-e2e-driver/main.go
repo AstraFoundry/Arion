@@ -13,7 +13,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"net"
 	"os"
 	"os/exec"
@@ -22,6 +21,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"arion.local/desktop/infrastructure/provision"
 )
 
 type driverConfig struct {
@@ -111,25 +112,12 @@ func (d *driver) path(p string) string {
 	return filepath.Join(d.dir, p)
 }
 
-func hashFile(path string) (string, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
-	h := sha256.New()
-	if _, err := io.Copy(h, file); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(h.Sum(nil)), nil
-}
-
 // hello attests artifacts, creates an isolated profile and launches the
 // actual app and editor fixture as their own processes.
 func (d *driver) hello() (map[string]any, error) {
 	attested := map[string]string{}
 	for _, artifact := range d.config.Artifacts {
-		digest, err := hashFile(d.path(artifact.Path))
+		digest, err := provision.HashFile(d.path(artifact.Path))
 		if err != nil {
 			return nil, err
 		}
@@ -382,14 +370,19 @@ func (d *driver) scenario(id string, actions []map[string]any) (map[string]any, 
 		return nil, err
 	}
 	tracePath := filepath.Join(evidenceDir, fmt.Sprintf("%s-%d.json", id, time.Now().UnixNano()))
-	data, _ := json.MarshalIndent(d.trace, "", " ")
+	data, err := json.MarshalIndent(d.trace, "", " ")
+	if err != nil {
+		return nil, err
+	}
 	if err := os.WriteFile(tracePath, data, 0o600); err != nil {
 		return nil, err
 	}
-	digest, _ := hashFile(tracePath)
+	// The digest covers the bytes just written; re-reading the file could
+	// only add a failure that would leave the evidence unhashed.
+	digest := sha256.Sum256(data)
 	relative, _ := filepath.Rel(d.dir, tracePath)
 	return map[string]any{"execution": "live", "fixtureOwnership": "isolated", "observations": observations,
-		"evidence": []map[string]any{{"path": relative, "sha256": digest}}}, nil
+		"evidence": []map[string]any{{"path": relative, "sha256": hex.EncodeToString(digest[:])}}}, nil
 }
 
 func (d *driver) cleanup() map[string]any {

@@ -321,11 +321,6 @@ func switchAwayIME() error {
 	return nil
 }
 
-// RemoveIME uses the installed signed host's maintenance entry.
-func RemoveIME() error {
-	return RemoveIMEWithHelper(context.Background(), InstalledIMEPath())
-}
-
 // IME is the session-bound local transport used by the InputMethodKit host.
 type IME = imebridge.IME
 

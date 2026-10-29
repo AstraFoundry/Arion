@@ -19,7 +19,7 @@ func (s *Store) BeginAccount(ctx context.Context) (application.AccountTx, error)
 	if err != nil {
 		return nil, err
 	}
-	return &accountTx{tx: tx}, nil
+	return &accountTx{transaction{tx: tx}}, nil
 }
 
 // Lookup reads the link and subject control for one account.
@@ -84,33 +84,7 @@ func (s *Store) EnsureTenant(ctx context.Context, issuer, subject string, quota 
 	return tenant, nil
 }
 
-type accountTx struct {
-	tx   pgx.Tx
-	done bool
-}
-
-func (t *accountTx) Commit(ctx context.Context) error {
-	if t.done {
-		return nil
-	}
-	if err := t.tx.Commit(ctx); err != nil {
-		return err
-	}
-	t.done = true
-	return nil
-}
-
-func (t *accountTx) Rollback(ctx context.Context) error {
-	if t.done {
-		return nil
-	}
-	t.done = true
-	err := t.tx.Rollback(ctx)
-	if errors.Is(err, pgx.ErrTxClosed) {
-		return nil
-	}
-	return err
-}
+type accountTx struct{ transaction }
 
 func (t *accountTx) ClaimJTI(ctx context.Context, jti string, now time.Time) (bool, error) {
 	tag, err := t.tx.Exec(ctx, `INSERT INTO security_event (jti, received_at) VALUES ($1, $2) ON CONFLICT DO NOTHING`, jti, now)

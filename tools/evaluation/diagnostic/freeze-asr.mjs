@@ -1,18 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import crypto from "node:crypto";
-import { digest } from "../src/manifest.mjs";
+import { digest, readJson as read, sha256 as hash } from "../src/manifest.mjs";
+import { parseFlags, requireFlags } from "./flags.mjs";
 
-const hash = (b) => crypto.createHash("sha256").update(b).digest("hex");
-const read = async (p) => JSON.parse(await fs.readFile(p, "utf8"));
-const flags = Object.fromEntries(
-  Array.from({ length: (process.argv.length - 2) / 2 }, (_, i) => [
-    process.argv[2 + i * 2].replace(/^--/, ""),
-    process.argv[3 + i * 2],
-  ]),
-);
-for (const k of ["corpus", "audio-corpus", "native", "qwen-asr", "out"])
-  if (!flags[k]) throw new Error(`--${k} required`);
+const flags = parseFlags(process.argv.slice(2));
+requireFlags(flags, ["corpus", "audio-corpus", "native", "qwen-asr", "out"]);
 const base = await read(flags.corpus),
   audioBytes = await fs.readFile(flags["audio-corpus"]),
   audio = JSON.parse(audioBytes);

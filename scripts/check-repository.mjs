@@ -38,7 +38,10 @@ async function siteTargetExists(url) {
   for (const candidate of candidates) {
     try {
       if ((await stat(candidate)).isFile()) return true;
-    } catch {}
+    } catch (error) {
+      // Only an absent candidate means "try the next one"; other errors are real.
+      if (error.code !== 'ENOENT' && error.code !== 'ENOTDIR') throw error;
+    }
   }
   return false;
 }
