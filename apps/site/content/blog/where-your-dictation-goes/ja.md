@@ -48,7 +48,7 @@ Arion は AGPL-3.0 のオープンソースなので、この記事の言葉を�
 git clone https://github.com/AstraFoundry/Arion.git
 cd Arion
 make install
-make desktop-build
+make build desktop
 ```
 
 そのあと Wi-Fi をオフにして音声入力してみてください。ここに書いたことが正しくなくなったら、それはバグです。[プライバシーのページ](/privacy/)と仕様[^spec]は、コードと同じ変更セットで更新されます。
