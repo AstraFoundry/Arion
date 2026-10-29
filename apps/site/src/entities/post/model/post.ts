@@ -28,6 +28,7 @@ export interface PostMeta {
   date: string;
   /** Day of the last substantive revision, `YYYY-MM-DD`; never before `date`. */
   updated?: string;
+  /** GitHub logins, in byline order; profiles are read at build time. */
   authors: string[];
   tags: string[];
   category: PostCategory;
@@ -35,6 +36,16 @@ export interface PostMeta {
   image?: PostImage;
   /** Drafts are built in development only. */
   draft: boolean;
+}
+
+/** A post author's public GitHub profile, as the build read it. */
+export interface PostAuthor {
+  login: string;
+  /** The profile's display name, or the login when the profile has none, as GitHub shows it. */
+  name: string;
+  profileUrl: string;
+  /** The avatar, published with the site under `/blog-assets/`. */
+  avatar: string;
 }
 
 export interface Post extends PostMeta {
@@ -80,6 +91,9 @@ export class PostError extends Error {
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
+/** A GitHub login: up to 39 letters, digits and single inner hyphens. */
+export const GITHUB_LOGIN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
+
 function text(data: Record<string, unknown>, key: string, source: string): string {
   const value = data[key];
   if (typeof value !== "string" || value.trim() === "") {
@@ -111,6 +125,28 @@ function list(data: Record<string, unknown>, key: string, source: string): strin
   return items;
 }
 
+/**
+ * `authors: ada, lena` or `authors: [ada, lena]`: GitHub logins, each once.
+ * Logins are case-insensitive, so `Ada` and `ada` are the same person.
+ */
+function authors(data: Record<string, unknown>, source: string): string[] {
+  const value = data.authors;
+  if (value === undefined) return [];
+  const items = typeof value === "string" ? value.split(",") : value;
+  if (!Array.isArray(items) || items.some((item) => typeof item !== "string")) {
+    throw new PostError(source, `front matter "authors" must be GitHub logins separated by commas`);
+  }
+  const logins = items.map((item: string) => item.trim());
+  const invalid = logins.find((login) => !GITHUB_LOGIN.test(login));
+  if (invalid !== undefined) {
+    throw new PostError(source, `front matter "authors" lists "${invalid}", which is not a GitHub login`);
+  }
+  if (new Set(logins.map((login) => login.toLowerCase())).size !== logins.length) {
+    throw new PostError(source, `front matter "authors" lists an entry twice`);
+  }
+  return logins;
+}
+
 /** Validates a post's front matter; every problem fails the build. */
 export function parseFrontmatter(data: unknown, source: string): PostFrontmatter {
   if (!data || typeof data !== "object") throw new PostError(source, "missing front matter");
@@ -140,7 +176,7 @@ export function parseFrontmatter(data: unknown, source: string): PostFrontmatter
     title: text(fields, "title", source),
     description: text(fields, "description", source),
     date: isoDate(fields.date, "date", source),
-    authors: list(fields, "authors", source),
+    authors: authors(fields, source),
     tags: list(fields, "tags", source),
     category: category as PostCategory,
     draft: fields.draft === true,
@@ -158,14 +194,14 @@ export function parseFrontmatter(data: unknown, source: string): PostFrontmatter
 }
 
 /**
- * Translations of one post share its publication date, category, cover image
- * and draft state; the words, authors' spelling, tags and revision date may
- * differ. Returns the first field that disagrees, if any.
+ * Translations of one post share its publication date, authors, category,
+ * cover image and draft state; the words, tags and revision date may differ. Returns the first field that disagrees, if any.
  */
 export function translationMismatch(posts: readonly PostMeta[]): string | undefined {
   const [first, ...rest] = posts;
   for (const post of rest) {
     if (post.date !== first.date) return "date";
+    if (post.authors.join() !== first.authors.join()) return "authors";
     if (post.category !== first.category) return "category";
     if (post.image?.src !== first.image?.src) return "image";
     if (post.draft !== first.draft) return "draft";

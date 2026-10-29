@@ -2,6 +2,7 @@
 title: Where your dictation goes
 description: Most voice input tools stream audio to the cloud, and the OS permission prompt looks the same either way. Here is the local memory lifecycle behind a dictation in Arion, the three places that touch the network, and how to verify it with Wi-Fi off.
 date: 2026-10-27
+authors: stvlynn
 category: product
 tags: [privacy, offline, encryption]
 image: /blog/where-your-dictation-goes/cover.webp

@@ -1,4 +1,5 @@
 export { AppLink } from "./app-link";
+export { AuthorByline, type AuthorProfile, AuthorSummary } from "./authors";
 export { Backdrop } from "./backdrop";
 export { BrandMark, BrandWord } from "./brand";
 export { DictationPill, type PillState } from "./dictation-pill";

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getPost } from "@/entities/post";
+import { getAuthors, getPost } from "@/entities/post";
 import { blogPostRoute, siteConfig, socialImage } from "@/shared/config";
 import { type Locale, LOCALE_TAGS, LOCALES, pageMetadata } from "@/shared/i18n";
 import { loadMessages } from "@/shared/i18n/server";
@@ -9,11 +9,12 @@ const ogLocale = (locale: Locale) => LOCALE_TAGS[locale].replace("-", "_");
 
 /**
  * A post's head: description, canonical and hreflang links, Open Graph
- * `article` (published and modified times, authors, section, tags) and a
+ * `article` (published and modified times, author profiles, section, tags) and a
  * large Twitter card, with the post's image or the site preview.
  */
-export function blogPostMetadata(slug: string, locale: Locale): Metadata {
+export async function blogPostMetadata(slug: string, locale: Locale): Promise<Metadata> {
   const post = getPost(slug, locale);
+  const authors = await getAuthors(post.authors);
   const { blog, meta } = loadMessages(locale);
   const base = pageMetadata(blogPostRoute(slug), locale, post.title, post.description);
   const image = post.image
@@ -22,7 +23,9 @@ export function blogPostMetadata(slug: string, locale: Locale): Metadata {
 
   return {
     ...base,
-    ...(post.authors.length > 0 ? { authors: post.authors.map((name) => ({ name })) } : {}),
+    ...(authors.length > 0
+      ? { authors: authors.map(({ name, profileUrl }) => ({ name, url: profileUrl })) }
+      : {}),
     ...(post.tags.length > 0 ? { keywords: post.tags } : {}),
     openGraph: {
       ...base.openGraph,
@@ -32,7 +35,7 @@ export function blogPostMetadata(slug: string, locale: Locale): Metadata {
       alternateLocale: LOCALES.filter((each) => each !== locale).map(ogLocale),
       publishedTime: post.date,
       modifiedTime: post.updated,
-      authors: post.authors,
+      authors: authors.map((author) => author.profileUrl),
       section: blog.categories[post.category],
       tags: post.tags,
       images: [image],

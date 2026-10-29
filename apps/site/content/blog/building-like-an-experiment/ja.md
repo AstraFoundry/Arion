@@ -2,6 +2,7 @@
 title: 私たちが音声入力メソッドを実験のように作る理由
 description: モデルとコーディングエージェントによって試作とデモが安くなった今、足りないのは変更が本当に役立ったかを知ることです。直感と異なる結果が出た3つの実験から、Arionがホールドアウト、アブレーション、明文化したルールで何を出荷するかを決めるまで。
 date: 2026-10-27
+authors: stvlynn
 category: engineering
 tags: [方法論, ベンチマーク, アブレーション, 評価, AI エージェント]
 image: /blog/building-like-an-experiment/cover.webp

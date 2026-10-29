@@ -17,6 +17,7 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
+    "@base-ui/react": "^1.9.0",
     "@shikijs/rehype": "^4.5.0",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
