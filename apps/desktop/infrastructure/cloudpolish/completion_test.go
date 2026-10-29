@@ -34,9 +34,12 @@ func TestGenericCompletionUsesIndependentRankingPrompt(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer s.CloseCompletion()
-	req := contracts.KeyboardRankRequest{Identity: contracts.Identity{SessionID: "synthetic", Generation: 1}, Revision: 1, Input: "beijing", Before: "这幅图的", Candidates: []domain.KeyboardCandidate{{Candidate: domain.Candidate{ID: "a", Text: "北京", Source: "test"}}, {Candidate: domain.Candidate{ID: "b", Text: "背景", Source: "test"}}}}
+	req := contracts.KeyboardRankRequest{Identity: contracts.Identity{SessionID: "synthetic", Generation: 1}, Revision: 1, Input: "beijing", Before: "这幅图的", Candidates: []domain.KeyboardCandidate{
+		{Candidate: domain.Candidate{ID: "a", Text: "北京", Source: "test"}, Start: 0, End: len("beijing")},
+		{Candidate: domain.Candidate{ID: "b", Text: "背景", Source: "test"}, Start: 0, End: len("beijing")},
+	}}
 	out, err := (&ranking.Ranker{Chat: s}).RankKeyboard(context.Background(), req)
-	if err != nil || out.Candidates[0].ID != "b" {
+	if err != nil || len(out.Candidates) != 2 || out.Candidates[0].ID != "b" || out.Decision != "model" || received == nil {
 		t.Fatal(out, err)
 	}
 	body, _ := json.Marshal(received)
