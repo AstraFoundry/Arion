@@ -37,6 +37,21 @@ if ($Child) {
     }
     $resolvedGo = (Get-Command go -CommandType Application | Select-Object -First 1).Source
     if ($resolvedGo -ne $GoExecutable) { throw 'The standard-user PATH does not select the pinned Go executable.' }
+    . (Join-Path $PSScriptRoot 'lib/windows-ci-go-cache.ps1')
+    $cacheSeed = Join-Path $Repository '.workspace/ci-standard-user-go-cache'
+    $cache = Join-Path $Repository '.workspace/windows-standard-user-go'
+    New-Item -ItemType Directory -Path $cache -Force | Out-Null
+    $env:GOCACHE = Join-Path $cache 'build'
+    $env:GOMODCACHE = Join-Path $cache 'mod'
+    foreach ($name in @('build', 'mod')) {
+        $destination = Join-Path $cache $name
+        New-Item -ItemType Directory -Path $destination -Force | Out-Null
+        Copy-CIGoCache (Join-Path $cacheSeed $name) $destination
+        $owner = (Get-Acl -LiteralPath $destination).GetOwner([Security.Principal.SecurityIdentifier]).Value
+        if ($owner -ne $ExpectedSID) { throw 'The active Go cache must be owned by the standard test user.' }
+    }
+    $env:XDG_CACHE_HOME = Join-Path $Repository '.workspace/native-download-cache'
+    Write-Output "Standard-user Go caches: $cache (owner $ExpectedSID)"
     $testExitCode = 1
     try {
         $preflightDirectory = Join-Path $Repository '.workspace/tests/windows-keyboard-ci'
@@ -60,10 +75,18 @@ if ($Child) {
         # Pipe identity, private ACL and canonical-path checks require this
         # ordinary token and its real profile temp directory, too.
         # Validate the private native ABI before the longer Go desktop suite.
+        $timer = [Diagnostics.Stopwatch]::StartNew()
         & $Node (Join-Path $Repository 'scripts/check-windows-keyboard.mjs')
         if ($LASTEXITCODE -ne 0) { throw 'Standard-user native keyboard checks failed.' }
+        Write-Output "Standard-user native keyboard checks: $($timer.Elapsed.TotalSeconds) seconds"
+        $timer.Restart()
         & $Node (Join-Path $Repository 'scripts/check-go.mjs') desktop
         $testExitCode = $LASTEXITCODE
+        Write-Output "Standard-user desktop tests and vet: $($timer.Elapsed.TotalSeconds) seconds"
+        if ($testExitCode -eq 0) {
+            foreach ($name in @('build', 'mod')) { Copy-CIGoCache (Join-Path $cache $name) (Join-Path $cacheSeed $name) }
+            Write-Output 'Exported standard-user Go compiler and module caches without profile or ACL data.'
+        }
     } finally {
         # Private DPAPI/options fixtures deny the parent runner access. Archive
         # them as their owner before deleting this account; the archive itself
