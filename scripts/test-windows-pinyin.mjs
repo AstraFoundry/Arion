@@ -44,13 +44,16 @@ mkdirSync(profile);
 const systemRoot = process.env.SystemRoot;
 if (!systemRoot) throw new Error('SystemRoot is required for an isolated Windows test environment.');
 const fixtures=englishAdmissionFixtures(root);
+const fixtureFiles = [...fixtures, path.join(path.dirname(fixtures[0]), 'provenance.json')];
+const fixtureIdentities = Object.fromEntries(fixtureFiles.map(file => [path.relative(root, file).replaceAll('\\', '/'), hash(file)]));
 const execution = spawnSync(binary, [path.join(runtime, 'data'), profile, ...fixtures], { cwd: runDirectory, windowsHide: true,
   encoding: 'utf8', timeout: 120000, env: { SystemRoot: systemRoot, WINDIR: systemRoot,
     PATH: path.join(systemRoot, 'System32'), TEMP: process.env.TEMP, TMP: process.env.TMP, APPDATA: process.env.APPDATA } });
 const changedSources = sourceNames.filter(name => hash(path.join(source, name)) !== sourceIdentities[name]);
+const changedFixtures = fixtureFiles.filter(file => hash(file) !== fixtureIdentities[path.relative(root, file).replaceAll('\\', '/')]);
 const runtimeChanged = hash(library) !== runtimeSha256;
 const report = { schema: 1, boundary: 'actual Rime and encrypted provider; no TSF or installed editor dispatch',
-  fixtureIdentities: Object.fromEntries(fixtures.map(file=>[path.basename(file),hash(file)])), binarySha256: hash(binary), runtimeSha256, profile, sourceIdentities, changedSources, runtimeChanged,
+  fixtureIdentities, changedFixtures, binarySha256: hash(binary), runtimeSha256, profile, sourceIdentities, changedSources, runtimeChanged,
   status: execution.status, error: execution.error?.message, stdout: execution.stdout, stderr: execution.stderr };
 const reportPath = path.join(runDirectory, 'report.json');
 writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');
@@ -59,4 +62,4 @@ process.stderr.write(execution.stderr ?? '');
 console.log(`Native Pinyin evidence: ${reportPath}`);
 if (execution.error) throw execution.error;
 if (execution.status !== 0) throw new Error(`Real Pinyin test failed (${execution.status}).`);
-if (changedSources.length || runtimeChanged) throw new Error('Pinyin sources or runtime changed during the test; inspect the report before retrying.');
+if (changedSources.length || changedFixtures.length || runtimeChanged) throw new Error('Pinyin sources, fixtures or runtime changed during the test; inspect the report before retrying.');

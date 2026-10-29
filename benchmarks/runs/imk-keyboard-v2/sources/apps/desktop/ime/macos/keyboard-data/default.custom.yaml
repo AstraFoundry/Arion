@@ -1,6 +1,0 @@
-# Restrict deployment and schema switching to Arion's reviewed offline profile.
-patch:
-  schema_list:
-    - schema: arion_pinyin
-  menu/page_size: 9
-  switcher/hotkeys: []

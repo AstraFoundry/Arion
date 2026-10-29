@@ -1,9 +1,0 @@
-{
-  "cpu": "Apple M4",
-  "memoryBytes": 34359738368,
-  "platform": "macOS-26.6.2-x86_64-i386-64bit",
-  "scope": "M4/32GB development host; minimum Apple Silicon16GB unverified",
-  "powerAndThermal": "Not measured; no attribution",
-  "timing": "Serial arms and reused baseline; historical clock inconsistency unresolved. No causal latency/SLO acceptance.",
-  "memory": "Post-response sampled inference-worker RSS, not peak/whole-app/ASR"
-}

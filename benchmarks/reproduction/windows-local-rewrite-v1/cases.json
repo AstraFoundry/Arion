@@ -1,6 +1,0 @@
-[
-  {"id":"han-chat","scene":"chat","text":"明天下午三点开会，记得带电脑。"},
-  {"id":"latin-chat","scene":"chat","text":"um please check the build logs and do not restart the server"},
-  {"id":"han-list","scene":"list","text":"第一，检查日志。第二，保留配置。第三，不要重启。"},
-  {"id":"context-choice","scene":"prompt","text":"请检查 chatter fly 的日志，不要重启服务。","screen":"Chatterfly application logs"}
-]

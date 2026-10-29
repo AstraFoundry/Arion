@@ -68,7 +68,7 @@ const config = {
 };
 writeFileSync(path.join(work, 'driver.json'), JSON.stringify(config, null, 2));
 const out = path.join(work, `run-${new Date().toISOString().replace(/[:.]/g, '-')}`);
-const result = spawnSync(process.execPath, [path.join(root, 'tools', 'evaluation', 'cli.mjs'), 'e2e',
+const result = spawnSync(process.execPath, [path.join(root, 'tools', 'driver', 'cli.mjs'), 'e2e',
   '--suite', path.join(root, 'tests', 'e2e', 'macos-shortcut-scenarios.json'), '--driver', path.join(work, 'driver.json'), '--out', out], { stdio: 'inherit' });
 console.log(`Results: ${path.relative(root, out)}/results.json`);
 process.exitCode = result.status ?? 1;

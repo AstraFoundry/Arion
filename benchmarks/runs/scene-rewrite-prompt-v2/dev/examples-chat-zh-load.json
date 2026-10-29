@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 3100.686,
-  "promptId": "prompt-v2-examples-chat-zh",
-  "prefixTokens": 249,
-  "peakRssBytes": 3388702720
-}

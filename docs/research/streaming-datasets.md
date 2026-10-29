@@ -1,6 +1,8 @@
 # Streaming speech datasets
 
-Hugging Face has useful evaluation corpora, but dataset `streaming=True` means incremental **download/iteration**, not a proven realtime recognition benchmark. [Pinned catalog](../../benchmarks/datasets.json) records exact repository commits inspected through the HF metadata API. No audio was downloaded and no access terms were accepted during this research.
+Research commands qualified with `/path/to/Arion-evaluation` run in the private [Arion evaluation repository](https://github.com/AstraFoundry/Arion-evaluation). Product checks run in this public checkout.
+
+Hugging Face has useful evaluation corpora, but dataset `streaming=True` means incremental **download/iteration**, not a proven realtime recognition benchmark. [Pinned catalog](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/datasets.json`) records exact repository commits inspected through the HF metadata API. No audio was downloaded and no access terms were accepted during this research.
 
 ## Dataset selection
 
@@ -22,13 +24,13 @@ Prefer original-publisher mirrors and exact pinned revisions. Public visibility 
 3. Decode/resample deterministically to mono 16 kHz, record decoder/resampler versions/settings and original/output hashes, and derive actual decoded duration. Save manifest audio SHA-256 after conversion. Do not treat the HF cache path as a reproducible artifact identity.
 4. Apply a documented source-specific annotation policy, including SEAME markers, `<inaudible>`, punctuation, abbreviations and official-vs-Arion normalization. Retain verbatim source labels privately. Correct source timestamps only with review and hash the annotation artifact.
 5. Final CER/WER/MER can use ordinary utterance labels. Onset/end/stable-unit and endpoint claims require reviewed speech intervals, intended turns and optional unit timing. Existing corpus alignment is a starting point, not verified latency truth. Never use the tested VAD/model's own predictions as gold.
-6. Validate with `make bench-validate CORPUS=...`. Use separate train warmups for dev evaluation, dev warmups for held-out test. Freeze the selection/export manifest, model hashes and config before each comparison.
+6. Validate with `make -C /path/to/Arion-evaluation bench-validate CORPUS=...`. Use separate train warmups for dev evaluation, dev warmups for held-out test. Freeze the selection/export manifest, model hashes and config before each comparison.
 
-Import/conversion is a follow-up DATA-01 implementation, not a hidden dependency in pnpm install or CI. The repo provides the target manifest validator, dataset catalog and `make datasets-check` pinned metadata verification. It does not install Python/HF loaders or acquire gated data automatically. The whole project remains pnpm-managed for JavaScript workflows; a future data converter may use an explicitly pinned runtime/tool via Make.
+Import/conversion is a follow-up DATA-01 implementation, not a hidden dependency in pnpm install or CI. The repo provides the target manifest validator, dataset catalog and `make -C /path/to/Arion-evaluation datasets-check` pinned metadata verification. It does not install Python/HF loaders or acquire gated data automatically. The whole project remains pnpm-managed for JavaScript workflows; a future data converter may use an explicitly pinned runtime/tool via Make.
 
 ## Streaming replay scenarios
 
-[Executable sweep](../../benchmarks/configs/desktop-streaming.json) covers chunk size × endpoint timeout with model/memory/ranker/correction held constant. Request effective settings are checked; chronological incremental feed and real native preview traces must be provided by the driver.
+[Executable sweep](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/configs/desktop-streaming.json`) covers chunk size × endpoint timeout with model/memory/ranker/correction held constant. Request effective settings are checked; chronological incremental feed and real native preview traces must be provided by the driver.
 
 Use independently labeled groups for short clean speech, hesitations/internal pauses, final quiet syllables, CJK/English switches, names/numbers/URLs, long continuous speech and nonspeech/noise. Keep original source splits. For long-form tests, preserve actual full recording order/state. Fixed concatenation of short clips with seeded silence is a separate **synthetic stress** set: record recipe/component hashes and never describe it as naturally occurring long-form conversation. Noise/gap/jitter transformations also need fixed recipes and source license tracking.
 

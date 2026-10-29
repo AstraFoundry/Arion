@@ -1,9 +1,0 @@
-{
-  "source": ".workspace/rewrite-selector-referent-v1",
-  "published": "benchmarks/runs/rewrite-selector-referent-v1",
-  "privateExcluded": [
-    "weights",
-    "runtime binaries",
-    "Go cleanup executable"
-  ]
-}

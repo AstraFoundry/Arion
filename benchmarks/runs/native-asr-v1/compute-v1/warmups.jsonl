@@ -1,2 +1,0 @@
-{"caseId": "tts-train-00-grandpa", "audioSha256": "b5123c7bae57b825518a5037d056fb51cdf7bbb9d88e5f0a47a2f8682f6d2051", "elapsedMs": 4453.095500124618, "response": {"type": "end", "text": "我们下午三点开个短会，讨论一下周二的。", "id": "1", "stop": "complete"}, "text": "我们下午三点开个短会，讨论一下周二的。"}
-{"caseId": "tts-train-01-grandpa", "audioSha256": "5b09ad0149ccc0dde5b086f4268772e32ee45c4303dd529052860945741609f9", "elapsedMs": 517.7349578589201, "response": {"id": "2", "text": "请把这份PDF发到我的邮箱。", "stop": "complete", "type": "end"}, "text": "请把这份PDF发到我的邮箱。"}

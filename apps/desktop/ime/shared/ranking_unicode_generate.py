@@ -74,7 +74,7 @@ for name in names:
     manifest['sources'][name] = {'url': url, 'sha256': hashlib.sha256((source / name).read_bytes()).hexdigest()}
 (target / 'ranking_unicode_sources.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8', newline='\n')
 (target / 'ranking_unicode_LICENSE.txt').write_bytes((source / 'license.txt').read_bytes())
-corpus = target.parents[3] / 'benchmarks/corpora/ime-learning-v1'
+corpus = target / 'testdata/ime-learning-v1'
 corpus.mkdir(parents=True, exist_ok=True)
 (corpus / 'GraphemeBreakTest-17.0.0.txt').write_bytes((source / 'GraphemeBreakTest.txt').read_bytes())
 (corpus / 'Scripts-17.0.0.txt').write_bytes((source / 'Scripts.txt').read_bytes())

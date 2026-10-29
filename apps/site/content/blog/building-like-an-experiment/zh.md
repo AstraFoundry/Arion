@@ -111,8 +111,8 @@ Arion 是一个在本地运行的语音与拼音输入法。按住快捷键说�
 benchmark 语料、逐条原始输出、预热记录、失败尝试、录制音频以及确切的脚本和 prompt，都放在仓库的 `benchmarks/` 下，带有字节级的 SHA-256 标识：1,062 个文件、约 98 MB 的证据（模型权重和个人录音除外）。[^archive] 不加载任何模型就能校验档案、重建报告：
 
 ```sh
-pnpm bench:archive:verify
-pnpm bench:archive:report --out .workspace/archive-report-repeat
+pnpm --dir /path/to/Arion-evaluation bench:archive:verify
+pnpm --dir /path/to/Arion-evaluation bench:archive:report --out .workspace/archive-report-repeat
 ```
 
 评测协议固定了容易在不同运行之间漂移的细节：统一的文本归一化、按总错误数除以总参考单位计算的语料错误率、按说话人分簇的配对 bootstrap 区间。测试参考答案不会进入推理、记忆或上下文，从测试数据学到的记忆会被直接拒绝（`EVAL-A04`）。[^method]
@@ -145,18 +145,18 @@ pnpm bench:archive:report --out .workspace/archive-report-repeat
 
 用本地模型和编程智能体做产品，瓶颈已经不是写代码了。动手之前先定义什么叫「变好」，并用哈希冻结一个留出集。一次只改一个变量，保留一行不用新模型的对照组。像记录成功一样记录失败，把决定写在下一个智能体会读到的地方，用新决定取代旧决定而不是抹掉它。这些做法本身不会让产品变好，但会让自欺变得难得多。
 
-[^live]: [实时改写流水线结果（v1）](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/live-rewrite-v1/README.md)与 [ADR 011](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/011-live-local-rewriting.md)。
+[^live]: [实时改写流水线结果（v1）](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/live-rewrite-v1/README.md)与 [ADR 011](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/011-live-local-rewriting.md)。
 
-[^context]: [改写上下文消融（v1）](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/context-ablation-v1/README.md)与 [ADR 013](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md)。
+[^context]: [改写上下文消融（v1）](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/context-ablation-v1/README.md)与 [ADR 013](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md)。
 
-[^phonetic]: [发音证据消融](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/phonetic-asr-1.7b-v2/README.md)。
+[^phonetic]: [发音证据消融](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/phonetic-asr-1.7b-v2/README.md)。
 
 [^eval]: [规范 008：评测与自动化](https://github.com/AstraFoundry/Arion/blob/main/specs/008-evaluation.md)。
 
-[^rime]: [Rime LLM 重排器复现](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/rime-llm-reranker-v1/README.md)。
+[^rime]: [Rime LLM 重排器复现](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/rime-llm-reranker-v1/README.md)。
 
-[^archive]: [benchmark 研究档案](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/migration/README.md)。
+[^archive]: [benchmark 研究档案](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/migration/README.md)。
 
 [^method]: [benchmark 方法论](https://github.com/AstraFoundry/Arion/blob/main/docs/research/benchmark-methodology.md)。
 
-[^imk]: [上下文调频结果](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/imk-context-v1/README.md)。
+[^imk]: [上下文调频结果](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/imk-context-v1/README.md)。

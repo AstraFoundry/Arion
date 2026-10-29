@@ -1,6 +1,0 @@
-{
-  "reason": "Before any stress/validation inference, fixed ambiguous-prior fixture so both independent names have the same preceding frame. Original had a different second frame and was not ambiguous under declared retrieval rule. Original bytes retained.",
-  "before": "b47830cb6bacbbff274a8c9a9d750bdf72e09aa515af51b71af479a5f5f15fc7",
-  "after": "5031bd4daa5b56312db9f788eba6115bf3042f55f608057a82a25bc2bd763177",
-  "inferenceAtCorrection": "Only development baseline/no-prior arms running; no validation/stress model calls."
-}

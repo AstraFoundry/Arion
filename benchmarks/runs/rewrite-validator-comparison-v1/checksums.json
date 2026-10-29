@@ -1,6 +1,0 @@
-{
-  "benchmarks/runs/rewrite-validator-comparison-v1/results.json": "37a424e1aed8443a83cb5f8b2bced41ccf8bff72c43bc43dd1919d2ffe344ecd",
-  "benchmarks/reproduction/rewrite-validator-comparison-v1/probes.json": "d9fd94fda1ef5ffa00ccc73ba4108215fe108df9911603da98accf3e3b74a527",
-  "benchmarks/reproduction/rewrite-validator-comparison-v1/README.md": "01876a2916ae97abe648d8b118c72dcb3ee766fe3cb62755d3607b19f1297c44",
-  "benchmarks/reproduction/rewrite-validator-comparison-v1/replay.py": "b652b2557a459ad45f5f2f0fac40c887e0d5af2cd6887ce7849ad343240c052d"
-}

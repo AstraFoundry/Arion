@@ -1,5 +1,0 @@
-{
-  "returncode": 1,
-  "stderr": "request failed: open /Users/steven/code/Arion/.workspace/qwen17/Users/steven/code/Arion/.workspace/qwen17/arion-eval-driver: no such file or directory\n",
-  "stdout": ""
-}

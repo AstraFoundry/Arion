@@ -1,7 +1,0 @@
-{
-  "status": "failed",
-  "stage": "driver build before inference",
-  "command": "go build -o .workspace/asr-hotwords-v1/driver benchmarks/reproduction/asr-hotwords-v1/driver.go",
-  "reason": "Sandbox denied write/read to default Go build cache under Library/Caches/go-build.",
-  "resolution": "Set GOCACHE to repository ignored .workspace/go-cache and build again; no model/backend substitution."
-}

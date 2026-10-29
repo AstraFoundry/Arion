@@ -1,8 +1,0 @@
-{
-  "source": ".workspace/rewrite-work-scope-v3",
-  "published": "benchmarks/runs/rewrite-work-scope-v3",
-  "privateExcluded": [
-    "weights",
-    "runtime binaries"
-  ]
-}

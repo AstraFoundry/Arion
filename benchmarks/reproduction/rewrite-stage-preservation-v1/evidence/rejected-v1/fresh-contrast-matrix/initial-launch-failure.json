@@ -1,4 +1,0 @@
-{
-  "status": "failed-before-model-launch",
-  "reason": "Runner computed repository root one directory too high; no model load or generations. Original runner bytes retained, corrected parents[3] to parents[2]."
-}

@@ -1,5 +1,0 @@
-
-> arion-monorepo@0.0.0 qwen17:verify /Users/steven/code/Arion
-> node scripts/qwen17-context-command.mjs verify
-
-Verified 207 archived files; no model weights required.

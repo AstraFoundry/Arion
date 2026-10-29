@@ -1,9 +1,0 @@
-{
-  "cpu": "Apple M4",
-  "memoryBytes": 34359738368,
-  "platform": "macOS-26.6.2-x86_64-i386-64bit",
-  "scope": "M4/32GB development; minimum Apple Silicon16GB unverified",
-  "timing": "Historical Q4 comparison, unresolved cross-clock/serial host drift; no causal speed/SLO acceptance",
-  "resources": "Maximum sampled post-response inference worker RSS, not peak/whole-app/ASR",
-  "acquisition": "Q8 download and validation completed before this native inference began"
-}

@@ -1,6 +1,0 @@
-{
-  "inputSha256": "30c7d3f9d353068aaa95847e2901135f37495c16c54cbccdf572803b289fbdf4",
-  "observationsSha256": "b51770e66429438fee4e0b7c1587cf309682b22057e2f60d2db00ad9cc5de217",
-  "policy": "Fixtures derived from actual candidate observations and original source.previous only; expected.json is excluded",
-  "cases": 9
-}

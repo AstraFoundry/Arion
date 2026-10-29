@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 2234.56,
-  "promptId": "no-validator-v1-minimal-email-zh",
-  "prefixTokens": 289,
-  "peakRssBytes": 3422158848
-}

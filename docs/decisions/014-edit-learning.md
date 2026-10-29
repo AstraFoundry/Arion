@@ -76,7 +76,7 @@ Arion had approved vocabulary that a user could type in Settings, and every entr
 - A pair applies after a single correction, so a mistaken edit is applied until it is undone or corrected back. Content changes that look like misrecognitions, such as one weekday replaced by another, are learned. The undo, the Settings list and reversal handling are the safeguards.
 - Edits Arion cannot see are not learned: Windows (no field reading yet), IME compositions, hosts whose Accessibility value is unreadable, and edits after the field lost focus.
 - A user who rewrites polished text back to their own wording teaches that wording, as with Typeless.
-- Historical extraction/recall results before the word-boundary change, measured in [edit-learning-v1](../../benchmarks/results/edit-learning-v1/README.md):
+- Historical extraction/recall results before the word-boundary change, measured in [edit-learning-v1](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/edit-learning-v1/README.md`):
   - On labelled edits, pair precision is 0.95 and recall 0.91, with nothing learned from 23 non-corrections. That set is a development set.
   - Held out, memory from dev corrections changed none of 150 test dictations: no benefit and no harm, because the errors did not recur.
   - When the same sentences are re-dictated, errors drop from 8.5 % to 3.6 % (mixed technical speech 23.9 % → 7.3 %), with 1 of 114 worsened.

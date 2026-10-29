@@ -1,8 +1,0 @@
-{
-  "originalFreezePath": "benchmarks/reproduction/rewrite-selector-d1-policy-v1/sources/budget-source-freeze.json",
-  "originalFreezeSha256": "a86b35d8b50bd359e83fb21fae74a267a77d3ef036498675bc6c022ca608aaef",
-  "originalInheritedLayoutLabel": "structured",
-  "actualLayout": "policy",
-  "scope": "The source freeze used for zero-generation budget work inherited a structured metadata label. Budget code and all requests were the declared policy layout. Preserve original source freeze; correct only layout metadata before any policy inference. No request, output, score, runtime or weight changes.",
-  "modelResponsesBeforeCorrection": 0
-}

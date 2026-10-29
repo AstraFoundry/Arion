@@ -22,7 +22,7 @@ func TestNativeWindowsLifecycle(t *testing.T) {
 	if runtimeDir == "" || modelDir == "" || out == "" {
 		t.Skip("native GGUF artifacts and output path required")
 	}
-	data, err := os.ReadFile("../../../../../benchmarks/reproduction/windows-local-rewrite-v1/cases.json")
+	data, err := os.ReadFile("testdata/windows-local-rewrite-cases.json")
 	if err != nil {
 		t.Fatal(err)
 	}

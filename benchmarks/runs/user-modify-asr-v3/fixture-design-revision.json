@@ -1,5 +1,0 @@
-{
-  "status": "superseded_before_any_inference",
-  "reason": "Separate future utterance templates across development and test as well as entities and voices.",
-  "previousFreezeSha256": "cfece9af98d01c8bf805fe9c2fc3a74cdfa4d3016258c2dee4ba02651a01a457"
-}

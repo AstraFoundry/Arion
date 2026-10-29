@@ -6,6 +6,7 @@ This directory is the single source of truth for how this project is built, orga
 
 - [Specifications](../specs/README.md) — normative workflows and acceptance IDs.
 - [Agent handoff](project/agent-handoff.md) — implementation tasks and dependencies.
+- [Repository split](project/repository-split.md) — public product ownership, private Git evidence and version-bound evaluation.
 - [Central sync design proposal](project/central-sync-design.md) — recommended encrypted data scope, competitor comparison and server/client delivery design.
 - [Research](research/README.md) — shipped-artifact evidence and local frameworks.
 

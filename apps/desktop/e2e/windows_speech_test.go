@@ -40,11 +40,11 @@ func TestWindowsPackagedSpeech(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	fixture := filepath.Join(root, "benchmarks/corpora/asr-v1/audio/libri-251-137823-0017.wav")
+	fixture := filepath.Join(root, "apps/desktop/e2e/testdata/libri-251-137823-0017.wav")
 	if hash := speechFileHash(t, fixture); hash != "5f0ef6809a5fcd07764139cfe5b7d67a27a6cd0045dcd48109f1c717d40b66e1" {
 		t.Fatal("speech fixture differs from its reviewed development-corpus identity")
 	}
-	silence := filepath.Join(root, "benchmarks/corpora/asr-v1/audio/nonspeech-dev-0.wav")
+	silence := filepath.Join(root, "apps/desktop/e2e/testdata/nonspeech-dev-0.wav")
 	if hash := speechFileHash(t, silence); hash != "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa" {
 		t.Fatal("silence fixture differs from its reviewed development-corpus identity")
 	}

@@ -1,4 +1,0 @@
-=== RUN   TestWindowsPackagedSpeech
-    windows_speech_test.go:113: packaged speech evidence: C:\project\Arion\.workspace\windows-validation\speech\installed-v2
---- PASS: TestWindowsPackagedSpeech (27.30s)
-PASS

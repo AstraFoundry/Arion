@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "historical",
+  "runId": "native-asr-v1-pipeline",
+  "source": {
+    "productCommit": "f3374fdf70ae092d637f391c6d4ff5f5fd62c811",
+    "dirty": true,
+    "originalPath": "benchmarks/runs/native-asr-v1/pipeline-v2/summary.json",
+    "summarySha256": "5b9beca91b205c725a133f3fc12605ec0d0841713399810a52a596770e38b621",
+    "archiveRepository": "https://github.com/AstraFoundry/Arion-evaluation"
+  },
+  "evaluations": [
+    {
+      "bundleId": "qwen3-asr-1.7b-mlx-8bit",
+      "runId": "native-asr-v1-pipeline",
+      "report": "models/evaluations/native-asr-v1-pipeline.json",
+      "hardware": "darwin-arm64",
+      "split": "dev",
+      "errorRates": {
+        "zh": 0.05354330708661417,
+        "en": 0.016129032258064516,
+        "mixed": 0.22010869565217392
+      },
+      "stopToReviewP95Ms": 1387.1722499999998,
+      "firstPartialP95Ms": 1440.3428000000001,
+      "realTimeFactor": 0.5711564639300598,
+      "observations": 118
+    }
+  ]
+}

@@ -1,1 +1,0 @@
-{"samples": [{"id": "dev-en-03", "sourceText": "Keep the original document", "scenario": "chat", "mode": "clean", "language": "en", "approvedMemory": []}, {"id": "dev-zh-01", "sourceText": "\u4eca\u5929\u5148\u68c0\u67e5\u90ae\u4ef6", "scenario": "chat", "mode": "clean", "language": "zh", "approvedMemory": []}]}

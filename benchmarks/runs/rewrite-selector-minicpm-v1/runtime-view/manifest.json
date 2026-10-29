@@ -1,7 +1,0 @@
-{
-  "status": "complete",
-  "generations": 12,
-  "resultsSha256": "a864e1cb18fcd99c6af47c650c423224a4f0f3b65906f3c1a1521d762b0d03a6",
-  "rawResultsSha256": "7a43bf6f8acabc1163990e233de4bf98f8e14db597894adc7687659df3f426bf",
-  "scope": "Derived view of12 existing native probe responses, zero additional inference. Interrupted1 native-log completion separate, no fabricated response envelope."
-}

@@ -32,19 +32,19 @@ These datasets do not cover consented editor context, Mandarin/mixed dictation, 
 
 ## Experiment and commands
 
-[desktop-rewrite.json](../../benchmarks/configs/desktop-rewrite.json) is a plan template with explicit placeholder artifact IDs. It contains 16 rule/LLM × context × memory × scenario conditions, an exact verbatim control and a full-feature FP32 reference. Three seeds/repeats × warm/cold × solo/concurrent-ASR yields 216 blocks per measured case. The configured output/token/thread values are experimental settings, not measured product defaults.
+[desktop-rewrite.json](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/configs/desktop-rewrite.json`) is a plan template with explicit placeholder artifact IDs. It contains 16 rule/LLM × context × memory × scenario conditions, an exact verbatim control and a full-feature FP32 reference. Three seeds/repeats × warm/cold × solo/concurrent-ASR yields 216 blocks per measured case. The configured output/token/thread values are experimental settings, not measured product defaults.
 
 The no-thinking prompt and deterministic decoding are held fixed; throughput is measured rather than inferred from parameter count. Additional checkpoint/provider/prompt/budget comparisons use separate reviewed configs; a quantization claim requires independently verified same-base checkpoint digests and export lineage, plus identical tokenizer/template and conversion settings except precision. FP32 against INT4 is otherwise explicitly a combined model/precision comparison. Record the FP32 reference's actual peak process RSS/device footprint using the same counters and contention policy as INT4; parameter count or weight-file size cannot substitute for resident-memory measurements. The placeholder reference is a CPU FP32 export; unsupported operators/providers fail explicitly without substituting another reference. Do not mix unrelated runtime/checkpoint changes into a context ablation.
 
-Use `node tools/evaluation/rewrite-cli.mjs` as the portable entry point (pnpm/Make wrap it):
+Use `pnpm --dir /path/to/Arion-evaluation exec node tools/evaluation/rewrite-cli.mjs` as the portable entry point (pnpm/Make wrap it):
 
 ```sh
-node tools/evaluation/rewrite-cli.mjs plan --config benchmarks/configs/desktop-rewrite.json --out .workspace/benchmarks/rewrite-plan.json
-node tools/evaluation/rewrite-cli.mjs validate --corpus /absolute/private/rewrite-corpus.json
-node tools/evaluation/rewrite-cli.mjs run --config benchmarks/configs/desktop-rewrite.json --corpus /absolute/private/rewrite-corpus.json --driver /absolute/private/rewrite-driver.json --out .workspace/benchmarks/rewrite-run
-node tools/evaluation/rewrite-cli.mjs report --results .workspace/benchmarks/rewrite-run
-node tools/evaluation/rewrite-cli.mjs human-export --results .workspace/benchmarks/rewrite-run --out .workspace/benchmarks/rewrite-review --raters 3 --seed 1729
-node tools/evaluation/rewrite-cli.mjs human-report --results .workspace/benchmarks/rewrite-run --review .workspace/benchmarks/rewrite-review --ratings /absolute/private/ratings.json
+pnpm --dir /path/to/Arion-evaluation exec node tools/evaluation/rewrite-cli.mjs plan --config benchmarks/configs/desktop-rewrite.json --out .workspace/benchmarks/rewrite-plan.json
+pnpm --dir /path/to/Arion-evaluation exec node tools/evaluation/rewrite-cli.mjs validate --corpus /absolute/private/rewrite-corpus.json
+pnpm --dir /path/to/Arion-evaluation exec node tools/evaluation/rewrite-cli.mjs run --config benchmarks/configs/desktop-rewrite.json --corpus /absolute/private/rewrite-corpus.json --driver /absolute/private/rewrite-driver.json --out .workspace/benchmarks/rewrite-run
+pnpm --dir /path/to/Arion-evaluation exec node tools/evaluation/rewrite-cli.mjs report --results .workspace/benchmarks/rewrite-run
+pnpm --dir /path/to/Arion-evaluation exec node tools/evaluation/rewrite-cli.mjs human-export --results .workspace/benchmarks/rewrite-run --out .workspace/benchmarks/rewrite-review --raters 3 --seed 1729
+pnpm --dir /path/to/Arion-evaluation exec node tools/evaluation/rewrite-cli.mjs human-report --results .workspace/benchmarks/rewrite-run --review .workspace/benchmarks/rewrite-review --ratings /absolute/private/ratings.json
 ```
 
 Existing plan/run/review directories cannot be overwritten. Cold means release LLM native allocations and private KV state, then reload for each measured request; the contention ASR residency policy stays fixed and is declared in runtime provenance. Warm means a persistent model after separate non-test warmups, with per-case KV reset. A model switch warms the new model before measurements. Seeds/repeated generation are not independent authors.
@@ -75,7 +75,7 @@ The validator rejects cross-split cluster/session/content/source-text/audio iden
 
 ## Rewrite driver contract
 
-Use the existing artifact-hashed executable/args/timeout configuration and persistent protocol-1 JSONL transport from [evaluation tooling](../../tools/evaluation/README.md), with explicit `schema:"arion-rewrite-v1"`. Stdout is one response per request; stderr is discarded. Do not log plaintext context or use a shell command string.
+Use the existing artifact-hashed executable/args/timeout configuration and persistent protocol-1 JSONL transport from the public [driver contract](../../tools/driver/README.md), with explicit `schema:"arion-rewrite-v1"`. Stdout is one response per request; stderr is discarded. Do not log plaintext context or use a shell command string.
 
 `hello` receives `purpose:"rewrite"` and all checked artifact hashes. It echoes `execution:"live"`, schema/hashes, actual darwin/win32 hardware and runtime version/buildFlags/timer/provider/scheduler/tokenizerVersion/promptHash. Capabilities include rewrite/native-preview/cold-reset/invalidate/cleanup and concurrent-asr when requested. Model, prompt, tokenizer, ASR and optional FP comparison model IDs must have local hash/license entries; model bundles also pin external tensor data, runtime and native-host binaries. The harness cannot prove a dishonest driver's inference claims: review its actual adapter and retained OS traces.
 
@@ -125,8 +125,8 @@ Use train/dev for prompt/constraint tuning and provisional quality/latency selec
 
 ## User-confirmed identifier normalization
 
-The [recorded user policy](../../benchmarks/runs/rewrite-spelling-alignment-v1/policy.json) permits unquoted read cash→readCash when OCR contains readCash/readCache: case/whitespace-only canonicalization preserves dictated letters. Retaining read cash also passes. readCache still needs relevant distinguishing evidence; phonetic similarity alone does not authorize that change. The same rule permits write right→writeRight without permitting writeRite. Literal quotes and source meaning, target identity, conditions, negation and requests remain protected. This changes the earlier research rubric, not production validation by itself.
+The [recorded user policy](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/rewrite-spelling-alignment-v1/policy.json`) permits unquoted read cash→readCash when OCR contains readCash/readCache: case/whitespace-only canonicalization preserves dictated letters. Retaining read cash also passes. readCache still needs relevant distinguishing evidence; phonetic similarity alone does not authorize that change. The same rule permits write right→writeRight without permitting writeRite. Literal quotes and source meaning, target identity, conditions, negation and requests remain protected. This changes the earlier research rubric, not production validation by itself.
 
-[Retrospective review](../../benchmarks/reproduction/rewrite-spelling-alignment-v1/README.md) keeps original judgments/selections immutable and provides a separate source-bound aligned view. Sixteen of25 relevant failed bodies become faithful;9 still fail for other content errors. Future qualification must freeze the aligned rubric before inference rather than silently promoting old selections. No independent review or inference is implied.
+[Retrospective review](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/reproduction/rewrite-spelling-alignment-v1/README.md`) keeps original judgments/selections immutable and provides a separate source-bound aligned view. Sixteen of25 relevant failed bodies become faithful;9 still fail for other content errors. Future qualification must freeze the aligned rubric before inference rather than silently promoting old selections. No independent review or inference is implied.
 
 Two-stage studies report intermediate choices separately from final body fidelity and scene quality. Empty or grammar-forced plans cannot count as successful delivered rewriting. Full context to selection and source-only context to formatting are explicit architecture treatments, distinct from current production routing.

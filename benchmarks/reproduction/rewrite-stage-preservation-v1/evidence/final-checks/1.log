@@ -1,5 +1,0 @@
-ok  	arion.local/core/domain	1.880s
-?   	arion.local/core/domain/ports	[no test files]
-ok  	arion.local/core/application	5.762s
-ok  	arion.local/desktop/infrastructure/llm/client	4.564s
-ok  	arion.local/desktop/infrastructure/llm/gguf	2.717s

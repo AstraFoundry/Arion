@@ -39,7 +39,7 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 | Cloud polishing | Republic providers: ChatGPT sign-in or an API key per provider (OpenAI, Anthropic, Google Gemini, DeepSeek, OpenRouter); one provider is active and the others keep their keys; shared staged polishing with enabled context | Optional, explicit engine choice ([ADR 022](../decisions/022-cloud-polishing.md), [cloud polishing](cloud-polishing.md)); real-service verification open |
 | Account sign-in | Public OIDC client `arion-desktop`, loopback PKCE, refresh token in Keychain or Credential Manager | Service, onboarding step and Settings › Account implemented ([account sign-in](account-signin.md)); device enrollment open |
 
-See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), [account sign-in](account-signin.md), [cloud polishing](cloud-polishing.md), and [agent handoff](agent-handoff.md).
+See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), [public and private ownership](repository-split.md), [account sign-in](account-signin.md), [cloud polishing](cloud-polishing.md), and [agent handoff](agent-handoff.md).
 
 [Central sync design proposal](central-sync-design.md) compares the recommended data allowlist with competitor evidence and specifies hosted deployment, client delivery, key lifecycle and release gaps. P1/P2 extensions remain proposals.
 

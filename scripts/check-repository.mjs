@@ -9,7 +9,7 @@ import { markdownAnchors } from './lib/markdown-anchors.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [];
 const files = [];
-const trees = ['docs', 'specs', 'apps', 'packages', 'services', 'models', 'deploy', 'tools', 'benchmarks', 'tests', 'scripts'];
+const trees = ['docs', 'specs', 'apps', 'packages', 'services', 'models', 'deploy', 'tools', 'tests', 'scripts'];
 const ignored = new Set(['build', 'dist', 'node_modules', '.git', '.next', 'out', '.mygo']);
 const generated = new Set(['apps/desktop/resources']);
 
@@ -90,6 +90,9 @@ for (const name of files.filter(name => name.endsWith('.json'))) {
 const rootPackage = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 if (!/^pnpm@\d+\.\d+\.\d+$/.test(rootPackage.packageManager)) errors.push('Root packageManager must pin an exact pnpm version');
 if (rootPackage.scripts && Object.values(rootPackage.scripts).some(command => /\b(npm|npx)\s/.test(command))) errors.push('Project scripts must use pnpm');
+for (const command of Object.values(rootPackage.scripts ?? {})) {
+  if (command.includes('benchmarks/') || command.includes('tools/evaluation')) errors.push('Public commands cannot depend on private research paths');
+}
 
 // Documented commands must exist. Frozen research evidence under benchmarks/
 // and hash-pinned upstream notices retain their original command context.

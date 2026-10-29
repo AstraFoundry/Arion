@@ -111,8 +111,8 @@ When a Qwen3 4B phonetic run was stopped partway, its two completed generations 
 Benchmark corpora, raw per-case outputs, warmups, failed attempts, recorded audio fixtures and exact prompts live in the repository under `benchmarks/`, identified by byte-level SHA-256 digests: 1,062 files and about 98 MB of evidence (model weights and personal recordings stay outside Git).[^archive] Anyone can verify the archive and rebuild the reports without loading a model:
 
 ```sh
-pnpm bench:archive:verify
-pnpm bench:archive:report --out .workspace/archive-report-repeat
+pnpm --dir /path/to/Arion-evaluation bench:archive:verify
+pnpm --dir /path/to/Arion-evaluation bench:archive:report --out .workspace/archive-report-repeat
 ```
 
 The evaluation protocol fixes the statistical details that otherwise drift between runs: a single text normalization, corpus error rates computed as total errors over total reference units, and paired speaker-cluster bootstrap intervals. Test references never enter inference, memory or context, and memory learned from test data is rejected (`EVAL-A04`).[^method]
@@ -145,18 +145,18 @@ Most numbers come from one Apple M4 (32 GiB) machine. Windows paths are often co
 
 If you build with local models and coding agents, the code is no longer the bottleneck. Decide what "better" means before you build, and freeze a held-out set with a hash. Change one variable at a time and include a control that does not use the new model. Record failures as carefully as successes, write the decision down where the next agent will read it, and supersede old decisions instead of erasing them. None of this makes a product good on its own, but it makes it much harder to fool yourself.
 
-[^live]: [Live rewrite pipeline results (v1)](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/live-rewrite-v1/README.md) and [ADR 011](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/011-live-local-rewriting.md).
+[^live]: [Live rewrite pipeline results (v1)](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/live-rewrite-v1/README.md) and [ADR 011](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/011-live-local-rewriting.md).
 
-[^context]: [Rewrite context ablation (v1)](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/context-ablation-v1/README.md) and [ADR 013](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md).
+[^context]: [Rewrite context ablation (v1)](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/context-ablation-v1/README.md) and [ADR 013](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md).
 
-[^phonetic]: [Phonetic evidence ablation](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/phonetic-asr-1.7b-v2/README.md).
+[^phonetic]: [Phonetic evidence ablation](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/phonetic-asr-1.7b-v2/README.md).
 
 [^eval]: [Specification 008: Evaluation and automation](https://github.com/AstraFoundry/Arion/blob/main/specs/008-evaluation.md).
 
-[^rime]: [Rime LLM reranker reproduction](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/rime-llm-reranker-v1/README.md).
+[^rime]: [Rime LLM reranker reproduction](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/rime-llm-reranker-v1/README.md).
 
-[^archive]: [Benchmark research archive](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/migration/README.md).
+[^archive]: [Benchmark research archive](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/migration/README.md).
 
 [^method]: [Benchmark methodology](https://github.com/AstraFoundry/Arion/blob/main/docs/research/benchmark-methodology.md).
 
-[^imk]: [Context ranking results](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/imk-context-v1/README.md).
+[^imk]: [Context ranking results](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/imk-context-v1/README.md).

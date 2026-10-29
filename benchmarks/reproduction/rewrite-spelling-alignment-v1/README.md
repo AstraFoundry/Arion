@@ -1,9 +1,0 @@
-# User-aligned spelling review
-
-The human explicitly confirmed: “允许规范成 readCash，但不能无依据改成 readCache”. The policy permits unquoted case/whitespace-only normalization matching dictated letters and OCR spelling. Retaining raw spelling also passes. Applying the same rule to write right→writeRight does not permit writeRite, changed targets, quoted replacements, unrelated OCR facts or semantic contradictions.
-
-[Policy](../../runs/rewrite-spelling-alignment-v1/policy.json) and [complete-body retrospective review](../../runs/rewrite-spelling-alignment-v1/review.json) are separate from historical observations, reviews and selections. All25 previously failed bodies containing source read cash/write right and output readCash/writeRight were inspected:16 become faithful/usable,9 remain incorrect for unsupported readCache, target replacement, condition deletion or wrong self-correction. No new inference or independent blind review. Every judgment binds original raw-row SHA, input/context/output and original review file hash.
-
-The earlier2B model screen therefore becomes24/24 faithful under this user policy, rather than23/24; the two contrast arms become16/16 rather than15/16 on their exposed probes. This changes interpretation of these historical narrow tests, not their as-run records or production qualification. Larger regression, other scenes/languages, independent natural quality and actual16GB/native/performance acceptance still apply. Future selection must freeze the aligned policy before testing.
-
-The [living report and rebuild instructions](../../results/rewrite-release/README.md) defaults to the user policy and can switch to the original rubric; iteration tables retain old figures and separately show aligned counts. Tests run with `python3 -m unittest discover -s benchmarks/reproduction/rewrite-spelling-alignment-v1 -p 'test_*.py'`; `review.py` verifies all linked bytes without inference.

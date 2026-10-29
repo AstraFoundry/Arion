@@ -1,7 +1,0 @@
-{"event":"provenance","workerSha256":"942d9831d45fd776ef6805ed93eb28d72de6afa27e0b418ec14db6b3589cbc6d","audioSha256":["8bc76e3746211962d65b47cfff79c6f18f6750b2cf1bfaf611330798495d11eb","5f0ef6809a5fcd07764139cfe5b7d67a27a6cd0045dcd48109f1c717d40b66e1"],"threads":4,"cancellationDeadlineMs":100,"adapterTimeoutApplied":false}
-{"event":"ready","protocol":3}
-{"event":"cancel","cycle":0,"elapsedMs":5909.0466,"answer":{"type":"cancelled","id":"cancel-0"}}
-{"event":"reuse","cycle":0,"elapsedMs":0.872599999999693,"answer":{"type":"end","id":"reuse-0","text":"Anyhow, we want to help. Got a job for us.","stop":"complete","languages":["en"]}}
-{"event":"cancel","cycle":1,"elapsedMs":5555.6916,"answer":{"type":"cancelled","id":"cancel-1"}}
-{"event":"reuse","cycle":1,"elapsedMs":0.8453999999983353,"answer":{"type":"end","id":"reuse-1","text":"Anyhow, we want to help. Got a job for us.","stop":"complete","languages":["en"]}}
-{"event":"exit","code":0}

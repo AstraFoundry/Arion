@@ -56,7 +56,8 @@
 ### Operations and quality
 
 - [`docs/operations/README.md`](docs/operations/README.md) — local development, CI/CD, deployment.
-- [`tools/evaluation/README.md`](tools/evaluation/README.md) — pnpm/Make evaluation commands and live driver protocol.
+- [`tools/driver/README.md`](tools/driver/README.md) — public product driver contract and owned E2E scenarios.
+- [`docs/project/repository-split.md`](docs/project/repository-split.md) — private evaluation ownership and evidence references.
 - [`docs/quality/e2e.md`](docs/quality/e2e.md) — actual native window and product OS scenarios.
 - [`docs/quality/README.md`](docs/quality/README.md) — testing strategy and code-review expectations.
 - [`docs/quality/agent-skills.md`](docs/quality/agent-skills.md) — installed Agent Skills (canonical `.claude/skills/`; `.agents` is a symlink to `.claude`).
@@ -131,7 +132,7 @@ After completing a task, update the documentation if the task has changed any of
 2. If no doc exists for the new topic, create one under the correct `docs/` subdomain and add it to the nearest `README.md`.
 3. Keep docs concise, factual, and example-driven. Avoid future dates, day estimates, and speculative language.
 4. Do not let implementation and documentation drift.
-5. When you rename, remove or change a command, `pnpm` script, `make` target, test, setting, user-visible control, default or version identifier, search `docs/`, `specs/`, every README (including `README.zh-CN.md` and `README.ja.md`), `tools/evaluation/README.md` and `apps/site/content` for the old name or value, and fix every hit in the same change. Frozen evidence under `benchmarks/` and dated research records keep what they recorded.
+5. When you rename, remove or change a command, `pnpm` script, `make` target, test, setting, user-visible control, default or version identifier, search `docs/`, `specs/`, every README (including `README.zh-CN.md` and `README.ja.md`), `tools/driver/README.md` and `apps/site/content` for the old name or value, and fix every hit in the same change. Frozen evidence under `Arion-evaluation/benchmarks/` and dated research records keep what they recorded.
 6. State a volatile fact (a test or case count, a version, a size, a default) in one owning document and link to it from the others, so there is one place to update.
 7. Give an ADR the next unused number and add it to [`docs/decisions/README.md`](docs/decisions/README.md); never reuse a number. Index every new document in its directory `README.md`.
 8. `README.md`, `README.zh-CN.md` and `README.ja.md` carry the same facts and the same local links; change them together. `AGENTS.md` mirrors this file, so edit only `CLAUDE.md`.
@@ -199,4 +200,4 @@ Create a todo file for long tasks and mark items with `[ ]` / `[x]`. Clean up wh
 
 ## Project automation
 
-Use pnpm exactly as pinned in `package.json`; install with the frozen lockfile. Common workflows belong in Makefile and portable Node entry points. Native tests require their actual target OS. Reusable benchmark corpora, exact fixtures, per-case outputs, failed attempts and reproduction sources belong under `benchmarks/` with original bytes, provenance and hashes. Keep weights, runtime environments, caches, personal recordings and unfinished execution in `.workspace/`; never substitute mock output for inference evidence. See `benchmarks/migration/README.md` for archive verification and report replay. Read [008 Evaluation](specs/008-evaluation.md) before changing experiments or drivers.
+Use pnpm exactly as pinned in `package.json`; install with the frozen lockfile. Common workflows belong in Makefile and portable Node entry points. Native tests require their actual target OS. Reusable benchmark corpora, exact fixtures, per-case outputs, failed attempts and reproduction sources belong under `benchmarks/` in the private `AstraFoundry/Arion-evaluation` Git repository, with original bytes, provenance and hashes. Public product tests retain small licensed fixtures in package `testdata` and use the public `tools/driver` contract. Keep weights, runtime environments, caches, personal recordings and unfinished execution in `.workspace/`; never substitute mock output for inference evidence. Follow the [repository split](docs/project/repository-split.md) and the private repository README for archive verification and report replay. Read [008 Evaluation](specs/008-evaluation.md) before changing experiments or drivers.

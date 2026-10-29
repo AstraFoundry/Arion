@@ -1,5 +1,0 @@
-# arion.local/desktop/bootstrap.test
-ld: warning: ignoring duplicate libraries: '-lobjc'
-ok  	arion.local/desktop/bootstrap	1.666s
-ok  	arion.local/desktop/infrastructure/macos	1.699s
-ok  	arion.local/desktop/infrastructure/diagnostics	1.722s

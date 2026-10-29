@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 2034.21,
-  "promptId": "prompt-v2-focused-prompt-zh",
-  "prefixTokens": 181,
-  "peakRssBytes": 3335651328
-}

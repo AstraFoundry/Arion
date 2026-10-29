@@ -71,7 +71,7 @@ The native arm64 owned-fixture experiment on macOS 26.6.2 verified:
 
 The initial x86_64-process run is retained separately and is not Intel hardware coverage. Both runs used unsigned non-executable markers, not real app bundles. They do not cover different-parent-directory permissions, unsupported/cross-volume filesystems, signed-resource validation, crash/power loss, TIS state or real editor switching. Finite stat observations corroborate the documented primitive and do not prove all race properties.
 
-Exact sources, observations and hashes are archived under [IME bundle-swap reproduction](../../benchmarks/reproduction/ime-bundle-swap-v1/README.md) and [raw runs](../../benchmarks/runs/ime-bundle-swap-v1/README.md).
+Exact sources, observations and hashes are archived under [IME bundle-swap reproduction](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/reproduction/ime-bundle-swap-v1/README.md`) and [raw runs](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/ime-bundle-swap-v1/README.md`).
 
 ## Implementation sequence and acceptance
 

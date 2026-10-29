@@ -13,7 +13,7 @@ const windows = process.platform === 'win32';
 if (windows && process.arch !== 'x64') throw new Error('The pinned Windows Rime ABI requires x64.');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = path.join(root, 'apps/desktop/ime/shared');
-const corpus = path.join(root, 'benchmarks/corpora/ime-learning-v1');
+const corpus = path.join(root, 'apps/desktop/ime/shared/testdata/ime-learning-v1');
 const output = path.join(root, '.workspace/tests/shared-keyboard-learning');
 mkdirSync(output, { recursive: true });
 const directory = mkdtempSync(path.join(output, 'run-'));
@@ -55,9 +55,9 @@ try {
     const file = path.join(corpus, fixture.file);
     const checked = identity(file);
     if (checked.sha256 !== fixture.sha256) throw new Error(`Pinned keyboard fixture changed: ${fixture.file}`);
-    report.fixtureIdentities[`benchmarks/corpora/ime-learning-v1/${fixture.file}`] = checked;
+    report.fixtureIdentities[`apps/desktop/ime/shared/testdata/ime-learning-v1/${fixture.file}`] = checked;
   }
-  report.fixtureIdentities['benchmarks/corpora/ime-learning-v1/provenance.json'] = identity(path.join(corpus, 'provenance.json'));
+  report.fixtureIdentities['apps/desktop/ime/shared/testdata/ime-learning-v1/provenance.json'] = identity(path.join(corpus, 'provenance.json'));
   const unicode = JSON.parse(readFileSync(path.join(source, 'ranking_unicode_sources.json'), 'utf8'));
   if (unicode.unicode_version !== '17.0.0' || digest(path.join(corpus, 'GraphemeBreakTest-17.0.0.txt')) !== unicode.sources['GraphemeBreakTest.txt'].sha256 || digest(path.join(corpus, 'Scripts-17.0.0.txt')) !== unicode.sources['Scripts.txt'].sha256 || digest(path.join(source, 'ranking_unicode_LICENSE.txt')) !== unicode.sources['license.txt'].sha256) throw new Error('Unicode corpus/license differs from the reviewed source ledger.');
   const compiler = process.env.CXX ?? (windows ? 'g++' : 'clang++');

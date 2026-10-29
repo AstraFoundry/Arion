@@ -1,9 +1,0 @@
-{
-  "scope": "Post-run scope clarification; frozen pre-inference protocol and implementation preserved.",
-  "limitations": [
-    "The implementation accepts complete camelCase compounds, not underscore identifiers despite protocol wording.",
-    "Unknown dictionary candidates are skipped. A unique known match does not prove exhaustive candidate coverage.",
-    "Derived phonetic hypotheses do not add acoustic evidence. Chinese names are outside this producer.",
-    "All 48 raw generations are retained; no output validation or fallback."
-  ]
-}

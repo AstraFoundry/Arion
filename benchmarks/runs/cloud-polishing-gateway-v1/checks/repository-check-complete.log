@@ -1,5 +1,0 @@
-
-> arion-monorepo@0.0.0 check /Users/steven/code/Arion
-> node scripts/check-repository.mjs
-
-Repository checks passed: 524 Markdown documents, JSON, JavaScript syntax and Go boundaries.

@@ -62,7 +62,7 @@ traffic captured. Full local instructions remain in
 
 Arion differs: the shared validator applies character-multiset coverage, lexical
 novelty, length ratios, literal digit-run evidence and recognized negation counts
-without a scene policy. [Seven reproducible probes](../../benchmarks/reproduction/rewrite-validator-comparison-v1/README.md)
+without a scene policy. [Seven reproducible probes](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/reproduction/rewrite-validator-comparison-v1/README.md`)
 show rejected paraphrases and accepted changes to assignees or release-day
 restrictions. For scene-aware rewriting, these are overly restrictive lexical
 gates and incomplete meaning checks. This finding supports replacing their role

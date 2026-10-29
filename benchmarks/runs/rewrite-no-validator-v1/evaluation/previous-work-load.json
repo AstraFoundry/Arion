@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 3477.731,
-  "promptId": "context-repair-v1-work-zh",
-  "prefixTokens": 469,
-  "peakRssBytes": 3370909696
-}

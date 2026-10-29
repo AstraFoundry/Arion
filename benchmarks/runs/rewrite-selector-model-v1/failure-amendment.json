@@ -1,5 +1,0 @@
-{
-  "reason": "Initial closure authoring supplied an incorrect case id. First attempted work/candidate source is history-0095, established from frozen source iteration and request/log evidence. Native run/logs unchanged.",
-  "originalSha256": "912fd3d443fe9875a436e6f52675a2cfb5c6947d2035520bc7a5c44d8c7cc678",
-  "correctedSha256": "b916a55f44fcc5b884334ab98229913fb52e66d838160acb5beb7b23b696e8f3"
-}

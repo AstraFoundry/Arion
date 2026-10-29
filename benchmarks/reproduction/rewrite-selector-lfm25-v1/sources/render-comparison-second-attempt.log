@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/steven/code/Arion/.workspace/rewrite-lfm25-research-v1/render-compare.py", line 14, in <module>
-    left,right=env.from_string(reference),env.from_string(embedded);source=R/'benchmarks/runs/rewrite-selector-screen-v1/run/results.jsonl';rows=list(map(json.loads,source.read_text().splitlines()));assert len(rows)==202
-AssertionError

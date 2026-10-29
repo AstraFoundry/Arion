@@ -1,8 +1,0 @@
-{
-  "status": "report-failed",
-  "source": "benchmarks/reproduction/gguf_model_screen_evidence.py",
-  "exception": "NameError: name json is not defined",
-  "phase": "post-inference archive validation",
-  "newModelGenerations": 0,
-  "repair": "Import json in the newly factored policy-driven verifier; no raw inference or frozen input changed."
-}

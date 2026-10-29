@@ -1,7 +1,0 @@
-{
-  "qualified": false,
-  "selected": null,
-  "productionActivated": false,
-  "mainComparisonExecuted": false,
-  "reason": "No full-policy, no-truncation configuration passes all six probes on both backends. Compact sentence has12/12 correct but clipped trusted instructions; corrected full policy6/12 correct. Preserve all72 native answers; no further expansion or release credit."
-}

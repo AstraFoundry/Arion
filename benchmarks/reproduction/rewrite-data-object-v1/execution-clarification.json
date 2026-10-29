@@ -1,6 +1,0 @@
-{
-  "scope": "Post-freeze execution disclosure; source/request bytes unchanged",
-  "overlappingAcquisition": "benchmarks/reproduction/rewrite-2b-precision-v1/acquisition.json",
-  "acquisitionSha256": "3daf8566fad7324cbf22aabef49d08811553e8bb85a24daf8f9e3f70e8bb2044",
-  "limitations": "Q8 network/disk acquisition overlaps part of this CPU Q4 study. Q8 inference begins only after both Q4 arms terminate. Do not infer causal input-format latency/throughput from the serial observations. Full raw timings retained."
-}

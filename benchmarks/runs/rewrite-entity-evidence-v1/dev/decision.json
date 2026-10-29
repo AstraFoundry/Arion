@@ -1,8 +1,0 @@
-{
-  "selected": "baseline",
-  "promotion": false,
-  "reason": "Exact-context-first policy does not improve the 26 paired development cases: both faithful21/26, required repairs3/5, correct-source controls5/8. Continue predeclared actual-Vision diagnostic without retuning.",
-  "freezeSha256": "2f2cbeb7b3e374f2572c2e86570e3aca67cc842c606bd88f5ff8fec48db8f65a",
-  "devResultsSha256": "b28ecdfbd6dc908e520d450af30cd94088cd8beaefed4870f164e7458feb89ac",
-  "devReviewSha256": "f236db0b9719183c024ac2533628c326dbcd2ee9646ffb8ac8978830d0153f4b"
-}

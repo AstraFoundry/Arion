@@ -1,3 +1,0 @@
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I20261018 14:05:55.157722 0x1f8b7e180 registry.cc:14] registering component: arion_encrypted_userdb
-Real-key lifecycle evidence: /Users/steven/code/Arion/.workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/prepared.json

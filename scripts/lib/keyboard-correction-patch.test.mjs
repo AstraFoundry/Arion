@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {patchCorrectionIdentity,verifiedCorrectionIdentity} from './keyboard-correction-patch.mjs';
-const source=readFileSync('benchmarks/corpora/ime-spelling-reference-v1/upstream-syllabifier.cc','utf8');
+const source=readFileSync('scripts/testdata/ime-spelling-reference-v1/upstream-syllabifier.cc','utf8');
 test('exact upstream patch is idempotent and changes only three lines',()=>{
  const patched=patchCorrectionIdentity(source);
  assert.equal(patchCorrectionIdentity(patched),patched);

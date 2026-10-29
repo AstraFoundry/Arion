@@ -1,7 +1,0 @@
-{
-  "kind": "derived-from-retained-original-control-outputs",
-  "registration": "Public LS/TIS register and enable statuses all0; parentdisabled andchildenabled; no selection attempted.",
-  "restoration": "Controller restored baselineChatterfly; initialcachedentries disabled/unselected; later exactquery own[]. Testbundle removed.",
-  "scope": "New profile authorizesKeychain but is not a demonstratedTIS enable fix.",
-  "userNextStep": "User elected to postpone login-based acceptance and preservecurrentstate; no pendingacceptancebundle remainsinstalled."
-}

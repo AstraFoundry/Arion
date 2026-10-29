@@ -2,7 +2,7 @@
 
 // Command arion-e2e-driver runs owned product scenarios against the packaged
 // Arion.app and an isolated AppKit editor fixture on the actual OS. It
-// speaks the tools/evaluation JSONL protocol; assertions stay in the harness.
+// speaks the tools/driver JSONL protocol; assertions stay in the harness.
 package main
 
 import (

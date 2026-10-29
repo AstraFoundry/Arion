@@ -1,6 +1,0 @@
-Executable=/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24/ArionKeychainValidation.app/Contents/MacOS/keychain-learning-test
-Executable=/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24/ArionKeychainValidation.app/Contents/MacOS/keychain-learning-test
-warning: Specifying ':' in the path is deprecated and will not work in a future release
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I20261018 16:12:45.353405 0x1f8b7e180 registry.cc:14] registering component: arion_encrypted_userdb
-Real-key lifecycle evidence: /Users/steven/code/Arion/.workspace/tests/keyboard-keychain-a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24/prepared.json

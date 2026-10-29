@@ -1,7 +1,0 @@
-
-> arion-monorepo@0.0.0 check /Users/steven/code/Arion
-> node scripts/check-repository.mjs
-
-docs/project/cloud-polishing.md: missing local target ../../benchmarks/runs/cloud-polishing-gateway-v1/README.md
-benchmarks/runs/README.md: missing local target cloud-polishing-gateway-v1/README.md
- ELIFECYCLE  Command failed with exit code 1.
