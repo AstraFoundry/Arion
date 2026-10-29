@@ -41,6 +41,7 @@ Write an ADR when the decision:
 - [026: Account-targeted product notifications](026-account-product-notifications.md) — signed-in OS-authorized running reception/catchup, native submission receipts and current-server action authorization.
 - [027: Speech & Polish settings and explicit cloud provider use](027-speech-polish-settings.md) — the section follows speech to text; cloud setup has two levels, subscriptions apart from API keys, an explicit Use, and a fast-tier default model.
 - [028: Separate Windows keyboard and voice host admission](028-windows-keyboard-host-admission.md) — elevated local typing with unchanged ordinary voice IPC.
+- [029: Shared vocabulary delivery over verified input-method transport](029-keyboard-vocabulary-transport.md) — complete encrypted projections, authenticated capability admission and restart-safe acknowledgement.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

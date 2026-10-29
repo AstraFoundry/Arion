@@ -15,11 +15,13 @@ class KeyboardClient {
     int (*error)(char*,size_t)=nullptr;
     int (*reset)(char*,size_t)=nullptr;
     uint64_t (*currentGeneration)()=nullptr;
-    int (*orderCandidates)(const char *const*,size_t,const char*,size_t*,char*,size_t)=nullptr;
+    int (*orderCandidates)(const char *const*,size_t,const unsigned char*,const char*,size_t*,char*,size_t)=nullptr;
     int (*learnCommit)(const char*,const char*,char*,size_t)=nullptr;
     int (*commitContext)(const char*,char*,size_t)=nullptr;
-    int (*candidateMetadata)(uintptr_t,size_t,ArionEmojiCandidateMetadata*)=nullptr;
+    int (*candidateMetadata)(uintptr_t,size_t,ArionCandidateMetadata*)=nullptr;
     int (*refreshEmoji)(uintptr_t)=nullptr;
+    int (*restorePersonal)(uintptr_t,uint64_t*)=nullptr;
+    int (*publishPersonal)(uintptr_t,uint64_t,const ArionPersonalTerm*,size_t)=nullptr;
     template<typename T> bool symbol(T &target,const char *name) {
         FARPROC address=GetProcAddress(module,name); static_assert(sizeof(target)==sizeof(address)); std::memcpy(&target,&address,sizeof(target)); return target!=nullptr;
     }
@@ -47,6 +49,7 @@ public:
         if (!module || !symbol(start,"arion_keyboard_start") || !symbol(enter,"arion_keyboard_enter") || !symbol(leave,"arion_keyboard_leave") || !symbol(stop,"arion_keyboard_stop") || !symbol(error,"arion_keyboard_error") || !symbol(reset,"arion_keyboard_reset_learning") || !symbol(currentGeneration,"arion_keyboard_generation")) { failure="keyboard runtime entry points"; close(); return false; }
         if (!symbol(orderCandidates,"arion_keyboard_order") || !symbol(learnCommit,"arion_keyboard_learn") || !symbol(commitContext,"arion_keyboard_context")) { failure="keyboard ranking entry points"; close(); return false; }
         if (!symbol(candidateMetadata,"arion_keyboard_candidate_metadata") || !symbol(refreshEmoji,"arion_keyboard_refresh_emoji")) { failure="keyboard Emoji entry points"; close(); return false; }
+        if (!symbol(restorePersonal,"arion_keyboard_restore_personal") || !symbol(publishPersonal,"arion_keyboard_publish_personal")) { failure="keyboard personal vocabulary entry point"; close(); return false; }
         if (!prepareKeyboardDirectory(userDirectory)) { failure="keyboard profile unverified"; close(); return false; }
         char message[256]{}; auto data=utf8(directory+L"\\data"),user=utf8(userDirectory);
         runtime=start(data.c_str(),user.c_str(),message,sizeof(message));
@@ -59,13 +62,16 @@ public:
         if (module) FreeLibrary(module);
         module=nullptr; start=nullptr; enter=nullptr; leave=nullptr; stop=nullptr; error=nullptr; reset=nullptr; currentGeneration=nullptr; orderCandidates=nullptr; learnCommit=nullptr; commitContext=nullptr;
         candidateMetadata=nullptr; refreshEmoji=nullptr;
+        restorePersonal=nullptr; publishPersonal=nullptr;
     }
     RimeApi *api() const { return runtime; }
-    bool candidate(uintptr_t session,size_t index,ArionEmojiCandidateMetadata &metadata) { return candidateMetadata && candidateMetadata(session,index,&metadata); }
+    bool candidate(uintptr_t session,size_t index,ArionCandidateMetadata &metadata) { return candidateMetadata && candidateMetadata(session,index,&metadata); }
     bool refreshEmojiCandidates(uintptr_t session) { return refreshEmoji && refreshEmoji(session); }
+    bool restorePersonalVocabulary(uintptr_t session,uint64_t &revision) { return restorePersonal && restorePersonal(session,&revision); }
+    bool publishPersonalVocabulary(uintptr_t session,uint64_t revision,const ArionPersonalTerm *terms,size_t count) { return publishPersonal && publishPersonal(session,revision,terms,count); }
     uint64_t generation() const { return currentGeneration?currentGeneration():0; }
-    bool order(const char *const *candidates,size_t count,const std::string &previous,size_t *indices,std::string &issue) {
-        char text[256]{}; bool ok=orderCandidates && orderCandidates(candidates,count,previous.c_str(),indices,text,sizeof(text)); issue=text; return ok;
+    bool order(const char *const *candidates,size_t count,const unsigned char *eligible,const std::string &previous,size_t *indices,std::string &issue) {
+        char text[256]{}; bool ok=orderCandidates && orderCandidates(candidates,count,eligible,previous.c_str(),indices,text,sizeof(text)); issue=text; return ok;
     }
     bool learn(const std::string &commit,const std::string &previous,std::string &issue) {
         char text[256]{}; bool ok=learnCommit && learnCommit(commit.c_str(),previous.c_str(),text,sizeof(text)); issue=text; return ok;

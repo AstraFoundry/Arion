@@ -6,7 +6,7 @@ class ContextRanker final {
 public:
     explicit ContextRanker(LearningRecords records);
     static std::string contextOf(const std::string &commit);
-    std::vector<size_t> order(const std::vector<std::string> &candidates,const std::string &previous) const;
+    std::vector<size_t> order(const std::vector<std::string> &candidates,const unsigned char *eligible,const std::string &previous) const;
     LearningChanges learn(const std::string &commit,const std::string &previous);
     size_t count() const { return records_.size(); }
 private:

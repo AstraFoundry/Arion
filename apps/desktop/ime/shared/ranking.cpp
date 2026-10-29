@@ -66,12 +66,11 @@ double ContextRanker::boost(const std::string &word,const std::string &context) 
     double age=tick_>tick?static_cast<double>(tick_-tick):0;
     return weight*std::log1p(static_cast<double>(count))*std::pow(0.5,age/halfLife);
 }
-std::vector<size_t> ContextRanker::order(const std::vector<std::string> &candidates,const std::string &previous) const {
+std::vector<size_t> ContextRanker::order(const std::vector<std::string> &candidates,const unsigned char *eligible,const std::string &previous) const {
     std::vector<size_t> result(candidates.size());std::iota(result.begin(),result.end(),0);
-    std::string context=contextOf(previous);if (context.empty() || candidates.size()<2) return result;
-    const size_t full=length(candidates[0]);if (!full) return result;
+    std::string context=contextOf(previous);if (context.empty() || candidates.size()<2 || !eligible) return result;
     std::vector<double> scores;bool boosted=false;
-    for (size_t i=0;i<candidates.size();++i) {double value=length(candidates[i])==full?boost(candidates[i],context):0;boosted=boosted||value>0;scores.push_back(value-std::log1p(static_cast<double>(i)));}
+    for (size_t i=0;i<candidates.size();++i) {double value=eligible[i]?boost(candidates[i],context):0;boosted=boosted||value>0;scores.push_back(value-std::log1p(static_cast<double>(i)));}
     if (boosted) {
         std::vector<size_t> chinese;
         for (size_t i=0;i<candidates.size();++i) if (rankingContainsHan(candidates[i])==1) chinese.push_back(i);
@@ -109,11 +108,11 @@ extern "C" char *arion_ranker_context(const char *commit) {
     auto text=arion::ime::ContextRanker::contextOf(commit?commit:"");if (text.empty()) return nullptr;
     auto result=static_cast<char*>(std::malloc(text.size()+1));if (result) std::memcpy(result,text.c_str(),text.size()+1);return result;
 }
-extern "C" void arion_ranker_order(const arion_ranker *ranker,const char *const *candidates,size_t count,const char *previous,size_t *indices) {
+extern "C" void arion_ranker_order(const arion_ranker *ranker,const char *const *candidates,size_t count,const unsigned char *eligible,const char *previous,size_t *indices) {
     if (!indices) return;
     if (!ranker) {std::iota(indices,indices+count,0);return;}
     std::vector<std::string> values;for (size_t i=0;i<count;++i) values.emplace_back(candidates[i]?candidates[i]:"");
-    auto order=ranker->value.order(values,previous?previous:"");std::copy(order.begin(),order.end(),indices);
+    auto order=ranker->value.order(values,eligible,previous?previous:"");std::copy(order.begin(),order.end(),indices);
 }
 extern "C" void arion_ranker_learn(arion_ranker *ranker,const char *commit,const char *previous,arion_ranker_change callback,void *context) {
     if (!ranker) return;

@@ -32,10 +32,15 @@ typedef NS_ENUM(NSInteger, ArionTypingSwitch) {
 // method; tests turn it off to read the engine's own order.
 @property BOOL contextRanking;
 @property BOOL emojiSuggestions;
+@property(nonatomic) BOOL typoCorrection;
+@property(nonatomic) uint32_t fuzzyPinyin;
 - (instancetype)initWithEngine:(ArionKeyboardEngine *)engine;
 - (BOOL)activate:(id)client error:(NSError **)error;
 - (void)deactivate;
 - (void)cancel;
+// Invoke only from a verified bridge on the engine/UI thread. A blocked voice
+// session refuses publication. Unknown or stale-activation messages return nil.
+- (NSDictionary *)applyVocabularyMessage:(NSDictionary *)message activation:(NSString *)activation blocked:(BOOL)blocked;
 - (void)toggleASCII;
 // Both discard unconfirmed composition; NO when the engine is not live or the
 // choice could not be saved.

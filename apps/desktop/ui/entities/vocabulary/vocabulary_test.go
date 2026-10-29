@@ -29,7 +29,7 @@ func TestHotwordsGroupWithoutEmptyAlias(t *testing.T) {
 		{ID: "word", To: "Arion", Hotword: true},
 		{ID: "pair", From: "ary on", To: "Arion", Hotword: true},
 	}, "Arion")
-	if len(groups) != 1 || !groups[0].Hotword || len(groups[0].Variants) != 1 || len(groups[0].HotwordIDs) != 1 || groups[0].HotwordIDs[0] != "word" {
+	if len(groups) != 1 || !groups[0].Hotword || len(groups[0].Variants) != 1 || len(groups[0].Hotwords) != 1 || groups[0].Hotwords[0].ID != "word" {
 		t.Fatalf("group %#v", groups)
 	}
 }

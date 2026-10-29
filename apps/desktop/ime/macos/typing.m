@@ -2,6 +2,8 @@
 #include "../shared/input.h"
 #include "../shared/ranking_bridge.h"
 #include "../shared/emoji.h"
+#include "../shared/spelling_options.h"
+#include "../shared/personal_vocabulary_bridge.h"
 #import <InputMethodKit/InputMethodKit.h>
 #include <ctype.h>
 
@@ -33,15 +35,12 @@ static BOOL containsHan(NSString *text) {
 @property BOOL emojiInComposition;
 @end
 
-static int emojiSharedMenuKind(void *context, uintptr_t session, size_t index, unsigned char *emoji) {
+static int sharedMenuMetadata(void *context, uintptr_t session, size_t index, ArionCandidateMetadata *metadata) {
     (void)context;
-    ArionEmojiCandidateMetadata metadata;
-    if (!arion_emoji_candidate_metadata(session,index,&metadata)) return 0;
-    *emoji = metadata.emoji != 0;
-    return 1;
+    return arion_candidate_metadata(session,index,metadata);
 }
 
-static int rankSharedMenu(void *context, const char *const *texts, size_t count, size_t *order) {
+static int rankSharedMenu(void *context, const char *const *texts, size_t count, const unsigned char *eligible, size_t *order) {
     NSDictionary *ranking = (__bridge NSDictionary *)context;
     NSMutableArray *candidates = [NSMutableArray arrayWithCapacity:count];
     for (size_t i = 0; i < count; i++) {
@@ -49,7 +48,7 @@ static int rankSharedMenu(void *context, const char *const *texts, size_t count,
         if (!text) return 0;
         [candidates addObject:text];
     }
-    NSArray<NSNumber *> *indices = [ranking[@"ranker"] order:candidates after:ranking[@"previous"]];
+    NSArray<NSNumber *> *indices = [ranking[@"ranker"] order:candidates eligible:eligible after:ranking[@"previous"]];
     if (indices.count != count) return 0;
     for (size_t i = 0; i < count; i++) order[i] = indices[i].unsignedIntegerValue;
     return 1;
@@ -74,6 +73,21 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
 - (void)setPageSize:(NSUInteger)pageSize {
     _pageSize = MAX(1, MIN(9, pageSize));
 }
+- (void)setTypoCorrection:(BOOL)enabled {
+    if (_typoCorrection == enabled) return;
+    [self cancel];
+    _typoCorrection = enabled;
+    if (self.engineGeneration == self.engine.generation)
+        arion_spelling_apply(self.engine.api,self.session,_typoCorrection,_fuzzyPinyin);
+}
+- (void)setFuzzyPinyin:(uint32_t)pairs {
+    pairs &= ARION_FUZZY_MASK;
+    if (_fuzzyPinyin == pairs) return;
+    [self cancel];
+    _fuzzyPinyin = pairs;
+    if (self.engineGeneration == self.engine.generation)
+        arion_spelling_apply(self.engine.api,self.session,_typoCorrection,_fuzzyPinyin);
+}
 - (void)dealloc {
     arion_menu_dispose(&_menu);
     // Engine sessions outlive their Objective-C owner unless explicitly closed.
@@ -94,6 +108,7 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
         return NO;
     }
     [self.engine setEmojiSuggestions:self.emojiSuggestions session:self.session];
+    arion_spelling_apply(self.engine.api,self.session,self.typoCorrection,self.fuzzyPinyin);
     self.available = [self refresh:error];
     return self.available;
 }
@@ -154,6 +169,68 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
 - (BOOL)live {
     return self.session && self.available && self.engineGeneration == self.engine.generation;
 }
+
+// JSON integers must be lossless. NSNumber also represents booleans and floating
+// values, which must not be accepted as request or persisted revision identities.
+static BOOL vocabularyInteger(id value, uint64_t *result) {
+    if (![value isKindOfClass:NSNumber.class] || CFGetTypeID((__bridge CFTypeRef)value)==CFBooleanGetTypeID()) return NO;
+    const char *kind=[value objCType];
+    if (!kind || !strchr("cCsSiIlLqQ",kind[0]) || kind[1]) return NO;
+    NSString *text=[value stringValue];
+    uint64_t number=[value unsignedLongLongValue];
+    if (![text isEqual:[NSString stringWithFormat:@"%llu",(unsigned long long)number]]) return NO;
+    *result=number;
+    return YES;
+}
+
+static const char *vocabularyString(id value, NSUInteger maximum) {
+    if (![value isKindOfClass:NSString.class]) return NULL;
+    NSUInteger bytes=[value lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+    if (!bytes || bytes>maximum) return NULL;
+    const char *text=[value UTF8String];
+    return text && strlen(text)==bytes ? text : NULL;
+}
+
+- (NSDictionary *)applyVocabularyMessage:(NSDictionary *)message activation:(NSString *)activation blocked:(BOOL)blocked {
+    if (![message isKindOfClass:NSDictionary.class]) return nil;
+    BOOL query=[message[@"op"] isEqual:@"vocabulary_query"];
+    if (!query && ![message[@"op"] isEqual:@"vocabulary_publish"]) return nil;
+    uint64_t request=0;
+    if (!NSThread.isMainThread || !activation.length || ![message[@"activation"] isEqual:activation] ||
+        !vocabularyInteger(message[@"request"],&request) || !request) return nil;
+    NSMutableDictionary *reply=[@{@"op":query?@"vocabulary_state":@"vocabulary_published",
+        @"activation":activation,@"request":@(request),@"status":@"rejected"} mutableCopy];
+    if (!self.live) return reply;
+    if (blocked || self.composing) { reply[@"status"]=@"busy"; return reply; }
+    uint64_t revision=0;
+    if (query) {
+        if (arion_personal_vocabulary_restore(self.session,&revision)) {
+            reply[@"status"]=@"ok";
+            reply[@"vocabularyRevision"]=@(revision);
+        }
+        return reply;
+    }
+    id entries=message[@"terms"];
+    if (!vocabularyInteger(message[@"vocabularyRevision"],&revision) || !revision ||
+        ![entries isKindOfClass:NSArray.class] || [entries count]>2000) return reply;
+    NSUInteger count=[entries count];
+    ArionPersonalTerm *terms=count?calloc(count,sizeof(*terms)):NULL;
+    if (count && !terms) return reply;
+    BOOL valid=YES;
+    for (NSUInteger i=0;i<count;++i) {
+        id entry=entries[i];
+        if (![entry isKindOfClass:NSDictionary.class]) { valid=NO; break; }
+        terms[i]=(ArionPersonalTerm){vocabularyString(entry[@"id"],128),
+            vocabularyString(entry[@"text"],256),vocabularyString(entry[@"reading"],448)};
+        if (!terms[i].id || !terms[i].text || !terms[i].reading) { valid=NO; break; }
+    }
+    if (valid && arion_personal_vocabulary_publish(self.session,revision,terms,count)) {
+        reply[@"status"]=@"ok";
+        reply[@"vocabularyRevision"]=@(revision);
+    }
+    free(terms);
+    return reply;
+}
 - (BOOL)handleEvent:(NSEvent *)event {
     if (!self.live) return NO;
     NSEventModifierFlags flags = event.modifierFlags;
@@ -205,7 +282,7 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
     }
     int key = arion_key_normalize(ArionKeyboardKey(event), ArionKeyboardModifiers(event), self.ascii);
     if (key < 0) { [self cancel]; self.previousCommit = nil; return NO; }
-    if (self.composing && _menu.highlight < _menu.count && _menu.emoji[_menu.highlight] &&
+    if (self.composing && _menu.highlight < _menu.count && _menu.metadata[_menu.highlight].emoji &&
         key < 128 && ispunct(key)) self.emojiInComposition = YES;
     BOOL wasComposing = self.composing;
     BOOL handled = [self.engine processKey:key modifiers:ArionKeyboardModifiers(event) session:self.session];
@@ -261,7 +338,7 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
 }
 - (BOOL)choose:(NSUInteger)index {
     if (index >= _menu.count) return NO;
-    BOOL emoji = _menu.emoji[index] != 0;
+    BOOL emoji = _menu.metadata[index].emoji != 0;
     if (![self.engine selectCandidate:_menu.indices[index] session:self.session]) return NO;
     self.emojiInComposition |= emoji;
     return [self refresh:nil];
@@ -325,7 +402,7 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
     ArionContextRanker *ranker = self.contextRanking ? self.engine.ranker : nil;
     NSDictionary *ranking = ranker ? @{ @"ranker": ranker, @"previous": self.context ?: @"" } : nil;
     return arion_menu_build_typed(&_menu, self.engine.api, self.session, self.pageSize,
-        ranking ? rankSharedMenu : NULL, (__bridge void *)ranking, emojiSharedMenuKind, NULL);
+        ranking ? rankSharedMenu : NULL, (__bridge void *)ranking, sharedMenuMetadata, NULL);
 }
 // Shows the current page and makes the engine's highlight match Arion's, so
 // a key the engine resolves itself (punctuation) commits the same candidate.

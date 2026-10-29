@@ -1,0 +1,8 @@
+{
+  "source": "https://github.com/rime/librime/blob/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime/algo/syllabifier.cc",
+  "license": "BSD-3-Clause",
+  "originalArchiveRef": "264b882fc1f83adfc29285d3e80324f308734671",
+  "originalArchivePath": "benchmarks/runs/keyboard-fuzzy-edge-v2/run/upstream-syllabifier.cc",
+  "sha256": "477bc49a5349da2be6bef8424f6ad95293720f2b152f4b2717c8535a49aaaf2d",
+  "sizeBytes": 10982
+}

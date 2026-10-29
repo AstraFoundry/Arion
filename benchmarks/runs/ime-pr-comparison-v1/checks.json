@@ -1,0 +1,30 @@
+{
+  "nativeMain": {
+    "status": "passed",
+    "processes": 1476,
+    "engineErrors": 0,
+    "repeatedOutputsIdentical": true
+  },
+  "archiveReplay": {
+    "status": "passed",
+    "originalFiles": 5022,
+    "nativeObservations": 1476,
+    "exactReportReplay": true,
+    "rejected": [
+      "incomplete run",
+      "changed raw bytes",
+      "duplicate observation",
+      "request reference leakage"
+    ]
+  },
+  "repositoryCheck": {
+    "command": "pnpm check",
+    "pnpm": "10.33.0",
+    "status": "passed",
+    "documents": 559
+  },
+  "whitespace": {
+    "command": "git diff --check",
+    "status": "passed"
+  }
+}

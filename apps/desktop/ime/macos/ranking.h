@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithRecords:(NSDictionary<NSString *, NSString *> *)records
                         persist:(void (^)(NSDictionary<NSString *, id> *changes))persist;
 // Indices into candidates, best first.
-- (NSArray<NSNumber *> *)order:(NSArray<NSString *> *)candidates after:(nullable NSString *)previous;
+- (NSArray<NSNumber *> *)order:(NSArray<NSString *> *)candidates eligible:(const unsigned char *)eligible after:(nullable NSString *)previous;
 // Records a confirmed commit, without trailing punctuation, after previous.
 // No-op without a usable context.
 - (void)learn:(NSString *)commit after:(nullable NSString *)previous;

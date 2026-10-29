@@ -145,3 +145,5 @@ The [technical spelling follow-up](rewrite-technical-spelling-v1/README.md) chec
 - [Vocabulary grouping and canonical recall](vocabulary-alignment-v1/README.md): production correction/recall comparison, actual local GGUF stage acceptance, immutable failed attempts and report replay.
 
 - [Production ASR hotword probe](asr-hotwords-v1/README.md) — reference-free production-port driver, paired controlled development inputs, native worker context checks and replay.
+
+[PR 40 / PR 45 native comparison](ime-pr-comparison-v1/README.md) uses one reference-isolated driver, 113 shared authored inputs, alternating repetitions, actual AppKit commits and separate candidate/casing/mixed-input metrics.

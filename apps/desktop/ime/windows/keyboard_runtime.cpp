@@ -6,9 +6,11 @@
 #include <mutex>
 #include <string>
 #include "keyboard_runtime.h"
+#include "../shared/personal_vocabulary_bridge.h"
 #include "emoji_text.h"
 #include "../shared/pinyin.h"
 #include "../shared/emoji.h"
+#include "../shared/spelling.h"
 #include "../shared/english.h"
 #include "../shared/learning_rime.h"
 #include "../shared/ranking.h"
@@ -82,6 +84,7 @@ extern "C" RimeApi *arion_keyboard_start(const char *data,const char *user,char 
         arion_emoji_register();
         if (!arion_learning_windows_register(learningDirectory.c_str(),error,capacity)) { failure="encrypted keyboard learning unavailable"; return nullptr; }
         api->initialize(&configuration);
+        arion_spelling_register();
         if (!arion_english_register(dataDirectory.c_str(),error,capacity)) {
             api->finalize(); failure="English lexicon initialization failed"; return nullptr;
         }
@@ -91,9 +94,9 @@ extern "C" RimeApi *arion_keyboard_start(const char *data,const char *user,char 
 }
 extern "C" void arion_keyboard_enter(void) { mutex.lock(); }
 extern "C" void arion_keyboard_leave(void) { mutex.unlock(); }
-extern "C" int arion_keyboard_candidate_metadata(uintptr_t session,size_t index,ArionEmojiCandidateMetadata *metadata) {
+extern "C" int arion_keyboard_candidate_metadata(uintptr_t session,size_t index,ArionCandidateMetadata *metadata) {
     std::lock_guard<std::recursive_mutex> lock(mutex);
-    return runtime && failure.empty() && arion_emoji_candidate_metadata(session,index,metadata);
+    return runtime && failure.empty() && arion_candidate_metadata(session,index,metadata);
 }
 extern "C" int arion_keyboard_refresh_emoji(uintptr_t session) {
     std::lock_guard<std::recursive_mutex> lock(mutex);
@@ -128,6 +131,7 @@ extern "C" int arion_keyboard_reset_learning(char *error,size_t capacity) {
     }
     arion_emoji_register();
     RimeTraits configuration=traits(); runtime->initialize(&configuration);
+    arion_spelling_register();
     if (!arion_english_register(dataDirectory.c_str(),error,capacity)) {
         failure="English lexicon initialization failed"; return 0;
     }
@@ -140,7 +144,7 @@ extern "C" uint64_t arion_keyboard_generation(void) {
     std::lock_guard<std::recursive_mutex> lock(mutex);
     return generation;
 }
-extern "C" int arion_keyboard_order(const char *const *candidates,size_t count,const char *previous,size_t *indices,char *error,size_t capacity) {
+extern "C" int arion_keyboard_order(const char *const *candidates,size_t count,const unsigned char *eligible,const char *previous,size_t *indices,char *error,size_t capacity) {
     std::lock_guard<std::recursive_mutex> lock(mutex);
     if (!candidates || !indices || count>8192 || !contextReady(error,capacity)) return 0;
     try {
@@ -148,7 +152,7 @@ extern "C" int arion_keyboard_order(const char *const *candidates,size_t count,c
         for (size_t i=0;i<count;++i) { if (!candidates[i]) return 0; values.emplace_back(candidates[i]); }
         arion::ime::ContextRanker ranker(rankingRecords());
         if (contextDatabase->disabled()) { output("encrypted context learning unavailable",error,capacity); return 0; }
-        auto order=ranker.order(values,previous?previous:"");
+        auto order=ranker.order(values,eligible,previous?previous:"");
         if (order.size()!=count) return 0;
         std::copy(order.begin(),order.end(),indices); output("",error,capacity); return 1;
     } catch (const std::exception &) { output("context candidate ranking failed",error,capacity); return 0; }
@@ -180,4 +184,16 @@ extern "C" void arion_keyboard_stop(void) {
     std::lock_guard<std::recursive_mutex> lock(mutex);
     if (!clients || --clients) return;
     runtime->cleanup_all_sessions(); ++generation; runtime->finalize(); contextDatabase.reset(); runtime=nullptr;
+}
+
+extern "C" int arion_keyboard_restore_personal(uintptr_t session,uint64_t *revision) {
+    std::lock_guard<std::recursive_mutex> lock(mutex);
+    if (!runtime || !failure.empty()) return 0;
+    return arion_personal_vocabulary_restore(session,revision);
+}
+
+extern "C" int arion_keyboard_publish_personal(uintptr_t session,uint64_t revision,const ArionPersonalTerm *terms,size_t count) {
+    std::lock_guard<std::recursive_mutex> lock(mutex);
+    if (!runtime || !failure.empty()) return 0;
+    return arion_personal_vocabulary_publish(session,revision,terms,count);
 }

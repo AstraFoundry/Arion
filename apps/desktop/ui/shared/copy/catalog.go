@@ -296,3 +296,11 @@ func (c Catalog) UpdateReadyVersion(version string) string {
 func (c Catalog) RemoveHotword(term string) string {
 	return c.format(FormatRemoveHotword, "term", term)
 }
+
+func (c Catalog) VocabReadingAction(term string) string {
+	return c.format(FormatVocabReadingAction, "term", term)
+}
+
+func (c Catalog) VocabReadingVariant(term, variant string) string {
+	return c.format(FormatVocabReadingVariant, "term", term, "variant", variant)
+}

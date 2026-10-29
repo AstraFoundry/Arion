@@ -134,6 +134,32 @@ func TestPolishEnginePreference(t *testing.T) {
 	}
 }
 
+func TestKeyboardSpellingPreferences(t *testing.T) {
+	p := DefaultPreferences("darwin")
+	if p.Keyboard.TypoCorrection || p.Keyboard.FuzzyPinyin != 0 {
+		t.Fatal("spelling expansion must be explicit")
+	}
+	p.Keyboard.TypoCorrection = true
+	p.Keyboard.FuzzyPinyin = FuzzyZZH | FuzzyIANIANG
+	data, err := json.Marshal(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored := DefaultPreferences("darwin")
+	if err := json.Unmarshal(data, &restored); err != nil {
+		t.Fatal(err)
+	}
+	normalized, repairs := restored.Normalize("darwin")
+	if normalized.Keyboard != p.Keyboard || len(repairs) != 0 {
+		t.Fatalf("spelling preferences changed after roundtrip: %+v %v", normalized.Keyboard, repairs)
+	}
+	restored.Keyboard.FuzzyPinyin |= 1 << 31
+	normalized, repairs = restored.Normalize("darwin")
+	if normalized.Keyboard.FuzzyPinyin != p.Keyboard.FuzzyPinyin || !slices.Contains(repairs, "keyboard") {
+		t.Fatalf("unknown fuzzy bits were not explicitly repaired: %+v %v", normalized.Keyboard, repairs)
+	}
+}
+
 func TestPunctuationPreference(t *testing.T) {
 	if got := DefaultPreferences("darwin").Punctuation; got != domain.PunctuationSmart {
 		t.Fatalf("default punctuation %q", got)

@@ -21,6 +21,13 @@ type Draft struct {
 	To      string
 	Error   copy.Key
 	Query   string
+	Reading readingDraft
+}
+
+type readingDraft struct {
+	ID, Spelling, Value string
+	Error               copy.Key
+	Focus               bool
 }
 
 var rowMotion = ui.ElementTransition{Animation: &theme.Settle, Enter: &ui.Motion{Collapse: true}, Exit: &ui.Motion{Collapse: true}}
@@ -43,6 +50,13 @@ func Learning(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 func Editor(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *Draft) {
 	messages := store.Copy()
 	ui.Column(c).Gap(12).Children(func() {
+		if notice := store.State.VocabularyKeyboardNotice; notice != "" {
+			color := tokens.Muted
+			if notice == copy.VocabKeyboardFailed {
+				color = tokens.Danger
+			}
+			ui.Text(c, messages.Text(notice)).FontSize(theme.Caption).TextColor(color)
+		}
 		kit.Card(c, tokens).Padding(12, 16).Children(func() {
 			ui.Column(c).Gap(8).Children(func() {
 				ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
@@ -94,20 +108,31 @@ func Editor(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *Draf
 						if group.Hotword {
 							ui.Text(c, messages.Text(copy.VocabHotwordStatus)).FontSize(theme.Caption).TextColor(tokens.Muted)
 						}
-						if len(group.HotwordIDs) > 0 {
-							ids := append([]string(nil), group.HotwordIDs...)
+						if len(group.Hotwords) > 0 {
+							entries := append([]runtime.Replacement(nil), group.Hotwords...)
 							kit.IconButton(c, tokens, icons.X, messages.RemoveHotword(group.Text)).OnClick(func() {
-								for _, id := range ids {
-									store.Actions.RemoveReplacement(id)
+								for _, entry := range entries {
+									store.Actions.RemoveReplacement(entry.ID)
 								}
 							})
 						}
 					})
+					for _, entry := range group.Hotwords {
+						keyboardReading(c.Key(entry.ID), store, tokens, &draft.Reading, entry)
+					}
 					for _, variant := range group.Variants {
 						id := variant.ID
-						ui.Row(c.Key(id)).Gap(8).AlignItems(ui.Center).Transition(rowMotion).Children(func() {
-							ui.Text(c, variant.From).FontSize(theme.Body).TextColor(tokens.Muted).Grow(1).Shrink(1)
-							kit.IconButton(c, tokens, icons.X, messages.RemoveVocabVariant(variant.From)).OnClick(func() { store.Actions.RemoveReplacement(id) })
+						ui.Column(c.Key(id)).Gap(4).Children(func() {
+							ui.Row(c).Gap(8).AlignItems(ui.Center).Transition(rowMotion).Children(func() {
+								ui.Text(c, variant.From).FontSize(theme.Body).TextColor(tokens.Muted).Grow(1).Shrink(1)
+								if draft.Reading.ID != id {
+									keyboardReading(c, store, tokens, &draft.Reading, variant)
+								}
+								kit.IconButton(c, tokens, icons.X, messages.RemoveVocabVariant(variant.From)).OnClick(func() { store.Actions.RemoveReplacement(id) })
+							})
+							if draft.Reading.ID == id {
+								keyboardReading(c, store, tokens, &draft.Reading, variant)
+							}
 						})
 					}
 				})
@@ -116,6 +141,56 @@ func Editor(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *Draf
 		ui.Row(c).Gap(6).AlignItems(ui.Center).TextColor(tokens.Muted).Children(func() {
 			ui.Icon(c, icons.Lock).FontSize(12)
 			ui.Text(c, messages.Text(copy.VocabStoredLocal)).FontSize(theme.Caption)
+		})
+	})
+}
+
+func keyboardReading(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *readingDraft, entry runtime.Replacement) {
+	messages := store.Copy()
+	if draft.ID != entry.ID {
+		label := entry.KeyboardPinyin
+		if label == "" {
+			label = messages.Text(copy.VocabReading)
+		}
+		name := messages.VocabReadingAction(entry.To)
+		if entry.From != "" {
+			name = messages.VocabReadingVariant(entry.To, entry.From)
+		}
+		kit.Button(c.Key("reading-edit"), tokens, kit.Ghost, label, true).Label(name).OnClick(func() {
+			*draft = readingDraft{ID: entry.ID, Spelling: entry.To, Value: entry.KeyboardPinyin, Focus: true}
+		})
+		return
+	}
+	ui.Column(c.Key("reading-form")).Gap(6).Children(func() {
+		field := ui.TextInput(c.Key("reading"), &draft.Value).Label(messages.Text(copy.VocabReading)).Placeholder(messages.Text(copy.VocabReadingPlaceholder))
+		if draft.Focus {
+			field.Focus()
+			draft.Focus = false
+		}
+		ui.Text(c, messages.Text(copy.VocabReadingHint)).FontSize(theme.Caption).TextColor(tokens.Muted)
+		if draft.Error != "" {
+			ui.Text(c, messages.Text(draft.Error)).FontSize(theme.Caption).TextColor(tokens.Danger)
+		}
+		ui.Row(c).Gap(8).Children(func() {
+			submit := kit.Button(c.Key("reading-save"), tokens, kit.Outline, messages.Text(copy.VocabReadingSave), true).Clicked()
+			cancel := kit.Button(c.Key("reading-cancel"), tokens, kit.Ghost, messages.Text(copy.VocabReadingCancel), true).Clicked()
+			if cancel {
+				*draft = readingDraft{}
+				return
+			}
+			if submit || field.Submitted() {
+				err := store.Actions.SetKeyboardPinyin(draft.ID, draft.Spelling, strings.TrimSpace(draft.Value))
+				switch {
+				case err == nil:
+					*draft = readingDraft{}
+				case errors.Is(err, runtime.ErrVocabularyInvalid):
+					draft.Error = copy.VocabReadingInvalid
+				case errors.Is(err, runtime.ErrVocabularyConflict):
+					draft.Error = copy.VocabReadingStale
+				default:
+					draft.Error = copy.VocabSaveFailed
+				}
+			}
 		})
 	})
 }

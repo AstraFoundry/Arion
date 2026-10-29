@@ -76,11 +76,14 @@ int wmain(int count,wchar_t **arguments) {
         auto error=symbol<decltype(&arion_keyboard_error)>(module,"arion_keyboard_error");
         auto generation=symbol<decltype(&arion_keyboard_generation)>(module,"arion_keyboard_generation");
         auto reset=symbol<decltype(&arion_keyboard_reset_learning)>(module,"arion_keyboard_reset_learning");
+        const unsigned char eligible[]={1,1,0,1};
         auto order=symbol<decltype(&arion_keyboard_order)>(module,"arion_keyboard_order");
         auto learn=symbol<decltype(&arion_keyboard_learn)>(module,"arion_keyboard_learn");
         auto context=symbol<decltype(&arion_keyboard_context)>(module,"arion_keyboard_context");
         auto metadata=symbol<decltype(&arion_keyboard_candidate_metadata)>(module,"arion_keyboard_candidate_metadata");
         auto refresh=symbol<decltype(&arion_keyboard_refresh_emoji)>(module,"arion_keyboard_refresh_emoji");
+        auto restore=symbol<decltype(&arion_keyboard_restore_personal)>(module,"arion_keyboard_restore_personal");
+        auto publish=symbol<decltype(&arion_keyboard_publish_personal)>(module,"arion_keyboard_publish_personal");
         const auto data=std::filesystem::path(arguments[2]).u8string(),user=std::filesystem::path(arguments[3]).u8string();
         char failure[512]{};
         RimeApi *api=start(data.c_str(),user.c_str(),failure,sizeof(failure));
@@ -90,6 +93,22 @@ int wmain(int count,wchar_t **arguments) {
         require(start(data.c_str(),(user+"-different").c_str(),failure,sizeof(failure))==nullptr,"different profile refuses reuse");
         stop();
         enter();
+        auto personalSession=arion_pinyin_create_session(api);
+        require(personalSession!=0,"create personal vocabulary session");
+        uint64_t personalRevision=0;
+        require(restore(personalSession,&personalRevision) && personalRevision==0,"fresh personal cache revision");
+        const ArionPersonalTerm personalTerm{"manual-term",u8"星槎","xing cha"};
+        require(publish(personalSession,1,&personalTerm,1),"publish personal term through module ABI");
+        require(!publish(personalSession,1,nullptr,0),"reject stale personal deletion");
+        require(arion_pinyin_process_key(api,personalSession,'x',0),"start personal composition");
+        require(!publish(personalSession,2,nullptr,0),"reject publication during composition");
+        api->clear_composition(personalSession);
+        arion_pinyin_destroy_session(api,personalSession);
+        personalSession=arion_pinyin_create_session(api);
+        require(restore(personalSession,&personalRevision) && personalRevision==1,"restore persisted personal revision into new session");
+        require(publish(personalSession,2,nullptr,0),"publish explicit empty personal projection");
+        require(restore(personalSession,&personalRevision) && personalRevision==2,"retain deletion revision");
+        arion_pinyin_destroy_session(api,personalSession);
         auto emojiSession=arion_pinyin_create_session(api);
         require(emojiSession!=0,"create Emoji metadata session");
         api->set_option(emojiSession,"arion_emoji",1);
@@ -98,7 +117,7 @@ int wmain(int count,wchar_t **arguments) {
             char **texts=nullptr; size_t count=0,index=static_cast<size_t>(-1);
             require(arion_pinyin_candidates(api,emojiSession,0,54,&texts,&count)!=0,"read actual typed engine menu");
             for (size_t i=0;i<count;++i) {
-                ArionEmojiCandidateMetadata value{};
+                ArionCandidateMetadata value{};
                 require(metadata(emojiSession,i,&value)!=0,"read metadata across validated module ABI");
                 if (value.emoji && std::strcmp(texts[i],u8"😊")==0) {
                     require(value.start==0 && value.end==8 && std::strcmp(value.source,u8"笑脸")==0 && std::strcmp(value.sequence_id,"1F60A")==0,"exact Emoji identity and input range");
@@ -175,7 +194,7 @@ int wmain(int count,wchar_t **arguments) {
         const char *candidates[]={u8"你好",u8"拟好",u8"你",u8"妮好"};
         auto rankedFirst=[&] {
             size_t indices[4]{};
-            require(order(candidates,4,u8"很好",indices,failure,sizeof(failure))!=0,"read encrypted context ranking");
+            require(order(candidates,4,eligible,u8"很好",indices,failure,sizeof(failure))!=0,"read encrypted context ranking");
             return indices[0];
         };
         auto teach=[&] {
@@ -202,7 +221,7 @@ int wmain(int count,wchar_t **arguments) {
             const char *word=mixed[1];
             for (int i=0;i<3;++i) require(learn(word,u8"很好",failure,sizeof(failure))!=0,"mixed/supplementary Han is learned");
             size_t indices[2]{};
-            require(order(mixed,2,u8"很好",indices,failure,sizeof(failure))!=0 && indices[0]==1,"Han confirmations promote through actual encrypted module ABI");
+            require(order(mixed,2,eligible,u8"很好",indices,failure,sizeof(failure))!=0 && indices[0]==1,"Han confirmations promote through actual encrypted module ABI");
         }
         teach();
         {
@@ -246,7 +265,7 @@ int wmain(int count,wchar_t **arguments) {
             require(error(failure,sizeof(failure))!=0,"tampered recovery stays unavailable");
             require(start(data.c_str(),user.c_str(),failure,sizeof(failure))==nullptr,"new client cannot reuse finalized failed runtime");
             size_t indices[4]{};
-            require(order(candidates,4,u8"很好",indices,failure,sizeof(failure))==0,"failed runtime refuses context reads");
+            require(order(candidates,4,eligible,u8"很好",indices,failure,sizeof(failure))==0,"failed runtime refuses context reads");
             require(learn(u8"妮好",u8"很好",failure,sizeof(failure))==0,"failed runtime refuses further learning writes");
             require(learn("Latin",u8"很好",failure,sizeof(failure))==0,"non-Han no-op never bypasses failed runtime readiness");
         }

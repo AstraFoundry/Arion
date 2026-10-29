@@ -88,6 +88,20 @@ export function verifyKeyboardBundle({ root = repository, bundle = path.join(roo
   const keyboard = path.join(resources, 'keyboard');
   const runtime = JSON.parse(readFileSync(path.join(keyboard, 'runtime.json'), 'utf8'));
   for (const [key, value] of Object.entries(pins.engine)) if (!isDeepStrictEqual(runtime[key], value)) throw new Error(`Keyboard runtime identity mismatch: ${key}`);
+  if (!isDeepStrictEqual(runtime.build?.correctionIdentity,pins.patches.correctionIdentity)) throw new Error('Keyboard correction identity patch provenance is missing.');
+  const expectedSources=Object.fromEntries(['source','dependencies','boost'].map(key=>[key,pins.archives[key]]));
+  if (!isDeepStrictEqual(runtime.build?.sources,expectedSources)) throw new Error('Keyboard source build pins differ.');
+  if (runtime.build?.builderSha256!==digest(path.join(root,'scripts/lib/keyboard-macos-runtime.mjs')) || runtime.build?.patcherSha256!==digest(path.join(root,'scripts/lib/keyboard-correction-patch.mjs'))) throw new Error('Keyboard source build recipe differs.');
+  const {fingerprint,outputs,...buildIdentity}=runtime.build;
+  if (fingerprint!==createHash('sha256').update(JSON.stringify(buildIdentity)).digest('hex') ||
+      !isDeepStrictEqual(buildIdentity.architectures,[...pins.engine.architectures].sort()) ||
+      buildIdentity.minimumSystemVersion!==config.macos.minimumSystemVersion ||
+      buildIdentity.logging!==true || buildIdentity.externalPlugins!==false)
+    throw new Error('Keyboard source build configuration or fingerprint differs.');
+  const libraryOutput=`build/lib/librime.${pins.engine.version}.dylib`;
+  if (!outputs || !isDeepStrictEqual(Object.keys(outputs).sort(),[libraryOutput,'build/bin/rime_deployer'].sort()) ||
+      !isDeepStrictEqual(outputs[libraryOutput],runtime.files?.['lib/librime.1.dylib']))
+    throw new Error('Keyboard source build output inventory differs.');
   if (!runtime.files || typeof runtime.files !== 'object' || Array.isArray(runtime.files)) throw new Error('Keyboard runtime hash manifest is missing.');
   const required = ['data/default.yaml', 'data/default.custom.yaml', 'data/key_bindings.yaml', 'data/punctuation.yaml', 'data/symbols.yaml',
     'data/pinyin_simp.schema.yaml', 'data/pinyin_simp.dict.yaml', 'data/arion_pinyin.schema.yaml',
@@ -145,7 +159,7 @@ export function verifyKeyboardBundle({ root = repository, bundle = path.join(roo
     }
   }
   // codesign changes Mach-O bytes. Immutable data/licenses retain exact hashes;
-  // the dylib is identified by its staged pinned archive and inspected ABI here.
+  // the dylib is identified by its pinned source build and inspected ABI here.
   const signature = spawnSync('codesign', ['--display', '--verbose=2', bundle], { encoding: 'utf8' });
   const signatureText = `${signature.stdout ?? ''}${signature.stderr ?? ''}`;
   const sealed = existsSync(path.join(contents, '_CodeSignature/CodeResources')) || (signature.status === 0 && !signatureText.includes('Info.plist=not bound'));

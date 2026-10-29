@@ -26,6 +26,9 @@ const files = ['learning.h', 'learning.cpp', 'learning_windows.cpp', 'learning_r
   'english.h', 'english.cpp', 'english_lexicon.h', 'english_lexicon.cpp', 'emoji.h', 'emoji.cpp', 'emoji_data.h',
   'ranking.h', 'ranking.cpp', 'ranking_bridge.h', 'ranking_unicode.h', 'ranking_unicode.cpp', 'ranking_unicode_data.h', 'ranking_test.cpp',
   'ranking_unicode_sources.json', 'ranking_unicode_LICENSE.txt', 'ranking_unicode_generate.py'];
+const engineSources = ['emoji.cpp', 'english_lexicon.cpp', 'spelling.cpp', 'personal_vocabulary.cpp', 'english.cpp'];
+files.push(...engineSources, 'emoji.h', 'emoji_data.h', 'spelling.h', 'spelling_options.h',
+  'personal_vocabulary.h', 'personal_vocabulary_bridge.h', 'english.h');
 const report = { schema: 1, platform: process.platform, architecture: process.arch,
   boundary: windows ? 'Shared codec/ranking, actual current-user DPAPI, pinned Rime encrypted Db ABI and owned concurrent editor processes; no TSF/installed editor dispatch' : 'Shared codec and ranking only; macOS native Keychain, CryptoKit and AppKit checks remain separate',
   directory, profiles: profile, sourceIdentities: {}, fixtureIdentities: {}, runtimeIdentities: {}, commands: [], status: 'running' };
@@ -43,7 +46,7 @@ function run(phase, command, args, { env = process.env, timeout = 120000 } = {})
 }
 try {
   for (const name of files) report.sourceIdentities[`apps/desktop/ime/shared/${name}`] = identity(path.join(source, name));
-  if (windows) for (const name of ['keyboard_options.h', 'keyboard_options_test.cpp', 'json.h', 'wire.h'])
+  if (windows) for (const name of ['keyboard_options.h', 'keyboard_options_test.cpp', 'json.h', 'wire.h', 'wire_text.h'])
     report.sourceIdentities[`apps/desktop/ime/windows/${name}`] = identity(path.join(source, '../windows', name));
   report.sourceIdentities['scripts/test-shared-keyboard-learning.mjs'] = identity(fileURLToPath(import.meta.url));
   const provenance = JSON.parse(readFileSync(path.join(corpus, 'provenance.json'), 'utf8'));
@@ -121,7 +124,7 @@ try {
     const pinyin = path.join(directory, 'multiprocess-pinyin.o');
     run('compile-multiprocess-pinyin-c-core', process.env.CC ?? 'gcc', ['-std=c11', '-O2', '-Wall', '-Wextra', '-Werror',
       '-I', path.join(sdk, 'include'), '-c', path.join(source, 'pinyin.c'), '-o', pinyin]);
-    const multi = compile('multiprocess-learning', ['learning.cpp', 'learning_windows.cpp', 'learning_rime.cpp', 'ranking.cpp', 'ranking_unicode.cpp', 'english.cpp', 'english_lexicon.cpp', 'emoji.cpp', 'learning_multiprocess_test.cpp'],
+    const multi = compile('multiprocess-learning', ['learning.cpp', 'learning_windows.cpp', 'learning_rime.cpp', 'ranking.cpp', 'ranking_unicode.cpp', ...engineSources, 'learning_multiprocess_test.cpp'],
       ['-DRIME_IMPORTS', '-isystem', path.join(sdk, 'include'), pinyin, importLibrary, '-lcrypt32', '-ladvapi32', '-lole32']);
     verifyWindowsPEDependencies([multi]);
     const multiProfile = path.join(profile, 'multiprocess');

@@ -312,7 +312,7 @@ rewrite-alignment-verify: ## Verify archived scene rewrite study without models
 rewrite-alignment-test: ## Test report evidence integrity guards without inference
 	@pnpm rewrite:alignment:test
 
-.PHONY: keyboard-stage keyboard-check keyboard-verify
+.PHONY: keyboard-stage keyboard-check keyboard-verify keyboard-publisher-check keyboard-vocabulary-check
 keyboard-stage: ## Stage pinned offline Pinyin runtime, schemas, data and notices
 	@pnpm keyboard:stage
 
@@ -322,6 +322,12 @@ contributors-update: ## Refresh the contributors and avatars shown in Settings â
 
 keyboard-check: ## Run actual macOS typing and encrypted learning checks in isolated fixtures
 	@pnpm keyboard:check
+
+keyboard-publisher-check: ## Validate actual Developer ID socket peers without installing an input source
+	@pnpm keyboard:publisher:check
+
+keyboard-vocabulary-check: ## Validate signed native vocabulary publication, restart and deletion
+	@pnpm keyboard:vocabulary:check
 
 keyboard-verify: ## Verify staged universal IMK bundle and its offline data closure
 	@pnpm keyboard:verify

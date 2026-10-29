@@ -31,7 +31,7 @@ for (const name of ['pinyin','input','menu']) {
 }
 const fontResource=buildCandidateFonts(root,compiler,objects,run);
 const base=['-std=c++17','-DINITGUID','-O2','-Wall','-Wextra','-Werror','-static','-isystem',path.join(sdk,'include')];
-run(compiler,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji','english','english_lexicon'].map(name=>path.join(common,`${name}.cpp`)),cObjects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',path.join(keyboard,'lib/ArionKeyboard.dll'),'-lcrypt32','-lole32','-luuid','-ladvapi32','-ldwrite','-ld2d1']);
+run(compiler,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji','spelling', 'personal_vocabulary', 'personal_vocabulary_store', 'english','english_lexicon'].map(name=>path.join(common,`${name}.cpp`)),cObjects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',path.join(keyboard,'lib/ArionKeyboard.dll'),'-lcrypt32','-lole32','-luuid','-ladvapi32','-ldwrite','-ld2d1']);
 recordWindowsKeyboardModule(keyboard);
 verifyWindowsKeyboardRuntime(keyboard);
 const keyboardManifestSHA256=createHash('sha256').update(readFileSync(path.join(keyboard,'runtime.json'))).digest('hex');

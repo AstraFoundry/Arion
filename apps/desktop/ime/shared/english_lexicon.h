@@ -13,6 +13,7 @@ namespace arion {
 class EnglishLexicon final : public std::enable_shared_from_this<EnglishLexicon> {
  public:
     struct Entry { std::string key, display; uint32_t rank; };
+    struct WordPrefix { size_t bytes; std::vector<Entry> forms; };
     enum class Completion { Suggest, Lookup };
     class Cursor {
      public:
@@ -46,8 +47,10 @@ class EnglishLexicon final : public std::enable_shared_from_this<EnglishLexicon>
     };
     static std::shared_ptr<const EnglishLexicon> Load(const std::filesystem::path &path);
     Matches Query(std::string_view input, Completion completion = Completion::Suggest) const;
+    std::vector<WordPrefix> WordPrefixes(std::string_view input) const;
  private:
     struct Word { std::vector<Entry> displays; uint32_t count; bool lowercase; };
+    const Word *ExactWord(std::string_view input) const;
     struct Index { std::vector<uint32_t> words, winners; size_t base = 1; };
     static constexpr uint32_t kSuggestionMinimumCount = 1000;
     std::vector<Word> words_;

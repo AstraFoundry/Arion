@@ -330,7 +330,14 @@ func RemoveIME() error {
 type IME = imebridge.IME
 
 func NewIME(path string, onLeave, onDictate func()) *IME {
-	return imebridge.New(path, onLeave, onDictate)
+	bridge := imebridge.New(path, onLeave, onDictate)
+	bridge.RequireClientVerification(func(peer imebridge.PeerIdentity, _ imebridge.ClientHello) error {
+		if !peer.BindPublisher(IMEBundleID) {
+			return domain.Fail(domain.CodeArtifactUnverified, domain.DetailInputMethodArtifactUnverified)
+		}
+		return nil
+	})
+	return bridge
 }
 
 // WriteKeyboardSettings writes keyboard.json beside the socket, where the
