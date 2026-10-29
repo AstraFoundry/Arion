@@ -4,6 +4,8 @@
 
 `make e2e` / `pnpm e2e:native` runs build-tagged Go tests in an actual macOS/Windows desktop session. The test hosts the production composition root (`bootstrap.App`) in an isolated temporary profile on MyGo's native loop.
 
+The offline native fixture has no update scheduler. Its build-tagged `ShowUpdateReminderForTest` explicitly creates only a reminder ledger in that temporary profile, so the production reminder window and Later/Dismiss persistence remain exercised without a release feed, transaction recovery or background update work. Unsupported production builds still leave update state untouched.
+
 DSK-A09 also switches language through the production preference action with settings/onboarding already open, checks native titles in both directions and captures Chinese Content.
 
 `TestOnboardingCompletionOpensSettings` covers the DSK-A15 completion transition through the production action: onboarding closes, Settings is visible and focused, and completion is saved in the isolated profile. This test does not relaunch the process. `TestSettingsLaunch` covers which later starts open Settings: a user-opened process, including an update restart, does; a login-item start, an unfinished onboarding, a notification-owned launch and a scripted session do not. A Spotlight-style reopen of the running app is the production `OnActivate` / `OnSecondInstance` path and is not a separate process launch in this suite.
