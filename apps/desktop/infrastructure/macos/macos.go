@@ -158,8 +158,6 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 	switch C.arion_capture_target(&native, readSite) {
 	case C.ARION_TARGET_UNTRUSTED:
 		return contracts.TargetSnapshot{}, domain.Fail(domain.CodePermissionDenied, "accessibility")
-	case C.ARION_TARGET_NONE:
-		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "no frontmost application")
 	}
 	role, subrole := C.GoString(&native.role[0]), C.GoString(&native.subrole[0])
 	bundle := C.GoString(&native.bundle[0])
@@ -352,16 +350,6 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 // paste is false when nothing editable is focused. secure is set when the
 // focused field must not receive text.
 func adoptLiveCursor(tgt *target) (paste bool, secure bool) {
-	if tgt.element != nil && C.arion_focus_matches(tgt.element, C.int(tgt.pid)) == 1 {
-		if C.arion_selection_matches(tgt.element, tgt.selection) != 1 {
-			C.arion_release(tgt.selection)
-			tgt.selection = C.arion_copy_selection(tgt.element)
-		}
-		if tgt.secure || C.arion_secure_input() == 1 {
-			return false, true
-		}
-		return true, false
-	}
 	var native C.arion_target
 	if C.arion_capture_target(&native, 0) != C.ARION_TARGET_OK {
 		return false, false
@@ -369,13 +357,15 @@ func adoptLiveCursor(tgt *target) (paste bool, secure bool) {
 	role, subrole := C.GoString(&native.role[0]), C.GoString(&native.subrole[0])
 	liveSecure := native.secure_input == 1 || subrole == "AXSecureTextField"
 	ownProcess := int(native.pid) == os.Getpid()
-	editable := native.element != nil && !ownProcess && (native.selection != nil || fieldKind(role, subrole) != domain.FieldUnknown)
+	editable := native.element != nil && !ownProcess && (native.editable == 1 && fieldKind(role, subrole) != domain.FieldUnknown)
 	if !editable || liveSecure {
 		C.arion_release(native.element)
 		C.arion_release(native.selection)
 		return false, liveSecure && native.element != nil && !ownProcess
 	}
-	tgt.follow = false
+	if tgt.element == nil || C.arion_focus_matches(tgt.element, C.int(tgt.pid)) != 1 {
+		tgt.follow = false
+	}
 	C.arion_release(tgt.element)
 	C.arion_release(tgt.selection)
 	tgt.element = native.element

@@ -118,6 +118,45 @@ func draftIs(text string) func(contracts.Event) bool {
 	return func(e contracts.Event) bool { return e.Kind == contracts.DraftReplaced && e.Text == text }
 }
 
+func TestProcessedTextCopiedWithoutInsertionTarget(t *testing.T) {
+	for _, translation := range []bool{false, true} {
+		name, processed := "polishing", "今天下午三点开会。"
+		if translation {
+			name, processed = "translation", "We meet at three this afternoon."
+		}
+		t.Run(name, func(t *testing.T) {
+			rewriter := &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
+				return processed, nil
+			}}
+			c, audio, events, target, _ := liveSetup(t, []string{"今天下午三点开会"}, rewriter, RewritePolicy{Enabled: !translation})
+			c.deps.SelectMode = func() domain.InputMode { return domain.SystemIMEMode }
+			target.outcome = contracts.Copied
+			if translation {
+				c.StartShortcut(domain.TargetEnglish)
+			} else {
+				c.StartShortcut("")
+			}
+			events.wait(t, stateIs(domain.Capturing))
+			c.CancelMode(domain.SystemIMEMode)
+			if snapshot := c.Snapshot(); snapshot.Mode != domain.ShortcutMode || snapshot.State != domain.Capturing {
+				t.Fatalf("input method deactivation interrupted the voice shortcut: %+v", snapshot)
+			}
+			audio.push(1, 0.2)
+			c.Stop()
+			result := events.wait(t, kindIs(contracts.CommitResultReady))
+			c.CommitReviewed()
+			if result.State != domain.Completed || result.Outcome != contracts.Copied || target.commits.Load() != 1 {
+				t.Fatalf("processed clipboard result: %+v commits=%d", result, target.commits.Load())
+			}
+			target.mu.Lock()
+			defer target.mu.Unlock()
+			if len(target.texts) != 1 || target.texts[0] != processed {
+				t.Fatalf("clipboard received %q, want the processed text %q", target.texts, processed)
+			}
+		})
+	}
+}
+
 // Closed segments stay recognized while capture continues. The rewriter runs
 // once after release, on the full recognized text, and that result is the
 // only inserted proposal.
