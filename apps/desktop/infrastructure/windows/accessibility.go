@@ -21,6 +21,9 @@ import (
 // The fixed UI Automation script reads visible controls in the captured window.
 // Text providers expose visible ranges; password and offscreen branches are skipped.
 const accessibilityScript = `$ErrorActionPreference = 'Stop'
+if ([System.Threading.Thread]::CurrentThread.GetApartmentState() -ne [System.Threading.ApartmentState]::MTA) {
+ throw 'UI Automation requires a multithreaded apartment'
+}
 Add-Type -AssemblyName UIAutomationClient
 Add-Type -AssemblyName UIAutomationTypes
 Add-Type -AssemblyName WindowsBase
@@ -91,7 +94,8 @@ func windowTextCommand(ctx context.Context, hwnd uintptr, source string) *exec.C
 	for i, u := range encoded {
 		script[2*i], script[2*i+1] = byte(u), byte(u>>8)
 	}
-	cmd := exec.CommandContext(ctx, "powershell.exe", "-NoProfile", "-NonInteractive", "-EncodedCommand", base64.StdEncoding.EncodeToString(script))
+	// UI Automation clients require a non-UI MTA thread; PowerShell defaults to STA.
+	cmd := exec.CommandContext(ctx, "powershell.exe", "-Mta", "-NoProfile", "-NonInteractive", "-EncodedCommand", base64.StdEncoding.EncodeToString(script))
 	cmd.Env = append(cmd.Environ(), "ARION_CONTEXT_HWND="+strconv.FormatUint(uint64(hwnd), 10))
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: 0x08000000}
 	return cmd
