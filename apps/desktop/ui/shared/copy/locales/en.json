@@ -388,6 +388,8 @@
   "SceneChosen": "Your choice",
   "SceneCardLabel": "Scene for this app",
   "CopyOriginal": "Copy original",
+  "ViewOriginalTranscript": "View original transcript",
+  "HideOriginalTranscript": "Hide original transcript",
   "FormatDownloadSize": "Downloads {size} once",
   "ModelNameGeneric": "Voice recognition",
   "ModelRecognitionGroup": "Recognition",

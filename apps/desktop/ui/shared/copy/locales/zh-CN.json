@@ -388,6 +388,8 @@
   "SceneChosen": "手动选择",
   "SceneCardLabel": "当前应用的场景",
   "CopyOriginal": "复制原文",
+  "ViewOriginalTranscript": "查看原始识别",
+  "HideOriginalTranscript": "收起原始识别",
   "FormatDownloadSize": "仅需下载一次（{size}）",
   "ModelNameGeneric": "语音识别",
   "ModelRecognitionGroup": "语音识别",
