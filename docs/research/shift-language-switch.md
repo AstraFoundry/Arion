@@ -41,7 +41,7 @@ Both inspected implementations support a standalone short Shift press that switc
 
 Arion now supports standalone left/right Shift release in less than 0.3 seconds, with chord, cancellation and deactivation invalidation; Shift+Space and the input menu remain available. The IMK controller requests modifier events and the typing owner tracks the pending press. For missing keycodes `0`/`255`, it recognizes Shift only from an unambiguous Shift-flag transition; known left/right keycodes retain their side checks. A separate caret badge provides transient feedback. The badge now uses an original 23 × 23 point solid rendering, no window shadow and a one-second lifetime, aligned with the subsequently inspected [Chatterfly default path](chatterfly-language-hint.md).
 
-Arion's existing KBD-04 rule discards unconfirmed composition on mode switch. The competitors' commit paths above differ from that rule. This research does not change KBD-04, choose a duration threshold for Arion, or authorize a different composition policy.
+KBD-04 now commits pending raw input before standalone Shift switches Chinese to English. Shift+Space and input-menu switching retain their discard policy. The competitor observations above remain version-bound evidence, separate from Arion's selected behavior and timing threshold.
 
 ## Arion host regression
 

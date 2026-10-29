@@ -69,6 +69,16 @@ static void record(NSString *step, ArionTyping *typing, TypingEditor *editor) {
     [trace addObject:@{@"step": step, @"state": capture(typing, editor)}];
 }
 
+static void saveEditor(TypingEditor *editor, NSString *report, NSString *name) {
+    [editor.view layoutSubtreeIfNeeded];
+    NSBitmapImageRep *bitmap = [editor.view bitmapImageRepForCachingDisplayInRect:editor.view.bounds];
+    require(bitmap != nil, @"native editor is drawable");
+    [editor.view cacheDisplayInRect:editor.view.bounds toBitmapImageRep:bitmap];
+    NSData *png = [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+    require([png writeToFile:[report.stringByDeletingLastPathComponent stringByAppendingPathComponent:name]
+        options:NSDataWritingAtomic error:nil], @"save actual AppKit editor rendering");
+}
+
 static std::map<std::string, std::string> learningRecords(NSString *file, NSData *keyBytes) {
     std::unique_ptr<rime::Db> database(ArionLearningTestDatabase(file, @"arion_pinyin", keyBytes));
     require(database != nullptr && database->OpenReadOnly(), @"read actual encrypted engine dictionary with synthetic key");
@@ -557,12 +567,65 @@ int main(int argc, const char *argv[]) {
             NSUInteger stale = typing.revision;
             require(!modifier(typing, 56, NSEventModifierFlagShift, 1) && !typing.ascii && typing.composing,
                     @"Shift press leaves mode and draft unchanged");
-            require(modifier(typing, 56, 0, 1.1) && typing.ascii && !typing.composing && editor.view.string.length == 0,
-                    @"short release switches and clears unconfirmed draft");
+            require(modifier(typing, 56, 0, 1.1) && typing.ascii && !typing.composing && [editor.view.string isEqual:@"nihao"] &&
+                    !editor.view.hasMarkedText && editor.insertions == 1,
+                    @"short release commits raw letters once before switching");
             require(switches == 1 && ![typing select:0 revision:stale], @"one mode notification and no stale candidate write");
-            require(!modifier(typing, 56, 0, 1.11) && switches == 1, @"duplicate release cannot toggle");
+            require(!modifier(typing, 56, 0, 1.11) && switches == 1 && editor.insertions == 1, @"duplicate release cannot toggle or insert again");
             modifier(typing, 60, NSEventModifierFlagShift, 2);
             require(modifier(typing, 60, 0, 2.1) && !typing.ascii && switches == 2, @"right Shift switches back persistently");
+        });
+        run(@"Shift commits raw spelling instead of English completion", @"KBD-A05", ^{
+            type(typing, @"arion");
+            saveEditor(editor, report, @"shift-macos-pending.png");
+            modifier(typing, 60, NSEventModifierFlagShift, 1);
+            require(modifier(typing, 60, 0, 1.1) && [editor.view.string isEqual:@"arion"] && typing.ascii,
+                    @"right Shift preserves the literal product name");
+            saveEditor(editor, report, @"shift-macos-committed.png");
+            require(!press(typing, @"x", 7) && editor.insertions == 1, @"English letters pass through after the raw commit");
+            modifier(typing, 56, NSEventModifierFlagShift, 2);
+            modifier(typing, 56, 0, 2.1);
+            type(typing, @"hel");
+            modifier(typing, 56, NSEventModifierFlagShift, 3);
+            modifier(typing, 56, 0, 3.1);
+            require([editor.view.string isEqual:@"arionhel"] && editor.insertions == 2, @"completion candidates never replace the raw prefix");
+        });
+        run(@"Shift preserves edited input and confirmed segments", @"KBD-A04 KBD-A05", ^{
+            type(typing, @"arionx");
+            press(typing, @"", 51);
+            press(typing, @"", 115);
+            modifier(typing, 56, NSEventModifierFlagShift, 1);
+            modifier(typing, 56, 0, 1.1);
+            require([editor.view.string isEqual:@"arion"] && !editor.view.hasMarkedText, @"raw commit includes the complete edited buffer at Home");
+            [typing toggleASCII];
+            type(typing, @"nihao");
+            NSUInteger prefix = [typing.snapshot.candidates indexOfObject:@"你"];
+            require(prefix != NSNotFound && [typing select:prefix revision:typing.revision] && typing.composing,
+                    @"partial Chinese selection retains the suffix");
+            modifier(typing, 60, NSEventModifierFlagShift, 2);
+            modifier(typing, 60, 0, 2.1);
+            require([editor.view.string isEqual:@"arion你hao"] && editor.insertions == 2,
+                    @"confirmed Chinese survives while the pending suffix commits literally");
+            [typing toggleASCII];
+            type(typing, @"ni'hao");
+            modifier(typing, 56, NSEventModifierFlagShift, 3);
+            modifier(typing, 56, 0, 3.1);
+            require([editor.view.string isEqual:@"arion你haoni'hao"] && editor.insertions == 3,
+                    @"explicit apostrophes survive without adding preedit spaces");
+        });
+        run(@"Shift raw commit ignores Chinese full width", @"KBD-A05 KBD-A09", ^{
+            @try {
+                require([typing toggleFullWidth], @"enable Chinese full width");
+                type(typing, @"arion");
+                modifier(typing, 56, NSEventModifierFlagShift, 1);
+                modifier(typing, 56, 0, 1.1);
+                require([editor.view.string isEqual:@"arion"] && typing.ascii && typing.fullWidth,
+                        @"raw letters stay half width without changing the saved Chinese preference");
+                require(!press(typing, @"a", 0), @"English mode still passes keys through");
+            } @finally {
+                if (typing.ascii) [typing toggleASCII];
+                if (typing.fullWidth) [typing toggleFullWidth];
+            }
         });
         run(@"duplicated host modifier notifications preserve one Shift tap", @"KBD-A05", ^{
             __block NSUInteger switches = 0;

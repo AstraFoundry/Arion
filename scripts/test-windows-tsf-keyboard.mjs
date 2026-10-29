@@ -90,7 +90,14 @@ try{
   assert.equal((await receive()).ready,true);
   const command=async text=>{fixture.stdin.write(text+'\n');return receive();};
   const key=async(code,modifiers=0,up=false)=>{const result=await command(`key:${code}:${modifiers}${up?':up':''}`);report.lastKey={code,result,stderr};save();return result;};
-  const type=async value=>{for(const letter of value)assert.equal((await key(letter.toUpperCase().charCodeAt(0))).eaten,true,`key ${letter}`);};
+  const type=async value=>{
+    assert.match(value,/^[a-z']+$/,'Fixture typing supports lowercase letters and apostrophes.');
+    for(const letter of value){
+      // The fixture takes virtual-key codes: ASCII 0x27 is VK_RIGHT, not a quote.
+      const code=letter==="'"?0xde:letter.toUpperCase().charCodeAt(0);
+      assert.equal((await key(code)).eaten,true,`key ${letter}`);
+    }
+  };
   const choose=async text=>{
     for(let attempt=0;attempt<20;attempt++){
       let menu=await command('menu');const index=menu.strings.indexOf(text);
@@ -187,11 +194,34 @@ try{
   await test('Expanded six-row native menu selects another row by mouse',async()=>{await command('reset');await type('ni');await key(34);const menu=await command('menu');assert.equal(menu.page,1);assert.ok(menu.height>32*2);await command('click:1');assert.equal(await document(),`A🙂${menu.strings[9]}Z`);});
   await test('Hidden stale native candidate click cannot insert',async()=>{await command('reset');await type('ni');await command('cacheclick');await key(27);await command('staleclick');assert.equal(await document(),'A🙂中Z');});
   await test('Return commits raw Pinyin rather than a candidate display string',async()=>{await command('reset');await type('nihao');await key(13);assert.equal(await document(),'A🙂nihaoZ');});
+  await test('Apostrophe typing reaches the raw engine input before Shift switching',async()=>{await command('reset');await type("ni'hao");await key(13);assert.equal(await document(),"A🙂ni'haoZ");});
   await test('Partial prefix remains provisional until suffix confirmation',async()=>{await command('reset');await type('nihao');await choose('你');assert.match(await document(),/^A🙂你.*haoZ$/u);await key(32);assert.equal(await document(),'A🙂你好Z');});
   await test('Backspace rolls a selected prefix back into raw composition',async()=>{await command('reset');await type('nihao');await choose('你');const selected=await document();await key(8);assert.notEqual(await document(),selected);await choose('你好');assert.equal(await document(),'A🙂你好Z');});
   await test('Home End and middle edits preserve the original suffix',async()=>{await command('reset');await type('nihao');await key(36);assert.equal((await command('state')).start,3);await key(35);assert.equal((await command('state')).start,(await document()).length-1);await key(37);await key(8);await type('i');assert.equal((await document()).replaceAll(' ',''),'A🙂nihaoZ');await key(35);await key(32);assert.equal(await document(),'A🙂你好Z');});
   await test('Forward Delete at Home removes only the engine caret character',async()=>{await command('reset');await type('nihao');await key(36);await key(46);assert.equal((await document()).replaceAll(' ',''),'A🙂ihaoZ');await type('n');await key(35);await key(32);assert.equal(await document(),'A🙂你好Z');});
   await test('Short Shift switches ASCII and another tap restores Chinese',async()=>{await command('reset');await key(160,1);assert.equal((await key(160,0,true)).eaten,true);assert.equal((await command('mode')).mode,'En');assert.equal((await key(78)).eaten,false);await key(160,1);await key(160,0,true);assert.equal((await command('mode')).mode,'中');await type('ni');await key(27);});
+  await test('Shift commits raw letters once before English pass-through',async()=>{
+    for(const word of ['arion','hel','nihao',"ni'hao"]){
+      await command('reset');await type(word);await command('cacheclick');
+      await key(160,1);assert.equal((await key(160,0,true)).eaten,true);
+      assert.equal(await document(),`A🙂${word}Z`);assert.equal((await command('mode')).mode,'En');
+      assert.equal((await command('menu')).visible,false);
+      await key(160,0,true);assert.equal(await document(),`A🙂${word}Z`);
+      await command('staleclick');assert.equal(await document(),`A🙂${word}Z`);
+      assert.equal((await key(88)).eaten,false);
+      await key(161,1);await key(161,0,true);assert.equal((await command('mode')).mode,'中');
+    }
+  });
+  await test('Shift preserves edits, confirmed prefix and half-width raw letters',async()=>{
+    await command('reset');await type('arionx');await key(8);await key(36);
+    await key(160,1);await key(160,0,true);assert.equal(await document(),'A🙂arionZ');
+    await key(160,1);await key(160,0,true);
+    await command('reset');await type('nihao');await choose('你');await key(160,1);await key(160,0,true);
+    assert.equal(await document(),'A🙂你haoZ');await key(160,1);await key(160,0,true);
+    await command('reset');await command('action:3');
+    try{await type('arion');await key(160,1);await key(160,0,true);assert.equal(await document(),'A🙂arionZ');}
+    finally{if((await command('mode')).mode==='En'){await key(160,1);await key(160,0,true);}await command('action:3');}
+  });
   await test('Control and Super shortcuts cancel ownership and pass through',async()=>{for(const modifiers of [4,1<<26]){await command('reset');await type('ni');assert.equal((await key(65,modifiers)).eaten,false);assert.equal(await document(),'A🙂中Z');}});
   await test('Interrupted Shift tap does not toggle Chinese mode',async()=>{await command('reset');await key(160,1);await key(17,5);await key(160,0,true);assert.equal((await command('mode')).mode,'中');});
   await test('Duplicate Shift notifications retain one original tap deadline',async()=>{await command('reset');await key(160,1);await pause(40);await key(160,1);await key(160,0,true);assert.equal((await command('mode')).mode,'En');await key(160,0,true);assert.equal((await command('mode')).mode,'En');await key(160,1);await pause(320);await key(160,1);await key(160,0,true);assert.equal((await command('mode')).mode,'En');await key(160,1);await key(160,0,true);assert.equal((await command('mode')).mode,'中');});

@@ -64,6 +64,14 @@ void arion_pinyin_set_options(RimeApi *api, uintptr_t session, int ascii, int fu
 int arion_pinyin_process_key(RimeApi *api, uintptr_t session, int key, int modifiers) {
     return session && key >= 0 && api->process_key(session, key, modifiers);
 }
+int arion_pinyin_commit_raw(RimeApi *api, uintptr_t session) {
+    if (!session) return 0;
+    int full_width = api->get_option(session, "full_shape");
+    if (full_width) api->set_option(session, "full_shape", 0);
+    int handled = arion_pinyin_process_key(api, session, 0xff0d, 0); /* Return */
+    if (full_width) api->set_option(session, "full_shape", 1);
+    return handled;
+}
 int arion_pinyin_select(RimeApi *api, uintptr_t session, size_t index, int current_page) {
     return session && (current_page ? api->select_candidate_on_current_page(session, index) : api->select_candidate(session, index));
 }

@@ -587,7 +587,7 @@ public:
         if (!eaten) return E_POINTER;
         *eaten=FALSE; if (target!=context || !focused) return S_OK;
         auto native=nativeKey(key,details);
-        if (native.shift && arion_shift_transition(&shiftTap,1,0,native.shiftSide,native.modifiers&~1,0,GetTickCount64()/1000.0)) { TypingCommand command; command.kind=TypingCommand::ToggleASCII; *eaten=keyRequest(command); }
+        if (native.shift && arion_shift_transition(&shiftTap,1,0,native.shiftSide,native.modifiers&~1,0,GetTickCount64()/1000.0)) { TypingCommand command; command.kind=TypingCommand::ShiftASCII; *eaten=keyRequest(command); }
         return S_OK;
     }
     HRESULT STDMETHODCALLTYPE OnPreservedKey(ITfContext*,REFGUID,BOOL *eaten) override { if (!eaten) return E_POINTER; *eaten=FALSE; return S_OK; }
