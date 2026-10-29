@@ -18,8 +18,8 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Width and Height size the panel: Height holds the scene card and four
-// lines of the last dictation with a model download or failure under them.
+// Width and Height size the panel: Height holds the scene card and a scrolling
+// last dictation with a model download or failure under it.
 // The card's target is read after the panel opens, so its room is fixed.
 const (
 	Width  = 330
@@ -28,7 +28,7 @@ const (
 
 // Panel keeps the panel's own view state.
 type Panel struct {
-	copied transcript.Copied
+	transcript transcript.View
 }
 
 // Render draws the panel over the popover material on macOS.
@@ -48,8 +48,9 @@ func (p *Panel) Render(c *ui.Context, store arion.Store) {
 		statusheader.Render(c, store, tokens)
 		dictate.Toggle(c, store, tokens)
 		scene.Card(c, store, tokens)
-		transcript.Last(c, store, tokens, &p.copied)
-		ui.Spacer(c)
+		ui.Scroll(c.Key(struct{ Text, Original string }{store.State.LastText, store.State.LastOriginal})).Grow(1).Children(func() {
+			transcript.Last(c, store, tokens, &p.transcript)
+		})
 		// The bundle itself is chosen in settings; the panel only shows the
 		// download or failure that keeps dictation from starting.
 		if store.State.Model.State != arion.ModelReady {

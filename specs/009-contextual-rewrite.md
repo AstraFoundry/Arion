@@ -16,6 +16,10 @@ Rewriting is separate from acoustic recognition, conservative correction and Lay
 6. Deliver the validated proposal automatically ([ADR 011](../docs/decisions/011-live-local-rewriting.md)) and keep the recognized original available to copy. A generated instruction, reasoning block, skill invocation or model refusal is never inserted as ordinary dictated text. Rejection, timeout, missing model and unsupported runtime are explicit organization outcomes recorded with the result. They retain the completed local speech-cleanup result; raw recognition and rule-corrected source remain separate.
 7. Commit only through the existing once-only target capability after source identity and mode checks. Source revision, cancellation or mode switch invalidates the proposal and owned composition. External-editor commit inserts at the caret focused at commit time, or copies to the clipboard when nothing editable is focused (DSK-06). Owned IME composition still drops on focus change. A late token, preview or callback cannot write to a target.
 
+### Last dictation recovery
+
+The menu bar panel initially shows the delivered text and its Copy action. When a nonempty original differs from that text, View original transcript reveals the source with its own Copy original action; identical or absent originals have no disclosure. A changed result or source collapses the preview, resets copy confirmation and scrolls to the top. Both versions remain selectable in a scrolling transcript region so long text does not displace the panel footer. The disclosure reports its expanded state to assistive technology.
+
 ## Live rewriting pipeline
 
 - LRW-01: While the user is speaking, closed recognizer segments stay recognized text. The open segment is displayed after them. No closed segment is sent to the rewrite model during speech, and no polished preview is shown. Recognition may still close a segment after quiet or the segment limit ([ADR 023](../docs/decisions/023-final-only-polishing.md)).

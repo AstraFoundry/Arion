@@ -325,6 +325,8 @@ const (
 	SceneChosen               Key = "SceneChosen"
 	SceneCardLabel            Key = "SceneCardLabel"
 	CopyOriginal              Key = "CopyOriginal"
+	ViewOriginalTranscript    Key = "ViewOriginalTranscript"
+	HideOriginalTranscript    Key = "HideOriginalTranscript"
 	MicDevice                 Key = "MicDevice"
 	MicSystem                 Key = "MicSystem"
 	MicTest                   Key = "MicTest"
