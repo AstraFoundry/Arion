@@ -152,6 +152,20 @@ func (r *recorder) AddHotword(text string) error {
 	return nil
 }
 
+func (r *recorder) SetKeyboardPinyin(id, spelling, reading string) error {
+	if r.vocabError != nil {
+		return r.vocabError
+	}
+	for i, entry := range r.state.Vocabulary {
+		if entry.ID == id && entry.To == spelling {
+			r.state.Vocabulary[i].KeyboardPinyin = reading
+			r.call("keyboard-reading")
+			return nil
+		}
+	}
+	return runtime.ErrVocabularyConflict
+}
+
 func (r *recorder) called(name string) bool {
 	for _, call := range r.calls {
 		if call == name {
@@ -1288,6 +1302,56 @@ func TestSwitchPermissionGuides(t *testing.T) {
 		if err := tt.Click(store.Copy().Text(copy.GuideClose)); err != nil || !actions.called("close-guide") {
 			t.Fatalf("switch guide could not close: %v", err)
 		}
+	}
+}
+
+func TestKeyboardSpellingSettings(t *testing.T) {
+	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		t.Run(string(language), func(t *testing.T) {
+			state, _, store := fixture()
+			state.Preferences.UILanguage = language
+			tt := ui.NewTester(func(c *ui.Context) {
+				tokens := theme.Apply(c)
+				ui.Column(c).Padding(16).Gap(12).Children(func() { keyboardui.Phonetics(c, store, tokens) })
+			}, 600, 600)
+			settle(tt)
+			for _, key := range []copy.Key{copy.KbdTypoCorrection, copy.KbdFuzzyPinyin, copy.KbdFuzzyZZH, copy.KbdFuzzyIANIANG, copy.KbdFuzzyUANUANG} {
+				if !hasText(tt, store.Copy().Text(key)) {
+					t.Fatalf("missing spelling setting %s", key)
+				}
+			}
+			snapshot(t, tt, "keyboard-spelling-"+string(language))
+			row, ok := tt.Find(store.Copy().Text(copy.KbdTypoCorrection))
+			if !ok {
+				t.Fatal("typing correction row missing")
+			}
+			tt.ClickAt(560, row.Y+row.H)
+			settle(tt)
+			if !state.Preferences.Keyboard.TypoCorrection {
+				t.Fatal("typing correction did not persist through preference action")
+			}
+			for _, pair := range []struct {
+				key copy.Key
+				x   float32
+			}{{copy.KbdFuzzyZZH, 260}, {copy.KbdFuzzyIANIANG, 550}} {
+				row, ok := tt.Find(store.Copy().Text(pair.key))
+				if !ok {
+					t.Fatalf("missing pair %s", pair.key)
+				}
+				tt.ClickAt(pair.x, row.Y+row.H/2)
+				settle(tt)
+			}
+			if state.Preferences.Keyboard.FuzzyPinyin != runtime.FuzzyZZH|runtime.FuzzyIANIANG {
+				t.Fatalf("pair toggles were not independent: %d", state.Preferences.Keyboard.FuzzyPinyin)
+			}
+			snapshot(t, tt, "keyboard-spelling-selected-"+string(language))
+			row, _ = tt.Find(store.Copy().Text(copy.KbdFuzzyZZH))
+			tt.ClickAt(260, row.Y+row.H/2)
+			settle(tt)
+			if state.Preferences.Keyboard.FuzzyPinyin != runtime.FuzzyIANIANG {
+				t.Fatal("disabling one fuzzy pair changed another")
+			}
+		})
 	}
 }
 

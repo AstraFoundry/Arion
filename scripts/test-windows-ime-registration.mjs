@@ -19,7 +19,7 @@ const compiler = process.env.CXX ?? 'g++';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const digest = file => sha(readFileSync(file));
 const tests = ['registration', 'selection', 'user_install', 'category', 'migration', 'upgrade', 'control'];
-const files = ['control.cpp', 'loader.h', 'identity.h', 'wire.h', 'payload.h', 'keyboard_payload.h', 'json.h', ...tests.map(name => `${name}_test.cpp`)];
+const files = ['control.cpp', 'loader.h', 'identity.h', 'wire.h','wire_text.h', 'payload.h', 'keyboard_payload.h', 'json.h', ...tests.map(name => `${name}_test.cpp`)];
 const report = { schema: 1, boundary: 'Callback-only profile migration contracts, read-only existing-state query, synthetic file-byte verifier fixtures; no installation, UAC, TSF activation or payload execution', directory, sources: {}, commands: [], status: 'running' };
 const save = () => writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`);
 function run(phase, command, argv, allowed = [0]) {

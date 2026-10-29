@@ -1,0 +1,22 @@
+{
+  "author": "Codex, requested by repository user",
+  "sources": [
+    {
+      "ref": "d1aaffdd43db876da9f8584ed4074830a293d9cb",
+      "path": "benchmarks/corpora/ime-english-admission-v1/development.tsv",
+      "sha256": "e213f6b55ee713d764d42a5754685bd6a7bb71c8bf382ec690968f3518771509"
+    },
+    {
+      "ref": "d1aaffdd43db876da9f8584ed4074830a293d9cb",
+      "path": "benchmarks/corpora/ime-english-admission-v1/validation.tsv",
+      "sha256": "aa9b77dbe9687c31262b1ad7a9dd9878464ff224a0e3415fc9afd0aaebd639f7"
+    },
+    {
+      "ref": "d1aaffdd43db876da9f8584ed4074830a293d9cb",
+      "path": "benchmarks/corpora/ime-english-admission-v1/holdout.tsv",
+      "sha256": "10f75ca72d41a02fd21182564dde3b28815a57fc1bea8305be61730f9633d900"
+    }
+  ],
+  "newInputs": "Authored before comparative execution; targets frozen as explicit output expectations, no corpus-based tuning.",
+  "limitations": "Not population accuracy or unseen holdout; technical canonical-case and explicit user-case are separate groups."
+}

@@ -38,8 +38,9 @@ class Typing {
     size_t pageSize=9;
     int textSize=16;
     CandidatePalette palette;
-    bool settingsChanged=false;
-    bool emojiSuggestions=true,emojiInComposition=false;
+    bool settingsChanged=false,spellingChanged=false;
+    bool emojiSuggestions=true,emojiInComposition=false,typoCorrection=false;
+    uint32_t fuzzyPinyin=0;
     std::wstring optionsPath;
     std::function<bool(TfEditCookie,ITfRange*)> safe;
     std::function<bool(TfEditCookie,ITfRange*,std::wstring&)> read;
@@ -49,27 +50,26 @@ class Typing {
     std::string previousCommit;
     ULONGLONG previousTime=0;
     std::string previousContext() { return GetTickCount64()-previousTime<120000?runtime.contextOf(previousCommit):std::string{}; }
-    static int rank(void *target,const char *const *texts,size_t count,size_t *indices) {
+    static int rank(void *target,const char *const *texts,size_t count,const unsigned char *eligible,size_t *indices) {
         auto self=static_cast<Typing*>(target);
-        if (self->runtime.order(texts,count,self->previousContext(),indices,self->rankingFailure)) return 1;
+        if (self->runtime.order(texts,count,eligible,self->previousContext(),indices,self->rankingFailure)) return 1;
         // Context learning is optional. Keep the real engine order and surface
         // its separate error; a ranking failure cannot disable normal Pinyin.
         for (size_t i=0;i<count;++i) indices[i]=i;
         return 1;
     }
-    static int candidateKind(void *target,uintptr_t current,size_t index,unsigned char *emoji) {
-        ArionEmojiCandidateMetadata metadata{};
-        if (!static_cast<Typing*>(target)->runtime.candidate(current,index,metadata)) return 0;
-        *emoji=metadata.emoji!=0; return 1;
+    static int candidateKind(void *target,uintptr_t current,size_t index,ArionCandidateMetadata *metadata) {
+        return static_cast<Typing*>(target)->runtime.candidate(current,index,*metadata);
     }
     bool buildMenu() {
         return arion_menu_build_typed(&menu,runtime.api(),session,pageSize,rank,this,candidateKind,this)!=0 && runtime.ready();
     }
     bool select(size_t index) {
         if (index>=menu.count || !arion_pinyin_select(runtime.api(),session,menu.indices[index],0)) return false;
-        emojiInComposition=emojiInComposition || menu.emoji[index]; return true;
+        emojiInComposition=emojiInComposition || menu.metadata[index].emoji; return true;
     }
-    void applyEmojiPreference() {
+    void applyCandidatePreferences() {
+        arion_spelling_apply(runtime.api(),session,typoCorrection,fuzzyPinyin);
         if (session && (runtime.api()->get_option(session,"arion_emoji")!=0)!=emojiSuggestions)
             runtime.api()->set_option(session,"arion_emoji",emojiSuggestions);
     }
@@ -87,8 +87,12 @@ class Typing {
         if (!healthy || FAILED(panel.error()) || !runtime.ready()) return false;
         if (!session) {
             session=arion_pinyin_create_session(runtime.api());
+            uint64_t restoredRevision=0;
+            if (session && !runtime.restorePersonalVocabulary(session,restoredRevision)) {
+                runtime.api()->destroy_session(session);session=0;
+            }
             generation=runtime.generation();
-            if (session) { arion_pinyin_set_options(runtime.api(),session,ascii,fullWidth,englishPunctuation); applyEmojiPreference(); }
+            if (session) { arion_pinyin_set_options(runtime.api(),session,ascii,fullWidth,englishPunctuation); applyCandidatePreferences(); }
         }
         return session!=0;
     }
@@ -197,7 +201,7 @@ public:
         bool native=accessible->nativeAllowed();
         size_t first=(menu.expanded?menu.top_row:menu.page)*menu.page_size;
         size_t count=menu.expanded?std::min(menu.count-first,arion_menu_row_count(&menu)*menu.page_size):arion_menu_visible_count(&menu);
-        for (size_t i=0;i<count;++i) candidates.push_back({wide(menu.texts[first+i]),L"",menu.indices[first+i],menu.emoji[first+i]!=0});
+        for (size_t i=0;i<count;++i) candidates.push_back({wide(menu.texts[first+i]),L"",menu.indices[first+i],menu.metadata[first+i].emoji!=0});
         if (native) {
             if (!panel.show(owner,area,candidates,menu.highlight-first,menu.page>0,!menu.exhausted || first+count<menu.count,revision,palette,menu.page_size,menu.expanded!=0,textSize)) {
                 accessible->bind(nullptr); runtime.failure="keyboard candidate rendering unavailable"; return E_FAIL;
@@ -258,14 +262,32 @@ public:
     void manager(ITfThreadMgr *value) { accessible->attach(value); }
     bool composing() const { return composition!=nullptr; }
     bool available() { if (FAILED(panel.error())) { runtime.failure="keyboard Emoji rendering unavailable"; return false; } return healthy && runtime.ready(); }
+    // Idle vocabulary updates do not read or mutate target text and therefore
+    // need no TSF edit cookie; the caller remains on the owning COM apartment.
+    const char *vocabulary(const WireMessage &message,uint64_t &version) {
+        if (composing()) return "busy";
+        KeyboardLease lease(runtime);
+        if (session && generation!=runtime.generation()) session=0;
+        if (!sessionReady()) return "rejected";
+        if (message.op==L"vocabulary_query")
+            return runtime.restorePersonalVocabulary(session,version)?"ok":"rejected";
+        if (message.op!=L"vocabulary_publish") return "rejected";
+        std::vector<ArionPersonalTerm> terms;
+        terms.reserve(message.terms.size());
+        for (const auto &term:message.terms) terms.push_back({term.id.c_str(),term.text.c_str(),term.reading.c_str()});
+        if (!runtime.publishPersonalVocabulary(session,message.vocabularyRevision,terms.data(),terms.size())) return "rejected";
+        version=message.vocabularyRevision; return "ok";
+    }
     bool isASCII() const { return ascii; }
     bool isFullWidth() const { return fullWidth; }
     bool isEnglishPunctuation() const { return englishPunctuation; }
     void options(const std::wstring &path) { optionsPath=path; KeyboardOptions value; if (readKeyboardOptions(path,value)) { fullWidth=value.fullWidth; englishPunctuation=value.englishPunctuation; } else modeFailure=nativeCopy(NativeCopy::OptionsFailed); }
     void configure(const KeyboardSettings &settings) {
-        settingsChanged=settingsChanged || pageSize!=settings.pageSize || textSize!=settings.textSize || emojiSuggestions!=settings.emojiSuggestions || memcmp(&palette,&settings.palette,sizeof(palette))!=0;
+        spellingChanged=spellingChanged || typoCorrection!=settings.typoCorrection || fuzzyPinyin!=settings.fuzzyPinyin;
+        settingsChanged=settingsChanged || pageSize!=settings.pageSize || textSize!=settings.textSize || emojiSuggestions!=settings.emojiSuggestions || typoCorrection!=settings.typoCorrection || fuzzyPinyin!=settings.fuzzyPinyin || memcmp(&palette,&settings.palette,sizeof(palette))!=0;
         pageSize=settings.pageSize; textSize=settings.textSize; palette=settings.palette;
         emojiSuggestions=settings.emojiSuggestions;
+        typoCorrection=settings.typoCorrection; fuzzyPinyin=settings.fuzzyPinyin;
     }
     void attach(ITfContext *value) { if (value==context) return; invalidate(); healthy=true; previousCommit.clear(); if (context) context->Release(); context=value; if (context) context->AddRef(); }
     bool same(TfEditCookie cookie) {
@@ -328,10 +350,15 @@ public:
         // only our unchanged marked bytes before discarding the expired handle.
         if (session && generation!=runtime.generation()) { cancel(cookie); session=0; }
         loadOptions();
+        if (spellingChanged) {
+            if (composition) cancel(cookie);
+            applyCandidatePreferences();
+            spellingChanged=false;
+        }
         if (command.kind==TypingCommand::Inspect) {
             if (composition && !same(cookie)) invalidate();
             else if (settingsChanged) {
-                applyEmojiPreference();
+                applyCandidatePreferences();
                 if (composition) { ++revision; if (buildMenu()) show(); else { healthy=false; cancel(cookie); return E_FAIL; } }
             }
             settingsChanged=false; return S_OK;
@@ -339,7 +366,7 @@ public:
         if (command.kind!=TypingCommand::Key && command.kind!=TypingCommand::ToggleASCII && command.kind!=TypingCommand::ShiftASCII && command.kind!=TypingCommand::TogglePunctuation && command.kind!=TypingCommand::ToggleWidth && command.revision!=revision) return S_FALSE;
         if (composition && !same(cookie)) { invalidate(); return S_FALSE; }
         if (settingsChanged) {
-            applyEmojiPreference(); settingsChanged=false;
+            applyCandidatePreferences(); settingsChanged=false;
             if (composition) {
                 ++revision;
                 if (!buildMenu()) { healthy=false; cancel(cookie); return E_FAIL; }
@@ -387,7 +414,7 @@ public:
                 if (menuAction==1) { ++revision; show(); return S_OK; }
             } else {
                 int key=arion_key_normalize(command.key.symbol,command.key.modifiers,ascii);
-                if (composition && menu.highlight<menu.count && menu.emoji[menu.highlight] && key>=0 && key<128 && std::ispunct(static_cast<unsigned char>(key))) emojiInComposition=true;
+                if (composition && menu.highlight<menu.count && menu.metadata[menu.highlight].emoji && key>=0 && key<128 && std::ispunct(static_cast<unsigned char>(key))) emojiInComposition=true;
                 handled=arion_pinyin_process_key(runtime.api(),session,key,command.key.modifiers)!=0;
                 if (emojiSuggestions && (key==0xff50 || key==0xff57 || key==0xff51 || key==0xff53) && !runtime.refreshEmojiCandidates(session)) {
                     recoveryText=lastText; healthy=false; cancel(cookie); runtime.failure="keyboard Emoji caret refresh failed"; return E_FAIL;

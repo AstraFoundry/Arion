@@ -147,13 +147,14 @@ type App struct {
 	replaces    []domain.Replacement
 	// vocabulary indexes replaces once per change; memory is vocab for
 	// worker goroutines (edit learning, recall counts).
-	asrHotwords []string
-	vocabulary  *domain.Vocabulary
-	memory      *vocabulary.Store
-	edits       *application.EditTracker
-	queueMu     sync.Mutex
-	queue       []func()
-	queueReady  chan struct{}
+	asrHotwords        []string
+	vocabulary         *domain.Vocabulary
+	memory             *vocabulary.Store
+	keyboardVocabulary *keyboardVocabularyProjection
+	edits              *application.EditTracker
+	queueMu            sync.Mutex
+	queue              []func()
+	queueReady         chan struct{}
 
 	accounts           *account.Service
 	accountMaintenance accountMaintenance
@@ -465,10 +466,9 @@ func (a *App) ready() {
 	a.refreshPermissions()
 	a.state.InputMethod = arion.InputMethodUnsupported
 	if a.ime != nil {
+		mygo.App.OnQuit(a.ime.Close)
 		if err := a.ime.Listen(); err != nil {
 			a.record("ime_listen", err)
-		} else {
-			mygo.App.OnQuit(a.ime.Close)
 		}
 		a.state.InputMethod = a.ime.State()
 		if err := a.ime.ApplyKeyboard(a.state.Preferences.Keyboard, a.state.Preferences.HoldKey); err != nil {
@@ -910,7 +910,7 @@ func (a *App) loadVocabulary(create bool) {
 		if !entry.Approved {
 			continue
 		}
-		a.state.Vocabulary = append(a.state.Vocabulary, arion.Replacement{ID: entry.ID, From: entry.From, To: entry.To, Hotword: domain.ASRHotwordEligible(domain.MemoryEntry{To: entry.To, Hotword: entry.Hotword, Origin: domain.MemoryOrigin(entry.Origin)})})
+		a.state.Vocabulary = append(a.state.Vocabulary, arion.Replacement{ID: entry.ID, From: entry.From, To: entry.To, KeyboardPinyin: entry.KeyboardPinyin, Hotword: domain.ASRHotwordEligible(domain.MemoryEntry{To: entry.To, Hotword: entry.Hotword, Origin: domain.MemoryOrigin(entry.Origin)})})
 		if entry.From != "" {
 			replaces = append(replaces, domain.Replacement{From: entry.From, To: entry.To})
 		}
@@ -920,6 +920,7 @@ func (a *App) loadVocabulary(create bool) {
 	a.replaces, a.vocabulary, a.memory = replaces, index, a.vocab
 	a.asrHotwords = domain.ASRHotwords(vocabulary.Memory(entries))
 	a.snapshot.Unlock()
+	a.queueKeyboardVocabulary(entries)
 }
 
 func (a *App) savePreferences(prefs application.Preferences) bool {

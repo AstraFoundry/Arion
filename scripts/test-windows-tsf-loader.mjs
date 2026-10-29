@@ -22,7 +22,7 @@ function run(phase,command,args) {
   return result;
 }
 try {
-  const files=['loader.cpp','loader.h','loader_fixture.cpp','loader_test.cpp','control.cpp','upgrade_test.cpp','payload_install_test.cpp','identity.h','payload.h','keyboard_payload.h','wire.h','json.h'];
+  const files=['loader.cpp','loader.h','loader_fixture.cpp','loader_test.cpp','control.cpp','upgrade_test.cpp','payload_install_test.cpp','identity.h','payload.h','keyboard_payload.h','wire.h','wire_text.h','json.h'];
   for(const file of files) report.sources[path.relative(root,path.join(source,file))]=sha(path.join(source,file));
   report.sources[path.relative(root,fileURLToPath(import.meta.url))]=sha(fileURLToPath(import.meta.url));
   const compiler=process.env.CXX??'g++';

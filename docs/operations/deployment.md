@@ -138,3 +138,9 @@ Packages with ASR hotword support must include the rebuilt `arion-mlx-2` worker,
 ### Windows speech typography
 
 Source Han Sans SC 2.005R is bundled unchanged under SIL OFL 1.1. The original regular and medium OTF files, copyright/license and hash manifest are in apps/desktop/ui/shared/typography/fonts. Windows speech views embed both weights in Arion.exe; candidate_fonts.rc embeds the regular font in ArionTSF.dll. Production and native fixtures share scripts/lib/windows-candidate-fonts.mjs for resource compilation. The package verifier checks font bytes in both binaries and exact license/provenance copies under licenses. Font changes therefore update the normal protected TSF core payload and never register a system font. macOS retains its existing typography.
+
+### Keyboard runtime source build
+
+`stage-keyboard-runtime.mjs` builds the reviewed Rime runtime and deployer from pinned archives; it requires CMake and the selected Xcode command-line toolchain. Both macOS and Windows staging apply the digest-verified correction-identity patch before compilation. macOS build caches live under `.workspace/keyboard-runtime/source-build/<fingerprint>` and retain command output in `evidence/`. Source, patch, recipe, architecture, minimum OS or toolchain changes select a new cache. A completed cache must retain both exact artifact hashes; an interrupted or corrupt cache fails explicitly. Preserve its evidence and move that cache directory before retrying.
+
+`node scripts/build-input-method.mjs` stages the runtime before building the nested bundle. `node --test scripts/lib/keyboard-correction-patch.test.mjs scripts/lib/keyboard-macos-runtime.test.mjs scripts/lib/keyboard-bundle.test.mjs` checks source drift, cache corruption and packaged provenance/signature/dictionary rejection. Bundle tests require an already built macOS bundle. These checks do not register or launch the installed input source.

@@ -167,3 +167,7 @@ The actual production-cleanup source replay changes one36-case input; prior raw-
 - [Vocabulary grouping and canonical recall](../results/vocabulary-alignment-v1/README.md): production correction/recall comparison, actual local GGUF stage acceptance, immutable failed attempts and report replay.
 
 - [ASR hotword observations](asr-hotwords-v1/paired-production/run.json) — 32 paired calls plus warmups, initial and sensitive reset probes, native smoke, and retained failed sandbox/build attempts; see [results](../results/asr-hotwords-v1/README.md).
+
+- [PR 40 / PR 45 native comparison](ime-pr-comparison-v1/README.md) — 113 shared inputs, 1,476 alternating native observations, exact/folded candidate ranks, mixed commits, paced timing, profiler and model-free archive replay.
+
+- [PR 40 English integration](ime-english-integration-v1/README.md) — unchanged 113 inputs, preserved English/Chinese pages, case and mixed gains, correction/personal validation, retained failures and exact replay.

@@ -145,7 +145,7 @@ class Service final : public ITfTextInputProcessorEx, public ITfThreadMgrEventSi
     }
     void send(const wchar_t *op) {
         std::string text = "{\"op\":" + ::quoted(op) + ",\"activation\":" + ::quoted(activation) + ",\"session\":" + ::quoted(session) + ",\"build\":" + ::quoted(build) + ",\"client\":\"Windows editor\",\"text\":\"\"}\n";
-        if (std::wcscmp(op,L"hello")==0) text.insert(1,"\"protocol\":"+std::to_string(WireProtocol)+",");
+        if (std::wcscmp(op,L"hello")==0) text.insert(1,"\"protocol\":"+std::to_string(WireProtocol)+","+(keyboard.api()?"\"capabilities\":[\"keyboard-vocabulary-v1\"],":""));
         transport.send(std::move(text));
     }
     void disconnect() {
@@ -305,6 +305,15 @@ class Service final : public ITfTextInputProcessorEx, public ITfThreadMgrEventSi
     }
     void receive(const WireMessage &message) {
         if (!focused || !context || message.activation != activation || activation.empty()) return;
+        if (message.op==L"vocabulary_query" || message.op==L"vocabulary_publish") {
+            uint64_t version=0;
+            const char *status=session.empty()?typing->vocabulary(message,version):"busy";
+            const wchar_t *op=message.op==L"vocabulary_query"?L"vocabulary_state":L"vocabulary_published";
+            transport.send("{\"op\":"+::quoted(op)+",\"activation\":"+::quoted(activation)+
+                ",\"request\":"+std::to_string(message.request)+",\"vocabularyRevision\":"+std::to_string(version)+
+                ",\"status\":\""+status+"\"}\n");
+            return;
+        }
         if (message.op == L"begin") {
             if (!session.empty() || message.session.empty()) return;
             session = message.session; revision = 0; request(message);

@@ -206,6 +206,61 @@ func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
+// Phonetics configures spelling expansion without changing the base dictionary.
+func Phonetics(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
+	prefs := store.State.Preferences.Keyboard
+	kit.Card(c, tokens).Children(func() {
+		kit.Row(c, tokens, messages.Text(copy.KbdTypoCorrection), messages.Text(copy.KbdTypoCorrectionDetail), func() {
+			enabled := prefs.TypoCorrection
+			if ui.Switch(c.Key("typo-correction"), &enabled).Label(messages.Text(copy.KbdTypoCorrection)).Changed() {
+				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Keyboard.TypoCorrection = enabled })
+			}
+		})
+	})
+	kit.Group(c, tokens, messages.Text(copy.KbdFuzzyPinyin), func() {
+		kit.Card(c, tokens).Children(func() {
+			ui.Row(c).Gap(12).AlignItems(ui.Start).Children(func() {
+				for _, group := range [][]fuzzyOption{fuzzyOptions[:6], fuzzyOptions[6:]} {
+					ui.Column(c).Grow(1).Shrink(1).Children(func() {
+						for i, pair := range group {
+							if i > 0 {
+								kit.Divider(c, tokens)
+							}
+							kit.Row(c, tokens, messages.Text(pair.label), "", func() {
+								enabled := prefs.FuzzyPinyin&pair.bit != 0
+								if ui.Switch(c.Key(string(pair.label)), &enabled).Label(messages.Text(pair.label)).Changed() {
+									store.Actions.UpdatePreferences(func(p *runtime.Preferences) {
+										if enabled {
+											p.Keyboard.FuzzyPinyin |= pair.bit
+										} else {
+											p.Keyboard.FuzzyPinyin &^= pair.bit
+										}
+									})
+								}
+							})
+						}
+					})
+				}
+			})
+		})
+	})
+}
+
+type fuzzyOption struct {
+	bit   uint32
+	label copy.Key
+}
+
+var fuzzyOptions = []fuzzyOption{
+	{runtime.FuzzyZZH, copy.KbdFuzzyZZH}, {runtime.FuzzyCCH, copy.KbdFuzzyCCH},
+	{runtime.FuzzySSH, copy.KbdFuzzySSH}, {runtime.FuzzyNL, copy.KbdFuzzyNL},
+	{runtime.FuzzyFH, copy.KbdFuzzyFH}, {runtime.FuzzyRL, copy.KbdFuzzyRL},
+	{runtime.FuzzyANANG, copy.KbdFuzzyANANG}, {runtime.FuzzyENENG, copy.KbdFuzzyENENG},
+	{runtime.FuzzyINING, copy.KbdFuzzyINING}, {runtime.FuzzyIANIANG, copy.KbdFuzzyIANIANG},
+	{runtime.FuzzyUANUANG, copy.KbdFuzzyUANUANG},
+}
+
 // Keys lists the input method's fixed keys.
 func Keys(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()

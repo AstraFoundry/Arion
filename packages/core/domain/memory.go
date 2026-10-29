@@ -34,6 +34,9 @@ type MemoryEntry struct {
 	Origin MemoryOrigin
 	// Hotword preserves canonical ASR eligibility when a learned pair is approved.
 	Hotword bool
+	// KeyboardPinyin is an explicitly confirmed, space-delimited reading.
+	// Empty means no keyboard pronunciation has been approved.
+	KeyboardPinyin string
 	// Uses counts the edits that taught this entry; Recalls counts the
 	// dictations it corrected.
 	Uses    int
@@ -83,6 +86,7 @@ func Learn(entries []MemoryEntry, pair Replacement, id string, now time.Time) ([
 				return out, LearnResult{Outcome: LearnKept, Entry: e}
 			}
 			out[i].To, out[i].Uses, out[i].Used = pair.To, 1, now
+			out[i].KeyboardPinyin = ""
 			return out, LearnResult{Outcome: LearnReplaced, Entry: out[i]}
 		}
 	}

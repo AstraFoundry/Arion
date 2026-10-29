@@ -10,7 +10,7 @@ The `arion_emoji` filter is implemented in the shared native host source, not su
 
 ## English words in Chinese mode
 
-The shared `arion_bilingual` translator wraps Rime's builtin Chinese script translator and a complete immutable English lexicon. It replaces the old English Rime schema/table and permanent prefix aliases. Both hosts use identical sources, candidate identities and data; no network, deployment or model inference runs while typing.
+The shared `arion_bilingual` translator wraps the shared Chinese spelling/personal translator and a complete immutable English lexicon. It replaces the old English Rime schema/table and permanent prefix aliases. Both hosts use identical sources, candidate identities and data; no network, deployment or model inference runs while typing.
 
 ESDB level 70, A/B/Z variant 1 supplies general membership. Original CSpell software/company files supply technical spellings. Standalone ASCII letters of length 2–128 retain native display case and lowercase lookup; compound syntax, punctuation, apostrophes and phrases are not silently flattened. There are 150,615 keys and 284,705 display forms including derived sentence case. Membership remains independent of frequency.
 
@@ -25,3 +25,9 @@ Without that strong Chinese evidence, exact English forms and admitted completio
 Original Chinese Phrase objects and English non-Phrase candidates retain real engine selection, revision ownership and Chinese-only encrypted learning. Neither this change nor source counts introduce English personal learning or editor-context collection. Missing Prism or malformed lexicon fails initialization explicitly before session creation. The industrial evidence and policy limits are in the repository's English candidate admission research document.
 
 The pinned source bytes and complete notices ship under `licenses/esdb`, `licenses/cspell` and `licenses/frequencywords`. FrequencyWords attribution/CC BY-SA 4.0 terms remain; the derived ranked data retains those terms and complete ESDB/CSpell notices. `node scripts/import-keyboard-english.mjs` reproduces the ESDB export; Python/SQLite are source-maintenance dependencies only. Normal generation uses portable Node. Pure index tests, native five/nine-slot authored cases, package verification and installed-editor acceptance are separate gates.
+
+## Spelling and mixed input
+
+The profile admits uppercase ASCII into owned composition and disables the inherited uppercase recognizer bypass. The bilingual translator folds English lookup, preserves source case for lowercase input and follows explicit typed case over each English span. Its original admission/ordering thresholds and generated lexicon bytes are unchanged. Exact-word prefix choices use the same lexicon only when the whole input has no English match and is not normal full Pinyin; shorter ranges let the existing engine convert the remaining suffix.
+
+Correction is enabled at the engine capability boundary, while the shared corrector checks per-session typo/fuzzy options that default off. Do not globally increase sentence or homophone counts: unchanged normal Chinese pages are a regression gate. Both packages require the reviewed correction-identity Rime source patch and exported native interfaces. Approved personal terms require explicit dictionary-resolvable readings and encrypted, revisioned projection delivery; they are independent of engine learning and the generated English data.

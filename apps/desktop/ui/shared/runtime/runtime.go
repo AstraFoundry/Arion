@@ -40,6 +40,17 @@ type (
 )
 
 const (
+	FuzzyZZH        = application.FuzzyZZH
+	FuzzyCCH        = application.FuzzyCCH
+	FuzzySSH        = application.FuzzySSH
+	FuzzyNL         = application.FuzzyNL
+	FuzzyFH         = application.FuzzyFH
+	FuzzyRL         = application.FuzzyRL
+	FuzzyANANG      = application.FuzzyANANG
+	FuzzyENENG      = application.FuzzyENENG
+	FuzzyINING      = application.FuzzyINING
+	FuzzyIANIANG    = application.FuzzyIANIANG
+	FuzzyUANUANG    = application.FuzzyUANUANG
 	StateIdle       = domain.Idle
 	StatePreparing  = domain.Preparing
 	StateCapturing  = domain.Capturing
@@ -337,10 +348,11 @@ type Device struct {
 
 // Replacement is an approved correction or a correct-only recognition hotword.
 type Replacement struct {
-	Hotword bool
-	ID      string
-	From    string
-	To      string
+	KeyboardPinyin string
+	Hotword        bool
+	ID             string
+	From           string
+	To             string
 }
 
 // Vocabulary errors distinguish actionable edits from storage failures.
@@ -520,6 +532,8 @@ type State struct {
 	Preferences Preferences
 	Devices     []Device
 	Vocabulary  []Replacement
+	// Empty only after acknowledgement or when no keyboard edit needs reporting.
+	VocabularyKeyboardNotice copy.Key
 	// Learned is the entry last learned from a correction, shown with an
 	// undo until it expires.
 	Learned Learned
@@ -604,6 +618,7 @@ type Actions interface {
 	AddReplacementVariants(froms []string, to string) error
 	// AddHotword saves a canonical ASR term independently of correction pairs.
 	AddHotword(text string) error
+	SetKeyboardPinyin(id, spelling, reading string) error
 	RemoveReplacement(id string)
 	// UndoLearned forgets the entry just learned and dismisses its notice.
 	UndoLearned(id string)

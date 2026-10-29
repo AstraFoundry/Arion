@@ -73,6 +73,14 @@ int main(int argc,char **argv) {
         auto variants=cases->Query("github").exact;
         require(variants.Peek()->display=="GitHub" && variants.Next() && variants.Peek()->display=="Github" && !variants.Next(),
                 "exact input did not expose its complete case family");
+        auto segments=cases->WordPrefixes("githubnihao");
+        require(segments.size()==2 && segments[0].bytes==6 && segments[0].forms[0].display=="GitHub" &&
+                segments[0].forms.size()==2 && segments[1].bytes==3,"exact word prefixes lost consumed range, order or source case");
+        require(cases->WordPrefixes("github").size()==1 && cases->WordPrefixes("git").empty(),
+                "word-prefix query included the whole input or invented a completion");
+        require(cases->WordPrefixes("github"+std::string(256,'n'))[0].bytes==6,
+                "long mixed input hid a valid bounded English prefix");
+        require(cases->WordPrefixes("GitHubnihao").empty(),"prefix lookup silently folded an unsupported key");
         require(cases->Query("git").familiar_exact && !cases->Query("github").familiar_exact,"native lowercase evidence was lost");
         write(file,"ARION_ENGLISH\t2\t5\nartifice\t2\t0\tartifice,Artifice\nartificial\t0\t4523\tartificial,Artificial\nartificially\t1\t2200\tartificially\nxing\t3\t697\tXING\nxinput\t4\t0\txinput\n");
         auto admission=arion::EnglishLexicon::Load(file);

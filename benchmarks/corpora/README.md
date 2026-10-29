@@ -53,3 +53,7 @@ it is independently verified and is not part of the historical migration manifes
 - [Selector-screen evaluator](rewrite-selector-screen-v1/README.md):101 preregistered source/reference-bound choice targets; same-letter canonicalization remains optional, evaluator never enters model data.
 
 - [asr-window-v1](asr-window-v1/README.md) — twelve authored Tingting utterances with original AIFF and hash-bound WAV for paired native ASR/window-context/final-rewrite integration.
+
+[ime-pr-comparison-v1](ime-pr-comparison-v1/README.md) freezes 113 shared English, Chinese-control, casing and mixed-input tasks; source-derived inputs remain exposed regression data.
+
+[ime-spelling-reference-v1](ime-spelling-reference-v1/README.md) retains the pinned upstream syllabifier bytes for production correction-patch verification.

@@ -20,6 +20,8 @@ This section defines how the frontend is organized using **Feature-Sliced Design
 
 Views read `runtime.State` and request `runtime.Actions`; the composition root mutates state on the main thread. Headless view tests in `ui/app` render every surface with MyGo's `ui.Tester`.
 
+Vocabulary reading edits distinguish encrypted saving from native keyboard application. A pending notice remains until the current snapshot is acknowledged; failure preserves entries and points to readings/input-method setup. Later acknowledgements for older edits cannot hide a newer pending deletion or failure. These notices use the existing English/Simplified Chinese catalogs and are omitted for an initially empty keyboard projection.
+
 ## Documents
 
 - [`fsd-overview.md`](fsd-overview.md) — what FSD is and why it is used.
@@ -64,3 +66,10 @@ General and About have no notification switches. Signed-in standard-center accou
 Settings → Vocabulary adds one correct spelling with one incorrect form per line, or uses the explicit “Add as a recognition hotword” switch to save a correct-only term without aliases. It shows approved records grouped by their exact correct spelling. The add form stays above the searchable list. Search matches either side and retains the matching group; each alias has its own remove action. Duplicate approvals are idempotent; a conflicting alias rejects the whole batch with a localized error and retains the draft. Existing per-alias learning provenance and undo remain independent. See [memory requirements](../../specs/003-memory-sync.md) and the [comparison](../research/type4me-vocabulary.md).
 
 A term shows recognition-hotword status when it has a standalone hotword or an eligible learned correction. Standalone hotwords have their own remove action beside the correct spelling; aliases retain individual removal below it. Removing a standalone hotword keeps correction aliases, and removing a learned alias keeps an independently saved hotword. Learned-derived eligibility follows that alias's undo/removal lifecycle; removing its contribution uses the alias action. A manually entered correction pair does not automatically bias recognition. Approval of an existing learned pair retains its hotword eligibility and counters. The hotword form validates a complete term up to 64 code points with localized errors and retains failed drafts. Learning, hotword persistence and recognition selection remain outside UI slices. See MEM-07 and acceptance MEM-A24–26 in [003](../../specs/003-memory-sync.md).
+
+## Pinyin spelling settings
+
+Settings → Keyboard includes an opt-in typing correction switch and independent fuzzy-initial/final pairs. The two-column pair controls retain each choice independently; no master switch enables unselected pairs. The existing preference action persists both fields and exports them through `keyboard.json`. Changing spelling options discards unconfirmed composition before new candidates are generated. These controls use the English/Simplified Chinese copy catalogs and the existing native switch component. See KBD-09/KBD-A13 in [007](../../specs/007-ime-ranking.md).
+
+
+Each approved vocabulary record has a Pinyin action. Standalone hotwords and correction variants keep independent record IDs and readings even when grouped under the same spelling. The inline editor focuses its input, accepts Enter or Save, retains failed drafts, and offers Cancel. Saving an empty value clears only that record’s reading. English and Simplified Chinese labels/errors use the shared catalogs; no pronunciation is guessed. The action checks the current canonical spelling before writing through the existing encrypted store and refreshes the keyboard projection. Native dictionary resolution and signed delivery remain separate from syntactic form validation.

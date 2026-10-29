@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "originalFiles": 5022,
+  "nativeObservations": 1476,
+  "exactReportReplay": true,
+  "rejected": [
+    "incomplete run",
+    "changed raw bytes",
+    "duplicate observation",
+    "request reference leakage"
+  ]
+}

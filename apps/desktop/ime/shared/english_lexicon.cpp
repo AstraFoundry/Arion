@@ -114,14 +114,26 @@ bool EnglishLexicon::Cursor::Next() {
     }
     return false;
 }
+const EnglishLexicon::Word *EnglishLexicon::ExactWord(std::string_view input) const {
+    const auto found=std::lower_bound(words_.begin(),words_.end(),input,
+        [](const Word &word,std::string_view value){return word.displays[0].key<value;});
+    return found!=words_.end() && found->displays[0].key==input?&*found:nullptr;
+}
+std::vector<EnglishLexicon::WordPrefix> EnglishLexicon::WordPrefixes(std::string_view input) const {
+    std::vector<WordPrefix> result;
+    if (input.size()<3) return result;
+    size_t letters=0;
+    while (letters<std::min(size_t(128),input.size()-1) && input[letters]>='a' && input[letters]<='z') ++letters;
+    for (size_t length=letters;length>=2;--length)
+        if (const auto *word=ExactWord(input.substr(0,length))) result.push_back({length,word->displays});
+    return result;
+}
 EnglishLexicon::Matches EnglishLexicon::Query(std::string_view input,Completion completion) const {
     auto owned=shared_from_this();
     Matches result{Cursor(owned),Cursor(owned),Cursor(owned),false};
     if (!letters(input,true)) return result;
-    auto exact=std::lower_bound(words_.begin(),words_.end(),input,
-        [](const Word &word,std::string_view value){return word.displays[0].key<value;});
-    if (exact!=words_.end() && exact->displays[0].key==input) {
-        result.exact.current_=result.exact.exact_=static_cast<uint32_t>(exact-words_.begin());
+    if (const auto *exact=ExactWord(input)) {
+        result.exact.current_=result.exact.exact_=static_cast<uint32_t>(exact-words_.data());
         result.familiar_exact=exact->lowercase && exact->count>=kSuggestionMinimumCount;
     }
     if (input.size()<3) return result;

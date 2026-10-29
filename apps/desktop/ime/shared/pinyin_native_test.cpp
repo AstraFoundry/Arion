@@ -8,6 +8,8 @@
 #include "english.h"
 #include "english_admission_cases.h"
 #include <algorithm>
+#include "spelling.h"
+#include "spelling_options.h"
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
@@ -76,6 +78,7 @@ int main(int argc,char **argv) {
         require(arion_learning_windows_register(learning.c_str(),error,sizeof(error)),error);
         arion_emoji_register();
         api->initialize(&traits); initialized=true;
+        arion_spelling_register();
         require(arion_english_register(data.c_str(),error,sizeof(error)),error);
         require(!arion_learning_error(error,sizeof(error)),error);
         auto first=arion_pinyin_create_session(api),second=arion_pinyin_create_session(api);
@@ -210,14 +213,46 @@ int main(int argc,char **argv) {
         type(api,first,"yinggelan");
         const std::string tagFlag=u8"\U0001f3f4\U000e0067\U000e0062\U000e0065\U000e006e\U000e0067\U000e007f";
         size_t tagIndex=candidateIndex(api,first,tagFlag);
-        ArionEmojiCandidateMetadata tagMetadata{};
-        require(arion_emoji_candidate_metadata(first,tagIndex,&tagMetadata) && tagMetadata.emoji,
+        ArionCandidateMetadata tagMetadata{};
+        require(arion_candidate_metadata(first,tagIndex,&tagMetadata) && tagMetadata.emoji,
                 "subdivision flag metadata unavailable");
         require(std::string(tagMetadata.sequence_id)=="1F3F4-E0067-E0062-E0065-E006E-E0067-E007F",
                 "subdivision flag sequence ID truncated");
         require(arion_pinyin_select(api,first,tagIndex,0),"subdivision flag selection failed");
         { Snapshot flag(api,first); require(std::string(flag.value.commit)==tagFlag,"subdivision flag commit changed Unicode"); }
         printCase("emoji-subdivision-flag-metadata-and-exact-commit");
+        arion_spelling_apply(api,second,1,0);
+        for (const char *keys : {"zhngguo", "zhoongguo", "zhognguo", "zhomgguo"}) {
+            arion_pinyin_clear(api,second); type(api,second,keys);
+            const auto index=candidateIndex(api,second,u8"中国");
+            ArionCandidateMetadata coverage{};
+            require(arion_candidate_metadata(second,index,&coverage) && coverage.start==0 &&
+                    coverage.end==std::string(keys).size(),"corrected candidate must cover the entire raw input");
+            require(arion_pinyin_select(api,second,index,0),"corrected candidate selection failed");
+            { Snapshot corrected(api,second); require(std::string(corrected.value.commit)==u8"中国" &&
+                !corrected.value.preedit[0],"corrected full-input commit differs"); }
+            { Snapshot consumed(api,second); require(!consumed.value.commit[0],"corrected commit repeated"); }
+        }
+        printCase("four-typo-operations-full-raw-coverage-and-single-commit");
+        arion_spelling_apply(api,second,0,1u);
+        selectPhrase(api,second,"zongguo",u8"中国","independent-z-zh-fuzzy-with-typo-disabled");
+        arion_spelling_apply(api,second,0,0);
+        for (const char *word : {"hello", "Hello", "HELLO", "hElLo"})
+            selectPhrase(api,second,word,word,"english-candidate-preserves-explicit-case");
+        for (bool englishFirst : {false,true}) {
+            arion_pinyin_clear(api,second);
+            type(api,second,englishFirst?"HELLOnihao":"nihaoHELLO");
+            require(arion_pinyin_select(api,second,candidateIndex(api,second,englishFirst?"HELLO":u8"你好"),0),
+                    "mixed prefix selection failed");
+            { Snapshot prefix(api,second); require(prefix.value.preedit[0] && !prefix.value.commit[0],
+                    "mixed prefix committed before suffix confirmation"); }
+            require(arion_pinyin_select(api,second,candidateIndex(api,second,englishFirst?u8"你好":"HELLO"),0),
+                    "mixed suffix selection failed");
+            { Snapshot final(api,second); require(std::string(final.value.commit)==(englishFirst?u8"HELLO你好":u8"你好HELLO") &&
+                    !final.value.preedit[0],"mixed final text or termination differs"); }
+            { Snapshot consumed(api,second); require(!consumed.value.commit[0],"mixed commit repeated"); }
+        }
+        printCase("bidirectional-mixed-partial-conversion-commits-once");
         arion_pinyin_destroy_session(api,first); arion_pinyin_destroy_session(api,second);
         api->finalize(); initialized=false;
         require(!arion_learning_error(error,sizeof(error)),error);

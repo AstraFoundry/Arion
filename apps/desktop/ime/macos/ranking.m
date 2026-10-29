@@ -34,12 +34,12 @@ static void collectChange(const char *key,const char *value,void *context) {
     if (!context) return nil;
     NSString *result=[NSString stringWithUTF8String:context];free(context);return result;
 }
-- (NSArray<NSNumber *> *)order:(NSArray<NSString *> *)candidates after:(NSString *)previous {
+- (NSArray<NSNumber *> *)order:(NSArray<NSString *> *)candidates eligible:(const unsigned char *)eligible after:(NSString *)previous {
     NSMutableData *values=[NSMutableData dataWithLength:candidates.count*sizeof(const char *)];
     NSMutableData *indices=[NSMutableData dataWithLength:candidates.count*sizeof(size_t)];
     const char **v=values.mutableBytes;size_t *order=indices.mutableBytes;
     for (NSUInteger i=0;i<candidates.count;i++) v[i]=candidates[i].UTF8String;
-    arion_ranker_order(self.core,v,candidates.count,previous.UTF8String,order);
+    arion_ranker_order(self.core,v,candidates.count,eligible,previous.UTF8String,order);
     NSMutableArray<NSNumber *> *result=[NSMutableArray arrayWithCapacity:candidates.count];
     for (NSUInteger i=0;i<candidates.count;i++) [result addObject:@(order[i])];
     return result;

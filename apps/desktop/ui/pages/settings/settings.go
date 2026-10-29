@@ -249,6 +249,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		kit.Group(c, tokens, "", func() { keyboard.Source(c, store, tokens, &p.keyboard) })
 		kit.Group(c, tokens, messages.Text(copy.KbdCandidatesGroup), func() { keyboard.Candidates(c, store, tokens) })
 		kit.Group(c, tokens, messages.Text(copy.KbdKeysGroup), func() { keyboard.Keys(c, store, tokens) })
+		kit.Group(c, tokens, messages.Text(copy.KbdPhoneticsGroup), func() { keyboard.Phonetics(c, store, tokens) })
 	case Microphone:
 		kit.Card(c, tokens).Children(func() {
 			kit.Row(c, tokens, messages.Text(copy.MicDevice), "", func() { microphone.Picker(c, store) })

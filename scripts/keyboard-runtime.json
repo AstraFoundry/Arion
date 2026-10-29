@@ -463,5 +463,12 @@
       "output": "scripts/data/english/esdb/words-70.txt"
     },
     "cspellCommit": "ae9c8d4dc15024377cc64b21d77ce863a35e0c9d"
+  },
+  "patches": {
+    "correctionIdentity": {
+      "version": 1,
+      "originalSha256": "477bc49a5349da2be6bef8424f6ad95293720f2b152f4b2717c8535a49aaaf2d",
+      "patchedSha256": "4de326710260d7934442ce57a2bf032152de0b2f0a78cde4f41a3c1a8e156f21"
+    }
   }
 }

@@ -1,11 +1,13 @@
 #pragma once
 #include "json.h"
+#include "../shared/spelling_options.h"
 #include "candidate_window.h"
 
 struct KeyboardSettings {
     size_t pageSize=9;
     int textSize=16;
-    bool emojiSuggestions=true;
+    bool emojiSuggestions=true,typoCorrection=false;
+    uint32_t fuzzyPinyin=0;
     CandidatePalette palette;
     std::wstring dictationKey;
 };
@@ -26,6 +28,10 @@ inline KeyboardSettings readKeyboardSettings(const std::wstring &path) {
         field=value.get(L"candidateSize");
         if (field && field->type==Json::String) { if (field->string==L"small") settings.textSize=14; else if (field->string==L"large") settings.textSize=20; }
         field=value.get(L"emojiSuggestions"); if (field && field->type==Json::Boolean) settings.emojiSuggestions=field->boolean;
+        field=value.get(L"typoCorrection"); if (field && field->type==Json::Boolean) settings.typoCorrection=field->boolean;
+        field=value.get(L"fuzzyPinyin");
+        if (field && field->type==Json::Number && field->number<=ARION_FUZZY_MASK &&
+            field->number==static_cast<uint32_t>(field->number)) settings.fuzzyPinyin=static_cast<uint32_t>(field->number);
         field=value.get(L"dictationKey"); if (field && field->type==Json::String) settings.dictationKey=field->string;
         field=value.get(L"appearance"); if (field && field->type==Json::String) { if (field->string==L"dark") dark=true; else if (field->string==L"light") dark=false; }
     }

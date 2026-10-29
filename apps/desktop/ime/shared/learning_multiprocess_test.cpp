@@ -4,8 +4,9 @@
 #include "learning_rime.h"
 #include "ranking.h"
 #include "pinyin.h"
-#include "english.h"
 #include "emoji.h"
+#include "spelling.h"
+#include "english.h"
 #include <rime/dict/db.h>
 #include <rime/algo/dynamics.h>
 #include <filesystem>
@@ -51,6 +52,7 @@ static int worker(const std::string &mode,const std::string &vault,const std::st
         std::string build=learningPath(data,"build");RimeTraits traits{};RIME_STRUCT_INIT(RimeTraits,traits);
         traits.shared_data_dir=data.c_str();traits.prebuilt_data_dir=build.c_str();traits.staging_dir=build.c_str();traits.user_data_dir=user.c_str();traits.app_name="rime.arion";traits.min_log_level=3;traits.log_dir="";
         api->setup(&traits);arion_emoji_register();api->initialize(&traits);
+        arion_spelling_register();
         char registrationError[512]={};
         if (!arion_english_register(data.c_str(),registrationError,sizeof(registrationError)))
             throw std::runtime_error(std::string("worker bilingual registration: ")+registrationError);
@@ -59,7 +61,10 @@ static int worker(const std::string &mode,const std::string &vault,const std::st
         context=openContextLearning(error);require(context!=nullptr,"worker context");ranker=std::make_unique<ContextRanker>(context->records());
     } else {
         db.reset(makeEncryptedRimeDatabase(provider,learningPath(vault,"arion_pinyin.arion-userdb"),"arion_pinyin"));
-        require(mode=="reader"?db->OpenReadOnly():db->Open(),"worker Db open");
+        if (!(mode=="reader"?db->OpenReadOnly():db->Open())) {
+            const auto failure=encryptedLearningError();
+            throw std::runtime_error("worker Db open ("+mode+"): "+std::to_string(failure.code)+" "+failure.operation);
+        }
         std::string tick;if (db->MetaFetch("/tick",&tick)) localTick=std::stoull(tick);
     }
     std::cout<<"READY"<<std::endl;std::string command;
@@ -193,7 +198,7 @@ int main(int argc,char **argv) {
         const auto contextVault=path("context");Child x("context",contextVault,data,path("context-a")),y("context",contextVault,data,path("context-b"));
         for (int i=0;i<12;++i) {x.send("learn");y.send("learn");x.expect("LEARNED");y.expect("LEARNED");}x.finish();y.finish();
         LearningError error;auto provider=makeWindowsLearningProvider(contextVault,error);require(provider && registerEncryptedLearning(provider,error),"reopen context vault");auto context=openContextLearning(error);require(context!=nullptr,"fresh-process context view");auto records=context->records();require(records["@tick"]=="24" && records[u8"c\tus\t热词"]=="24 24","merged context count/tick");
-        ContextRanker ranked(records);require(ranked.order({u8"冷词","plain",u8"热词"},"previous")==std::vector<size_t>({2,1,0}),"peer learning changes ranking");
+        const unsigned char eligible[]={1,0,1};ContextRanker ranked(records);require(ranked.order({u8"冷词","plain",u8"热词"},eligible,"previous")==std::vector<size_t>({2,1,0}),"peer learning changes ranking");
         require(!resetLearningVault(provider,error) && error.code==8,"reset refuses active shared lease");context.reset();require(resetLearningVault(provider,error),"reset after every lease closes");pass("context-pair-clock-ranking-and-active-reset");
         std::cout<<"All owned multi-process encrypted learning checks passed.\n";return 0;
     } catch (const std::exception &error) {std::cerr<<"FAIL "<<error.what()<<'\n';return 1;}

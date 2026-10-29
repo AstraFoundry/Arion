@@ -5,7 +5,9 @@
 #import "candidate_panel.h"
 #import "composition.h"
 #import "typing.h"
+#include "../shared/spelling_options.h"
 #import "source_maintenance.h"
+#include "../../infrastructure/imebridge/peer_darwin.h"
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <errno.h>
@@ -19,6 +21,8 @@ static NSString *hostBuildIdentity;
 @property(weak) ArionInputController *active;
 @property int fd;
 @property(copy) NSString *connection;
+@property(assign) SecCodeRef peerCode;
+@property(assign) SecRequirementRef peerRequirement;
 + (instancetype)shared;
 - (void)send:(NSDictionary *)message;
 - (BOOL)connect;
@@ -69,7 +73,8 @@ static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel 
     ArionCandidateSize size = ArionCandidateSizeMedium;
     ArionCandidateAppearance appearance = ArionCandidateAppearanceSystem;
     NSColor *lightFill = nil, *lightText = nil, *darkFill = nil, *darkText = nil;
-    BOOL emojiSuggestions = YES;
+    BOOL emojiSuggestions = YES, typoCorrection = NO;
+    uint32_t fuzzyPinyin = 0;
     NSString *dictationKey = nil;
     NSData *data = [NSData dataWithContentsOfFile:[applicationSupport() stringByAppendingPathComponent:@"keyboard.json"]];
     NSDictionary *settings = data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
@@ -92,11 +97,19 @@ static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel 
         }
         value = settings[@"emojiSuggestions"];
         if ([value isKindOfClass:NSNumber.class]) emojiSuggestions = [value boolValue];
+        value = settings[@"typoCorrection"];
+        if ([value isKindOfClass:NSNumber.class]) typoCorrection = [value boolValue];
+        value = settings[@"fuzzyPinyin"];
+        if ([value isKindOfClass:NSNumber.class] && [value doubleValue] >= 0 &&
+            [value doubleValue] <= ARION_FUZZY_MASK && [value doubleValue] == [value unsignedIntValue])
+            fuzzyPinyin = [value unsignedIntValue];
         value = settings[@"dictationKey"];
         if ([value isKindOfClass:NSString.class]) dictationKey = value;
     }
     typing.pageSize = pageSize;
     typing.emojiSuggestions = emojiSuggestions;
+    typing.typoCorrection = typoCorrection;
+    typing.fuzzyPinyin = fuzzyPinyin;
     panel.size = size;
     panel.appearance = appearance;
     panel.lightFill = lightFill;
@@ -172,11 +185,24 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
     struct timeval timeout = {.tv_sec = 0, .tv_usec = 200000};
     setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
     if (connect(fd, (struct sockaddr *)&address, sizeof(address)) != 0) { close(fd); return NO; }
+    id appIdentifier=NSBundle.mainBundle.infoDictionary[@"ArionAppIdentifier"];
+    SecRequirementRef requirement=[appIdentifier isKindOfClass:NSString.class] ?
+        arion_peer_publisher_requirement([appIdentifier UTF8String]) : NULL;
+    uint32_t peerPID=0,peerUID=0;
+    SecCodeRef peer=requirement ? arion_socket_peer(fd,&peerPID,&peerUID) : NULL;
+    if (!arion_peer_matches(peer,requirement)) {
+        if (peer) CFRelease(peer);
+        if (requirement) CFRelease(requirement);
+        close(fd); return NO;
+    }
     int reader = dup(fd);
-    if (reader < 0) { close(fd); return NO; }
+    if (reader < 0) { CFRelease(peer); CFRelease(requirement); close(fd); return NO; }
+    self.peerCode=peer;
+    self.peerRequirement=requirement;
     self.fd = fd;
     self.connection = NSUUID.UUID.UUIDString;
-    [self writeMessage:@{@"op": @"hello", @"build": hostBuildIdentity}];
+    [self writeMessage:@{@"op": @"hello", @"build": hostBuildIdentity, @"protocol":@1,
+        @"capabilities":@[@"keyboard-vocabulary-v1"]}];
     if (self.fd < 0) { close(reader); return NO; }
     NSString *connection = self.connection;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -189,6 +215,8 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
     if (self.fd >= 0) { shutdown(self.fd, SHUT_RDWR); close(self.fd); }
     self.fd = -1;
     self.connection = nil;
+    if (self.peerCode) { CFRelease(self.peerCode); self.peerCode=NULL; }
+    if (self.peerRequirement) { CFRelease(self.peerRequirement); self.peerRequirement=NULL; }
     [self.active.composition invalidate];
 }
 
@@ -210,7 +238,10 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
             [pending setLength:0];
             if (![message isKindOfClass:NSDictionary.class]) { valid = NO; break; }
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([self.connection isEqual:connection]) [self.active apply:message];
+                if ([self.connection isEqual:connection]) {
+                    if (arion_peer_matches(self.peerCode,self.peerRequirement)) [self.active apply:message];
+                    else [self disconnect];
+                }
             });
         }
     }
@@ -233,6 +264,7 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
 }
 
 - (void)writeMessage:(NSDictionary *)message {
+    if (!arion_peer_matches(self.peerCode,self.peerRequirement)) { [self disconnect]; return; }
     NSMutableData *data = [[NSJSONSerialization dataWithJSONObject:message options:0 error:nil] mutableCopy];
     if (!data) return;
     [data appendBytes:"\n" length:1];
@@ -318,11 +350,19 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
 
 - (NSUInteger)recognizedEvents:(id)sender {
     (void)sender;
-    return NSEventMaskKeyDown | NSEventMaskFlagsChanged;
+    // Requesting modifier events disables IMK's default mouse termination.
+    // Relinquish provisional text before a host click changes its owner.
+    return NSEventMaskKeyDown | NSEventMaskFlagsChanged |
+        NSEventMaskLeftMouseDown | NSEventMaskRightMouseDown | NSEventMaskOtherMouseDown;
 }
 
 - (BOOL)handleEvent:(NSEvent *)event client:(id)sender {
-    (void)sender;
+    if (event.type == NSEventTypeLeftMouseDown || event.type == NSEventTypeRightMouseDown ||
+        event.type == NSEventTypeOtherMouseDown) {
+        [self commitComposition:sender];
+        [self.languageWindow hide];
+        return NO;
+    }
     if (event.type == NSEventTypeFlagsChanged) {
         return self.keyboardReady && self.typing.available && [self.typing handleEvent:event];
     }
@@ -346,6 +386,11 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
 }
 
 - (void)apply:(NSDictionary *)message {
+    if ([message[@"op"] isEqual:@"vocabulary_query"] || [message[@"op"] isEqual:@"vocabulary_publish"]) {
+        NSDictionary *ack=[self.typing applyVocabularyMessage:message activation:self.composition.activation blocked:self.composition.live];
+        if (ack) [[ArionBridge shared] send:ack];
+        return;
+    }
     if ([message[@"op"] isEqual:@"begin"] &&
         [message[@"activation"] isEqual:self.composition.activation] &&
         [message[@"session"] isKindOfClass:NSString.class] && [message[@"session"] length] > 0 &&
