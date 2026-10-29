@@ -9,7 +9,10 @@ limits and the 1.5-second traversal budget remain. Repeated fresh hosted runners
 exceeded the previous five-second initialization limit before authorization.
 Managed initialization now has a separate 15-second ceiling, remains cancellable,
 and records elapsed time in its real initialization test; the final rewrite's
-independent context wait is unchanged.
+independent context wait is unchanged. Slow hosted runners still timed out in the
+first traversal, so initialization also JIT-compiles the traversal methods and
+connects the UI Automation client (desktop root element, walker, pattern and
+control-type statics) before READY, without inspecting the target.
 CI security tests use an ordinary account, while actual OS-input fixtures use
 the runner's original interactive session. Neither scope establishes clean-host
 or broad third-party editor compatibility.
