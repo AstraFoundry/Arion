@@ -60,6 +60,7 @@ var (
 	Mic               = load("mic")
 	MicOff            = load("mic-off")
 	Pencil            = load("pencil")
+	Plus              = load("plus")
 	Power             = load("power")
 	RotateCw          = load("rotate-cw")
 	Search            = load("search")

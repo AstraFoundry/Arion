@@ -272,7 +272,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		p.modelSection(c, store, tokens)
 	case Vocabulary:
 		vocabulary.Learning(c, store, tokens)
-		vocabulary.Editor(c, store, tokens, &p.draft)
+		vocabulary.Editor(c, store, tokens, &p.draft, keyboard.Ready(store))
 	case Account:
 		signin.Card(c, store, tokens)
 		if store.State.Account.SignedIn() {
