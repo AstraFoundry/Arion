@@ -35,8 +35,11 @@ Three build-time variables, inlined into the bundle (`src/shared/config/env.ts`)
 
 `scripts/build-assets.mjs` derives every image from files already in the repository; nothing is fetched or hotlinked:
 
-- `public/backdrops/*.webp` (the hero crops and one 4:5 `tour-<chapter>` crop per feature-tour chapter) from `apps/desktop/ui/shared/assets/backdrop.jpg` ("Flowers falling" by Roma Kaiuk, Unsplash License; credited on `/credits/`). The source is 800×1000, so the wide crops are upscaled; the photograph is motion-blurred, which hides it.
-- `public/brand/*.png` and `public/og.jpg` from `apps/desktop/resources/icon.png`.
+- `public/backdrops/flowers-*.webp` and `public/og.jpg` from `assets/backdrops/pink-motion.jpg` ("Pink flowers with motion blur effect" by Raphael Nicolas, Unsplash License). The hero uses this photograph.
+- `public/backdrops/tour-<chapter>-800.webp`, one 4:5 crop per feature-tour chapter. Two chapters crop `gladiolus.jpg`; the other three use their own photograph in `assets/backdrops/`.
+- `public/blog/<slug>/cover.webp`, a 4:3 cover for each post, from the same directory.
+- Every photograph is credited on `/credits/`. These files are separate from the desktop app's backdrop.
+- `public/brand/*.png`, and the mark composited onto `public/og.jpg`, from `apps/desktop/resources/icon.png`.
 
 ## Temporary vendored design code
 
