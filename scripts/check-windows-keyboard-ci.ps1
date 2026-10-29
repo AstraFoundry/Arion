@@ -1,7 +1,7 @@
 # Hosted Windows runners are administrators. Native acceptance must instead
 # execute under a real standard user's loaded profile, including DPAPI.
 [CmdletBinding()]
-param([switch]$Child, [string]$Repository, [string]$Node, [string]$GoExecutable,
+param([switch]$Child, [string]$Repository, [string]$Node, [string]$GoExecutable, [string]$GoVersion,
     [string]$ExpectedSID, [string]$Station, [string]$Desktop)
 $ErrorActionPreference = 'Stop'
 
@@ -30,12 +30,10 @@ if ($Child) {
     $env:GO = $GoExecutable
     $env:PATH = (Split-Path -Parent $GoExecutable) + [IO.Path]::PathSeparator + $env:PATH
     $env:GOTOOLCHAIN = 'local'
-    $goDirective = Get-Content -LiteralPath (Join-Path $Repository 'go.work') -TotalCount 1
-    if ($goDirective -notmatch '^go\s+(\S+)\s*$') { throw 'The workspace must pin its Go toolchain.' }
-    $expectedGoVersion = "go version go$($Matches[1]) windows/amd64"
+    if (!$GoVersion) { throw 'The parent must provide its actual Go SDK version.' }
     $actualGoVersion = & $GoExecutable version
-    if ($LASTEXITCODE -ne 0 -or $actualGoVersion -ne $expectedGoVersion) {
-        throw "Unexpected standard-user Go toolchain: $actualGoVersion; expected $expectedGoVersion"
+    if ($LASTEXITCODE -ne 0 -or $actualGoVersion -ne $GoVersion) {
+        throw "Unexpected standard-user Go toolchain: $actualGoVersion; expected $GoVersion"
     }
     $resolvedGo = (Get-Command go -CommandType Application | Select-Object -First 1).Source
     if ($resolvedGo -ne $GoExecutable) { throw 'The standard-user PATH does not select the pinned Go executable.' }
@@ -91,6 +89,11 @@ if ($Repository -ne (Resolve-Path -LiteralPath $env:GITHUB_WORKSPACE).Path) {
 & (Join-Path $PSScriptRoot 'test-windows-keyboard-ci-desktop.ps1')
 $Node = (Get-Command node -CommandType Application | Select-Object -First 1).Source
 $GoExecutable = (Get-Command go -CommandType Application | Select-Object -First 1).Source
+$env:GOTOOLCHAIN = 'local'
+$GoVersion = & $GoExecutable version
+if ($LASTEXITCODE -ne 0 -or $GoVersion -notmatch '^go version go\d+\.\d+\.\d+ windows/amd64$') {
+    throw "The installed native Go SDK is unavailable: $GoVersion"
+}
 $account = 'arion-test-' + [Guid]::NewGuid().ToString('N').Substring(0, 8)
 $password = ConvertTo-SecureString ('Aa1!' + [Convert]::ToBase64String([Security.Cryptography.RandomNumberGenerator]::GetBytes(32))) -AsPlainText -Force
 $originalACL = Get-Acl -LiteralPath $Repository
@@ -111,8 +114,8 @@ try {
     $desktopAccess = Grant-KeyboardCIDesktopAccess $user.SID.Value
     Write-Output "Temporary keyboard CI desktop: $($desktopAccess.StationName)\$($desktopAccess.DesktopName), SID $($user.SID.Value)"
     $credential = [Management.Automation.PSCredential]::new("$env:COMPUTERNAME\$account", $password)
-    $arguments = '-NoProfile -File "{0}" -Child -Repository "{1}" -Node "{2}" -ExpectedSID "{3}" -Station "{4}" -Desktop "{5}" -GoExecutable "{6}"' -f `
-        $PSCommandPath, $Repository, $Node, $user.SID.Value, $desktopAccess.StationName, $desktopAccess.DesktopName, $GoExecutable
+    $arguments = '-NoProfile -File "{0}" -Child -Repository "{1}" -Node "{2}" -ExpectedSID "{3}" -Station "{4}" -Desktop "{5}" -GoExecutable "{6}" -GoVersion "{7}"' -f `
+        $PSCommandPath, $Repository, $Node, $user.SID.Value, $desktopAccess.StationName, $desktopAccess.DesktopName, $GoExecutable, $GoVersion
     # Only the tool search path is forwarded; release credentials and other
     # workflow environment variables are not inherited by the test process.
     $testProcess = Start-Process -FilePath (Join-Path $PSHOME 'pwsh.exe') -ArgumentList $arguments `
