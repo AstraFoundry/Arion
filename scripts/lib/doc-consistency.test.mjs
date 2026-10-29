@@ -14,6 +14,10 @@ test('code spans and fenced blocks name commands; prose does not', () => {
   ]);
 });
 
+test('a quoted commit subject is not a command', () => {
+  assert.deepEqual(commandReferences('Commit: `ci(security): pin pnpm action-setup to a commit`.'), []);
+});
+
 test('brace groups expand into one script per alternative', () => {
   assert.deepEqual(commandReferences('`pnpm rewrite:demo:{report,test}`').map(reference => reference.target), ['rewrite:demo:report', 'rewrite:demo:test']);
 });

@@ -1,6 +1,7 @@
 // Mechanical documentation checks: a documented command must exist, ADR
 // numbers are unique and indexed, and the translated READMEs link what the
 // English one links.
+const conventionalSubject = /^[a-z]+(?:\([a-z0-9-]+\))?!?: /;
 const pnpmBuiltins = new Set(['install', 'exec', 'dlx', 'add', 'run', 'approve-builds', 'update', 'list', 'config', 'store', 'why', 'outdated', 'audit', 'rebuild', 'prune', 'remove']);
 
 /** Makefile goals that carry a `##` help comment or are declared as rules. */
@@ -20,6 +21,8 @@ export function commandReferences(source) {
     }
     const spans = fence === null ? [...line.matchAll(/`([^`\n]+)`/g)].map(match => match[1]) : [line];
     for (const raw of spans) {
+      // A quoted Conventional Commits subject is not a command.
+      if (fence === null && conventionalSubject.test(raw)) continue;
       const span = raw.replace(/\s#.*$/, '');
       for (const match of span.matchAll(/(?:^|[\s;&|(])(pnpm|make)\s+(?:run\s+)?([a-z][a-z0-9:_-]*)(?:\{([a-z0-9,:_-]+)\})?/g)) {
         const [, tool, target, alternatives] = match;
