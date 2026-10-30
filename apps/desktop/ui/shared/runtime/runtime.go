@@ -5,6 +5,7 @@ package runtime
 
 import (
 	"errors"
+	"github.com/egoist/mygo/ui"
 	"time"
 
 	"arion.local/core/application"
@@ -523,6 +524,7 @@ type Diagnostics struct{ Phase DiagnosticsPhase }
 // State is everything views read. The composition root mutates it only on
 // the main thread and then invalidates windows.
 type State struct {
+	Clipboard   Clipboard
 	Diagnostics Diagnostics
 	Version     string
 	Dictation   Dictation
@@ -557,11 +559,7 @@ type State struct {
 	Focus SettingsFocus
 	// MonitorLevels feed the microphone test meter, newest last.
 	MonitorLevels []float32
-	LastText      string
-	// LastOriginal is the recognized text of the last dictation when a
-	// rewrite replaced it; empty otherwise.
-	LastOriginal string
-	Platform     string
+	Platform      string
 	// SceneTarget is set each time the panel opens.
 	SceneTarget SceneTarget
 	// Account is the hosted-sync sign-in projection. It has no tokens.
@@ -573,6 +571,16 @@ type State struct {
 // Actions are requests views make; implementations return quickly and do
 // slow work off the main thread.
 type Actions interface {
+	OpenClipboard()
+	OpenClipboardSettings()
+	CloseClipboard()
+	RetryClipboard()
+	SetClipboardShortcut(string)
+	SetClipboardLimits(ClipLimits)
+	PinClipboard(string, bool)
+	CopyClipboard(string)
+	PasteClipboard(string)
+	HoverClipboard(string, ui.Rect, int)
 	ToggleDictation()
 	CancelDictation()
 	RequestMicrophone()
@@ -622,7 +630,7 @@ type Actions interface {
 	RemoveReplacement(id string)
 	// UndoLearned forgets the entry just learned and dismisses its notice.
 	UndoLearned(id string)
-	CopyText(text string)
+	CopyText(text string) bool
 	// ChooseScene keeps scene for SceneTarget's site or app; empty follows
 	// the built-in rules again.
 	ChooseScene(scene domain.Scene)

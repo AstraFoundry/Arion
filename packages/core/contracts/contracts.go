@@ -87,13 +87,16 @@ const (
 	Applied    CommitOutcome = "applied"
 	NotApplied CommitOutcome = "not_applied"
 	Unknown    CommitOutcome = "unknown"
-	// Copied means the text was left on the system clipboard because no
-	// editable field was focused. It is not an insertion and is not retried.
+	// Copied means the text was left on the system clipboard instead of
+	// inserted. NoInput distinguishes positive absence from delivery fallbacks.
+	// It is not an insertion and is not retried.
 	Copied CommitOutcome = "copied"
 )
 
 type CommitResult struct {
 	Identity
+	// NoInput is true only when the adapter positively observed no editable input.
+	NoInput bool
 	Outcome CommitOutcome
 	// Failure explains a not_applied outcome with a stable code.
 	Failure domain.ErrorCode
@@ -141,6 +144,7 @@ type Event struct {
 	Scene   string           `json:"scene,omitempty"`
 	Level   float32          `json:"level,omitempty"`
 	Outcome CommitOutcome    `json:"outcome,omitempty"`
+	NoInput bool             `json:"no_input,omitempty"`
 	Error   domain.ErrorCode `json:"error,omitempty"`
 	// Detail is a content-free diagnostic category such as "microphone" or
 	// "accessibility" for PERMISSION_DENIED.

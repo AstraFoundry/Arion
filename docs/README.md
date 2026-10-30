@@ -4,6 +4,8 @@ This directory is the single source of truth for how this project is built, orga
 
 ## Product implementation
 
+- [Clipboard history](project/clipboard.md) — opt-in local resource history and internal-write isolation.
+
 - [Specifications](../specs/README.md) — normative workflows and acceptance IDs.
 - [Agent handoff](project/agent-handoff.md) — implementation tasks and dependencies.
 - [Repository split](project/repository-split.md) — public product ownership, private Git evidence and version-bound evaluation.

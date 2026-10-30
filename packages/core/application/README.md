@@ -1,3 +1,5 @@
 # Application use cases
 
 `Coordinator` orchestrates one dictation session at a time over domain-owned [ports](../domain/ports/ports.go): target capture, recognizer stream, bounded frame queue, optional acoustic finalizer, correction policy and the single commit. Every public method is safe for concurrent use; a new generation invalidates late callbacks. `Preferences` holds the user's persisted choices. `EditTracker` follows the field a commit went into and reports the user's corrections in it ([ADR 014](../../../docs/decisions/014-edit-learning.md)); it never blocks a commit or the next session. `UsageMeter` folds a session's events into the counts it adds once its commit completes (`domain.UsageLog`); the composition root persists them. Concrete adapters are wired by the desktop composition root.
+
+`Clipboard` serializes history changes over `ports.ClipboardRepository` and delegates typed deduplication/retention to the domain. `ClipboardCapture` baselines OS revisions at opt-in/pause boundaries; source exclusion is supplied by native adapters, never inferred from text. See [010](../../../specs/010-clipboard.md).

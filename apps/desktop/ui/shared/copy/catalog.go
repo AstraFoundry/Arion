@@ -176,6 +176,19 @@ func (c Catalog) Bytes(n int64) string {
 	return c.format(FormatBytesMB, "value", strconv.FormatInt((n+(1<<19))/(1<<20), 10))
 }
 
+// ClipboardSize keeps small text/file references distinguishable from images.
+func (c Catalog) ClipboardSize(n int64) string {
+	key, value := FormatClipboardBytes, strconv.FormatInt(n, 10)
+	if n >= 1<<20 {
+		key = FormatClipboardMiB
+		value = fmt.Sprintf("%.1f", float64(n)/(1<<20))
+	} else if n >= 1<<10 {
+		key = FormatClipboardKiB
+		value = fmt.Sprintf("%.1f", float64(n)/(1<<10))
+	}
+	return c.format(key, "value", value)
+}
+
 func (c Catalog) Progress(done, total int64) string {
 	return c.format(FormatProgress, "done", c.Bytes(done), "total", c.Bytes(total))
 }
@@ -303,4 +316,37 @@ func (c Catalog) VocabReadingAction(term string) string {
 
 func (c Catalog) VocabReadingVariant(term, variant string) string {
 	return c.format(FormatVocabReadingVariant, "term", term, "variant", variant)
+}
+
+// ClipboardEntries formats the retention count in its interface language.
+func (c Catalog) ClipboardEntries(n int) string {
+	key := FormatClipboardEntries
+	if n == 1 {
+		key = FormatClipboardEntry
+	}
+	return c.format(key, "value", c.Count(n))
+}
+
+// ClipboardDays formats the retention duration in its interface language.
+func (c Catalog) ClipboardDays(n int) string {
+	key := FormatClipboardDays
+	if n == 1 {
+		key = FormatClipboardDay
+	}
+	return c.format(key, "value", c.Count(n))
+}
+
+// ClipboardTime uses local calendar boundaries, including across DST changes.
+// Today shows hours/minutes; the prior seven days use the weekday.
+func (c Catalog) ClipboardTime(copied, now time.Time) string {
+	copied = copied.In(now.Location())
+	day := time.Date(copied.Year(), copied.Month(), copied.Day(), 0, 0, 0, 0, now.Location())
+	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	if day.Equal(today) {
+		return c.format(FormatClipboardTime, "hour", fmt.Sprintf("%02d", copied.Hour()), "minute", fmt.Sprintf("%02d", copied.Minute()))
+	}
+	if day.Before(today) && !day.Before(today.AddDate(0, 0, -7)) {
+		return c.Weekday(copied.Weekday())
+	}
+	return c.MonthDay(copied)
 }

@@ -10,7 +10,7 @@ import (
 
 func TestNativePasteboardTransaction(t *testing.T) {
 	binary := filepath.Join(t.TempDir(), "pasteboard-transaction")
-	command := exec.Command("clang", "-fobjc-arc", "testdata/pasteboard.m", "-o", binary,
+	command := exec.Command("xcrun", "--sdk", "macosx", "clang", "-fobjc-arc", "testdata/pasteboard.m", "-o", binary,
 		"-framework", "Cocoa", "-framework", "ApplicationServices", "-framework", "Carbon")
 	if output, err := command.CombinedOutput(); err != nil {
 		t.Fatalf("compile pasteboard checks: %v\n%s", err, output)

@@ -19,7 +19,7 @@ Session states: `idle → preparing → capturing → finalizing → reviewing �
 - `TargetToken` is opaque. OS-native handles and editor pointers must not appear in JSON or core DTOs.
 - Text offsets in portable DTOs count Unicode scalar values in the exact source text. Convert explicitly to UTF-16, byte offsets or host ranges inside the OS adapter; include source revision to prevent index drift.
 - Candidate IDs are producer-owned and unique within a revision. Ranking returns IDs and scores only; selected text remains the exact producer text.
-- `CommitResult` separates `applied`, `not_applied`, `unknown`, and `copied`. `copied` means the text was left on the system clipboard because no editable field was focused; it is not an insertion. Never retry an `unknown` or `copied` result automatically. A clipboard cleanup warning may accompany `unknown`; it must not be converted into `not_applied` or interpreted as permission to retry.
+- `CommitResult` separates `applied`, `not_applied`, `unknown`, and `copied`. `copied` means the text was left on the system clipboard instead of inserted. `NoInput` separately identifies a positive native observation of no editable input; permission uncertainty and target-change fallbacks leave it false. Only a successful `copied` result with this flag may explicitly enter enabled clipboard history ([010](010-clipboard.md)); it is not an insertion. Never retry an `unknown` or `copied` result automatically. A clipboard cleanup warning may accompany `unknown`; it must not be converted into `not_applied` or interpreted as permission to retry.
 
 ## Error taxonomy
 

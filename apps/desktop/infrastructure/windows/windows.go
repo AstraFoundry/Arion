@@ -11,6 +11,7 @@ import (
 	"encoding/hex"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"syscall"
 	"time"
 	"unicode/utf16"
@@ -20,6 +21,9 @@ import (
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 )
+
+var clipboardGate = make(chan struct{}, 1)
+var internalClipboardRevision atomic.Uint64
 
 var (
 	user32                       = syscall.NewLazyDLL("user32.dll")
@@ -280,13 +284,14 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
 	}
-	copyResult := func() (contracts.CommitResult, error) {
+	copyResult := func(noInput bool) (contracts.CommitResult, error) {
 		if ctx.Err() != nil {
 			result.Failure = domain.CodeCancelled
 		} else if !publishClipboard(request.Text) {
 			result.Failure = domain.CodeClipboardUnavailable
 		} else {
 			result.Outcome = contracts.Copied
+			result.NoInput = noInput
 		}
 		return result, nil
 	}
@@ -302,8 +307,31 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
 	}
+	var pid uint32
+	if foreground != 0 {
+		procGetWindowThreadProcessId.Call(foreground, uintptr(unsafe.Pointer(&pid)))
+	}
+	metadataEditable, secure, known := dictationInput(pid)
+	if ctx.Err() != nil {
+		result.Failure = domain.CodeCancelled
+		return result, nil
+	}
+	if now, _, _ := procGetForegroundWindow.Call(); now != foreground || (now != 0 && focusOf(now) != focus) {
+		result.Failure = domain.CodeTargetChanged
+		return result, nil
+	}
+	if secure {
+		result.Failure = domain.CodeSecureFieldBlocked
+		return result, nil
+	}
+	// Keep Win32's explicit readonly/disabled checks; UIA also recognizes
+	// editors that do not expose a standard Edit window or native caret.
+	if !standardEdit && enabled != 0 && known {
+		editable = metadataEditable
+	}
 	if foreground == 0 || !editable {
-		return copyResult()
+		noInput := (known && !metadataEditable) || (standardEdit && enabled != 0 && style&esReadOnly != 0)
+		return copyResult(noInput)
 	}
 	tgt.foreground, tgt.focus = foreground, focus
 	if ctx.Err() != nil {
@@ -321,7 +349,7 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 			return foreground == tgt.foreground && focusOf(foreground) == tgt.focus
 		})
 		if !posted && failure == domain.CodeTargetChanged {
-			return copyResult()
+			return copyResult(false)
 		}
 		if posted {
 			result.Outcome = contracts.Unknown
@@ -421,6 +449,9 @@ func writeClipboardText(text string) bool {
 	procGlobalUnlock.Call(handle)
 	procEmptyClipboard.Call()
 	ok, _, _ := procSetClipboardData.Call(cfUnicodeText, handle)
+	if ok != 0 {
+		markInternalClipboard()
+	}
 	return ok != 0
 }
 
@@ -445,6 +476,8 @@ func excludeFromClipboardHistory() bool {
 
 // publishClipboard leaves text on the clipboard and does not paste it.
 func publishClipboard(text string) bool {
+	clipboardGate <- struct{}{}
+	defer func() { <-clipboardGate }()
 	if text == "" {
 		return false
 	}
@@ -462,6 +495,8 @@ func publishClipboard(text string) bool {
 // excluded from clipboard history and cloud clipboard; when that mark cannot
 // be set, the previous text is put back and the paste fails.
 func paste(text string) bool {
+	clipboardGate <- struct{}{}
+	defer func() { <-clipboardGate }()
 	if ok, _, _ := procOpenClipboard.Call(0); ok == 0 {
 		return false
 	}

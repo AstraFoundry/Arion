@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"arion.local/desktop/ui/features/polish"
-	"arion.local/desktop/ui/features/transcript"
 	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/pages/settings"
 	"arion.local/desktop/ui/shared/copy"
@@ -357,80 +356,6 @@ func lastExact(texts []string, want string) int {
 	return last
 }
 
-// Copy actions always have a visible source, and new results close the preview.
-func TestOriginalTranscriptPreview(t *testing.T) {
-	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
-		t.Run(string(locale), func(t *testing.T) {
-			state, actions, store := fixture()
-			state.Preferences.UILanguage = locale
-			state.LastText, state.LastOriginal = "我们周四开会。", "嗯我们周三开会，不对周四。"
-			view := &transcript.View{}
-			messages := store.Copy()
-			tt := ui.NewTester(func(c *ui.Context) { transcript.Last(c, store, theme.Resolve(false), view) }, 298, 240)
-			settle(tt)
-			if hasText(tt, state.LastOriginal) || hasText(tt, messages.Text(copy.CopyOriginal)) || !hasText(tt, messages.Text(copy.ViewOriginalTranscript)) {
-				t.Fatalf("original must start hidden: %q", tt.Texts())
-			}
-			if err := tt.Click(messages.Text(copy.Copy)); err != nil {
-				t.Fatal(err)
-			}
-			if !actions.called("copy:" + state.LastText) {
-				t.Fatalf("result not copied: %v", actions.calls)
-			}
-			if err := tt.Click(messages.Text(copy.ViewOriginalTranscript)); err != nil {
-				t.Fatal(err)
-			}
-			settle(tt)
-			if !hasText(tt, state.LastOriginal) || !hasText(tt, state.LastText) || !hasText(tt, messages.Text(copy.CopyOriginal)) {
-				t.Fatalf("both versions must be visible: %q", tt.Texts())
-			}
-			if err := tt.Click(messages.Text(copy.CopyOriginal)); err != nil {
-				t.Fatal(err)
-			}
-			if !actions.called("copy:" + state.LastOriginal) {
-				t.Fatalf("original not copied: %v", actions.calls)
-			}
-			if err := tt.Click(messages.Text(copy.HideOriginalTranscript)); err != nil {
-				t.Fatal(err)
-			}
-			settle(tt)
-			if hasText(tt, state.LastOriginal) || hasText(tt, messages.Text(copy.CopyOriginal)) {
-				t.Fatalf("collapsed original is still visible: %q", tt.Texts())
-			}
-			if err := tt.Click(messages.Text(copy.ViewOriginalTranscript)); err != nil {
-				t.Fatal(err)
-			}
-			state.LastOriginal = "周四，嗯，开会。"
-			settle(tt)
-			if hasText(tt, state.LastOriginal) || hasText(tt, messages.Text(copy.Copied)) || !hasText(tt, messages.Text(copy.ViewOriginalTranscript)) {
-				t.Fatalf("changed source retained preview or confirmation: %q", tt.Texts())
-			}
-			if err := tt.Click(messages.Text(copy.ViewOriginalTranscript)); err != nil {
-				t.Fatal(err)
-			}
-			state.LastText = "我们周五开会。"
-			settle(tt)
-			if hasText(tt, state.LastOriginal) || !hasText(tt, messages.Text(copy.ViewOriginalTranscript)) {
-				t.Fatalf("changed result retained preview: %q", tt.Texts())
-			}
-			for _, original := range []string{state.LastText, ""} {
-				state.LastOriginal = original
-				settle(tt)
-				if hasText(tt, messages.Text(copy.ViewOriginalTranscript)) || hasText(tt, messages.Text(copy.CopyOriginal)) {
-					t.Fatalf("redundant original action: %q", tt.Texts())
-				}
-			}
-			state.LastText, state.LastOriginal = "", "Orphaned source"
-			settle(tt)
-			if !hasText(tt, messages.Text(copy.PanelEmpty)) || hasText(tt, messages.Text(copy.Copy)) || hasText(tt, messages.Text(copy.ViewOriginalTranscript)) {
-				t.Fatalf("empty result has copy actions: %q", tt.Texts())
-			}
-		})
-	}
-}
-
-// Engine and model-family names stay out of the interface: the Model page
-// and the onboarding model step speak in plain words in both languages.
 func TestNoTechnicalModelNames(t *testing.T) {
 	banned := []string{"ASR", "LLM", "Qwen", "SenseVoice", "Zipformer", "ONNX", "GenAI", "int4", "160 ms"}
 	check := func(where string, texts []string) {

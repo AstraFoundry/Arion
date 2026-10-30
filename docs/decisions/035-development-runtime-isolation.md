@@ -1,4 +1,4 @@
-# ADR 034: Isolated development sessions
+# ADR 035: Isolated development sessions
 
 Status: Accepted.
 
@@ -10,7 +10,7 @@ A locally packaged preview and the installed release share the production bundle
 
 - Daily use runs the installed release. macOS development starts explicitly through `make desktop-dev`, after quitting the running desktop. The launch preflight checks release and development executable paths across checkouts and refuses overlap. `make desktop-status` reports actual paths and hashes. `make desktop-production` verifies and opens the installed signed release after development stops.
 - macOS development requires a persistent installed code-signing identity in `MACOS_DEV_SIGNING_IDENTITY`. Each build uses the resolved certificate fingerprint. macOS builds once with MyGo `dev -build-only`, then launches the bundle through LaunchServices. Development requires explicit quit and rebuild rather than direct-process live reload, so TCC attributes access to the app instead of its terminal or coding-agent parent. The entry point does not silently use ad hoc signing when this setting is absent.
-- Development application state and OS credentials use `Arion Dev`; releases retain `Arion`. Existing production state is neither copied nor migrated. Explicit E2E data directories remain supported.
+- Development application state and OS credentials, including the clipboard history encryption key, use `Arion Dev`; releases retain `Arion`. Existing production state is neither copied nor migrated. Explicit E2E data directories remain supported.
 - Development does not create an installed-input-method adapter. It cannot take over the release's socket or alter installed keyboard preferences, learning, or vocabulary projection. Signed IME acceptance uses the release workflow.
 - An unavailable update source has no recovery scheduler and does not load or modify persisted update state. Supported release recovery keeps its existing maintenance and signature checks.
 

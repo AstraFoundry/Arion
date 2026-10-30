@@ -6,6 +6,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Security/Security.h>
 #include "native.h"
+#include "focus.h"
 #import "../../ime/macos/source_maintenance.h"
 #include <fcntl.h>
 #include <stdio.h>
@@ -44,14 +45,12 @@ static void copy_string(CFTypeRef value, char *out, size_t size) {
     }
 }
 
-static AXUIElementRef focused_element(int *error) {
+static AXUIElementRef focused_element(int *error, int *no_input, int secure) {
     AXUIElementRef system = AXUIElementCreateSystemWide();
-    CFTypeRef element = NULL;
-    AXError result = AXUIElementCopyAttributeValue(system, kAXFocusedUIElementAttribute, &element);
+    AXUIElementSetMessagingTimeout(system, 0.2);
+    AXUIElementRef element = arion_copy_focus(system, secure, no_input, error);
     CFRelease(system);
-    *error = (int)result;
-    if (result != kAXErrorSuccess || !element) return NULL;
-    return (AXUIElementRef)element;
+    return element;
 }
 
 // copy_site reads only the authorized outermost web area's http(s) host.
@@ -111,8 +110,8 @@ int arion_capture_target(arion_target *out, int read_site) {
         if (app.localizedName) strlcpy(out->app_name, app.localizedName.UTF8String, sizeof(out->app_name));
         out->secure_input = IsSecureEventInputEnabled() ? 1 : 0;
         int error = 0;
-        AXUIElementRef element = focused_element(&error);
-        if (!element) return ARION_TARGET_OK; // app-level target; safety unknown
+        AXUIElementRef element = focused_element(&error, &out->no_input, out->secure_input);
+        if (!element) return ARION_TARGET_OK;
         CFTypeRef role = NULL, subrole = NULL;
         AXUIElementCopyAttributeValue(element, kAXRoleAttribute, &role);
         AXUIElementCopyAttributeValue(element, kAXSubroleAttribute, &subrole);
@@ -191,7 +190,7 @@ int arion_focus_matches(void *element, int pid) {
     @autoreleasepool {
         NSRunningApplication *app = [[NSWorkspace sharedWorkspace] frontmostApplication];
         int error = 0;
-        AXUIElementRef current = focused_element(&error);
+        AXUIElementRef current = focused_element(&error, NULL, 0);
         if (!element) {
             if (current) CFRelease(current);
             return app && app.processIdentifier == pid;

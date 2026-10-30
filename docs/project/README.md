@@ -4,6 +4,8 @@ Arion is a voice input product with a native Go desktop shell. macOS on Apple si
 
 ## Confirmed scope
 
+- Opt-in local clipboard history for text/links, images and ordinary-file references; input-target dictation is excluded, while confirmed no-input copies may be recorded. See [clipboard history](clipboard.md) for workflow and verification boundaries.
+
 - Optional cloud polishing with the user's ChatGPT plan or API key, chosen explicitly; audio stays local, while enabled context can accompany cloud polishing ([ADR 022](../decisions/022-cloud-polishing.md)).
 - Local streaming speech recognition and live correction, initially evaluated on Mandarin, English, and mixed technical vocabulary.
 - Unified dictation with automatic delivery through the selected Arion input method or the external editor. IMK/TSF are separate OS adapters sharing the same core.

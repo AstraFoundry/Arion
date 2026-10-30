@@ -26,6 +26,13 @@ const (
 // Key returns the named 256-bit key, creating it on first use. A Keychain
 // failure is an error; Arion never falls back to a key on disk.
 func Key(service, account string) ([]byte, error) {
+	return loadKey(service, account, true)
+}
+
+// ExistingKey never creates a replacement for an encrypted store's lost key.
+func ExistingKey(service, account string) ([]byte, error) { return loadKey(service, account, false) }
+
+func loadKey(service, account string, create bool) ([]byte, error) {
 	cs, ca := C.CString(service), C.CString(account)
 	defer C.free(unsafe.Pointer(cs))
 	defer C.free(unsafe.Pointer(ca))
@@ -35,6 +42,9 @@ func Key(service, account string) ([]byte, error) {
 	case 0:
 		return key, nil
 	case errItemNotFound:
+		if !create {
+			return nil, fmt.Errorf("encryption key missing (%d)", int(status))
+		}
 	default:
 		return nil, fmt.Errorf("keychain read failed (%d)", int(status))
 	}
