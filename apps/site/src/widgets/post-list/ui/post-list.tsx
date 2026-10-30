@@ -1,12 +1,18 @@
-import type { PostMeta } from "@/entities/post";
+import { getAuthors, type PostMeta } from "@/entities/post";
 import { blogPostRoute } from "@/shared/config";
 import { formatDate, useCopy, useLocale } from "@/shared/i18n";
 import { cn } from "@/shared/lib";
-import { AppLink, Dateline } from "@/shared/ui";
+import { AppLink, AuthorSummary, Dateline } from "@/shared/ui";
+
+/** A post's authors, read at build time; nothing when it names none. */
+async function PostAuthors({ logins, className }: { logins: readonly string[]; className?: string }) {
+  if (logins.length === 0) return null;
+  return <AuthorSummary authors={await getAuthors(logins)} className={className} />;
+}
 
 /**
  * The newest post, given the room of a magazine lead: its image (when it
- * has one) beside the title and description. The whole block is one link.
+ * has one) beside the title, description and authors. The whole block is one link.
  */
 export function FeaturedPost({ post }: { post: PostMeta }) {
   const { blog } = useCopy();
@@ -36,12 +42,13 @@ export function FeaturedPost({ post }: { post: PostMeta }) {
         <p className="max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
           {post.description}
         </p>
+        <PostAuthors logins={post.authors} className="mt-2" />
       </div>
     </AppLink>
   );
 }
 
-/** Posts as rows: date and category, then title and description; newest first. */
+/** Posts as rows: date and category, then title, description and authors; newest first. */
 export function PostList({ posts }: { posts: readonly PostMeta[] }) {
   const { blog } = useCopy();
   const locale = useLocale();
@@ -71,6 +78,7 @@ export function PostList({ posts }: { posts: readonly PostMeta[] }) {
               <span className="line-clamp-2 max-w-2xl text-pretty text-muted-foreground">
                 {post.description}
               </span>
+              <PostAuthors logins={post.authors} className="mt-1" />
             </span>
           </AppLink>
         </li>

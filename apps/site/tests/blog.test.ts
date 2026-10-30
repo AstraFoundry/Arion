@@ -13,6 +13,7 @@ import {
   sortNewestFirst,
   translationMismatch,
 } from "@/entities/post/model/post";
+import { authorAvatars, getAuthors } from "@/entities/post/api/authors";
 import { mediaSize, PROJECT_ASSET_BASE, resolveMedia } from "@/shared/lib/server";
 import {
   rehypeFigures,
@@ -42,7 +43,7 @@ describe("post front matter", () => {
     const full = {
       ...valid,
       updated: "2026-11-02",
-      authors: ["Ada", "Lena"],
+      authors: "ada, lena-k",
       tags: ["privacy", "offline"],
       image: "./cover.webp",
       imageAlt: "A cover",
@@ -51,7 +52,7 @@ describe("post front matter", () => {
     expect(parseFrontmatter(full, "en.md")).toEqual({
       ...valid,
       updated: "2026-11-02",
-      authors: ["Ada", "Lena"],
+      authors: ["ada", "lena-k"],
       tags: ["privacy", "offline"],
       image: { src: "./cover.webp", alt: "A cover" },
       draft: true,
@@ -61,7 +62,12 @@ describe("post front matter", () => {
   it("rejects malformed standard fields", () => {
     expect(() => parseFrontmatter({ ...valid, image: "./cover.webp" }, "en.md")).toThrow(/imageAlt/);
     expect(() => parseFrontmatter({ ...valid, updated: "2026-01-01" }, "en.md")).toThrow(/before "date"/);
-    expect(() => parseFrontmatter({ ...valid, authors: "Ada" }, "en.md")).toThrow(/list/);
+    expect(parseFrontmatter({ ...valid, authors: ["ada", "Lena"] }, "en.md").authors).toEqual(["ada", "Lena"]);
+    expect(() => parseFrontmatter({ ...valid, authors: "Ada Lovelace" }, "en.md")).toThrow(/not a GitHub login/);
+    expect(() => parseFrontmatter({ ...valid, authors: "ada,,lena" }, "en.md")).toThrow(/not a GitHub login/);
+    expect(() => parseFrontmatter({ ...valid, authors: "-ada" }, "en.md")).toThrow(/not a GitHub login/);
+    expect(() => parseFrontmatter({ ...valid, authors: "ada, Ada" }, "en.md")).toThrow(/twice/);
+    expect(() => parseFrontmatter({ ...valid, authors: [1] }, "en.md")).toThrow(/separated by commas/);
     expect(() => parseFrontmatter({ ...valid, tags: ["a", "a"] }, "en.md")).toThrow(/twice/);
     expect(() => parseFrontmatter({ ...valid, draft: "yes" }, "en.md")).toThrow(/draft/);
     expect(() => parseFrontmatter({ ...valid, summary: "x" }, "en.md")).toThrow(/unknown front matter "summary"/);
@@ -104,6 +110,9 @@ describe("post lists", () => {
     expect(translationMismatch([meta("a", "2026-01-01"), meta("a", "2026-01-01", { draft: true })])).toBe(
       "draft",
     );
+    expect(
+      translationMismatch([meta("a", "2026-01-01", { authors: ["ada"] }), meta("a", "2026-01-01")]),
+    ).toBe("authors");
   });
 });
 
@@ -217,6 +226,68 @@ describe("media resolution", () => {
 
       fetchMock.mockResolvedValueOnce(new Response("gone", { status: 404 }));
       await expect(mediaSize({ url: "https://img.example.com/gone.png" })).rejects.toThrow(/HTTP 404/);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+});
+
+describe("post authors", () => {
+  const avatar = readFileSync(path.resolve("public/og.jpg"));
+  const user = (login: string, name: string | null) => ({
+    login,
+    name,
+    html_url: `https://github.com/${login}`,
+    avatar_url: `https://avatars.githubusercontent.com/u/1?v=4`,
+  });
+
+  function github(users: Record<string, ReturnType<typeof user>>) {
+    return vi.fn(async (input: string | URL, init?: RequestInit) => {
+      const url = new URL(input);
+      if (url.host === "avatars.githubusercontent.com") {
+        return new Response(avatar, { headers: { "Content-Type": "image/jpeg" } });
+      }
+      const found = users[url.pathname.replace("/users/", "").toLowerCase()];
+      const headers = new Headers(init?.headers);
+      if (!headers.get("Accept")?.includes("github")) return new Response("", { status: 400 });
+      return found ? Response.json(found) : new Response("", { status: 404 });
+    });
+  }
+
+  it("reads each profile once and publishes its avatar by content hash", async () => {
+    const fetchMock = github({ ada: user("Ada", "Ada Lovelace"), lena: user("lena", null) });
+    vi.stubGlobal("fetch", fetchMock);
+    try {
+      const authors = await getAuthors(["ada", "lena"]);
+      expect(authors).toEqual([
+        {
+          login: "Ada",
+          name: "Ada Lovelace",
+          profileUrl: "https://github.com/Ada",
+          avatar: expect.stringMatching(new RegExp(`^${PROJECT_ASSET_BASE}[0-9a-f]{12}/ada\\.jpg$`)),
+        },
+        expect.objectContaining({ login: "lena", name: "lena" }),
+      ]);
+      expect(fetchMock.mock.calls.map(([url]) => String(url))).toContain(
+        "https://avatars.githubusercontent.com/u/1?v=4&s=64",
+      );
+
+      await getAuthors(["ADA"]);
+      expect(fetchMock).toHaveBeenCalledTimes(4);
+      const [[url, bytes]] = await authorAvatars(["ada"]);
+      expect(url).toBe(authors[0].avatar);
+      expect(bytes).toEqual(new Uint8Array(avatar));
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("fails the build for an unknown login or a rate limit", async () => {
+    vi.stubGlobal("fetch", github({}));
+    try {
+      await expect(getAuthors(["nobody"])).rejects.toThrow(/Blog author "nobody": .*HTTP 404/);
+      vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 403 })));
+      await expect(getAuthors(["limited"])).rejects.toThrow(/GITHUB_TOKEN/);
     } finally {
       vi.unstubAllGlobals();
     }

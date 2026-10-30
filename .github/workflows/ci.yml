@@ -62,6 +62,9 @@ jobs:
       - run: pnpm notifications:check
       - name: Marketing site (dictionaries, types, lint, tests, static export)
         run: pnpm site:check
+        env:
+          # Blog author profiles are read from the GitHub API at build time.
+          GITHUB_TOKEN: ${{ github.token }}
 
   native-shell:
     strategy:
