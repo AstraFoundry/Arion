@@ -129,8 +129,7 @@ func TestNotice(t *testing.T) {
 		{"none", runtime.Account{Phase: runtime.AccountSignedIn}, ""},
 		{"cancelled", runtime.Account{ErrorCode: runtime.AccountCodeCancelled}, ""},
 		{"timeout", runtime.Account{ErrorCode: runtime.AccountCodeTimeout}, copy.AccErrTimeout},
-		{"waitlist row tells it", runtime.Account{ErrorCode: runtime.AccountCodeWaitlist,
-			Waitlist: runtime.AccountWaitlist{Phase: runtime.AccountWaitlistError}}, ""},
+		{"waitlist failure", runtime.Account{ErrorCode: runtime.AccountCodeWaitlist}, copy.AccWaitlistFailed},
 		{"revoke failed", runtime.Account{ErrorCode: runtime.AccountCodeRevoke,
 			SignOut: runtime.AccountSignOut{Attempted: true, RefreshTokenDeleted: true, RevokeAttempted: true}}, copy.AccRevokeUnconfirmed},
 		{"revoke unconfirmed without code", runtime.Account{
@@ -141,21 +140,6 @@ func TestNotice(t *testing.T) {
 	} {
 		if got := Notice(tc.account); got != tc.want {
 			t.Errorf("%s: Notice = %q, want %q", tc.name, got, tc.want)
-		}
-	}
-}
-
-func TestWaitlistStatus(t *testing.T) {
-	for phase, want := range map[runtime.AccountWaitlistPhase]copy.Key{
-		runtime.AccountWaitlistIdle:            copy.AccWaitlistOpen,
-		runtime.AccountWaitlistJoining:         copy.AccWaitlistOpen,
-		runtime.AccountWaitlistJoinedPending:   copy.AccWaitlistPending,
-		runtime.AccountWaitlistAlreadyEntitled: copy.AccWaitlistEntitled,
-		runtime.AccountWaitlistClosed:          copy.AccWaitlistClosed,
-		runtime.AccountWaitlistError:           copy.AccWaitlistFailed,
-	} {
-		if got := WaitlistStatus(phase); got != want {
-			t.Errorf("WaitlistStatus(%q) = %s, want %s", phase, got, want)
 		}
 	}
 }

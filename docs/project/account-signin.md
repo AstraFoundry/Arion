@@ -22,10 +22,9 @@ These `runtime.Actions` methods return immediately. Work continues off the main 
 | `CancelSignIn()` | Invalidates the in-flight sign-in or refresh. A callback that arrives afterwards is not exchanged. A refresh token already stored for that attempt is deleted and revoked. |
 | `RefreshAccount()` | Explicit entitlement recheck; rotates the stored refresh token and replaces the in-memory access token. Phase `refreshing`. |
 | `SignOut()` | Revokes the refresh token, then deletes that credential item. Local keys and local memory stay. |
-| `JoinHostedSyncWaitlist()` | Resolves and joins the hosted-sync waitlist. |
 | `CheckStoredAccount()` | Reads whether a refresh token is stored, with `Service.Stored`. This does nothing unless `Phase` is `signed_out` and `Credential` is unknown. A result is dropped when a sign-in, refresh, cancel or sign-out started during the read. |
 
-One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_PROGRESS`. Join does the same while one is running.
+One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_PROGRESS`. `JoinHostedSyncWaitlist` does the same while one is running; views do not call it.
 
 ## What views read
 
@@ -50,15 +49,15 @@ The loopback answers `200` with `Cache-Control: no-store`, `Referrer-Policy: no-
 
 The onboarding step `Account` follows Welcome (`entities/onboarding`) and is skipped when the account is disabled. Signed out, it offers **Continue with Google**, **Continue with GitHub** and **Continue with email**. Each calls `SignIn`, which opens the issuer's sign-in page in the browser, where the same methods sign in or create an account. The primary footer button is **Continue locally**, which moves on with no account and no network. A custom issuer (`Account.Portal` empty) gets one **Sign in** button instead. While `Phase` is `signing_in`, the step shows the browser wait with Cancel (`CancelSignIn`). The step does not move on while a sign-in, refresh, or sign-out is running (`Account.Busy`).
 
-The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. Its hover and selected fills are the sidebar's neutral grays. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card reports automatic restoration and offers **Sign out**, which revokes and deletes that token without requiring a session in memory. There is no Reconnect control. In onboarding, Continue may move on while background recovery waits for connectivity. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in, a Hosted sync card follows, then links to the AstraFoundry account portal (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
+The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. Its hover and selected fills are the sidebar's neutral grays. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card reports automatic restoration and offers **Sign out**, which revokes and deletes that token without requiring a session in memory. There is no Reconnect control. In onboarding, Continue may move on while background recovery waits for connectivity. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in with the hosted-sync entitlement, a Hosted sync card follows. Without the entitlement, views do not offer a waitlist. A Usage data row follows while signed in. Links to the AstraFoundry account portal follow (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
 
-`features/signin` draws the account card and the hosted-sync card. `entities/account` maps state to copy keys.
+`features/signin` draws the account card and, when the entitlement is present, the hosted-sync card. `entities/account` maps state to copy keys.
 
 | State | Shown |
 | --- | --- |
-| `HostedSync` false | Waitlist row. Idle shows Join (`JoinHostedSyncWaitlist`). `joined_pending` shows "under review" and `already_entitled` shows "already has hosted sync"; both offer Check again (`RefreshAccount`), and the new access token carries the granted `ent`. `closed` has no action. `error` shows Retry. Every phase says that self-hosted sync needs no waitlist and that local features work either way |
+| `HostedSync` false | No hosted-sync card. Local features stay available. Views do not call `JoinHostedSyncWaitlist` |
 | `HostedSync` true | Hosted sync is available. Setting up this device is not in this version |
-| `ErrorCode` | One notice per code. `ErrorDetail` picks a variant: `access_denied`; `invalid_grant` or `not_found`; a network detail (`transport`, `request`, `http_N`) or an issuer configuration detail (`issuer_mismatch`, `s256_required`, …); browser `open` or the loopback. `SIGN_IN_CANCELLED` shows nothing. A `WAITLIST` failure appears only in the waitlist row |
+| `ErrorCode` | One notice per code. `ErrorDetail` picks a variant: `access_denied`; `invalid_grant` or `not_found`; a network detail (`transport`, `request`, `http_N`) or an issuer configuration detail (`issuer_mismatch`, `s256_required`, …); browser `open` or the loopback. `SIGN_IN_CANCELLED` shows nothing. A `WAITLIST` code uses the same notice |
 | `SignOut.RevokeAttempted` and not `Revoked` | Signed out on this device, but AstraFoundry did not confirm the revocation |
 
 `runtime.AccountCodes` lists the codes views know. `TestAccountCodesMatchService` parses `internal/account/errors.go`, so a new service code fails until it is listed and has copy (`TestEveryErrorCodeHasCopy`).

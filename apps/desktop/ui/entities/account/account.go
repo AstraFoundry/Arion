@@ -1,6 +1,6 @@
 // Package account maps the AstraFoundry account projection to what views
 // say about it: the stage to draw, the profile line and the copy for each
-// failure and waitlist phase.
+// failure.
 package account
 
 import (
@@ -132,12 +132,9 @@ func ErrorMessage(code, detail string) copy.Key {
 }
 
 // Notice is the one account message a view shows above its controls. A
-// waitlist failure is told by the waitlist row instead, and a sign-out whose
-// revocation was not confirmed says so even without an error code.
+// sign-out whose revocation was not confirmed says so even without an error
+// code.
 func Notice(a runtime.Account) copy.Key {
-	if a.ErrorCode == runtime.AccountCodeWaitlist && a.Waitlist.Phase == runtime.AccountWaitlistError {
-		return ""
-	}
 	if key := ErrorMessage(a.ErrorCode, a.ErrorDetail); key != "" {
 		return key
 	}
@@ -145,20 +142,4 @@ func Notice(a runtime.Account) copy.Key {
 		return copy.AccRevokeUnconfirmed
 	}
 	return ""
-}
-
-// WaitlistStatus names the hosted-sync waitlist phase for an account
-// without the entitlement.
-func WaitlistStatus(phase runtime.AccountWaitlistPhase) copy.Key {
-	switch phase {
-	case runtime.AccountWaitlistJoinedPending:
-		return copy.AccWaitlistPending
-	case runtime.AccountWaitlistAlreadyEntitled:
-		return copy.AccWaitlistEntitled
-	case runtime.AccountWaitlistClosed:
-		return copy.AccWaitlistClosed
-	case runtime.AccountWaitlistError:
-		return copy.AccWaitlistFailed
-	}
-	return copy.AccWaitlistOpen
 }
