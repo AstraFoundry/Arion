@@ -220,7 +220,7 @@ func New(opts Options) (*App, error) {
 	resources, _ := mygo.App.Path(mygo.PathResources)
 	asr.Resources = resources
 	a.rewriter = rewriting.New(catalog, a.store, rewriting.Locate(resources), opts.Threads, modelruntime.Platform())
-	a.keyboardModel = keyboardmodel.New(catalog, a.store, keyboardmodel.Locate(resources))
+	a.keyboardModel = keyboardmodel.New(catalog, keyboardmodel.Locate(resources))
 	a.history = application.NewHistory(30 * time.Minute)
 	a.mic = audio.NewMicrophone(a.platform)
 	a.mic.Select(prefs.Microphone)
@@ -883,7 +883,7 @@ func (a *App) startPolish(download bool) {
 		a.rewriter.Disable()
 		a.keyboardModel.Disable()
 		if p := a.preferences(); ctx.Err() == nil && p.Keyboard.NeuralRanking {
-			_ = a.keyboardModel.Enable(ctx, download)
+			_ = a.keyboardModel.Enable(ctx)
 		}
 		a.rewriter.Refresh()
 		if p := a.preferences(); ctx.Err() == nil && ((p.Polish && p.PolishEngine == application.PolishLocal) || p.Keyboard.NeuralRanking) {

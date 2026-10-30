@@ -370,8 +370,10 @@ func Neural(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	enabled := store.State.Preferences.Keyboard.NeuralRanking
 	model := store.State.Polish
+	downloadable := true
 	if fast := store.State.KeyboardModel; fast.State != runtime.PolishReady {
 		model = fast
+		downloadable = false
 	}
 	kit.Card(c, tokens).Children(func() {
 		kit.Row(c, tokens, messages.Text(copy.KbdNeuralRanking), messages.Text(copy.KbdNeuralDetail), func() {
@@ -411,11 +413,11 @@ func Neural(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				key := copy.KbdNeuralUnavailable
 				if model.State == runtime.PolishLoading {
 					key = copy.PolishLoading
-				} else if !model.Installed && model.State != runtime.PolishUnsupported {
+				} else if downloadable && !model.Installed && model.State != runtime.PolishUnsupported {
 					key = copy.KbdNeuralMissing
 				}
 				ui.Text(c, messages.Text(key)).FontSize(theme.Caption).TextColor(tokens.Muted)
-				if !model.Installed && model.State != runtime.PolishUnsupported {
+				if downloadable && !model.Installed && model.State != runtime.PolishUnsupported {
 					if kit.Button(c.Key("ranking-download"), tokens, kit.Outline, messages.Text(copy.PolishDownload), model.State != runtime.PolishProvisioning).Clicked() {
 						store.Actions.DownloadPolish()
 					}

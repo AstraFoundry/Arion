@@ -15,13 +15,12 @@ import (
 	"arion.local/models"
 )
 
-// Service owns a separately provisioned fast worker. Lifecycle calls are
+// Service owns a bundled fast worker. Lifecycle calls are
 // serialized by the bootstrap resource queue; inference may run concurrently.
 type Service struct {
 	mu         sync.Mutex
 	worker     *Worker
 	model      models.FileModel
-	store      *provision.Store
 	executable string
 	status     rewriting.Status
 	changed    func(rewriting.Status)
@@ -41,13 +40,13 @@ func Locate(resources string) string {
 	}
 	return ""
 }
-func New(catalog models.Catalog, store *provision.Store, executable string) *Service {
+func New(catalog models.Catalog, executable string) *Service {
 	model, ok := catalog.KeyboardRanker(ModelID)
 	state := rewriting.Off
 	if !ok || executable == "" {
 		state = rewriting.Unsupported
 	}
-	return &Service{store: store, model: model, executable: executable, status: rewriting.Status{State: state, Name: model.Name, SizeBytes: model.SizeBytes()}}
+	return &Service{model: model, executable: executable, status: rewriting.Status{State: state, Name: model.Name, SizeBytes: model.SizeBytes()}}
 }
 func (s *Service) OnStatus(changed func(rewriting.Status)) {
 	s.mu.Lock()
@@ -78,20 +77,27 @@ func (s *Service) Disable() {
 		}
 	})
 }
-func (s *Service) Enable(ctx context.Context, download bool) error {
+func (s *Service) Enable(ctx context.Context) error {
 	if s.Status().State == rewriting.Unsupported {
 		return domain.Fail(domain.CodeModelUnsupported, "keyboard runtime not bundled")
 	}
-	dir, err := s.store.InstalledRewriter(s.model)
-	if download {
-		s.set(func(st *rewriting.Status) { st.State, st.Failure = rewriting.Provisioning, "" })
-		dir, err = s.store.EnsureRewriter(ctx, s.model, func(_ string, phase provision.Phase, done, total int64) {
-			s.set(func(st *rewriting.Status) { st.Phase, st.Done, st.Total = phase, done, total })
-		})
-	} else if domain.CodeOf(err) == domain.CodeModelMissing {
-		s.set(func(st *rewriting.Status) { st.State, st.Installed = rewriting.Off, false })
-		return nil
+
+	dir := filepath.Dir(s.executable)
+	var err error
+	for name, spec := range s.model.Files {
+		file := filepath.Join(dir, name)
+		stat, statErr := os.Stat(file)
+		if statErr != nil || stat.Size() != spec.SizeBytes {
+			err = domain.Fail(domain.CodeArtifactUnverified, "bundled keyboard model missing or changed")
+			break
+		}
+		digest, hashErr := provision.HashFile(file)
+		if hashErr != nil || digest != spec.SHA256 {
+			err = domain.Fail(domain.CodeArtifactUnverified, "bundled keyboard model digest mismatch")
+			break
+		}
 	}
+	verified := err == nil
 	if err == nil {
 		s.set(func(st *rewriting.Status) { st.State, st.Installed = rewriting.Loading, true })
 		load, cancel := context.WithTimeout(ctx, 5*time.Second)
@@ -110,7 +116,13 @@ func (s *Service) Enable(ctx context.Context, download bool) error {
 			return nil
 		}
 	}
-	s.set(func(st *rewriting.Status) { st.State, st.Failure = rewriting.Failed, domain.CodeModelUnsupported })
+	failure := domain.CodeOf(err)
+	if failure == "" {
+		failure = domain.CodeModelUnsupported
+	}
+	s.set(func(st *rewriting.Status) {
+		st.State, st.Failure, st.Installed = rewriting.Failed, failure, verified
+	})
 	return err
 }
 func (s *Service) SuspendKeyboard(suspended bool) {

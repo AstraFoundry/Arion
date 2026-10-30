@@ -537,6 +537,8 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
     }
     if (candidates.count<2) return;
     self.rankingCandidates = candidates; self.rankingSlots = slots;
+    // Freeze and the new proposal are distinct messages on the bridge.
+    self.rankingRevision++;
     self.rankingChanged(@{@"input":@(input),@"preedit":self.snapshot.preedit ?: @"",@"before":self.context ?: @"",@"candidates":candidates},self.rankingRevision);
 }
 - (void)applyRankingMessage:(NSDictionary *)message activation:(NSString *)activation {

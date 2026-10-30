@@ -1,7 +1,8 @@
-// Build the pinned, local fast-ranking worker; weights remain opt-in downloads.
+// Build the pinned, local fast-ranking worker; including its digest-verified lightweight weights.
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, copyFileSync, readdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdirSync, copyFileSync, readdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import path from 'node:path';
+import { pinnedFile } from './lib/pinned-file.mjs';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const platform = `${process.platform === 'win32' ? 'windows' : process.platform}-${process.arch === 'x64' ? 'amd64' : process.arch}`;
@@ -14,6 +15,11 @@ rmSync(destination, { recursive: true, force: true });
 mkdirSync(path.join(destination, 'licenses'), { recursive: true });
 const binary = `arion-keyboard-ranker${process.platform === 'win32' ? '.exe' : ''}`;
 copyFileSync(path.join(target, 'release', binary), path.join(destination, binary));
+const catalog = JSON.parse(readFileSync(path.join(root, 'models/catalog.json'), 'utf8'));
+const model = catalog.keyboardRankers.find(model => model.id === 'chinese-ime-lm-4m-int8');
+if (!model) throw new Error('Missing pinned keyboard model');
+for (const [name, spec] of Object.entries(model.files)) copyFileSync(pinnedFile(spec), path.join(destination, name));
+
 for (const name of ['LICENSE', 'NOTICE']) copyFileSync(path.join(source, name), path.join(destination, 'licenses', `chinese-ime-lm-${name}`));
 
 const metadata = JSON.parse(execFileSync('cargo', ['metadata', '--locked', '--format-version', '1', '--manifest-path', path.join(source, 'Cargo.toml')], { cwd: root, encoding: 'utf8' }));

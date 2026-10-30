@@ -273,6 +273,7 @@ public:
             rankingSlots.push_back(i); rankingIDs.push_back(id);
         }
         if (rankingIDs.size()<2) { rankingSlots.clear();rankingIDs.clear();return; }
+        ++rankingRevision;
         rankingChanged("\"input\":"+::quoted(wide(input))+",\"before\":"+::quoted(wide(before))+",\"candidates\":["+candidates+"]",rankingRevision);
     }
     HRESULT applyRanking(TfEditCookie cookie,const WireMessage &message) {

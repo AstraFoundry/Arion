@@ -151,8 +151,12 @@ int main(int argc, const char *argv[]) {
         run(@"local neural promotion preserves commit and rejects stale replies", @"RNK-A02 RNK-A03 RNK-A07", ^{
             require(!typing.neuralRanking, @"neural ranking defaults off");
             __block NSDictionary *request=nil;
-            __block NSUInteger epoch=0;
-            typing.rankingChanged=^(NSDictionary *snapshot,NSUInteger revision) { request=snapshot; epoch=revision; };
+            __block NSUInteger epoch=0, frozenEpoch=0;
+            typing.rankingChanged=^(NSDictionary *snapshot,NSUInteger revision) {
+                if (!snapshot) frozenEpoch=revision;
+                else require(revision>frozenEpoch, @"request epoch must follow freeze epoch");
+                request=snapshot; epoch=revision;
+            };
             typing.neuralRanking=YES;
             type(typing,@"nihao"); press(typing,@" ",49);
             type(typing,@"xian");

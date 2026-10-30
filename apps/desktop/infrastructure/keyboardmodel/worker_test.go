@@ -1,7 +1,6 @@
 package keyboardmodel
 
 import (
-	"arion.local/desktop/infrastructure/provision"
 	"arion.local/desktop/infrastructure/rewriting"
 	"arion.local/models"
 	"bufio"
@@ -94,7 +93,7 @@ func TestWorkerRealModel(t *testing.T) {
 	}
 }
 
-func TestServiceRealProvisionedModel(t *testing.T) {
+func TestServiceRealBundledModel(t *testing.T) {
 	model, binary := os.Getenv("ARION_TEST_KEYBOARD_MODEL"), os.Getenv("ARION_TEST_KEYBOARD_BINARY")
 	if model == "" || binary == "" {
 		t.Skip("explicit real model and worker required")
@@ -103,28 +102,31 @@ func TestServiceRealProvisionedModel(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	store := provision.NewStore(t.TempDir())
-	store.Offline = true
-	service := New(catalog, store, binary)
-	defer service.Disable()
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err = service.Enable(ctx, false); err != nil || service.Status().Installed {
-		t.Fatal("missing model silently enabled", err)
-	}
-	spec, _ := catalog.KeyboardRanker(ModelID)
-	bytes, err := os.ReadFile(model)
+	bundle := t.TempDir()
+	executable := filepath.Join(bundle, filepath.Base(binary))
+	bytes, err := os.ReadFile(binary)
 	if err != nil {
 		t.Fatal(err)
 	}
-	downloads := filepath.Join(store.Root, ".downloads")
-	if err = os.MkdirAll(downloads, 0700); err != nil {
+	if err = os.WriteFile(executable, bytes, 0700); err != nil {
 		t.Fatal(err)
 	}
-	if err = os.WriteFile(filepath.Join(downloads, spec.Files["sentence-model.safetensors"].SHA256), bytes, 0600); err != nil {
+	service := New(catalog, executable)
+	defer service.Disable()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err = service.Enable(ctx); err == nil || service.Status().Installed {
+		t.Fatal("missing bundled weights accepted")
+	}
+	bytes, err = os.ReadFile(model)
+	if err != nil {
 		t.Fatal(err)
 	}
-	if err = service.Enable(ctx, true); err != nil {
+	weights := filepath.Join(bundle, "sentence-model.safetensors")
+	if err = os.WriteFile(weights, bytes, 0600); err != nil {
+		t.Fatal(err)
+	}
+	if err = service.Enable(ctx); err != nil {
 		t.Fatal(err)
 	}
 	if service.Status().State != rewriting.Ready {
@@ -138,7 +140,11 @@ func TestServiceRealProvisionedModel(t *testing.T) {
 		t.Fatal("speech did not suspend fast worker", err)
 	}
 	service.Disable()
-	if service.Status().State != rewriting.Off {
-		t.Fatal(service.Status())
+	bytes[0] ^= 1
+	if err = os.WriteFile(weights, bytes, 0600); err != nil {
+		t.Fatal(err)
+	}
+	if err = service.Enable(ctx); err == nil {
+		t.Fatal("tampered bundled weights accepted")
 	}
 }

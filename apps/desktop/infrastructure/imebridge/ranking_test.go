@@ -216,3 +216,14 @@ func TestSettledAbstentionPreservesFast(t *testing.T) {
 		t.Fatal("abstention undid fast result", got)
 	}
 }
+
+func TestKeyboardRankingRequestAfterNativeFreeze(t *testing.T) {
+	_, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	h.send(t, message{Op: "keyboard_freeze", Activation: "editor", Revision: 1})
+	h.send(t, rankRequest(2))
+	if got := h.read(t); got.Revision != 2 || got.Status != "ok" {
+		t.Fatal("new native snapshot was discarded", got)
+	}
+}

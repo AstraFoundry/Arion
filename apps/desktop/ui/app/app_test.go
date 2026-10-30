@@ -1843,7 +1843,7 @@ func TestKeyboardNeuralSettings(t *testing.T) {
 						state.Permissions.Accessibility = runtime.ConsentDenied
 					}
 				}
-				state.KeyboardModel = state.Polish
+				state.KeyboardModel = runtime.Polish{State: runtime.PolishReady, Installed: true}
 				state.Platform = "darwin-arm64"
 				tt := ui.NewTester(func(c *ui.Context) {
 					tokens := theme.Apply(c)
