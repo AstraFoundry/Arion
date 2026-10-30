@@ -520,12 +520,19 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
     self.rankingRevision++;
     if (self.neuralRanking && self.rankingChanged) self.rankingChanged(nil, self.rankingRevision);
 }
+- (void)skipRanking:(NSString *)reason count:(NSUInteger)count {
+    if (self.rankingSkipped) self.rankingSkipped(reason, count, ++self.rankingRevision);
+}
 - (void)requestRanking {
-    if (!self.neuralRanking || !self.rankingChanged || !self.composing || self.ascii ||
-        _menu.page || _menu.highlight || _menu.expanded || _menu.count < 2 || [self.context lengthOfBytesUsingEncoding:NSUTF8StringEncoding]>2048) return;
+    if (!self.neuralRanking || !self.rankingChanged || !self.composing || self.ascii) return;
+    if (_menu.page || _menu.highlight || _menu.expanded) { [self skipRanking:@"navigation" count:0]; return; }
+    if (!_menu.count) { [self skipRanking:@"no_comparable_candidates" count:0]; return; }
     const char *input = self.engine.api->get_input(self.session);
-    if (!input || !*input || strlen(input) > 256 || self.engine.api->get_caret_pos(self.session) != strlen(input)) return;
-    if (!containsHan(@(_menu.texts[0]))) return;
+    if (!input || !*input || strlen(input)>256 || [self.context lengthOfBytesUsingEncoding:NSUTF8StringEncoding]>2048) {
+        [self skipRanking:@"input_bounds" count:0]; return;
+    }
+    if (self.engine.api->get_caret_pos(self.session)!=strlen(input)) { [self skipRanking:@"caret_not_at_end" count:0]; return; }
+    if (!containsHan(@(_menu.texts[0]))) { [self skipRanking:@"non_chinese" count:0]; return; }
     NSMutableArray *candidates = [NSMutableArray array], *slots = [NSMutableArray array];
     for (size_t i=0; i<MIN(_menu.count,27); ++i) {
         ArionCandidateMetadata item = _menu.metadata[i];
@@ -535,7 +542,10 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
         [candidates addObject:@{@"id":[NSString stringWithFormat:@"c%zu",_menu.indices[i]],
             @"text":@(_menu.texts[i]),@"source":@(item.type),@"start":@(item.start),@"end":@(item.end)}];
     }
-    if (candidates.count<2) return;
+    if (candidates.count<2) {
+        [self skipRanking:@"no_comparable_candidates" count:candidates.count];
+        return;
+    }
     self.rankingCandidates = candidates; self.rankingSlots = slots;
     // Freeze and the new proposal are distinct messages on the bridge.
     self.rankingRevision++;

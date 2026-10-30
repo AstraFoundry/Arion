@@ -388,6 +388,10 @@ public:
             if (!snapshot.empty()) text+=",\"rankRequest\":{\"session_id\":"+::quoted(activation)+",\"generation\":1,\"revision\":"+std::to_string(revision)+","+snapshot+"}";
             transport.send(text+"}\n");
         };
+        typing->rankingSkipped=[this](const std::string &reason,size_t count,uint64_t revision) {
+            if (!transport.connected() || activation.empty() || !session.empty()) return;
+            transport.send("{\"op\":\"keyboard_rank_skipped\",\"activation\":"+::quoted(activation)+",\"revision\":"+std::to_string(revision)+",\"eligibleCount\":"+std::to_string(count)+",\"rankingReason\":"+::quoted(wide(reason))+"}\n");
+        };
         candidates.onAction([this](const CandidateAction &action) {
             TypingCommand command; command.revision=action.revision; command.engineIndex=action.index;
             command.kind=action.kind==CandidateAction::Select?TypingCommand::Choose:action.kind==CandidateAction::Previous?TypingCommand::Previous:TypingCommand::Next;

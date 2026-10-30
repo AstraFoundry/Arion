@@ -252,17 +252,24 @@ private:
         return hr;
     }
 public:
+    std::function<void(const std::string&,size_t,uint64_t)> rankingSkipped;
     std::function<void(const std::string&,uint64_t)> rankingChanged;
     void freezeRanking() {
         rankingSlots.clear(); rankingIDs.clear(); ++rankingRevision;
         if (neuralRanking && rankingChanged) rankingChanged({},rankingRevision);
     }
+    void skipRanking(const std::string &reason,size_t count=0) {
+        if (rankingSkipped) rankingSkipped(reason,count,++rankingRevision);
+    }
     void requestRanking() {
+        if (!neuralRanking || !rankingChanged || !composition || ascii) return;
+        if (menu.page || menu.expanded || menu.highlight) { skipRanking("navigation"); return; }
+        if (!menu.count) { skipRanking("no_comparable_candidates"); return; }
         auto before=previousContext();
-        if (!neuralRanking || !rankingChanged || !composition || ascii || menu.page || menu.expanded ||
-            menu.highlight || menu.count<2 || before.size()>2048) return;
         const char *input=runtime.api()->get_input(session);
-        if (!input || !*input || std::strlen(input)>256 || runtime.api()->get_caret_pos(session)!=std::strlen(input) || !runtime.han(menu.texts[0])) return;
+        if (!input || !*input || std::strlen(input)>256 || before.size()>2048) { skipRanking("input_bounds"); return; }
+        if (runtime.api()->get_caret_pos(session)!=std::strlen(input)) { skipRanking("caret_not_at_end"); return; }
+        if (!runtime.han(menu.texts[0])) { skipRanking("non_chinese"); return; }
         std::string candidates;
         for (size_t i=0;i<std::min(menu.count,size_t{27});++i) {
             const auto &item=menu.metadata[i];
@@ -272,7 +279,10 @@ public:
             candidates+="{\"id\":"+::quoted(wide(id))+",\"text\":"+::quoted(wide(menu.texts[i]))+",\"source\":"+::quoted(wide(item.type))+",\"start\":"+std::to_string(item.start)+",\"end\":"+std::to_string(item.end)+"}";
             rankingSlots.push_back(i); rankingIDs.push_back(id);
         }
-        if (rankingIDs.size()<2) { rankingSlots.clear();rankingIDs.clear();return; }
+        if (rankingIDs.size()<2) {
+            skipRanking("no_comparable_candidates",rankingIDs.size());
+            rankingSlots.clear();rankingIDs.clear();return;
+        }
         ++rankingRevision;
         rankingChanged("\"input\":"+::quoted(wide(input))+",\"before\":"+::quoted(wide(before))+",\"candidates\":["+candidates+"]",rankingRevision);
     }

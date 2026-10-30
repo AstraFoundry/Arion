@@ -8,6 +8,20 @@ import (
 	"arion.local/core/domain/ports"
 )
 
+// OnKeyboardRankingDiagnostic observes content-free native eligibility skips.
+// The observer must return immediately and must not reenter the bridge.
+func (m *IME) OnKeyboardRankingDiagnostic(observer func(string, int)) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.onRankingDiagnostic = observer
+}
+
+func (m *IME) traceRankingLocked(reason string, count int) {
+	if m.onRankingDiagnostic != nil {
+		m.onRankingDiagnostic(reason, count)
+	}
+}
+
 const rankingCapability = "keyboard-ranking-v2"
 
 // ConfigureKeyboardRanking replaces the local ranker and revokes every proposal
@@ -79,18 +93,32 @@ func (m *IME) receiveRankingLocked(msg message) {
 		return
 	}
 	if msg.Revision == 0 || msg.Revision <= m.rankingRevision {
+		m.traceRankingLocked("stale_revision", 0)
 		return
 	}
 	m.rankingRevision = msg.Revision
 	if m.ranking == nil && m.rankingFast == nil {
+		m.traceRankingLocked("ranking_disabled", 0)
+		return
+	}
+	if msg.Op == "keyboard_rank_skipped" {
+		m.invalidateRankingLocked()
+		if msg.EligibleCount != nil && *msg.EligibleCount >= 0 && *msg.EligibleCount < 2 {
+			switch msg.RankingReason {
+			case "no_comparable_candidates", "navigation", "input_bounds", "caret_not_at_end", "non_chinese":
+				m.traceRankingLocked(msg.RankingReason, *msg.EligibleCount)
+			}
+		}
 		return
 	}
 	if msg.Op == "keyboard_freeze" {
+		m.traceRankingLocked("freeze", 0)
 		m.invalidateRankingLocked()
 		return
 	}
 	req := msg.RankRequest
 	if req == nil || req.SessionID != msg.Activation || req.Generation != 1 || req.Revision != msg.Revision {
+		m.traceRankingLocked("invalid_request", 0)
 		m.invalidateRankingLocked()
 		return
 	}
@@ -112,6 +140,7 @@ func (m *IME) receiveRankingLocked(msg message) {
 			if m.closed || current != scheduler || m.conn != conn || m.activation != activation ||
 				m.rankingRevision != msg.Revision || m.updating || m.token != "" || !m.clientVerified || !m.peer.Alive() ||
 				(tier == 0 && m.rankingSettledRevision == msg.Revision) {
+				m.traceRankingLocked("superseded", len(req.Candidates))
 				return
 			}
 			// An abstaining settled model has no new evidence; it must not undo a
@@ -132,7 +161,11 @@ func (m *IME) receiveRankingLocked(msg message) {
 			}
 			ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 			defer cancel()
-			_ = m.sendLocked(ctx, reply)
+			if err := m.sendLocked(ctx, reply); err != nil {
+				m.traceRankingLocked("delivery_failed", len(req.Candidates))
+			} else if reply.Status == "ok" {
+				m.traceRankingLocked("proposal_sent", len(req.Candidates))
+			}
 		}(tier, scheduler)
 	}
 }

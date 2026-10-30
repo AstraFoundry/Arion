@@ -449,6 +449,7 @@ func TestNoInputFactIsRestrictedToSuccessfulCopiedCommit(t *testing.T) {
 func TestKeyboardRankingEventsCanBeExported(t *testing.T) {
 	r := openTest(t)
 	r.Record(Entry{Event: "keyboard_ranking_configuration"})
+	r.Record(Entry{Event: "keyboard_ranking_trace", Reason: "no_comparable_candidates", Count: 1})
 	for _, outcome := range []string{"accepted", "unchanged", "timeout", "cancelled", "unavailable", "rejected"} {
 		r.Record(Entry{Event: "keyboard_ranking", ModelID: "chinese-ime-lm-4m-int8", Outcome: outcome, Count: 2, DurationMs: 427})
 	}
@@ -461,9 +462,16 @@ func TestKeyboardRankingEventsCanBeExported(t *testing.T) {
 	for _, b := range files {
 		combined = append(combined, b...)
 	}
-	for _, event := range []string{"keyboard_ranking_configuration", "keyboard_ranking", "chinese-ime-lm-4m-int8"} {
+	for _, event := range []string{"keyboard_ranking_configuration", "keyboard_ranking_trace", "no_comparable_candidates", "keyboard_ranking", "chinese-ime-lm-4m-int8"} {
 		if !bytes.Contains(combined, []byte(event)) {
 			t.Fatal("missing diagnostic", event)
 		}
+	}
+}
+
+func TestKeyboardTraceRejectsUnboundedReason(t *testing.T) {
+	entry := Entry{At: time.Now(), Event: "keyboard_ranking_trace", Reason: "private candidate canary"}
+	if entry.valid() {
+		t.Fatal("arbitrary trace accepted")
 	}
 }

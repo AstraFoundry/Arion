@@ -150,7 +150,7 @@ type KeyboardPreferences struct {
 	EmojiSuggestions bool `json:"emojiSuggestions"`
 	TypoCorrection   bool `json:"typoCorrection"`
 	NeuralRanking    bool `json:"neuralRanking"`
-	// Context permissions are independent of voice polishing and default off.
+	// Context choices default on, gated by neural ranking and OS permission.
 	ContextCursor bool `json:"contextCursor"`
 	ContextScreen bool `json:"contextScreen"`
 	// FuzzyPinyin is a stable bit set shared with the native keyboard ABI.
@@ -175,7 +175,7 @@ const (
 // DefaultKeyboardPreferences keep the engine's nine-candidate page and the
 // app's yellow accent.
 func DefaultKeyboardPreferences() KeyboardPreferences {
-	return KeyboardPreferences{PageSize: 9, CandidateSize: CandidateMedium, Appearance: AppearanceSystem, Accent: AccentYellow, EmojiSuggestions: true}
+	return KeyboardPreferences{PageSize: 9, CandidateSize: CandidateMedium, Appearance: AppearanceSystem, Accent: AccentYellow, EmojiSuggestions: true, ContextCursor: true, ContextScreen: true}
 }
 
 // normalize repairs fields that cannot be valid.

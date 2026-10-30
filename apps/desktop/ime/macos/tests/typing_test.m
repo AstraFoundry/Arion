@@ -185,6 +185,20 @@ int main(int argc, const char *argv[]) {
             [typing applyRankingMessage:reply activation:@"test"];
             require(!typing.composing && editor.insertions==2, @"canceled reply cannot insert text");
         });
+        run(@"incomparable candidates emit content-free ranking skip", @"RNK-A02", ^{
+            __block NSUInteger skipped=0;
+            __block NSString *lastReason=nil;
+            typing.rankingSkipped=^(NSString *reason, NSUInteger count, NSUInteger revision) {
+                require(count<2 && revision>0, @"skip reports only bounded eligible count and revision");
+                if ([reason isEqual:@"no_comparable_candidates"]) skipped++;
+                lastReason=reason;
+            };
+            typing.rankingChanged=^(NSDictionary *snapshot, NSUInteger revision) { (void)revision; if (snapshot) lastReason=nil; };
+            typing.neuralRanking=YES;
+            type(typing,@"zizhufangti");
+            require(skipped>0 && [lastReason isEqual:@"no_comparable_candidates"], @"final mixed-coverage composition reports eligibility skip");
+            press(typing,@"\x1b",53);
+        });
         run(@"real full-Pinyin commit", @"KBD-A01", ^{
             type(typing, @"nihao");
             require(typing.composing && editor.view.hasMarkedText, @"engine preedit becomes AppKit marked text");

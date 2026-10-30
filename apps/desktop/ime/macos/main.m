@@ -310,6 +310,14 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
             }
             [bridge send:message];
         };
+        self.typing.rankingSkipped = ^(NSString *reason, NSUInteger count, NSUInteger revision) {
+            ArionInputController *controller=weakSelf;
+            ArionBridge *bridge=[ArionBridge shared];
+            NSString *activation=controller.composition.activation;
+            if (bridge.fd<0 || bridge.active!=controller || !activation.length || controller.composition.session.length) return;
+            [bridge send:@{@"op":@"keyboard_rank_skipped",@"activation":activation,
+                @"revision":@(revision),@"eligibleCount":@(count),@"rankingReason":reason}];
+        };
         self.typing.modeChanged = ^(ArionTypingSwitch change) {
             ArionInputController *controller = weakSelf;
             if ([ArionBridge shared].active != controller) return;

@@ -48,6 +48,7 @@ Write an ADR when the decision:
 - [034: Local clipboard history](034-clipboard-history.md) — encrypted local resources, file references and internal-write exclusion.
 - [035: Isolated development sessions](035-development-runtime-isolation.md) — persistent development signing, separate mutable state, and explicit release switching.
 - [036: Two-stage local keyboard ranking](036-two-stage-keyboard-ranking.md) — independent fast/settled lanes and consent-gated Accessibility context.
+- [037: Keyboard context defaults and developer diagnostics](037-keyboard-context-and-developer-diagnostics.md).
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

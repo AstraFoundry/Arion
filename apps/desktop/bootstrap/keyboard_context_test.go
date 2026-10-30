@@ -45,7 +45,13 @@ func TestKeyboardContextConsentAndTarget(t *testing.T) {
 				req.Preedit = "old"
 			}
 			called := false
-			ranker := keyboardContext{targets: target, cursor: func() bool { return true }, enabled: func() bool { return mode != "off" }, ranker: contextRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+			traceReason := ""
+			ranker := keyboardContext{trace: func(reason string, err error) {
+				if err == nil {
+					t.Fatal("failure trace lacks error")
+				}
+				traceReason = reason
+			}, targets: target, cursor: func() bool { return true }, enabled: func() bool { return mode != "off" }, ranker: contextRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
 				called = true
 				if mode == "matching" && (r.Before != "before" || r.After != "after" || r.Screen != "window") {
 					t.Fatal("context omitted")
@@ -65,6 +71,10 @@ func TestKeyboardContextConsentAndTarget(t *testing.T) {
 			}
 			if (mode == "off" || mode == "denied") && target.captures != 0 {
 				t.Fatal("unnecessary capture")
+			}
+			expected := map[string]string{"foreign": "context_target", "secure": "context_target", "denied": "context_target", "changed-mark": "context_marked_mismatch"}[mode]
+			if traceReason != expected {
+				t.Fatalf("trace %q, want %q", traceReason, expected)
 			}
 			if target.discards != target.captures {
 				t.Fatal("captured target retained")

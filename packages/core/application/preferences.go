@@ -22,6 +22,8 @@ const (
 // on purpose: the best evaluated bundle loads automatically; ModelOverride
 // only exists for an explicit choice among evaluated bundles.
 type Preferences struct {
+	// DeveloperMode is session-only and never restored from disk.
+	DeveloperMode       bool                 `json:"-"`
 	Clipboard           ClipboardPreferences `json:"clipboard"`
 	Version             int                  `json:"version"`
 	UILanguage          UILanguage           `json:"uiLanguage"`

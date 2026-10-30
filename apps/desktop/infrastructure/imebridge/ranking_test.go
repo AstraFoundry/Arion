@@ -227,3 +227,28 @@ func TestKeyboardRankingRequestAfterNativeFreeze(t *testing.T) {
 		t.Fatal("new native snapshot was discarded", got)
 	}
 }
+
+func TestNativeRankingSkipDiagnostics(t *testing.T) {
+	m, _ := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		t.Error("skip must not invoke model")
+		return rankAnswer(r), nil
+	})
+	var counts []int
+	m.OnKeyboardRankingDiagnostic(func(reason string, count int) {
+		if reason == "no_comparable_candidates" {
+			counts = append(counts, count)
+		}
+	})
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	one, invalid := 1, 2
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "no_comparable_candidates", Activation: "other", Revision: 1, EligibleCount: &one})
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "no_comparable_candidates", Activation: "editor", Revision: 1, EligibleCount: &one})
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "no_comparable_candidates", Activation: "editor", Revision: 1, EligibleCount: &one})
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "no_comparable_candidates", Activation: "editor", Revision: 2, EligibleCount: &invalid})
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "no_comparable_candidates", Activation: "editor", Revision: 3})
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "private input canary", Activation: "editor", Revision: 4, EligibleCount: &one})
+	if len(counts) != 1 || counts[0] != 1 {
+		t.Fatal(counts)
+	}
+}

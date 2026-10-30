@@ -676,5 +676,7 @@
   "AccTerms": "使用条款",
   "AccPrivacy": "隐私政策",
   "KbdContextCursor": "在本机参考光标前后文字",
-  "KbdContextScreen": "在本机参考当前窗口文字"
+  "KbdContextScreen": "在本机参考当前窗口文字",
+  "DeveloperMode": "开发者模式",
+  "DeveloperModeDetail": "本次运行记录详细键盘诊断，不记录输入文字。"
 }

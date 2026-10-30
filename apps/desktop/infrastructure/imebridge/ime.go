@@ -20,6 +20,8 @@ import (
 )
 
 type message struct {
+	RankingReason      string                         `json:"rankingReason,omitempty"`
+	EligibleCount      *int                           `json:"eligibleCount,omitempty"`
 	RankRequest        *contracts.KeyboardRankRequest `json:"rankRequest,omitempty"`
 	RankResult         *contracts.KeyboardRankResult  `json:"rankResult,omitempty"`
 	Capabilities       []string                       `json:"capabilities,omitempty"`
@@ -38,6 +40,7 @@ type message struct {
 }
 
 type IME struct {
+	onRankingDiagnostic    func(string, int)
 	ranking                *application.KeyboardRanking
 	rankingFast            *application.KeyboardRanking
 	rankingSettledRevision uint64
@@ -288,7 +291,7 @@ func (m *IME) serve(conn net.Conn) {
 			break
 		}
 		switch msg.Op {
-		case "keyboard_rank", "keyboard_freeze":
+		case "keyboard_rank", "keyboard_freeze", "keyboard_rank_skipped":
 			m.receiveRankingLocked(msg)
 		case "vocabulary_state", "vocabulary_published":
 			m.receiveVocabularyLocked(msg)

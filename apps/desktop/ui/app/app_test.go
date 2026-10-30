@@ -1826,13 +1826,18 @@ func TestDictationHidesDeliveryInternals(t *testing.T) {
 
 func TestKeyboardNeuralSettings(t *testing.T) {
 	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
-		for _, mode := range []string{"off", "missing", "loading", "ready", "unavailable", "context", "permission"} {
+		for _, mode := range []string{"off", "missing", "loading", "ready", "unavailable", "context", "context-off", "permission"} {
 			t.Run(string(language)+"/"+mode, func(t *testing.T) {
 				state, _, store := fixture()
 				state.Preferences.UILanguage = language
 				state.Preferences.Keyboard.NeuralRanking = mode != "off"
+				state.Preferences.Keyboard.ContextCursor = mode != "context-off"
+				state.Preferences.Keyboard.ContextScreen = mode != "context-off"
 				state.Polish.Installed = mode != "missing"
 				state.Polish.State = map[string]runtime.PolishState{"off": runtime.PolishOff, "missing": runtime.PolishOff, "loading": runtime.PolishLoading, "ready": runtime.PolishReady, "unavailable": runtime.PolishFailed}[mode]
+				if mode == "context-off" {
+					state.Polish.State = runtime.PolishReady
+				}
 				if mode == "context" || mode == "permission" {
 					state.Polish.State = runtime.PolishReady
 					state.Preferences.Keyboard.ContextCursor = true
@@ -1865,5 +1870,44 @@ func TestKeyboardNeuralSettings(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestDeveloperModeHiddenEntry(t *testing.T) {
+	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		state, _, store := fixture()
+		state.Preferences.UILanguage = language
+		page := &settings.Page{}
+		page.Section = settings.About
+		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+		settle(tt)
+		label := store.Copy().Text(copy.DeveloperMode)
+		if hasText(tt, label) {
+			t.Fatal("developer mode visible before unlock")
+		}
+		snapshot(t, tt, "developer-hidden-"+string(language))
+		for i := 0; i < 10; i++ {
+			if err := tt.Click(store.Copy().Version(state.Version)); err != nil {
+				t.Fatal(err)
+			}
+			tt.Frame()
+		}
+		settle(tt)
+		if !state.Preferences.DeveloperMode || !hasText(tt, label) {
+			t.Fatal("developer entry did not unlock", tt.Texts())
+		}
+		tt.Scroll(SettingsWidth/2, SettingsHeight/2, 0, 280)
+		settle(tt)
+		snapshot(t, tt, "developer-enabled-"+string(language))
+		row, ok := tt.Find(label)
+		if !ok {
+			t.Fatal("missing developer switch")
+		}
+		tt.ClickAt(SettingsWidth-60, row.Y+row.H)
+		settle(tt)
+		if state.Preferences.DeveloperMode {
+			t.Fatal("developer mode did not disable")
+		}
+		snapshot(t, tt, "developer-disabled-"+string(language))
 	}
 }
