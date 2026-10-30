@@ -45,6 +45,7 @@ With -web, it develops an app of native UI in browsers instead: it builds
 the app for them (GOOS=js GOARCH=wasm), serves it at http://localhost:<port>,
 opens it, and rebuilds it as its code changes, which reloads the page; the
 page shows why a build failed.`)
+	buildOnly := flags.Bool("build-only", false, "build and sign once without launching or watching")
 	skipDevCommand := flags.Bool("skip-dev-command", false, "do not run devCommand")
 	sign := flags.String("sign", "-", "macOS signing identity for the development app")
 	output := flags.String("out", "", "development output directory (default .mygo/dev)")
@@ -58,6 +59,9 @@ page shows why a build failed.`)
 	if err != nil {
 		return err
 	}
+	if *web && *buildOnly {
+		return errors.New("-build-only requires a native app")
+	}
 	if *web {
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 		defer stop()
@@ -67,7 +71,7 @@ page shows why a build failed.`)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	s := &devSession{root: c.root, output: *output, sign: *sign, name: devConfig(c).Name, env: []string{"MYGO_ENV=development"}}
+	s := &devSession{root: c.root, output: *output, sign: *sign, buildOnly: *buildOnly, name: devConfig(c).Name, env: []string{"MYGO_ENV=development"}}
 	var server atomic.Pointer[exec.Cmd] // the dev command
 	go func() {
 		// Ctrl+C again does not wait for the app to quit.
@@ -88,6 +92,11 @@ page shows why a build failed.`)
 			return nil
 		}
 		return err
+	}
+	if *buildOnly {
+		t := con.start("Building " + s.name)
+		_, _, err := s.buildAndLaunch(ctx, t, [32]byte{})
+		return t.end(err, "Built "+s.name)
 	}
 	var starting *task
 	var exited chan error // the dev command's
@@ -169,11 +178,12 @@ page shows why a build failed.`)
 
 // devSession builds and runs development builds of an app.
 type devSession struct {
-	root   string
-	output string
-	sign   string
-	name   string   // of the development app, for messages
-	env    []string // for the app
+	root      string
+	output    string
+	sign      string
+	buildOnly bool
+	name      string   // of the development app, for messages
+	env       []string // for the app
 
 	// Used by one build at a time.
 	iconKey string
@@ -602,6 +612,9 @@ func (s *devSession) buildAndLaunch(ctx context.Context, t *task, running [32]by
 		exe = bundleExecutable(final)
 	} else if err := placeBuild(stage, dir, res); err != nil {
 		return nil, sum, err
+	}
+	if s.buildOnly {
+		return nil, sum, nil
 	}
 	s.stopLive()
 	if p, err = s.launch(exe); err != nil {

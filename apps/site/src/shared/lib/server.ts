@@ -43,14 +43,16 @@ function requireFile(file: string, src: string): void {
 }
 
 /**
- * A repository file published at `/blog-assets/<content hash>/<name>`; the
- * hash changes with the bytes, so the URL can be cached forever.
+ * Bytes published at `/blog-assets/<content hash>/<name>`; the hash changes
+ * with the bytes, so the URL can be cached forever.
  */
-export function projectAssetUrl(file: string): string {
-  const hash = createHash("sha256").update(readFileSync(file)).digest("hex").slice(0, 12);
-  const name = path.basename(file).replace(/[^A-Za-z0-9._-]+/g, "-");
-  return `${PROJECT_ASSET_BASE}${hash}/${name}`;
+export function assetUrl(bytes: Uint8Array, name: string): string {
+  const hash = createHash("sha256").update(bytes).digest("hex").slice(0, 12);
+  return `${PROJECT_ASSET_BASE}${hash}/${name.replace(/[^A-Za-z0-9._-]+/g, "-")}`;
 }
+
+/** A repository file published under `/blog-assets/`. */
+export const projectAssetUrl = (file: string) => assetUrl(readFileSync(file), path.basename(file));
 
 /**
  * Resolves a media `src` written in a post at `fromFile`:

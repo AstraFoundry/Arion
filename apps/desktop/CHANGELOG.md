@@ -1,3 +1,25 @@
+## 0.1.0-alpha.20
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Add opt-in local clipboard history. The encrypted store keeps text, file references and images. A compact picker supports search, pins and hover previews. The menu bar no longer shows the last dictation.
+- Leave the processed dictation or translation on the clipboard when a global shortcut finds no editable field.
+- Report committed daily usage only while signed in with explicit consent, and show whether reporting is on in Settings › Account. Audio and dictated text stay on this device.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable for this preview. Model weights download separately. Native Windows notification delivery, clean-machine acceptance, production old-to-new update acceptance and real-service cloud/translation acceptance remain open. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for acceptance limits and verification.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 新增可选的本地剪贴板历史。加密存储保留文本、文件引用和图片，紧凑选择器支持搜索、置顶和悬停预览。菜单栏不再显示上一次听写。
+- 全局快捷键找不到可编辑输入框时，将处理后的听写或翻译结果留在剪贴板。
+- 仅在已登录且明确同意时上报已提交的每日用量，并在设置 › 账户中显示是否正在上报。音频和听写文本仍留在本机。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证；Windows 预览版仍无发布者签名。模型权重单独下载。Windows 原生通知投递、全新机器、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.0-alpha.19
 
 ### English

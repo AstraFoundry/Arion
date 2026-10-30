@@ -33,6 +33,12 @@ func TestMain(m *testing.M) {
 		fmt.Fprintln(os.Stderr, "native E2E requires ARION_NATIVE_E2E=1 and an interactive desktop session")
 		os.Exit(2)
 	}
+	if directory := os.Getenv("ARION_E2E_SOURCE_DIR"); directory != "" {
+		if err := os.Chdir(directory); err != nil {
+			fmt.Fprintln(os.Stderr, "native E2E source directory:", err)
+			os.Exit(1)
+		}
+	}
 	data, err := os.MkdirTemp("", "arion-e2e-")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)

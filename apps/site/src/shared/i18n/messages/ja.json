@@ -160,7 +160,6 @@
     "allPosts": "すべての記事",
     "morePosts": "ほかの記事",
     "contents": "目次",
-    "byline": "著者：{authors}",
     "updated": "{date} 更新",
     "categories": {
       "announcement": "お知らせ",

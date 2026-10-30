@@ -2,6 +2,7 @@
 package app
 
 import (
+	"arion.local/desktop/ui/pages/clipboard"
 	"arion.local/desktop/ui/pages/guide"
 	"arion.local/desktop/ui/pages/menubar"
 	"arion.local/desktop/ui/pages/onboarding"
@@ -12,6 +13,17 @@ import (
 	"arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo/ui"
 )
+
+func Clipboard(store runtime.Store) View {
+	page := &clipboard.Page{}
+	return View{Content: ui.View(func(c *ui.Context) { page.Render(c, store) }).WithClipboardWriter(func(text string) { store.Actions.CopyText(text) }), Close: func() {}}
+}
+
+const ClipboardWidth = clipboard.Width
+
+func ClipboardHeight(items []runtime.Clip) int { return clipboard.Height(items) }
+
+func PanelHeightFor(store runtime.Store) int { return menubar.HeightFor(store) }
 
 // Window sizes in DIPs, owned by the pages that lay them out.
 const (
@@ -51,7 +63,7 @@ func TrayHint(store runtime.Store) View {
 
 func Panel(store runtime.Store) View {
 	page := &menubar.Panel{}
-	return View{Content: ui.View(func(c *ui.Context) { page.Render(c, store) }), Close: func() {}}
+	return View{Content: ui.View(func(c *ui.Context) { page.Render(c, store) }).WithClipboardWriter(func(text string) { store.Actions.CopyText(text) }), Close: func() {}}
 }
 
 func Settings(store runtime.Store) View {
@@ -70,4 +82,11 @@ func GuideHeightFor(pane runtime.GuidePane) int { return guide.HeightFor(pane) }
 // UpdateReminder is the separate passive reminder; bootstrap owns its window.
 func UpdateReminder(store runtime.Store) View {
 	return View{Content: ui.View(func(c *ui.Context) { updatereminder.Render(c, store) }), Close: func() {}}
+}
+
+const ClipboardPreviewWidth = clipboard.PreviewWidth
+const ClipboardPreviewHeight = clipboard.PreviewHeight
+
+func ClipboardPreview(item runtime.Clip, bitmap *ui.Bitmap) View {
+	return View{Content: ui.View(func(c *ui.Context) { clipboard.Preview(c, item, bitmap) }), Close: func() {}}
 }

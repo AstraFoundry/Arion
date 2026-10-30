@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	"errors"
+	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -152,5 +153,27 @@ func TestFailedRollbackBlocksFurtherUpdatesAndPreservesJournal(t *testing.T) {
 	u.install()
 	if s.Phase != arion.UpdateFailed || u.due(time.Now().Add(updateInterval)) {
 		t.Fatal("blocked transaction restarted")
+	}
+}
+
+func TestUnsupportedBuildDoesNotRecoverOrRewriteSavedUpdate(t *testing.T) {
+	for _, content := range []string{`{"schema":1,"stage":"/release/update-stage","version":"9.9.9"}`, `invalid state`} {
+		t.Run(content, func(t *testing.T) {
+			dir := t.TempDir()
+			path := filepath.Join(dir, "updates.json")
+			if err := os.WriteFile(path, []byte(content), 0600); err != nil {
+				t.Fatal(err)
+			}
+			a := &App{opts: Options{DataDir: dir}}
+			a.updates = newUpdates(&fakeFeed{enabled: false}, &a.state.Update, nil)
+			a.scheduleUpdates()
+			if a.updatePolicy != nil || a.updates.recovering || a.updates.blocked || a.state.Update.Phase != arion.UpdateUnsupported || a.state.Update.StateError {
+				t.Fatalf("unsupported build entered update recovery: %+v", a.state.Update)
+			}
+			got, err := os.ReadFile(path)
+			if err != nil || string(got) != content {
+				t.Fatalf("saved release transaction modified: %q %v", got, err)
+			}
+		})
 	}
 }

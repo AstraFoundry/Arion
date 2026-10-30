@@ -8,8 +8,6 @@ import (
 	"unsafe"
 )
 
-var procIsClipboardFormatAvailable = user32.NewProc("IsClipboardFormatAvailable")
-
 // The transient paste text must carry the clipboard-history exclusion format.
 // This writes the real clipboard and restores its previous Unicode text.
 func TestTransientClipboardTextIsExcludedFromHistory(t *testing.T) {

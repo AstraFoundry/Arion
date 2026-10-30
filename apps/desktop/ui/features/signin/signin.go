@@ -284,6 +284,31 @@ func HostedSync(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
+// UsageReporting says whether this session reports consented daily usage.
+// The choice lives on the portal's data page; a new choice reaches Arion
+// with the next token, which checking again fetches.
+func UsageReporting(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
+	a := store.State.Account
+	manage := func() {
+		if a.Portal != "" && kit.Button(c.Key("usage-manage"), tokens, kit.Outline, messages.Text(copy.AccUsageManage), true).Clicked() {
+			c.OpenURL(a.Portal + "/data")
+		}
+	}
+	kit.Card(c, tokens).Children(func() {
+		if a.UsageReporting {
+			line(c, tokens, icons.CircleCheck, tokens.Success, messages.Text(copy.AccUsageOn), messages.Text(copy.AccUsageOnDetail), manage)
+			return
+		}
+		line(c, tokens, icons.Info, tokens.Muted, messages.Text(copy.AccUsageOff), messages.Text(copy.AccUsageOffDetail), func() {
+			manage()
+			if kit.Button(c.Key("usage-check"), tokens, kit.Outline, messages.Text(copy.AccCheckAgain), !a.Busy()).Clicked() {
+				store.Actions.RefreshAccount()
+			}
+		})
+	})
+}
+
 func waitlist(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	a := store.State.Account

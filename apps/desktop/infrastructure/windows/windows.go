@@ -11,6 +11,7 @@ import (
 	"encoding/hex"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"syscall"
 	"time"
 	"unicode/utf16"
@@ -21,10 +22,14 @@ import (
 	"arion.local/core/domain/ports"
 )
 
+var clipboardGate = make(chan struct{}, 1)
+var internalClipboardRevision atomic.Uint64
+
 var (
 	user32                       = syscall.NewLazyDLL("user32.dll")
 	kernel32                     = syscall.NewLazyDLL("kernel32.dll")
 	shell32                      = syscall.NewLazyDLL("shell32.dll")
+	procIsWindowEnabled          = user32.NewProc("IsWindowEnabled")
 	procGetForegroundWindow      = user32.NewProc("GetForegroundWindow")
 	procGetWindowThreadProcessId = user32.NewProc("GetWindowThreadProcessId")
 	procGetGUIThreadInfo         = user32.NewProc("GetGUIThreadInfo")
@@ -48,6 +53,7 @@ var (
 const (
 	gwlStyle         = ^uintptr(15) // GWL_STYLE (-16)
 	esPassword       = 0x0020
+	esReadOnly       = 0x0800
 	inputKeyboard    = 1
 	keyeventfUnicode = 0x0004
 	keyeventfKeyUp   = 0x0002
@@ -122,14 +128,19 @@ func NewTargets(readScreen func() bool, delivery func() Delivery) *Targets {
 	return &Targets{targets: map[contracts.TargetToken]*target{}, delivery: delivery, readScreen: readScreen}
 }
 
-func focusOf(foreground uintptr) uintptr {
+func focusState(foreground uintptr) guiThreadInfo {
+	if foreground == 0 {
+		return guiThreadInfo{}
+	}
 	thread, _, _ := procGetWindowThreadProcessId.Call(foreground, 0)
 	info := guiThreadInfo{Size: uint32(unsafe.Sizeof(guiThreadInfo{}))}
 	if ok, _, _ := procGetGUIThreadInfo.Call(thread, uintptr(unsafe.Pointer(&info))); ok == 0 {
-		return 0
+		return guiThreadInfo{}
 	}
-	return info.Focus
+	return info
 }
+
+func focusOf(foreground uintptr) uintptr { return focusState(foreground).Focus }
 
 func className(hwnd uintptr) string {
 	buffer := make([]uint16, 128)
@@ -139,9 +150,6 @@ func className(hwnd uintptr) string {
 
 func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.TargetSnapshot, error) {
 	foreground, _, _ := procGetForegroundWindow.Call()
-	if foreground == 0 {
-		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "no foreground window")
-	}
 	focus := focusOf(foreground)
 	secure, readable := false, false
 	var start, end uint32
@@ -276,25 +284,54 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
 	}
-	foreground, _, _ := procGetForegroundWindow.Call()
-	focus := uintptr(0)
-	if foreground != 0 {
-		focus = focusOf(foreground)
-	}
-	if foreground == 0 || focus == 0 {
-		if !publishClipboard(request.Text) {
+	copyResult := func(noInput bool) (contracts.CommitResult, error) {
+		if ctx.Err() != nil {
+			result.Failure = domain.CodeCancelled
+		} else if !publishClipboard(request.Text) {
 			result.Failure = domain.CodeClipboardUnavailable
-			return result, nil
+		} else {
+			result.Outcome = contracts.Copied
+			result.NoInput = noInput
 		}
-		result.Outcome = contracts.Copied
 		return result, nil
 	}
-	if strings.EqualFold(className(focus), "Edit") {
-		style, _, _ := procGetWindowLongW.Call(focus, gwlStyle)
-		if style&esPassword != 0 {
-			result.Failure = domain.CodeSecureFieldBlocked
-			return result, nil
-		}
+	foreground, _, _ := procGetForegroundWindow.Call()
+	current := focusState(foreground)
+	focus := current.Focus
+	class := strings.ToLower(className(focus))
+	enabled, _, _ := procIsWindowEnabled.Call(focus)
+	standardEdit := class == "edit" || strings.HasPrefix(class, "richedit")
+	style, _, _ := procGetWindowLongW.Call(focus, gwlStyle)
+	editable := focus != 0 && enabled != 0 && (standardEdit || current.Caret != 0) && (!standardEdit || style&esReadOnly == 0)
+	if standardEdit && style&esPassword != 0 {
+		result.Failure = domain.CodeSecureFieldBlocked
+		return result, nil
+	}
+	var pid uint32
+	if foreground != 0 {
+		procGetWindowThreadProcessId.Call(foreground, uintptr(unsafe.Pointer(&pid)))
+	}
+	metadataEditable, secure, known := dictationInput(pid)
+	if ctx.Err() != nil {
+		result.Failure = domain.CodeCancelled
+		return result, nil
+	}
+	if now, _, _ := procGetForegroundWindow.Call(); now != foreground || (now != 0 && focusOf(now) != focus) {
+		result.Failure = domain.CodeTargetChanged
+		return result, nil
+	}
+	if secure {
+		result.Failure = domain.CodeSecureFieldBlocked
+		return result, nil
+	}
+	// Keep Win32's explicit readonly/disabled checks; UIA also recognizes
+	// editors that do not expose a standard Edit window or native caret.
+	if !standardEdit && enabled != 0 && known {
+		editable = metadataEditable
+	}
+	if foreground == 0 || !editable {
+		noInput := (known && !metadataEditable) || (standardEdit && enabled != 0 && style&esReadOnly != 0)
+		return copyResult(noInput)
 	}
 	tgt.foreground, tgt.focus = foreground, focus
 	if ctx.Err() != nil {
@@ -312,12 +349,7 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 			return foreground == tgt.foreground && focusOf(foreground) == tgt.focus
 		})
 		if !posted && failure == domain.CodeTargetChanged {
-			if !publishClipboard(request.Text) {
-				result.Failure = domain.CodeClipboardUnavailable
-				return result, nil
-			}
-			result.Outcome = contracts.Copied
-			return result, nil
+			return copyResult(false)
 		}
 		if posted {
 			result.Outcome = contracts.Unknown
@@ -417,6 +449,9 @@ func writeClipboardText(text string) bool {
 	procGlobalUnlock.Call(handle)
 	procEmptyClipboard.Call()
 	ok, _, _ := procSetClipboardData.Call(cfUnicodeText, handle)
+	if ok != 0 {
+		markInternalClipboard()
+	}
 	return ok != 0
 }
 
@@ -441,6 +476,8 @@ func excludeFromClipboardHistory() bool {
 
 // publishClipboard leaves text on the clipboard and does not paste it.
 func publishClipboard(text string) bool {
+	clipboardGate <- struct{}{}
+	defer func() { <-clipboardGate }()
 	if text == "" {
 		return false
 	}
@@ -458,6 +495,8 @@ func publishClipboard(text string) bool {
 // excluded from clipboard history and cloud clipboard; when that mark cannot
 // be set, the previous text is put back and the paste fails.
 func paste(text string) bool {
+	clipboardGate <- struct{}{}
+	defer func() { <-clipboardGate }()
 	if ok, _, _ := procOpenClipboard.Call(0); ok == 0 {
 		return false
 	}
@@ -480,9 +519,12 @@ func paste(text string) bool {
 		{Type: inputKeyboard, VK: vkV, Flags: keyeventfKeyUp}, {Type: inputKeyboard, VK: vkControl, Flags: keyeventfKeyUp},
 	})
 	time.Sleep(400 * time.Millisecond)
-	if current, _, _ := procGetClipboardSequence.Call(); current == owned && hadText {
+	if current, _, _ := procGetClipboardSequence.Call(); current == owned {
 		if ok, _, _ := procOpenClipboard.Call(0); ok != 0 {
-			writeClipboardText(previous)
+			procEmptyClipboard.Call()
+			if hadText {
+				writeClipboardText(previous)
+			}
 			procCloseClipboard.Call()
 		}
 	}

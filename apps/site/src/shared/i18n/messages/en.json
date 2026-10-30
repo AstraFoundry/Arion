@@ -160,7 +160,6 @@
     "allPosts": "All posts",
     "morePosts": "More from the blog",
     "contents": "Contents",
-    "byline": "By {authors}",
     "updated": "Updated {date}",
     "categories": {
       "announcement": "Announcement",

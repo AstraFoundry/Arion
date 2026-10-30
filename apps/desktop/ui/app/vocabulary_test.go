@@ -3,6 +3,7 @@ package app
 import (
 	"errors"
 	"testing"
+	"time"
 
 	"arion.local/desktop/ui/pages/settings"
 	"arion.local/desktop/ui/shared/copy"
@@ -104,6 +105,7 @@ func TestVocabularyAddTermThenForms(t *testing.T) {
 			if !actions.called("add-hotword") || len(state.Vocabulary) != 1 || state.Vocabulary[0].To != "Arion" || state.Vocabulary[0].From != "" {
 				t.Fatalf("term not saved: %v %v", actions.calls, state.Vocabulary)
 			}
+			rest(tt, 500*time.Millisecond)
 			if err := tt.Click(messages.VocabVariantAction("Arion")); err != nil {
 				t.Fatal(err)
 			}

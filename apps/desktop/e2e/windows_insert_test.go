@@ -4,6 +4,7 @@ package e2e
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"syscall"
 	"testing"
@@ -14,6 +15,8 @@ import (
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/windows"
+	"github.com/egoist/mygo"
+	"github.com/egoist/mygo/transfer"
 )
 
 func identity() contracts.Identity {
@@ -226,5 +229,106 @@ func TestWindowsFocusChangeInsertsIntoFocusedEditor(t *testing.T) {
 	}
 	if !within(5*time.Second, func() bool { return first.text() == "" && second.text() == text }) {
 		t.Fatalf("text after focus change: %q %q", first.text(), second.text())
+	}
+}
+
+// DSK-A03: a focused button has no insertion point. Copy the processed text
+// without sending keys, for both an absent initial caret and a lost caret.
+func TestWindowsCopiesWithoutEditableFocus(t *testing.T) {
+	for _, delivery := range []windows.Delivery{windows.DeliveryAutomatic, windows.DeliveryClipboard} {
+		for _, initial := range []string{"button", "editor"} {
+			for _, readOnly := range []bool{false, true} {
+				t.Run(fmt.Sprintf("%s/%s/readonly-%v", delivery, initial, readOnly), func(t *testing.T) {
+					editor := startWindowsEditor(t)
+					noneditable := editor.button
+					if readOnly {
+						procSendMessageW.Call(editor.edit, 0x00CF, 1, 0) // EM_SETREADONLY
+						noneditable = editor.edit
+					}
+					editor.focusControl(t, noneditable)
+					if initial == "editor" {
+						editor.focus(t)
+					}
+					targets := windows.NewTargets(nil, func() windows.Delivery { return delivery })
+					snapshot, err := targets.Capture(context.Background(), identity())
+					if err != nil {
+						t.Fatal(err)
+					}
+					editor.focusControl(t, noneditable)
+					previous, err := mygo.Clipboard.Read()
+					if err != nil {
+						t.Fatal(err)
+					}
+					const text = "Processed 中文🙂\nsecond line"
+					t.Cleanup(func() {
+						if mygo.Clipboard.ReadText() == text {
+							if err := mygo.Clipboard.Write(previous); err != nil {
+								t.Error(err)
+							}
+						}
+					})
+					request := contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text}
+					result, err := targets.Commit(context.Background(), request)
+					if err != nil || result.Outcome != contracts.Copied || result.Failure != "" {
+						t.Fatalf("noneditable focus: %+v %v", result, err)
+					}
+					if got := mygo.Clipboard.ReadText(); got != text {
+						t.Fatalf("clipboard text %q, want %q", got, text)
+					}
+					if editor.text() != "" || editor.characters.Load() != 0 || editor.changes.Load() != 0 {
+						t.Fatal("clipboard-only delivery edited a field")
+					}
+					if duplicate, _ := targets.Commit(context.Background(), request); duplicate.Outcome != contracts.NotApplied {
+						t.Fatal("clipboard-only target reused")
+					}
+				})
+			}
+		}
+	}
+}
+
+func TestWindowsPasteRestoresClipboard(t *testing.T) {
+	for _, original := range []string{"", "Arion owned clipboard sentinel"} {
+		t.Run(fmt.Sprintf("original-text-%v", original != ""), func(t *testing.T) {
+			editor := startWindowsEditor(t)
+			editor.focus(t)
+			previous, err := mygo.Clipboard.Read()
+			if err != nil {
+				t.Fatal(err)
+			}
+			const text = "Paste into the editor"
+			t.Cleanup(func() {
+				if current := mygo.Clipboard.ReadText(); current == original || current == text {
+					if err := mygo.Clipboard.Write(previous); err != nil {
+						t.Error(err)
+					}
+				}
+			})
+			var contents transfer.Data
+			if original != "" {
+				contents = transfer.TextData(original)
+			}
+			if err := mygo.Clipboard.Write(contents); err != nil {
+				t.Fatal(err)
+			}
+			targets := windows.NewTargets(nil, func() windows.Delivery { return windows.DeliveryClipboard })
+			snapshot, err := targets.Capture(context.Background(), identity())
+			if err != nil {
+				t.Fatal(err)
+			}
+			result, err := targets.Commit(context.Background(), contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text})
+			if err != nil || result.Outcome != contracts.Unknown || result.Failure != "" {
+				t.Fatalf("paste result: %+v %v", result, err)
+			}
+			if !within(5*time.Second, func() bool { return editor.text() == text }) {
+				t.Fatalf("editor text %q, want %q", editor.text(), text)
+			}
+			if got := mygo.Clipboard.ReadText(); got != original {
+				t.Fatalf("clipboard text %q, want original %q", got, original)
+			}
+			if original == "" && len(mygo.Clipboard.Formats()) != 0 {
+				t.Fatal("paste left clipboard formats on the originally empty clipboard")
+			}
+		})
 	}
 }

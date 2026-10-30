@@ -1,5 +1,7 @@
 # Agent handoff
 
+Clipboard P0 is defined in [010](../../specs/010-clipboard.md) and [ADR 034](../decisions/034-clipboard-history.md). Domain/application history, encrypted snapshots, native revision filtering, localized picker/settings, and tray/shortcut wiring are implemented. Application ignore lists are excluded. External-editor/file-manager paste, OS permission and Windows runtime acceptance remain target-OS checks; see the [clipboard workflow](clipboard.md).
+
 Read [AGENTS.md](../../AGENTS.md), [architecture](architecture.md), [repository](repository.md), and the relevant [spec](../../specs/README.md) first. Claim a task in an ignored `.workspace/todo/` file, record touched paths, then report implementation, checks and remaining gaps. No dates or duration estimates.
 
 ## Implemented

@@ -35,16 +35,16 @@ func (x actions) RetryModel() {
 		x.a.runResource(func() { x.a.activate(x.a.state.Preferences.ModelOverride) })
 	}
 }
-func (x actions) DownloadPolish()      { x.a.startPolish(true) }
-func (x actions) RetryPolish()         { x.DownloadPolish() }
-func (x actions) StartLevelMonitor()   { x.a.startMonitor() }
-func (x actions) StopLevelMonitor()    { x.a.stopMonitor() }
-func (x actions) RefreshDevices()      { go x.a.refreshDevicesAsync() }
-func (x actions) CopyText(text string) { mygo.Clipboard.WriteText(text) }
-func (x actions) OpenSettings()        { x.a.openSettings() }
-func (x actions) CheckForUpdates()     { x.a.updates.check(time.Now(), true) }
-func (x actions) InstallUpdate()       { x.a.updates.install() }
-func (x actions) RestartToUpdate()     { x.a.restartUpdate() }
+func (x actions) DownloadPolish()           { x.a.startPolish(true) }
+func (x actions) RetryPolish()              { x.DownloadPolish() }
+func (x actions) StartLevelMonitor()        { x.a.startMonitor() }
+func (x actions) StopLevelMonitor()         { x.a.stopMonitor() }
+func (x actions) RefreshDevices()           { go x.a.refreshDevicesAsync() }
+func (x actions) CopyText(text string) bool { return x.a.copyTranscript(text) }
+func (x actions) OpenSettings()             { x.a.openSettings() }
+func (x actions) CheckForUpdates()          { x.a.updates.check(time.Now(), true) }
+func (x actions) InstallUpdate()            { x.a.updates.install() }
+func (x actions) RestartToUpdate()          { x.a.restartUpdate() }
 
 // OpenUpdate shows Settings › About, where the update is installed.
 func (x actions) OpenUpdate() {
@@ -78,6 +78,9 @@ func (x actions) RecordShortcut(owner string) {
 	a.state.Hold.RecordedKey = ""
 	a.state.Hold.RecordInvalid, a.state.Hold.RecordCancelled = false, false
 	a.startHoldKey()
+	if a.clipboard != nil {
+		a.registerClipboardShortcut()
+	}
 	a.invalidate()
 }
 
@@ -116,6 +119,9 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	change(&next)
 	next, _ = next.Normalize(runtime.GOOS)
 	if !a.savePreferences(next) {
+		if next.Clipboard != before.Clipboard {
+			a.state.Clipboard.Error = copy.ClipboardSaveFailed
+		}
 		if next.CheckUpdates != before.CheckUpdates || next.AutoInstallUpdates != before.AutoInstallUpdates || next.AllowPrereleaseUpdates != before.AllowPrereleaseUpdates {
 			a.state.Update.StateError = true
 			if a.updatePolicy != nil {
@@ -126,6 +132,13 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	}
 	if next.UILanguage != before.UILanguage {
 		a.updateLanguage()
+	}
+	if next.Clipboard != before.Clipboard {
+		a.state.Clipboard.Error = ""
+		a.configureClipboard(before.Clipboard)
+	}
+	if a.clipboard != nil && (next.HoldKey != before.HoldKey || next.TranslateKey != before.TranslateKey) {
+		a.registerClipboardShortcut()
 	}
 	if next.LaunchAtLogin != before.LaunchAtLogin {
 		_ = mygo.App.SetOpenAtLogin(next.LaunchAtLogin)
@@ -172,7 +185,7 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 
 // SetHoldKey persists the hold-to-talk key and restarts its listener.
 func (x actions) SetHoldKey(key application.HoldKey) {
-	if application.HoldKeysConflict(key, x.a.prefs.TranslateKey) {
+	if application.HoldKeysConflict(key, x.a.prefs.TranslateKey) || x.a.clipboardKeyConflicts(key) {
 		return
 	}
 	x.a.core.Cancel()
@@ -184,7 +197,7 @@ func (x actions) SetHoldKey(key application.HoldKey) {
 
 // SetTranslateKey persists the translation hold-to-talk key and restarts the listener.
 func (x actions) SetTranslateKey(key application.HoldKey) {
-	if application.HoldKeysConflict(key, x.a.prefs.HoldKey) {
+	if application.HoldKeysConflict(key, x.a.prefs.HoldKey) || x.a.clipboardKeyConflicts(key) {
 		return
 	}
 	x.a.core.Cancel()

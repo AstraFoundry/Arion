@@ -78,7 +78,7 @@ make e2e-macos      # owned product scenarios against the packaged Arion.app
 make site-check     # marketing site (apps/site): i18n, types, lint, tests, static export
 ```
 
-On first launch, `make desktop-dev` opens onboarding, requests microphone and Accessibility permissions, and downloads the default recognition model bundle into `~/Library/Application Support/Arion/models/` (macOS) or `%AppData%\Arion\models\` (Windows). For macOS ad hoc `CDHash` permission behavior and development troubleshooting, see [Local Development (`docs/operations/local-dev.md`)](docs/operations/local-dev.md#macos-development-build-and-tcc-permission-diagnostics).
+On first launch, `make desktop-dev` opens onboarding and provisions its own development profile. On macOS, configure a persistent signing certificate and quit the release before starting development. Use `make desktop-status` to check the actual running binary and `make desktop-production` to return to the installed release. Setup, profile paths, permission checks, and IME restrictions are in [Local Development (`docs/operations/local-dev.md`)](docs/operations/local-dev.md#macos-development-build-and-tcc-permission-diagnostics).
 
 ## Documentation
 

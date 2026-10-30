@@ -74,7 +74,7 @@ func gravity(g platform.Gravity) int32 { return int32((g.Y+1)*3 + g.X + 1 + 1) }
 func (w *window) initFlyout() {
 	loadFlyouts()
 	data := ptr(w.id)
-	if w.opts.Flyout.Tray != nil {
+	if w.opts.Parent == nil {
 		gtkWindowSetTypeHint(w.win, typeHintUtility)
 		gtkWindowSetSkipPagerHint(w.win, true)
 		w.SetAlwaysOnTop(true)
@@ -97,9 +97,12 @@ func (w *window) initFlyout() {
 // popup's position as it maps: there a flyout that shows maps again,
 // unless only its parent moved, which the popup follows.
 func (w *window) PlaceFlyout(f platform.Flyout, size platform.Size) {
-	if w.opts.Flyout != nil && f.Tray != nil && !w.closed {
+	if w.opts.Flyout != nil && w.opts.Parent == nil && !w.closed {
 		w.flyout, w.flyoutSize, w.placed = f, size, true
 		r := platform.Centered(size, platform.PrimaryWorkArea(screen{}.Displays()))
+		if f.Tray == nil {
+			r, _, _ = f.Place(f.Anchor, size, platform.WorkAreaFor(f.Anchor, screen{}.Displays()))
+		}
 		w.SetBounds(r) // Wayland compositors place it themselves
 		return
 	}

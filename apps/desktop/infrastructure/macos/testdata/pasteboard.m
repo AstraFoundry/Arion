@@ -6,6 +6,7 @@ static int focus_ok = 1, selection_ok = 1, secure = 0, posts = 0;
 int arion_focus_matches(void *element, int pid) { return focus_ok; }
 int arion_selection_matches(void *element, void *selection) { return selection_ok; }
 int arion_secure_input(void) { return secure; }
+int arion_frontmost_pid(void) { return 1; }
 
 // Keep real pasteboard and CGEvent construction, but intercept delivery:
 // this isolated check must never type into a user's foreground application.
@@ -30,6 +31,16 @@ static void replace_board(NSPasteboard *board, NSString *text) {
 int main(void) {
     @autoreleasepool {
         NSPasteboard *board = [NSPasteboard pasteboardWithUniqueName];
+        replace_board(board,@"same user text");
+        CHECK(!history_excluded(board));
+        NSPasteboardItem *privateItem = [NSPasteboardItem new];
+        [privateItem setString:@"same user text" forType:NSPasteboardTypeString];
+        [privateItem setData:[NSData data] forType:@"org.nspasteboard.ConcealedType"];
+        [board clearContents]; [board writeObjects:@[privateItem]];
+        CHECK(history_excluded(board));
+        replace_board(board,@"same user text");
+        CHECK(!history_excluded(board));
+        [board clearContents];
         NSPasteboardItem *first = [NSPasteboardItem new], *second = [NSPasteboardItem new];
         NSData *bytes = [NSData dataWithBytes:"\0\1\377" length:3];
         [first setString:@"original" forType:NSPasteboardTypeString];
@@ -42,6 +53,7 @@ int main(void) {
         CHECK(tx);
         CHECK([[board.pasteboardItems[0] stringForType:NSPasteboardTypeString] isEqual:@"original"]);
         CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_OK);
+        CHECK(history_excluded(board));
         CHECK([[board stringForType:NSPasteboardTypeString] isEqual:text]);
         CHECK([board.pasteboardItems[0].types containsObject:transientPasteType]);
         CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_FAILED);

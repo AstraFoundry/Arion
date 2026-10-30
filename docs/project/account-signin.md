@@ -8,7 +8,7 @@ Behavior is specified in [ADR 015](../decisions/015-hosted-relay-account-authori
 
 `account.New` and `bootstrap.New` remain idle. After native readiness, the composition root reads the OS credential store off the main thread and automatically restores an existing account with its refresh token. Dictation and window startup never wait for account networking. Device-only, offline and scripted E2E profiles do not start background maintenance.
 
-Maintenance checks wall-clock deadlines every five seconds, including after sleep. Tokens renew before expiry (10% of the remaining lifetime, capped at one minute). Missing expiry schedules no proactive refresh. Transient transport failures, HTTP 408/429/5xx, OAuth `server_error`/`temporarily_unavailable`, and credential read/write errors retry with exponential backoff and jitter, starting at five seconds and capped at five minutes. Existing account identity stays visible; transient refresh failures show no prompt or toast. A restart while offline shows automatic restoration until connectivity returns; profile data is not persisted.
+Maintenance checks wall-clock deadlines every five seconds, including after sleep. Tokens renew before expiry (10% of the remaining lifetime, capped at one minute). Missing expiry schedules no proactive refresh. Transient transport failures, HTTP 408/429/5xx, OAuth `server_error`/`temporarily_unavailable`, and credential read/write errors retry with exponential backoff and jitter, starting at five seconds and capped at five minutes. Existing account identity stays visible; transient refresh failures show no prompt or toast. A restart while offline shows automatic restoration until connectivity returns. Display name and email for the restored subject are read from preferences; picture bytes are not persisted.
 
 Missing credentials or `invalid_grant` stop recovery and allow sign-in. Other permanent failures stop automatic retries and show the existing localized error. Refresh, sign-in and sign-out are serialized by account phase and service locks; generation checks discard stale results. Sign-out invalidates queued recovery before revocation, and app quit stops the maintenance timer. No background operation opens a browser.
 
@@ -29,12 +29,12 @@ One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_P
 
 ## What views read
 
-`State.Account` has no access token and no refresh token.
+`State.Account` has no access token and no refresh token. The last signed-in `Subject`, `Name` and `Email` are also stored in preference schema v1 as additive `accountIssuer` / `accountSubject` / `accountName` / `accountEmail` so Settings can show the profile line after a restart. They are display cache, not credentials. A matching issuer and `Subject` fills empty session fields; a different account or sign-out clears them. Picture bytes stay in memory only.
 
 | Field | Values |
 | --- | --- |
 | `Phase` | `signed_out`, `signing_in`, `signed_in`, `refreshing`, `signing_out` |
-| `Subject`, `Name`, `Email`, `Picture`, `Locale` | Profile from the ID token, for display |
+| `Subject`, `Name`, `Email`, `Picture`, `Locale` | Profile from the ID token or UserInfo, for display. Empty name and email for the same subject are filled from preferences |
 | `HostedSync` | `ent` contains `arion.sync.hosted`. The sync server remains the authority |
 | `ErrorCode`, `ErrorDetail` | Content-free failure. Map them through the copy catalog |
 | `Waitlist.Phase` | empty, `joining`, `joined_pending`, `already_entitled`, `closed`, `error` |
@@ -69,7 +69,6 @@ Not built yet:
 
 - **Device enrollment (SYNC-02) after the entitlement.** No desktop sync client exists. The entitled row in `features/signin` is where enrollment starts.
 - **Turn off sync and Delete server data (SYNC-07).** No actions back them, so Settings shows neither. They stay two separate operations.
-- **Profile after restart.** Name and email are not kept on disk. While initial background restoration is pending, the stored state shows no profile. Keeping it would add fields to the versioned preferences schema.
 
 ## Service API
 
@@ -156,3 +155,46 @@ Native Keychain and Credential Manager behavior is verified by compiling the pla
 The composition root supplies the immutable [compiled center profile](central-sync-design.md#implemented-profile-boundaries), including custom issuer, client, resource, scopes and entitlement. Refresh-token storage is keyed by its fingerprint. Legacy unscoped tokens are retained without migration; sign in again. Device mode disables all account operations and removes the account setup path. Custom OIDC disables the AstraFoundry catalog/waitlist flow. Neither profile selection nor credential-store construction contacts a server or enables sync.
 
 OS-authorized [product notifications](product-notifications.md) use the current session without requiring hosted-sync entitlement or an application preference. Sign-out invalidates the network/action generation before revocation; restoring a session resumes authenticated catchup when OS permission allows. This does not enable encrypted memory sync.
+
+## Consented usage reporting
+
+The access token carries `usage_consent_version=usage-v1` and a valid
+`usage_consent_at` timestamp only after the platform records explicit agreement.
+Missing/older claims leave reporting disabled. The desktop never treats sign-in
+alone as permission. A newly accepted choice reaches an existing desktop session
+at its next token refresh; the server checks current consent on every report.
+
+The same committed usage event that updates Overview also updates a separate
+account-scoped ledger. Only events committed while signed in and consented are
+counted; earlier Overview history and signed-out dictation are not backfilled.
+Visits record active signed-in calendar days, including days without dictation.
+The payload contains date, visited, sessions, microphone milliseconds and word
+count, plus the fixed product slug and a random account/installation source ID.
+It contains no recording, text, scene, application identity, host or session time.
+
+At sign-in and every five minutes, a background worker sends changed daily
+snapshots to the issuer's `/api/v1/usage`. The persisted random source ID survives
+restarts; the server takes monotonic snapshots per source and sums distinct
+sources, so retries and multiple devices do not overwrite each other. Pending
+snapshots are bounded to 31 local calendar days. Local ledger paths are keyed by
+issuer and subject, and contain no credentials. Account switches and sign-out
+cancel requests and invalidate queued acknowledgements. Only the exact sent
+snapshot is acknowledged, preserving commits made while a request is in flight.
+A successful response must name Arion, match the sent calendar day, retain its
+visit flag and confirm each counter at or above the sent value. Missing/wrong
+products or lower counters are payload errors; they leave the snapshot pending
+and use the normal retry backoff instead of acknowledging unconfirmed usage.
+Transient failures retry after 15 seconds with exponential delay capped at five
+minutes. Authorization refusals stop collection and sending until a fresh token
+allows them; token expiry waits for the existing account maintenance flow.
+Offline and scripted E2E profiles do not start reporting.
+
+Settings › Account shows a Usage data row while signed in: reporting is on only
+while the current token carries consent and the platform has not refused it.
+Manage opens the portal's `/account/data` page (standard issuer only). When off,
+Check again refreshes the session so a choice made on the web takes effect.
+The platform caps sources per account day and accepts dates within 32 days back
+and one day ahead of its UTC day; the 31-day ledger stays inside that window.
+
+Display caches are also keyed by issuer and subject. Legacy unscoped display
+caches are cleared rather than reused for a potentially different account.

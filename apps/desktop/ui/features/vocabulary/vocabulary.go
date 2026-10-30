@@ -29,6 +29,9 @@ type variantDraft struct {
 	Term, Value string
 	Error       copy.Key
 	Focus       bool
+	// Held records that the input has had focus, so it closes on blur
+	// only after focus has actually arrived.
+	Held bool
 }
 
 type readingDraft struct {
@@ -205,7 +208,9 @@ func variantAdder(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft
 	case draft.Focus:
 		input.Focus()
 		draft.Focus = false
-	case !input.Focused() && strings.TrimSpace(draft.Value) == "":
+	case input.Focused():
+		draft.Held = true
+	case draft.Held && strings.TrimSpace(draft.Value) == "":
 		*draft = variantDraft{}
 		return
 	}
@@ -314,7 +319,7 @@ func addVariant(store runtime.Store, draft *variantDraft) {
 	}
 	switch err := store.Actions.AddReplacementVariants([]string{draft.Value}, draft.Term); {
 	case err == nil:
-		draft.Value, draft.Error, draft.Focus = "", "", true
+		draft.Value, draft.Error = "", ""
 	case errors.Is(err, runtime.ErrVocabularyInvalid):
 		draft.Error = copy.VocabInvalid
 	case errors.Is(err, runtime.ErrVocabularyConflict):

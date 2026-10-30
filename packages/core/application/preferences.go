@@ -1,6 +1,10 @@
 package application
 
-import "arion.local/core/domain"
+import (
+	"strings"
+
+	"arion.local/core/domain"
+)
 
 // Delivery selects how shortcut-mode commits reach other applications.
 type Delivery string
@@ -18,11 +22,12 @@ const (
 // on purpose: the best evaluated bundle loads automatically; ModelOverride
 // only exists for an explicit choice among evaluated bundles.
 type Preferences struct {
-	Version             int        `json:"version"`
-	UILanguage          UILanguage `json:"uiLanguage"`
-	OnboardingCompleted bool       `json:"onboardingCompleted"`
-	HoldKey             HoldKey    `json:"holdKey"`
-	TranslateKey        HoldKey    `json:"translateKey,omitempty"`
+	Clipboard           ClipboardPreferences `json:"clipboard"`
+	Version             int                  `json:"version"`
+	UILanguage          UILanguage           `json:"uiLanguage"`
+	OnboardingCompleted bool                 `json:"onboardingCompleted"`
+	HoldKey             HoldKey              `json:"holdKey"`
+	TranslateKey        HoldKey              `json:"translateKey,omitempty"`
 	// PreviousTranslateKey retains the last assignment while translation is off.
 	PreviousTranslateKey HoldKey                    `json:"previousTranslateKey,omitempty"`
 	TranslateLanguage    domain.TranslationLanguage `json:"translateLanguage,omitempty"`
@@ -78,6 +83,13 @@ type Preferences struct {
 	// Keyboard configures Arion's input method. Profiles written before it
 	// existed load the defaults.
 	Keyboard KeyboardPreferences `json:"keyboard"`
+	// AccountSubject, AccountName and AccountEmail remember the last signed-in
+	// profile line for Settings. They are not credentials; tokens stay in the
+	// OS store. Profiles written before they existed load empty.
+	AccountIssuer  string `json:"accountIssuer,omitempty"`
+	AccountSubject string `json:"accountSubject,omitempty"`
+	AccountName    string `json:"accountName,omitempty"`
+	AccountEmail   string `json:"accountEmail,omitempty"`
 }
 
 // PolishEngine selects where polishing runs.
@@ -108,7 +120,8 @@ func DefaultPreferences(platform string) Preferences {
 		TranslateKey: DefaultTranslateKey(platform), TranslateLanguage: domain.TargetEnglish,
 		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, Punctuation: domain.PunctuationSmart, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
-		Keyboard: DefaultKeyboardPreferences(),
+		Keyboard:  DefaultKeyboardPreferences(),
+		Clipboard: DefaultClipboardPreferences(),
 	}
 }
 
@@ -119,6 +132,13 @@ func DefaultPreferences(platform string) Preferences {
 func (p Preferences) Normalize(platform string) (Preferences, []string) {
 	defaults := DefaultPreferences(platform)
 	var repaired []string
+	if !p.Clipboard.Limits.Valid() {
+		p.Clipboard.Limits = defaults.Clipboard.Limits
+		repaired = append(repaired, "clipboard.limits")
+	}
+	if p.Clipboard.Shortcut == "" {
+		p.Clipboard.Shortcut = defaults.Clipboard.Shortcut
+	}
 	if p.UILanguage != English && p.UILanguage != SimplifiedChinese {
 		p.UILanguage = defaults.UILanguage
 		repaired = append(repaired, "uiLanguage")
@@ -173,5 +193,36 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 		p.MicrophoneGain = defaults.MicrophoneGain
 		repaired = append(repaired, "microphoneGain")
 	}
+	if next := p.WithAccountDisplay(p.AccountIssuer, p.AccountSubject, p.AccountName, p.AccountEmail); next.AccountIssuer != p.AccountIssuer || next.AccountSubject != p.AccountSubject || next.AccountName != p.AccountName || next.AccountEmail != p.AccountEmail {
+		p = next
+		repaired = append(repaired, "accountDisplay")
+	}
 	return p, repaired
+}
+
+// WithAccountDisplay stores the signed-in profile line, or clears it when
+// subject is empty. Tokens are never written here.
+func (p Preferences) WithAccountDisplay(issuer, subject, name, email string) Preferences {
+	p.AccountIssuer = strings.TrimSpace(issuer)
+	p.AccountSubject = strings.TrimSpace(subject)
+	p.AccountName = strings.TrimSpace(name)
+	p.AccountEmail = strings.TrimSpace(email)
+	if p.AccountIssuer == "" || p.AccountSubject == "" {
+		p.AccountIssuer = ""
+		p.AccountSubject = ""
+		p.AccountName = ""
+		p.AccountEmail = ""
+	}
+	return p
+}
+
+// DisplayForAccount returns the remembered name and email when they belong
+// to subject. A different or empty subject is not a match.
+func (p Preferences) DisplayForAccount(issuer, subject string) (name, email string, ok bool) {
+	subject = strings.TrimSpace(subject)
+	if issuer == "" || p.AccountIssuer != issuer || subject == "" || p.AccountSubject != subject {
+		return "", "", false
+	}
+	name, email = strings.TrimSpace(p.AccountName), strings.TrimSpace(p.AccountEmail)
+	return name, email, name != "" || email != ""
 }

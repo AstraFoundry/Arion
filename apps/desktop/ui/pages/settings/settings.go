@@ -5,6 +5,7 @@ package settings
 import (
 	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/entities/model"
+	"arion.local/desktop/ui/features/clipboard"
 	"arion.local/desktop/ui/features/cloud"
 	"arion.local/desktop/ui/features/contributors"
 	"arion.local/desktop/ui/features/diagnostics"
@@ -41,6 +42,7 @@ const (
 	Microphone = "microphone"
 	Model      = "model"
 	Vocabulary = "vocabulary"
+	Clipboard  = "clipboard"
 	Account    = "account"
 	About      = "about"
 )
@@ -66,6 +68,7 @@ const (
 
 // Page keeps the window's own state.
 type Page struct {
+	clipboardPicker holdkey.PickerState
 	holdPicker      holdkey.PickerState
 	translatePicker holdkey.PickerState
 	Section         string
@@ -103,6 +106,9 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 		if p.shown == Dictation {
 			p.holdPicker.Close(store)
 			p.translatePicker.Close(store)
+		}
+		if p.shown == Clipboard {
+			p.clipboardPicker.Close(store)
 		}
 		if p.shown == Keyboard {
 			store.Actions.CancelInputMethodSetup()
@@ -176,6 +182,7 @@ func (p *Page) syncMonitor(store runtime.Store) {
 func (p *Page) Close(store runtime.Store) {
 	p.holdPicker.Close(store)
 	p.translatePicker.Close(store)
+	p.clipboardPicker.Close(store)
 	if p.Section == Keyboard {
 		store.Actions.CancelInputMethodSetup()
 	}
@@ -273,10 +280,18 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 	case Vocabulary:
 		vocabulary.Learning(c, store, tokens)
 		vocabulary.Editor(c, store, tokens, &p.draft, keyboard.Ready(store))
+	case Clipboard:
+		if !store.State.Preferences.Clipboard.Enabled {
+			p.clipboardPicker.Close(store)
+		}
+		clipboard.Settings(c, store, tokens, func() { holdkey.ClipboardSetting(c, store, &p.clipboardPicker) })
 	case Account:
 		signin.Card(c, store, tokens)
 		if store.State.Account.SignedIn() {
 			kit.Group(c, tokens, messages.Text(copy.AccSyncGroup), func() { signin.HostedSync(c, store, tokens) })
+			if !store.State.Account.Disabled {
+				kit.Group(c, tokens, messages.Text(copy.AccUsageGroup), func() { signin.UsageReporting(c, store, tokens) })
+			}
 		}
 		signin.Portal(c, store, tokens)
 	case About:

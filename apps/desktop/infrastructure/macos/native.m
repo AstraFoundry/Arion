@@ -6,6 +6,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Security/Security.h>
 #include "native.h"
+#include "focus.h"
 #import "../../ime/macos/source_maintenance.h"
 #include <fcntl.h>
 #include <stdio.h>
@@ -44,14 +45,12 @@ static void copy_string(CFTypeRef value, char *out, size_t size) {
     }
 }
 
-static AXUIElementRef focused_element(int *error) {
+static AXUIElementRef focused_element(int *error, int *no_input, int secure) {
     AXUIElementRef system = AXUIElementCreateSystemWide();
-    CFTypeRef element = NULL;
-    AXError result = AXUIElementCopyAttributeValue(system, kAXFocusedUIElementAttribute, &element);
+    AXUIElementSetMessagingTimeout(system, 0.2);
+    AXUIElementRef element = arion_copy_focus(system, secure, no_input, error);
     CFRelease(system);
-    *error = (int)result;
-    if (result != kAXErrorSuccess || !element) return NULL;
-    return (AXUIElementRef)element;
+    return element;
 }
 
 // copy_site reads only the authorized outermost web area's http(s) host.
@@ -100,10 +99,6 @@ int arion_selection_matches(void *element, void *selection) {
     return same;
 }
 
-void *arion_copy_selection(void *element) {
-    return (void *)selected_range((AXUIElementRef)element);
-}
-
 int arion_capture_target(arion_target *out, int read_site) {
     memset(out, 0, sizeof(*out));
     if (!AXIsProcessTrusted()) return ARION_TARGET_UNTRUSTED;
@@ -115,8 +110,8 @@ int arion_capture_target(arion_target *out, int read_site) {
         if (app.localizedName) strlcpy(out->app_name, app.localizedName.UTF8String, sizeof(out->app_name));
         out->secure_input = IsSecureEventInputEnabled() ? 1 : 0;
         int error = 0;
-        AXUIElementRef element = focused_element(&error);
-        if (!element) return ARION_TARGET_OK; // app-level target; safety unknown
+        AXUIElementRef element = focused_element(&error, &out->no_input, out->secure_input);
+        if (!element) return ARION_TARGET_OK;
         CFTypeRef role = NULL, subrole = NULL;
         AXUIElementCopyAttributeValue(element, kAXRoleAttribute, &role);
         AXUIElementCopyAttributeValue(element, kAXSubroleAttribute, &subrole);
@@ -132,6 +127,11 @@ int arion_capture_target(arion_target *out, int read_site) {
         int secure = out->secure_input || strcmp(out->subrole, "AXSecureTextField") == 0;
         if (read_site && !secure) copy_site(element, out->site, sizeof(out->site));
         if (!secure) out->selection = (void *)selected_range(element);
+        Boolean valueSettable = false, selectedTextSettable = false;
+        AXUIElementIsAttributeSettable(element, kAXValueAttribute, &valueSettable);
+        AXUIElementIsAttributeSettable(element, kAXSelectedTextAttribute, &selectedTextSettable);
+        out->editable = valueSettable || selectedTextSettable;
+
         out->element = (void *)element; // retained; released by arion_release
         return ARION_TARGET_OK;
     }
@@ -190,7 +190,7 @@ int arion_focus_matches(void *element, int pid) {
     @autoreleasepool {
         NSRunningApplication *app = [[NSWorkspace sharedWorkspace] frontmostApplication];
         int error = 0;
-        AXUIElementRef current = focused_element(&error);
+        AXUIElementRef current = focused_element(&error, NULL, 0);
         if (!element) {
             if (current) CFRelease(current);
             return app && app.processIdentifier == pid;

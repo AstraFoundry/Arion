@@ -96,11 +96,15 @@ func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		ui.Icon(c, icons.ChevronsUpDown).FontSize(14).TextColor(tokens.Muted)
 	})
 	kit.SelectPopup(tokens, sel, func() {
-		kit.SelectItem(c, tokens, sel, "", messages.Text(copy.SceneAutomatic), chosen == "")
-		kit.SelectSeparator(c, tokens)
-		for _, s := range runtime.ChoosableScenes {
-			kit.SelectItem(c, tokens, sel, s, messages.Text(Label(s)), chosen == s)
-		}
+		bounds := button.Bounds()
+		room := max(bounds.Y-4, c.Root().Bounds().H-bounds.Y-bounds.H-4)
+		ui.Scroll(c).MaxHeight(min(kit.PopupHeight, max(56, room-10))).Children(func() {
+			kit.SelectItem(c, tokens, sel, "", messages.Text(copy.SceneAutomatic), chosen == "")
+			kit.SelectSeparator(c, tokens)
+			for _, s := range runtime.ChoosableScenes {
+				kit.SelectItem(c, tokens, sel, s, messages.Text(Label(s)), chosen == s)
+			}
+		})
 	})
 	if button.Changed() {
 		store.Actions.ChooseScene(selected)

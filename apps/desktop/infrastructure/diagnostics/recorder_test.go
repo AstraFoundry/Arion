@@ -429,3 +429,19 @@ func TestInputMethodSetupDiagnosticsUseClosedStages(t *testing.T) {
 		t.Fatal("arbitrary stage accepted")
 	}
 }
+
+func TestNoInputFactIsRestrictedToSuccessfulCopiedCommit(t *testing.T) {
+	valid := Entry{At: time.Now(), Event: "commit_result", Outcome: "copied", NoInput: true}
+	if !valid.valid() {
+		t.Fatal("positive no-input copied result rejected")
+	}
+	for _, entry := range []Entry{
+		{At: time.Now(), Event: "commit_result", Outcome: "unknown", NoInput: true},
+		{At: time.Now(), Event: "commit_result", Outcome: "copied", NoInput: true, Code: domain.CodePermissionDenied},
+		{At: time.Now(), Event: "target_capture", NoInput: true},
+	} {
+		if entry.valid() {
+			t.Fatal("no-input fact accepted outside successful copied result")
+		}
+	}
+}

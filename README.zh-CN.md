@@ -78,7 +78,7 @@ make e2e-macos      # 针对打包后的 Arion.app 运行产品场景测试
 make site-check     # 宣传站点 (apps/site)：i18n、类型、lint、测试与静态导出
 ```
 
-首次运行 `make desktop-dev` 时，应用会打开引导界面，请求麦克风与辅助功能权限，并将默认识别模型包下载至 `~/Library/Application Support/Arion/models/`（macOS）或 `%AppData%\Arion\models\`（Windows）。关于 macOS 开发模式构建与 TCC 权限排障说明，请参阅[本地开发指南 (`docs/operations/local-dev.md`)](docs/operations/local-dev.md#macos-development-build-and-tcc-permission-diagnostics)。
+首次运行 `make desktop-dev` 时，应用会打开引导界面，并使用独立的开发数据目录。macOS 上需先配置固定签名证书，并退出正式版。使用 `make desktop-status` 核对实际运行的程序，使用 `make desktop-production` 返回已安装的正式版。证书配置、数据路径、权限验证与输入法限制见[本地开发指南 (`docs/operations/local-dev.md`)](docs/operations/local-dev.md#macos-development-build-and-tcc-permission-diagnostics)。
 
 ## 文档导航
 

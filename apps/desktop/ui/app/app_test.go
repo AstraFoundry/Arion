@@ -52,7 +52,7 @@ func (r *recorder) UseRecommendedBundle()      { r.call("use-recommended") }
 func (r *recorder) RefreshDevices()            { r.call("devices") }
 func (r *recorder) StartLevelMonitor()         { r.call("monitor-start") }
 func (r *recorder) StopLevelMonitor()          { r.call("monitor-stop") }
-func (r *recorder) CopyText(text string)       { r.call("copy:" + text) }
+func (r *recorder) CopyText(text string) bool  { r.call("copy:" + text); return true }
 func (r *recorder) OpenSettings()              { r.call("settings") }
 func (r *recorder) CompleteOnboarding()        { r.call("complete") }
 func (r *recorder) SignIn()                    { r.call("sign-in") }
@@ -312,9 +312,10 @@ func TestOverlayPhases(t *testing.T) {
 func TestMenuBarPanel(t *testing.T) {
 	state, actions, store := fixture()
 	panel := &menubar.Panel{}
-	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight)
+	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store))
+	tt.SetSize(PanelWidth, PanelHeightFor(store))
 	settle(tt)
-	if !hasText(tt, copy.For(copy.English).Text(copy.StatusReady)) || !hasText(tt, copy.For(copy.English).Text(copy.PanelEmpty)) {
+	if !hasText(tt, copy.For(copy.English).Text(copy.StatusReady)) {
 		t.Fatalf("idle panel: %q", tt.Texts())
 	}
 	if hasText(tt, copy.For(copy.English).Text(copy.ModelNameGeneric)) {
@@ -328,35 +329,29 @@ func TestMenuBarPanel(t *testing.T) {
 		t.Fatal("start button did not toggle dictation")
 	}
 	state.Dictation = runtime.Dictation{SessionID: "1", State: runtime.StateCapturing, Levels: levels(40), Changed: time.Now()}
-	state.LastText = "Ship the release notes before Friday."
+	tt.SetSize(PanelWidth, PanelHeightFor(store))
 	settle(tt)
 	if !hasText(tt, copy.For(copy.English).Text(copy.StopDictate)) || !hasText(tt, copy.For(copy.English).Text(copy.StatusListening)) {
 		t.Fatalf("live panel: %q", tt.Texts())
 	}
 	snapshot(t, tt, "panel-listening")
-	if err := tt.Click(copy.For(copy.English).Text(copy.Copy)); err != nil {
-		t.Fatal(err)
-	}
-	if !actions.called("copy:Ship the release notes before Friday.") {
-		t.Fatal("copy did not copy the last dictation")
-	}
 	state.Dictation = runtime.Dictation{}
 	state.Model = runtime.Model{State: runtime.ModelProvisioning, Phase: runtime.PhaseDownloading, Done: 63 << 20, Total: 134 << 20, Active: state.Model.Active, Automatic: true}
+	tt.SetSize(PanelWidth, PanelHeightFor(store))
 	settle(tt)
 	if !hasText(tt, copy.For(copy.English).Text(copy.StatusPreparing)) || !hasText(tt, "63 MB of 134 MB") {
 		t.Fatalf("provisioning panel: %q", tt.Texts())
 	}
 	snapshot(t, tt, "panel-downloading")
 
-	// A failed download offers its retry above the footer, under the
-	// longest last dictation.
-	state.LastText = strings.Repeat("Ship the release notes before Friday. ", 12)
+	// A failed download offers its retry above the footer.
 	state.Model = runtime.Model{State: runtime.ModelFailed, Failure: runtime.CodeProvisioningFailed, Active: state.Model.Active, Automatic: true}
+	tt.SetSize(PanelWidth, PanelHeightFor(store))
 	settle(tt)
 	en := copy.For(copy.English)
 	retry, ok := tt.Find(en.Text(copy.Retry))
 	quit, _ := tt.Find(en.Text(copy.Quit))
-	if !ok || retry.Y+retry.H > quit.Y || quit.Y+quit.H > PanelHeight {
+	if !ok || retry.Y+retry.H > quit.Y || quit.Y+quit.H > float32(PanelHeightFor(store)) {
 		t.Fatalf("retry %+v and footer %+v do not fit the panel", retry, quit)
 	}
 	if err := tt.Click(en.Text(copy.Retry)); err != nil || !actions.called("retry") {
@@ -404,6 +399,7 @@ func TestSettingsSections(t *testing.T) {
 		t.Fatal(err)
 	}
 	settle(tt)
+	rest(tt, 500*time.Millisecond)
 	if err := tt.Click(copy.For(copy.English).VocabVariantAction("Arion")); err != nil {
 		t.Fatal(err)
 	}
@@ -566,8 +562,9 @@ func TestUpdateStates(t *testing.T) {
 func TestUpdateNotice(t *testing.T) {
 	state, actions, store := fixture()
 	panel := &menubar.Panel{}
-	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight)
+	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store))
 	en := copy.For(copy.English)
+	tt.SetSize(PanelWidth, PanelHeightFor(store))
 	settle(tt)
 	if hasText(tt, en.UpdateTo("0.2.0")) {
 		t.Fatal("notice without an update")
@@ -575,6 +572,7 @@ func TestUpdateNotice(t *testing.T) {
 	quit, _ := tt.Find(en.Text(copy.Quit))
 	state.Update = runtime.Update{Phase: runtime.UpdateAvailable, Version: "0.1.0-alpha.6"}
 	state.Preferences.UILanguage = runtime.LanguageChinese
+	tt.SetSize(PanelWidth, PanelHeightFor(store))
 	settle(tt)
 	zh := copy.For(copy.SimplifiedChinese)
 	if q, ok := tt.Find(zh.Text(copy.Quit)); !ok || q.X+q.W > PanelWidth-16 {
@@ -583,6 +581,7 @@ func TestUpdateNotice(t *testing.T) {
 	snapshot(t, tt, "panel-update-zh-CN")
 	state.Preferences.UILanguage = runtime.LanguageEnglish
 	state.Update = runtime.Update{Phase: runtime.UpdateAvailable, Version: "0.2.0"}
+	tt.SetSize(PanelWidth, PanelHeightFor(store))
 	settle(tt)
 	if q, _ := tt.Find(en.Text(copy.Quit)); q.W != quit.W || q.X != quit.X {
 		t.Fatalf("the update moved Quit: %+v from %+v", q, quit)
@@ -756,7 +755,7 @@ func TestDarkAppearance(t *testing.T) {
 		render        func(c *ui.Context)
 		width, height int
 	}{
-		{"panel", func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight},
+		{"panel", func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store)},
 		{"settings", func(c *ui.Context) { settingsPage.Render(c, store) }, SettingsWidth, SettingsHeight},
 		{"onboarding", func(c *ui.Context) { onboardingPage.Render(c, store) }, OnboardingWidth, OnboardingHeight},
 	} {
@@ -944,11 +943,11 @@ func TestInterfaceLanguageSwitch(t *testing.T) {
 	panel := &menubar.Panel{}
 	onboardingPage := onboarding.NewPage()
 	settingsTester := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
-	panelTester := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight)
+	panelTester := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store))
 	onboardingTester := ui.NewTester(func(c *ui.Context) { onboardingPage.Render(c, store) }, OnboardingWidth, OnboardingHeight)
 	page.Section = settings.General
-	state.LastText = "User text {index}: keep exactly."
-	state.Dictation = runtime.Dictation{SessionID: "active", State: runtime.StateCapturing, Draft: state.LastText, Changed: time.Now()}
+	draft := "User text {index}: keep exactly."
+	state.Dictation = runtime.Dictation{SessionID: "active", State: runtime.StateCapturing, Draft: draft, Changed: time.Now()}
 	settle(settingsTester)
 	if err := settingsTester.Click("English"); err != nil {
 		t.Fatal(err)
@@ -966,7 +965,7 @@ func TestInterfaceLanguageSwitch(t *testing.T) {
 	if !hasText(settingsTester, "界面语言") || !hasText(panelTester, "结束") || !hasText(onboardingTester, "开始设置") {
 		t.Fatalf("views did not switch: %q %q %q", settingsTester.Texts(), panelTester.Texts(), onboardingTester.Texts())
 	}
-	if state.Dictation.SessionID != "active" || state.Dictation.Draft != state.LastText || !hasText(panelTester, state.LastText) {
+	if state.Dictation.SessionID != "active" || state.Dictation.Draft != draft {
 		t.Fatal("language change altered user content/session")
 	}
 	snapshot(t, settingsTester, "settings-general-zh-CN")
@@ -1042,6 +1041,7 @@ func TestChineseSettingsAndTransientErrors(t *testing.T) {
 		t.Fatal(err)
 	}
 	settle(tt)
+	rest(tt, 500*time.Millisecond)
 	if err := tt.Click(zh.VocabVariantAction("Arion {value}")); err != nil {
 		t.Fatal(err)
 	}
@@ -1083,7 +1083,7 @@ func TestChineseOverlayAndDownload(t *testing.T) {
 	state.Model.Phase = runtime.PhaseDownloading
 	state.Model.Done, state.Model.Total = 63<<20, 134<<20
 	panel := &menubar.Panel{}
-	panelTester := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight)
+	panelTester := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store))
 	settle(panelTester)
 	if !hasText(panelTester, "正在下载") || !hasText(panelTester, "63 MB / 134 MB") {
 		t.Fatalf("untranslated download: %q", panelTester.Texts())
