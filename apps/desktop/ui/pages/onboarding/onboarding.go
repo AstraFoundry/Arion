@@ -129,11 +129,15 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.OnbStart), true).OnClick(func() { p.move(c, 1, store) })
 				case onboarding.Account:
 					// Signed out, moving on is continuing locally.
-					label := messages.Text(copy.Continue)
+					label, variant := messages.Text(copy.Continue), kit.Primary
 					if account.StageOf(state.Account) == account.SignedOut {
-						label = messages.Text(copy.OnbContinueLocally)
+						label, variant = messages.Text(copy.OnbContinueLocally), kit.Ghost
 					}
-					kit.Button(c.Key("next"), tokens, kit.Primary, label, onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, store) })
+					button := kit.Button(c.Key("next"), tokens, variant, label, onboarding.Ready(step, state))
+					if variant == kit.Ghost {
+						button.TextColor(tokens.Muted)
+					}
+					button.OnClick(func() { p.move(c, 1, store) })
 				case onboarding.InputMethod:
 					if !onboarding.Ready(step, state) {
 						kit.Button(c.Key("later"), tokens, kit.Ghost, messages.Text(copy.OnbIMELater), !state.InputMethodInstalling).OnClick(func() {
@@ -432,6 +436,7 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 			} else {
 				signin.Methods(c, store, tokens)
 			}
+			signin.Terms(c, store, tokens)
 			signin.Notice(c, store, tokens)
 		})
 	case onboarding.Finished:

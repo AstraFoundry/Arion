@@ -12,7 +12,7 @@ The site at `arion.astrafoundry.si` is the one place in the repository where Rea
 | `app/blog-assets/` | Static route writing files that blog posts name by project path ([blog](blog.md#media-sources)) |
 | `pages/` | Empty on purpose: it stops Next from reading `src/pages` as the Pages Router |
 | `src/app` | Document shell (`LocaleRootLayout`), providers, root metadata, global CSS |
-| `src/pages` | `home`, `blog`, `blog-post`, `privacy`, `self-hosting`, `credits`, `not-found`: a page component and its metadata |
+| `src/pages` | `home`, `blog`, `blog-post`, `privacy`, `terms`, `self-hosting`, `credits`, `not-found`: a page component and its metadata |
 | `src/widgets` | `site-header`, `site-footer`, `hero`, `feature-tour`, `privacy-summary`, `open-source`, `download-cta`, `post-article`, `post-list` |
 | `src/features` | `switch-locale`, `theme-switch`, `download-release` |
 | `src/entities` | `post` (blog front matter rules and the build-time content reader) |
@@ -43,3 +43,7 @@ Posts are Markdown in `content/blog/<slug>/<locale>.md`, rendered at build time 
 ## Deployment
 
 `apps/site/wrangler.jsonc` serves `apps/site/out` as Workers static assets with no Worker script, auto trailing slashes and `404.html` for unknown paths, on the custom domain `arion.astrafoundry.si`. See [deployment](../operations/deployment.md#marketing-site).
+
+## Product terms
+
+`/terms/` and its localized routes contain Arion’s product terms, separate from the AstraFoundry website terms. The desktop onboarding account step links here before opening browser authentication. The footer and sitemap include the page; its links preserve the reader’s locale for the privacy page and point to the repository license for software rights.

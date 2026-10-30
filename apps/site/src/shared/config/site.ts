@@ -33,6 +33,7 @@ export const socialImage = { url: "/og.jpg", width: 1200, height: 630 } as const
 export const routes = {
   home: "/",
   privacy: "/privacy/",
+  terms: "/terms/",
   selfHosting: "/self-hosting/",
   credits: "/credits/",
   blog: "/blog/",

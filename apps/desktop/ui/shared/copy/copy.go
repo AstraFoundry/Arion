@@ -5,6 +5,12 @@ package copy
 type Key string
 
 const (
+	AccTermsNotice Key = "AccTermsNotice"
+	AccTerms       Key = "AccTerms"
+	AccPrivacy     Key = "AccPrivacy"
+)
+
+const (
 	KbdNeuralRanking            Key = "KbdNeuralRanking"
 	KbdNeuralDetail             Key = "KbdNeuralDetail"
 	KbdNeuralReady              Key = "KbdNeuralReady"

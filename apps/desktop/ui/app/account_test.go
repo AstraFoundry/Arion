@@ -5,6 +5,7 @@ import (
 
 	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/pages/settings"
+	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo/ui"
@@ -389,4 +390,43 @@ func TestSettingsAccountUsageReporting(t *testing.T) {
 	settle(tt)
 	expect(t, tt, true, zh.Text(copy.AccUsageGroup), zh.Text(copy.AccUsageOff), zh.Text(copy.AccUsageOffDetail))
 	snapshot(t, tt, "settings-account-usage-off-zh")
+}
+
+// Product terms are available before authentication, including custom issuers.
+func TestOnboardingTermsAndLocalContinuation(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		for _, custom := range []bool{false, true} {
+			state, actions, store := fixture()
+			state.Preferences.UILanguage = locale
+			if custom {
+				state.Account.Portal = ""
+			}
+			messages := store.Copy()
+			page := onboarding.NewPage()
+			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+			settle(tt)
+			click := clicker(t, tt)
+			click(messages.Text(copy.OnbStart))
+			expect(t, tt, true, messages.Text(copy.AccTermsNotice), messages.Text(copy.AccTerms), messages.Text(copy.AccPrivacy))
+			actions.calls = nil
+			click(messages.Text(copy.AccTerms))
+			click(messages.Text(copy.AccPrivacy))
+			origin := config.SiteURL
+			if locale == runtime.LanguageChinese {
+				origin += "/zh"
+			}
+			urls := tt.OpenedURLs()
+			if len(urls) != 2 || urls[0] != origin+config.TermsPath || urls[1] != origin+config.PrivacyPath {
+				t.Fatalf("unexpected legal destinations: %v", urls)
+			}
+			if actions.called("sign-in") {
+				t.Fatal("reading terms must not start authentication")
+			}
+			if !custom {
+				snapshot(t, tt, "onboarding-terms-"+string(locale))
+			}
+			click(messages.Text(copy.OnbContinueLocally))
+			expect(t, tt, true, messages.Text(copy.OnbMicTitle))
+		}
+	}
 }
