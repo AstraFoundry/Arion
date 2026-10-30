@@ -1,3 +1,25 @@
+## 0.1.0-alpha.21
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Simplify Vocabulary into one entry per correct spelling, with inline incorrect forms and editable Pinyin readings while the Arion input method is installed. New terms appear first.
+- Remove the hosted-sync waitlist card from Account settings.
+- Keep clipboard history within count and storage limits without expiring entries by age.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable for this preview. Model weights download separately. Native Windows notification delivery, clean-machine acceptance, production old-to-new update acceptance and real-service cloud/translation acceptance remain open. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for acceptance limits and verification.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 简化词库：每个正确词条统一管理错误形式；安装 Arion 输入法后，可直接编辑拼音读音。新词条优先显示。
+- 移除账户设置中的托管同步候补卡片。
+- 剪贴板历史按数量和存储容量限制清理，不再按保留天数过期。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证；Windows 预览版仍无发布者签名。模型权重单独下载。Windows 原生通知投递、全新机器、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.0-alpha.20
 
 ### English
