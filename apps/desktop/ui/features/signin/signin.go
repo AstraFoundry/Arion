@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"arion.local/desktop/ui/entities/account"
+	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
@@ -317,5 +318,21 @@ func line(c *ui.Context, tokens theme.Tokens, icon *ui.SVG, color ui.Color, titl
 		if control != nil {
 			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(control)
 		}
+	})
+}
+
+// Terms presents the product terms before opening browser authentication.
+func Terms(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
+	origin := config.SiteURL
+	if store.State.Preferences.UILanguage == runtime.LanguageChinese {
+		origin += "/zh"
+	}
+	ui.Column(c).Gap(4).Children(func() {
+		ui.Text(c, messages.Text(copy.AccTermsNotice)).FontSize(theme.Caption).TextColor(tokens.Muted)
+		ui.Row(c).Gap(12).Children(func() {
+			ui.Link(c, messages.Text(copy.AccTerms), origin+config.TermsPath).FontSize(theme.Caption).TextColor(tokens.Text)
+			ui.Link(c, messages.Text(copy.AccPrivacy), origin+config.PrivacyPath).FontSize(theme.Caption).TextColor(tokens.Text)
+		})
 	})
 }

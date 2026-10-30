@@ -26,7 +26,8 @@
     "privacy": "Privacy",
     "selfHosting": "Self-hosting",
     "openSource": "Open source",
-    "account": "Account"
+    "account": "Account",
+    "terms": "Terms of Use"
   },
   "hero": {
     "title": "Voice input that never leaves your computer",
@@ -285,5 +286,41 @@
     "title": "Page not found",
     "body": "This address does not exist on the Arion site.",
     "home": "Go to the home page"
+  },
+  "termsPage": {
+    "title": "Terms of Use",
+    "lead": "Terms for using Arion and signing in to an AstraFoundry account from Arion.",
+    "sections": [
+      {
+        "title": "Open-source software",
+        "body": [
+          "Arion is licensed under the GNU Affero General Public License, version 3. Your rights to use, modify and share the software, and its warranty limitations, are governed by that license. These terms do not replace the software license."
+        ]
+      },
+      {
+        "title": "Your account",
+        "body": [
+          "Signing in is optional. After model provisioning, local dictation, vocabulary and learning work without an account. Keep your sign-in credentials secure and use only an account you are authorized to access. Signing out removes the stored sign-in credential without deleting your local vocabulary or encryption keys."
+        ]
+      },
+      {
+        "title": "Privacy and connected services",
+        "body": [
+          "Speech recognition runs on your device. Cloud polishing is optional and sends recognized text and enabled context to your chosen provider, never microphone audio. The provider’s own terms apply to that service. Read the Privacy Policy for details about local storage, account services and network activity."
+        ]
+      },
+      {
+        "title": "Hosted sync",
+        "body": [
+          "Signing in does not by itself enable memory sync or grant access to a hosted service. Hosted sync requires availability, account entitlement and device setup. Any additional service terms must be presented before that service is enabled."
+        ]
+      },
+      {
+        "title": "Review your output",
+        "body": [
+          "Speech recognition and polishing can make mistakes. Review the text before sending or relying on it. You remain responsible for the content you choose to share."
+        ]
+      }
+    ]
   }
 }

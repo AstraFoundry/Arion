@@ -12,6 +12,9 @@ const (
 
 // Destinations the About section opens in the browser.
 const (
+	SiteURL       = "https://arion.astrafoundry.si"
+	TermsPath     = "/terms/"
+	PrivacyPath   = "/privacy/"
 	TeamURL       = "https://github.com/AstraFoundry"
 	RepositoryURL = "https://github.com/AstraFoundry/Arion"
 	XURL          = "https://x.com/AstraFoundry"

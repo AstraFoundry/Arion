@@ -673,5 +673,8 @@
   "ClipboardSelectionEmpty": "Select an item to preview",
   "FormatClipboardEntry": "{value} item",
   "FormatClipboardTime": "{hour}:{minute}",
-  "ClipboardCloseSearch": "Close search"
+  "ClipboardCloseSearch": "Close search",
+  "AccTermsNotice": "By signing in, you agree to the Terms of Use and acknowledge the Privacy Policy.",
+  "AccTerms": "Terms of Use",
+  "AccPrivacy": "Privacy Policy"
 }

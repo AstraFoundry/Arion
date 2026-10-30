@@ -673,5 +673,8 @@
   "ClipboardSelectionEmpty": "选择一条记录以预览",
   "FormatClipboardEntry": "{value} 条",
   "FormatClipboardTime": "{hour}:{minute}",
-  "ClipboardCloseSearch": "关闭搜索"
+  "ClipboardCloseSearch": "关闭搜索",
+  "AccTermsNotice": "登录即表示你同意使用条款并已阅读隐私政策。",
+  "AccTerms": "使用条款",
+  "AccPrivacy": "隐私政策"
 }

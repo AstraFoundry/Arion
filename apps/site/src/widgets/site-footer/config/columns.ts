@@ -14,6 +14,7 @@ export function footerColumns(copy: Messages): FooterColumn[] {
         { label: copy.common.download, href: downloadHref },
         { label: copy.nav.blog, href: routes.blog },
         { label: copy.nav.privacy, href: routes.privacy },
+        { label: copy.nav.terms, href: routes.terms },
         { label: copy.nav.selfHosting, href: routes.selfHosting },
         { label: copy.nav.openSource, href: anchor(sections.openSource) },
       ],

@@ -27,6 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...listPosts("en").flatMap((post) =>
       localized(blogPostRoute(post.slug), { lastModified: lastModified(post), priority: 0.6 }),
     ),
+    ...localized(routes.terms, { changeFrequency: "monthly", priority: 0.5 }),
     ...localized(routes.privacy, { changeFrequency: "monthly", priority: 0.8 }),
     ...localized(routes.selfHosting, { changeFrequency: "monthly", priority: 0.7 }),
     ...localized(routes.credits, { changeFrequency: "yearly", priority: 0.3 }),
