@@ -1,6 +1,6 @@
 // Package signin is the AstraFoundry account for hosted sync: signing in
-// through the browser, signing out, and joining the hosted-sync waitlist.
-// Dictation, memory and learning never depend on it.
+// through the browser and signing out. Dictation, memory and learning never
+// depend on it.
 package signin
 
 import (
@@ -265,53 +265,18 @@ func Notice(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
-// HostedSync is the signed-in account's hosted-sync access: available, or
-// the waitlist with its phase.
+// HostedSync reports that the signed-in account's access token carries the
+// hosted-sync entitlement. Without that entitlement the account card stands
+// alone. Setting up this device starts here once the desktop sync client exists.
 func HostedSync(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	if store.State.Account.Disabled || store.State.Account.WaitlistDisabled && !store.State.Account.HostedSync {
+	a := store.State.Account
+	if a.Disabled || !a.HostedSync {
 		return
 	}
 	messages := store.Copy()
-	a := store.State.Account
 	kit.Card(c, tokens).Children(func() {
-		if a.HostedSync {
-			// Device enrollment (SYNC-02) starts here once the desktop sync
-			// client exists.
-			line(c, tokens, icons.CircleCheck, tokens.Success, messages.Text(copy.AccSyncAvailable), messages.Text(copy.AccSyncDeviceLater), nil)
-			return
-		}
-		waitlist(c, store, tokens)
+		line(c, tokens, icons.CircleCheck, tokens.Success, messages.Text(copy.AccSyncAvailable), messages.Text(copy.AccSyncDeviceLater), nil)
 	})
-}
-
-func waitlist(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	messages := store.Copy()
-	a := store.State.Account
-	button := func(label string, action func()) {
-		if kit.Button(c.Key(label), tokens, kit.Outline, label, !a.Busy()).Clicked() {
-			action()
-		}
-	}
-	icon, color := icons.Info, tokens.Muted
-	var control func()
-	switch a.Waitlist.Phase {
-	case runtime.AccountWaitlistJoining:
-		control = func() { ui.Spinner(c).Size(14, 14) }
-	case runtime.AccountWaitlistJoinedPending:
-		icon = icons.Clock
-		control = func() { button(messages.Text(copy.AccCheckAgain), store.Actions.RefreshAccount) }
-	case runtime.AccountWaitlistAlreadyEntitled:
-		// The access token predates the entitlement; a refresh carries it.
-		icon, color = icons.CircleCheck, tokens.Success
-		control = func() { button(messages.Text(copy.AccCheckAgain), store.Actions.RefreshAccount) }
-	case runtime.AccountWaitlistClosed:
-	case runtime.AccountWaitlistError:
-		icon, color = icons.TriangleAlert, tokens.Danger
-		control = func() { button(messages.Text(copy.Retry), store.Actions.JoinHostedSyncWaitlist) }
-	default:
-		control = func() { button(messages.Text(copy.AccWaitlistJoin), store.Actions.JoinHostedSyncWaitlist) }
-	}
-	line(c, tokens, icon, color, messages.Text(account.WaitlistStatus(a.Waitlist.Phase)), messages.Text(copy.AccSelfHosted), control)
 }
 
 // line is a settings row led by an icon that carries the state's color.

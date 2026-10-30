@@ -275,7 +275,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		vocabulary.Editor(c, store, tokens, &p.draft)
 	case Account:
 		signin.Card(c, store, tokens)
-		if store.State.Account.SignedIn() {
+		if store.State.Account.SignedIn() && store.State.Account.HostedSync {
 			kit.Group(c, tokens, messages.Text(copy.AccSyncGroup), func() { signin.HostedSync(c, store, tokens) })
 		}
 		signin.Portal(c, store, tokens)

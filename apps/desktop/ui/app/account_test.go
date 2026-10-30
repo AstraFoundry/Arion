@@ -37,7 +37,7 @@ func signedIn(state *runtime.State, hosted bool) {
 // The account step follows the welcome. It offers Google, GitHub and email,
 // which all open the browser sign-in, beside continuing locally; the
 // sign-in waits on the browser with a cancel, explains failures, and once
-// signed in shows the waitlist or the entitlement before moving on.
+// signed in shows the profile, plus hosted sync when the account has it.
 func TestOnboardingAccountStep(t *testing.T) {
 	state, actions, store := fixture()
 	en := copy.For(copy.English)
@@ -79,21 +79,13 @@ func TestOnboardingAccountStep(t *testing.T) {
 
 	signedIn(state, false)
 	settle(tt)
-	expect(t, tt, true, "Ada Lovelace", "ada@example.com", en.Text(copy.AccWaitlistOpen), en.Text(copy.AccSelfHosted), en.Text(copy.Continue))
-	expect(t, tt, false, en.Text(copy.AccErrDenied), en.Text(copy.OnbContinueLocally))
+	expect(t, tt, true, "Ada Lovelace", "ada@example.com", en.Text(copy.Continue))
+	expect(t, tt, false, en.Text(copy.AccErrDenied), en.Text(copy.OnbContinueLocally), en.Text(copy.AccSyncGroup), en.Text(copy.AccSyncAvailable))
 	snapshot(t, tt, "onboarding-account-signed-in")
-	click(en.Text(copy.AccWaitlistJoin))
-	if !actions.called("join-waitlist") {
-		t.Fatal("waitlist join not requested")
-	}
-	state.Account.Waitlist.Phase = runtime.AccountWaitlistJoinedPending
-	settle(tt)
-	expect(t, tt, true, en.Text(copy.AccWaitlistPending))
 
 	signedIn(state, true)
 	settle(tt)
 	expect(t, tt, true, en.Text(copy.AccSyncAvailable), en.Text(copy.AccSyncDeviceLater))
-	expect(t, tt, false, en.Text(copy.AccWaitlistJoin), en.Text(copy.AccSelfHosted))
 	click(en.Text(copy.Continue))
 	expect(t, tt, true, en.Text(copy.OnbMicTitle))
 }
@@ -176,49 +168,9 @@ func TestSettingsAccountSignedIn(t *testing.T) {
 	signedIn(state, false)
 	tt := openAccount(t, store)
 	click := clicker(t, tt)
-	expect(t, tt, true, "Ada Lovelace", en.Text(copy.AccSignOut), en.Text(copy.AccSyncGroup), en.Text(copy.AccWaitlistJoin))
+	expect(t, tt, true, "Ada Lovelace", en.Text(copy.AccSignOut))
+	expect(t, tt, false, en.Text(copy.AccSyncGroup), en.Text(copy.AccSyncAvailable))
 	snapshot(t, tt, "settings-account-signed-in")
-
-	for _, tc := range []struct {
-		phase   runtime.AccountWaitlistPhase
-		status  copy.Key
-		action  copy.Key
-		request string
-	}{
-		{runtime.AccountWaitlistJoinedPending, copy.AccWaitlistPending, copy.AccCheckAgain, "refresh-account"},
-		{runtime.AccountWaitlistAlreadyEntitled, copy.AccWaitlistEntitled, copy.AccCheckAgain, "refresh-account"},
-		{runtime.AccountWaitlistError, copy.AccWaitlistFailed, copy.Retry, "join-waitlist"},
-	} {
-		actions.calls = nil
-		state.Account.Waitlist = runtime.AccountWaitlist{Phase: tc.phase}
-		state.Account.ErrorCode = ""
-		if tc.phase == runtime.AccountWaitlistError {
-			state.Account.ErrorCode = runtime.AccountCodeWaitlist
-		}
-		settle(tt)
-		expect(t, tt, true, en.Text(tc.status), en.Text(copy.AccSelfHosted))
-		click(en.Text(tc.action))
-		if !actions.called(tc.request) {
-			t.Fatalf("%s: %s not requested: %v", tc.phase, tc.request, actions.calls)
-		}
-		snapshot(t, tt, "settings-account-waitlist-"+string(tc.phase))
-	}
-	// The waitlist row already says the join failed; no second notice.
-	failures := 0
-	for _, text := range tt.Texts() {
-		if text == en.Text(copy.AccWaitlistFailed) {
-			failures++
-		}
-	}
-	if failures != 1 {
-		t.Fatalf("waitlist failure shown %d times", failures)
-	}
-
-	state.Account.Waitlist = runtime.AccountWaitlist{Phase: runtime.AccountWaitlistClosed}
-	state.Account.ErrorCode = ""
-	settle(tt)
-	expect(t, tt, true, en.Text(copy.AccWaitlistClosed))
-	expect(t, tt, false, en.Text(copy.AccWaitlistJoin), en.Text(copy.Retry))
 
 	actions.calls = nil
 	state.Account.Phase = runtime.AccountSigningOut
@@ -365,7 +317,11 @@ func TestCustomOIDCDoesNotOfferOfficialWaitlist(t *testing.T) {
 	page.Section = settings.Account
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	settle(tt)
-	expect(t, tt, false, copy.For(copy.English).Text(copy.AccWaitlistJoin))
+	en := copy.For(copy.English)
+	expect(t, tt, false, en.Text(copy.AccSyncGroup), en.Text(copy.AccSyncAvailable))
+	state.Account.HostedSync = true
+	settle(tt)
+	expect(t, tt, true, en.Text(copy.AccSyncAvailable))
 }
 
 func TestAccountShowsConfiguredIssuer(t *testing.T) {
