@@ -33,7 +33,7 @@ All internal revisions still carry the native marker and remain excluded from cl
 - `bootstrap/clipboard*.go`: collection, explicit dictation capture, key/shortcut/window lifecycle and bounded resource workers.
 - `ui/features/clipboard`, `ui/pages/clipboard`: localized compact picker and collection settings.
 
-One bounded snapshot lives at `<data directory>/clipboard.bin`. Content, image bytes, paths, timestamps and derived IDs stay inside ciphertext. `clipboard-key` is a distinct Keychain/DPAPI item. Missing-key/authentication/read failures cannot create replacement history. No plaintext image cache, account sync, diagnostic content, OCR or polishing-context source exists. Confidential/transient/generated markers are respected; this does not promise universal secret detection.
+One bounded snapshot lives at `<data directory>/clipboard.bin`. Content, image bytes, paths, timestamps and derived IDs stay inside ciphertext. `clipboard-key` is a distinct Keychain/DPAPI item. Its service follows the desktop profile: `Arion Dev` for development and `Arion` for releases, with no automatic key migration ([ADR 035](../decisions/035-development-runtime-isolation.md)). Missing-key/authentication/read failures cannot create replacement history. No plaintext image cache, account sync, diagnostic content, OCR or polishing-context source exists. Confidential/transient/generated markers are respected; this does not promise universal secret detection.
 
 ## Verification
 

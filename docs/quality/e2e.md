@@ -4,6 +4,8 @@
 
 `make e2e` / `pnpm e2e:native` runs build-tagged Go tests in an actual macOS/Windows desktop session. The test hosts the production composition root (`bootstrap.App`) in an isolated temporary profile on MyGo's native loop.
 
+The offline native fixture has no update scheduler. Its build-tagged `ShowUpdateReminderForTest` explicitly creates only a reminder ledger in that temporary profile, so the production reminder window and Later/Dismiss persistence remain exercised without a release feed, transaction recovery or background update work. Unsupported production builds still leave update state untouched.
+
 DSK-A09 also switches language through the production preference action with settings/onboarding already open, checks native titles in both directions and captures Chinese Content.
 
 `TestOnboardingCompletionOpensSettings` covers the DSK-A15 completion transition through the production action: onboarding closes, Settings is visible and focused, and completion is saved in the isolated profile. This test does not relaunch the process. `TestSettingsLaunch` covers which later starts open Settings: a user-opened process, including an update restart, does; a login-item start, an unfinished onboarding, a notification-owned launch and a scripted session do not. A Spotlight-style reopen of the running app is the production `OnActivate` / `OnSecondInstance` path and is not a separate process launch in this suite.
@@ -164,3 +166,9 @@ The validated DLL tests read actual typed candidate metadata and confirm caret s
 ## Custom shortcut hooks
 
 The Windows native suite also runs `TestWindowsCustomShortcutHook` for F8 and Ctrl+F8, both release orders and immediate hook teardown. `TestWindowsModifierPrefixChordHook` configures Right Ctrl alongside Ctrl+F8 and requires a pending modifier, chord activation and exactly one chord release in either release order, without a trailing solo activation. It requires the interactive Windows desktop; pure cross-platform interpretation tests do not substitute for this native check. See [shortcut configuration](../project/dictation-shortcuts.md).
+
+The local product-harness check can replay a licensed public WAV through the packaged development app and its actual recognizer and rewriter. Use the existing `ARION_E2E_CONTROL` interface with an isolated data directory, an independent verified model copy, and the owned editor fixture. Activate that fixture through LaunchServices before capture; launching both applications in the background does not establish real editor focus. Require the actual editor edit count, commit outcome, processed clipboard contents, and clipboard restoration. This check needs no separate Accessibility grant for a test runner when the signed development app already owns its permissions.
+
+## Development session identity
+
+DSK-A23 follows the [local switching workflow](../operations/local-dev.md#switch-between-the-release-and-development). Record actual executable paths and hashes before each shortcut run. Rebuild twice with the same persistent signing identity and verify the real OS permission state, then return to the installed release and compare its saved profile and update state. Script preflight, bootstrap recovery, and credential namespace tests do not replace native permission continuity.

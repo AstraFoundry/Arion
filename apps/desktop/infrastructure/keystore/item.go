@@ -43,7 +43,7 @@ const (
 // Target is the Windows credential name.
 func Target() string { return Store{}.target() }
 
-func (s Store) target() string { return Service + "/" + s.accountName() }
+func (s Store) target() string { return s.serviceName() + "/" + s.accountName() }
 
 func (s Store) accountName() string {
 	if s.item != "" {
@@ -59,21 +59,21 @@ func (s Store) accountName() string {
 func PutArgs(secret string) []string { return Store{}.putArgs(secret) }
 
 func (s Store) putArgs(secret string) []string {
-	return []string{"add-generic-password", "-U", "-s", Service, "-a", s.accountName(), "-w", secret}
+	return []string{"add-generic-password", "-U", "-s", s.serviceName(), "-a", s.accountName(), "-w", secret}
 }
 
 // GetArgs is the security(1) argument vector for a read.
 func GetArgs() []string { return Store{}.getArgs() }
 
 func (s Store) getArgs() []string {
-	return []string{"find-generic-password", "-s", Service, "-a", s.accountName(), "-w"}
+	return []string{"find-generic-password", "-s", s.serviceName(), "-a", s.accountName(), "-w"}
 }
 
 // DeleteArgs is the security(1) argument vector for deletion.
 func DeleteArgs() []string { return Store{}.deleteArgs() }
 
 func (s Store) deleteArgs() []string {
-	return []string{"delete-generic-password", "-s", Service, "-a", s.accountName()}
+	return []string{"delete-generic-password", "-s", s.serviceName(), "-a", s.accountName()}
 }
 
 func rejectEmpty(token string) error {
@@ -88,7 +88,20 @@ func Open() Store { return Store{} }
 
 // Store is one platform credential item: the refresh token unless opened
 // with OpenItem.
-type Store struct{ profile, item string }
+type Store struct{ profile, item, service string }
+
+// WithService isolates a build's credentials while preserving the item identity.
+func (s Store) WithService(service string) Store {
+	s.service = service
+	return s
+}
+
+func (s Store) serviceName() string {
+	if s.service != "" {
+		return s.service
+	}
+	return Service
+}
 
 // OpenForProfile isolates refresh tokens by the compiled public profile fingerprint.
 func OpenForProfile(fingerprint string) Store { return Store{profile: fingerprint} }
@@ -103,10 +116,17 @@ func CloudPolishProviderAccount(provider string) string {
 }
 
 // Catalog addresses every Arion credential item by account name.
-type Catalog struct{}
-
-func (Catalog) Put(account, secret string) error { return OpenItem(account).Put(secret) }
-func (Catalog) Get(account string) (string, error) {
-	return OpenItem(account).Get()
+type Catalog struct {
+	// Service separates development credentials from installed releases.
+	Service string
 }
-func (Catalog) Delete(account string) error { return OpenItem(account).Delete() }
+
+func (c Catalog) Put(account, secret string) error {
+	return OpenItem(account).WithService(c.Service).Put(secret)
+}
+func (c Catalog) Get(account string) (string, error) {
+	return OpenItem(account).WithService(c.Service).Get()
+}
+func (c Catalog) Delete(account string) error {
+	return OpenItem(account).WithService(c.Service).Delete()
+}

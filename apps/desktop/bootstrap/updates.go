@@ -81,9 +81,12 @@ type updates struct {
 }
 
 func newUpdates(source updateSource, state *arion.Update, post func(func())) *updates {
+	if source != nil && !source.Enabled() {
+		source = nil
+	}
 	u := &updates{source: source, state: state, post: post}
 	state.Phase = arion.UpdateUnsupported
-	if source != nil && source.Enabled() {
+	if source != nil {
 		state.Phase = arion.UpdateIdle
 	}
 	return u

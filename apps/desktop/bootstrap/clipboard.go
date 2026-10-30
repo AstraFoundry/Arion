@@ -144,9 +144,9 @@ func (a *App) loadClipboard() {
 	a.clipboardWork(func() ([]domain.Clip, error) {
 		var key []byte
 		if errors.Is(err, os.ErrNotExist) {
-			key, err = secrets.Key("Arion", "clipboard-key")
+			key, err = secrets.Key(desktopProfile(mygo.IsDev()), "clipboard-key")
 		} else if err == nil {
-			key, err = secrets.ExistingKey("Arion", "clipboard-key")
+			key, err = secrets.ExistingKey(desktopProfile(mygo.IsDev()), "clipboard-key")
 		}
 		if err != nil {
 			return nil, err

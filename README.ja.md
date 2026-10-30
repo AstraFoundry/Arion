@@ -78,7 +78,7 @@ make e2e-macos      # パッケージングされた Arion.app に対する製�
 make site-check     # マーケティングサイト (apps/site)：i18n、型、lint、テスト、静的エクスポート
 ```
 
-初回実行時、`make desktop-dev` はオンボーディングを開き、マイクとアクセシビリティの権限を要求し、デフォルトの認識モデルバンドルを `~/Library/Application Support/Arion/models/`（macOS）または `%AppData%\Arion\models\`（Windows）にダウンロードします。macOS 開発ビルドの `CDHash` 権限挙動とトラブルシューティングについては、[ローカル開発 (`docs/operations/local-dev.md`)](docs/operations/local-dev.md#macos-development-build-and-tcc-permission-diagnostics)を参照してください。
+初回の `make desktop-dev` はオンボーディングを開き、独立した開発プロファイルを使用します。macOS では固定の署名証明書を設定し、製品版を終了してから起動します。`make desktop-status` で実行中のバイナリを確認し、`make desktop-production` でインストール済みの製品版に戻ります。証明書、データパス、権限の検証、入力メソッドの制限は[ローカル開発 (`docs/operations/local-dev.md`)](docs/operations/local-dev.md#macos-development-build-and-tcc-permission-diagnostics)を参照してください。
 
 ## ドキュメント
 

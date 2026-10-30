@@ -408,3 +408,35 @@ func TestDevOutputDir(t *testing.T) {
 		}
 	}
 }
+
+// Build-only callers own launch and lifetime, allowing macOS LaunchServices to
+// attribute privacy requests to the app rather than the developer's terminal.
+func TestDevBuildOnlyDoesNotLaunch(t *testing.T) {
+	if testing.Short() {
+		t.Skip("compiles a program")
+	}
+	dir := t.TempDir()
+	marker := filepath.Join(dir, "launched")
+	writeFiles(t, dir, map[string]string{
+		"go.mod":    "module example.com/buildonly\n\n" + goDirective(t) + "\n",
+		"mygo.json": `{"name":"Build Only","identifier":"com.example.buildonly"}`,
+		"main.go":   fmt.Sprintf("package main\nimport \"os\"\nfunc main() { if os.Getenv(\"MYGO_GENERATE\") == \"\" { os.WriteFile(%q, []byte(\"unexpected launch\"), 0600) } }\n", marker),
+	})
+	output := filepath.Join(t.TempDir(), "output")
+	if err := runDev([]string{"-build-only", "-out", output, dir}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(marker); !os.IsNotExist(err) {
+		t.Fatalf("build-only launched the app: %v", err)
+	}
+	name := "build-only-dev"
+	if runtime.GOOS == "darwin" {
+		name = filepath.Join("Build Only Dev.app", "Contents", "MacOS", "Build Only Dev")
+	} else if runtime.GOOS == "windows" {
+		name = "Build Only Dev.exe"
+	}
+	executable := filepath.Join(output, runtime.GOOS+"-"+runtime.GOARCH, name)
+	if _, err := os.Stat(executable); err != nil {
+		t.Fatalf("missing development artifact: %v", err)
+	}
+}

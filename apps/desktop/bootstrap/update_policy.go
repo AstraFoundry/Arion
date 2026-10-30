@@ -39,6 +39,10 @@ type updatePolicy struct {
 
 func (a *App) scheduleUpdates() {
 	a.updates.record = a.record
+	// Unsupported builds do not own an update transaction or its persisted state.
+	if a.updates.source == nil {
+		return
+	}
 	p := &updatePolicy{store: updatestate.Store{Path: filepath.Join(a.opts.DataDir, "updates.json")}, lastBusy: time.Now(), stop: make(chan struct{}), requestPermission: mygo.RequestNotificationPermission}
 	a.updatePolicy = p
 	saved, err := p.store.Load()
