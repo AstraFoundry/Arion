@@ -19,6 +19,35 @@ func Tooltip(c *ui.Context, tokens theme.Tokens, anchor ui.Element, text string)
 	})
 }
 
+// FieldError says why the value in field cannot be saved, in a callout
+// attached below the field: the message stays with the field it is about
+// and nothing around it moves. The field is marked invalid, so a text
+// input draws its border in Danger even while focused and assistive
+// technology reads the message with it; in the callout the alert glyph
+// alone carries the color. The callout starts where the field starts, or,
+// with end, ends where it ends, for a field at the end of its row. Nothing
+// shows for an empty text.
+func FieldError(c *ui.Context, tokens theme.Tokens, field ui.Element, text string, end bool) {
+	if text == "" {
+		return
+	}
+	field.Error(text)
+	at, self := ui.AnchorBottomLeft, ui.AnchorTopLeft
+	if end {
+		at, self = ui.AnchorBottomRight, ui.AnchorTopRight
+	}
+	ui.Overlay(c, func() {
+		callout := ui.Row(c).AttachTo(field, at, self).Margin(6, 0, 0, 0).
+			MaxWidth(280).Padding(6, 10, 6, 8).Gap(6).AlignItems(ui.Start).PassThrough().
+			Radius(theme.RadiusMD).Background(tokens.Card).Border(1, tokens.CardBorder)
+		Raise(callout, tokens, Lifted)
+		callout.Children(func() {
+			ui.Icon(c, icons.CircleAlert).FontSize(13).TextColor(tokens.Danger).Margin(1, 0, 0, 0)
+			ui.Text(c, text).FontSize(theme.Caption).TextColor(tokens.Text).Shrink(1)
+		})
+	})
+}
+
 // Hint is an info glyph whose Tooltip explains the setting beside it, so a
 // row keeps one line. It takes the keyboard focus, which shows the tip too.
 func Hint(c *ui.Context, tokens theme.Tokens, text string) ui.Element {

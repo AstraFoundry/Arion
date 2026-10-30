@@ -4,7 +4,7 @@
   "VocabKeyboardPending": "Saved. Keyboard changes are pending; select Arion and finish the current composition to apply them.",
   "VocabKeyboardFailed": "Keyboard changes could not be applied. Check the Pinyin readings and input method setup. Your entries remain saved.",
   "VocabReadingPlaceholder": "xing cha gong fang",
-  "VocabReadingInvalid": "Use lowercase Pinyin syllables separated by single spaces.",
+  "VocabReadingInvalid": "Use Pinyin letters, with a space between syllables.",
   "VocabReadingStale": "This entry changed or was removed. Reopen it before editing.",
   "VocabReadingSave": "Save",
   "VocabReadingCancel": "Cancel",

@@ -30,6 +30,7 @@ Rules:
 - About's **Community** row opens the Discord server and the Feishu group from `kit.AppButton`s: each app's own colored logo on a small card-colored tile with a hairline, rising on hover and named in a tooltip. Logos keep their brand colors (sources and licensing in `ui/shared/icons/svg/LICENSE-svg-logos` and `ui/shared/assets/README.md`); never recolor them.
 - About ends with **Contributors**: GitHub avatars in GitHub's order, each over half of the next, opening a page of every contributor whose avatars pop in one after another; hover names the account and a click opens its profile. The list and avatars are embedded by `pnpm contributors:update`; the app never asks GitHub for them.
 - State is carried in words first. `kit.Status` colors only the icon; the label stays `Text`.
+- An input's error belongs to the input: `kit.FieldError`, never a loose red line under the row. Prevent the error first: accept what the user means (Pinyin readings fold width, case, ü and spacing), give the format by example in the placeholder, check on save, then re-check every edit until the value is valid, so the error clears the moment it is fixed.
 - A ready state gets no line of its own when the controls already say it: an enabled switch and the chosen engine mean the local model runs, so Polish and local candidate ranking show only a download, progress or failure. Behavior worth knowing in every state (ranking pauses during dictation) belongs in the row's detail or `Hint`.
 
 ## Type, radius, spacing
@@ -80,6 +81,7 @@ The macOS consent guide is a whole window floating over System Settings: its car
 | `SelectTrigger` | coss `Select` trigger for a plain value: the `Outline` button anatomy at 28 DIP, the value and an up-down chevron; its popup is `SelectPopup` |
 | `Empty` | coss `Empty`: one muted, centered line filling a card body that has nothing to show yet |
 | `Tooltip`, `Hint` | coss `Tooltip` over `ui.TooltipBase`: Caption text on a card face, hairline, radius 6, `Lifted`, at most 260 DIP; shown on hover or focus and named to assistive technology as the anchor's description. `Hint` is a focusable 13 DIP info glyph in `Faint` (`Muted` when hovered) carrying one |
+| `FieldError` | Why a field's value cannot be saved: the field is marked with MyGo's `Error`, so a text input keeps a `Danger` border while focused and assistive technology reads the message, and a callout attached below the field, aligned to its start or, for a field ending its row, its end (card face, hairline, radius 6, `Lifted`, at most 280 DIP) states it beside a `Danger` alert glyph in `Text` ink. It floats over the layout, so nothing moves |
 | `TipRow` | A setting row whose explanation is a `Hint` after the title instead of a detail line, so dense cards stay one line per setting |
 | `LinkRow` | A row that opens a page: optional leading glyph or mark, title, its current value in `Muted`, and a `Faint` chevron |
 

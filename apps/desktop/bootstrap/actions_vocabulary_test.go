@@ -29,7 +29,11 @@ func TestKeyboardReadingActionPreservesEntryAndRejectsStaleSpelling(t *testing.T
 	if err := x.SetKeyboardPinyin(entry.ID, "星茶工坊", "xing cha gong fang"); !errors.Is(err, arion.ErrVocabularyConflict) {
 		t.Fatal(err)
 	}
-	if err := x.SetKeyboardPinyin(entry.ID, entry.To, "Xing"); !errors.Is(err, arion.ErrVocabularyInvalid) {
+	// What a Chinese input method types is saved in transport form.
+	if err := x.SetKeyboardPinyin(entry.ID, entry.To, "Xing\u3000Cha  gong fang "); err != nil || a.state.Vocabulary[0].KeyboardPinyin != "xing cha gong fang" {
+		t.Fatalf("typed reading not normalized: %v %q", err, a.state.Vocabulary[0].KeyboardPinyin)
+	}
+	if err := x.SetKeyboardPinyin(entry.ID, entry.To, "xing1"); !errors.Is(err, arion.ErrVocabularyInvalid) {
 		t.Fatal(err)
 	}
 	if err := x.SetKeyboardPinyin(entry.ID, entry.To, ""); err != nil {

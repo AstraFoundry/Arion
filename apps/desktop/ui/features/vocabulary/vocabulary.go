@@ -104,25 +104,22 @@ func Editor(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *Draf
 // the term itself, so one kind of entry carries everything.
 func composer(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *Draft) {
 	messages := store.Copy()
-	ui.Column(c).Gap(6).Padding(10, 12, 10, 16).Children(func() {
-		ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
-			var input ui.Element
-			ui.Icon(c, icons.Plus).FontSize(14).TextColor(tokens.Muted).OnClick(func() { input.Focus() })
-			input = bare(ui.TextInput(c.Key("term"), &draft.Term)).Grow(1).Shrink(1).
-				Placeholder(messages.Text(copy.VocabToHint)).Label(messages.Text(copy.VocabToLabel))
-			if input.Changed() {
-				draft.Error = ""
-			}
-			add := kit.Button(c.Key("add"), tokens, kit.Outline, messages.Text(copy.Add), strings.TrimSpace(draft.Term) != "").Clicked()
-			if add || input.Submitted() {
-				addTerm(store, draft)
-				input.Focus()
-			}
-		})
-		if draft.Error != "" {
-			ui.Text(c, messages.Text(draft.Error)).FontSize(theme.Caption).TextColor(tokens.Danger)
+	var input ui.Element
+	ui.Row(c).Gap(8).Padding(10, 12, 10, 16).AlignItems(ui.Center).Children(func() {
+		ui.Icon(c, icons.Plus).FontSize(14).TextColor(tokens.Muted).OnClick(func() { input.Focus() })
+		input = bare(ui.TextInput(c.Key("term"), &draft.Term)).Grow(1).Shrink(1).
+			Placeholder(messages.Text(copy.VocabToHint)).Label(messages.Text(copy.VocabToLabel))
+		if input.Changed() {
+			draft.Error = ""
+		}
+		add := kit.Button(c.Key("add"), tokens, kit.Outline, messages.Text(copy.Add), strings.TrimSpace(draft.Term) != "").Clicked()
+		if add || input.Submitted() {
+			addTerm(store, draft)
+			announce(c, store, draft.Error)
+			input.Focus()
 		}
 	})
+	fieldError(c, store, tokens, input, draft.Error, false)
 }
 
 func term(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *Draft, group vocabularymodel.Term, keyboard bool) {
@@ -157,16 +154,6 @@ func term(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *Draft,
 			}
 			variantAdder(c, store, tokens, &draft.Variant, group.Text)
 		})
-		var failure copy.Key
-		if draft.Variant.Term == group.Text {
-			failure = draft.Variant.Error
-		}
-		if reading && draft.Reading.Error != "" {
-			failure = draft.Reading.Error
-		}
-		if failure != "" {
-			ui.Text(c, messages.Text(failure)).FontSize(theme.Caption).TextColor(tokens.Danger)
-		}
 	})
 }
 
@@ -204,6 +191,9 @@ func variantAdder(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft
 		Radius(theme.RadiusPill).Border(1, tokens.CardBorder).BorderStyle(ui.BorderDashed).FontSize(theme.Body).
 		Placeholder(label).Label(messages.VocabVariantAction(term)).
 		OnShortcut(0, ui.KeyEscape, func() { *draft = variantDraft{} })
+	if draft.Error != "" {
+		input.BorderStyle(ui.BorderSolid)
+	}
 	switch {
 	case draft.Focus:
 		input.Focus()
@@ -219,7 +209,9 @@ func variantAdder(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft
 	}
 	if input.Submitted() {
 		addVariant(store, draft)
+		announce(c, store, draft.Error)
 	}
+	fieldError(c, store, tokens, input, draft.Error, false)
 }
 
 // readingChip shows the Pinyin that types this term on Arion's keyboard, or
@@ -261,17 +253,20 @@ func readingEditor(c *ui.Context, store runtime.Store, tokens theme.Tokens, draf
 		field.Focus()
 		draft.Focus = false
 	}
-	if field.Changed() {
+	// Checked on save first, then on every edit, so an error clears the
+	// moment the reading becomes valid.
+	if field.Changed() && (draft.Error != copy.VocabReadingInvalid || runtime.KeyboardPinyinValid(draft.Spelling, draft.Value)) {
 		draft.Error = ""
 	}
 	if dismiss {
 		cancel()
 		return
 	}
+	fieldError(c, store, tokens, field, draft.Error, true)
 	if !save && !field.Submitted() {
 		return
 	}
-	err := store.Actions.SetKeyboardPinyin(draft.ID, draft.Spelling, strings.TrimSpace(draft.Value))
+	err := store.Actions.SetKeyboardPinyin(draft.ID, draft.Spelling, draft.Value)
 	switch {
 	case err == nil:
 		cancel()
@@ -281,6 +276,21 @@ func readingEditor(c *ui.Context, store runtime.Store, tokens theme.Tokens, draf
 		draft.Error = copy.VocabReadingStale
 	default:
 		draft.Error = copy.VocabSaveFailed
+	}
+	announce(c, store, draft.Error)
+}
+
+// fieldError attaches the failure of key, if any, to field (kit.FieldError).
+func fieldError(c *ui.Context, store runtime.Store, tokens theme.Tokens, field ui.Element, key copy.Key, end bool) {
+	if key != "" {
+		kit.FieldError(c, tokens, field, store.Copy().Text(key), end)
+	}
+}
+
+// announce reads a save's failure out to assistive technology once.
+func announce(c *ui.Context, store runtime.Store, key copy.Key) {
+	if key != "" {
+		c.Announce(store.Copy().Text(key))
 	}
 }
 

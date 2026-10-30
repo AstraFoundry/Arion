@@ -381,8 +381,10 @@ func (x actions) AddReplacementVariants(froms []string, to string) error {
 	return nil
 }
 
-// SetKeyboardPinyin binds a reading to the exact currently approved spelling.
+// SetKeyboardPinyin binds a reading, as typed, to the exact currently
+// approved spelling; the reading is normalized before it is checked.
 func (x actions) SetKeyboardPinyin(id, spelling, reading string) error {
+	reading = domain.NormalizeKeyboardPinyin(reading)
 	if err := domain.ValidateKeyboardPinyin(spelling, reading); err != nil {
 		return arion.ErrVocabularyInvalid
 	}
