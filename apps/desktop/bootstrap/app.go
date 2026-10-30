@@ -72,6 +72,8 @@ type Options struct {
 
 // App owns the running desktop application.
 type App struct {
+	clipboard           *clipboardController
+	clipboardWin        *mygo.Window
 	center              center.Profile
 	repairedPreferences int
 	diagnostics         *diagnostics.Recorder
@@ -390,7 +392,7 @@ func (a *App) OpenOnboarding() { mygo.RunOnMain(a.openOnboarding) }
 func (a *App) Windows() map[string]*mygo.Window {
 	windows := map[string]*mygo.Window{}
 	mygo.RunOnMain(func() {
-		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding, "update-reminder": func() *mygo.Window {
+		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "clipboard": a.clipboardWin, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding, "update-reminder": func() *mygo.Window {
 			if a.updatePolicy != nil {
 				return a.updatePolicy.reminder
 			}
@@ -508,6 +510,7 @@ func (a *App) ready() {
 	a.startHoldKey()
 	mygo.App.OnQuit(a.platform.StopHoldKey)
 	a.createTray()
+	a.startClipboard()
 	a.createOverlay()
 	a.state.Model.Bundles = a.bundles()
 	a.runResource(func() { a.activate(a.state.Preferences.ModelOverride) })
@@ -579,6 +582,12 @@ func (a *App) drain() {
 }
 
 func (a *App) invalidate() {
+	if a.panel != nil {
+		height := uiapp.PanelHeightFor(a.ui)
+		if _, current := a.panel.ContentSize(); current != height {
+			a.panel.SetContentSize(uiapp.PanelWidth, height)
+		}
+	}
 	for window := range a.views {
 		window.Invalidate()
 	}
@@ -639,18 +648,15 @@ func (a *App) apply(e contracts.Event) {
 		d.Original = dictationOriginal(e)
 		setState(domain.Reviewing)
 	case contracts.CommitResultReady:
+		a.recordClipboardDictation(e)
 		d.Outcome, d.Failure = e.Outcome, e.Error
 		d.Pasted = a.core.Snapshot().Mode == domain.ShortcutMode && (runtime.GOOS == "darwin" || a.state.Preferences.Delivery == application.DeliveryClipboard) && e.Outcome != contracts.NotApplied && e.Outcome != contracts.Copied
-		a.state.LastText, a.state.LastOriginal = e.Text, d.Original
 		setState(e.State)
 	case contracts.ErrorOccurred:
 		if e.Error == domain.CodeSessionBusy {
 			return
 		}
 		d.Failure, d.FailureDetail = e.Error, e.Detail
-		if e.Text != "" {
-			a.state.LastText, a.state.LastOriginal = e.Text, e.Source
-		}
 		setState(e.State)
 		a.clearUnavailableModelFailure()
 	}

@@ -4,7 +4,7 @@ The current runtime, templates and delivery policy are superseded by [ADR 018](0
 
 ## Status
 
-Accepted (product decision). Supersedes the review-before-insert rule of [ADR 008](008-contextual-rewrite-evaluation.md) for the final rewrite; ADR 008's evaluation boundary otherwise stands. The mid-speech text-model preview is superseded by [ADR 023](023-final-only-polishing.md). Segment closure and the final rewrite remain.
+Accepted (product decision). Supersedes the review-before-insert rule of [ADR 008](008-contextual-rewrite-evaluation.md) for the final rewrite; ADR 008's evaluation boundary otherwise stands. The mid-speech text-model preview is superseded by [ADR 023](023-final-only-polishing.md). Segment closure and the final rewrite remain. [ADR 034](034-clipboard-history.md) removes the menu-bar transcript recovery controls while keeping original recognition separate from delivered text in the active session.
 
 ## Context
 

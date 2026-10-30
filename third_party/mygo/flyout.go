@@ -50,8 +50,13 @@ var placements = map[Placement]struct {
 // FlyoutOptions configures NewFlyout.
 type FlyoutOptions struct {
 	// Parent owns the flyout, which stays above it, follows it as it moves
-	// and closes with it. A flyout has a Parent or a Tray.
+	// and closes with it. Choose exactly one of Parent, Tray or ScreenAnchor.
 	Parent *Window
+	// ScreenAnchor places an independent flyout beside a screen-space rectangle
+	// in DIPs, such as an external editor's caret or the mouse pointer. It has
+	// no owner window. SetAnchor updates it in the same screen coordinates.
+	// On Wayland, the compositor controls independent window placement.
+	ScreenAnchor *Rectangle
 	// Tray anchors the flyout to a tray icon instead, as the panel of a
 	// menu bar app: it goes next to the icon, on the side Placement
 	// names (PlacementBottom below an icon of the macOS menu bar, which
@@ -128,14 +133,27 @@ type FlyoutOptions struct {
 }
 
 // NewFlyout creates a flyout: a window without a frame, a background, a
-// shadow or a taskbar button, owned by its parent and placed next to a
-// rectangle of it, which may extend beyond the parent but stays in the
-// work area of a display. Its page or native UI draws all of it: give the
+// shadow or a taskbar button, placed next to a parent, tray or screen
+// rectangle while remaining in the display work area. Parent-owned flyouts
+// may extend beyond their owner. Its page or native UI draws all of it: give the
 // page a background, or the native UI's root one. Like NewWindow, it must
 // be called after the application is ready.
 func NewFlyout(opts FlyoutOptions) *Window {
-	if (opts.Parent == nil) == (opts.Tray == nil) {
-		panic("mygo: NewFlyout needs a Parent or a Tray")
+	anchors := 0
+	if opts.Parent != nil {
+		anchors++
+	}
+	if opts.Tray != nil {
+		anchors++
+	}
+	if opts.ScreenAnchor != nil {
+		anchors++
+	}
+	if anchors != 1 {
+		panic("mygo: NewFlyout needs exactly one of Parent, Tray or ScreenAnchor")
+	}
+	if opts.ScreenAnchor != nil && opts.Popover {
+		panic("mygo: a screen-anchored flyout cannot use a system popover")
 	}
 	fo, err := opts.platform()
 	if err != nil {
@@ -173,8 +191,12 @@ func (o *FlyoutOptions) platform() (*platform.Flyout, error) {
 	if !ok {
 		return nil, fmt.Errorf("mygo: unknown flyout placement %q", o.Placement)
 	}
+	anchor := o.Anchor
+	if o.ScreenAnchor != nil {
+		anchor = *o.ScreenAnchor
+	}
 	return &platform.Flyout{
-		Anchor:    platform.Rect(o.Anchor),
+		Anchor:    platform.Rect(anchor),
 		Side:      p.side,
 		Align:     p.align,
 		Gap:       o.Gap,
@@ -186,8 +208,8 @@ func (o *FlyoutOptions) platform() (*platform.Flyout, error) {
 // IsFlyout reports whether NewFlyout created the window.
 func (w *Window) IsFlyout() bool { return w.flyout != nil }
 
-// SetAnchor places a flyout against another rectangle of its parent, in
-// DIPs relative to the parent's content area, as FlyoutOptions.Anchor. It
+// SetAnchor places a flyout against another rectangle of its parent, or
+// in screen DIPs for an independent ScreenAnchor flyout. It
 // does nothing for other windows.
 func (w *Window) SetAnchor(anchor Rectangle) {
 	onMain(func() {

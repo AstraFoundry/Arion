@@ -288,3 +288,38 @@ func TestNativePermissionMetadata(t *testing.T) {
 		t.Fatal("bundle locale declarations differ from staged localizations")
 	}
 }
+
+func TestClipboardCalendarTime(t *testing.T) {
+	loc := time.FixedZone("Shanghai", 8*60*60)
+	now := time.Date(2026, 10, 29, 12, 0, 0, 0, loc)
+	for _, test := range []struct {
+		copied time.Time
+		en, zh string
+	}{
+		{time.Date(2026, 10, 29, 9, 5, 0, 0, loc), "09:05", "09:05"},
+		{time.Date(2026, 10, 28, 18, 35, 0, 0, time.UTC), "02:35", "02:35"},
+		{now.AddDate(0, 0, -1), "Wed", "周三"},
+		{now.AddDate(0, 0, -7), "Thu", "周四"},
+		{now.AddDate(0, 0, -8), "Oct 21", "10月21日"},
+		{time.Date(2025, 12, 31, 9, 0, 0, 0, loc), "Dec 31", "12月31日"},
+		{now.AddDate(0, 0, 1), "Oct 30", "10月30日"},
+	} {
+		for _, locale := range []Locale{English, SimplifiedChinese} {
+			want := test.en
+			if locale == SimplifiedChinese {
+				want = test.zh
+			}
+			if got := For(locale).ClipboardTime(test.copied, now); got != want {
+				t.Fatalf("%s %s: got %q, want %q", locale, test.copied, got, want)
+			}
+		}
+	}
+	dst, err := time.LoadLocation("America/New_York")
+	if err != nil {
+		t.Fatal(err)
+	}
+	now = time.Date(2026, 11, 4, 12, 0, 0, 0, dst)
+	if got := For(English).ClipboardTime(now.AddDate(0, 0, -7), now); got != "Wed" {
+		t.Fatalf("DST calendar boundary: %q", got)
+	}
+}

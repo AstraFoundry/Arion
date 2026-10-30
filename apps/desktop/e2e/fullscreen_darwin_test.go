@@ -12,6 +12,7 @@ import (
 	"time"
 
 	uiapp "arion.local/desktop/ui/app"
+	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
 )
 
@@ -155,4 +156,53 @@ func startEditorFixture(t *testing.T) func(op string, values map[string]any) edi
 		return state
 	}
 	return request
+}
+
+// CLP-A07: the actual picker must join a foreign fullscreen Space without
+// activating Arion or requiring an Accessibility grant just to browse history.
+func TestClipboardInForeignFullscreenSpace(t *testing.T) {
+	request := startEditorFixture(t)
+	request("focus", map[string]any{"target": "A"})
+	request("fullscreen", map[string]any{"enabled": true})
+	defer func() {
+		request("fullscreen", map[string]any{"enabled": false})
+		eventually(t, "owned editor left fullscreen", func() bool { s := request("state", nil); return !s.Fullscreen && !s.Transitioning })
+	}()
+	var state editorState
+	eventually(t, "owned editor entered fullscreen", func() bool {
+		state = request("state", nil)
+		return state.Fullscreen && !state.Transitioning && state.Active
+	})
+	var original arion.Clipboard
+	app.Update(func(s *arion.State) {
+		original = s.Clipboard
+		p := arion.ClipboardText("Owned clipboard history fixture")
+		s.Clipboard.Items = []arion.Clip{{ID: p.ID(), Payload: p}}
+	})
+	defer func() {
+		mygo.RunOnMain(func() { app.Store().Actions.CloseClipboard() })
+		app.Update(func(s *arion.State) { s.Clipboard = original })
+	}()
+	for cycle := 0; cycle < 2; cycle++ {
+		mygo.RunOnMain(func() { app.Store().Actions.OpenClipboard() })
+		var picker *mygo.Window
+		eventually(t, "picker appeared", func() bool { picker = app.Windows()["clipboard"]; return picker != nil && picker.IsVisible() })
+		var observation overlayObservation
+		eventually(t, "picker joined foreign fullscreen space", func() bool {
+			mygo.RunOnMain(func() { observation = observeOverlay(picker.NativeHandle(), state.PID) })
+			return observation.OnActiveSpace && observation.OnScreen && observation.AboveFixture && observation.OverlapsFixture && observation.FrontmostPID == state.PID
+		})
+		if !picker.IsFocused() {
+			t.Fatal("picker could not receive keyboard input without activating Arion")
+		}
+		if cycle == 0 {
+			capture(t, picker, "clipboard-fullscreen", uiapp.ClipboardWidth, 100)
+		}
+		mygo.RunOnMain(func() { app.Store().Actions.CloseClipboard() })
+		eventually(t, "picker closed", func() bool { return app.Windows()["clipboard"] == nil })
+		state = request("state", nil)
+		if !state.Fullscreen || !state.Active || state.Focused != "A" {
+			t.Fatalf("picker changed editor space/focus: %+v", state)
+		}
+	}
 }

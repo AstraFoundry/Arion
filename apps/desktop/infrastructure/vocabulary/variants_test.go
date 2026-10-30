@@ -2,6 +2,8 @@ package vocabulary
 
 import (
 	"bytes"
+	"crypto/aes"
+	"crypto/cipher"
 	"errors"
 	"os"
 	"reflect"
@@ -143,8 +145,10 @@ func TestAddVariantsReadsLegacyEncryptedPairs(t *testing.T) {
 	store, path := openTemp(t)
 	// This is the original pair-only JSON schema, without learning fields.
 	plain := []byte(`[{"id":"legacy","from":"ary on","to":"Arion","approved":true,"origin":"user_approved"}]`)
-	nonce := bytes.Repeat([]byte{3}, store.aead.NonceSize())
-	sealed := store.aead.Seal(nonce, nonce, plain, []byte("arion-vocabulary-v1"))
+	block, _ := aes.NewCipher(bytes.Repeat([]byte{7}, 32))
+	aead, _ := cipher.NewGCM(block)
+	nonce := bytes.Repeat([]byte{3}, aead.NonceSize())
+	sealed := aead.Seal(nonce, nonce, plain, []byte("arion-vocabulary-v1"))
 	if err := os.WriteFile(path, sealed, 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -164,17 +168,12 @@ func TestAddVariantsStorageFailureLeavesFileUnchanged(t *testing.T) {
 		t.Fatal(err)
 	}
 	raw := readBytes(t, path)
-	if err := os.Mkdir(path+".tmp", 0o700); err != nil {
-		t.Fatal(err)
-	}
+	store.file.MaxBytes = int64(len(raw))
 	if got, err := store.AddVariants([]string{"阿里昂", "阿瑞昂"}, "Arion"); err == nil || got != nil {
 		t.Fatalf("write failure returned %v, %v", got, err)
 	}
 	if !bytes.Equal(raw, readBytes(t, path)) || len(mustList(t, store)) != 1 {
 		t.Fatal("failed write changed existing memory")
-	}
-	if err := os.Remove(path + ".tmp"); err != nil {
-		t.Fatal(err)
 	}
 	raw[len(raw)-1] ^= 1
 	if err := os.WriteFile(path, raw, 0o600); err != nil {

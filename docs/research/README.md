@@ -2,6 +2,8 @@
 
 Complete study files and raw results are versioned in the private [Arion evaluation repository](https://github.com/AstraFoundry/Arion-evaluation). `benchmarks/...` references below are paths inside that repository. Public product decisions, methods and sanitized evidence ledgers remain here. The [repository split](../project/repository-split.md) defines the boundary.
 
+- [Clipboard settings](clipboard-settings.md) — primary-source retention controls in Maccy/Ditto and Arion's simplified settings/picker split.
+
 Research separates **observed shipped artifacts**, **static inferences**, **vendor statements**, **Arion design choices**, and **unknowns**. Static symbols do not prove runtime execution or server behavior.
 
 - [Update notifications and automatic installation](update-notifications.md) — open issues #12/#13, macOS/Windows registration, pinned Magpie update behavior, and staged installation/lifecycle safety proposal.

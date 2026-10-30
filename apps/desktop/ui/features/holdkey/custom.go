@@ -28,7 +28,7 @@ func (s *PickerState) Close(store runtime.Store) {
 	s.listening, s.focus, s.error = false, false, ""
 }
 
-func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), blocked runtime.HoldKey, conflict copy.Key) {
+func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), validate func(runtime.HoldKey) copy.Key) {
 	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
 	t := c.Theme()
 	closeRecorder := func() { state.Close(store); c.Invalidate() }
@@ -99,8 +99,8 @@ func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner
 					closeRecorder()
 				case captured.RecordInvalid:
 					state.error = copy.HoldKeyNeedsModifier
-				case runtime.HoldKeysConflict(captured.RecordedKey, blocked):
-					state.error = conflict
+				case validate(captured.RecordedKey) != "":
+					state.error = validate(captured.RecordedKey)
 					store.Actions.RecordShortcut("")
 					store.Actions.RecordShortcut(owner)
 				case captured.RecordedKey != "":

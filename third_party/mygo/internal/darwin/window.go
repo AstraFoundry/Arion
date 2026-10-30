@@ -216,7 +216,7 @@ func (w *window) createFlyout() {
 	// parent instead, and one that takes the keyboard closes.
 	send(w.win, "setHidesOnDeactivate:", 0)
 	send(w.win, "setCollectionBehavior:", collectionTransient|collectionIgnoresCycle|collectionFullScreenAuxiliary)
-	if w.flyout.Tray != nil {
+	if w.parent == nil {
 		// Over the windows of other apps, as the menus of the menu bar.
 		send(w.win, "setLevel:", nsPopUpMenuWindowLevel)
 	}

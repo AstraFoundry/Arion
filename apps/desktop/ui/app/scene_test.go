@@ -85,32 +85,39 @@ func TestSceneCard(t *testing.T) {
 	}
 }
 
-// The panel holds the scene card and four lines of the last dictation.
+// The compact panel holds the scene card and footer actions.
 func TestPanelWithSceneCard(t *testing.T) {
 	state, _, store := fixture()
 	state.Preferences.Polish, state.Preferences.MatchApp = true, true
 	state.Polish = runtime.Polish{State: runtime.PolishReady, Installed: true}
 	state.SceneTarget = runtime.SceneTarget{Known: true, AppName: "Cursor", Hints: runtime.SceneHints{App: "com.todesktop.230313mzl4w4u92", Field: runtime.FieldText}}
-	state.LastText = "帮我改一下 client.ts，请求失败的时候重试三次，超时设成五秒，然后在 README 里补一段说明，再加一个单元测试覆盖重试逻辑和超时逻辑，最后跑一遍完整测试。"
 	panel := &menubar.Panel{}
-	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight)
+	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store))
 	settle(tt)
 	en := copy.For(copy.English)
 	card, ok := tt.Find(en.Text(copy.ScenePrompt))
 	quit, _ := tt.Find(en.Text(copy.Quit))
-	text, _ := tt.Find(state.LastText)
-	if !ok || text.Y+text.H > quit.Y || card.Y > text.Y {
-		t.Fatalf("layout: card %+v text %+v quit %+v", card, text, quit)
+	if !ok || card.Y+card.H > quit.Y || quit.Y+quit.H > float32(PanelHeightFor(store)) {
+		t.Fatalf("layout: card %+v quit %+v", card, quit)
 	}
 	snapshot(t, tt, "panel-scene")
-	// The select's popup fits in the panel below the card.
+	// The select flips above in the compact panel and scrolls to every option.
 	if err := tt.Click(en.Text(copy.SceneCardLabel)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
+	tt.Scroll(card.X+20, card.Y-30, 0, 240)
+	rest(tt, 250*time.Millisecond)
 	search, ok := tt.Find(en.Text(copy.SceneSearch))
-	if !ok || search.Y < card.Y || search.Y+search.H > PanelHeight {
+	if !ok || search.Y < 0 || search.Y+search.H > float32(PanelHeightFor(store)) {
 		t.Fatalf("popup: search %+v card %+v", search, card)
 	}
 	snapshot(t, tt, "panel-scene-select")
+	if err := tt.Click(en.Text(copy.SceneSearch)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if state.Preferences.SceneOverrides["com.todesktop.230313mzl4w4u92"] != runtime.SceneSearch {
+		t.Fatal("last scene option was not reachable")
+	}
 }
