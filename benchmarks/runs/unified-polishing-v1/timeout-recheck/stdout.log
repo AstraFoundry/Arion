@@ -1,5 +1,0 @@
---- FAIL: TestNativeStagePreservation (19.14s)
-    stage_native_test.go:191: private GGUF request failed
-FAIL
-FAIL	arion.local/desktop/infrastructure/llm/gguf	19.386s
-FAIL

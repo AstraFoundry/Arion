@@ -1,8 +1,0 @@
-{
-  "freezeSha256": "94405c0888a144c479bae55dd4641339e66a378ad3a4204740287e7f4dc04791",
-  "devResultsSha256": "33de49ccbfcec3fa9024a5ba5e7ca5900d7197a03418aee4cefe3b5af64baa60",
-  "devReviewSha256": "ce34469e7ef5b4a5571f27904463bc70f641501b8f67eecec365be8c5d16d40b",
-  "selected": "tasked",
-  "promotion": false,
-  "reason": "Equal development fidelity 16/18 and required repairs 3/5; scene readiness improves from 12/18 to 14/18 without new damage. Select only for paired evaluation; longer input costs latency. No release promotion."
-}

@@ -1,7 +1,0 @@
-{
-  "status": "complete",
-  "generations": 12,
-  "resultsSha256": "96d8f7bbbecb9a66d9248cdb86ebed86ebaee02099b22654855d5f972729fcec",
-  "rawResultsSha256": "837e814ab54e762d5afe5cca1fe464babd89ae9541aca1da48e2fc0e54d45d7f",
-  "scope": "Derived view of12 already counted native responses; zero additional inference."
-}

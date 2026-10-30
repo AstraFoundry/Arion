@@ -1,5 +1,0 @@
-ok  	arion.local/desktop/infrastructure/imebridge	2.153s
-# arion.local/desktop/bootstrap.test
-ld: warning: ignoring duplicate libraries: '-lobjc'
-ok  	arion.local/desktop/infrastructure/macos	1.704s
-ok  	arion.local/desktop/bootstrap	2.669s

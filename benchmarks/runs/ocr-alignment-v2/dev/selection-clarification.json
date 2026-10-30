@@ -1,7 +1,0 @@
-{
-  "selectionSha256": "c1193f37c6e37ff48550dcbb60b7ec2697143facf22b1a79fea0fd03a45e8c2c",
-  "kind": "selection-description-clarification-no-treatment-change",
-  "correction": "The frozen selection description incorrectly says aligned had the lower median. Nearest-rank p50 was aligned 672.723750 ms and staged 672.629583 ms, effectively tied. The justified tie-break is the shorter direct policy; aligned also had lower p95 in these 16 cases. Choice, prompts and pre-evaluation selection hash remain unchanged.",
-  "devAlignedP50Ms": 672.7237501181662,
-  "devStagedP50Ms": 672.6295829284936
-}

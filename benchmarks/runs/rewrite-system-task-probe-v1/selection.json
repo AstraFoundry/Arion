@@ -1,9 +1,0 @@
-{
-  "selected": null,
-  "qualified": false,
-  "probePassed": false,
-  "freezeSha256": "c2a13ac40598f7da45cd12c03d01229f1409f832637a6889996961cdff59712f",
-  "resultsSha256": "2e780486c03fea9d34580ca184c84d3af6ceb6c178620bd90bbfe44a17231ec7",
-  "reviewSha256": "c17c58424b29a5a3e70e810e389e0f258f44ff7481bda8c7c3966b05082231a5",
-  "reason": "Four of12 stress outcomes still fail; full36 expansion and fresh24 are not executed. System scope repairs four footer boundary regressions but restores only baseline-level hard-subset quality, not release readiness."
-}

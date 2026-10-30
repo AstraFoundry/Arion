@@ -1,9 +1,0 @@
-0.00.046.873 I srv  llama_server: initializing ...
-0.00.046.880 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
-0.00.047.061 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
-0.00.048.745 I srv    load_model: loading model '/Users/steven/code/Arion/.workspace/rewrite-small-models-v1/Qwen3.5-2B-Q4_K_M.gguf'
-0.01.195.603 I cmn          init: llama threadpool init, n_threads = 4
-0.01.234.991 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 4096, kv_unified = 'false'
-0.01.237.320 I srv  llama_server: model loaded
-0.01.237.324 I srv  llama_server: listening on http://127.0.0.1:18769
-0.01.306.036 I srv    operator(): operator(): cleaning up before exit...

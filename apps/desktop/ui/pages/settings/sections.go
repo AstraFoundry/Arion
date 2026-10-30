@@ -38,6 +38,7 @@ var sections = []sectionInfo{
 	{id: Microphone, icon: icons.Mic, title: copy.NavMicrophone},
 	{id: Model, icon: icons.Cpu, title: copy.NavModel, attention: func(s runtime.Store) bool { return model.NeedsAction(s.State.Model) }},
 	{id: Vocabulary, icon: icons.BookOpen, title: copy.NavVocabulary},
+	{id: Clipboard, icon: icons.Clipboard, title: copy.ClipboardTitle},
 	{id: About, icon: icons.Info, title: copy.NavAbout, attention: func(s runtime.Store) bool { return s.State.Update.Pending() }},
 	{id: Account, title: copy.NavAccount, shown: func(s runtime.Store) bool { return !s.State.Account.Disabled }, card: true},
 }

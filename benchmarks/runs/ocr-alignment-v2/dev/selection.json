@@ -1,8 +1,0 @@
-{
-  "selected": "aligned",
-  "freezeSha256": "8fa26501db1d4e95b0af4e4ae8f0a5afa0b7b040e44fed2d8054611de1a57cb6",
-  "devResultsSha256": "c3079df961a5f1189d5a98df51093e1904f8151e5461f4dbe4004689cbd019de",
-  "devReviewSha256": "5ee697e3b69aab4dd1830a9e2a5809688c0538fb11831df2904db83c0e4d0378",
-  "basis": "Diagnostic only. Both candidates: 13/16 intended-message passes, 3/5 required repairs, same material failures and useful scene coverage. Aligned uses the shorter direct repair policy and lower median request time. Recipient/platform misses and hostile-context replacement remain; no release promotion.",
-  "productionActivation": false
-}

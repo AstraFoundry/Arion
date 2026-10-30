@@ -1,6 +1,0 @@
-=== RUN   TestNativeSelectedPipeline
-    native_test.go:80: unexpected list layout for case 8: "First, Jules checks inventory on Monday. Second, Morgan packs the orders on Thursday. Ship only after inspection clears."
---- FAIL: TestNativeSelectedPipeline (25.39s)
-FAIL
-FAIL	arion.local/desktop/infrastructure/llm/gguf	25.858s
-FAIL

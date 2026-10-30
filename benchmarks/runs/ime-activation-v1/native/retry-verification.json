@@ -1,7 +1,0 @@
-{
-  "idempotentActivationPassed": true,
-  "cancelExit": 1,
-  "cancelLeftSelectionUnchanged": true,
-  "installedBytesUnchanged": true,
-  "selectedSourceRestored": "com.bytedance.inputmethod.doubaoime.pinyin"
-}

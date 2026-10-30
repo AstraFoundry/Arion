@@ -1,8 +1,0 @@
-{
-  "allRawResponsesRead": 404,
-  "uniqueFailedTuplesRead": 13,
-  "changedPairsRead": 4,
-  "resultsSha256": "aa1142b26cfe3d4085bbf0dfa9487771892b797d2dc8b14bdc1455e0e4258553",
-  "reviewTuplesSha256": "921e09d230303f7d692b68745c49f3023ee49294f329701ed8677141df6804f2",
-  "scope": "All404 actual raw outputs and edited sources personally read in consecutive ranges. All13 unique failed complete-source/context/hypothesis/output tuples and4 changed pairs separately read. Assistant review, not independent blind acceptance."
-}

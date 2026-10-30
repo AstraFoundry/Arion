@@ -1,6 +1,6 @@
 # Phonetic evidence for ASR correction
 
-Status: primary-paper and public-interface research, matched-artifact static investigation, and a [completed exploratory Qwen3-1.7B benchmark](../../benchmarks/results/phonetic-asr-1.7b-v2/README.md). No production recognition model, phonetic sidecar or correction policy was changed. This does not change the normative [speech contract](../../specs/002-speech-pipeline.md).
+Status: primary-paper and public-interface research, matched-artifact static investigation, and a [completed exploratory Qwen3-1.7B benchmark](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/phonetic-asr-1.7b-v2/README.md`). No production recognition model, phonetic sidecar or correction policy was changed. This does not change the normative [speech contract](../../specs/002-speech-pipeline.md).
 
 ## Finding
 
@@ -20,7 +20,7 @@ Even perfect pronunciation cannot identify a name among exact homophones without
 
 ## Measured local comparison
 
-The [complete 1.7B result](../../benchmarks/results/phonetic-asr-1.7b-v2/README.md) covers 154 test cases and 924 actual generations across six treatments. The user stopped the remaining 4B checkpoint; its partial observations are excluded. The cancelled parent execution is retained, and the complete 1.7B observations have a separately verified analysis view.
+The [complete 1.7B result](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/phonetic-asr-1.7b-v2/README.md`) covers 154 test cases and 924 actual generations across six treatments. The user stopped the remaining 4B checkpoint; its partial observations are excluded. The cancelled parent execution is retained, and the complete 1.7B observations have a separately verified analysis view.
 
 | Condition | Mandarin CER | English WER | Synthetic mixed MER |
 | --- | --- | --- | --- |
@@ -93,7 +93,7 @@ Current vendor pages describe [Doubao's recognition and text organization](https
 
 This section describes the retired runtime retained as research evidence. The desktop now uses native workers under [ADR 020](../decisions/020-native-qwen-asr.md). The historical desktop module pinned sherpa-onnx Go v1.13.8. Its cached macOS binding defines online `Text`, `Tokens`, `Timestamps`, `Json`, and offline `YsLogProbs` alongside tokens/timing. Actual model coverage still needs verification: the inspected [tagged Qwen3-ASR implementation](https://github.com/k2-fsa/sherpa-onnx/blob/v1.13.8/sherpa-onnx/csrc/offline-recognizer-qwen3-asr-impl.cc) sets text/tokens without establishing populated token log probabilities.
 
-The archived [ASR adapter](../../benchmarks/reproduction/qwen17-accessibility-v1/source-final/apps/desktop/infrastructure/asr/sherpa.go) uses `greedy_search` and takes only `.Text` at streaming partial/final and offline recognition sites. The [Draft contract](../../packages/core/contracts/contracts.go) has no token-evidence fields; the [Finalizer port](../../packages/core/domain/ports/ports.go) returns a string. Therefore, preserving the current transducer's evidence is a concrete first experiment, rather than assuming the existing pipeline already passes confidence to correction.
+The archived [ASR adapter](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/reproduction/qwen17-accessibility-v1/source-final/apps/desktop/infrastructure/asr/sherpa.go`) uses `greedy_search` and takes only `.Text` at streaming partial/final and offline recognition sites. The [Draft contract](../../packages/core/contracts/contracts.go) has no token-evidence fields; the [Finalizer port](../../packages/core/domain/ports/ports.go) returns a string. Therefore, preserving the current transducer's evidence is a concrete first experiment, rather than assuming the existing pipeline already passes confidence to correction.
 
 Proposed information flow, not an implementation commitment:
 

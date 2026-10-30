@@ -2,12 +2,44 @@ package bootstrap
 
 import (
 	"errors"
+	goruntime "runtime"
 	"testing"
+	"time"
 
+	"arion.local/core/application"
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/holdkey"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/runtime"
 )
+
+func TestVoiceShortcutsUseCurrentCaretWithArionInputMethodSelected(t *testing.T) {
+	for _, translation := range []bool{false, true} {
+		t.Run(map[bool]string{false: "polishing", true: "translation"}[translation], func(t *testing.T) {
+			core, err := application.NewCoordinator(application.Dependencies{
+				Audio: readinessAudio{}, Recognizers: readinessRecognizer{},
+				NewID:      func() string { return "shortcut-route" },
+				SelectMode: func() domain.InputMode { return domain.SystemIMEMode },
+			}, application.Options{})
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(core.Cancel)
+			prefs := application.DefaultPreferences(goruntime.GOOS)
+			a := &App{core: core, prefs: prefs}
+			a.state.Preferences = prefs
+			a.state.Model.State = runtime.ModelReady
+			key := prefs.HoldKey
+			if translation {
+				key = prefs.TranslateKey
+			}
+			a.onHoldKeyEvent(key, holdkey.Down, time.Now())
+			if snapshot := core.Snapshot(); snapshot.Mode != domain.ShortcutMode || snapshot.State != domain.Preparing {
+				t.Fatalf("voice shortcut selected owned IME delivery: %+v", snapshot)
+			}
+		})
+	}
+}
 
 type routeIME struct {
 	InputMethod
@@ -69,6 +101,25 @@ func TestDictationRouteUsesActualSelection(t *testing.T) {
 		}
 		if got := a.dictationMode(); got != want {
 			t.Fatalf("%s: got %s want %s", state, got, want)
+		}
+	}
+}
+
+type dictationInputProbe struct {
+	Targets
+	noInput bool
+}
+
+func (p dictationInputProbe) NoInput() bool { return p.noInput }
+func TestDictationWithoutInputChoosesCopyBeforeIMEAcquisition(t *testing.T) {
+	for _, absent := range []bool{false, true} {
+		a := &App{ime: observedRouteIME{selected: true}, targets: dictationInputProbe{noInput: absent}}
+		want := domain.SystemIMEMode
+		if absent {
+			want = domain.ShortcutMode
+		}
+		if got := a.dictationMode(); got != want {
+			t.Fatalf("no input %v: route %s want %s", absent, got, want)
 		}
 	}
 }

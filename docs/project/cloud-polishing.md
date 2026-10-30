@@ -54,9 +54,9 @@ The chosen model is a preference (`UpdatePreferences` with `CloudModel`), applie
 
 `go test ./infrastructure/cloudpolish ./ui/app` runs against local fakes, including the ChatGPT flow on port 1455. `bootstrap` tests need macOS or Windows. Sign-in against the real services remains open (CLD-A05).
 
-[Shared-pipeline verification](../../benchmarks/runs/unified-polishing-v1/README.md) records complete desktop/core checks and actual local model/worker runs. One context fixture repeatedly times out, and its isolated recheck fails session erasure. Real cloud service and microphone-to-editor acceptance remain open. The staged runner snapshots the shared `llm/rewrite` package along with its adapters.
+[Shared-pipeline verification](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/unified-polishing-v1/README.md`) records complete desktop/core checks and actual local model/worker runs. One context fixture repeatedly times out, and its isolated recheck fails session erasure. Real cloud service and microphone-to-editor acceptance remain open. The staged runner snapshots the shared `llm/rewrite` package along with its adapters.
 
-The [OpenAI gateway integration run](../../benchmarks/runs/cloud-polishing-gateway-v1/README.md) exercises both `/v1/responses` and `/v1/chat/completions` over loopback HTTP through the production Republic transport and shared pipeline. Its 60 cases cover all context-switch combinations through coordinator delivery, stage isolation, final-only scheduling, single commit, rejected/truncated responses, transient HTTP retries, cancellation and deadline recovery. Run from the repository root:
+The [OpenAI gateway integration run](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/cloud-polishing-gateway-v1/README.md`) exercises both `/v1/responses` and `/v1/chat/completions` over loopback HTTP through the production Republic transport and shared pipeline. Its 60 cases cover all context-switch combinations through coordinator delivery, stage isolation, final-only scheduling, single commit, rejected/truncated responses, transient HTTP retries, cancellation and deadline recovery. Run from the repository root:
 
 ```sh
 go test -race ./apps/desktop/infrastructure/cloudpolish -run '^TestOpenAIGateway' -count=1 -timeout=120s
@@ -64,4 +64,4 @@ go test -race ./apps/desktop/infrastructure/cloudpolish -run '^TestOpenAIGateway
 
 Only the remote gateway replies and the coordinator's audio/recognition/editor ports are synthetic. These tests establish protocol and orchestration behavior; they do not establish real cloud inference quality, service latency, OS context capture or microphone-to-editor acceptance.
 
-[Main-branch integration verification](../../benchmarks/runs/cloud-polishing-main-v1/README.md) additionally checks the current source-tag prompt format and punctuation forwarding, retaining final-only timing for both engines.
+[Main-branch integration verification](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/cloud-polishing-main-v1/README.md`) additionally checks the current source-tag prompt format and punctuation forwarding, retaining final-only timing for both engines.

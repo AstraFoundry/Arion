@@ -1,6 +1,0 @@
-activated xasr-160-xasr-final in 2883 ms
-llm loaded prompt=selector-contextual-v5+natural-layout-v3 in 889 ms
-native-06          stop→final   5565 ms previews=0 accepted
-native-07          stop→final    536 ms previews=3 accepted
-native-numeric-01  stop→final   1765 ms previews=0 accepted
-native-numeric-02  stop→final    510 ms previews=0 accepted

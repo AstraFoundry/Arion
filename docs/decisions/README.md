@@ -43,6 +43,10 @@ Write an ADR when the decision:
 - [029: Spoken self-repair collapses before polish](029-spoken-self-repair.md) — `speech-spans-v3` drops a clear revision to the final span; `cleanup-rules-v2` keeps the speaker's wording and names an ASR mishear fix a correction.
 - [030: Shared vocabulary delivery over verified input-method transport](030-keyboard-vocabulary-transport.md) — complete encrypted projections, authenticated capability admission and restart-safe acknowledgement.
 - [031: Opt-in local keyboard neural ranking](031-local-keyboard-neural-ranking.md) — default-off local completion, verified revision ownership and voice priority.
+- [032: Public product and private evaluation repositories](032-public-product-private-evaluation.md) — independent public product checks and a Git-only private research archive.
+- [033: Current-caret delivery for global voice shortcuts](033-voice-shortcut-delivery.md) — dictation and translation keys use external delivery regardless of the selected input source.
+- [034: Local clipboard history](034-clipboard-history.md) — encrypted local resources, file references and internal-write exclusion.
+- [035: Isolated development sessions](035-development-runtime-isolation.md) — persistent development signing, separate mutable state, and explicit release switching.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

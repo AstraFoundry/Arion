@@ -1,12 +1,12 @@
 import { ArrowLeft } from "lucide-react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { toJsxRuntime } from "hast-util-to-jsx-runtime";
-import type { Post } from "@/entities/post";
+import { getAuthors, type Post } from "@/entities/post";
 import { routes } from "@/shared/config";
-import { format, formatDate, formatList } from "@/shared/i18n";
+import { format, formatDate } from "@/shared/i18n";
 import { loadMessages } from "@/shared/i18n/server";
 import { mediaSize } from "@/shared/lib/server";
-import { AppLink, Dateline } from "@/shared/ui";
+import { AppLink, AuthorByline, Dateline } from "@/shared/ui";
 import { postComponents } from "../lib/components";
 import { renderMarkdown } from "../lib/markdown";
 import { TableOfContents } from "./table-of-contents";
@@ -16,22 +16,20 @@ import "./prose.css";
 const MIN_TOC_HEADINGS = 3;
 
 /** Authors and the revision date, when the post has them. */
-function Byline({ post }: { post: Post }) {
+async function Byline({ post }: { post: Post }) {
   const { blog } = loadMessages(post.locale);
-  const { locale } = post;
   if (post.authors.length === 0 && !post.updated) return null;
+  const authors = await getAuthors(post.authors);
   return (
-    <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
-      {post.authors.length > 0 ? (
-        <span>{format(blog.byline, { authors: formatList(post.authors, locale) })}</span>
-      ) : null}
-      {post.authors.length > 0 && post.updated ? <span aria-hidden="true">·</span> : null}
+    <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+      {authors.length > 0 ? <AuthorByline authors={authors} /> : null}
+      {authors.length > 0 && post.updated ? <span aria-hidden="true">·</span> : null}
       {post.updated ? (
         <time dateTime={post.updated} className="tabular-nums">
-          {format(blog.updated, { date: formatDate(post.updated, locale) })}
+          {format(blog.updated, { date: formatDate(post.updated, post.locale) })}
         </time>
       ) : null}
-    </p>
+    </div>
   );
 }
 

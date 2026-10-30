@@ -1,12 +1,14 @@
 # Phonetic ASR ablation procedure
 
+Research commands qualified with `/path/to/Arion-evaluation` run in the private [Arion evaluation repository](https://github.com/AstraFoundry/Arion-evaluation). Product checks run in this public checkout.
+
 This procedure implements the exploratory comparison proposed in [phonetic ASR research](phonetic-asr-correction.md). It measures real acoustic extraction and local CPU generation on macOS with Python 3.12. It does not train PYG-ASR or LLM-P2G, modify production correction, or establish native end-to-end latency.
 
-The [completed Qwen3-1.7B result](../../benchmarks/results/phonetic-asr-1.7b-v2/README.md) contains all 154 cases and six conditions (924 generations). The user cancelled the remaining 4B checkpoint. Its parent execution remains cancelled; a hash-linked view verifies the complete 1.7B coverage without new inference and excludes every 4B observation. The two-model design below records the original plan, rather than a claim that both checkpoints completed.
+The [completed Qwen3-1.7B result](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/phonetic-asr-1.7b-v2/README.md`) contains all 154 cases and six conditions (924 generations). The user cancelled the remaining 4B checkpoint. Its parent execution remains cancelled; a hash-linked view verifies the complete 1.7B coverage without new inference and excludes every 4B observation. The two-model design below records the original plan, rather than a claim that both checkpoints completed.
 
 ## Frozen design
 
-The [configuration](../../benchmarks/configs/phonetic-asr.json) fixes an X-ASR 160 ms INT8 transducer, greedy decoding, 20 ms input chunks, 0.8 s endpoint silence, 0.4 s tail padding and four CPU threads. Audio is replayed faster than realtime. Each file has fresh recognition state; endpoint-delimited results are retained separately. Text, emitted tokens, their timestamps and actual `ys_probs` log scores are saved. No ASR alternatives are fabricated.
+The [configuration](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/configs/phonetic-asr.json`) fixes an X-ASR 160 ms INT8 transducer, greedy decoding, 20 ms input chunks, 0.8 s endpoint silence, 0.4 s tail padding and four CPU threads. Audio is replayed faster than realtime. Each file has fresh recognition state; endpoint-delimited results are retained separately. Text, emitted tokens, their timestamps and actual `ys_probs` log scores are saved. No ASR alternatives are fabricated.
 
 An independently provisioned Allosaurus 1.0.2 / `uni2005` checkpoint recognizes the same original audio into one universal IPA phone sequence with `emit=1`, on CPU; its MFCC frontend internally resamples to 8 kHz. No language label, reference, expected word, lexicon or text-ASR result enters this phone recognizer. This is a generic phone sidecar, not a jointly trained Mandarin-pinyin/character system. Its approximate phone sequence is supplied as evidence, not treated as ground truth.
 
@@ -36,7 +38,7 @@ The manifest pins public-source revisions, access/license records, audio convers
 
 Acoustic extraction runs train warmups and then all dev/test audio, verifying each audio digest and PCM format before inference. Development token scores determine the low-score threshold: their lower quartile, without reference-based fitting. The resulting threshold is a heuristic flag, not calibrated correctness probability. The original plan paired all 154 test cases across raw output and six conditions for each LLM, for 1,848 measured generations and 154 raw controls, with two development warmups per model/treatment. The requested completed scope contains the full 924-generation 1.7B checkpoint; the cancelled 4B remainder is not part of its result.
 
-Archived evidence includes exact prompts, raw ASR/IPA/pinyin, decoder JSON, generation/token events, output-limit flags, completed/failure status, configuration and code hashes, input/model/runtime hashes, Git revision/dirty state, host/power settings, warmups and monotonic timings. Output directories and aggregate report files refuse overwrite. Failed/incomplete runs cannot produce a complete report. Exact research inputs and outputs are retained in the [benchmark archive](../../benchmarks/migration/README.md); personal recordings, weights and runtime environments remain outside Git.
+Archived evidence includes exact prompts, raw ASR/IPA/pinyin, decoder JSON, generation/token events, output-limit flags, completed/failure status, configuration and code hashes, input/model/runtime hashes, Git revision/dirty state, host/power settings, warmups and monotonic timings. Output directories and aggregate report files refuse overwrite. Failed/incomplete runs cannot produce a complete report. Exact research inputs and outputs are retained in the [benchmark archive](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/migration/README.md`); personal recordings, weights and runtime environments remain outside Git.
 
 ## Metrics and interpretation
 
@@ -58,12 +60,12 @@ Generation timing includes prompt prefill and token decoding on a warm model. Ac
 
 ## Reproduction
 
-Use the pinned pnpm version and the [evaluation command contracts](../../tools/evaluation/README.md#phonetic-correction-ablations). Provisioned private assets remain required; no command automatically acquires models. New inference still needs local models/runtimes. Existing results can be rescored with `pnpm bench:archive:report --out <new-directory>`. Example using the archived corpus and retained local inference assets:
+Use the pinned pnpm version and the private repository's [evaluation command contracts](https://github.com/AstraFoundry/Arion-evaluation). Provisioned private assets remain required; no command automatically acquires models. New inference still needs local models/runtimes. Existing results can be rescored with `pnpm --dir /path/to/Arion-evaluation bench:archive:report --out <new-directory>`. Example using the archived corpus and retained local inference assets:
 
 ```sh
-make phonetic-extract CORPUS=benchmarks/corpora/asr-v1/corpus.json EVAL_PYTHON=.workspace/phonetic-venv/bin/python MODELS=.workspace/models/store PHONE_MODELS=.workspace/phonetic-models RUNTIME_ARTIFACTS=.workspace/phonetic-models/acoustic-artifacts.json OUT=.workspace/benchmarks/phonetic-repeat-acoustic
-make phonetic-bench CORPUS=benchmarks/corpora/asr-v1/corpus.json EVAL_PYTHON=.workspace/ablation-venv/bin/python MODELS=.workspace/ablation-models RUNTIME_ARTIFACTS=.workspace/phonetic-models/llm-runtime-artifacts.json LLM_ARTIFACTS=.workspace/phonetic-models/llm-artifacts.json EVIDENCE=.workspace/benchmarks/phonetic-repeat-acoustic PHONETIC_PREFLIGHT=.workspace/benchmarks/phonetic-asr-v2/smoke-a OUT=.workspace/benchmarks/phonetic-repeat-correction
-make phonetic-report RESULTS=.workspace/benchmarks/phonetic-repeat-correction OUT=.workspace/benchmarks/phonetic-repeat-summary.json
+make -C /path/to/Arion-evaluation phonetic-extract CORPUS=benchmarks/corpora/asr-v1/corpus.json EVAL_PYTHON=.workspace/phonetic-venv/bin/python MODELS=.workspace/models/store PHONE_MODELS=.workspace/phonetic-models RUNTIME_ARTIFACTS=.workspace/phonetic-models/acoustic-artifacts.json OUT=.workspace/benchmarks/phonetic-repeat-acoustic
+make -C /path/to/Arion-evaluation phonetic-bench CORPUS=benchmarks/corpora/asr-v1/corpus.json EVAL_PYTHON=.workspace/ablation-venv/bin/python MODELS=.workspace/ablation-models RUNTIME_ARTIFACTS=.workspace/phonetic-models/llm-runtime-artifacts.json LLM_ARTIFACTS=.workspace/phonetic-models/llm-artifacts.json EVIDENCE=.workspace/benchmarks/phonetic-repeat-acoustic PHONETIC_PREFLIGHT=.workspace/benchmarks/phonetic-asr-v2/smoke-a OUT=.workspace/benchmarks/phonetic-repeat-correction
+make -C /path/to/Arion-evaluation phonetic-report RESULTS=.workspace/benchmarks/phonetic-repeat-correction OUT=.workspace/benchmarks/phonetic-repeat-summary.json
 ```
 
 The phone checkpoint archive is pinned to SHA-256 `7dc4f20802012f64ac07deb04ade263f199c839521e58eae83c99d79028fc4de`, acquired from the author's `v1.0/uni2005.tar.gz` release. This is acquisition provenance for local research, not a product distribution/license decision. The pinned dependency lock and private artifact manifest identify the actual implementation used.

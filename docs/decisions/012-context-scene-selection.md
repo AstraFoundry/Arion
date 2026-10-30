@@ -8,7 +8,7 @@ Accepted (product decision). Extends [ADR 011](011-live-local-rewriting.md). Sce
 
 Chatterfly rewrites dictation differently for email, workplace messages, coding-agent prompts and general typing, and picks the scene automatically. Its client sends the frontmost app's bundle ID and window title, the field type, text around the cursor, the clipboard and per-app input history to a server that classifies the scene and then rewrites for it ([research](../research/chatterfly.md#scene-recognition-and-switching)). Arion's live pipeline always asked its local model for plain chat text, except in benchmark fixtures that declared a scene.
 
-Arion runs a 1.7B model on the device and reads no field text. A prompt that taught three more scenes (`live-v3`: work, prompt and search instructions plus six demonstrations) lowered the held-out live benchmark from 27 to 22 passes and raised final latency, so scene support cannot come from a longer prompt ([report](../../benchmarks/results/scene-switching-v1/README.md)).
+Arion runs a 1.7B model on the device and reads no field text. A prompt that taught three more scenes (`live-v3`: work, prompt and search instructions plus six demonstrations) lowered the held-out live benchmark from 27 to 22 passes and raised final latency, so scene support cannot come from a longer prompt ([report](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/scene-switching-v1/README.md`)).
 
 ## Decision
 
@@ -20,7 +20,7 @@ Arion runs a 1.7B model on the device and reads no field text. A prompt that tau
 
 ## Consequences
 
-- On the held-out scene set, delivered passes rose from 14 to 21 of 30, mostly from email layout and search finishing; the live regression sets stayed at 27/30 and 17/24 ([report](../../benchmarks/results/scene-switching-v1/README.md)). Plain chat output is unchanged because the prompt and its KV prefix are unchanged.
+- On the held-out scene set, delivered passes rose from 14 to 21 of 30, mostly from email layout and search finishing; the live regression sets stayed at 27/30 and 17/24 ([report](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/scene-switching-v1/README.md`)). Plain chat output is unchanged because the prompt and its KV prefix are unchanged.
 - Numbered lines for enumerated work messages and coding requests depend on the 1.7B model following `[list]`, which it did not reliably do on new cases.
 - The tables need upkeep: unlisted apps and sites fall back to chat, and scenes that depend on a page path (iCloud Mail, Feishu documents on the messenger's domain) cannot be told apart by host.
 - Reading the page URL relies on the browser exposing its accessibility tree. It is not yet verified on a trusted build (SCN-A04); without it, browser targets fall back to app and field signals.

@@ -25,6 +25,14 @@ func load(name string) *ui.SVG {
 }
 
 var (
+	CornerDownLeft    = load("corner-down-left")
+	Image             = load("image")
+	File              = load("file")
+	Folder            = load("folder")
+	Pin               = load("pin")
+	Trash             = load("trash")
+	Ellipsis          = load("ellipsis")
+	Link              = load("link")
 	Accessibility     = load("accessibility")
 	ArrowDown         = load("arrow-down")
 	ArrowRight        = load("arrow-right")
@@ -60,6 +68,7 @@ var (
 	Mic               = load("mic")
 	MicOff            = load("mic-off")
 	Pencil            = load("pencil")
+	Plus              = load("plus")
 	Power             = load("power")
 	RotateCw          = load("rotate-cw")
 	Search            = load("search")

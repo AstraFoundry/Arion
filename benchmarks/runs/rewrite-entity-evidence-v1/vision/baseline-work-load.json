@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 3676.35,
-  "promptId": "ocr-alignment-v2-aligned-work-zh",
-  "prefixTokens": 586,
-  "peakRssBytes": 3671769088
-}

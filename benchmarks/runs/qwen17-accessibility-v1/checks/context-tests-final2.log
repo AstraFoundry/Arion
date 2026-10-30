@@ -1,9 +1,0 @@
-
-> arion-monorepo@0.0.0 qwen17:context:test /Users/steven/code/Arion
-> node scripts/qwen17-context-command.mjs test
-
-......
-----------------------------------------------------------------------
-Ran 6 tests in 0.055s
-
-OK

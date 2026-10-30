@@ -1,1 +1,0 @@
-{"command": ["python3", "-u", "benchmarks/reproduction/rewrite-selector-minicpm-v1/run.py", "--out", ".workspace/rewrite-selector-minicpm-v1/comparison-run"], "exitCode": 0, "comparisonAddendumSha256": "7bd019065e425e06f68843f78d67e825863a0aa82bedf3adc36655690e3a2a87"}

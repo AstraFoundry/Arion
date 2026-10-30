@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 4646.485,
-  "promptId": "entity-evidence-v1-exact-chat",
-  "prefixTokens": 540,
-  "peakRssBytes": 3623682048
-}

@@ -65,6 +65,7 @@ func (a *App) createTray() {
 		}
 		items := []*mygo.MenuItem{
 			{Label: label, Click: func(*mygo.MenuItem, *mygo.Window) { actions{a}.ToggleDictation() }},
+			{Label: a.ui.Copy().Text(copy.ClipboardTitle), Click: func(*mygo.MenuItem, *mygo.Window) { actions{a}.OpenClipboard() }},
 			mygo.Separator(),
 			{Label: a.ui.Copy().Text(copy.TraySettings), Accelerator: "CmdOrCtrl+,", Click: func(*mygo.MenuItem, *mygo.Window) { a.openSettings() }},
 		}
@@ -102,7 +103,7 @@ func (a *App) togglePanel() {
 	a.peekScene()
 	view := uiapp.Panel(a.ui)
 	a.panel = mygo.NewFlyout(mygo.FlyoutOptions{
-		Tray: a.tray, Placement: mygo.PlacementBottom, Gap: 4, Width: uiapp.PanelWidth, Height: uiapp.PanelHeight,
+		Tray: a.tray, Placement: mygo.PlacementBottom, Gap: 4, Width: uiapp.PanelWidth, Height: uiapp.PanelHeightFor(a.ui),
 		Focusable: true, Shadow: true, Popover: true, Content: view.Content,
 	})
 	a.track(a.panel, view, func() { a.panel = nil })
@@ -244,6 +245,9 @@ func (a *App) updateLanguage() {
 	}
 	if a.settingsWin != nil {
 		a.settingsWin.SetTitle(messages.Text(copy.SettingsTitle))
+	}
+	if a.clipboardWin != nil {
+		a.clipboardWin.SetTitle(messages.Text(copy.ClipboardTitle))
 	}
 	if a.tray != nil {
 		a.tray.SetToolTip(messages.Text(copy.TrayToolTip))

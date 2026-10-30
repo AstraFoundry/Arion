@@ -1,4 +1,0 @@
-=== RUN   TestNativeSelectedPipeline
---- PASS: TestNativeSelectedPipeline (8.50s)
-PASS
-ok  	arion.local/desktop/infrastructure/llm/gguf	8.719s

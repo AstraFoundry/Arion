@@ -1,7 +1,0 @@
-{
-  "schemaVersion": 1,
-  "origin": "All 50 context/target pairs authored originally for this benchmark by the coding agent; no copied text, personal data, recordings or external corpora",
-  "license": "AGPL-3.0-only (repository-authored fixtures)",
-  "classification": "Synthetic exposed development diagnostic of context ranking; not a held-out test",
-  "counts": { "groups": 20, "pairs": 50, "repetitions": 4, "seeds": 3 }
-}

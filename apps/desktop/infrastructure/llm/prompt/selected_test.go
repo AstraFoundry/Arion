@@ -14,7 +14,7 @@ import (
 )
 
 func TestSelectedSelectorParityAndFormatterIsolation(t *testing.T) {
-	data, err := os.ReadFile("../../../../../benchmarks/reproduction/rewrite-product-integration-v1/payload-parity.json")
+	data, err := os.ReadFile("testdata/payload-parity.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -75,9 +75,9 @@ func TestSelectedSelectorParityAndFormatterIsolation(t *testing.T) {
 
 func TestSelectedTemplateOriginalBytes(t *testing.T) {
 	for source, got := range map[string][]byte{
-		"rewrite-selector-screen-v1/templates/baseline/prompts.json": selectedSelection,
+		"baseline-prompts.json": selectedSelection,
 	} {
-		want, err := os.ReadFile("../../../../../benchmarks/reproduction/" + source)
+		want, err := os.ReadFile("testdata/" + source)
 		if err != nil {
 			t.Fatal(err)
 		}

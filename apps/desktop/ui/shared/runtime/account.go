@@ -60,10 +60,13 @@ type Account struct {
 	PictureData []byte
 	Locale      string
 	HostedSync  bool
-	ErrorCode   string
-	ErrorDetail string
-	Waitlist    AccountWaitlist
-	SignOut     AccountSignOut
+	// UsageReporting is true while this session sends consented daily usage:
+	// the token carries current consent and the platform has not refused it.
+	UsageReporting bool
+	ErrorCode      string
+	ErrorDetail    string
+	Waitlist       AccountWaitlist
+	SignOut        AccountSignOut
 	// Credential is meaningful while signed out; any sign-in, refresh,
 	// cancel or sign-out resets it to CredentialUnknown.
 	Credential AccountCredential

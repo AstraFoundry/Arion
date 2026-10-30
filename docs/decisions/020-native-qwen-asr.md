@@ -24,7 +24,7 @@ The user explicitly adopted MLX 1.7B 8-bit and retired the old stack. A catalog 
 
 Completed native-worker and coordinator evaluations are recorded separately. Python MLX compute results are historical evidence, not native-package acceptance. Runtime replacement requires new evidence, including cancellation, stale-result rejection, tail preservation, offline loading and relocation.
 
-The [native prompt smoke](../../benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/README.md) retains the actual Apple Silicon build, failed sandbox launch, subsequent native capability/recognition checks, empty-context reuse and oversized-context refusal. It is protocol evidence using one existing synthetic development fixture, not hotword accuracy or latency acceptance. The speech.cpp option mapping and capability declaration were checked against pinned source; native Windows hotword inference remains unverified by this check.
+The [native prompt smoke](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/README.md`) retains the actual Apple Silicon build, failed sandbox launch, subsequent native capability/recognition checks, empty-context reuse and oversized-context refusal. It is protocol evidence using one existing synthetic development fixture, not hotword accuracy or latency acceptance. The speech.cpp option mapping and capability declaration were checked against pinned source; native Windows hotword inference remains unverified by this check.
 
 ## Packaging
 

@@ -17,11 +17,11 @@ import (
 
 // Authored text probes exercise the actual worker, not acoustic recognition.
 func TestNativeNumericFillers(t *testing.T) {
-	runNativeRewriteCases(t, "rewrite-numeric-filler-v1")
+	runNativeRewriteCases(t, "numeric-filler-cases.json")
 }
 
 func TestNativeTechnicalSpellings(t *testing.T) {
-	runNativeRewriteCases(t, "rewrite-technical-spelling-v1")
+	runNativeRewriteCases(t, "technical-spelling-cases.json")
 }
 
 func runNativeRewriteCases(t *testing.T, fixture string) {
@@ -30,7 +30,7 @@ func runNativeRewriteCases(t *testing.T, fixture string) {
 	if runtimeDir == "" || modelDir == "" || out == "" {
 		t.Skip("native GGUF artifacts and output path required")
 	}
-	data, err := os.ReadFile(filepath.Join("../../../../../benchmarks/reproduction", fixture, "cases.json"))
+	data, err := os.ReadFile(filepath.Join("testdata", fixture))
 	if err != nil {
 		t.Fatal(err)
 	}

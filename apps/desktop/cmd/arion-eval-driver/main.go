@@ -1,7 +1,7 @@
 //go:build !windows
 
 // Command arion-eval-driver runs Arion's production dictation pipeline behind
-// the evaluation JSONL protocol (tools/evaluation). Audio is replayed in real
+// the evaluation JSONL protocol (tools/driver). Audio is replayed in real
 // time from verified fixtures; stdout carries protocol lines only.
 package main
 

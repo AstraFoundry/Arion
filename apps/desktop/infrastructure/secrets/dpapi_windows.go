@@ -35,12 +35,22 @@ const keyBytes = 32
 // Key returns the named key protected by DPAPI for the current user. The
 // protected blob lives in %AppData%\Arion; it is useless to other users.
 func Key(service, account string) ([]byte, error) {
+	return loadKey(service, account, true)
+}
+
+func ExistingKey(service, account string) ([]byte, error) { return loadKey(service, account, false) }
+
+func loadKey(service, account string, create bool) ([]byte, error) {
 	base, err := os.UserConfigDir()
 	if err != nil {
 		return nil, err
 	}
 	path := filepath.Join(base, service, account+".dpapi")
-	if sealed, err := os.ReadFile(path); err == nil {
+	sealed, err := os.ReadFile(path)
+	if err == nil {
+		if len(sealed) == 0 {
+			return nil, errors.New("protected key is empty")
+		}
 		var out blob
 		if r, _, _ := procCryptUnprotectData.Call(uintptr(unsafe.Pointer(newBlob(sealed))), 0, 0, 0, 0, 0, uintptr(unsafe.Pointer(&out))); r == 0 {
 			return nil, errors.New("DPAPI unprotect failed")
@@ -51,6 +61,9 @@ func Key(service, account string) ([]byte, error) {
 			return nil, errors.New("protected key has unexpected size")
 		}
 		return key, nil
+	}
+	if !errors.Is(err, os.ErrNotExist) || !create {
+		return nil, err
 	}
 	key := make([]byte, keyBytes)
 	if _, err := rand.Read(key); err != nil {

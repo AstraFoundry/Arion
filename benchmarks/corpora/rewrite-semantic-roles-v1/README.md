@@ -1,3 +1,0 @@
-# Semantic-role spelling controls
-
-Thirty-two authored source/context pairs: eight fixed-source groups with no context, related context, wrong-domain context, and the same wrong-domain context plus an instruction. Includes one exposed nursery failure source and seven additional controlled source formulations. Four groups retain valid source meanings; four represent intended ASR recovery despite common source words. Evaluator labels are separate and never read by the model runner. All sources, labels and prompt examples are frozen before inference. Typed text, no new audio or Vision; development ablation controls, not independent natural or release-held-out data.

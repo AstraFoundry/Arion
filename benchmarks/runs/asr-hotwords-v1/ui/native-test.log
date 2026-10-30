@@ -1,8 +1,0 @@
-# arion.local/desktop/e2e.test
-ld: warning: ignoring duplicate libraries: '-lobjc'
-=== RUN   TestVocabularyNativeGroups
---- PASS: TestVocabularyNativeGroups (1.05s)
-=== RUN   TestVocabularyNativeHotwordActions
---- PASS: TestVocabularyNativeHotwordActions (8.94s)
-PASS
-ok  	arion.local/desktop/e2e	10.637s

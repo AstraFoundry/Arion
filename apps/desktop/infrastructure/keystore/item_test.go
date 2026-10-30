@@ -72,3 +72,17 @@ func TestCloudPolishItemIsSeparate(t *testing.T) {
 		}
 	}
 }
+
+func TestDevelopmentCredentialsCannotAddressProductionItems(t *testing.T) {
+	for _, production := range []Store{OpenForProfile("center"), OpenItem(CloudPolishAccount), OpenItem(CloudPolishProviderAccount("chatgpt"))} {
+		development := production.WithService("Arion Dev")
+		if development.target() == production.target() {
+			t.Fatal("development can change production credentials")
+		}
+		for _, args := range [][]string{development.putArgs("synthetic"), development.getArgs(), development.deleteArgs()} {
+			if !hasPair(args, "-s", "Arion Dev") || !hasPair(args, "-a", production.accountName()) {
+				t.Fatalf("development item escaped its service: %q", args)
+			}
+		}
+	}
+}

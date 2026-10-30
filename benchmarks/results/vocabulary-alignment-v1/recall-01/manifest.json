@@ -1,8 +1,0 @@
-{
-  "schema": "vocabulary-recall-report-v1",
-  "sourceRun": "../../../runs/vocabulary-alignment-v1/recall-01",
-  "sourceManifestSha256": "607cc521fe4b7337d9da1e1563e054d3a6a32ce7f9e4fb5f0f1d7a58a1800e75",
-  "files": {
-    "report.json": "46e863fceb1c9b10363458f50f0141bae3e4b3a241b43c8ade7c726f31644a7e"
-  }
-}

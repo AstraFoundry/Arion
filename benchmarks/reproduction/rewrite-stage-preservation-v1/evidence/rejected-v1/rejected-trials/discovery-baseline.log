@@ -1,4 +1,0 @@
-=== RUN   TestNativeStagePreservation
-signal: terminated
-FAIL	arion.local/desktop/infrastructure/llm/gguf	275.646s
-FAIL

@@ -1,7 +1,0 @@
-{
-  "appExecutableSha256": "7e5d81c6c402f1247cd11e90eec749c4b69c6f63ee423906d8ad9ea8e97410e1",
-  "hostExecutableSha256": "3d37225015a5aca8ca93bfbab2c59a5f6db7e983e6b31b2051f123e3c19e1a84",
-  "hostInfoSha256": "6e22ea9364da5fe062855293e531c504eb343f7da7872b392dd11b1b8bff02eb",
-  "architecture": "arm64",
-  "packageVerification": "Developer ID, hardened runtime, notarization and Gatekeeper passed; complete log retained in .workspace/ime-activation-signed-build-final.log"
-}

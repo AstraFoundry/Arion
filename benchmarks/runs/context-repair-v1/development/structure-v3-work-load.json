@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 2906.556,
-  "promptId": "structure-v3-work-zh",
-  "prefixTokens": 335,
-  "peakRssBytes": 3461414912
-}

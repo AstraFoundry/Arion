@@ -17,7 +17,18 @@ import (
 // Content is a user interface for a window, the value of
 // mygo.WindowOptions.Content. Create it with View.
 type Content struct {
-	view func(*context)
+	view           func(*context)
+	clipboardWrite func(string)
+}
+
+// WithClipboardWriter returns a copy that routes text copies, including
+// selection/edit-menu commands, through write on the main thread. Configure
+// before attaching to a window. A nil writer uses the system clipboard.
+// The application owns error presentation and must not block the callback.
+func (v *Content) WithClipboardWriter(write func(string)) *Content {
+	copy := *v
+	copy.clipboardWrite = write
+	return &copy
 }
 
 // View returns the content of a window whose user interface view builds,
@@ -39,7 +50,7 @@ func RegisterFont(data []byte, family string) error {
 
 // AttachContent connects the content to a window; package mygo calls it.
 func (v *Content) AttachContent(conn *surface.Conn) {
-	h := &windowHost{conn: conn}
+	h := &windowHost{conn: conn, clipboardWrite: v.clipboardWrite}
 	rt := newRuntime(v.view, h)
 	h.rt = rt
 	conn.Event = h.event
@@ -67,9 +78,10 @@ func (v *Content) AttachContent(conn *surface.Conn) {
 // windowHost presents frames on a window's surface, with a GPU renderer
 // when the platform has one and in memory otherwise.
 type windowHost struct {
-	conn *surface.Conn
-	rt   *engine
-	gpu  gpuRenderer
+	clipboardWrite func(string)
+	conn           *surface.Conn
+	rt             *engine
+	gpu            gpuRenderer
 	// gpuTried tells that the first frame tried the GPU, onGPU that its
 	// renderer drew on a GPU, degraded that one drawing in software took
 	// its place, and gpuSince when the renderer was made. After a failure,
@@ -462,6 +474,10 @@ func (h *windowHost) readClipboard() string {
 }
 
 func (h *windowHost) writeClipboard(s string) {
+	if h.clipboardWrite != nil {
+		h.clipboardWrite(s)
+		return
+	}
 	if h.conn.Clipboard != nil {
 		h.conn.Clipboard.WriteText(s)
 	}

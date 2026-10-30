@@ -158,8 +158,6 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 	switch C.arion_capture_target(&native, readSite) {
 	case C.ARION_TARGET_UNTRUSTED:
 		return contracts.TargetSnapshot{}, domain.Fail(domain.CodePermissionDenied, "accessibility")
-	case C.ARION_TARGET_NONE:
-		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "no frontmost application")
 	}
 	role, subrole := C.GoString(&native.role[0]), C.GoString(&native.subrole[0])
 	bundle := C.GoString(&native.bundle[0])
@@ -329,13 +327,15 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
 	}
-	paste, secure := adoptLiveCursor(tgt)
+	paste, secure, noInput := adoptLiveCursor(tgt)
 	if secure {
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
 	}
 	if !paste {
-		return publishClipboard(ctx, request.Identity, request.Text)
+		copied, err := publishClipboard(ctx, request.Identity, request.Text)
+		copied.NoInput = noInput && copied.Outcome == contracts.Copied
+		return copied, err
 	}
 	if tgt.follow {
 		t.keepFollowed(request.Target, tgt)
@@ -351,31 +351,23 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 // adoptLiveCursor points tgt at the editable field focused now.
 // paste is false when nothing editable is focused. secure is set when the
 // focused field must not receive text.
-func adoptLiveCursor(tgt *target) (paste bool, secure bool) {
-	if tgt.element != nil && C.arion_focus_matches(tgt.element, C.int(tgt.pid)) == 1 {
-		if C.arion_selection_matches(tgt.element, tgt.selection) != 1 {
-			C.arion_release(tgt.selection)
-			tgt.selection = C.arion_copy_selection(tgt.element)
-		}
-		if tgt.secure || C.arion_secure_input() == 1 {
-			return false, true
-		}
-		return true, false
-	}
+func adoptLiveCursor(tgt *target) (paste bool, secure bool, noInput bool) {
 	var native C.arion_target
 	if C.arion_capture_target(&native, 0) != C.ARION_TARGET_OK {
-		return false, false
+		return false, false, false
 	}
 	role, subrole := C.GoString(&native.role[0]), C.GoString(&native.subrole[0])
 	liveSecure := native.secure_input == 1 || subrole == "AXSecureTextField"
 	ownProcess := int(native.pid) == os.Getpid()
-	editable := native.element != nil && !ownProcess && (native.selection != nil || fieldKind(role, subrole) != domain.FieldUnknown)
+	editable := native.element != nil && !ownProcess && (native.editable == 1 && fieldKind(role, subrole) != domain.FieldUnknown)
 	if !editable || liveSecure {
 		C.arion_release(native.element)
 		C.arion_release(native.selection)
-		return false, liveSecure && native.element != nil && !ownProcess
+		return false, liveSecure && native.element != nil && !ownProcess, !liveSecure && !ownProcess && (native.no_input == 1 || (native.selection == nil && fieldKind(role, subrole) == domain.FieldUnknown && role != ""))
 	}
-	tgt.follow = false
+	if tgt.element == nil || C.arion_focus_matches(tgt.element, C.int(tgt.pid)) != 1 {
+		tgt.follow = false
+	}
 	C.arion_release(tgt.element)
 	C.arion_release(tgt.selection)
 	tgt.element = native.element
@@ -383,7 +375,7 @@ func adoptLiveCursor(tgt *target) (paste bool, secure bool) {
 	tgt.pid = int(native.pid)
 	tgt.secure = false
 	tgt.readable = native.value_readable == 1
-	return true, false
+	return true, false, false
 }
 
 // Follow marks a captured target to stay readable after Commit. Secure,

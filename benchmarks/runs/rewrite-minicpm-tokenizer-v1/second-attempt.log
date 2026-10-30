@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/steven/code/Arion/.workspace/rewrite-minicpm5-v1/tokenizer-parity-v1/run.py", line 14, in <module>
-    (D/'plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2)+'\n');tok=Tokenizer.from_file(str(D/'tokenizer.json'));out=D/'native';out.mkdir(exist_ok=False);w=Session(out,'tokenizer-parity',18826,gpu_layers=99,verbosity=5);records=[]
-Exception: data did not match any variant of untagged enum ModelWrapper at line 653946 column 3

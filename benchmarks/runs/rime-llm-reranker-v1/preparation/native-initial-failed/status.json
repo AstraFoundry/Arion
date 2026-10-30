@@ -1,4 +1,0 @@
-{
-  "status": "prepare-failed",
-  "error": "Native compilation failed; original log: /Users/steven/code/Arion/.workspace/rime-llm-reranker-v1/native-build/compile.log"
-}

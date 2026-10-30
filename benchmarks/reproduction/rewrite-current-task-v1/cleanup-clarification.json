@@ -1,7 +1,0 @@
-{
-  "scope": "Post-observation pipeline-scope clarification, no raw inference or original score changes.",
-  "preflight": "benchmarks/runs/rewrite-cleanup-preflight-v1/provenance.json",
-  "changedInputCase": "lp-stress-correction",
-  "message": "Production cleanup removes the superseded read cash request before organization. These direct LLM diagnostics fed the original text, so their loop/failure cannot by itself prove a production reproduction. Other35 regression sources are unchanged by the current cleanup.",
-  "unitTestClarification": "The current-task test named unfiltered_allows_natural_omission checks missing-marker mechanics only, not semantic correctness of its artificial output. It is not inference evidence or an observed false rejection."
-}

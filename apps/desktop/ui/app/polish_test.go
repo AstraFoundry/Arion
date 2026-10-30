@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"arion.local/desktop/ui/features/polish"
-	"arion.local/desktop/ui/features/transcript"
 	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/pages/settings"
 	"arion.local/desktop/ui/shared/copy"
@@ -357,28 +356,6 @@ func lastExact(texts []string, want string) int {
 	return last
 }
 
-// A rewritten dictation keeps its recognized original one click away.
-func TestCopyOriginal(t *testing.T) {
-	state, actions, store := fixture()
-	state.LastText, state.LastOriginal = "我们周四开会。", "嗯我们周三开会，不对周四。"
-	copied := &transcript.Copied{}
-	tt := ui.NewTester(func(c *ui.Context) { transcript.Last(c, store, theme.Resolve(false), copied) }, 320, 160)
-	settle(tt)
-	if err := tt.Click(copy.For(copy.English).Text(copy.CopyOriginal)); err != nil {
-		t.Fatal(err)
-	}
-	if !actions.called("copy:" + state.LastOriginal) {
-		t.Fatalf("original not copied: %v", actions.calls)
-	}
-	state.LastOriginal = ""
-	settle(tt)
-	if hasText(tt, copy.For(copy.English).Text(copy.CopyOriginal)) {
-		t.Fatal("copy original shown without a rewrite")
-	}
-}
-
-// Engine and model-family names stay out of the interface: the Model page
-// and the onboarding model step speak in plain words in both languages.
 func TestNoTechnicalModelNames(t *testing.T) {
 	banned := []string{"ASR", "LLM", "Qwen", "SenseVoice", "Zipformer", "ONNX", "GenAI", "int4", "160 ms"}
 	check := func(where string, texts []string) {

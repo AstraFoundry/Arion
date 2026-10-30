@@ -22,6 +22,10 @@ func configureInputMethodDiagnostics(record func(diagnostics.Entry)) {
 	macos.SetIMEDiagnostics(record)
 }
 
+func configureClipboardWindow(window *mygo.Window) {
+	macos.ConfigureOverlay(window.NativeHandle())
+}
+
 func configureOverlay(window *mygo.Window) {
 	macos.ConfigureOverlay(window.NativeHandle())
 }

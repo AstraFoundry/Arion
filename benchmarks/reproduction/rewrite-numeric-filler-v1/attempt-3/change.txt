@@ -1,1 +1,0 @@
-Attempt 3 used the same template as attempt 2 and ordered shared demonstrations before scene demonstrations for the list scene. Shared assistant examples still used plain prose. Both list probes failed. The final fix also renders shared demonstration outputs as numbered items for that scene.

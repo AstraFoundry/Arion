@@ -69,7 +69,7 @@
 
 ```sh
 make install        # 固定バージョンの pnpm ワークスペースをインストール (--frozen-lockfile)
-make check          # ドキュメント、JSON、Go レイヤー境界、ワークフロー検査、および core/sync/updates/i18n/評価テスト
+make check          # ドキュメント、JSON、Go レイヤー境界、ワークフロー検査、および core/sync/updates/i18n/公開 Driver テスト
 make desktop-check  # デスクトップテスト、キーボードチェック、go vet (cgo)
 make desktop-dev    # ネイティブランタイムをステージングし、開発モードで Arion Dev を起動
 make build desktop  # apps/desktop/build/ 配下に Arion.app + DMG (macOS) または NSIS インストーラー (Windows) をパッケージング
@@ -78,7 +78,7 @@ make e2e-macos      # パッケージングされた Arion.app に対する製�
 make site-check     # マーケティングサイト (apps/site)：i18n、型、lint、テスト、静的エクスポート
 ```
 
-初回実行時、`make desktop-dev` はオンボーディングを開き、マイクとアクセシビリティの権限を要求し、デフォルトの認識モデルバンドルを `~/Library/Application Support/Arion/models/`（macOS）または `%AppData%\Arion\models\`（Windows）にダウンロードします。macOS 開発ビルドの `CDHash` 権限挙動とトラブルシューティングについては、[ローカル開発 (`docs/operations/local-dev.md`)](docs/operations/local-dev.md#macos-development-build-and-tcc-permission-diagnostics)を参照してください。
+初回の `make desktop-dev` はオンボーディングを開き、独立した開発プロファイルを使用します。macOS では固定の署名証明書を設定し、製品版を終了してから起動します。`make desktop-status` で実行中のバイナリを確認し、`make desktop-production` でインストール済みの製品版に戻ります。証明書、データパス、権限の検証、入力メソッドの制限は[ローカル開発 (`docs/operations/local-dev.md`)](docs/operations/local-dev.md#macos-development-build-and-tcc-permission-diagnostics)を参照してください。
 
 ## ドキュメント
 
@@ -88,7 +88,9 @@ make site-check     # マーケティングサイト (apps/site)：i18n、型、
 | **アーキテクチャ・仕様** | [アーキテクチャ (`docs/project/architecture.md`)](docs/project/architecture.md) · [リポジトリオーナーシップ (`docs/project/repository.md`)](docs/project/repository.md) · [仕様書 (`specs/README.md`)](specs/README.md) · [ADR (`docs/decisions/README.md`)](docs/decisions/README.md) |
 | **フロントエンド・バックエンド** | [フロントエンド FSD 規約 (`docs/frontend/README.md`)](docs/frontend/README.md) · [UI ローカリゼーション (`docs/frontend/i18n.md`)](docs/frontend/i18n.md) · [バックエンド DDD 規約 (`docs/backend/README.md`)](docs/backend/README.md) |
 | **運用・デプロイ** | [ローカル開発 (`docs/operations/local-dev.md`)](docs/operations/local-dev.md) · [デプロイメント (`docs/operations/deployment.md`)](docs/operations/deployment.md) · [リリースステータス (`docs/operations/release-status.md`)](docs/operations/release-status.md) · [Arion センター (`deploy/center/README.md`)](deploy/center/README.md) · [同期リレー運用 (`deploy/sync/README.md`)](deploy/sync/README.md) |
-| **品質・ベンチマーク** | [品質とテスト (`docs/quality/README.md`)](docs/quality/README.md) · [ネイティブ E2E (`docs/quality/e2e.md`)](docs/quality/e2e.md) · [リサーチエビデンス (`docs/research/README.md`)](docs/research/README.md) · [評価ランナー (`tools/evaluation/README.md`)](tools/evaluation/README.md) · [ベンチマーク結果 (`benchmarks/README.md`)](benchmarks/README.md) |
+| **品質・ベンチマーク** | [品質とテスト (`docs/quality/README.md`)](docs/quality/README.md) · [ネイティブ E2E (`docs/quality/e2e.md`)](docs/quality/e2e.md) · [リサーチエビデンス (`docs/research/README.md`)](docs/research/README.md) · [製品 Driver (`tools/driver/README.md`)](tools/driver/README.md) · [ベンチマーク結果 (`benchmarks/README.md`)](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/README.md`) |
+
+公開プロダクトと内部評価の責務は[二つのリポジトリのガイド](docs/project/repository-split.md)を参照してください。
 
 ## コントリビューター
 

@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 2120.294,
-  "promptId": "no-validator-v1-minimal-chat-zh",
-  "prefixTokens": 260,
-  "peakRssBytes": 3398352896
-}

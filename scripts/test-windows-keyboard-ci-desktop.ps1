@@ -1,9 +1,10 @@
-# Pure descriptor/parser contracts only: no accounts, native handles, DACL writes
-# or GUI are created by this test, including on developer machines.
+# Descriptor/parser and owned cache-copy contracts only. This test creates no
+# accounts, native handles, desktop DACL changes or GUI, including on local hosts.
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'lib/windows-keyboard-ci-desktop.ps1')
+. (Join-Path $PSScriptRoot 'lib/windows-ci-go-cache.ps1')
 function Assert-Contract([bool]$Value, [string]$Message) { if (!$Value) { throw $Message } }
-foreach ($name in @('check-windows-keyboard-ci.ps1', 'lib/windows-keyboard-ci-desktop.ps1', 'test-windows-keyboard-ci-desktop.ps1')) {
+foreach ($name in @('check-windows-keyboard-ci.ps1', 'lib/windows-keyboard-ci-desktop.ps1', 'lib/windows-ci-go-cache.ps1', 'test-windows-keyboard-ci-desktop.ps1')) {
     $parseErrors = $null; $tokens = $null
     [Management.Automation.Language.Parser]::ParseFile((Join-Path $PSScriptRoot $name), [ref]$tokens, [ref]$parseErrors) | Out-Null
     Assert-Contract ($parseErrors.Count -eq 0) "PowerShell parse errors in $name : $parseErrors"
@@ -41,3 +42,21 @@ if ($env:GITHUB_ACTIONS -ne 'true' -or $env:RUNNER_ENVIRONMENT -ne 'github-hoste
     Write-Output 'PASS local desktop mutation refusal (no native changes).'
 }
 Write-Output 'PASS keyboard CI parser, descriptor grants and exact DACL comparison (no native changes).'
+$cacheTest = Join-Path ([IO.Path]::GetTempPath()) ('arion-go-cache-' + [Guid]::NewGuid().ToString('N'))
+try {
+    $source = Join-Path $cacheTest 'source'
+    $destination = Join-Path $cacheTest 'destination'
+    New-Item -ItemType Directory -Path $source, $destination -Force | Out-Null
+    [IO.File]::WriteAllText((Join-Path $source 'artifact'), 'compiler cache fixture')
+    $acl = Get-Acl -LiteralPath $destination
+    $acl.SetAccessRuleProtection($true, $true)
+    Set-Acl -LiteralPath $destination -AclObject $acl
+    $before = (Get-Acl -LiteralPath $destination).Sddl
+    Copy-CIGoCache $source $destination
+    Assert-Contract ((Get-FileHash (Join-Path $source 'artifact')).Hash -eq (Get-FileHash (Join-Path $destination 'artifact')).Hash) 'Go cache data changed during transfer.'
+    Assert-Contract ((Get-Acl -LiteralPath $destination).Sddl -eq $before) 'Cache transfer replaced destination permissions.'
+    Copy-CIGoCache $source $destination
+    Copy-CIGoCache (Join-Path $cacheTest 'cold-miss') $destination
+    Assert-Contract ((Get-Acl -LiteralPath $destination).Sddl -eq $before) 'Repeated cache transfer changed destination permissions.'
+    Write-Output 'PASS Go cache transfer, cold miss and destination permission preservation.'
+} finally { Remove-Item -LiteralPath $cacheTest -Recurse -Force }

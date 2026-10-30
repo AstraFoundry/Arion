@@ -86,7 +86,7 @@ These choices align the useful grouped editing workflow while preserving Arion's
 
 ## Implemented validation
 
-The selected grouped editor, atomic alias addition and canonical recall changes are implemented. See [vocabulary alignment results](../../benchmarks/results/vocabulary-alignment-v1/README.md) for controlled baseline comparison, real local model observations, native macOS UI evidence and explicit limits.
+The selected grouped editor, atomic alias addition and canonical recall changes are implemented. See [vocabulary alignment results](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/vocabulary-alignment-v1/README.md`) for controlled baseline comparison, real local model observations, native macOS UI evidence and explicit limits.
 
 ## ASR hotword alignment
 
@@ -103,4 +103,4 @@ The subsequent ASR change adds recognition-time context independently of the eig
 
 Neither system promotes incorrect spellings into recognition hints. Arion selects correct terms before any transcript exists, so this is bounded memory selection, not transcript-based fuzzy retrieval. Later rule replacement and canonical rewrite retrieval retain their own behavior. See MEM-07 and SPH-11/12.
 
-The [paired ASR hotword evaluation](../../benchmarks/results/asr-hotwords-v1/README.md) records actual local MLX inference, unrelated-context controls, silence, per-case outputs and context-reset observations. It evaluates an exposed development vocabulary and does not establish held-out personalization gains or Windows inference quality. The [native runtime smoke archive](../../benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/README.md) separately verifies request handling and the model context bound.
+The [paired ASR hotword evaluation](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/asr-hotwords-v1/README.md`) records actual local MLX inference, unrelated-context controls, silence, per-case outputs and context-reset observations. It evaluates an exposed development vocabulary and does not establish held-out personalization gains or Windows inference quality. The [native runtime smoke archive](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/README.md`) separately verifies request handling and the model context bound.

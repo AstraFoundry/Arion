@@ -1,6 +1,0 @@
-# arion.local/desktop/ui/app [arion.local/desktop/ui/app.test]
-apps/desktop/ui/app/cloud_test.go:248:15: not enough arguments in call to reveal
-	have (*ui.Tester, string)
-	want (*testing.T, *ui.Tester, string)
-FAIL	arion.local/desktop/ui/app [build failed]
-FAIL

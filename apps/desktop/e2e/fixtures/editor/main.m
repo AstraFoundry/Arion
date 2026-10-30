@@ -90,7 +90,7 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
 - (NSDictionary *)state {
     NSRange a = self.editorA.selectedRange, b = self.editorB.selectedRange;
     NSResponder *first = self.window.firstResponder;
-    NSString *focused = first == self.editorA ? @"A" : first == self.editorB ? @"B" : (first == self.secure || first == self.secure.currentEditor) ? @"secure" : @"";
+    NSString *focused = first == self.editorA ? (self.editorA.editable ? @"A" : @"readonly") : first == self.editorB ? @"B" : (first == self.secure || first == self.secure.currentEditor) ? @"secure" : @"";
     return @{
         @"web": @{@"text": self.webText, @"edits": @(self.webEdits), @"focused": @(self.webFocused)},
         @"clipboardOwned": @((BOOL)([NSPasteboard generalPasteboard].changeCount == self.clipboardChange)),
@@ -119,7 +119,8 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
             [self.web evaluateJavaScript:@"t.focus();report()" completionHandler:nil];
             return [self state];
         }
-        NSResponder *responder = [target isEqual:@"A"] ? self.editorA : [target isEqual:@"B"] ? self.editorB : self.secure;
+        self.editorA.editable = ![target isEqual:@"readonly"];
+        NSResponder *responder = [target isEqual:@"none"] ? nil : ([target isEqual:@"A"] || [target isEqual:@"readonly"]) ? self.editorA : [target isEqual:@"B"] ? self.editorB : self.secure;
         [self.window makeFirstResponder:responder];
     } else if ([op isEqual:@"set"]) {
         NSTextView *editor = [command[@"target"] isEqual:@"B"] ? self.editorB : self.editorA;
@@ -153,7 +154,11 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
     } else if ([op isEqual:@"clipboardCheck"]) {
         NSPasteboard *board = NSPasteboard.generalPasteboard;
         // Only acknowledge the expected test-owned value for cleanup.
-        if ([[board stringForType:NSPasteboardTypeString] isEqual:command[@"text"]]) self.clipboardChange = board.changeCount;
+        BOOL matches = [[board stringForType:NSPasteboardTypeString] isEqual:command[@"text"]];
+        if (matches) self.clipboardChange = board.changeCount;
+        NSMutableDictionary *state = [[self state] mutableCopy];
+        state[@"clipboardOwned"] = @(matches);
+        return state;
     } else if ([op isEqual:@"clipboardRestore"]) {
         NSPasteboard *board = NSPasteboard.generalPasteboard;
         if (self.savedClipboard && board.changeCount == self.clipboardChange) {

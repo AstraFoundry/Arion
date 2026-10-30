@@ -1,5 +1,0 @@
---- FAIL: TestNativeStagePreservation (0.19s)
-    stage_native_test.go:120: GGUF runtime exited during load
-FAIL
-FAIL	arion.local/desktop/infrastructure/llm/gguf	0.728s
-FAIL

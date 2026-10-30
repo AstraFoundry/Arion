@@ -1,6 +1,0 @@
-{
-  "status": "cancelled",
-  "reason": "Discovery of source v3 was stopped after finding installed product is v1; prioritize actual user artifact. No production source was changed. Native test PID 4215 and its own runtime child 4216 terminated; installed app runtime untouched.",
-  "observationsRetained": 37,
-  "timingLimit": "Unisolated discovery; overlaps synthetic ASR preparation and installed-worker diagnostic; early harness did not apply product 10-second deadline."
-}

@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 3209.833,
-  "promptId": "no-validator-v1-anchored-prompt-zh",
-  "prefixTokens": 490,
-  "peakRssBytes": 3584000000
-}

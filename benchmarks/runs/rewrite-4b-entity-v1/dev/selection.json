@@ -1,9 +1,0 @@
-{
-  "selected": null,
-  "qualifiedForFresh": false,
-  "promotion": false,
-  "freezeSha256": "a73b65c7ead3ecaab3744f180047d5aab46f2247a5d5340feecb382654e7b497",
-  "devResultsSha256": "3db8b1cc5478a3f1c4357eb39f414a51faa708b869bd123387c4a0490b9ddcec",
-  "devReviewSha256": "790b5d8a4f0f242ff69286504dc531c90ee11620c92a022141c974690a0f1dee",
-  "reason": "Exact-context rule still misses the recipient repair and reintroduces OCR replacement of the negative question: fidelity7/8\u21926/8. No fresh inference or production promotion."
-}

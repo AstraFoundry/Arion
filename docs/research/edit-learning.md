@@ -61,7 +61,7 @@ The selection fills the `USER_MODIFY` slot of the on-device speech model's promp
 - Usage and recall counts, expiry, eviction and suppression of reverted pairs (Doubao).
 - Recalling only what is relevant to the current text, within a bound (Doubao's top-N).
 
-Unlike all three, Arion computes the diff, stores the memory and recalls it on the device, and nothing is uploaded. Doubao picks pairs before the text exists because its recognizer is the language model. Arion corrects after recognition, so it matches pairs against the text itself. [ADR 014](../decisions/014-edit-learning.md) records the decision and [edit-learning-v1](../../benchmarks/results/edit-learning-v1/README.md) measures it.
+Unlike all three, Arion computes the diff, stores the memory and recalls it on the device, and nothing is uploaded. Doubao picks pairs before the text exists because its recognizer is the language model. Arion corrects after recognition, so it matches pairs against the text itself. [ADR 014](../decisions/014-edit-learning.md) records the decision and [edit-learning-v1](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/edit-learning-v1/README.md`) measures it.
 
 ## Limitations
 

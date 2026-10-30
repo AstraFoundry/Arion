@@ -1,4 +1,0 @@
-=== RUN   TestNativeStagePreservation
---- PASS: TestNativeStagePreservation (53.87s)
-PASS
-ok  	arion.local/desktop/infrastructure/llm/gguf	54.352s

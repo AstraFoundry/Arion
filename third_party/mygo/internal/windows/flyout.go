@@ -79,9 +79,14 @@ func (w *window) PlaceFlyout(f platform.Flyout, size platform.Size) {
 		}
 		mon, _, _ := procMonitorFromRect.Call(uintptr(unsafe.Pointer(&a)), monitorDefaultToNearest)
 		dpi = monitorDPI(mon)
+	} else if w.parent == nil {
+		display := platform.DisplayFor(f.Anchor, screen{}.Displays())
+		dpi = int(display.ScaleFactor * 96)
+		a.Left, a.Top = toPx(f.Anchor.X, dpi), toPx(f.Anchor.Y, dpi)
+		a.Right, a.Bottom = a.Left+toPx(f.Anchor.Width, dpi), a.Top+toPx(f.Anchor.Height, dpi)
 	} else {
 		p := w.parent
-		if p == nil || p.closed {
+		if p.closed {
 			return
 		}
 		dpi = dpiOf(p.hwnd)

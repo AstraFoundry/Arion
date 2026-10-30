@@ -14,10 +14,61 @@ export interface Credit {
 /** Photographs behind the product illustrations (public/backdrops). */
 export const photoCredits: readonly Credit[] = [
   {
-    id: "flowers-falling",
-    title: "Flowers falling",
-    author: "Roma Kaiuk",
-    sourceUrl: "https://unsplash.com/photos/a-group-of-pink-flowers-z51SGO5m5ec",
+    id: "pink-motion",
+    title: "Pink flowers with motion blur effect",
+    author: "Raphael Nicolas",
+    sourceUrl: "https://unsplash.com/photos/pink-flowers-with-motion-blur-effect-DjZ5xwr1cq4",
+    license: "Unsplash License",
+    licenseUrl: "https://unsplash.com/license",
+  },
+  {
+    id: "pink-gladiolus",
+    title: "Pink gladiolus flowers with green foliage in motion",
+    author: "Eugene Golovesov",
+    sourceUrl:
+      "https://unsplash.com/photos/pink-gladiolus-flowers-with-green-foliage-in-motion-Jk_9EwoLXnY",
+    license: "Unsplash License",
+    licenseUrl: "https://unsplash.com/license",
+  },
+  {
+    id: "coneflower-swirl",
+    title: "Pink coneflowers with a swirling motion effect",
+    author: "Brooke Balentine",
+    sourceUrl:
+      "https://unsplash.com/photos/pink-coneflowers-with-a-swirling-motion-effect--Ck7iqGR1pc",
+    license: "Unsplash License",
+    licenseUrl: "https://unsplash.com/license",
+  },
+  {
+    id: "rose-bush",
+    title: "Blurred pink flowers in a vibrant, green bush",
+    author: "Eugene Golovesov",
+    sourceUrl: "https://unsplash.com/photos/blurred-pink-flowers-in-a-vibrant-green-bush-cTChGLob-2k",
+    license: "Unsplash License",
+    licenseUrl: "https://unsplash.com/license",
+  },
+  {
+    id: "dark-roses",
+    title: "Blurred pink flowers against dark background",
+    author: "Brigitte Elsner",
+    sourceUrl: "https://unsplash.com/photos/blurred-pink-flowers-against-dark-background-_NnGJYw02Z8",
+    license: "Unsplash License",
+    licenseUrl: "https://unsplash.com/license",
+  },
+  {
+    id: "pink-grass",
+    title: "Pink flowers and green grass with motion blur",
+    author: "Eugene Golovesov",
+    sourceUrl: "https://unsplash.com/photos/pink-flowers-and-green-grass-with-motion-blur-6mV2lNqyLps",
+    license: "Unsplash License",
+    licenseUrl: "https://unsplash.com/license",
+  },
+  {
+    id: "soft-pink",
+    title: "Soft pink flowers with green leaves in soft focus",
+    author: "Ruben Mavarez",
+    sourceUrl:
+      "https://unsplash.com/photos/soft-pink-flowers-with-green-leaves-in-soft-focus-yi0RrmWvd-8",
     license: "Unsplash License",
     licenseUrl: "https://unsplash.com/license",
   },
