@@ -19,9 +19,17 @@ var readings []byte
 //go:embed data/cmudict-pronunciation-v1-cmudict.dict
 var dictionary string
 
+var loadReadings = sync.OnceValues(func() (map[string][]string, error) {
+	var result map[string][]string
+	err := json.Unmarshal(readings, &result)
+	return result, err
+})
+
 var load = sync.OnceValues(func() (*domain.SpellingLexicon, error) {
 	l := &domain.SpellingLexicon{English: map[string][][]string{}}
-	if err := json.Unmarshal(readings, &l.Readings); err != nil {
+	var err error
+	l.Readings, err = CharacterReadings()
+	if err != nil {
 		return nil, err
 	}
 	scanner := bufio.NewScanner(strings.NewReader(dictionary))
@@ -57,3 +65,7 @@ var load = sync.OnceValues(func() (*domain.SpellingLexicon, error) {
 
 // Load returns immutable resources shared by all requests in the worker.
 func Load() (*domain.SpellingLexicon, error) { return load() }
+
+// CharacterReadings returns the pinned character dictionary in its original
+// preference order. Consumers must not mutate the shared map.
+func CharacterReadings() (map[string][]string, error) { return loadReadings() }

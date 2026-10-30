@@ -38,3 +38,9 @@ The worker flushes accepted records and snapshots only the five named diagnostic
 The macOS native chooser was exercised in an isolated test app: cancel created no archive, save produced the expected ZIP, and Finder selected it. Windows native chooser/Explorer behavior still requires a Windows host; headless rendering does not establish it. [Competitor evidence](../research/competitor-diagnostics.md) motivates the stage boundaries; [privacy requirements](../../specs/005-privacy.md) remain authoritative.
 
 Input-method maintenance diagnostics include bounded helper PID and availability state (`unknown`, `available`, `selected`, `unavailable`) alongside own parent/child IDs and native operation statuses. `disable` and `verify_removal` are separate operations; a disable return code is not completion. Existing `ime_install_started`, `ime_install_completed` and `ime_install_failed` events also cover automatic replacements. Input text, foreign source identifiers and helper stderr are not added to exports.
+
+## Keyboard model ranking
+
+`keyboard_ranking_configuration` records configuration success or a stable failure code. `keyboard_ranking` records candidate count, elapsed milliseconds and a closed outcome: `accepted` (a different first candidate proposed), `unchanged`, `timeout`, `cancelled`, `unavailable` or `rejected`. A proposed promotion does not prove native application: the host still rejects stale input and navigation. Neither event includes input, context, candidate text, IDs or model output. Both are accepted by the diagnostic export schema.
+
+The outcome event runs only after the scheduler’s debounce reaches the ranker. Native eligibility skips and requests cancelled during debounce produce no model-outcome event. See [keyboard ranking](../decisions/031-local-keyboard-neural-ranking.md) for the trigger and ownership rules.

@@ -350,10 +350,12 @@ type Device struct {
 // Replacement is an approved correction or a correct-only recognition hotword.
 type Replacement struct {
 	KeyboardPinyin string
-	Hotword        bool
-	ID             string
-	From           string
-	To             string
+	// DefaultKeyboardPinyin is a dictionary suggestion, never an approved reading.
+	DefaultKeyboardPinyin string
+	Hotword               bool
+	ID                    string
+	From                  string
+	To                    string
 }
 
 // Vocabulary errors distinguish actionable edits from storage failures.

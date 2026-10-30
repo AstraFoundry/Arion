@@ -418,7 +418,6 @@ const (
 	VocabReading              Key = "VocabReading"
 	VocabKeyboardPending      Key = "VocabKeyboardPending"
 	VocabKeyboardFailed       Key = "VocabKeyboardFailed"
-	VocabReadingPlaceholder   Key = "VocabReadingPlaceholder"
 	VocabReadingInvalid       Key = "VocabReadingInvalid"
 	VocabReadingStale         Key = "VocabReadingStale"
 	VocabReadingSave          Key = "VocabReadingSave"

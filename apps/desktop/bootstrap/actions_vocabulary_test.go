@@ -20,6 +20,13 @@ func TestKeyboardReadingActionPreservesEntryAndRejectsStaleSpelling(t *testing.T
 		t.Fatal(err)
 	}
 	entry := a.state.Vocabulary[0]
+	if entry.DefaultKeyboardPinyin != "xing cha gong fang" || entry.KeyboardPinyin != "" {
+		t.Fatalf("expected an unapproved dictionary suggestion: %+v", entry)
+	}
+	persisted, err := store.List()
+	if err != nil || len(persisted) != 1 || persisted[0].KeyboardPinyin != "" {
+		t.Fatal("displaying a default must not persist or publish it", err)
+	}
 	if err := x.SetKeyboardPinyin(entry.ID, entry.To, "xing cha gong fang"); err != nil {
 		t.Fatal(err)
 	}

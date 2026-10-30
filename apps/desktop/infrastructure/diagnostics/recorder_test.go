@@ -445,3 +445,25 @@ func TestNoInputFactIsRestrictedToSuccessfulCopiedCommit(t *testing.T) {
 		}
 	}
 }
+
+func TestKeyboardRankingEventsCanBeExported(t *testing.T) {
+	r := openTest(t)
+	r.Record(Entry{Event: "keyboard_ranking_configuration"})
+	for _, outcome := range []string{"accepted", "unchanged", "timeout", "cancelled", "unavailable", "rejected"} {
+		r.Record(Entry{Event: "keyboard_ranking", Outcome: outcome, Count: 2, DurationMs: 427})
+	}
+	path := filepath.Join(t.TempDir(), "ranking.zip")
+	if err := r.Export(path, "0.1.0"); err != nil {
+		t.Fatal(err)
+	}
+	files := unzip(t, path)
+	var combined []byte
+	for _, b := range files {
+		combined = append(combined, b...)
+	}
+	for _, event := range []string{"keyboard_ranking_configuration", "keyboard_ranking"} {
+		if !bytes.Contains(combined, []byte(event)) {
+			t.Fatal("missing diagnostic", event)
+		}
+	}
+}

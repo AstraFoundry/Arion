@@ -27,6 +27,7 @@ import (
 	"arion.local/desktop/infrastructure/cloudpolish"
 	"arion.local/desktop/infrastructure/diagnostics"
 	"arion.local/desktop/infrastructure/keystore"
+	"arion.local/desktop/infrastructure/llm/spelling"
 	"arion.local/desktop/infrastructure/modelruntime"
 	"arion.local/desktop/infrastructure/netproxy"
 	"arion.local/desktop/infrastructure/provision"
@@ -923,13 +924,18 @@ func (a *App) loadVocabulary(create bool) {
 		a.record("vocabulary_load", err)
 		return
 	}
+	readings, err := spelling.CharacterReadings()
+	if err != nil {
+		a.record("vocabulary_load", err)
+		return
+	}
 	a.state.Vocabulary = a.state.Vocabulary[:0]
 	var replaces []domain.Replacement
 	for _, entry := range entries {
 		if !entry.Approved {
 			continue
 		}
-		a.state.Vocabulary = append(a.state.Vocabulary, arion.Replacement{ID: entry.ID, From: entry.From, To: entry.To, KeyboardPinyin: entry.KeyboardPinyin, Hotword: domain.ASRHotwordEligible(domain.MemoryEntry{To: entry.To, Hotword: entry.Hotword, Origin: domain.MemoryOrigin(entry.Origin)})})
+		a.state.Vocabulary = append(a.state.Vocabulary, arion.Replacement{ID: entry.ID, From: entry.From, To: entry.To, KeyboardPinyin: entry.KeyboardPinyin, DefaultKeyboardPinyin: domain.DefaultKeyboardPinyin(entry.To, readings), Hotword: domain.ASRHotwordEligible(domain.MemoryEntry{To: entry.To, Hotword: entry.Hotword, Origin: domain.MemoryOrigin(entry.Origin)})})
 		if entry.From != "" {
 			replaces = append(replaces, domain.Replacement{From: entry.From, To: entry.To})
 		}
