@@ -4,6 +4,8 @@
 
 ## Workflow
 
+The picker and passive hover preview keep their root canvases transparent after theme application and restoration. Their rounded cards draw the visible surface so the native window shadow follows the card rather than an opaque rectangular background.
+
 Settings → Clipboard exposes one opt-in collection switch. Its shortcut and maximum-count rows use the dictation disclosure and native key recorder. Disabled options are hidden; no separate pause preference exists. Exact dictation/translation/history shortcut conflicts are rejected. Recording temporarily suspends activation shortcuts.
 
 The tray entry and configurable `CmdOrCtrl+Shift+V` shortcut open a frameless 270-DIP-wide picker beside the captured input. Height follows history content, between 100 and 198 DIPs, with at most four equal-height rows visible; additional records scroll. Prefer the caret rectangle when the OS exposes it; otherwise use the editable field frame. If input geometry is unavailable, use the mouse position and keep history accessible in copy-only mode. Placement flips above near the bottom and stays within the monitor work area. Opening history does not require an editable target or Accessibility permission. On macOS the picker is a nonactivating native panel with fullscreen auxiliary/Spaces participation; showing it must not activate Arion or switch away from the foreground application. Input availability remains a delivery concern. Clicking outside closes the picker.

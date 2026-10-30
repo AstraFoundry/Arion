@@ -145,6 +145,8 @@ func (p *Panel) Render(c *ui.Context, store runtime.Store) {
 	if len(items) > 0 {
 		p.selectedID = items[p.selected].ID
 	}
+	// Restoring the list theme also resets the root background.
+	c.Root().Background(ui.Transparent)
 }
 
 func (p *Panel) history(c *ui.Context, store runtime.Store, tokens theme.Tokens, items []runtime.Clip) {

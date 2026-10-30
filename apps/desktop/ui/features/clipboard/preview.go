@@ -32,6 +32,7 @@ func previewHeight(c *ui.Context, item runtime.Clip, bitmap *ui.Bitmap) int {
 // Preview shows the original content without adding delivery or management actions.
 func Preview(c *ui.Context, item runtime.Clip, bitmap *ui.Bitmap) {
 	tokens := theme.Apply(c)
+	c.Root().Background(ui.Transparent)
 	ui.Column(c).Fill().Padding(12).Background(tokens.Card).Border(1, tokens.CardBorder).Radius(theme.RadiusLG).Children(func() {
 		if item.Payload.Kind == runtime.ClipImage && bitmap != nil {
 			ui.Image(c, bitmap).Grow(1).MinHeight(0).AlignSelf(ui.Stretch).Fit(ui.Contain).Radius(theme.RadiusSM)
