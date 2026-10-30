@@ -32,7 +32,8 @@ for (const module of modules) {
   else {
     const unformatted = run('gofmt', ['-l', ...files], cwd, env, true).trim();
     if (unformatted) { console.error(`Unformatted Go files:\n${unformatted}`); process.exit(1); }
-    run('go', ['test', './...'], cwd, env);
+    // Cache compilation, but execute every desktop test on each native CI run.
+    run('go', ['test', ...(mode === 'desktop' ? ['-count=1'] : []), './...'], cwd, env);
     run('go', ['vet', './...'], cwd, env);
   }
 }
