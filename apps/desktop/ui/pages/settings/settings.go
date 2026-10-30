@@ -289,6 +289,9 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		signin.Card(c, store, tokens)
 		if store.State.Account.SignedIn() {
 			kit.Group(c, tokens, messages.Text(copy.AccSyncGroup), func() { signin.HostedSync(c, store, tokens) })
+			if !store.State.Account.Disabled {
+				kit.Group(c, tokens, messages.Text(copy.AccUsageGroup), func() { signin.UsageReporting(c, store, tokens) })
+			}
 		}
 		signin.Portal(c, store, tokens)
 	case About:

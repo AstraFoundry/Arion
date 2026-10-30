@@ -6,10 +6,10 @@
 | Raw audio/PCM | Bounded RAM for active session | Never sync/log; disk recording requires separate user action |
 | ASR/correction drafts | Active session RAM | Never diagnostics; history separately opt-in |
 | Target app/nearby/selected text | Bounded consent-gated session context | Never sync/log or persist automatically |
-| Approved vocabulary/correction/preferences | Encrypted local values, including pairs learned from the user's corrections with their use counts | Client-encrypted sync only when enabled |
+| Approved vocabulary/correction/preferences | Encrypted local values, including pairs learned from the user's corrections with their use counts. Preferences may also keep the last signed-in account subject, display name and email for the Settings card; they are not tokens | Client-encrypted sync only when enabled |
 | Keyboard composition | Active native session RAM | No raw key history, logs or sync |
 | Confirmed keyboard word learning | Separate authenticated encrypted userdb snapshots; this-device Keychain key | Explicit reset/delete; encrypted backups only; no account sync |
-| Usage counts | Per-day numbers in `usage.json`: sessions, speaking time, words and words per rewrite scene; no text, app, host or time of day | Never sync/log; shown only in Settings › Overview |
+| Usage counts | Per-day numbers in `usage.json`: sessions, speaking time, words and words per rewrite scene; no text, app, host or time of day | Local Overview is always available; only explicitly consented, signed-in daily aggregates may be reported as PRV-10 |
 | Group/device keys and auth tokens | OS credential store | Never logs/config/export without explicit protected flow |
 | Models | Per-user verified model cache | Public artifact downloads only; no speech payload |
 | Cloud polishing credential | One OS credential item: an API key, or the ChatGPT refresh token, account ID and email | Never logs/config/export/sync; deleted on disconnect |
@@ -37,7 +37,17 @@ PRV-06: A relay operator, self-hosted or hosted, can observe timing, IP/device/g
 
 PRV-08: Usage counts record a session only after its commit completes. They hold calendar-day totals keyed by date and by scene name, never dictated text, bundle IDs, hosts or per-session timestamps, so they cannot reconstruct what was said or where.
 
-PRV-09: Account sign-in runs when the user starts it ([account sign-in](../docs/project/account-signin.md)). The access token stays in process memory. The refresh token is its own OS credential item. Sign-out revokes that item and deletes it. The vocabulary encryption key stays. Failures shown in the UI are a code and a content-free detail.
+PRV-09: Account sign-in runs when the user starts it ([account sign-in](../docs/project/account-signin.md)). The access token stays in process memory. The refresh token is its own OS credential item. Sign-out revokes that item and deletes it. The last signed-in subject, display name and email may be stored in `preferences.json` so Settings can show the profile after a restart; they are cleared on sign-out or when restoration ends the session. The vocabulary encryption key stays. Failures shown in the UI are a code and a content-free detail.
+
+PRV-10: Usage reporting requires the current version of explicit account consent.
+Only commits made while signed in and consented enter the upload ledger; no prior
+local history or signed-out activity is backfilled. Reports include daily visit,
+session, microphone-time and word totals, a product slug and a random identifier
+scoped to an account and installation. They contain no audio, dictated text,
+scene, application identity, URL or per-session timestamp. The platform receives
+account-linked aggregates and an arrival time. Pending snapshots persist for at
+most 31 days, without tokens. Sign-out/account changes cancel sending; the server
+checks consent for every write and rejects revoked consent even with an old JWT.
 
 ## Acceptance
 
