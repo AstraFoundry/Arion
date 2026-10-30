@@ -44,7 +44,7 @@ func TestEncryptedClipboardRoundTripTamperAndFileReferences(t *testing.T) {
 	if err != nil || len(items) != 2 {
 		t.Fatalf("restart %v %v", items, err)
 	}
-	if _, err = application.NewClipboard(restart).Refresh(l, now.Add(100*24*time.Hour)); err != nil {
+	if _, err = application.NewClipboard(restart).Refresh(l); err != nil {
 		t.Fatal(err)
 	}
 	if b, _ := os.ReadFile(file); string(b) != "original bytes" {
@@ -54,7 +54,7 @@ func TestEncryptedClipboardRoundTripTamperAndFileReferences(t *testing.T) {
 		t.Fatal(err)
 	}
 	wrong, _ := Open(path, bytes.Repeat([]byte{8}, 32))
-	if _, err = application.NewClipboard(wrong).Refresh(l, now.Add(100*24*time.Hour)); err == nil {
+	if _, err = application.NewClipboard(wrong).Refresh(l); err == nil {
 		t.Fatal("wrong key accepted")
 	}
 	if b, _ := os.ReadFile(path); !bytes.Equal(b, sealed) {

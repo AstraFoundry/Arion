@@ -54,7 +54,7 @@ func TestClipboardLimitEditProtectsPinsAndOtherPreferences(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	items, err = a.clipboard.service.Pin(items[0].ID, true, l, time.Now())
+	items, err = a.clipboard.service.Pin(items[0].ID, true, l)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -192,7 +192,7 @@ func TestClipboardPlacementStaysBesideInputAndInsideWorkArea(t *testing.T) {
 	}
 }
 
-func TestClipboardLegacyFolderPinsReturnToAutomaticExpiry(t *testing.T) {
+func TestClipboardLegacyFolderPinsReturnToCountRetention(t *testing.T) {
 	a := clipboardFixture(t)
 	old := time.Now().Add(-100 * 24 * time.Hour)
 	payload := domain.ClipPayload{Kind: domain.ClipFiles, Files: []string{t.TempDir()}}
@@ -201,12 +201,17 @@ func TestClipboardLegacyFolderPinsReturnToAutomaticExpiry(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err = a.clipboard.service.Pin(items[0].ID, true, limits, old); err != nil {
+	if _, err = a.clipboard.service.Pin(items[0].ID, true, limits); err != nil {
 		t.Fatal(err)
 	}
-	kept, err := refreshClipboard(a.clipboard.service, limits, time.Now())
-	if err != nil || len(kept) != 0 {
-		t.Fatal("hidden unsupported pin could not expire")
+	kept, err := refreshClipboard(a.clipboard.service, limits)
+	if err != nil || len(kept) != 1 || kept[0].Pinned {
+		t.Fatal("hidden unsupported pin remained protected")
+	}
+	limits.Count = 1
+	kept, err = a.clipboard.service.Capture(domain.ClipTextPayload("new ordinary copy"), limits, time.Now())
+	if err != nil || len(kept) != 1 || kept[0].Payload.Text != "new ordinary copy" {
+		t.Fatal("hidden unsupported reference did not follow the count limit")
 	}
 }
 
@@ -223,7 +228,7 @@ func TestClipboardLegacyFoldersStayOutOfPublishedItems(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(a.clipboard.service, limits, time.Now()) }, copy.ClipboardLoadFailed)
+	a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(a.clipboard.service, limits) }, copy.ClipboardLoadFailed)
 	finishClipboardWork(t, a)
 	if len(a.state.Clipboard.Items) != 1 || a.state.Clipboard.Items[0].Payload.Files[0] != file {
 		t.Fatal("legacy folder was published or ordinary file was hidden")

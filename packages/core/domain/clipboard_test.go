@@ -38,14 +38,13 @@ func TestClipboardRetentionProtectsPinsAndRejectsCapacity(t *testing.T) {
 	now := time.Unix(10000000, 0)
 	l := DefaultClipLimits()
 	l.Count = 1
-	l.Days = 1
 	l.Bytes = 1 << 20
 	l.ItemBytes = 1 << 20
 	pinned := Clip{ID: "pin", Payload: ClipTextPayload(strings.Repeat("p", 700000)), Copied: now.Add(-48 * time.Hour), Pinned: true}
 	old := Clip{ID: "old", Payload: ClipTextPayload("old"), Copied: now.Add(-48 * time.Hour)}
 	a := Clip{ID: "a", Payload: ClipTextPayload("a"), Copied: now.Add(-time.Hour)}
 	b := Clip{ID: "b", Payload: ClipTextPayload("b"), Copied: now}
-	got, err := PruneClips([]Clip{a, pinned, old, b}, l, now)
+	got, err := PruneClips([]Clip{a, pinned, old, b}, l)
 	if err != nil || len(got) != 2 || got[0].ID != "pin" || got[1].ID != "b" {
 		t.Fatalf("retention: %v %v", got, err)
 	}
@@ -58,7 +57,7 @@ func TestClipboardRetentionProtectsPinsAndRejectsCapacity(t *testing.T) {
 		t.Fatalf("oversize: %v", err)
 	}
 	pinned.Payload = ClipTextPayload(strings.Repeat("x", int(l.Bytes)+1))
-	if _, err = PruneClips([]Clip{pinned}, l, now); !errors.Is(err, ErrClipCapacity) {
+	if _, err = PruneClips([]Clip{pinned}, l); !errors.Is(err, ErrClipCapacity) {
 		t.Fatalf("pin evicted: %v", err)
 	}
 }
@@ -84,5 +83,25 @@ func TestClipboardFiltersAndFileOrdering(t *testing.T) {
 	}
 	if _, err := CaptureClip(nil, ClipPayload{Kind: ClipText, Text: "x\x00y"}, l, now); err == nil {
 		t.Fatal("NUL text accepted")
+	}
+}
+
+func TestClipboardOldEntriesRemainUntilCountLimit(t *testing.T) {
+	limits := DefaultClipLimits()
+	limits.Count = 2
+	now := time.Now()
+	old := ClipTextPayload("old but useful")
+	items, err := CaptureClip(nil, old, limits, now.AddDate(-10, 0, 0))
+	if err != nil {
+		t.Fatal(err)
+	}
+	items, err = CaptureClip(items, ClipTextPayload("recent"), limits, now)
+	if err != nil || len(items) != 2 || items[1].ID != old.ID() {
+		t.Fatalf("old entry expired below count limit: %v %v", items, err)
+	}
+	newest := ClipTextPayload("newest")
+	items, err = CaptureClip(items, newest, limits, now.Add(time.Second))
+	if err != nil || len(items) != 2 || items[0].ID != newest.ID() || items[1].Payload.Text != "recent" {
+		t.Fatalf("count limit did not replace the oldest entry: %v %v", items, err)
 	}
 }

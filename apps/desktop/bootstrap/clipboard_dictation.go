@@ -25,7 +25,7 @@ func (a *App) recordClipboardDictation(e contracts.Event) {
 	a.drainClipboardDictations()
 }
 
-// A bounded pending history uses the same count/age/byte rules as persisted
+// A bounded pending history uses the same count/byte rules as persisted
 // history. Drain after the current resource mutation, preserving copy time.
 func (a *App) drainClipboardDictations() {
 	cc := a.clipboard

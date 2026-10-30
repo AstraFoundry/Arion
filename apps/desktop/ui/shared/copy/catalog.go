@@ -327,15 +327,6 @@ func (c Catalog) ClipboardEntries(n int) string {
 	return c.format(key, "value", c.Count(n))
 }
 
-// ClipboardDays formats the retention duration in its interface language.
-func (c Catalog) ClipboardDays(n int) string {
-	key := FormatClipboardDays
-	if n == 1 {
-		key = FormatClipboardDay
-	}
-	return c.format(key, "value", c.Count(n))
-}
-
 // ClipboardTime uses local calendar boundaries, including across DST changes.
 // Today shows hours/minutes; the prior seven days use the weekday.
 func (c Catalog) ClipboardTime(copied, now time.Time) string {

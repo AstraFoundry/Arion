@@ -10,7 +10,6 @@ import (
 	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
 	"runtime"
-	"time"
 )
 
 func (x actions) OpenClipboard() {
@@ -42,7 +41,7 @@ func (x actions) OpenClipboard() {
 	}
 	if cc.service != nil && !a.state.Clipboard.Busy {
 		limits := a.state.Preferences.Clipboard.Limits
-		a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(cc.service, limits, time.Now()) }, copy.ClipboardLoadFailed)
+		a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(cc.service, limits) }, copy.ClipboardLoadFailed)
 	}
 	view := uiapp.Clipboard(a.ui)
 	bounds := clipboardBounds(cc.anchor, mygo.Screen.DisplayMatching(cc.anchor).WorkArea, uiapp.ClipboardWidth, uiapp.ClipboardHeight(a.state.Clipboard.Items))
@@ -104,7 +103,7 @@ func (x actions) SetClipboardLimits(limits arion.ClipLimits) {
 		x.UpdatePreferences(func(p *application.Preferences) { p.Clipboard.Limits = limits })
 		return
 	}
-	if _, err := domain.PruneClips(a.state.Clipboard.Items, limits, time.Now()); err != nil {
+	if _, err := domain.PruneClips(a.state.Clipboard.Items, limits); err != nil {
 		a.state.Clipboard.Error = clipboardError(err, copy.ClipboardInvalidLimits)
 		return
 	}
@@ -114,7 +113,7 @@ func (x actions) SetClipboardLimits(limits arion.ClipLimits) {
 		a.state.Clipboard.Error = copy.ClipboardSaveFailed
 		return
 	}
-	a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(a.clipboard.service, limits, time.Now()) }, copy.ClipboardSaveFailed)
+	a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(a.clipboard.service, limits) }, copy.ClipboardSaveFailed)
 }
 func (x actions) PinClipboard(id string, pin bool) {
 	a := x.a
@@ -122,5 +121,5 @@ func (x actions) PinClipboard(id string, pin bool) {
 		return
 	}
 	limits := a.state.Preferences.Clipboard.Limits
-	a.clipboardWork(func() ([]domain.Clip, error) { return a.clipboard.service.Pin(id, pin, limits, time.Now()) }, copy.ClipboardSaveFailed)
+	a.clipboardWork(func() ([]domain.Clip, error) { return a.clipboard.service.Pin(id, pin, limits) }, copy.ClipboardSaveFailed)
 }

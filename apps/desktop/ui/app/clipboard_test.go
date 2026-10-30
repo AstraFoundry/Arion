@@ -72,9 +72,8 @@ func TestClipboardSettingsDisclosureAndRecorder(t *testing.T) {
 				settle(tt)
 			}
 			choose(copy.ClipboardCount, messages.ClipboardEntries(500))
-			choose(copy.ClipboardDays, messages.ClipboardDays(7))
 			saved := state.Preferences.Clipboard.Limits
-			if saved.Count != 500 || saved.Days != 7 || saved.Bytes != limits.Bytes || saved.ItemBytes != limits.ItemBytes {
+			if saved.Count != 500 || saved.Bytes != limits.Bytes || saved.ItemBytes != limits.ItemBytes {
 				t.Fatal("retention preset changed internal byte bounds")
 			}
 

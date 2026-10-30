@@ -12,7 +12,7 @@ These are source-code observations, not execution of installed competitor produc
 
 ## Arion decision
 
-Expose only ordinary-history count and retention age through preset selectors, below the enabled collection switch. Retain existing custom values when displaying saved preferences. Keep byte-budget and per-capture safeguards internal. Defaults remain 200 ordinary entries, 30 days, 100 MiB total payload and 10 MiB per capture. Pins bypass age/count expiry but consume the storage budget.
+Expose only the maximum ordinary-history count below the enabled collection switch. Retain saved custom counts. New copies over the limit replace the oldest unpinned records; age does not expire history, so low-frequency copies may remain indefinitely. Pins bypass count eviction but consume the storage budget. Keep byte-budget and per-capture safeguards internal; [CLP-07](../../specs/010-clipboard.md#requirements) owns the presets and defaults. The user selected count-only retention to simplify the workflow; competitor controls above remain source observations rather than requirements.
 
 Use the dictation native key recorder and disclosure. The current simplified picker exposes no destructive management; cleanup is automatic, and pin/unpin remains available on hover. The comparison motivates the simplification; it does not copy either product's interface or broaden Arion's scope.
 

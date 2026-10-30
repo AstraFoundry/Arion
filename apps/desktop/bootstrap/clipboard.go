@@ -34,7 +34,6 @@ type clipboardController struct {
 	shortcut          string
 	target            clipboardos.Target
 	stop              chan struct{}
-	lastPruned        time.Time
 	pasteSeq          uint64
 	windowSeq         uint64
 	delivering        bool
@@ -44,7 +43,7 @@ type clipboardController struct {
 }
 
 func (a *App) startClipboard() {
-	a.clipboard = &clipboardController{stop: make(chan struct{}), lastPruned: time.Now()}
+	a.clipboard = &clipboardController{stop: make(chan struct{})}
 	revision, _ := clipboardos.Revision()
 	a.clipboard.capture.Configure(a.state.Preferences.Clipboard.Enabled, revision)
 	a.clipboard.observed.Store(revision)
@@ -58,7 +57,6 @@ func (a *App) startClipboard() {
 		}
 	})
 	go func() {
-		maintenance := time.Now()
 		ticker := time.NewTicker(300 * time.Millisecond)
 		defer ticker.Stop()
 		for {
@@ -66,14 +64,10 @@ func (a *App) startClipboard() {
 			case <-a.clipboard.stop:
 				return
 			case <-ticker.C:
-				due := time.Since(maintenance) >= time.Minute
-				if !due && (!a.clipboard.collecting.Load() || clipboardos.Sequence() == a.clipboard.observed.Load()) {
+				if !a.clipboard.collecting.Load() || clipboardos.Sequence() == a.clipboard.observed.Load() {
 					continue
 				}
 				if a.clipboard.pollPending.CompareAndSwap(false, true) {
-					if due {
-						maintenance = time.Now()
-					}
 					a.post(func() { defer a.clipboard.pollPending.Store(false); a.pollClipboard() })
 				}
 			}
@@ -156,7 +150,7 @@ func (a *App) loadClipboard() {
 			return nil, e
 		}
 		service := application.NewClipboard(repo)
-		items, e := refreshClipboard(service, a.preferences().Clipboard.Limits, time.Now())
+		items, e := refreshClipboard(service, a.preferences().Clipboard.Limits)
 		if e == nil {
 			a.post(func() { a.clipboard.service = service })
 		}
@@ -225,12 +219,6 @@ func (a *App) pollClipboard() {
 	if a.state.Clipboard.Busy {
 		return
 	}
-	if cc.service != nil && time.Since(cc.lastPruned) >= time.Minute {
-		cc.lastPruned = time.Now()
-		limits := a.state.Preferences.Clipboard.Limits
-		a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(cc.service, limits, time.Now()) }, copy.ClipboardSaveFailed)
-		return
-	}
 	if !a.state.Preferences.Clipboard.Enabled || cc.service == nil {
 		return
 	}
@@ -278,14 +266,14 @@ func (a *App) pollClipboard() {
 }
 
 // Unsupported legacy references cannot retain invisible permanent pins. They
-// become ordinary records and expire through the configured retention policy.
-func refreshClipboard(service *application.Clipboard, limits domain.ClipLimits, now time.Time) ([]domain.Clip, error) {
+// become ordinary records and follow the configured count/storage limits.
+func refreshClipboard(service *application.Clipboard, limits domain.ClipLimits) ([]domain.Clip, error) {
 	return service.Update(func(items []domain.Clip) ([]domain.Clip, error) {
 		for i, item := range items {
 			if item.Pinned && errors.Is(clipboardos.ValidateFiles(item.Payload), transfer.ErrFormat) {
 				items[i].Pinned = false
 			}
 		}
-		return domain.PruneClips(items, limits, now)
+		return domain.PruneClips(items, limits)
 	})
 }

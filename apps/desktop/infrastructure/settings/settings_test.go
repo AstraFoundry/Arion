@@ -140,3 +140,31 @@ func TestKeyboardNeuralPreferenceIsExplicitAndIndependent(t *testing.T) {
 		t.Fatalf("disable did not persist: %v", err)
 	}
 }
+
+func TestClipboardRetiredAgeSettingPreservesCount(t *testing.T) {
+	store := Store{Path: filepath.Join(t.TempDir(), "preferences.json")}
+	legacy := []byte(`{"clipboard":{"enabled":true,"limits":{"count":500,"days":7,"bytes":104857600,"itemBytes":10485760}}}`)
+	if err := os.WriteFile(store.Path, legacy, 0600); err != nil {
+		t.Fatal(err)
+	}
+	prefs, repairs, err := store.Load()
+	if err != nil || len(repairs) != 0 || !prefs.Clipboard.Enabled || prefs.Clipboard.Limits.Count != 500 {
+		t.Fatalf("retired age reset clipboard preferences: %v %v %v", prefs.Clipboard, repairs, err)
+	}
+	if err := store.Save(prefs); err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(store.Path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var stored struct {
+		Clipboard struct{ Limits map[string]json.RawMessage }
+	}
+	if err := json.Unmarshal(data, &stored); err != nil {
+		t.Fatal(err)
+	}
+	if _, exists := stored.Clipboard.Limits["days"]; exists {
+		t.Fatal("retired age setting was persisted again")
+	}
+}

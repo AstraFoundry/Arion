@@ -89,17 +89,16 @@ type Clip struct {
 
 type ClipLimits struct {
 	Count     int   `json:"count"`
-	Days      int   `json:"days"`
 	Bytes     int64 `json:"bytes"`
 	ItemBytes int64 `json:"itemBytes"`
 }
 
 func DefaultClipLimits() ClipLimits {
-	return ClipLimits{Count: 200, Days: 30, Bytes: 100 << 20, ItemBytes: 10 << 20}
+	return ClipLimits{Count: 200, Bytes: 100 << 20, ItemBytes: 10 << 20}
 }
 
 func (l ClipLimits) Valid() bool {
-	return l.Count >= 1 && l.Count <= 2000 && l.Days >= 1 && l.Days <= 365 && l.Bytes >= 1<<20 && l.Bytes <= 500<<20 && l.ItemBytes >= 1<<10 && l.ItemBytes <= l.Bytes && l.ItemBytes <= 50<<20
+	return l.Count >= 1 && l.Count <= 2000 && l.Bytes >= 1<<20 && l.Bytes <= 500<<20 && l.ItemBytes >= 1<<10 && l.ItemBytes <= l.Bytes && l.ItemBytes <= 50<<20
 }
 
 func SortClips(items []Clip) {
@@ -117,9 +116,9 @@ func SortClips(items []Clip) {
 	})
 }
 
-// PruneClips preserves pins and applies count/age to the ordinary history.
+// PruneClips preserves pins and applies count/storage limits to the ordinary history.
 // Pinned data cannot be silently evicted to make a policy fit.
-func PruneClips(items []Clip, limits ClipLimits, now time.Time) ([]Clip, error) {
+func PruneClips(items []Clip, limits ClipLimits) ([]Clip, error) {
 	if !limits.Valid() {
 		return nil, ErrClipInvalid
 	}
@@ -137,10 +136,9 @@ func PruneClips(items []Clip, limits ClipLimits, now time.Time) ([]Clip, error) 
 	var out []Clip
 	var used int64
 	count := 0
-	cut := now.Add(-time.Duration(limits.Days) * 24 * time.Hour)
 	for _, item := range items {
 		size := item.Payload.Bytes()
-		if !item.Pinned && (item.Copied.Before(cut) || count >= limits.Count || used+size > limits.Bytes) {
+		if !item.Pinned && (count >= limits.Count || used+size > limits.Bytes) {
 			continue
 		}
 		out = append(out, item)
@@ -172,7 +170,7 @@ func CaptureClip(items []Clip, payload ClipPayload, limits ClipLimits, now time.
 	if !found {
 		next = append(next, Clip{ID: id, Payload: payload, Copied: now})
 	}
-	next, err := PruneClips(next, limits, now)
+	next, err := PruneClips(next, limits)
 	if err != nil {
 		return nil, err
 	}

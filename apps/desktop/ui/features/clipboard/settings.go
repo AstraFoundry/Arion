@@ -26,21 +26,12 @@ func Settings(c *ui.Context, store runtime.Store, tokens theme.Tokens, shortcut 
 			kit.Divider(c, tokens)
 			shortcut()
 			kit.Divider(c, tokens)
-			count, days := prefs.Limits.Count, prefs.Limits.Days
-			kit.Row(c, tokens, messages.Text(copy.ClipboardCount), "", func() {
+			count := prefs.Limits.Count
+			kit.TipRow(c, tokens, messages.Text(copy.ClipboardCount), messages.Text(copy.ClipboardLimitsHint), func() {
 				if kit.Select(c.Key("count"), &count, retentionOptions(count, 100, 200, 500, 1000), messages.ClipboardEntries, nil).
 					Label(messages.Text(copy.ClipboardCount)).Disabled(store.State.Clipboard.Busy).Changed() {
 					limits := prefs.Limits
 					limits.Count = count
-					store.Actions.SetClipboardLimits(limits)
-				}
-			})
-			kit.Divider(c, tokens)
-			kit.TipRow(c, tokens, messages.Text(copy.ClipboardDays), messages.Text(copy.ClipboardLimitsHint), func() {
-				if kit.Select(c.Key("days"), &days, retentionOptions(days, 1, 7, 14, 30, 90), messages.ClipboardDays, nil).
-					Label(messages.Text(copy.ClipboardDays)).Disabled(store.State.Clipboard.Busy).Changed() {
-					limits := prefs.Limits
-					limits.Days = days
 					store.Actions.SetClipboardLimits(limits)
 				}
 			})

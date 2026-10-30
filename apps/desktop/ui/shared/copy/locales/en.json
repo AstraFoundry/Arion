@@ -644,8 +644,7 @@
   "ClipboardShortcut": "History shortcut",
   "ClipboardShortcutHint": "Open clipboard history and paste a previous copy.",
   "ClipboardCount": "History size",
-  "ClipboardDays": "Keep history for",
-  "ClipboardLimitsHint": "Older items are removed automatically. Pinned items are kept.",
+  "ClipboardLimitsHint": "The oldest unpinned items are removed when the limit is exceeded.",
   "ClipboardInvalidLimits": "Could not save these history limits.",
   "ClipboardBusy": "Saving…",
   "ClipboardLoadFailed": "History could not be opened. Retry after checking this device’s key and storage.",
@@ -669,12 +668,10 @@
   "ClipboardShortcutNeedsChord": "Use a modifier with a key, or a function key.",
   "ClipboardKeyConflict": "This shortcut is already used for clipboard history. Choose another.",
   "FormatClipboardEntries": "{value} items",
-  "FormatClipboardDays": "{value} days",
   "ClipboardManage": "Manage history",
   "ClipboardLink": "Link",
   "ClipboardSelectionEmpty": "Select an item to preview",
   "FormatClipboardEntry": "{value} item",
-  "FormatClipboardDay": "{value} day",
   "FormatClipboardTime": "{hour}:{minute}",
   "ClipboardCloseSearch": "Close search"
 }

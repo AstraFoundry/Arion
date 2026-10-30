@@ -85,15 +85,15 @@ func (s *Clipboard) Update(change func([]domain.Clip) ([]domain.Clip, error)) ([
 	return next, nil
 }
 
-func (s *Clipboard) Refresh(limits domain.ClipLimits, now time.Time) ([]domain.Clip, error) {
-	return s.Update(func(items []domain.Clip) ([]domain.Clip, error) { return domain.PruneClips(items, limits, now) })
+func (s *Clipboard) Refresh(limits domain.ClipLimits) ([]domain.Clip, error) {
+	return s.Update(func(items []domain.Clip) ([]domain.Clip, error) { return domain.PruneClips(items, limits) })
 }
 func (s *Clipboard) Capture(payload domain.ClipPayload, limits domain.ClipLimits, now time.Time) ([]domain.Clip, error) {
 	return s.Update(func(items []domain.Clip) ([]domain.Clip, error) {
 		return domain.CaptureClip(items, payload, limits, now)
 	})
 }
-func (s *Clipboard) Pin(id string, pinned bool, limits domain.ClipLimits, now time.Time) ([]domain.Clip, error) {
+func (s *Clipboard) Pin(id string, pinned bool, limits domain.ClipLimits) ([]domain.Clip, error) {
 	return s.Update(func(items []domain.Clip) ([]domain.Clip, error) {
 		found := false
 		for i := range items {
@@ -105,6 +105,6 @@ func (s *Clipboard) Pin(id string, pinned bool, limits domain.ClipLimits, now ti
 		if !found {
 			return nil, domain.ErrClipMissing
 		}
-		return domain.PruneClips(items, limits, now)
+		return domain.PruneClips(items, limits)
 	})
 }
