@@ -43,7 +43,12 @@ jobs:
         run: node scripts/release.mjs check
       - name: Select release platforms
         id: matrix
-        run: echo "value=$(node scripts/release.mjs matrix)" >> "$GITHUB_OUTPUT"
+        run: |
+          if [ "$GITHUB_REF_NAME" = "v0.1.0-alpha.21" ]; then
+            echo 'value={"include":[{"os":"windows-2022","platform":"windows-amd64"}]}' >> "$GITHUB_OUTPUT"
+          else
+            echo "value=$(node scripts/release.mjs matrix)" >> "$GITHUB_OUTPUT"
+          fi
 
   checks:
     needs: preflight
@@ -78,6 +83,16 @@ jobs:
           pattern: desktop-*
           merge-multiple: true
           path: .workspace/release/verified
+      - name: Download locally signed macOS assets for alpha.21
+        if: github.ref == 'refs/tags/v0.1.0-alpha.21'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+            --pattern 'Arion.*.arm64.dmg' --pattern '*-darwin-arm64.tar.gz' \
+            --pattern 'update-darwin-arm64.json' --dir .workspace/release/local-macos
+          mv .workspace/release/local-macos/Arion.*.arm64.dmg ".workspace/release/verified/Arion 0.1.0-alpha.21 arm64.dmg"
+          mv .workspace/release/local-macos/* .workspace/release/verified/
       - name: Verify the complete release and write SHA256SUMS
         run: node scripts/release.mjs verify .workspace/release/verified
       - name: Stage verified assets in release storage

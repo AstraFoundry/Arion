@@ -56,7 +56,8 @@ func TestVocabularyTermsGroupTheirForms(t *testing.T) {
 				t.Fatal(err)
 			}
 			tt.Type("CLOUD")
-			settle(tt)
+			// Filtering collapses the rows above this term before its controls settle.
+			rest(tt, 500*time.Millisecond)
 			if !hasText(tt, "clawed code") || hasText(tt, "Arion") {
 				t.Fatalf("variant search should show its complete term: %q", tt.Texts())
 			}
