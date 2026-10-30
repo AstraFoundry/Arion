@@ -391,10 +391,6 @@ func TestSettingsSections(t *testing.T) {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if err := tt.Click(copy.For(copy.English).Text(copy.VocabFromLabel)); err != nil {
-		t.Fatal(err)
-	}
-	tt.Type("阿里昂")
 	if err := tt.Click(copy.For(copy.English).Text(copy.VocabToLabel)); err != nil {
 		t.Fatal(err)
 	}
@@ -403,7 +399,15 @@ func TestSettingsSections(t *testing.T) {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if len(state.Vocabulary) != 1 || state.Vocabulary[0].To != "Arion" || !hasText(tt, "阿里昂") {
+	rest(tt, 500*time.Millisecond)
+	if err := tt.Click(copy.For(copy.English).VocabVariantAction("Arion")); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	tt.Type("阿里昂")
+	tt.Key(0, ui.KeyEnter)
+	settle(tt)
+	if len(state.Vocabulary) != 2 || state.Vocabulary[1].To != "Arion" || !hasText(tt, "阿里昂") {
 		t.Fatalf("vocabulary not added: %v %q", state.Vocabulary, tt.Texts())
 	}
 	snapshot(t, tt, "settings-vocabulary-filled")
@@ -982,7 +986,7 @@ func TestInterfaceLanguageSwitch(t *testing.T) {
 }
 
 func TestChineseSettingsAndTransientErrors(t *testing.T) {
-	state, _, store := fixture()
+	state, actions, store := fixture()
 	state.Preferences.UILanguage = runtime.LanguageChinese
 	page := settings.NewPage()
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
@@ -1004,26 +1008,31 @@ func TestChineseSettingsAndTransientErrors(t *testing.T) {
 	}
 	page.Section = settings.Vocabulary
 	settle(tt)
+	if err := tt.Click(zh.Text(copy.VocabToLabel)); err != nil {
+		t.Fatal(err)
+	}
+	tt.Type("<|system|>")
+	actions.vocabError = runtime.ErrVocabularyInvalid
 	if err := tt.Click("添加"); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if !hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.VocabInvalid)) {
+	if !hasText(tt, zh.Text(copy.VocabTermInvalid)) {
 		t.Fatalf("missing localized validation: %q", tt.Texts())
 	}
 	state.Preferences.UILanguage = runtime.LanguageEnglish
 	settle(tt)
-	if !hasText(tt, copy.For(copy.English).Text(copy.VocabInvalid)) || hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.VocabInvalid)) {
+	if !hasText(tt, copy.For(copy.English).Text(copy.VocabTermInvalid)) || hasText(tt, zh.Text(copy.VocabTermInvalid)) {
 		t.Fatalf("stale validation after switch: %q", tt.Texts())
 	}
+	actions.vocabError = nil
 
-	// A draft entered in English survives the language change and is saved verbatim.
-	if err := tt.Click(copy.For(copy.English).Text(copy.VocabFromLabel)); err != nil {
-		t.Fatal(err)
-	}
-	tt.Type("阿里昂 {value}")
+	// Drafts entered in English survive the language change and are saved verbatim.
 	if err := tt.Click(copy.For(copy.English).Text(copy.VocabToLabel)); err != nil {
 		t.Fatal(err)
+	}
+	for range "<|system|>" {
+		tt.Key(0, ui.KeyBackspace)
 	}
 	tt.Type("Arion {value}")
 	state.Preferences.UILanguage = runtime.LanguageChinese
@@ -1032,7 +1041,17 @@ func TestChineseSettingsAndTransientErrors(t *testing.T) {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if len(state.Vocabulary) != 1 || state.Vocabulary[0].From != "阿里昂 {value}" || state.Vocabulary[0].To != "Arion {value}" {
+	rest(tt, 500*time.Millisecond)
+	if err := tt.Click(zh.VocabVariantAction("Arion {value}")); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	tt.Type("阿里昂 {value}")
+	state.Preferences.UILanguage = runtime.LanguageEnglish
+	settle(tt)
+	tt.Key(0, ui.KeyEnter)
+	settle(tt)
+	if len(state.Vocabulary) != 2 || state.Vocabulary[0].To != "Arion {value}" || state.Vocabulary[1].From != "阿里昂 {value}" || state.Vocabulary[1].To != "Arion {value}" {
 		t.Fatalf("language switch changed vocabulary draft: %v", state.Vocabulary)
 	}
 }

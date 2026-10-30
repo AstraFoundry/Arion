@@ -233,9 +233,14 @@ func (c Catalog) MoreContributors(n int) string {
 	return c.format(FormatMoreContributors, "count", strconv.Itoa(n))
 }
 
-// RemoveVocabVariant names the individual spelling removed by its action.
-func (c Catalog) RemoveVocabVariant(variant string) string {
-	return c.format(FormatRemoveVocabVariant, "variant", variant)
+// RemoveVocab names the term or incorrect form removed by its action.
+func (c Catalog) RemoveVocab(text string) string {
+	return c.format(FormatRemoveVocab, "text", text)
+}
+
+// VocabVariantAction names the action adding an incorrect form to term.
+func (c Catalog) VocabVariantAction(term string) string {
+	return c.format(FormatVocabVariantAction, "term", term)
 }
 
 func (c Catalog) UpdateTo(version string) string {
@@ -303,11 +308,6 @@ func (c Catalog) UpdateDownloaded(version string) string {
 // UpdateReadyVersion describes a completed installation awaiting relaunch.
 func (c Catalog) UpdateReadyVersion(version string) string {
 	return c.format(FormatUpdateReady, "version", version)
-}
-
-// RemoveHotword names the independent canonical term being removed.
-func (c Catalog) RemoveHotword(term string) string {
-	return c.format(FormatRemoveHotword, "term", term)
 }
 
 func (c Catalog) VocabReadingAction(term string) string {
