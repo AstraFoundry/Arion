@@ -50,8 +50,8 @@ jobs:
     uses: ./.github/workflows/ci.yml
     with:
       release: true
-      # One-release exemption: these E2E checks were completed before tagging.
-      skip-e2e: ${{ github.ref == 'refs/tags/v0.1.0-alpha.17' }}
+      # Explicit per-release E2E exemptions; other release gates remain enabled.
+      skip-e2e: ${{ github.ref == 'refs/tags/v0.1.0-alpha.17' || github.ref == 'refs/tags/v0.1.0-alpha.21' }}
       native-matrix: ${{ needs.preflight.outputs.native-matrix }}
     secrets:
       MYGO_UPDATER_PRIVATE_KEY: ${{ secrets.MYGO_UPDATER_PRIVATE_KEY }}
