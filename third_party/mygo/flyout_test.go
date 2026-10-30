@@ -172,3 +172,22 @@ func TestTrayFlyout(t *testing.T) {
 		NewFlyout(FlyoutOptions{Parent: parent, Tray: tray})
 	}()
 }
+
+func TestScreenAnchoredFlyout(t *testing.T) {
+	anchor := Rectangle{X: 300, Y: 220, Width: 1, Height: 18}
+	fl, fw := testFlyout(t, FlyoutOptions{ScreenAnchor: &anchor, Width: 270, Height: 198, Gap: 4, Focusable: true})
+	if fw.Opts.Parent != nil || fw.Opts.Flyout.Tray != nil || !fl.IsFocused() {
+		t.Fatal("screen flyout acquired an owner or failed to take the keyboard")
+	}
+	if got := fl.Bounds(); got != (Rectangle{X: 300, Y: 242, Width: 270, Height: 198}) {
+		t.Fatalf("screen anchor placement: %+v", got)
+	}
+	fl.SetAnchor(Rectangle{X: 400, Y: 880})
+	if got := fl.Bounds(); got.Y != 678 {
+		t.Fatalf("screen flyout did not flip above work-area edge: %+v", got)
+	}
+	fl.SetContentSize(270, 100)
+	if got := fl.Bounds(); got.Y != 776 || got.Height != 100 {
+		t.Fatalf("screen flyout resize: %+v", got)
+	}
+}

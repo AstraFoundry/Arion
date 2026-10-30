@@ -7,7 +7,6 @@ import (
 	"arion.local/desktop/ui/features/dictate"
 	"arion.local/desktop/ui/features/provision"
 	"arion.local/desktop/ui/features/scene"
-	"arion.local/desktop/ui/features/transcript"
 	"arion.local/desktop/ui/features/update"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
@@ -18,18 +17,29 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Width and Height size the panel: Height holds the scene card and a scrolling
-// last dictation with a model download or failure under it.
-// The card's target is read after the panel opens, so its room is fixed.
+// Width and Height size the ready panel. Optional blocks add only their own space.
 const (
 	Width  = 330
-	Height = 384
+	Height = 160
 )
 
-// Panel keeps the panel's own view state.
-type Panel struct {
-	transcript transcript.View
+// HeightFor follows the visible blocks rather than reserving transcript space.
+func HeightFor(store arion.Store) int {
+	height := Height
+	if scene.Visible(store) {
+		height += 62
+	}
+	if store.State.Model.State != arion.ModelReady {
+		height += 64
+	}
+	if _, ok := update.Notice(store); ok {
+		height += 34
+	}
+	return height
 }
+
+// Panel keeps the panel's own view state.
+type Panel struct{}
 
 // Render draws the panel over the popover material on macOS.
 func (p *Panel) Render(c *ui.Context, store arion.Store) {
@@ -48,9 +58,6 @@ func (p *Panel) Render(c *ui.Context, store arion.Store) {
 		statusheader.Render(c, store, tokens)
 		dictate.Toggle(c, store, tokens)
 		scene.Card(c, store, tokens)
-		ui.Scroll(c.Key(struct{ Text, Original string }{store.State.LastText, store.State.LastOriginal})).Grow(1).Children(func() {
-			transcript.Last(c, store, tokens, &p.transcript)
-		})
 		// The bundle itself is chosen in settings; the panel only shows the
 		// download or failure that keeps dictation from starting.
 		if store.State.Model.State != arion.ModelReady {

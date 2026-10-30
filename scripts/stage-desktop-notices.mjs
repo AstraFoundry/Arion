@@ -25,7 +25,7 @@ for (const row of modules.trim().split('\n')) {
   const folder = name.replaceAll('/', '_');
   mkdirSync(path.join(destination, folder));
   for (const file of licenses) copyFileSync(path.join(directory, file), path.join(destination, folder, file));
-  records.push({ module: name, version, ...(name === 'github.com/egoist/mygo' ? { source: 'third_party/mygo', patch: 'prerelease-channel-v1, url-channel-v1, staged-update-v1, native-notifications-v1, codesign-metadata-v1, windows-native-transparency-v1' } : {}), licenses: licenses.map(file => `${folder}/${file}`) });
+  records.push({ module: name, version, ...(name === 'github.com/egoist/mygo' ? { source: 'third_party/mygo', patch: 'prerelease-channel-v1, url-channel-v1, staged-update-v1, native-notifications-v1, codesign-metadata-v1, windows-native-transparency-v1, native-clipboard-writer-v1, screen-anchored-flyout-v1' } : {}), licenses: licenses.map(file => `${folder}/${file}`) });
 }
 writeFileSync(path.join(destination, 'go-modules.json'), `${JSON.stringify(records, null, 2)}\n`);
 const native = JSON.parse(readFileSync(path.join(root, 'scripts/native-notices.json'), 'utf8'));

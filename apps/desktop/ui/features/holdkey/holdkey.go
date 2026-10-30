@@ -1,5 +1,5 @@
-// Package holdkey chooses the dictation key, the only global activation,
-// and explains why it is not listening.
+// Package holdkey records native dictation, translation and history shortcuts,
+// and explains why activation is unavailable.
 package holdkey
 
 import (
@@ -33,6 +33,15 @@ func TranslateSetting(c *ui.Context, store runtime.Store, state *PickerState) {
 }
 
 func picker(c *ui.Context, store runtime.Store, state *PickerState, translation, setting bool) {
+	pickerFor(c, store, state, translation, setting, false)
+}
+
+// ClipboardSetting uses the native recorder shared with dictation and translation.
+func ClipboardSetting(c *ui.Context, store runtime.Store, state *PickerState) {
+	pickerFor(c, store, state, false, true, true)
+}
+
+func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, translation, setting, clipboard bool) {
 	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
 	prefs := store.State.Preferences
 	owner, current, blocked := "dictation", prefs.HoldKey, prefs.TranslateKey
@@ -47,12 +56,39 @@ func picker(c *ui.Context, store runtime.Store, state *PickerState, translation,
 			current = prefs.PreviousTranslateKey
 		}
 	}
+	clipboardKey, _ := runtime.ClipboardShortcutKey(platform.GOOS, prefs.Clipboard.Shortcut)
+	if clipboard {
+		owner, current = "clipboard", clipboardKey
+		label, detail, edit = copy.ClipboardShortcut, copy.ClipboardShortcutHint, copy.ClipboardShortcutEdit
+		set = func(key runtime.HoldKey) { store.Actions.SetClipboardShortcut(string(key)) }
+	}
+	validate := func(key runtime.HoldKey) copy.Key {
+		if clipboard {
+			if _, ok := runtime.ClipboardShortcutKey(platform.GOOS, string(key)); !ok {
+				return copy.ClipboardShortcutNeedsChord
+			}
+			if runtime.HoldKeysConflict(key, prefs.HoldKey) {
+				return copy.TranslateKeyConflict
+			}
+			if runtime.HoldKeysConflict(key, prefs.TranslateKey) {
+				return copy.HoldKeyConflict
+			}
+		} else {
+			if runtime.HoldKeysConflict(key, blocked) {
+				return conflict
+			}
+			if runtime.HoldKeysConflict(key, clipboardKey) {
+				return copy.ClipboardKeyConflict
+			}
+		}
+		return ""
+	}
 	column := ui.Column(c).Shrink(1)
 	if !setting {
 		column.Gap(6).AlignItems(ui.Start)
 	}
 	column.Children(func() {
-		control := func() { shortcutField(c, store, state, owner, current, edit, set, blocked, conflict) }
+		control := func() { shortcutField(c, store, state, owner, current, edit, set, validate) }
 		if setting {
 			kit.TipRow(c, tokens, messages.Text(label), messages.Text(detail), control)
 		} else {
@@ -64,6 +100,8 @@ func picker(c *ui.Context, store runtime.Store, state *PickerState, translation,
 			switch {
 			case state.listening:
 				message = copy.HoldKeySystemHint
+			case clipboard && store.State.Clipboard.ShortcutFailed:
+				message, ink = copy.ClipboardShortcutFailed, tokens.Danger
 			case current == runtime.HoldFn:
 				message = copy.HoldKeyFnHint
 			}

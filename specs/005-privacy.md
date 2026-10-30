@@ -2,6 +2,7 @@
 
 | Data | Default lifetime/location | Sync/log policy |
 | --- | --- | --- |
+| Clipboard history | Off until enabled; bounded AES-GCM snapshot with a distinct OS-kept key; ordinary files are references; input-target dictation excluded, confirmed no-input copies eligible while enabled | Never sync/log, feed polishing or upload; see [010](010-clipboard.md) |
 | Raw audio/PCM | Bounded RAM for active session | Never sync/log; disk recording requires separate user action |
 | ASR/correction drafts | Active session RAM | Never diagnostics; history separately opt-in |
 | Target app/nearby/selected text | Bounded consent-gated session context | Never sync/log or persist automatically |

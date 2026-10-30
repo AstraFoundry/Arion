@@ -6,18 +6,16 @@
 package vocabulary
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"os"
-	"path/filepath"
 	"sync"
 	"time"
 
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/encryptedfile"
 )
 
 // Entry is a correction pair or a canonical-only hotword with local provenance. Files written
@@ -73,20 +71,16 @@ const associated = "arion-vocabulary-v1"
 // Store is an encrypted file of entries.
 type Store struct {
 	path string
-	aead cipher.AEAD
+	file *encryptedfile.File
 	mu   sync.Mutex
 }
 
 func Open(path string, key []byte) (*Store, error) {
-	block, err := aes.NewCipher(key)
+	file, err := encryptedfile.New(path, key, associated, 64<<20)
 	if err != nil {
 		return nil, err
 	}
-	aead, err := cipher.NewGCM(block)
-	if err != nil {
-		return nil, err
-	}
-	return &Store{path: path, aead: aead}, nil
+	return &Store{path: path, file: file}, nil
 }
 
 // List decrypts all entries. A wrong key or tampered file fails closed.
@@ -97,20 +91,12 @@ func (s *Store) List() ([]Entry, error) {
 }
 
 func (s *Store) read() ([]Entry, error) {
-	sealed, err := os.ReadFile(s.path)
+	plain, err := s.file.Read()
 	if errors.Is(err, os.ErrNotExist) {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, err
-	}
-	if len(sealed) < s.aead.NonceSize() {
-		return nil, errors.New("vocabulary file is truncated")
-	}
-	nonce, body := sealed[:s.aead.NonceSize()], sealed[s.aead.NonceSize():]
-	plain, err := s.aead.Open(nil, nonce, body, []byte(associated))
-	if err != nil {
-		return nil, errors.New("vocabulary file failed authentication")
 	}
 	var entries []Entry
 	if err := json.Unmarshal(plain, &entries); err != nil {
@@ -124,43 +110,7 @@ func (s *Store) write(entries []Entry) error {
 	if err != nil {
 		return err
 	}
-	nonce := make([]byte, s.aead.NonceSize())
-	if _, err := rand.Read(nonce); err != nil {
-		return err
-	}
-	sealed := s.aead.Seal(nonce, nonce, plain, []byte(associated))
-	if err := os.MkdirAll(filepath.Dir(s.path), 0o700); err != nil {
-		return err
-	}
-	tmp := s.path + ".tmp"
-	if err := writeSynced(tmp, sealed); err != nil {
-		return err
-	}
-	if err := os.Rename(tmp, s.path); err != nil {
-		return err
-	}
-	// The rename is durable once the directory is synced.
-	if dir, err := os.Open(filepath.Dir(s.path)); err == nil {
-		_ = dir.Sync()
-		_ = dir.Close()
-	}
-	return nil
-}
-
-func writeSynced(path string, data []byte) error {
-	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o600)
-	if err != nil {
-		return err
-	}
-	if _, err := f.Write(data); err != nil {
-		_ = f.Close()
-		return err
-	}
-	if err := f.Sync(); err != nil {
-		_ = f.Close()
-		return err
-	}
-	return f.Close()
+	return s.file.Write(plain)
 }
 
 func newEntryID() string {

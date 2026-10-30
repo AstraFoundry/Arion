@@ -110,3 +110,5 @@ Read the [documentation](docs/README.md).
 ## License
 
 MIT
+
+Screen-anchored native flyouts use `FlyoutOptions.ScreenAnchor` instead of a parent or tray. The rectangle and subsequent `SetAnchor` calls use screen DIPs. These panels can take keyboard focus without activating the app on macOS, for clipboard history and external-editor suggestions. Positioning is constrained to the monitor work area; independent placement on Wayland remains compositor-controlled. `Popover` requires a parent or tray anchor.

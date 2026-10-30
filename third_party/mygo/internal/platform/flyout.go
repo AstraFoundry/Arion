@@ -125,7 +125,10 @@ func slideAndResize(boundsPos, boundsSize, pos, size int) (int, int) {
 // WorkAreaFor returns the work area of the display a flyout anchored at r
 // goes to, as GDK picks it: the one whose work area overlaps r the most,
 // else the one nearest to r's center.
-func WorkAreaFor(r Rect, displays []Display) Rect {
+func WorkAreaFor(r Rect, displays []Display) Rect { return DisplayFor(r, displays).WorkArea }
+
+// DisplayFor selects the monitor for screen-space geometry and its scale.
+func DisplayFor(r Rect, displays []Display) Display {
 	best, bestArea := -1, 0
 	for i, d := range displays {
 		if a := overlap(d.WorkArea, r); a > bestArea {
@@ -145,9 +148,9 @@ func WorkAreaFor(r Rect, displays []Display) Rect {
 		}
 	}
 	if best < 0 {
-		return Rect{}
+		return Display{}
 	}
-	return displays[best].WorkArea
+	return displays[best]
 }
 
 func overlap(a, b Rect) int {

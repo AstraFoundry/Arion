@@ -711,7 +711,7 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 		if result.Outcome == contracts.Applied {
 			c.remember(r, text)
 		}
-		event = contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CommitResultReady, Revision: revision}, State: domain.Completed, Outcome: result.Outcome, Error: result.Failure, Text: text}
+		event = contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CommitResultReady, Revision: revision}, State: domain.Completed, Outcome: result.Outcome, NoInput: result.NoInput, Error: result.Failure, Text: text}
 	default:
 		code := result.Failure
 		if code == "" {

@@ -18,11 +18,12 @@ const (
 // on purpose: the best evaluated bundle loads automatically; ModelOverride
 // only exists for an explicit choice among evaluated bundles.
 type Preferences struct {
-	Version             int        `json:"version"`
-	UILanguage          UILanguage `json:"uiLanguage"`
-	OnboardingCompleted bool       `json:"onboardingCompleted"`
-	HoldKey             HoldKey    `json:"holdKey"`
-	TranslateKey        HoldKey    `json:"translateKey,omitempty"`
+	Clipboard           ClipboardPreferences `json:"clipboard"`
+	Version             int                  `json:"version"`
+	UILanguage          UILanguage           `json:"uiLanguage"`
+	OnboardingCompleted bool                 `json:"onboardingCompleted"`
+	HoldKey             HoldKey              `json:"holdKey"`
+	TranslateKey        HoldKey              `json:"translateKey,omitempty"`
 	// PreviousTranslateKey retains the last assignment while translation is off.
 	PreviousTranslateKey HoldKey                    `json:"previousTranslateKey,omitempty"`
 	TranslateLanguage    domain.TranslationLanguage `json:"translateLanguage,omitempty"`
@@ -108,7 +109,8 @@ func DefaultPreferences(platform string) Preferences {
 		TranslateKey: DefaultTranslateKey(platform), TranslateLanguage: domain.TargetEnglish,
 		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, Punctuation: domain.PunctuationSmart, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
-		Keyboard: DefaultKeyboardPreferences(),
+		Keyboard:  DefaultKeyboardPreferences(),
+		Clipboard: DefaultClipboardPreferences(),
 	}
 }
 
@@ -119,6 +121,13 @@ func DefaultPreferences(platform string) Preferences {
 func (p Preferences) Normalize(platform string) (Preferences, []string) {
 	defaults := DefaultPreferences(platform)
 	var repaired []string
+	if !p.Clipboard.Limits.Valid() {
+		p.Clipboard.Limits = defaults.Clipboard.Limits
+		repaired = append(repaired, "clipboard.limits")
+	}
+	if p.Clipboard.Shortcut == "" {
+		p.Clipboard.Shortcut = defaults.Clipboard.Shortcut
+	}
 	if p.UILanguage != English && p.UILanguage != SimplifiedChinese {
 		p.UILanguage = defaults.UILanguage
 		repaired = append(repaired, "uiLanguage")

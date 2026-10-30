@@ -20,6 +20,8 @@ func newPlatform() Platform { return windowsPlatform{} }
 
 func configureInputMethodDiagnostics(func(diagnostics.Entry)) {}
 
+func configureClipboardWindow(*mygo.Window) {}
+
 func configureOverlay(window *mygo.Window) { windows.ConfigureOverlay(window.NativeHandle()) }
 
 func (windowsPlatform) Microphone() runtime.Consent    { return runtime.ConsentGranted }

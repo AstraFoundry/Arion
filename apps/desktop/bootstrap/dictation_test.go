@@ -104,3 +104,22 @@ func TestDictationRouteUsesActualSelection(t *testing.T) {
 		}
 	}
 }
+
+type dictationInputProbe struct {
+	Targets
+	noInput bool
+}
+
+func (p dictationInputProbe) NoInput() bool { return p.noInput }
+func TestDictationWithoutInputChoosesCopyBeforeIMEAcquisition(t *testing.T) {
+	for _, absent := range []bool{false, true} {
+		a := &App{ime: observedRouteIME{selected: true}, targets: dictationInputProbe{noInput: absent}}
+		want := domain.SystemIMEMode
+		if absent {
+			want = domain.ShortcutMode
+		}
+		if got := a.dictationMode(); got != want {
+			t.Fatalf("no input %v: route %s want %s", absent, got, want)
+		}
+	}
+}
