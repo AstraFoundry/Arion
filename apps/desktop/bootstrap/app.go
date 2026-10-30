@@ -26,6 +26,7 @@ import (
 	"arion.local/desktop/infrastructure/browser"
 	"arion.local/desktop/infrastructure/cloudpolish"
 	"arion.local/desktop/infrastructure/diagnostics"
+	"arion.local/desktop/infrastructure/keyboardmodel"
 	"arion.local/desktop/infrastructure/keystore"
 	"arion.local/desktop/infrastructure/llm/spelling"
 	"arion.local/desktop/infrastructure/modelruntime"
@@ -87,6 +88,7 @@ type App struct {
 	store               *provision.Store
 	manager             *modelruntime.Manager
 	rewriter            *rewriting.Service
+	keyboardModel       *keyboardmodel.Service
 	cloud               *cloudpolish.Service
 	// cloudProvider is the last provider applied while connected. A sign-in
 	// or key check changes the visible provider before it succeeds, and that
@@ -218,6 +220,7 @@ func New(opts Options) (*App, error) {
 	resources, _ := mygo.App.Path(mygo.PathResources)
 	asr.Resources = resources
 	a.rewriter = rewriting.New(catalog, a.store, rewriting.Locate(resources), opts.Threads, modelruntime.Platform())
+	a.keyboardModel = keyboardmodel.New(catalog, a.store, keyboardmodel.Locate(resources))
 	a.history = application.NewHistory(30 * time.Minute)
 	a.mic = audio.NewMicrophone(a.platform)
 	a.mic.Select(prefs.Microphone)
@@ -452,6 +455,7 @@ func (a *App) ready() {
 	a.core.Subscribe(func(e contracts.Event) {
 		if e.Kind == contracts.SessionStateChanged {
 			a.rewriter.SuspendKeyboard(e.State != domain.Idle && !domain.IsTerminal(e.State))
+			a.keyboardModel.SuspendKeyboard(e.State != domain.Idle && !domain.IsTerminal(e.State))
 		}
 		a.post(func() { a.apply(e) })
 	})
@@ -466,6 +470,8 @@ func (a *App) ready() {
 	a.manager.OnStatus(func(s modelruntime.Status) { a.post(func() { a.applyModel(s) }) })
 	a.rewriter.OnStatus(func(s rewriting.Status) { a.post(func() { a.applyPolish(s) }) })
 	a.applyPolish(a.rewriter.Status())
+	a.keyboardModel.OnStatus(func(s rewriting.Status) { a.post(func() { applyModelStatus(&a.state.KeyboardModel, s) }) })
+	applyModelStatus(&a.state.KeyboardModel, a.keyboardModel.Status())
 	a.startPolish(false)
 	a.cloud.OnStatus(func(s cloudpolish.Status) { a.post(func() { a.applyCloud(s) }) })
 	go a.cloud.Load()
@@ -474,6 +480,7 @@ func (a *App) ready() {
 			a.polishCancel()
 		}
 		a.rewriter.Disable()
+		a.keyboardModel.Disable()
 	})
 	mygo.App.OnQuit(func() { a.core.Cancel(); a.manager.Close() })
 	a.refreshPermissions()
@@ -874,6 +881,10 @@ func (a *App) startPolish(download bool) {
 			return
 		}
 		a.rewriter.Disable()
+		a.keyboardModel.Disable()
+		if p := a.preferences(); ctx.Err() == nil && p.Keyboard.NeuralRanking {
+			_ = a.keyboardModel.Enable(ctx, download)
+		}
 		a.rewriter.Refresh()
 		if p := a.preferences(); ctx.Err() == nil && ((p.Polish && p.PolishEngine == application.PolishLocal) || p.Keyboard.NeuralRanking) {
 			if download {
@@ -890,6 +901,10 @@ func (a *App) applyPolish(s rewriting.Status) {
 	if string(p.State) != string(s.State) || string(p.Phase) != string(s.Phase) || p.Failure != s.Failure {
 		a.recordEntry(diagnostics.Entry{Event: "rewrite_status", ModelID: rewriting.DefaultModel, Outcome: string(s.State), Phase: string(s.Phase), Code: diagnostics.FailureCode(s.Failure)})
 	}
+	applyModelStatus(p, s)
+}
+
+func applyModelStatus(p *arion.Polish, s rewriting.Status) {
 	p.Phase, p.Done, p.Total, p.Failure = arion.ProvisionPhase(s.Phase), s.Done, s.Total, s.Failure
 	p.Installed, p.SizeBytes = s.Installed, s.SizeBytes
 	p.State = map[rewriting.State]arion.PolishState{rewriting.Unsupported: arion.PolishUnsupported, rewriting.Off: arion.PolishOff,

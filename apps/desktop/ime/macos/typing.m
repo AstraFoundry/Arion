@@ -301,7 +301,7 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
         NSBeep();
         return YES;
     }
-    if (handled && ((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') || key == 0xff08 || key == 0xffff)) [self requestRanking];
+    if (handled && ((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') || key == '\'' || key == 0xff08 || key == 0xffff)) [self requestRanking];
     // A key the host handles (Return, arrows, Delete) may move its caret away
     // from the last commit, which then stops being context.
     if (!handled && !wasComposing) self.previousCommit = nil;
@@ -413,6 +413,9 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
 // a key the engine resolves itself (punctuation) commits the same candidate.
 - (BOOL)publishMenu {
     [self freezeRanking];
+    return [self publishRankedMenu];
+}
+- (BOOL)publishRankedMenu {
     ArionKeyboardSnapshot *base = self.engineSnapshot;
     if (!base) return NO;
     if (!arion_menu_prepare(&_menu, self.engine.api, self.session)) return NO;
@@ -519,7 +522,7 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
 }
 - (void)requestRanking {
     if (!self.neuralRanking || !self.rankingChanged || !self.composing || self.ascii ||
-        _menu.page || _menu.highlight || _menu.expanded || _menu.count < 2 || !self.context.length || [self.context lengthOfBytesUsingEncoding:NSUTF8StringEncoding]>2048) return;
+        _menu.page || _menu.highlight || _menu.expanded || _menu.count < 2 || [self.context lengthOfBytesUsingEncoding:NSUTF8StringEncoding]>2048) return;
     const char *input = self.engine.api->get_input(self.session);
     if (!input || !*input || strlen(input) > 256 || self.engine.api->get_caret_pos(self.session) != strlen(input)) return;
     if (!containsHan(@(_menu.texts[0]))) return;
@@ -534,7 +537,7 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
     }
     if (candidates.count<2) return;
     self.rankingCandidates = candidates; self.rankingSlots = slots;
-    self.rankingChanged(@{@"input":@(input),@"before":self.context,@"candidates":candidates},self.rankingRevision);
+    self.rankingChanged(@{@"input":@(input),@"preedit":self.snapshot.preedit ?: @"",@"before":self.context ?: @"",@"candidates":candidates},self.rankingRevision);
 }
 - (void)applyRankingMessage:(NSDictionary *)message activation:(NSString *)activation {
     uint64_t revision=0, generation=0, resultRevision=0;
@@ -543,7 +546,7 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
     NSDictionary *result=message[@"rankResult"];
     if (![message[@"status"] isEqual:@"ok"] || ![result isKindOfClass:NSDictionary.class] ||
         ![result[@"session_id"] isEqual:activation] || !vocabularyInteger(result[@"generation"],&generation) || generation!=1 ||
-        !vocabularyInteger(result[@"revision"],&resultRevision) || resultRevision!=revision) { [self freezeRanking]; return; }
+        !vocabularyInteger(result[@"revision"],&resultRevision) || resultRevision!=revision) { return; }
     NSArray *order=result[@"candidates"];
     if (![order isKindOfClass:NSArray.class] || order.count!=self.rankingCandidates.count) return;
     for (id item in order) if (![item isKindOfClass:NSDictionary.class] || ![item[@"id"] isKindOfClass:NSString.class]) return;
@@ -555,7 +558,7 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
     NSDictionary *selected=expected[chosen]; [expected removeObjectAtIndex:chosen]; [expected insertObject:selected atIndex:0];
     for (NSUInteger i=0;i<order.count;++i) if (![order[i][@"id"] isEqual:expected[i][@"id"]]) return;
     size_t slots[27]; for (NSUInteger i=0;i<self.rankingSlots.count;++i) slots[i]=self.rankingSlots[i].unsignedIntegerValue;
-    if (![self verify] || !arion_menu_promote_slots(&_menu,slots,self.rankingSlots.count,chosen)) return;
-    [self publishMenu];
+    if (![self verify] || ![self buildMenu] || !arion_menu_promote_slots(&_menu,slots,self.rankingSlots.count,chosen)) return;
+    [self publishRankedMenu];
 }
 @end

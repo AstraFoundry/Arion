@@ -260,7 +260,7 @@ public:
     void requestRanking() {
         auto before=previousContext();
         if (!neuralRanking || !rankingChanged || !composition || ascii || menu.page || menu.expanded ||
-            menu.highlight || menu.count<2 || before.empty() || before.size()>2048) return;
+            menu.highlight || menu.count<2 || before.size()>2048) return;
         const char *input=runtime.api()->get_input(session);
         if (!input || !*input || std::strlen(input)>256 || runtime.api()->get_caret_pos(session)!=std::strlen(input) || !runtime.han(menu.texts[0])) return;
         std::string candidates;
@@ -278,14 +278,14 @@ public:
     HRESULT applyRanking(TfEditCookie cookie,const WireMessage &message) {
         KeyboardLease lease(runtime);
         if (!session || generation!=runtime.generation() || !neuralRanking || rankingIDs.empty() || message.revision!=rankingRevision || !same(cookie)) return S_FALSE;
-        if (!message.rankingOK) { freezeRanking(); return S_FALSE; }
+        if (!message.rankingOK) return S_FALSE;
         if (message.rankedIDs.size()!=rankingIDs.size()) return S_FALSE;
         auto selected=std::find(rankingIDs.begin(),rankingIDs.end(),message.rankedIDs[0]);
         if (selected==rankingIDs.end()) return S_FALSE;
         size_t chosen=static_cast<size_t>(selected-rankingIDs.begin());
         auto expected=rankingIDs; auto id=expected[chosen]; expected.erase(expected.begin()+chosen); expected.insert(expected.begin(),id);
-        if (expected!=message.rankedIDs || !arion_menu_promote_slots(&menu,rankingSlots.data(),rankingSlots.size(),chosen)) return S_FALSE;
-        freezeRanking(); ++revision;
+        if (expected!=message.rankedIDs || !buildMenu() || !arion_menu_promote_slots(&menu,rankingSlots.data(),rankingSlots.size(),chosen)) return S_FALSE;
+        ++revision;
         show(); return S_OK;
     }
     uint64_t revision=0;

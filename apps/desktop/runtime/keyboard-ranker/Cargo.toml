@@ -1,0 +1,15 @@
+[package]
+name = "arion-keyboard-ranker"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-only"
+
+[dependencies]
+chinese-ime-lm = "=0.2.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

@@ -216,5 +216,43 @@
       "conversion": "Community GGUF from pinned Qwen3.5-2B source; actual 1,881,825,088 parameters; source/export numerical parity not established.",
       "evaluations": []
     }
+  ],
+  "keyboardRankers": [
+    {
+      "id": "chinese-ime-lm-4m-int8",
+      "name": "Chinese IME 4M",
+      "runtime": {
+        "engine": "chinese-ime-lm",
+        "version": "0.2.0"
+      },
+      "repository": "https://github.com/metasequoiaime/chinese-ime-lm",
+      "revision": "09a69f20b4726f75d4aa318975e3e891c1135aaf",
+      "sourceRepository": "https://github.com/metasequoiaime/chinese-ime-lm",
+      "modelCard": "https://huggingface.co/metasequoiaime/pinyin-ime-reranker-4M",
+      "license": {
+        "model": "Apache-2.0",
+        "runtime": "Apache-2.0",
+        "reference": "https://github.com/metasequoiaime/chinese-ime-lm/blob/154eb5c59a5ad9b0c93a48b05dc7cd143601d18a/NOTICE",
+        "status": "reviewed"
+      },
+      "platforms": [
+        "darwin-arm64",
+        "windows-amd64"
+      ],
+      "languages": [
+        "zh"
+      ],
+      "files": {
+        "sentence-model.safetensors": {
+          "url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/model-v1/sentence-model.safetensors",
+          "sha256": "86ac529510cb3b4968a5e6ade83ec8080f5b34a0a681e75c362accbbd387d1c1",
+          "sizeBytes": 4486280
+        }
+      },
+      "prompt": "candidate-best-where-v1",
+      "quantization": "upstream int8",
+      "conversion": "Published upstream model-v1 keyboard preset; bytes unchanged; embedded C4 Chinese and LCCC attribution retained.",
+      "evaluations": []
+    }
   ]
 }

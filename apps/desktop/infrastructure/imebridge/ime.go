@@ -38,39 +38,41 @@ type message struct {
 }
 
 type IME struct {
-	ranking            *application.KeyboardRanking
-	rankingCapable     bool
-	rankingRevision    uint64
-	vocabularyCapable  bool
-	vocabularyDelivery *vocabularyDelivery
-	vocabularyRequest  uint64
-	vocabulary         *vocabularyExchange
-	path               string
-	mu                 sync.Mutex
-	conn               net.Conn
-	listener           net.Listener
-	releaseSocket      func()
-	build              string
-	verifyClient       ClientVerifier
-	clientVerified     bool
-	clientError        error
-	peer               PeerIdentity
-	admission          uint64
-	publishedAdmission uint64
-	verifying          int
-	changed            chan struct{}
-	updating           bool
-	closed             bool
-	activation, client string
-	identity           contracts.Identity
-	token              contracts.TargetToken
-	revision           uint64
-	committing         bool
-	ack                chan bool
-	begin              chan bool
-	requireBegin       bool
-	onLeave            func()
-	onDictate          func()
+	ranking                *application.KeyboardRanking
+	rankingFast            *application.KeyboardRanking
+	rankingSettledRevision uint64
+	rankingCapable         bool
+	rankingRevision        uint64
+	vocabularyCapable      bool
+	vocabularyDelivery     *vocabularyDelivery
+	vocabularyRequest      uint64
+	vocabulary             *vocabularyExchange
+	path                   string
+	mu                     sync.Mutex
+	conn                   net.Conn
+	listener               net.Listener
+	releaseSocket          func()
+	build                  string
+	verifyClient           ClientVerifier
+	clientVerified         bool
+	clientError            error
+	peer                   PeerIdentity
+	admission              uint64
+	publishedAdmission     uint64
+	verifying              int
+	changed                chan struct{}
+	updating               bool
+	closed                 bool
+	activation, client     string
+	identity               contracts.Identity
+	token                  contracts.TargetToken
+	revision               uint64
+	committing             bool
+	ack                    chan bool
+	begin                  chan bool
+	requireBegin           bool
+	onLeave                func()
+	onDictate              func()
 }
 
 // New serves the socket at path. onLeave runs when an owned session loses
@@ -161,6 +163,10 @@ func (m *IME) leave(had bool) {
 func (m *IME) Close() {
 	m.mu.Lock()
 	m.closed = true
+	if m.rankingFast != nil {
+		m.rankingFast.Close()
+		m.rankingFast = nil
+	}
 	if m.ranking != nil {
 		m.ranking.Close()
 		m.ranking = nil
@@ -244,6 +250,7 @@ func (m *IME) serve(conn net.Conn) {
 	}
 	had := m.invalidateLocked()
 	m.rankingRevision = 0
+	m.rankingSettledRevision = 0
 	m.activation, m.client, m.build = "", "", hello.Build
 	if hello.Op == "activate" {
 		m.activation, m.client = hello.Activation, hello.Client
@@ -294,6 +301,7 @@ func (m *IME) serve(conn net.Conn) {
 			if msg.Activation != "" && msg.Activation != m.activation {
 				had = m.invalidateLocked()
 				m.rankingRevision = 0
+				m.rankingSettledRevision = 0
 				m.activation = msg.Activation
 				m.client = msg.Client
 				m.notifyLocked()

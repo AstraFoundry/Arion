@@ -145,7 +145,7 @@ class Service final : public ITfTextInputProcessorEx, public ITfThreadMgrEventSi
     }
     void send(const wchar_t *op) {
         std::string text = "{\"op\":" + ::quoted(op) + ",\"activation\":" + ::quoted(activation) + ",\"session\":" + ::quoted(session) + ",\"build\":" + ::quoted(build) + ",\"client\":\"Windows editor\",\"text\":\"\"}\n";
-        if (std::wcscmp(op,L"hello")==0) text.insert(1,"\"protocol\":"+std::to_string(WireProtocol)+","+(keyboard.api()?"\"capabilities\":[\"keyboard-vocabulary-v1\",\"keyboard-ranking-v1\"],":""));
+        if (std::wcscmp(op,L"hello")==0) text.insert(1,"\"protocol\":"+std::to_string(WireProtocol)+","+(keyboard.api()?"\"capabilities\":[\"keyboard-vocabulary-v1\",\"keyboard-ranking-v2\"],":""));
         transport.send(std::move(text));
     }
     void disconnect() {

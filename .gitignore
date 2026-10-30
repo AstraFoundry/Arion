@@ -86,3 +86,7 @@ __pycache__/
 
 # Full research archives belong to the private evaluation repository.
 /benchmarks/
+
+# Staged local fast-ranking worker and Cargo build output.
+/apps/desktop/resources/*/keyboard-ranker/
+/apps/desktop/runtime/keyboard-ranker/target/

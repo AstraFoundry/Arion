@@ -12,6 +12,8 @@ const (
 
 const (
 	KbdNeuralRanking            Key = "KbdNeuralRanking"
+	KbdContextCursor            Key = "KbdContextCursor"
+	KbdContextScreen            Key = "KbdContextScreen"
 	KbdNeuralDetail             Key = "KbdNeuralDetail"
 	KbdNeuralUnavailable        Key = "KbdNeuralUnavailable"
 	KbdNeuralMissing            Key = "KbdNeuralMissing"

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted.
+Accepted. Scheduling and context scope superseded by [ADR 036](036-two-stage-keyboard-ranking.md).
 
 ## Context
 
@@ -24,4 +24,4 @@ Shared menu tests cover fixed non-Chinese slots and range/navigation rejection. 
 
 ## Alternatives
 
-A new IME-specific model remains a separate model-selection task. Remote keyboard ranking requires a separate consent and privacy decision. Neither is introduced here.
+The original single-model decision is extended by ADR 036. Remote keyboard ranking requires a separate consent and privacy decision. Neither is introduced here.

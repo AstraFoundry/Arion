@@ -450,7 +450,7 @@ func TestKeyboardRankingEventsCanBeExported(t *testing.T) {
 	r := openTest(t)
 	r.Record(Entry{Event: "keyboard_ranking_configuration"})
 	for _, outcome := range []string{"accepted", "unchanged", "timeout", "cancelled", "unavailable", "rejected"} {
-		r.Record(Entry{Event: "keyboard_ranking", Outcome: outcome, Count: 2, DurationMs: 427})
+		r.Record(Entry{Event: "keyboard_ranking", ModelID: "chinese-ime-lm-4m-int8", Outcome: outcome, Count: 2, DurationMs: 427})
 	}
 	path := filepath.Join(t.TempDir(), "ranking.zip")
 	if err := r.Export(path, "0.1.0"); err != nil {
@@ -461,7 +461,7 @@ func TestKeyboardRankingEventsCanBeExported(t *testing.T) {
 	for _, b := range files {
 		combined = append(combined, b...)
 	}
-	for _, event := range []string{"keyboard_ranking_configuration", "keyboard_ranking"} {
+	for _, event := range []string{"keyboard_ranking_configuration", "keyboard_ranking", "chinese-ime-lm-4m-int8"} {
 		if !bytes.Contains(combined, []byte(event)) {
 			t.Fatal("missing diagnostic", event)
 		}

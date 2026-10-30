@@ -3,17 +3,21 @@ package bootstrap
 import (
 	"context"
 	"errors"
+	goruntime "runtime"
 	"time"
 
+	"arion.local/core/application"
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/diagnostics"
+	"arion.local/desktop/infrastructure/keyboardmodel"
 	"arion.local/desktop/infrastructure/llm/ranking"
+	"arion.local/desktop/infrastructure/rewriting"
 )
 
 type keyboardRankingReceiver interface {
-	ConfigureKeyboardRanking(ports.KeyboardRanker) error
+	ConfigureKeyboardRankingStages(ports.KeyboardRanker, ports.KeyboardRanker) error
 }
 
 func (a *App) configureKeyboardRanking() {
@@ -21,18 +25,20 @@ func (a *App) configureKeyboardRanking() {
 	if !ok {
 		return
 	}
-	var ranker ports.KeyboardRanker
+	var fast, ranker ports.KeyboardRanker
 	if a.state.Preferences.Keyboard.NeuralRanking {
-		ranker = observedKeyboardRanker{ranker: &ranking.Ranker{Chat: a.rewriter}, record: a.recordEntry}
+		fast = observedKeyboardRanker{ranker: a.keyboardContextRanker(a.keyboardModel, false), modelID: keyboardmodel.ModelID, record: a.recordEntry}
+		ranker = observedKeyboardRanker{ranker: a.keyboardContextRanker(&ranking.Ranker{Chat: a.rewriter}, true), modelID: rewriting.DefaultModel, record: a.recordEntry}
 	}
-	a.record("keyboard_ranking_configuration", receiver.ConfigureKeyboardRanking(ranker))
+	a.record("keyboard_ranking_configuration", receiver.ConfigureKeyboardRankingStages(fast, ranker))
 }
 
 // Observe proposals at the model boundary. Acceptance here is not confirmation
 // that the native host applied the proposal before the user changed input.
 type observedKeyboardRanker struct {
-	ranker ports.KeyboardRanker
-	record func(diagnostics.Entry)
+	ranker  ports.KeyboardRanker
+	modelID string
+	record  func(diagnostics.Entry)
 }
 
 func (r observedKeyboardRanker) RankKeyboard(ctx context.Context, req contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
@@ -40,9 +46,9 @@ func (r observedKeyboardRanker) RankKeyboard(ctx context.Context, req contracts.
 	result, err := r.ranker.RankKeyboard(ctx, req)
 	outcome := "unchanged"
 	switch {
-	case errors.Is(err, context.DeadlineExceeded):
+	case errors.Is(err, context.DeadlineExceeded) || errors.Is(ctx.Err(), context.DeadlineExceeded):
 		outcome = "timeout"
-	case errors.Is(err, context.Canceled):
+	case errors.Is(err, context.Canceled) || errors.Is(ctx.Err(), context.Canceled):
 		outcome = "cancelled"
 	case domain.CodeOf(err) == domain.CodeModelMissing:
 		outcome = "unavailable"
@@ -51,6 +57,21 @@ func (r observedKeyboardRanker) RankKeyboard(ctx context.Context, req contracts.
 	case len(req.Candidates) > 0 && len(result.Candidates) > 0 && result.Candidates[0].ID != req.Candidates[0].ID:
 		outcome = "accepted"
 	}
-	r.record(diagnostics.Entry{Event: "keyboard_ranking", Outcome: outcome, DurationMs: float64(time.Since(started).Microseconds()) / 1000, Count: len(req.Candidates)})
+	r.record(diagnostics.Entry{Event: "keyboard_ranking", ModelID: r.modelID, Outcome: outcome, DurationMs: float64(time.Since(started).Microseconds()) / 1000, Count: len(req.Candidates)})
 	return result, err
+}
+
+func (a *App) keyboardContextRanker(ranker ports.KeyboardRanker, screen bool) ports.KeyboardRanker {
+	if goruntime.GOOS != "darwin" {
+		return ranker
+	}
+	enabled := func() bool {
+		p := a.preferences().Keyboard
+		return p.NeuralRanking && (p.ContextCursor || screen && p.ContextScreen)
+	}
+	targets := a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery }, TargetGates{
+		Cursor: func() bool { p := a.preferences().Keyboard; return p.NeuralRanking && p.ContextCursor },
+		Screen: func() bool { p := a.preferences().Keyboard; return p.NeuralRanking && screen && p.ContextScreen },
+	})
+	return keyboardContext{targets: targets, ranker: ranker, enabled: enabled, cursor: func() bool { return a.preferences().Keyboard.ContextCursor }}
 }

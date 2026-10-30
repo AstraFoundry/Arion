@@ -122,7 +122,8 @@ func knownModel(id string) bool {
 	_, bundle := catalog.Bundle(id)
 	_, artifact := catalog.Artifact(id)
 	_, rewriter := catalog.Rewriter(id)
-	return bundle || artifact || rewriter
+	_, keyboard := catalog.KeyboardRanker(id)
+	return bundle || artifact || rewriter || keyboard
 }
 
 // Failure never serializes an error's message or unrecognized code.

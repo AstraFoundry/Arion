@@ -674,5 +674,7 @@
   "ClipboardCloseSearch": "Close search",
   "AccTermsNotice": "By signing in, you agree to the Terms of Use and acknowledge the Privacy Policy.",
   "AccTerms": "Terms of Use",
-  "AccPrivacy": "Privacy Policy"
+  "AccPrivacy": "Privacy Policy",
+  "KbdContextCursor": "Use surrounding text locally",
+  "KbdContextScreen": "Use window text locally"
 }

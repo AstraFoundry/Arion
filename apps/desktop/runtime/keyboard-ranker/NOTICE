@@ -1,0 +1,39 @@
+chinese-ime-lm
+Copyright 2026 chinese-ime-lm contributors
+
+本产品包含由 chinese-ime-lm 项目开发的软件，以 Apache License 2.0 授权。
+
+————————————————————————————————————————
+
+模型权重的语料署名
+
+本仓库发布的模型权重使用以下语料训练。各语料的许可均要求署名随衍生成果传播；
+该署名同时写在权重文件的 safetensors `__metadata__` 头的 `attribution` 字段中，
+以保证它无法与权重分离。再分发权重时必须保留该字段。
+
+- C4 中文部分（ODC-BY）
+  https://huggingface.co/datasets/allenai/c4
+
+- LCCC（MIT）
+  https://github.com/thu-coai/CDial-GPT
+
+————————————————————————————————————————
+
+评测数据
+
+eval/quanpin-words-v1.tsv 中的用例派生自 MSIME 引擎的示例全拼词库，该词库以
+MIT 许可发布。
+
+eval/sentences-v1.tsv 为本项目原创。
+
+————————————————————————————————————————
+
+可选语料
+
+corpus/fetch.py 另外支持从以下来源构建语料。它们带有 share-alike 义务，
+本仓库发布的权重不使用这些来源；自行使用时请自行承担相应义务。
+
+- 中文维基百科（CC BY-SA 4.0）
+- MDN Web Docs 中文翻译（CC BY-SA 2.5）
+- Kubernetes 文档中文版（CC BY 4.0）
+- TensorFlow 文档中文版（Apache-2.0）

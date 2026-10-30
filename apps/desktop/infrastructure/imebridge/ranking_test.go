@@ -135,3 +135,84 @@ func TestKeyboardRankingRejectsInventedCandidate(t *testing.T) {
 		t.Fatal(r)
 	}
 }
+
+func TestKeyboardRankingTwoLanesShareSnapshot(t *testing.T) {
+	m, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	fast := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	settled := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		if r.Candidates[0].ID != "c0" {
+			t.Error("settled saw reordered input")
+		}
+		out := rankAnswer(r)
+		out.Candidates = []domain.RankedCandidate{{ID: "c0"}, {ID: "c1"}}
+		return out, nil
+	})
+	if err := m.ConfigureKeyboardRankingStages(fast, settled); err != nil {
+		t.Fatal(err)
+	}
+	h.send(t, rankRequest(1))
+	if got := h.read(t); got.RankResult == nil || got.RankResult.Candidates[0].ID != "c1" {
+		t.Fatal(got)
+	}
+	if got := h.read(t); got.RankResult == nil || got.RankResult.Candidates[0].ID != "c0" {
+		t.Fatal(got)
+	}
+}
+
+func TestKeyboardRankingSettledSuppressesLateFast(t *testing.T) {
+	m, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	release := make(chan struct{})
+	fast := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		<-release
+		return rankAnswer(r), nil
+	})
+	settled := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	if err := m.ConfigureKeyboardRankingStages(fast, settled); err != nil {
+		t.Fatal(err)
+	}
+	h.send(t, rankRequest(1))
+	if got := h.read(t); got.Status != "ok" {
+		t.Fatal(got)
+	}
+	close(release)
+	h.send(t, rankRequest(2))
+	if got := h.read(t); got.Revision != 2 {
+		t.Fatal("late fast overwrote settled", got)
+	}
+}
+
+func TestSettledAbstentionPreservesFast(t *testing.T) {
+	m, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	settledDone := make(chan struct{}, 1)
+	fast := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	settled := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		out := rankAnswer(r)
+		out.Decision = "abstained_no_context"
+		settledDone <- struct{}{}
+		return out, nil
+	})
+	if err := m.ConfigureKeyboardRankingStages(fast, settled); err != nil {
+		t.Fatal(err)
+	}
+	h.send(t, rankRequest(1))
+	if got := h.read(t); got.Status != "ok" {
+		t.Fatal(got)
+	}
+	<-settledDone
+	h.send(t, rankRequest(2))
+	if got := h.read(t); got.Revision != 2 {
+		t.Fatal("abstention undid fast result", got)
+	}
+}

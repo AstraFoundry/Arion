@@ -41,6 +41,6 @@ Input-method maintenance diagnostics include bounded helper PID and availability
 
 ## Keyboard model ranking
 
-`keyboard_ranking_configuration` records configuration success or a stable failure code. `keyboard_ranking` records candidate count, elapsed milliseconds and a closed outcome: `accepted` (a different first candidate proposed), `unchanged`, `timeout`, `cancelled`, `unavailable` or `rejected`. A proposed promotion does not prove native application: the host still rejects stale input and navigation. Neither event includes input, context, candidate text, IDs or model output. Both are accepted by the diagnostic export schema.
+`keyboard_ranking_configuration` records configuration success or a stable failure code. `keyboard_ranking` records the catalog model ID, candidate count, elapsed milliseconds and a closed outcome: `accepted` (a different first candidate proposed), `unchanged`, `timeout`, `cancelled`, `unavailable` or `rejected`. A proposed promotion does not prove native application: the host still rejects stale input and navigation. Neither event includes input, context, candidate text, candidate IDs or model output. Both are accepted by the diagnostic export schema.
 
-The outcome event runs only after the scheduler’s debounce reaches the ranker. Native eligibility skips and requests cancelled during debounce produce no model-outcome event. See [keyboard ranking](../decisions/031-local-keyboard-neural-ranking.md) for the trigger and ownership rules.
+The outcome event runs only after the scheduler’s debounce reaches the ranker. Native eligibility skips and requests cancelled during debounce produce no model-outcome event. See [keyboard ranking](../decisions/036-two-stage-keyboard-ranking.md) for the trigger and ownership rules.

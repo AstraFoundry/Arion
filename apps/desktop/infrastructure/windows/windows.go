@@ -537,3 +537,10 @@ func OpenSettings(uri string) {
 	file, _ := syscall.UTF16PtrFromString(uri)
 	procShellExecuteW.Call(0, uintptr(unsafe.Pointer(verb)), uintptr(unsafe.Pointer(file)), 0, 0, 1)
 }
+
+// Discard releases a captured target that was used only for context.
+func (t *Targets) Discard(token contracts.TargetToken) {
+	t.mu.Lock()
+	delete(t.targets, token)
+	t.mu.Unlock()
+}

@@ -1826,17 +1826,29 @@ func TestDictationHidesDeliveryInternals(t *testing.T) {
 
 func TestKeyboardNeuralSettings(t *testing.T) {
 	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
-		for _, mode := range []string{"off", "missing", "loading", "ready", "unavailable"} {
+		for _, mode := range []string{"off", "missing", "loading", "ready", "unavailable", "context", "permission"} {
 			t.Run(string(language)+"/"+mode, func(t *testing.T) {
 				state, _, store := fixture()
 				state.Preferences.UILanguage = language
 				state.Preferences.Keyboard.NeuralRanking = mode != "off"
 				state.Polish.Installed = mode != "missing"
 				state.Polish.State = map[string]runtime.PolishState{"off": runtime.PolishOff, "missing": runtime.PolishOff, "loading": runtime.PolishLoading, "ready": runtime.PolishReady, "unavailable": runtime.PolishFailed}[mode]
+				if mode == "context" || mode == "permission" {
+					state.Polish.State = runtime.PolishReady
+					state.Preferences.Keyboard.ContextCursor = true
+					state.Preferences.Keyboard.ContextScreen = true
+					if mode == "context" {
+						state.Permissions.Accessibility = runtime.ConsentGranted
+					} else {
+						state.Permissions.Accessibility = runtime.ConsentDenied
+					}
+				}
+				state.KeyboardModel = state.Polish
+				state.Platform = "darwin-arm64"
 				tt := ui.NewTester(func(c *ui.Context) {
 					tokens := theme.Apply(c)
 					ui.Column(c).Padding(16).Gap(12).Children(func() { keyboardui.Neural(c, store, tokens) })
-				}, 600, 260)
+				}, 600, 320)
 				settle(tt)
 				if !hasText(tt, store.Copy().Text(copy.KbdNeuralRanking)) {
 					t.Fatal("missing ranking control")

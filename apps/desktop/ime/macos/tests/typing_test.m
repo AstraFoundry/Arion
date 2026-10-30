@@ -164,6 +164,13 @@ int main(int argc, const char *argv[]) {
                 @"rankResult":@{@"session_id":@"test",@"generation":@1,@"revision":@(epoch),@"candidates":order}};
             [typing applyRankingMessage:reply activation:@"test"];
             require([typing.snapshot.candidates[0] isEqual:selected[@"text"]], @"existing candidate is promoted");
+            NSDictionary *settled=@{@"activation":@"test",@"revision":@(epoch),@"status":@"ok",
+                @"rankResult":@{@"session_id":@"test",@"generation":@1,@"revision":@(epoch),@"candidates":original}};
+            [typing applyRankingMessage:settled activation:@"test"];
+            require([typing.snapshot.candidates[0] isEqual:original[0][@"text"]], @"settled pass uses original candidate identities");
+            [typing applyRankingMessage:reply activation:@"test"];
+            require([typing.snapshot.candidates[0] isEqual:selected[@"text"]], @"same revision remains eligible before navigation");
+
             press(typing,@" ",49);
             require([editor.view.string hasSuffix:selected[@"text"]] && editor.insertions==2, @"Space commits promoted engine candidate once");
             type(typing,@"xian");

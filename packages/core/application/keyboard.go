@@ -150,6 +150,9 @@ type KeyboardPreferences struct {
 	EmojiSuggestions bool `json:"emojiSuggestions"`
 	TypoCorrection   bool `json:"typoCorrection"`
 	NeuralRanking    bool `json:"neuralRanking"`
+	// Context permissions are independent of voice polishing and default off.
+	ContextCursor bool `json:"contextCursor"`
+	ContextScreen bool `json:"contextScreen"`
 	// FuzzyPinyin is a stable bit set shared with the native keyboard ABI.
 	FuzzyPinyin uint32 `json:"fuzzyPinyin"`
 }

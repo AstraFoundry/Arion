@@ -674,5 +674,7 @@
   "ClipboardCloseSearch": "关闭搜索",
   "AccTermsNotice": "登录即表示你同意使用条款并已阅读隐私政策。",
   "AccTerms": "使用条款",
-  "AccPrivacy": "隐私政策"
+  "AccPrivacy": "隐私政策",
+  "KbdContextCursor": "在本机参考光标前后文字",
+  "KbdContextScreen": "在本机参考当前窗口文字"
 }
