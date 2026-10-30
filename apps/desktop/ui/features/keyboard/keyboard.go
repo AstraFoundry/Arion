@@ -138,9 +138,9 @@ func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 		ui.Text(c, messages.Text(copy.IMESetupHint)).FontSize(theme.Caption).TextColor(tokens.Muted)
 	}
 	if state.Error != "" {
-		ui.Text(c, messages.Text(errorKey(store, state.Error))).FontSize(theme.Caption).TextColor(tokens.Danger)
+		kit.Notice(c, tokens, tokens.Danger, messages.Text(errorKey(store, state.Error)), nil)
 	} else if s.InputMethodError != "" {
-		ui.Text(c, messages.Text(errorKey(store, s.InputMethodError))).FontSize(theme.Caption).TextColor(tokens.Danger)
+		kit.Notice(c, tokens, tokens.Danger, messages.Text(errorKey(store, s.InputMethodError)), nil)
 	}
 }
 

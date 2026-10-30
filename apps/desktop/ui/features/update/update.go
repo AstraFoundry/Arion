@@ -18,7 +18,7 @@ func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	kit.Card(c, tokens).Children(func() {
 		status(c, store, tokens)
 		if u.StateError {
-			ui.Text(c, messages.Text(copy.UpdateStateFailed)).FontSize(theme.Caption).TextColor(tokens.Warning).Padding(0, 16, 10, 16)
+			kit.Notice(c, tokens, tokens.Warning, messages.Text(copy.UpdateStateFailed), nil).Padding(0, 16, 10, 16)
 		}
 		if u.Phase == runtime.UpdateUnsupported || (u.Phase == runtime.UpdateFailed && u.Failed == runtime.UpdateStepRecovery) {
 			return

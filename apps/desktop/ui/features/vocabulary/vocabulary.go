@@ -65,12 +65,10 @@ func Learning(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 func Editor(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *Draft, keyboard bool) {
 	messages := store.Copy()
 	ui.Column(c).Gap(12).Children(func() {
-		if notice := store.State.VocabularyKeyboardNotice; notice != "" && keyboard {
-			color := tokens.Muted
-			if notice == copy.VocabKeyboardFailed {
-				color = tokens.Danger
-			}
-			ui.Text(c, messages.Text(notice)).FontSize(theme.Caption).TextColor(color)
+		if notice := store.State.VocabularyKeyboardNotice; notice == copy.VocabKeyboardFailed && keyboard {
+			kit.Notice(c, tokens, tokens.Danger, messages.Text(notice), nil)
+		} else if notice != "" && keyboard {
+			ui.Text(c, messages.Text(notice)).FontSize(theme.Caption).TextColor(tokens.Muted)
 		}
 		if len(store.State.Vocabulary) > 0 {
 			field(c.Key("search"), tokens, icons.Search, &draft.Query, messages.Text(copy.VocabSearch), messages.Text(copy.VocabSearch))

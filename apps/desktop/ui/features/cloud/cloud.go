@@ -346,9 +346,7 @@ func notice(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 	}
 	key := FailureKey(cl.Failure)
 	messages := store.Copy()
-	ui.Row(c.Key("cloud-notice")).Gap(8).Padding(0, 4).AlignItems(ui.Center).Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}}).Children(func() {
-		ui.Icon(c, icons.TriangleAlert).FontSize(13).TextColor(tokens.Danger)
-		ui.Text(c, messages.Text(key)).FontSize(theme.Caption).Grow(1).Shrink(1)
+	kit.Notice(c.Key("cloud-notice"), tokens, tokens.Danger, messages.Text(key), func() {
 		// Retry lists the connection in use. A key attempt's own failure
 		// stays on its page without offering that list.
 		owner := cl.FailureProvider
@@ -361,5 +359,5 @@ func notice(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 				store.Actions.ListCloudModels()
 			}
 		}
-	})
+	}).Padding(0, 4).Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}})
 }

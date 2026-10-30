@@ -44,6 +44,16 @@ func TestShortcutFeedbackBelongsToTheEditedSetting(t *testing.T) {
 						t.Fatalf("%s outside translation row: row %+v, feedback %+v, language %+v", key, row, feedback, language)
 					}
 				}
+				// A refused key is the recording field's error: a callout
+				// attached below the field, ending where the field ends.
+				onField := func(key copy.Key) {
+					t.Helper()
+					field, fieldOK := tt.Find(messages.Text(copy.HoldKeyRecording))
+					feedback, feedbackOK := tt.Find(messages.Text(key))
+					if !fieldOK || !feedbackOK || feedback.Y < field.Y+field.H || feedback.Y > field.Y+field.H+24 || feedback.X+feedback.W > field.X+field.W {
+						t.Fatalf("%s not attached below the field: field %+v, feedback %+v", key, field, feedback)
+					}
+				}
 				if hasText(tt, messages.Text(copy.HoldKeySystemHint)) || hasText(tt, messages.Text(copy.HoldKeyConflict)) || hasText(tt, messages.Text(copy.TranslateKeyConflict)) {
 					t.Fatal("custom assignments show an unverified warning")
 				}
@@ -54,7 +64,7 @@ func TestShortcutFeedbackBelongsToTheEditedSetting(t *testing.T) {
 				state.Hold.RecordedKey = state.Preferences.HoldKey
 				state.Hold.RecordedSeq++
 				tt.Frame()
-				inTranslation(copy.TranslateKeyConflict)
+				onField(copy.TranslateKeyConflict)
 				if hasText(tt, messages.Text(copy.HoldKeySystemHint)) || hasText(tt, messages.Text(copy.HoldKeyConflict)) || state.Preferences.TranslateKey != "alt+f9" {
 					t.Fatal("duplicate error has the wrong message or changed the assignment")
 				}
@@ -73,6 +83,7 @@ func TestShortcutFeedbackBelongsToTheEditedSetting(t *testing.T) {
 				if !hasText(tt, messages.Text(copy.HoldKeyConflict)) || hasText(tt, messages.Text(copy.TranslateKeyConflict)) || state.Preferences.HoldKey != "ctrl+f8" {
 					t.Fatal("dictation duplicate did not identify translation")
 				}
+				onField(copy.HoldKeyConflict)
 				snapshot(t, tt, "shortcut-feedback-dictation-duplicate-"+name)
 				click(copy.HoldKeyCancel)
 				if hasText(tt, messages.Text(copy.HoldKeySystemHint)) || hasText(tt, messages.Text(copy.HoldKeyConflict)) {

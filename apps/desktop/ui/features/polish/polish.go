@@ -6,7 +6,6 @@ package polish
 import (
 	"arion.local/desktop/ui/entities/model"
 	"arion.local/desktop/ui/shared/copy"
-	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
@@ -145,13 +144,11 @@ func Context(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				if !prefs.ContextScreen || store.State.Permissions.Accessibility == runtime.ConsentGranted {
 					return
 				}
-				ui.Row(c.Key("screen-permission")).Padding(0, 16, 12, 16).Gap(8).AlignItems(ui.Center).Children(func() {
-					ui.Icon(c, icons.TriangleAlert).FontSize(14).TextColor(tokens.Warning)
-					ui.Text(c, messages.Text(copy.ContextScreenPermission)).FontSize(theme.Caption).Grow(1)
+				kit.Notice(c.Key("screen-permission"), tokens, tokens.Warning, messages.Text(copy.ContextScreenPermission), func() {
 					if kit.Button(c, tokens, kit.Outline, messages.Text(copy.Allow), true).Clicked() {
 						store.Actions.RequestAccessibility()
 					}
-				})
+				}).Padding(0, 16, 12, 16)
 			})
 		row("context-history", copy.ContextHistoryLabel, copy.ContextHistoryDetail, prefs.ContextHistory,
 			func(p *runtime.Preferences, on bool) { p.ContextHistory = on }, nil)
@@ -202,9 +199,7 @@ func statusBody(c *ui.Context, store runtime.Store, tokens theme.Tokens, showCon
 		}
 	case p.State == runtime.PolishFailed:
 		return func() {
-			ui.Row(c.Key("failed")).Gap(8).AlignItems(ui.Center).Children(func() {
-				ui.Icon(c, icons.TriangleAlert).FontSize(14).TextColor(tokens.Danger)
-				ui.Text(c, messages.Text(model.FailureKey(p.Failure))).FontSize(theme.Caption).Grow(1)
+			kit.Notice(c.Key("failed"), tokens, tokens.Danger, messages.Text(model.FailureKey(p.Failure)), func() {
 				if kit.Button(c, tokens, kit.Outline, messages.Text(copy.Retry), true).Clicked() {
 					store.Actions.RetryPolish()
 				}

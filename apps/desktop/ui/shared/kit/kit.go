@@ -215,6 +215,25 @@ func Status(c *ui.Context, tokens theme.Tokens, icon *ui.SVG, color ui.Color, te
 	})
 }
 
+// Notice states a problem that is not one field's value, such as a failed
+// operation or a missing permission, where it applies: an alert glyph in
+// ink (Danger for a failure, Warning for something waiting on the user)
+// beside the message in Text ink, with the control that resolves it, when
+// action builds one, at the trailing edge. As with Status, the color stays
+// on the glyph and never on the sentence. A field's own value takes
+// FieldError instead.
+func Notice(c *ui.Context, tokens theme.Tokens, ink ui.Color, text string, action func()) ui.Element {
+	return ui.Row(c).Gap(10).AlignItems(ui.Center).Children(func() {
+		ui.Row(c).Grow(1).Shrink(1).Gap(6).AlignItems(ui.Start).Children(func() {
+			ui.Icon(c, icons.TriangleAlert).FontSize(13).TextColor(ink).Margin(1, 0, 0, 0)
+			ui.Text(c, text).FontSize(theme.Caption).TextColor(tokens.Text).Shrink(1)
+		})
+		if action != nil {
+			action()
+		}
+	})
+}
+
 // Pill is the dictation HUD's surface: the warm substrate in both
 // appearances, a hairline, a 1px top light and a contact plus ambient
 // shadow, so it reads over any app. The live pill and its illustrations

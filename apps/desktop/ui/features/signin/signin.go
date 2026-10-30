@@ -260,10 +260,8 @@ func Notice(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	if key == "" {
 		return
 	}
-	ui.Row(c.Key("account-notice")).Gap(6).Padding(0, 4).Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}}).Children(func() {
-		ui.Icon(c, icons.TriangleAlert).FontSize(13).TextColor(tokens.Danger).Margin(1, 0, 0, 0)
-		ui.Text(c, store.Copy().Text(key)).FontSize(theme.Caption).Shrink(1)
-	})
+	kit.Notice(c.Key("account-notice"), tokens, tokens.Danger, store.Copy().Text(key), nil).
+		Padding(0, 4).Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}})
 }
 
 // HostedSync reports that the signed-in account's access token carries the

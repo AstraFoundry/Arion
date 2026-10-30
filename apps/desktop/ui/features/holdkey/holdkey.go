@@ -88,23 +88,24 @@ func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, translati
 		column.Gap(6).AlignItems(ui.Start)
 	}
 	column.Children(func() {
-		control := func() { shortcutField(c, store, state, owner, current, edit, set, validate) }
+		control := func() { shortcutField(c, store, state, owner, current, edit, set, validate, setting) }
 		if setting {
 			kit.TipRow(c, tokens, messages.Text(label), messages.Text(detail), control)
 		} else {
 			control()
 		}
-		message, ink := state.error, tokens.Danger
-		if message == "" {
-			ink = tokens.Muted
-			switch {
-			case state.listening:
-				message = copy.HoldKeySystemHint
-			case clipboard && store.State.Clipboard.ShortcutFailed:
-				message, ink = copy.ClipboardShortcutFailed, tokens.Danger
-			case current == runtime.HoldFn:
-				message = copy.HoldKeyFnHint
-			}
+		// A refused key is the field's own error (shortcutField); below the
+		// row go guidance in Muted and a failure that is not the field's.
+		var message copy.Key
+		failed := false
+		switch {
+		case state.error != "":
+		case state.listening:
+			message = copy.HoldKeySystemHint
+		case clipboard && store.State.Clipboard.ShortcutFailed:
+			message, failed = copy.ClipboardShortcutFailed, true
+		case current == runtime.HoldFn:
+			message = copy.HoldKeyFnHint
 		}
 		if message != "" {
 			feedback := ui.Column(c)
@@ -113,7 +114,13 @@ func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, translati
 			} else {
 				feedback.MaxWidth(c.Theme().Space(80))
 			}
-			feedback.Children(func() { ui.Text(c, messages.Text(message)).FontSize(theme.Caption).TextColor(ink) })
+			feedback.Children(func() {
+				if failed {
+					kit.Notice(c, tokens, tokens.Danger, messages.Text(message), nil)
+				} else {
+					ui.Text(c, messages.Text(message)).FontSize(theme.Caption).TextColor(tokens.Muted)
+				}
+			})
 		}
 	})
 }
@@ -190,14 +197,13 @@ func ListenerStatus(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	}
 	messages := store.Copy()
 	hold := store.State.Hold
-	ui.Row(c.Key("shortcut-listener-status")).Gap(10).AlignItems(ui.Center).Children(func() {
-		message, action := copy.HoldKeyUnavailable, copy.Retry
-		repair := store.Actions.RetryShortcutListener
-		if hold.Failure == runtime.CodePermissionDenied {
-			message, action = copy.HoldKeyNeedsMonitoring, copy.Allow
-			repair = store.Actions.RequestInputMonitoring
-		}
-		ui.Text(c, messages.Text(message)).FontSize(theme.Caption).TextColor(tokens.Danger).Grow(1).Shrink(1)
+	message, action := copy.HoldKeyUnavailable, copy.Retry
+	repair := store.Actions.RetryShortcutListener
+	if hold.Failure == runtime.CodePermissionDenied {
+		message, action = copy.HoldKeyNeedsMonitoring, copy.Allow
+		repair = store.Actions.RequestInputMonitoring
+	}
+	kit.Notice(c.Key("shortcut-listener-status"), tokens, tokens.Danger, messages.Text(message), func() {
 		if kit.Button(c, tokens, kit.Outline, messages.Text(action), true).Clicked() {
 			repair()
 		}

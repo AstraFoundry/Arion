@@ -30,8 +30,30 @@ Rules:
 - About's **Community** row opens the Discord server and the Feishu group from `kit.AppButton`s: each app's own colored logo on a small card-colored tile with a hairline, rising on hover and named in a tooltip. Logos keep their brand colors (sources and licensing in `ui/shared/icons/svg/LICENSE-svg-logos` and `ui/shared/assets/README.md`); never recolor them.
 - About ends with **Contributors**: GitHub avatars in GitHub's order, each over half of the next, opening a page of every contributor whose avatars pop in one after another; hover names the account and a click opens its profile. The list and avatars are embedded by `pnpm contributors:update`; the app never asks GitHub for them.
 - State is carried in words first. `kit.Status` colors only the icon; the label stays `Text`.
-- An input's error belongs to the input: `kit.FieldError`, never a loose red line under the row. Prevent the error first: accept what the user means (Pinyin readings fold width, case, ü and spacing), give the format by example in the placeholder, check on save, then re-check every edit until the value is valid, so the error clears the moment it is fixed.
+- Errors, warnings and guidance follow [Feedback](#feedback-errors-warnings-and-states): the color is on a glyph or an invalid field's border, never on a sentence.
 - A ready state gets no line of its own when the controls already say it: an enabled switch and the chosen engine mean the local model runs, so Polish and local candidate ranking show only a download, progress or failure. Behavior worth knowing in every state (ranking pauses during dictation) belongs in the row's detail or `Hint`.
+
+## Feedback: errors, warnings and states
+
+Feedback says what happened and what to do, next to the thing it is about, in the quietest form that is still noticed. Pick the pattern by what the message is about, never by how serious it feels:
+
+| What the message is about | Pattern | Where |
+| --- | --- | --- |
+| The value of one field (invalid input, a refused or duplicate shortcut) | `kit.FieldError` | Callout attached below the field; the field takes the `Danger` border |
+| An operation or setting that failed, or a permission or resource it waits on | `kit.Notice`, `Danger` for a failure, `Warning` for something waiting on the user, with the fixing action (Retry, Allow) at its trailing edge | Inside the card, under the row it concerns; above the cards when it concerns the whole section (the shared shortcut listener) |
+| A settled outcome worth stating (granted, verified offline) | `kit.Status` | At the row's trailing edge |
+| Guidance while the user acts (press a new shortcut, the Fn note) | One `Caption` line in `Muted` | Under the row it guides |
+| Work in progress | `ui.Progress` with a `Muted` phase label | Where the result will appear |
+| Ready, saved, or on, when the controls already show it | Nothing | — |
+
+Rules:
+
+- **Never color a sentence.** Danger and Warning go on the glyph and on an invalid field's border; message text stays `Text` (`Muted` for guidance). A red or orange line of text is never the pattern.
+- **Prevent before reporting.** Accept what the user plainly means (Pinyin readings fold width, case, ü and spacing), give a format by example in the placeholder, and leave nothing for the user to retype that the app can normalize. Disable an action only where its row already says why.
+- **Timing.** Check a value when it is committed (Return, Save, a recorded key), not while it is typed. After a failed commit, check every edit and remove the error the moment the value is valid. A failure stays until it is resolved or the user cancels the edit; it never times out.
+- **Placement does not move the page.** A field error floats over the layout; a `Notice` takes the place where the outcome appears and enters with the shared motion. Neither becomes a toast or dialog when the user can fix it in place.
+- **Copy.** One or two sentences: what happened, then what to do. Name the other action in a conflict. No error codes, blame or exclamation marks. The fix is a button, not an instruction to find one.
+- **Accessibility.** `FieldError` marks the field invalid with the message as its error; a failed commit announces the message once.
 
 ## Type, radius, spacing
 
@@ -69,6 +91,7 @@ The macOS consent guide is a whole window floating over System Settings: its car
 | `Card`, `Group`, `Row`, `Divider`, `SectionTitle` | Grouped settings surfaces |
 | `RowFrame` | Settings row geometry shared by `Row`, `TipRow`, `LinkRow` and hand-built card rows: `theme.RowHeight` (52 DIP) with 10 × 16 DIP insets, so a switch row and a button, select or segmented row line up; only content that needs more room is taller |
 | `Status` | Colored icon plus a word in text ink |
+| `Notice` | A problem that is not one field's value: a `Danger` or `Warning` alert glyph, the message in `Text` ink, and an optional fixing action at the trailing edge ([Feedback](#feedback-errors-warnings-and-states)) |
 | `Pill` | The dictation HUD surface, shared by the live pill and illustrations |
 | `Mark` | The app icon bitmap; the brand mark is never a glyph in an accent tile |
 | `Kbd`, `KbdGroup`, `LevelBars`, `Press` | coss `Kbd`/`KbdGroup` for keys (20 DIP, radius 4, `Subtle` fill, 12 DIP medium `Muted` text; pill variant on the substrate), live meter, press feedback |
@@ -141,7 +164,7 @@ Render every surface with `ARION_UI_SNAPSHOTS=<dir> go test ./ui/app` (light, pl
 
 Shortcut fields and Select triggers share `kit.ControlFrame`: theme surface, a one-DIP border, control radius, padding and minimum width. Shortcut fields show the current value and a Lucide pencil icon. Recording retains this geometry and uses the dedicated blue semantic tokens, a localized prompt and an X cancel icon. It saves on complete key release and adds no enter/exit animation. Translation details use `kit.Disclosure`, shared with local polishing status: measured height and opacity, 200 ms `theme.Disclosure`, reversible from the current value. Closing keeps the content mounted with input disabled until it disappears. Reduce Motion applies the final layout immediately. Only subordinate settings reveal or collapse; the enclosing card and enable switch remain stationary. Clipboard collection reuses this disclosure for its shortcut and maximum-history-count rows, with the same native recorder and value-control geometry. The settings section entrance animates position only, so changing content height never animates the entire page.
 
-Shortcut feedback is scoped to its setting: recording guidance uses `Muted`, exact Arion duplicates use `Danger` and name the other action, and Fn setup notes remain with the selected Fn assignment. Feedback sits below the complete setting row, preserving label/control alignment; translation feedback belongs inside its disclosure. Idle custom assignments show no inferred warning. Their information icons expose only behavior on hover or keyboard focus; recording guidance stays below the edited setting. Shared listener failures sit outside both cards with Allow or Retry, without changing preferences.
+Shortcut feedback is scoped to its setting: recording guidance uses `Muted` and Fn setup notes remain with the selected Fn assignment, below the complete setting row, preserving label/control alignment; translation feedback belongs inside its disclosure. A refused key (an exact Arion duplicate, which names the other action, or a key the shortcut cannot use) is the recording field's `FieldError`; recording continues. A clipboard shortcut the system refused to register is a `Notice` below the row. Idle custom assignments show no inferred warning. Their information icons expose only behavior on hover or keyboard focus; recording guidance stays below the edited setting. Shared listener failures sit outside both cards with Allow or Retry, without changing preferences.
 
 ## Menu-bar panel sizing
 
