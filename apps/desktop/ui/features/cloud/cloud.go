@@ -201,7 +201,7 @@ func page(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 func saved(c *ui.Context, store runtime.Store, tokens theme.Tokens, id string) {
 	messages := store.Copy()
 	kit.Card(c, tokens).Children(func() {
-		ui.Row(c).Gap(12).Padding(12, 16).AlignItems(ui.Center).Children(func() {
+		kit.RowFrame(ui.Row(c)).Gap(12).AlignItems(ui.Center).Children(func() {
 			Mark(c, tokens, id, 20)
 			ui.Column(c).Grow(1).Shrink(1).Gap(2).Children(func() {
 				ui.Text(c, config.CloudProviders[id]).FontSize(theme.Body).FontWeight(500)
@@ -275,7 +275,7 @@ func inUse(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	}
 	chosen := store.State.Preferences.CloudModel
 	kit.Card(c, tokens).Children(func() {
-		ui.Row(c).Gap(12).Padding(12, 16).AlignItems(ui.Center).Children(func() {
+		kit.RowFrame(ui.Row(c)).Gap(12).AlignItems(ui.Center).Children(func() {
 			Mark(c, tokens, cl.Provider, 20)
 			ui.Column(c).Grow(1).Shrink(1).Gap(2).Children(func() {
 				ui.Text(c, config.CloudProviders[cl.Provider]).FontSize(theme.Body).FontWeight(500)

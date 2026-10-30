@@ -14,8 +14,9 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// The polish row states its one-time download, shows progress, readiness,
-// unsupported platforms and failures with a retry, in both languages.
+// The polish row states its one-time download, shows progress,
+// unsupported platforms and failures with a retry, in both languages, and
+// says nothing more once the model is ready.
 func TestPolishRowStates(t *testing.T) {
 	state, actions, store := fixture()
 	tt := ui.NewTester(func(c *ui.Context) {
@@ -57,9 +58,11 @@ func TestPolishRowStates(t *testing.T) {
 	}
 	state.Polish = runtime.Polish{State: runtime.PolishReady, Installed: true}
 	settle(tt)
-	if !hasText(tt, en.Text(copy.PolishReady)) {
+	// A ready model adds no line: the switch already says polishing is on.
+	if hasText(tt, en.Text(copy.PolishReady)) || hasText(tt, en.Text(copy.Retry)) {
 		t.Fatalf("ready: %q", tt.Texts())
 	}
+	snapshot(t, tt, "settings-polish-ready")
 	state.Preferences.UILanguage = runtime.LanguageChinese
 	state.Polish = runtime.Polish{State: runtime.PolishUnsupported}
 	settle(tt)

@@ -30,6 +30,7 @@ Rules:
 - About's **Community** row opens the Discord server and the Feishu group from `kit.AppButton`s: each app's own colored logo on a small card-colored tile with a hairline, rising on hover and named in a tooltip. Logos keep their brand colors (sources and licensing in `ui/shared/icons/svg/LICENSE-svg-logos` and `ui/shared/assets/README.md`); never recolor them.
 - About ends with **Contributors**: GitHub avatars in GitHub's order, each over half of the next, opening a page of every contributor whose avatars pop in one after another; hover names the account and a click opens its profile. The list and avatars are embedded by `pnpm contributors:update`; the app never asks GitHub for them.
 - State is carried in words first. `kit.Status` colors only the icon; the label stays `Text`.
+- A ready state gets no line of its own when the controls already say it: an enabled switch and the chosen engine mean the local model runs, so Polish and local candidate ranking show only a download, progress or failure. Behavior worth knowing in every state (ranking pauses during dictation) belongs in the row's detail or `Hint`.
 
 ## Type, radius, spacing
 
@@ -65,6 +66,7 @@ The macOS consent guide is a whole window floating over System Settings: its car
 | `IconButton` | 28 DIP ghost square with a tooltip naming it |
 | `Style` | The button anatomy for custom content (the dictation toggle) |
 | `Card`, `Group`, `Row`, `Divider`, `SectionTitle` | Grouped settings surfaces |
+| `RowFrame` | Settings row geometry shared by `Row`, `TipRow`, `LinkRow` and hand-built card rows: `theme.RowHeight` (52 DIP) with 10 × 16 DIP insets, so a switch row and a button, select or segmented row line up; only content that needs more room is taller |
 | `Status` | Colored icon plus a word in text ink |
 | `Pill` | The dictation HUD surface, shared by the live pill and illustrations |
 | `Mark` | The app icon bitmap; the brand mark is never a glyph in an accent tile |

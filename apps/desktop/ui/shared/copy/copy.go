@@ -13,7 +13,6 @@ const (
 const (
 	KbdNeuralRanking            Key = "KbdNeuralRanking"
 	KbdNeuralDetail             Key = "KbdNeuralDetail"
-	KbdNeuralReady              Key = "KbdNeuralReady"
 	KbdNeuralUnavailable        Key = "KbdNeuralUnavailable"
 	KbdNeuralMissing            Key = "KbdNeuralMissing"
 	FormatVocabReadingVariant   Key = "FormatVocabReadingVariant"

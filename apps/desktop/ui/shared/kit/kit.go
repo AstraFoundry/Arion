@@ -165,10 +165,17 @@ func Group(c *ui.Context, tokens theme.Tokens, title string, body func()) {
 	})
 }
 
+// RowFrame gives a card row the settings row geometry: theme.RowHeight
+// and the shared insets. Its insets fit the tallest control inside that
+// height, so the control never decides how tall a row is.
+func RowFrame(row ui.Element) ui.Element {
+	return row.Padding(10, 16).MinHeight(theme.RowHeight)
+}
+
 // Row lays out a labeled setting: title and optional detail on the left,
 // the control on the right.
 func Row(c *ui.Context, tokens theme.Tokens, title, detail string, control func()) ui.Element {
-	return ui.Row(c).Gap(16).Padding(12, 16).AlignItems(ui.Center).Children(func() {
+	return RowFrame(ui.Row(c)).Gap(16).AlignItems(ui.Center).Children(func() {
 		ui.Column(c).Grow(1).Shrink(1).Gap(2).Children(func() {
 			ui.Text(c, title).FontSize(theme.Body).FontWeight(500)
 			if detail != "" {

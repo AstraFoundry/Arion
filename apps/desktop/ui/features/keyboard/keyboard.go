@@ -376,12 +376,11 @@ func Neural(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Keyboard.NeuralRanking = enabled })
 			}
 		})
-		if enabled {
+		// A ready model needs no line: the switch already says ranking is on.
+		if enabled && model.State != runtime.PolishReady {
 			ui.Column(c).Padding(0, 16, 12, 16).Gap(8).Children(func() {
 				key := copy.KbdNeuralUnavailable
-				if model.State == runtime.PolishReady {
-					key = copy.KbdNeuralReady
-				} else if model.State == runtime.PolishLoading {
+				if model.State == runtime.PolishLoading {
 					key = copy.PolishLoading
 				} else if !model.Installed && model.State != runtime.PolishUnsupported {
 					key = copy.KbdNeuralMissing

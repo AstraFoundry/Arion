@@ -228,7 +228,7 @@ func Portal(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 					kit.Divider(c, tokens)
 				}
 				url := a.Portal + page.Path
-				row := ui.ButtonBase(c.Key(page.Path)).Gap(12).Padding(12, 16).AlignItems(ui.Center).Label(messages.Text(page.Title))
+				row := kit.RowFrame(ui.ButtonBase(c.Key(page.Path))).Gap(12).AlignItems(ui.Center).Label(messages.Text(page.Title))
 				if row.Hovered() {
 					row.Background(tokens.AccentSoft.Alpha(0.5).Over(tokens.Card))
 				}
@@ -307,7 +307,7 @@ func UsageReporting(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 
 // line is a settings row led by an icon that carries the state's color.
 func line(c *ui.Context, tokens theme.Tokens, icon *ui.SVG, color ui.Color, title, detail string, control func()) {
-	ui.Row(c).Gap(12).Padding(12, 16).AlignItems(ui.Center).Children(func() {
+	kit.RowFrame(ui.Row(c)).Gap(12).AlignItems(ui.Center).Children(func() {
 		ui.Icon(c, icon).FontSize(16).TextColor(color)
 		ui.Column(c).Grow(1).Shrink(1).Gap(2).Children(func() {
 			ui.Text(c, title).FontSize(theme.Body).FontWeight(500).ContentTransition(ui.ContentTransition{})

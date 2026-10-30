@@ -44,6 +44,11 @@ const (
 	Gutter     = 24
 )
 
+// RowHeight is a settings row's height whatever control it holds — a
+// switch, a button, a select or a segmented control — so the rows of a
+// card line up. Only content that needs more room makes a row taller.
+const RowHeight = 52
+
 // Sunbeam scales. Yellow is anchored at 500; ink rotates hue 40 → 22 from
 // paper to ink. Kept unexported: views reach them through Tokens.
 var (
