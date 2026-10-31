@@ -31,3 +31,14 @@ node --test tools/driver/test/*.test.mjs
 ```
 
 Tests use temporary synthetic subprocesses and files. They exercise transport, failure records, artifact/evidence checks and cleanup. A synthetic process reporting a platform is a protocol fixture; these tests do not establish native editor dispatch, speech inference or product OS acceptance.
+
+## Local completion research probe
+
+`go build ./apps/desktop/cmd/arion-completion-probe` builds a protocol-1 adapter
+for the existing local LLM client. Its `load` request accepts `client.Config`;
+`complete` accepts the existing `prompt.ChatRequest`. Each request requires a
+positive `timeoutMs` no greater than 120000. Responses preserve the request ID,
+actual result, error and monotonic wall duration. It has no cloud path, candidate
+insertion or automatic text commitment. Private studies own prompts, fixtures,
+artifact verification and scoring; this probe does not establish native IME
+acceptance or validate proposed pinyin completions.
