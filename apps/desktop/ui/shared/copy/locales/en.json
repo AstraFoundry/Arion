@@ -3,7 +3,6 @@
   "VocabReading": "Pinyin",
   "VocabKeyboardPending": "Saved. Keyboard changes are pending; select Arion and finish the current composition to apply them.",
   "VocabKeyboardFailed": "Keyboard changes could not be applied. Check the Pinyin readings and input method setup. Your entries remain saved.",
-  "VocabReadingPlaceholder": "xing cha gong fang",
   "VocabReadingInvalid": "Use Pinyin letters, with a space between syllables.",
   "VocabReadingStale": "This entry changed or was removed. Reopen it before editing.",
   "VocabReadingSave": "Save",
@@ -611,7 +610,7 @@
   "KbdFuzzyIANIANG": "ian / iang",
   "KbdFuzzyUANUANG": "uan / uang",
   "KbdNeuralRanking": "Local candidate ranking",
-  "KbdNeuralDetail": "Use the local model and your preceding input to reorder Chinese candidates. Pauses during dictation. Suggestions can be wrong.",
+  "KbdNeuralDetail": "Prioritize candidates that fit what you’re writing.",
   "KbdNeuralUnavailable": "Local model unavailable. Standard ranking remains active.",
   "KbdNeuralMissing": "Download the local model to use candidate ranking.",
   "ClipboardTitle": "Clipboard",
@@ -675,5 +674,9 @@
   "ClipboardCloseSearch": "Close search",
   "AccTermsNotice": "By signing in, you agree to the Terms of Use and acknowledge the Privacy Policy.",
   "AccTerms": "Terms of Use",
-  "AccPrivacy": "Privacy Policy"
+  "AccPrivacy": "Privacy Policy",
+  "KbdContextCursor": "Use surrounding text locally",
+  "KbdContextScreen": "Use window text locally",
+  "DeveloperMode": "Developer mode",
+  "DeveloperModeDetail": "Detailed local keyboard diagnostics until restart. Input text is never logged."
 }

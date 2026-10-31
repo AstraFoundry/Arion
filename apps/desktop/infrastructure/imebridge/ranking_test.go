@@ -135,3 +135,120 @@ func TestKeyboardRankingRejectsInventedCandidate(t *testing.T) {
 		t.Fatal(r)
 	}
 }
+
+func TestKeyboardRankingTwoLanesShareSnapshot(t *testing.T) {
+	m, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	fast := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	settled := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		if r.Candidates[0].ID != "c0" {
+			t.Error("settled saw reordered input")
+		}
+		out := rankAnswer(r)
+		out.Candidates = []domain.RankedCandidate{{ID: "c0"}, {ID: "c1"}}
+		return out, nil
+	})
+	if err := m.ConfigureKeyboardRankingStages(fast, settled); err != nil {
+		t.Fatal(err)
+	}
+	h.send(t, rankRequest(1))
+	if got := h.read(t); got.RankResult == nil || got.RankResult.Candidates[0].ID != "c1" {
+		t.Fatal(got)
+	}
+	if got := h.read(t); got.RankResult == nil || got.RankResult.Candidates[0].ID != "c0" {
+		t.Fatal(got)
+	}
+}
+
+func TestKeyboardRankingSettledSuppressesLateFast(t *testing.T) {
+	m, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	release := make(chan struct{})
+	fast := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		<-release
+		return rankAnswer(r), nil
+	})
+	settled := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	if err := m.ConfigureKeyboardRankingStages(fast, settled); err != nil {
+		t.Fatal(err)
+	}
+	h.send(t, rankRequest(1))
+	if got := h.read(t); got.Status != "ok" {
+		t.Fatal(got)
+	}
+	close(release)
+	h.send(t, rankRequest(2))
+	if got := h.read(t); got.Revision != 2 {
+		t.Fatal("late fast overwrote settled", got)
+	}
+}
+
+func TestSettledAbstentionPreservesFast(t *testing.T) {
+	m, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	settledDone := make(chan struct{}, 1)
+	fast := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	settled := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		out := rankAnswer(r)
+		out.Decision = "abstained_no_context"
+		settledDone <- struct{}{}
+		return out, nil
+	})
+	if err := m.ConfigureKeyboardRankingStages(fast, settled); err != nil {
+		t.Fatal(err)
+	}
+	h.send(t, rankRequest(1))
+	if got := h.read(t); got.Status != "ok" {
+		t.Fatal(got)
+	}
+	<-settledDone
+	h.send(t, rankRequest(2))
+	if got := h.read(t); got.Revision != 2 {
+		t.Fatal("abstention undid fast result", got)
+	}
+}
+
+func TestKeyboardRankingRequestAfterNativeFreeze(t *testing.T) {
+	_, h := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	h.send(t, message{Op: "keyboard_freeze", Activation: "editor", Revision: 1})
+	h.send(t, rankRequest(2))
+	if got := h.read(t); got.Revision != 2 || got.Status != "ok" {
+		t.Fatal("new native snapshot was discarded", got)
+	}
+}
+
+func TestNativeRankingSkipDiagnostics(t *testing.T) {
+	m, _ := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		t.Error("skip must not invoke model")
+		return rankAnswer(r), nil
+	})
+	var counts []int
+	m.OnKeyboardRankingDiagnostic(func(reason string, count int) {
+		if reason == "no_comparable_candidates" {
+			counts = append(counts, count)
+		}
+	})
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	one, invalid := 1, 2
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "no_comparable_candidates", Activation: "other", Revision: 1, EligibleCount: &one})
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "no_comparable_candidates", Activation: "editor", Revision: 1, EligibleCount: &one})
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "no_comparable_candidates", Activation: "editor", Revision: 1, EligibleCount: &one})
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "no_comparable_candidates", Activation: "editor", Revision: 2, EligibleCount: &invalid})
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "no_comparable_candidates", Activation: "editor", Revision: 3})
+	m.receiveRankingLocked(message{Op: "keyboard_rank_skipped", RankingReason: "private input canary", Activation: "editor", Revision: 4, EligibleCount: &one})
+	if len(counts) != 1 || counts[0] != 1 {
+		t.Fatal(counts)
+	}
+}

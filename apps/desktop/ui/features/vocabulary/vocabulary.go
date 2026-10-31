@@ -139,7 +139,7 @@ func term(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *Draft,
 			}
 			if !reading {
 				records := group.Records
-				kit.IconButton(c, tokens, icons.X, messages.RemoveVocab(group.Text)).OnClick(func() {
+				kit.IconButton(c, tokens, icons.Trash, messages.RemoveVocab(group.Text)).OnClick(func() {
 					for _, record := range records {
 						store.Actions.RemoveReplacement(record.ID)
 					}
@@ -229,7 +229,11 @@ func readingChip(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft 
 			ui.Text(c, record.KeyboardPinyin).FontSize(theme.Caption).SingleLine()
 		}
 	}).OnClick(func() {
-		*draft = readingDraft{ID: record.ID, Spelling: record.To, Value: record.KeyboardPinyin, Focus: true}
+		value := record.KeyboardPinyin
+		if value == "" {
+			value = record.DefaultKeyboardPinyin
+		}
+		*draft = readingDraft{ID: record.ID, Spelling: record.To, Value: value, Focus: true}
 	})
 }
 
@@ -243,7 +247,7 @@ func readingEditor(c *ui.Context, store runtime.Store, tokens theme.Tokens, draf
 	ui.Row(c).Gap(2).AlignItems(ui.Center).OnShortcut(0, ui.KeyEscape, cancel).Children(func() {
 		ui.Icon(c, icons.Keyboard).FontSize(13).TextColor(tokens.Muted).Margin(0, 6, 0, 0)
 		field = ui.TextInput(c.Key("reading"), &draft.Value).Width(176).Height(28).Padding(0, 10).FontSize(theme.Body).
-			Label(messages.Text(copy.VocabReading)).Placeholder(messages.Text(copy.VocabReadingPlaceholder))
+			Label(messages.Text(copy.VocabReading))
 		save = kit.IconButton(c.Key("reading-save"), tokens, icons.Check, messages.Text(copy.VocabReadingSave)).Clicked()
 		dismiss = kit.IconButton(c.Key("reading-cancel"), tokens, icons.X, messages.Text(copy.VocabReadingCancel)).Clicked()
 	})

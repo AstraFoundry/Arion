@@ -145,7 +145,7 @@ class Service final : public ITfTextInputProcessorEx, public ITfThreadMgrEventSi
     }
     void send(const wchar_t *op) {
         std::string text = "{\"op\":" + ::quoted(op) + ",\"activation\":" + ::quoted(activation) + ",\"session\":" + ::quoted(session) + ",\"build\":" + ::quoted(build) + ",\"client\":\"Windows editor\",\"text\":\"\"}\n";
-        if (std::wcscmp(op,L"hello")==0) text.insert(1,"\"protocol\":"+std::to_string(WireProtocol)+","+(keyboard.api()?"\"capabilities\":[\"keyboard-vocabulary-v1\",\"keyboard-ranking-v1\"],":""));
+        if (std::wcscmp(op,L"hello")==0) text.insert(1,"\"protocol\":"+std::to_string(WireProtocol)+","+(keyboard.api()?"\"capabilities\":[\"keyboard-vocabulary-v1\",\"keyboard-ranking-v2\"],":""));
         transport.send(std::move(text));
     }
     void disconnect() {
@@ -387,6 +387,10 @@ public:
             std::string text="{\"op\":\""+std::string(snapshot.empty()?"keyboard_freeze":"keyboard_rank")+"\",\"activation\":"+::quoted(activation)+",\"revision\":"+std::to_string(revision);
             if (!snapshot.empty()) text+=",\"rankRequest\":{\"session_id\":"+::quoted(activation)+",\"generation\":1,\"revision\":"+std::to_string(revision)+","+snapshot+"}";
             transport.send(text+"}\n");
+        };
+        typing->rankingSkipped=[this](const std::string &reason,size_t count,uint64_t revision) {
+            if (!transport.connected() || activation.empty() || !session.empty()) return;
+            transport.send("{\"op\":\"keyboard_rank_skipped\",\"activation\":"+::quoted(activation)+",\"revision\":"+std::to_string(revision)+",\"eligibleCount\":"+std::to_string(count)+",\"rankingReason\":"+::quoted(wide(reason))+"}\n");
         };
         candidates.onAction([this](const CandidateAction &action) {
             TypingCommand command; command.revision=action.revision; command.engineIndex=action.index;

@@ -370,6 +370,21 @@ func TestContextTraceSnapshotExcludesLateAndCleanupProgress(t *testing.T) {
 	}
 }
 
+func TestContextTraceCancelBoundaryExcludesSameInstantCleanup(t *testing.T) {
+	trace := newContextTrace()
+	boundary := time.Now()
+	trace.mu.Lock()
+	trace.observation.events[stageGoWritten] = boundary.Add(-time.Millisecond)
+	trace.cancelledAt = boundary
+	trace.observation.events[stageStdoutEOF] = boundary
+	trace.observation.events[stageProcessExited] = boundary
+	trace.mu.Unlock()
+	observation := trace.snapshot(boundary.Add(time.Second))
+	if observation.events[stageGoWritten].IsZero() || !observation.events[stageStdoutEOF].IsZero() || !observation.events[stageProcessExited].IsZero() {
+		t.Fatalf("same-instant cleanup counted as pre-cancellation progress: %s", observation)
+	}
+}
+
 func TestContextProcessCancellationCutoffPrecedesWatcherCleanup(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

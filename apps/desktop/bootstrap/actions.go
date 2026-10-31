@@ -158,7 +158,7 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 			a.record("keyboard_settings", err)
 		}
 	}
-	if next.Keyboard.NeuralRanking != before.Keyboard.NeuralRanking {
+	if next.Keyboard.NeuralRanking != before.Keyboard.NeuralRanking || next.Keyboard.ContextCursor != before.Keyboard.ContextCursor || next.Keyboard.ContextScreen != before.Keyboard.ContextScreen {
 		a.configureKeyboardRanking()
 	}
 	if next.Polish != before.Polish || next.PolishEngine != before.PolishEngine || next.Keyboard.NeuralRanking != before.Keyboard.NeuralRanking {

@@ -1,5 +1,5 @@
 // Native algorithm checks use an isolated synthetic prism, never user data.
-import { spawnSync } from 'node:child_process';
+import { cachedSpawn } from './lib/windows-compile-cache.mjs';
 import { createHash } from 'node:crypto';
 import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -25,7 +25,7 @@ const report = { platform: process.platform, arch: process.arch,
   library: { path: library, sha256: hash(library) },
   prism: { path: prism, sha256: hash(prism) }, commands: [], status: 'running' };
 function run(command, args) {
-  const result = spawnSync(command, args, { cwd: directory, encoding: 'utf8', timeout: 120000,
+  const result = cachedSpawn(command, args, { cwd: directory, encoding: 'utf8', timeout: 120000,
     env: { ...process.env, PATH: `${path.join(runtime, 'lib')}${path.delimiter}${process.env.PATH}` } });
   report.commands.push({ command, args, status: result.status, signal: result.signal,
     error: result.error?.message, stdout: result.stdout, stderr: result.stderr });

@@ -54,7 +54,7 @@ func (e Entry) valid() bool {
 		return false
 	}
 	switch e.Event {
-	case "app_started", "app_stopped", "preferences_repaired", "preferences_save", "usage_load", "usage_save", "vocabulary_key", "vocabulary_load", "vocabulary_save", "vocabulary_recall", "edit_learning", "e2e_listen", "ime_listen", "ime_native", "ime_source_state", "ime_setup_started", "ime_setup_completed", "ime_setup_cancelled", "ime_setup_failed", "ime_install_started", "ime_install_failed", "ime_install_pending", "ime_install_completed", "ime_settings_open", "ime_remove", "consent_guide", "hold_register", "permissions_changed", "devices_list", "model_status", "rewrite_status", "model_activate", "update_check", "update_install", "update_state", "update_notification", "product_notification", "export_started", "export_completed", "export_failed", "export_cancelled", "events_dropped", "session_state", "session_error", "correction_ready", "commit_result", "first_draft", "target_capture", "recognizer_create", "audio_start", "acoustic_finalize", "context_read", "rewrite_final", "target_commit", "segment_queue", "rewrite_validation", "dictation_toggle", "dictation_cancel", "power_suspend", "screen_locked", "hold_start", "hold_stop", "hold_cancel":
+	case "keyboard_ranking_trace", "keyboard_ranking", "keyboard_ranking_configuration", "app_started", "app_stopped", "preferences_repaired", "preferences_save", "usage_load", "usage_save", "vocabulary_key", "vocabulary_load", "vocabulary_save", "vocabulary_recall", "edit_learning", "e2e_listen", "ime_listen", "ime_native", "ime_source_state", "ime_setup_started", "ime_setup_completed", "ime_setup_cancelled", "ime_setup_failed", "ime_install_started", "ime_install_failed", "ime_install_pending", "ime_install_completed", "ime_settings_open", "ime_remove", "consent_guide", "hold_register", "permissions_changed", "devices_list", "model_status", "rewrite_status", "model_activate", "update_check", "update_install", "update_state", "update_notification", "product_notification", "export_started", "export_completed", "export_failed", "export_cancelled", "events_dropped", "session_state", "session_error", "correction_ready", "commit_result", "first_draft", "target_capture", "recognizer_create", "audio_start", "acoustic_finalize", "context_read", "rewrite_final", "target_commit", "segment_queue", "rewrite_validation", "dictation_toggle", "dictation_cancel", "power_suspend", "screen_locked", "hold_start", "hold_stop", "hold_cancel":
 	default:
 		return false
 	}
@@ -79,7 +79,7 @@ func (e Entry) valid() bool {
 		return false
 	}
 	switch e.Outcome {
-	case "", "absent", "discovering", "pending", "installed", "selected", "learned", "cleared", "not_found", "outside", "too_large", "rewrite", "no_pair", "markup", "length", "new_number", "unsupported_content", "negation_dropped", "final_value_dropped", "content_dropped", "uncertainty_dropped", "context_copied", "ok", "failed", "cancelled", "unselected", "provisioning", "loading", "ready", "unsupported", "off", "downloading", "verifying", "extracting", "granted", "denied", "restricted", "undetermined", "accepted", "timeout", "unavailable", "preview", "applied", "not_applied", "unknown", "copied", "unchanged", "empty", "truncated", "too_long", "meaning_changed", "unsafe", "invalid", "rejected":
+	case "no_context", "no_comparable_candidates", "", "absent", "discovering", "pending", "installed", "selected", "learned", "cleared", "not_found", "outside", "too_large", "rewrite", "no_pair", "markup", "length", "new_number", "unsupported_content", "negation_dropped", "final_value_dropped", "content_dropped", "uncertainty_dropped", "context_copied", "ok", "failed", "cancelled", "unselected", "provisioning", "loading", "ready", "unsupported", "off", "downloading", "verifying", "extracting", "granted", "denied", "restricted", "undetermined", "accepted", "timeout", "unavailable", "preview", "applied", "not_applied", "unknown", "copied", "unchanged", "empty", "truncated", "too_long", "meaning_changed", "unsafe", "invalid", "rejected":
 	default:
 		return false
 	}
@@ -94,7 +94,7 @@ func (e Entry) valid() bool {
 		return false
 	}
 	switch e.Reason {
-	case "", "idle", "focus_lost", "cleared", "next_dictation", "max_time", "abandoned", "no_baseline":
+	case "no_comparable_candidates", "navigation", "input_bounds", "caret_not_at_end", "non_chinese", "stale_revision", "ranking_disabled", "freeze", "invalid_request", "superseded", "delivery_failed", "proposal_sent", "context_target", "context_capture", "context_read", "context_marked_mismatch", "context_bounds", "", "idle", "focus_lost", "cleared", "next_dictation", "max_time", "abandoned", "no_baseline":
 	default:
 		return false
 	}
@@ -122,7 +122,8 @@ func knownModel(id string) bool {
 	_, bundle := catalog.Bundle(id)
 	_, artifact := catalog.Artifact(id)
 	_, rewriter := catalog.Rewriter(id)
-	return bundle || artifact || rewriter
+	_, keyboard := catalog.KeyboardRanker(id)
+	return bundle || artifact || rewriter || keyboard
 }
 
 // Failure never serializes an error's message or unrecognized code.

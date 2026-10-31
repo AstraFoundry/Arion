@@ -1,5 +1,5 @@
 // Isolated native module and installer-filesystem checks; no TIP registration.
-import { spawnSync } from 'node:child_process';
+import { cachedSpawn } from './lib/windows-compile-cache.mjs';
 import { createHash } from 'node:crypto';
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -18,7 +18,7 @@ const report={schema:1,boundary:'Production DLL load/lifecycle and synthetic ins
 const save=()=>writeFileSync(path.join(directory,'report.json'),JSON.stringify(report,null,2)+'\n');
 function run(command,args,env=process.env) {
   const started=performance.now();
-  const result=spawnSync(command,args,{cwd:directory,encoding:'utf8',windowsHide:true,timeout:180000,env});
+  const result=cachedSpawn(command,args,{cwd:directory,encoding:'utf8',windowsHide:true,timeout:180000,env});
   report.commands.push({command,args,durationMs:performance.now()-started,status:result.status,error:result.error?.message,stdout:result.stdout,stderr:result.stderr}); save();
   process.stdout.write(result.stdout??''); process.stderr.write(result.stderr??'');
   if(result.error) throw result.error;

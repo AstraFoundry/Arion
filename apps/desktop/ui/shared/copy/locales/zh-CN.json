@@ -3,7 +3,6 @@
   "VocabReading": "拼音",
   "VocabKeyboardPending": "已保存，键盘词条尚未更新。请选择 Arion 并结束当前拼音输入，等待更新。",
   "VocabKeyboardFailed": "键盘词条更新失败，请检查拼音读音和输入法设置。词条仍保存在本机。",
-  "VocabReadingPlaceholder": "xing cha gong fang",
   "VocabReadingInvalid": "拼音只能包含字母，音节之间用空格分隔。",
   "VocabReadingStale": "词条已修改或删除，请重新打开后编辑。",
   "VocabReadingSave": "保存",
@@ -611,7 +610,7 @@
   "KbdFuzzyIANIANG": "ian / iang",
   "KbdFuzzyUANUANG": "uan / uang",
   "KbdNeuralRanking": "本地智能排序",
-  "KbdNeuralDetail": "根据刚刚输入的内容，用本地模型调整中文候选顺序，听写期间暂停。建议可能不准确。",
+  "KbdNeuralDetail": "优先显示符合当前语境的候选词。",
   "KbdNeuralUnavailable": "本地模型不可用，继续使用常规排序。",
   "KbdNeuralMissing": "下载本地模型后即可使用智能排序。",
   "ClipboardTitle": "剪贴板",
@@ -675,5 +674,9 @@
   "ClipboardCloseSearch": "关闭搜索",
   "AccTermsNotice": "登录即表示你同意使用条款并已阅读隐私政策。",
   "AccTerms": "使用条款",
-  "AccPrivacy": "隐私政策"
+  "AccPrivacy": "隐私政策",
+  "KbdContextCursor": "在本机参考光标前后文字",
+  "KbdContextScreen": "在本机参考当前窗口文字",
+  "DeveloperMode": "开发者模式",
+  "DeveloperModeDetail": "本次运行记录详细键盘诊断，不记录输入文字。"
 }

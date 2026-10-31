@@ -19,16 +19,16 @@ import (
 
 // CTX-A04: on a real browser window the target adapter reads the text
 // before the cursor and the window's recognized text, and neither with its
-// gates closed. Needs Accessibility and Screen Recording for the process
+// gates closed. Needs Accessibility for the process
 // running the test, granted by a person, so it runs only with
 // ARION_E2E_CONTEXT=1.
 func TestReadContextFromWindow(t *testing.T) {
 	if os.Getenv("ARION_E2E_CONTEXT") != "1" {
-		t.Skip("set ARION_E2E_CONTEXT=1 after granting Accessibility and Screen Recording to the test runner")
+		t.Skip("set ARION_E2E_CONTEXT=1 after granting Accessibility to the test runner")
 	}
 	permissions := macos.Permissions{}
-	if permissions.Accessibility() != macos.AuthGranted || permissions.ScreenRecording() != macos.AuthGranted {
-		t.Fatal("ARION_E2E_CONTEXT=1 requires Accessibility and Screen Recording access for the test runner")
+	if permissions.Accessibility() != macos.AuthGranted {
+		t.Fatal("ARION_E2E_CONTEXT=1 requires Accessibility access for the test runner")
 	}
 	page := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -50,6 +50,7 @@ func TestReadContextFromWindow(t *testing.T) {
 		target, err := targets.Capture(context.Background(), contracts.Identity{SessionID: "ctx", Generation: 1})
 		if err == nil {
 			snap, _ = targets.ReadContext(context.Background(), target.Identity, target.Target)
+			targets.Discard(target.Target)
 			if strings.Contains(snap.Before, "Siobhan") && strings.Contains(snap.Screen, "Kubernetes") {
 				break
 			}
@@ -65,6 +66,7 @@ func TestReadContextFromWindow(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer targets.Discard(target.Target)
 	closed, _ := targets.ReadContext(context.Background(), target.Identity, target.Target)
 	if closed.Before != "" || closed.Screen != "" {
 		t.Fatal("context read with its gates closed")

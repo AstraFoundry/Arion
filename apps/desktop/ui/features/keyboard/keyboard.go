@@ -370,23 +370,55 @@ func Neural(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	enabled := store.State.Preferences.Keyboard.NeuralRanking
 	model := store.State.Polish
+	downloadable := true
+	if fast := store.State.KeyboardModel; fast.State != runtime.PolishReady {
+		model = fast
+		downloadable = false
+	}
 	kit.Card(c, tokens).Children(func() {
 		kit.Row(c, tokens, messages.Text(copy.KbdNeuralRanking), messages.Text(copy.KbdNeuralDetail), func() {
 			if ui.Switch(c.Key("neural-ranking"), &enabled).Label(messages.Text(copy.KbdNeuralRanking)).Changed() {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Keyboard.NeuralRanking = enabled })
 			}
 		})
+
+		if enabled && strings.HasPrefix(store.State.Platform, "darwin") {
+			for _, option := range []struct {
+				key    string
+				label  copy.Key
+				value  bool
+				update func(*runtime.KeyboardPreferences, bool)
+			}{
+				{"ranking-cursor", copy.KbdContextCursor, store.State.Preferences.Keyboard.ContextCursor, func(p *runtime.KeyboardPreferences, v bool) { p.ContextCursor = v }},
+				{"ranking-screen", copy.KbdContextScreen, store.State.Preferences.Keyboard.ContextScreen, func(p *runtime.KeyboardPreferences, v bool) { p.ContextScreen = v }},
+			} {
+				kit.Row(c, tokens, messages.Text(option.label), "", func() {
+					value := option.value
+					if ui.Switch(c.Key(option.key), &value).Label(messages.Text(option.label)).Changed() {
+						store.Actions.UpdatePreferences(func(p *runtime.Preferences) { option.update(&p.Keyboard, value) })
+					}
+				})
+			}
+		}
+		if enabled && strings.HasPrefix(store.State.Platform, "darwin") && (store.State.Preferences.Keyboard.ContextCursor || store.State.Preferences.Keyboard.ContextScreen) && store.State.Permissions.Accessibility != runtime.ConsentGranted {
+			kit.Notice(c.Key("ranking-permission-notice"), tokens, tokens.Warning, messages.Text(copy.ContextScreenPermission), func() {
+				if kit.Button(c.Key("ranking-permission"), tokens, kit.Outline, messages.Text(copy.Allow), true).Clicked() {
+					store.Actions.RequestAccessibility()
+				}
+			}).Padding(0, 16, 12, 16)
+		}
+
 		// A ready model needs no line: the switch already says ranking is on.
 		if enabled && model.State != runtime.PolishReady {
 			ui.Column(c).Padding(0, 16, 12, 16).Gap(8).Children(func() {
 				key := copy.KbdNeuralUnavailable
 				if model.State == runtime.PolishLoading {
 					key = copy.PolishLoading
-				} else if !model.Installed && model.State != runtime.PolishUnsupported {
+				} else if downloadable && !model.Installed && model.State != runtime.PolishUnsupported {
 					key = copy.KbdNeuralMissing
 				}
 				ui.Text(c, messages.Text(key)).FontSize(theme.Caption).TextColor(tokens.Muted)
-				if !model.Installed && model.State != runtime.PolishUnsupported {
+				if downloadable && !model.Installed && model.State != runtime.PolishUnsupported {
 					if kit.Button(c.Key("ranking-download"), tokens, kit.Outline, messages.Text(copy.PolishDownload), model.State != runtime.PolishProvisioning).Clicked() {
 						store.Actions.DownloadPolish()
 					}

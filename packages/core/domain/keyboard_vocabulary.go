@@ -97,3 +97,24 @@ func ValidateKeyboardPinyin(text, reading string) error {
 	}
 	return nil
 }
+
+// DefaultKeyboardPinyin is an editable suggestion from the dictionary's primary
+// character readings. It does not resolve phrase-level polyphony or approve a
+// vocabulary binding. Unsupported text has no suggestion, including Latin names.
+func DefaultKeyboardPinyin(text string, readings map[string][]string) string {
+	var syllables []string
+	for _, character := range text {
+		choices := readings[string(character)]
+		if len(choices) == 0 {
+			return ""
+		}
+		syllable := strings.TrimRight(choices[0], "012345")
+		syllable = strings.ReplaceAll(syllable, "ü", "v")
+		syllables = append(syllables, syllable)
+	}
+	reading := strings.Join(syllables, " ")
+	if ValidateKeyboardPinyin(text, reading) != nil {
+		return ""
+	}
+	return reading
+}

@@ -39,7 +39,7 @@ func TestVocabularyReadingEditor(t *testing.T) {
 		messages := store.Copy()
 		state.Vocabulary = []runtime.Replacement{
 			{ID: "other", To: "Claude Code", Hotword: true, KeyboardPinyin: "ke lao de"},
-			{ID: "term", To: "星槎工坊", Hotword: true},
+			{ID: "term", To: "星槎工坊", Hotword: true, DefaultKeyboardPinyin: "xing cha gong fang"},
 		}
 		tt := vocabularyPage(store, SettingsHeight)
 		tt.SetDark(mode.dark)
@@ -52,7 +52,16 @@ func TestVocabularyReadingEditor(t *testing.T) {
 		if _, ok := tt.Find(messages.RemoveVocab("星槎工坊")); ok {
 			t.Fatal("removing the term beside an open reading invites the wrong action")
 		}
-		tt.Type("xing cha gong fang")
+		if err := tt.Click(messages.Text(copy.VocabReadingCancel)); err != nil {
+			t.Fatal(err)
+		}
+		settle(tt)
+		if actions.called("keyboard-reading") || actions.called("remove:term") || state.Vocabulary[1].KeyboardPinyin != "" {
+			t.Fatal("cancel must neither approve the suggestion nor delete the term")
+		}
+		if err := tt.Click(messages.VocabReadingAction("星槎工坊")); err != nil {
+			t.Fatal(err)
+		}
 		settle(tt)
 		snapshot(t, tt, "vocabulary-reading-"+name)
 		tt.Key(0, ui.KeyEnter)

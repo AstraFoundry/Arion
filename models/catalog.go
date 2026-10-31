@@ -18,15 +18,19 @@ var catalogJSON []byte
 
 // Catalog is the approved, provisionable model metadata (MOD-01).
 type Catalog struct {
-	Version   int        `json:"version"`
-	Artifacts []Artifact `json:"artifacts"`
-	Bundles   []Bundle   `json:"bundles"`
-	Rewriters []Rewriter `json:"rewriters"`
+	Version         int         `json:"version"`
+	Artifacts       []Artifact  `json:"artifacts"`
+	Bundles         []Bundle    `json:"bundles"`
+	Rewriters       []Rewriter  `json:"rewriters"`
+	KeyboardRankers []FileModel `json:"keyboardRankers,omitempty"`
 }
 
 // Rewriter is an optional local LLM for live rewriting (009). Its weights
 // are individual pinned files; the GenAI runtime ships inside the app.
-type Rewriter struct {
+type Rewriter = FileModel
+
+// FileModel describes independently pinned weights for a native model runtime.
+type FileModel struct {
 	ID           string                `json:"id"`
 	Name         string                `json:"name"`
 	Runtime      Runtime               `json:"runtime"`
@@ -77,7 +81,7 @@ func (c Catalog) Rewriter(id string) (Rewriter, bool) {
 }
 
 // SizeBytes is a rewriter's total download size.
-func (r Rewriter) SizeBytes() int64 {
+func (r FileModel) SizeBytes() int64 {
 	var n int64
 	for _, f := range r.Files {
 		n += f.SizeBytes
@@ -227,7 +231,7 @@ func Parse(data []byte) (Catalog, error) {
 		artifacts[a.ID] = a
 	}
 	rewriters := map[string]bool{}
-	for _, r := range catalog.Rewriters {
+	for _, r := range append(append([]FileModel(nil), catalog.Rewriters...), catalog.KeyboardRankers...) {
 		if r.ID == "" || r.Name == "" || rewriters[r.ID] {
 			return Catalog{}, fmt.Errorf("catalog: missing or duplicate rewriter id %q", r.ID)
 		}
@@ -300,4 +304,14 @@ func (c Catalog) DownloadBytes(b Bundle) int64 {
 		}
 	}
 	return total
+}
+
+// KeyboardRanker returns an optional keyboard model by its catalog identity.
+func (c Catalog) KeyboardRanker(id string) (FileModel, bool) {
+	for _, r := range c.KeyboardRankers {
+		if r.ID == id {
+			return r, true
+		}
+	}
+	return FileModel{}, false
 }

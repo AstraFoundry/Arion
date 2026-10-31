@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted.
+Accepted. Scheduling and context scope superseded by [ADR 036](036-two-stage-keyboard-ranking.md).
 
 ## Context
 
@@ -14,7 +14,7 @@ Expose `keyboard.neuralRanking`, default false, independently of voice polishing
 
 The existing mutually verified input-method connection advertises `keyboard-ranking-v1`. Requests carry activation, a monotonically increasing revision, and a snapshot of existing candidates; replies echo all identities. Context consists only of the native adapter's recent confirmed commit, never arbitrary surrounding host text. Raw input is bounded to 256 UTF-8 bytes, preceding context to 2,048 bytes, and the leading window to 27 candidates. Only Han candidates with the first candidate's actual consumed range participate. English, Emoji and other-range slots stay in place. No context or fewer than two eligible candidates causes no model call.
 
-The local menu appears immediately. A 75 ms debounce and 750 ms request deadline bound enhancement; one running request and one replaceable pending snapshot prevent backlog. Navigation, selection, edits, cancellation, activation changes, updates and disabling revoke stale proposals. Only a validated stable promotion of an existing ID can update the same untouched first page. Normal engine selection still owns commit. Timeout, malformed output and unavailable service leave that menu intact. Settings show local model readiness; they do not promise that each revision receives a model result.
+The local menu appears immediately. A 75 ms debounce and 750 ms request deadline bound enhancement; one running request and one replaceable pending snapshot prevent backlog. Navigation, selection, edits, cancellation, activation changes, updates and disabling revoke stale proposals. Only a validated stable promotion of an existing ID can update the same untouched first page. Normal engine selection still owns commit. Timeout, malformed output and unavailable service leave that menu intact. Settings surface loading, missing-model and failure states without a redundant ready-state paragraph; they do not promise that each revision receives a model result.
 
 Voice preparation suspends and cancels keyboard completion before audio work. Direct polishing also preempts it. The native path remains usable with the desktop app stopped. Elevated Windows input does not gain permission to connect to voice IPC.
 
@@ -24,4 +24,4 @@ Shared menu tests cover fixed non-Chinese slots and range/navigation rejection. 
 
 ## Alternatives
 
-A new IME-specific model remains a separate model-selection task. Remote keyboard ranking requires a separate consent and privacy decision. Neither is introduced here.
+The original single-model decision is extended by ADR 036. Remote keyboard ranking requires a separate consent and privacy decision. Neither is introduced here.

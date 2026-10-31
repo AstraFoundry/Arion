@@ -1,6 +1,7 @@
 import { buildCandidateFonts } from './lib/windows-candidate-fonts.mjs';
 // Owned ACP keyboard checks in the current desktop token, including elevated hosts.
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
+import { cachedSpawn } from './lib/windows-compile-cache.mjs';
 import { createHash } from 'node:crypto';
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -37,7 +38,7 @@ sources.add(fileURLToPath(import.meta.url));
 for (const file of sources) report.sources[path.relative(root, file)] = hash(file);
 const save = () => writeFileSync(path.join(directory, 'report.json'), JSON.stringify(report, null, 2) + '\n');
 function run(command, argv) {
-  const result = spawnSync(command, argv, { cwd: directory, windowsHide: true, encoding: 'utf8', timeout: 120000 });
+  const result = cachedSpawn(command, argv, { cwd: directory, windowsHide: true, encoding: 'utf8', timeout: 120000 });
   report.commands.push({ command, args: argv, status: result.status, error: result.error?.message, stdout: result.stdout, stderr: result.stderr });
   save();
   if (result.error || result.status !== 0) throw result.error ?? new Error(result.stderr || command + ' failed: ' + result.status);

@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 
 	"arion.local/desktop/infrastructure/cloudpolish"
+	"arion.local/desktop/infrastructure/keyboardmodel"
 	"arion.local/desktop/infrastructure/keystore"
 	"arion.local/desktop/infrastructure/rewriting"
 	"arion.local/desktop/infrastructure/settings"
@@ -27,7 +28,7 @@ var _ cloudpolish.SecretStore = keystore.Catalog{}
 
 // Both engines honor the same context switches; cloud stages run after stop.
 func TestCloudPolicyUsesSharedContext(t *testing.T) {
-	a := &App{prefs: application.DefaultPreferences("darwin"), rewriter: &rewriting.Service{}}
+	a := &App{prefs: application.DefaultPreferences("darwin"), keyboardModel: &keyboardmodel.Service{}, rewriter: &rewriting.Service{}}
 	a.prefs.Polish = true
 	local := a.rewritePolicy()
 	if !local.Enabled || !local.Context.Screen || !local.Context.Cursor || !local.Context.History {
@@ -42,7 +43,7 @@ func TestCloudPolicyUsesSharedContext(t *testing.T) {
 
 // The router follows the engine preference per request.
 func TestPolishRouterFollowsEngine(t *testing.T) {
-	a := &App{prefs: application.DefaultPreferences("darwin"), rewriter: &rewriting.Service{},
+	a := &App{prefs: application.DefaultPreferences("darwin"), keyboardModel: &keyboardmodel.Service{}, rewriter: &rewriting.Service{},
 		cloud: cloudpolish.New(noSecrets{}, func(string) error { return nil }, nil)}
 	router := polishRouter{a}
 	if router.engine() != ports.Rewriter(a.rewriter) {

@@ -350,10 +350,12 @@ type Device struct {
 // Replacement is an approved correction or a correct-only recognition hotword.
 type Replacement struct {
 	KeyboardPinyin string
-	Hotword        bool
-	ID             string
-	From           string
-	To             string
+	// DefaultKeyboardPinyin is a dictionary suggestion, never an approved reading.
+	DefaultKeyboardPinyin string
+	Hotword               bool
+	ID                    string
+	From                  string
+	To                    string
 }
 
 // Vocabulary errors distinguish actionable edits from storage failures.
@@ -530,16 +532,17 @@ type Diagnostics struct{ Phase DiagnosticsPhase }
 // State is everything views read. The composition root mutates it only on
 // the main thread and then invalidates windows.
 type State struct {
-	Clipboard   Clipboard
-	Diagnostics Diagnostics
-	Version     string
-	Dictation   Dictation
-	Model       Model
-	Polish      Polish
-	Permissions Permissions
-	Preferences Preferences
-	Devices     []Device
-	Vocabulary  []Replacement
+	Clipboard     Clipboard
+	Diagnostics   Diagnostics
+	Version       string
+	Dictation     Dictation
+	Model         Model
+	Polish        Polish
+	KeyboardModel Polish
+	Permissions   Permissions
+	Preferences   Preferences
+	Devices       []Device
+	Vocabulary    []Replacement
 	// Empty only after acknowledgement or when no keyboard edit needs reporting.
 	VocabularyKeyboardNotice copy.Key
 	// Learned is the entry last learned from a correction, shown with an

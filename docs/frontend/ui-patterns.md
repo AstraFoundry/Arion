@@ -88,3 +88,5 @@ The shared Pinyin worktree uses the same candidate appearance, ranking and key c
 - Use semantic HTML (`button`, `a`, `label`, `nav`, `main`).
 - Every interactive element must have an accessible name.
 - Do not build fake buttons or links with `div` + click handlers.
+
+Keyboard neural settings keep one short benefit sentence. Separate macOS cursor/window switches grant local context reads; neither inherits voice-polishing consent. Model readiness includes both fast and settled workers ([ADR 036](../decisions/036-two-stage-keyboard-ranking.md)).

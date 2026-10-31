@@ -5,7 +5,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 for (const [args, cwd] of [
   [['scripts/verify-public-fixtures.mjs'], root],
   [['--test', 'scripts/lib/catalog-evaluation.test.mjs', 'scripts/lib/reset-desktop.test.mjs', 'scripts/lib/markdown-anchors.test.mjs', 'scripts/lib/release.test.mjs', 'scripts/lib/workflow-check.test.mjs', 'scripts/lib/doc-consistency.test.mjs', 'scripts/lib/center-profile.test.mjs', 'scripts/lib/desktop-signing.test.mjs', 'scripts/lib/desktop-development.test.mjs', 'scripts/lib/ime-provisioning.test.mjs', 'scripts/lib/macos-distribution.test.mjs', 'scripts/lib/release-policy.test.mjs', 'scripts/lib/windows-pe.test.mjs'], root],
-  [['--test', 'scripts/lib/native-ci-cache-key.test.mjs'], root],
+  [['--test', 'scripts/lib/native-ci-cache-key.test.mjs', 'scripts/lib/ci-native-scope.test.mjs', 'scripts/lib/windows-compile-cache.test.mjs'], root],
   [['scripts/check-go.mjs', 'core'], root],
   [['scripts/check-go.mjs', 'sync'], root],
   [['scripts/check-go.mjs', 'updates'], root],

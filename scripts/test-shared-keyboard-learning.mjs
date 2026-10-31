@@ -1,6 +1,7 @@
 // Native shared storage/ranking checks use only newly owned synthetic profiles.
 // Windows also exercises actual DPAPI and the pinned private Rime C++ ABI.
 import { spawnSync } from 'node:child_process';
+import { cachedSpawn } from './lib/windows-compile-cache.mjs';
 import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -34,7 +35,7 @@ const report = { schema: 1, platform: process.platform, architecture: process.ar
   directory, profiles: profile, sourceIdentities: {}, fixtureIdentities: {}, runtimeIdentities: {}, commands: [], status: 'running' };
 const save = () => writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`);
 function run(phase, command, args, { env = process.env, timeout = 120000 } = {}) {
-  const result = spawnSync(command, args, { cwd: directory, encoding: 'utf8', windowsHide: true, timeout, maxBuffer: 16 * 1024 * 1024, env });
+  const result = cachedSpawn(command, args, { cwd: directory, encoding: 'utf8', windowsHide: true, timeout, maxBuffer: 16 * 1024 * 1024, env });
   const record = { phase, command, args, cwd: directory, status: result.status, signal: result.signal, error: result.error?.message, stdout: result.stdout, stderr: result.stderr };
   report.commands.push(record);
   save();
