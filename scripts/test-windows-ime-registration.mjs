@@ -1,6 +1,6 @@
 // Pure registration contracts and read-only queries; no UAC or OS mutation.
 // The verify cases use synthetic file bytes and never load a payload DLL.
-import { spawnSync } from 'node:child_process';
+import { cachedSpawn } from './lib/windows-compile-cache.mjs';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -23,7 +23,7 @@ const files = ['control.cpp', 'loader.h', 'identity.h', 'wire.h','wire_text.h', 
 const report = { schema: 1, boundary: 'Callback-only profile migration contracts, read-only existing-state query, synthetic file-byte verifier fixtures; no installation, UAC, TSF activation or payload execution', directory, sources: {}, commands: [], status: 'running' };
 const save = () => writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`);
 function run(phase, command, argv, allowed = [0]) {
-  const result = spawnSync(command, argv, { cwd: directory, encoding: 'utf8', windowsHide: true, timeout: 120000, maxBuffer: 8 * 1024 * 1024 });
+  const result = cachedSpawn(command, argv, { cwd: directory, encoding: 'utf8', windowsHide: true, timeout: 120000, maxBuffer: 8 * 1024 * 1024 });
   report.commands.push({ phase, command, args: argv, status: result.status, error: result.error?.message, stdout: result.stdout, stderr: result.stderr });
   save();
   process.stdout.write(result.stdout ?? '');

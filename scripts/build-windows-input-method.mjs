@@ -1,4 +1,4 @@
-import { execFileSync } from 'node:child_process';
+import { cachedSpawn } from './lib/windows-compile-cache.mjs';
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -17,7 +17,11 @@ mkdirSync(output, { recursive: true });
 mkdirSync(objects, { recursive: true });
 const compiler = process.env.CXX ?? 'g++';
 const cCompiler = process.env.CC ?? 'gcc';
-const run = (command,args) => execFileSync(command,args,{cwd:root,stdio:'inherit',windowsHide:true});
+const run = (command, args) => {
+  const result = cachedSpawn(command, args, { cwd: root, stdio: 'inherit', windowsHide: true });
+  if (result.error) throw result.error;
+  if (result.status !== 0) throw new Error(`${command} failed (${result.status})`);
+};
 if (/(?:^|[/\\])cl(?:\.exe)?$/i.test(compiler)) throw new Error('The Windows encrypted keyboard module requires the same MinGW-w64 GCC ABI as the pinned Rime runtime.');
 run(process.execPath,[path.join(root,'scripts/stage-keyboard-runtime.mjs')]);
 const keyboard = path.join(root,'apps/desktop/resources/windows-amd64/keyboard');
