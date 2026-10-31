@@ -113,6 +113,9 @@ func (s *KeyboardRanking) canApplyLocked(out KeyboardRankOutcome) bool {
 	if s.closed || s.frozen || out.Err != nil || out.Ticket != s.ticket || out.Result.Identity != s.current.Identity || out.Result.Revision != s.current.Revision {
 		return false
 	}
+	if c := out.Result.Completion; c != nil {
+		return s.current.AllowCompletion && len(s.current.Candidates) > 0 && s.current.Candidates[0].Start == 0 && s.current.Candidates[0].End == len(s.current.Input) && len(out.Result.Candidates) == 0 && domain.ValidKeyboardCompletion(*c, s.current.Input)
+	}
 	plain := make([]domain.Candidate, len(s.current.Candidates))
 	for i, c := range s.current.Candidates {
 		plain[i] = c.Candidate

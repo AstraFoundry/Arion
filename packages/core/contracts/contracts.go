@@ -66,6 +66,7 @@ type ContextSnapshot struct {
 	Identity
 	Target     TargetToken
 	SafeToRead bool
+	Selected   string
 	Before     string
 	After      string
 	Screen     string

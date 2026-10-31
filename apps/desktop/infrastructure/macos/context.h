@@ -29,6 +29,6 @@ int arion_accessibility_window(void *element, int pid, double timeout_seconds, c
 
 // arion_cursor_context reads up to max characters before and after the
 // focused element's selection. Strings are malloc'd UTF-8 the caller frees.
-int arion_cursor_context(void *element, long max, char **before, char **after);
+int arion_cursor_context(void *element, long max, char **before, char **after, char **selected);
 
 #endif

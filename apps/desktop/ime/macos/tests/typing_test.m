@@ -185,20 +185,74 @@ int main(int argc, const char *argv[]) {
             [typing applyRankingMessage:reply activation:@"test"];
             require(!typing.composing && editor.insertions==2, @"canceled reply cannot insert text");
         });
-        run(@"incomparable candidates emit content-free ranking skip", @"RNK-A02", ^{
-            __block NSUInteger skipped=0;
-            __block NSString *lastReason=nil;
-            typing.rankingSkipped=^(NSString *reason, NSUInteger count, NSUInteger revision) {
-                require(count<2 && revision>0, @"skip reports only bounded eligible count and revision");
-                if ([reason isEqual:@"no_comparable_candidates"]) skipped++;
-                lastReason=reason;
-            };
-            typing.rankingChanged=^(NSDictionary *snapshot, NSUInteger revision) { (void)revision; if (snapshot) lastReason=nil; };
+        run(@"generated whole-input candidate commits through the engine", @"RNK-A09", ^{
+            __block NSDictionary *request=nil;
+            __block NSUInteger epoch=0;
+            typing.rankingChanged=^(NSDictionary *snapshot,NSUInteger revision) { request=snapshot;epoch=revision; };
             typing.neuralRanking=YES;
-            type(typing,@"zizhufangti");
-            require(skipped>0 && [lastReason isEqual:@"no_comparable_candidates"], @"final mixed-coverage composition reports eligibility skip");
+            typing.contextRanking=NO;
+            type(typing,@"chonggyxia");
+            require(request!=nil && [request[@"allowCompletion"] boolValue], @"single full-range candidate can request completion");
+            NSData *requestJSON=[NSJSONSerialization dataWithJSONObject:request options:0 error:nil];
+            NSDictionary *wireRequest=requestJSON ? [NSJSONSerialization JSONObjectWithData:requestJSON options:0 error:nil] : nil;
+            require(wireRequest && CFGetTypeID((__bridge CFTypeRef)wireRequest[@"allowCompletion"])==CFBooleanGetTypeID(), @"completion capability serializes as a JSON boolean for the Go bridge");
+            NSDictionary *reply=@{@"activation":@"test",@"revision":@(epoch),@"status":@"ok",
+                @"rankResult":@{@"session_id":@"test",@"generation":@1,@"revision":@(epoch),
+                    @"completion":@{@"input":@"chonggyxia",@"text":@"重构一下",@"reading":@"chong gou yi xia"}}};
+            ArionCandidatePanel *panel=[ArionCandidatePanel new];
+            for (NSUInteger stage=0;stage<2;stage++) {
+                if (stage) [typing applyRankingMessage:reply activation:@"test"];
+                for (NSUInteger dark=0;dark<2;dark++) {
+                    panel.appearance=dark?ArionCandidateAppearanceDark:ArionCandidateAppearanceLight;
+                    [panel showCandidates:typing.snapshot.candidates highlighted:typing.snapshot.highlighted lastPage:typing.snapshot.lastPage
+                        revision:typing.revision caretRect:NSMakeRect(80,300,1,20)];
+                    savePanel(panel,report,[NSString stringWithFormat:@"completion-macos-%@-%@.png",stage?@"generated":@"original",dark?@"dark":@"light"]);
+                }
+            }
+            [panel hide];
+            require([typing.snapshot.candidates[0] isEqual:@"重构一下"] && editor.insertions==0,
+                    @"generated candidate becomes provisional first choice without inserting");
+            record(@"generated candidate",typing,editor);
+            press(typing,@" ",49);
+            require([editor.view.string isEqual:@"重构一下"] && editor.insertions==1, @"Space commits new engine candidate exactly once");
+            type(typing,@"chonggyxia");
+            NSArray *original=typing.snapshot.candidates.copy;
+            [typing applyRankingMessage:reply activation:@"test"];
+            require([original isEqual:typing.snapshot.candidates], @"old completion cannot affect new composition");
             press(typing,@"\x1b",53);
+            [typing applyRankingMessage:reply activation:@"test"];
+            require(!typing.composing && editor.insertions==1, @"cancelled completion cannot insert");
         });
+        for (NSString *action in @[@"edit",@"navigate",@"deactivate",@"punctuation",@"original",@"cancel"]) {
+            run([@"completion ownership " stringByAppendingString:action],@"RNK-A09",^{
+                __block NSDictionary *request=nil;__block NSUInteger epoch=0;
+                typing.neuralRanking=YES;typing.contextRanking=NO;
+                typing.rankingChanged=^(NSDictionary *snapshot,NSUInteger revision){request=snapshot;epoch=revision;};
+                type(typing,@"chonggyxia");
+                NSString *original=typing.snapshot.candidates[0];
+                require(request!=nil,@"completion request available");
+                NSDictionary *reply=@{@"activation":@"test",@"revision":@(epoch),@"status":@"ok",
+                    @"rankResult":@{@"session_id":@"test",@"generation":@1,@"revision":@(epoch),
+                        @"completion":@{@"input":@"chonggyxia",@"text":@"重构一下",@"reading":@"chong gou yi xia"}}};
+                if ([action isEqual:@"edit"]) press(typing,@"\x7f",51);
+                if ([action isEqual:@"navigate"]) [typing highlight:1 revision:typing.revision];
+                if ([action isEqual:@"deactivate"]) [typing deactivate];
+                NSArray *before=typing.snapshot.candidates.copy;
+                [typing applyRankingMessage:reply activation:@"test"];
+                if ([action isEqual:@"edit"] || [action isEqual:@"navigate"] || [action isEqual:@"deactivate"]) {
+                    require(editor.insertions==0 && (!before || [before isEqual:typing.snapshot.candidates]),@"ownership change rejects late completion");
+                } else if ([action isEqual:@"punctuation"]) {
+                    press(typing,@",",43);
+                    require([editor.view.string isEqual:@"重构一下，"],@"punctuation commits the displayed generated engine candidate");
+                } else if ([action isEqual:@"original"]) {
+                    selectText(typing,original);
+                    require([editor.view.string isEqual:original] && editor.insertions==1,@"original candidate retains its engine selection mapping");
+                } else {
+                    press(typing,@"\x1b",53);
+                    require(editor.view.string.length==0 && editor.insertions==0,@"cancel removes provisional generated candidate without commit");
+                }
+            });
+        }
         run(@"real full-Pinyin commit", @"KBD-A01", ^{
             type(typing, @"nihao");
             require(typing.composing && editor.view.hasMarkedText, @"engine preedit becomes AppKit marked text");

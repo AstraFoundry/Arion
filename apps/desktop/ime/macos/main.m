@@ -205,7 +205,7 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
     self.fd = fd;
     self.connection = NSUUID.UUID.UUIDString;
     [self writeMessage:@{@"op": @"hello", @"build": hostBuildIdentity, @"protocol":@1,
-        @"capabilities":@[@"keyboard-vocabulary-v1",@"keyboard-ranking-v2"]}];
+        @"capabilities":@[@"keyboard-vocabulary-v1",@"keyboard-ranking-v2",@"keyboard-completion-v1"]}];
     if (self.fd < 0) { close(reader); return NO; }
     NSString *connection = self.connection;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{

@@ -2,6 +2,7 @@
 #include "../shared/input.h"
 #include "../shared/ranking_bridge.h"
 #include "../shared/emoji.h"
+#include "../shared/completion.h"
 #include "../shared/spelling_options.h"
 #include "../shared/personal_vocabulary_bridge.h"
 #import <InputMethodKit/InputMethodKit.h>
@@ -542,14 +543,14 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
         [candidates addObject:@{@"id":[NSString stringWithFormat:@"c%zu",_menu.indices[i]],
             @"text":@(_menu.texts[i]),@"source":@(item.type),@"start":@(item.start),@"end":@(item.end)}];
     }
-    if (candidates.count<2) {
+    if (candidates.count==0) {
         [self skipRanking:@"no_comparable_candidates" count:candidates.count];
         return;
     }
     self.rankingCandidates = candidates; self.rankingSlots = slots;
     // Freeze and the new proposal are distinct messages on the bridge.
     self.rankingRevision++;
-    self.rankingChanged(@{@"input":@(input),@"preedit":self.snapshot.preedit ?: @"",@"before":self.context ?: @"",@"candidates":candidates},self.rankingRevision);
+    self.rankingChanged(@{@"allowCompletion":(_menu.metadata[0].start==0 && _menu.metadata[0].end==strlen(input) ? @YES : @NO),@"input":@(input),@"preedit":self.snapshot.preedit ?: @"",@"before":self.context ?: @"",@"candidates":candidates},self.rankingRevision);
 }
 - (void)applyRankingMessage:(NSDictionary *)message activation:(NSString *)activation {
     uint64_t revision=0, generation=0, resultRevision=0;
@@ -559,6 +560,19 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
     if (![message[@"status"] isEqual:@"ok"] || ![result isKindOfClass:NSDictionary.class] ||
         ![result[@"session_id"] isEqual:activation] || !vocabularyInteger(result[@"generation"],&generation) || generation!=1 ||
         !vocabularyInteger(result[@"revision"],&resultRevision) || resultRevision!=revision) { return; }
+    NSDictionary *completion=result[@"completion"];
+    if (completion) {
+        if (![completion isKindOfClass:NSDictionary.class] || ![completion[@"input"] isKindOfClass:NSString.class] ||
+            ![completion[@"text"] isKindOfClass:NSString.class] || ![self verify]) return;
+        if (!arion_completion_insert(self.session,[completion[@"input"] UTF8String],[completion[@"text"] UTF8String])) return;
+        // Rebuild from real engine candidates. Do not allow the old pair ranker
+        // to supersede the contextual completion before it is displayed.
+        if (!arion_menu_build_typed(&_menu,self.engine.api,self.session,self.pageSize,NULL,NULL,sharedMenuMetadata,NULL) || ![self publishRankedMenu]) {
+            self.recoveryText=self.snapshot.preedit; self.available=NO; [self cancel]; return;
+        }
+        [self freezeRanking];
+        return;
+    }
     NSArray *order=result[@"candidates"];
     if (![order isKindOfClass:NSArray.class] || order.count!=self.rankingCandidates.count) return;
     for (id item in order) if (![item isKindOfClass:NSDictionary.class] || ![item[@"id"] isKindOfClass:NSString.class]) return;

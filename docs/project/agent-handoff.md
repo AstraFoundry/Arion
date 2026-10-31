@@ -24,6 +24,10 @@ Read [AGENTS.md](../../AGENTS.md), [architecture](architecture.md), [repository]
 
 Verification results and their limits are recorded in [validation](../quality/validation.md).
 
+## Contextual keyboard completion
+
+The macOS whole-input generation path is implemented under [ADR 038](../decisions/038-contextual-keyboard-completion.md). Local phonetic-constrained smoke and native engine/editor fixtures are separate checks; installed-editor context acquisition and broad unseen quality remain open. Windows generation is not implemented.
+
 ## Open work
 
 | Task | Priority | Depends on | Concrete completion gate |

@@ -43,13 +43,14 @@ Input-method maintenance diagnostics include bounded helper PID and availability
 
 Detailed ranking events are recorded only in session-only developer mode: in About, click the version ten times within five seconds. The revealed switch disables it immediately; restarting also disables it. Input, context, candidates, IDs and model output remain excluded. Use the regular Export logs action after reproducing a problem. See [ADR 037](../decisions/037-keyboard-context-and-developer-diagnostics.md).
 
-`keyboard_ranking_configuration` remains available outside developer mode. `keyboard_ranking` identifies the catalog model, candidate count, elapsed time, stable error code and outcome: `accepted` (a different first candidate proposed), `unchanged`, `no_context`, `no_comparable_candidates`, `timeout`, `cancelled`, `unavailable` or `rejected`. Model events start only after debounce reaches the ranker.
+`keyboard_ranking_configuration` remains available outside developer mode. `keyboard_ranking` identifies the catalog model, candidate count, elapsed time, stable error code and outcome: `accepted` (a different first candidate proposed), `generated` (a provisional new-text candidate), `uncertain` (explicit generation abstention), `unchanged`, `no_context`, `no_comparable_candidates`, `timeout`, `cancelled`, `unavailable` or `rejected`. Model events start only after debounce reaches the ranker.
 
 `keyboard_ranking_trace` records closed reasons without text:
 
 | Reason | Meaning |
 | --- | --- |
-| `no_comparable_candidates` | Native filtering left fewer than two Han candidates covering the leader's input range; count is 0 or 1. Multiword input often has one full-range sentence and several shorter prefix words. No model ran. |
+| `completion_phonetic_mismatch` | Nonempty model output failed complete syllable/dictionary validation; original candidates remain available. |
+| `no_comparable_candidates` | Native filtering left fewer than two Han candidates covering the leader's input range; count is 0 or 1. Multiword input often has one full-range sentence and several shorter prefix words. No ranking model ran; negotiated whole-input completion may still run. |
 | `navigation` / `caret_not_at_end` | The menu was navigated, expanded or paged, or the caret moved inside the composition. |
 | `input_bounds` / `non_chinese` | Input/context exceeded admission bounds, or the first candidate was not Chinese. |
 | `freeze` / `superseded` / `stale_revision` | Composition ownership was revoked, a result lost to newer work, or an old native message arrived. Superseded work includes cancellation during debounce. |
@@ -58,4 +59,4 @@ Detailed ranking events are recorded only in session-only developer mode: in Abo
 | `context_marked_mismatch` / `context_bounds` | Captured caret text did not end in the owned preedit, or window context exceeded its bound. |
 | `proposal_sent` / `delivery_failed` | The bridge sent the proposal or transport failed. Delivery does not prove native application. |
 
-Native trace messages are admitted only for the verified live activation and a fresh revision. Reasons/counts are validated before recording; exports accept only the closed schema. A model can keep the first candidate, and no existing candidate can be replaced by newly generated text. Neither waiting nor enabling context guarantees a visible reorder.
+Native trace messages are admitted only for the verified live activation and a fresh revision. Reasons/counts are validated before recording; exports accept only the closed schema. A model can keep the first candidate. Negotiated macOS whole-input completion may add a provisional first candidate under [ADR 038](../decisions/038-contextual-keyboard-completion.md); it does not overwrite an existing candidate or committed text. Neither waiting nor enabling context guarantees a visible update.

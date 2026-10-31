@@ -450,7 +450,8 @@ func TestKeyboardRankingEventsCanBeExported(t *testing.T) {
 	r := openTest(t)
 	r.Record(Entry{Event: "keyboard_ranking_configuration"})
 	r.Record(Entry{Event: "keyboard_ranking_trace", Reason: "no_comparable_candidates", Count: 1})
-	for _, outcome := range []string{"accepted", "unchanged", "timeout", "cancelled", "unavailable", "rejected"} {
+	r.Record(Entry{Event: "keyboard_ranking_trace", Reason: "completion_phonetic_mismatch", Count: 1})
+	for _, outcome := range []string{"generated", "uncertain", "accepted", "unchanged", "timeout", "cancelled", "unavailable", "rejected"} {
 		r.Record(Entry{Event: "keyboard_ranking", ModelID: "chinese-ime-lm-4m-int8", Outcome: outcome, Count: 2, DurationMs: 427})
 	}
 	path := filepath.Join(t.TempDir(), "ranking.zip")
