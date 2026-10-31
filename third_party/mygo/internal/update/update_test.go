@@ -1,7 +1,9 @@
 package update
 
 import (
+	"archive/tar"
 	"bytes"
+	"compress/gzip"
 	"crypto/ed25519"
 	"crypto/sha256"
 	"encoding/base64"
@@ -99,6 +101,44 @@ func TestArchive(t *testing.T) {
 		if link, err := os.Readlink(filepath.Join(dst, "App.app/Contents/Resources/link")); err != nil || link != "data/a.txt" {
 			t.Errorf("link = %q, %v", link, err)
 		}
+	}
+}
+
+func TestExtractArchiveRejectsSymlinkEscape(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("the escape uses a POSIX symlink walk")
+	}
+	body := []byte("escaped")
+	var raw bytes.Buffer
+	gz := gzip.NewWriter(&raw)
+	tw := tar.NewWriter(gz)
+	entries := []tar.Header{
+		{Name: "a", Typeflag: tar.TypeSymlink, Linkname: ".", Mode: 0o777},
+		{Name: "a/b", Typeflag: tar.TypeSymlink, Linkname: "..", Mode: 0o777},
+		{Name: "a/b/outside.txt", Typeflag: tar.TypeReg, Mode: 0o644, Size: int64(len(body))},
+	}
+	for i, hdr := range entries {
+		if err := tw.WriteHeader(&hdr); err != nil {
+			t.Fatal(err)
+		}
+		if i == len(entries)-1 {
+			if _, err := tw.Write(body); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if err := tw.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if err := gz.Close(); err != nil {
+		t.Fatal(err)
+	}
+	dst := t.TempDir()
+	if err := ExtractArchive(bytes.NewReader(raw.Bytes()), dst); err == nil {
+		t.Fatal("symlink chain was extracted")
+	}
+	if _, err := os.Stat(filepath.Join(filepath.Dir(dst), "outside.txt")); err == nil {
+		t.Fatal("archive wrote outside the staging directory")
 	}
 }
 

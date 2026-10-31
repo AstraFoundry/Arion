@@ -15,16 +15,18 @@ Severity is the reviewer's estimate of real exploitability and impact: **High** 
 | SEC-05 | Low | Fixed | Next.js advisories in the site toolchain | `apps/site/package.json` |
 | SEC-06 | Medium | Open | Update version is not signed (rollback) | `third_party/mygo/updater.go:177`, `third_party/mygo/internal/update/update.go:105` |
 | SEC-07 | Medium | Open | macOS credentials readable through `/usr/bin/security` | `apps/desktop/infrastructure/keystore/item.go:61`, `keychain_darwin.go:40` |
-| SEC-08 | Medium | Open | macOS IME socket accepts any same-user peer | `apps/desktop/infrastructure/imebridge/ime.go:270`, `apps/desktop/infrastructure/macos/ime.go:332` |
+| SEC-08 | Low | Open | macOS IME peer is publisher-checked, not build-checked | `apps/desktop/infrastructure/macos/ime.go:329`, `apps/desktop/infrastructure/imebridge/peer_darwin.h:48` |
 | SEC-09 | Medium | Open | Windows elevates a helper from a user-writable directory | `apps/desktop/infrastructure/tsf/ime_windows.go:105`, `:573`; `third_party/mygo/cmd/mygo/nsis.go:329` |
 | SEC-10 | Low | Open | Release builds honour the E2E control socket | `apps/desktop/main.go:37`, `apps/desktop/bootstrap/e2e.go:195` |
-| SEC-11 | Low | Open | Update extraction follows in-archive symlinks | `third_party/mygo/internal/update/update.go:276` |
-| SEC-12 | Low | Open | Forged callback ends the ChatGPT sign-in | `apps/desktop/internal/oauthloopback/oauthloopback.go:56`, `apps/desktop/infrastructure/cloudpolish/chatgpt.go:22` |
-| SEC-13 | Low | Open | Update center signs downloads for unpublished files | `services/updates/application/service.go:141` |
+| SEC-11 | Low | Fixed | Update extraction follows in-archive symlinks | `third_party/mygo/internal/update/update.go` (`rejectSymlinkTraversal`) |
+| SEC-12 | Low | Fixed | Forged callback ends the ChatGPT sign-in | `apps/desktop/internal/oauthloopback/oauthloopback.go` |
+| SEC-13 | Low | Fixed | Update center signs downloads for unpublished files | `services/updates/application/service.go` (`publishedFile`) |
 | SEC-14 | Low | Open | `undici` advisories in site deployment tooling | `apps/site` → `wrangler` → `miniflare` → `undici` |
 | SEC-15 | Low | Open | Static site sends no security headers | `apps/site` (no `public/_headers`) |
 | SEC-16 | Info | Open | First-party actions pinned to major tags | `.github/workflows/*.yml` |
 | SEC-17 | Info | Open | Cloud polishing reuses another client's OAuth ID | `apps/desktop/infrastructure/cloudpolish/chatgpt.go:21` |
+| SEC-18 | Medium | Fixed | Security-event route skipped the rate limiter | `services/sync/interfaces/http/server.go` (`allowSecurity`) |
+| SEC-19 | Medium | Fixed | OIDC discovery could fetch a link-local JWKS URL | `services/sync/infrastructure/oidc/provider.go` (`ValidateFetchURL`) |
 
 ## Fixed
 
@@ -50,6 +52,26 @@ Shortcut-mode delivery places dictated text on the system clipboard for the past
 
 `pnpm audit` reported critical and high Next.js advisories for 16.0.0–16.4.0 (image optimization and `use cache` remote code execution, server action denial of service). The production site is a static export, so only the local development server was exposed. Next.js and `eslint-config-next` are now 16.4.3; `pnpm site:check` passes. Commit: `fix(security): upgrade the site to next 16.4.3`.
 
+### SEC-11 Update extraction can escape through earlier symlinks
+
+`ExtractArchive` still checks names and link targets lexically, and it now refuses to create or write an entry when any existing path component is a symbolic link (`Lstat`, not `Stat`). A chain such as `a → .` then `a/b → ..` stops at `a`. A valid signature is still required to reach extraction. Test: `TestExtractArchiveRejectsSymlinkEscape`. Commit: `fix(security): bound relay fetches, oauth callbacks, and update files`.
+
+### SEC-12 First callback wins on the fixed ChatGPT sign-in port
+
+The loopback listener now takes the expected `state` before it accepts connections. A callback with a different state is answered `403` and does not fill the one-slot channel, so the real redirect can still arrive. Hosted account sign-in passes its state the same way. An empty state remains first-callback-wins for tests that do not set one. PKCE still prevents token theft. A sign-in that receives only a wrong state now waits until its deadline instead of failing immediately. Test: `TestMismatchedStateDoesNotConsumeTheCallback`. Commit: `fix(security): bound relay fetches, oauth callbacks, and update files`.
+
+### SEC-13 Downloads of unpublished release files
+
+`FileURL` presigns a flat name only when the stable or beta index names it as an installer or update archive, or when that target's published manifest names it as the archive, a delta, or a previous archive. Anything else is `404` `NO_RELEASE`. Tests: the updates HTTP route test covers a published archive, a manifest delta, and `staged.tar.gz`. Commit: `fix(security): bound relay fetches, oauth callbacks, and update files`.
+
+### SEC-18 Security events skipped the relay rate limiter
+
+`POST /v1/security-events` verified the body with no call to `allow`. The route has no device proof, so the limit is per client address from `RemoteAddr`, not per `X-Arion-Device-Id`. Rotating that header does not buy another budget. The body is read only after the check. Test: `TestSecurityEventsShareAClientBudget`. Commit: `fix(security): bound relay fetches, oauth callbacks, and update files`.
+
+### SEC-19 Discovery JWKS URL could target link-local metadata
+
+When `JWKSURL` is empty, the relay stores `jwks_uri` from the issuer's discovery document and GETs it. That URL is now rejected when it is not `http` or `https`, carries user info, or addresses a link-local, unspecified, or multicast IP, or `metadata.google.internal`. The same check applies to the issuer and to redirects on the relay's own HTTP client. `http://127.0.0.1` and ordinary self-hosted hosts remain valid. A hostile issuer that uses a public name resolving to metadata is not covered. Tests: `TestFetchURLRejectsMetadataTargets`, `TestDiscoveryDoesNotFetchLinkLocalJWKS`. Commit: `fix(security): bound relay fetches, oauth callbacks, and update files`.
+
 ## Open
 
 ### SEC-06 The update signature does not bind the version
@@ -60,9 +82,9 @@ The manifest's Ed25519 signature covers only the archive's SHA-256. `Version`, t
 
 The hosted-sync refresh token and cloud polishing credentials (API key or ChatGPT refresh token) are written with `security add-generic-password -w <secret>` without an access list. The item's default ACL trusts the creating program, `/usr/bin/security`, so any process of the same user can read it with `security find-generic-password -w` without a Keychain prompt. The secret is also an argument of the child process while it is written (already documented in `keystore/item.go`). Proposed fix: move these items to the SecItem API used by `infrastructure/secrets` (Data Protection keychain, this-device accessibility, app access group) and migrate existing items once. Needs macOS validation and a migration decision.
 
-### SEC-08 macOS IME socket has no peer authentication
+### SEC-08 macOS IME peer is not bound to the installed build
 
-`~/Library/Application Support/Arion/ime.sock` is mode 0600, so only the same user connects, but the macOS bridge does not call `RequireClientVerification`; Windows verifies the pipe client's process and loaded module. Any same-user process can send `hello`/`activate`, become the IME client and send `dictate`. Arion then starts microphone capture under its own microphone permission; while the Arion input source is selected, the session commits the recognized text to that client instead of the real input method. The overlay pill makes capture visible. Proposed fix: verify the peer's audit token (`LOCAL_PEERTOKEN`) against the installed `ArionInput` code signature and announced build hash before accepting `activate` or `dictate`, as on Windows.
+`NewIME` calls `RequireClientVerification`. The socket peer is taken from `LOCAL_PEERTOKEN`, must share the process euid, and `BindPublisher` requires a Developer ID signature whose identifier is `ArionInput`'s bundle ID and whose Team ID is this app's. An unsigned or differently signed process cannot become the client. Unlike Windows, the check does not require `hello.Build` to equal the hash of the installed `ArionInput` binary, so an older signed copy of that bundle can still hold the voice pipe. Proposed fix: after `BindPublisher`, require `hello.Build` to equal `inputBuildIdentity` of the bundle the app itself installed.
 
 ### SEC-09 Elevated Windows helper runs from a user-writable directory
 
@@ -70,19 +92,7 @@ The per-user installer places the app in `%LOCALAPPDATA%\Programs\Arion`. Input-
 
 ### SEC-10 E2E control socket in release builds
 
-`main.go` passes `ARION_E2E_CONTROL`, `ARION_DATA_DIR` and `ARION_OFFLINE` from the environment in every build. With a control socket, a same-user process that launches the installed app can replay fixture audio and commit recognized text into the focused application through Arion's Accessibility trust; the socket is created with the default umask. Packaged E2E deliberately drives the shipped app, so removing the harness from releases is a test-strategy decision. Proposed fix: a release-time build tag that excludes the harness, or an explicit opt-in that release signing rejects, plus a 0600 socket in a private directory.
-
-### SEC-11 Update extraction can escape through earlier symlinks
-
-`ExtractArchive` checks names and link targets lexically. A symlink `a → .` followed by `a/b → ..` passes those checks, after which an entry `a/b/x` resolves outside the staging directory. Exploitation requires a validly signed archive, whose signer can already ship code, so this is defense in depth. Proposed fix: extract through `os.OpenRoot` or reject entries whose parent path traverses a symlink; record it as a maintained MyGo patch in [third_party](../../third_party/README.md).
-
-### SEC-12 First callback wins on the fixed ChatGPT sign-in port
-
-The ChatGPT sign-in must listen on `127.0.0.1:1455` (the provider's registered redirect) and delivers only the first callback. Any web page open during sign-in can request `http://localhost:1455/auth/callback?state=x`, which fails the attempt with a state mismatch. State and PKCE prevent token theft; the impact is a sign-in denial. Proposed fix: ignore callbacks whose state does not match and keep waiting until the deadline.
-
-### SEC-13 Downloads of unpublished release files
-
-`FileURL` presigns any flat name under `files/` in the release bucket, including staged releases not yet published and withdrawn releases. Names are predictable from versions. The files are signed builds, and apps install only what a channel manifest offers, so the exposure is early or continued public access to builds that staff have not published. Proposed fix: presign only files referenced by a published channel manifest or index.
+`main.go` passes `ARION_E2E_CONTROL`, `ARION_DATA_DIR` and `ARION_OFFLINE` from the environment in every build. With a control socket, a same-user process that launches the installed app can replay fixture audio and commit recognized text into the focused application through Arion's Accessibility trust. After bind, `internal/controlsock.Listen` limits the socket to the current user. POSIX sockets are mode `0600`. On Windows, `os.Chmod` only changes the read-only attribute and `Stat` still reports `0666`, so Listen replaces the file DACL with one protected allow ACE for the current user. Another user cannot connect when the path is in a shared directory. Packaged E2E deliberately drives the shipped app, so removing the harness from releases is still a test-strategy decision. Proposed fix: a release-time build tag that excludes the harness, or an explicit opt-in that release signing rejects.
 
 ### SEC-14 `undici` advisories in deployment tooling
 

@@ -11,7 +11,7 @@ import (
 func TestLoopbackServesCallbackPage(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	lb, redirect, err := startLoopback(ctx, func() []byte { return []byte("<p>page</p>") })
+	lb, redirect, err := startLoopback(ctx, func() []byte { return []byte("<p>page</p>") }, "")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -14,6 +14,7 @@ import (
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/audio"
+	"arion.local/desktop/internal/controlsock"
 	"github.com/egoist/mygo"
 )
 
@@ -193,8 +194,7 @@ func (h *harness) observations() map[string]any {
 // serve answers one JSON command per line on a local socket owned by the
 // launching driver.
 func (h *harness) serve(path string) error {
-	_ = os.Remove(path)
-	listener, err := net.Listen("unix", path)
+	listener, err := controlsock.Listen(path)
 	if err != nil {
 		return err
 	}

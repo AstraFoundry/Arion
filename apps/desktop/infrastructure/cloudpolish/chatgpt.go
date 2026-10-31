@@ -66,7 +66,7 @@ func signInChatGPT(ctx context.Context, issuer string, client *http.Client, brow
 	if err != nil {
 		return Credential{}, fail(CodeSignIn, err)
 	}
-	srv, _, err := oauthloopback.Start(ctx, chatgptListen, chatgptPath, page)
+	srv, _, err := oauthloopback.Start(ctx, chatgptListen, chatgptPath, page, state)
 	if err != nil {
 		if ctx.Err() != nil {
 			return Credential{}, stopped(ctx)

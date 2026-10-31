@@ -5,6 +5,7 @@ import (
 	"crypto/ed25519"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"sync"
@@ -351,6 +352,76 @@ func asDomain(err error, dest **domain.Error) bool {
 	}
 	return false
 }
+
+func TestFetchURLRejectsMetadataTargets(t *testing.T) {
+	for _, raw := range []string{
+		"http://169.254.169.254/latest/meta-data",
+		"https://metadata.google.internal/computeMetadata/v1/",
+		"file:///etc/passwd",
+		"https://user:pass@example.com/jwks",
+		"http://0.0.0.0/jwks",
+	} {
+		if err := ValidateFetchURL(raw); err == nil {
+			t.Errorf("accepted %s", raw)
+		}
+	}
+	for _, raw := range []string{"http://127.0.0.1:9/jwks", "https://login.example.com/jwks", "http://issuer.internal:8080/jwks"} {
+		if err := ValidateFetchURL(raw); err != nil {
+			t.Errorf("rejected %s: %v", raw, err)
+		}
+	}
+	if _, err := New(Options{
+		Issuer: "https://login.example.com", Audience: testAudience, ClientID: testClient, Entitlement: testEntitlement,
+		JWKSURL: "http://169.254.169.254/jwks", Algorithms: []string{"EdDSA"}, Leeway: time.Second, CacheTTL: time.Hour,
+		Directory: memory.New(), Now: time.Now,
+	}); err == nil {
+		t.Fatal("link-local JWKS URL was configured")
+	}
+}
+
+func TestDiscoveryDoesNotFetchLinkLocalJWKS(t *testing.T) {
+	_, priv, err := ed25519.GenerateKey(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fetched := false
+	discovery := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/.well-known/openid-configuration" {
+			fetched = true
+			http.NotFound(w, r)
+			return
+		}
+		_ = json.NewEncoder(w).Encode(map[string]string{"jwks_uri": "http://169.254.169.254/latest"})
+	}))
+	t.Cleanup(discovery.Close)
+	provider, err := New(Options{
+		Issuer: discovery.URL, Audience: testAudience, ClientID: testClient, Entitlement: testEntitlement,
+		Algorithms: []string{"EdDSA"}, Leeway: 30 * time.Second, CacheTTL: time.Hour, Quota: 1 << 20,
+		Directory: memory.New(), Now: time.Now,
+		HTTP: &http.Client{Transport: roundTripFunc(func(r *http.Request) (*http.Response, error) {
+			if r.URL.Hostname() == "169.254.169.254" {
+				fetched = true
+				return nil, errors.New("metadata fetched")
+			}
+			return http.DefaultTransport.RoundTrip(r)
+		})},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Now()
+	token := signAccess(t, priv, "k1", discovery.URL, testAudience, "alice", "at+jwt", now, now.Add(time.Hour), now, []string{testEntitlement})
+	if _, err := provider.Authorize(context.Background(), "Bearer "+token); err == nil {
+		t.Fatal("authorized with an unfetched key")
+	}
+	if fetched {
+		t.Fatal("relay requested the link-local JWKS URL")
+	}
+}
+
+type roundTripFunc func(*http.Request) (*http.Response, error)
+
+func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
 
 func asApplication(err error, dest **application.Error) bool {
 	for err != nil {

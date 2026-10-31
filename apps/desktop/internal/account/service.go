@@ -127,7 +127,7 @@ func (s *Service) SignIn(ctx context.Context) (Session, error) {
 	if err != nil {
 		return Session{}, wrap(CodeToken, "state", err)
 	}
-	lb, redirect, err := startLoopback(opCtx, s.page)
+	lb, redirect, err := startLoopback(opCtx, s.page, state)
 	if err != nil {
 		return Session{}, s.aborted(ctx, opCtx, err)
 	}

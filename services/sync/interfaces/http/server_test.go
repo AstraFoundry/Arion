@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/ed25519"
+	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
 	"io"
@@ -586,6 +587,32 @@ func newIssuer(t *testing.T) (*httptest.Server, ed25519.PrivateKey) {
 	}))
 	t.Cleanup(srv.Close)
 	return srv, priv
+}
+
+func TestSecurityEventsShareAClientBudget(t *testing.T) {
+	issuer := httptest.NewServer(http.NotFoundHandler())
+	t.Cleanup(issuer.Close)
+	_, priv, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	env := newHarness(t, 1<<20, time.Hour, 1, "oidc", issuer.URL, priv)
+	first := env.postSET("not-a-token")
+	if first.Code == http.StatusTooManyRequests {
+		t.Fatalf("first request limited: %s", first.Body.Bytes())
+	}
+	for _, device := range []string{"", "device-a", "device-b"} {
+		req := httptest.NewRequest(http.MethodPost, "/v1/security-events", strings.NewReader("not-a-token"))
+		req.Header.Set("Content-Type", "application/secevent+jwt")
+		if device != "" {
+			req.Header.Set("X-Arion-Device-Id", device)
+		}
+		rec := httptest.NewRecorder()
+		env.h.ServeHTTP(rec, req)
+		if rec.Code != http.StatusTooManyRequests {
+			t.Fatalf("device %q: %d %s", device, rec.Code, rec.Body.Bytes())
+		}
+	}
 }
 
 func strconvMilli(at time.Time) string {
