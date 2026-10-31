@@ -331,10 +331,7 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 				microphone.Meter(c, store, tokens)
 				ui.Text(c, messages.Text(copy.OnbMicTest)).FontSize(theme.Caption).TextColor(tokens.Muted)
 			case runtime.ConsentDenied, runtime.ConsentRestricted:
-				ui.Row(c).Gap(6).MaxWidth(380).Children(func() {
-					ui.Icon(c, icons.TriangleAlert).FontSize(13).TextColor(tokens.Danger).Margin(1, 0, 0, 0)
-					ui.Text(c, messages.Text(copy.OnbMicDenied)).FontSize(theme.Caption).Shrink(1)
-				})
+				kit.Notice(c, tokens, tokens.Danger, messages.Text(copy.OnbMicDenied), nil).MaxWidth(380)
 				permissions.Request(c, store, tokens, permissions.Microphone, messages.Text(copy.OnbMicAllow), true)
 			default:
 				permissions.Request(c, store, tokens, permissions.Microphone, messages.Text(copy.OnbMicAllow), true)

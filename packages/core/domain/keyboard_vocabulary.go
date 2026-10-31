@@ -42,6 +42,34 @@ func KeyboardTerms(entries []MemoryEntry) ([]KeyboardTerm, error) {
 	return terms, nil
 }
 
+// NormalizeKeyboardPinyin puts a typed reading in transport form without
+// changing what it says. Full-width letters and spaces, as a Chinese input
+// method types them, become ASCII; letters become lowercase; ü becomes v,
+// as Pinyin keyboards spell it; and runs of spaces or syllable apostrophes
+// (xi'an) become one space. Anything else is left for
+// ValidateKeyboardPinyin to reject.
+func NormalizeKeyboardPinyin(reading string) string {
+	var b strings.Builder
+	for _, r := range reading {
+		switch {
+		case r >= '\uff01' && r <= '\uff5e':
+			r -= 0xfee0
+		case r == '\u3000':
+			r = ' '
+		}
+		switch {
+		case r >= 'A' && r <= 'Z':
+			r += 'a' - 'A'
+		case r == '\u00fc' || r == '\u00dc':
+			r = 'v'
+		case r == '\'' || r == '\u2019':
+			r = ' '
+		}
+		b.WriteRune(r)
+	}
+	return strings.Join(strings.Fields(b.String()), " ")
+}
+
 // ValidateKeyboardPinyin checks the transport form, not linguistic correctness.
 // The native dictionary must additionally resolve each syllable before use.
 // Empty explicitly removes the reading. No character-to-Pinyin guessing occurs.

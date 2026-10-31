@@ -19,6 +19,35 @@ func Tooltip(c *ui.Context, tokens theme.Tokens, anchor ui.Element, text string)
 	})
 }
 
+// FieldError says why the value in field cannot be saved, in a callout
+// attached below the field: the message stays with the field it is about
+// and nothing around it moves. The field is marked invalid, so a text
+// input draws its border in Danger even while focused and assistive
+// technology reads the message with it; in the callout the alert glyph
+// alone carries the color. The callout starts where the field starts, or,
+// with end, ends where it ends, for a field at the end of its row. Nothing
+// shows for an empty text.
+func FieldError(c *ui.Context, tokens theme.Tokens, field ui.Element, text string, end bool) {
+	if text == "" {
+		return
+	}
+	field.Error(text)
+	at, self := ui.AnchorBottomLeft, ui.AnchorTopLeft
+	if end {
+		at, self = ui.AnchorBottomRight, ui.AnchorTopRight
+	}
+	ui.Overlay(c, func() {
+		callout := ui.Row(c).AttachTo(field, at, self).Margin(6, 0, 0, 0).
+			MaxWidth(280).Padding(6, 10, 6, 8).Gap(6).AlignItems(ui.Start).PassThrough().
+			Radius(theme.RadiusMD).Background(tokens.Card).Border(1, tokens.CardBorder)
+		Raise(callout, tokens, Lifted)
+		callout.Children(func() {
+			ui.Icon(c, icons.CircleAlert).FontSize(13).TextColor(tokens.Danger).Margin(1, 0, 0, 0)
+			ui.Text(c, text).FontSize(theme.Caption).TextColor(tokens.Text).Shrink(1)
+		})
+	})
+}
+
 // Hint is an info glyph whose Tooltip explains the setting beside it, so a
 // row keeps one line. It takes the keyboard focus, which shows the tip too.
 func Hint(c *ui.Context, tokens theme.Tokens, text string) ui.Element {
@@ -35,7 +64,7 @@ func Hint(c *ui.Context, tokens theme.Tokens, text string) ui.Element {
 // TipRow is Row with its explanation in a Hint after the title instead of
 // a detail line.
 func TipRow(c *ui.Context, tokens theme.Tokens, title, tip string, control func()) ui.Element {
-	return ui.Row(c).Gap(16).Padding(12, 16).AlignItems(ui.Center).Children(func() {
+	return RowFrame(ui.Row(c)).Gap(16).AlignItems(ui.Center).Children(func() {
 		ui.Row(c).Grow(1).Shrink(1).Gap(6).AlignItems(ui.Center).Children(func() {
 			ui.Text(c, title).FontSize(theme.Body).FontWeight(500).Shrink(1)
 			if tip != "" {
@@ -79,7 +108,7 @@ func LinkRow(c *ui.Context, tokens theme.Tokens, title, value string, lead func(
 // LinkRowWith is LinkRow with its own content before the chevron in place
 // of a value, as a stack of avatars.
 func LinkRowWith(c *ui.Context, tokens theme.Tokens, title string, lead, trailing func()) bool {
-	row := ui.ButtonBase(c).Gap(12).Padding(12, 16).AlignItems(ui.Center).Label(title)
+	row := RowFrame(ui.ButtonBase(c)).Gap(12).AlignItems(ui.Center).Label(title)
 	if row.Hovered() {
 		row.Background(tokens.AccentSoft.Alpha(0.5).Over(tokens.Card))
 	}

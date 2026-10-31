@@ -28,7 +28,9 @@ func (s *PickerState) Close(store runtime.Store) {
 	s.listening, s.focus, s.error = false, false, ""
 }
 
-func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), validate func(runtime.HoldKey) copy.Key) {
+// shortcutField is the recorder. A key it refuses is the field's error,
+// attached below it; end aligns that callout with a field ending its row.
+func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), validate func(runtime.HoldKey) copy.Key, end bool) {
 	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
 	t := c.Theme()
 	closeRecorder := func() { state.Close(store); c.Invalidate() }
@@ -107,7 +109,14 @@ func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner
 					set(captured.RecordedKey)
 					closeRecorder()
 				}
+				if state.error != "" {
+					c.Announce(messages.Text(state.error))
+				}
 			}
+		}
+		if state.error != "" {
+			field.Border(1, tokens.Danger)
+			kit.FieldError(c, tokens, field, messages.Text(state.error), end)
 		}
 	})
 }

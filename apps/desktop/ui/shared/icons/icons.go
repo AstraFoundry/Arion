@@ -46,6 +46,7 @@ var (
 	ChevronRight      = load("chevron-right")
 	ExternalLink      = load("external-link")
 	ChevronsUpDown    = load("chevrons-up-down")
+	CircleAlert       = load("circle-alert")
 	CircleCheck       = load("circle-check")
 	CircleUser        = load("circle-user")
 	Clipboard         = load("clipboard")

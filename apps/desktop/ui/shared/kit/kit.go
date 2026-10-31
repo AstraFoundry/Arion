@@ -165,10 +165,17 @@ func Group(c *ui.Context, tokens theme.Tokens, title string, body func()) {
 	})
 }
 
+// RowFrame gives a card row the settings row geometry: theme.RowHeight
+// and the shared insets. Its insets fit the tallest control inside that
+// height, so the control never decides how tall a row is.
+func RowFrame(row ui.Element) ui.Element {
+	return row.Padding(10, 16).MinHeight(theme.RowHeight)
+}
+
 // Row lays out a labeled setting: title and optional detail on the left,
 // the control on the right.
 func Row(c *ui.Context, tokens theme.Tokens, title, detail string, control func()) ui.Element {
-	return ui.Row(c).Gap(16).Padding(12, 16).AlignItems(ui.Center).Children(func() {
+	return RowFrame(ui.Row(c)).Gap(16).AlignItems(ui.Center).Children(func() {
 		ui.Column(c).Grow(1).Shrink(1).Gap(2).Children(func() {
 			ui.Text(c, title).FontSize(theme.Body).FontWeight(500)
 			if detail != "" {
@@ -205,6 +212,25 @@ func Status(c *ui.Context, tokens theme.Tokens, icon *ui.SVG, color ui.Color, te
 	return ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
 		ui.Icon(c, icon).FontSize(13).TextColor(color)
 		ui.Text(c, text).FontSize(theme.Caption).FontWeight(500).TextColor(tokens.Text).SingleLine().ContentTransition(ui.ContentTransition{})
+	})
+}
+
+// Notice states a problem that is not one field's value, such as a failed
+// operation or a missing permission, where it applies: an alert glyph in
+// ink (Danger for a failure, Warning for something waiting on the user)
+// beside the message in Text ink, with the control that resolves it, when
+// action builds one, at the trailing edge. As with Status, the color stays
+// on the glyph and never on the sentence. A field's own value takes
+// FieldError instead.
+func Notice(c *ui.Context, tokens theme.Tokens, ink ui.Color, text string, action func()) ui.Element {
+	return ui.Row(c).Gap(10).AlignItems(ui.Center).Children(func() {
+		ui.Row(c).Grow(1).Shrink(1).Gap(6).AlignItems(ui.Start).Children(func() {
+			ui.Icon(c, icons.TriangleAlert).FontSize(13).TextColor(ink).Margin(1, 0, 0, 0)
+			ui.Text(c, text).FontSize(theme.Caption).TextColor(tokens.Text).Shrink(1)
+		})
+		if action != nil {
+			action()
+		}
 	})
 }
 

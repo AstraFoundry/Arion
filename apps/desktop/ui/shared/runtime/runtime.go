@@ -364,6 +364,12 @@ var (
 	ErrVocabularyConflict = errors.New("vocabulary variant belongs to another term")
 )
 
+// KeyboardPinyinValid reports whether reading, as typed, would save for
+// spelling: SetKeyboardPinyin normalizes it, then checks it the same way.
+func KeyboardPinyinValid(spelling, reading string) bool {
+	return domain.ValidateKeyboardPinyin(spelling, domain.NormalizeKeyboardPinyin(reading)) == nil
+}
+
 // Learned is a vocabulary entry just learned from the user's correction.
 type Learned struct {
 	ID   string
@@ -629,6 +635,8 @@ type Actions interface {
 	AddReplacementVariants(froms []string, to string) error
 	// AddHotword saves a canonical ASR term independently of correction pairs.
 	AddHotword(text string) error
+	// SetKeyboardPinyin binds a reading, as typed, to the spelling; it is
+	// normalized first (see KeyboardPinyinValid).
 	SetKeyboardPinyin(id, spelling, reading string) error
 	RemoveReplacement(id string)
 	// UndoLearned forgets the entry just learned and dismisses its notice.

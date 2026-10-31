@@ -23,6 +23,24 @@ func TestKeyboardPinyinTransportValidation(t *testing.T) {
 	}
 }
 
+func TestKeyboardPinyinNormalizesTypedForm(t *testing.T) {
+	for typed, want := range map[string]string{
+		"xing cha gong fang":       "xing cha gong fang",
+		"xing\u3000cha\u3000gong":  "xing cha gong",
+		"  xing  cha\tgong ":       "xing cha gong",
+		"Xing CHA":                 "xing cha",
+		"\uff58\uff49\uff4e\uff47": "xing",
+		"l\u00fc L\u00dc":          "lv lv",
+		"xi'an xi\u2019an":         "xi an xi an",
+		"":                         "",
+		"xing1":                    "xing1",
+	} {
+		if got := NormalizeKeyboardPinyin(typed); got != want {
+			t.Errorf("NormalizeKeyboardPinyin(%q) = %q, want %q", typed, got, want)
+		}
+	}
+}
+
 func TestKeyboardProjectionUsesOnlyExplicitCurrentReadings(t *testing.T) {
 	entries := []MemoryEntry{
 		{ID: "z", To: "星槎", KeyboardPinyin: "xing cha", Origin: OriginEdit, Uses: 900},

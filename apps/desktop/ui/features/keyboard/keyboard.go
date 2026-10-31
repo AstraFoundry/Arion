@@ -138,9 +138,9 @@ func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 		ui.Text(c, messages.Text(copy.IMESetupHint)).FontSize(theme.Caption).TextColor(tokens.Muted)
 	}
 	if state.Error != "" {
-		ui.Text(c, messages.Text(errorKey(store, state.Error))).FontSize(theme.Caption).TextColor(tokens.Danger)
+		kit.Notice(c, tokens, tokens.Danger, messages.Text(errorKey(store, state.Error)), nil)
 	} else if s.InputMethodError != "" {
-		ui.Text(c, messages.Text(errorKey(store, s.InputMethodError))).FontSize(theme.Caption).TextColor(tokens.Danger)
+		kit.Notice(c, tokens, tokens.Danger, messages.Text(errorKey(store, s.InputMethodError)), nil)
 	}
 }
 
@@ -401,13 +401,14 @@ func Neural(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			}
 		}
 		if enabled && strings.HasPrefix(store.State.Platform, "darwin") && (store.State.Preferences.Keyboard.ContextCursor || store.State.Preferences.Keyboard.ContextScreen) && store.State.Permissions.Accessibility != runtime.ConsentGranted {
-			kit.Row(c, tokens, messages.Text(copy.ContextScreenPermission), "", func() {
+			kit.Notice(c.Key("ranking-permission-notice"), tokens, tokens.Warning, messages.Text(copy.ContextScreenPermission), func() {
 				if kit.Button(c.Key("ranking-permission"), tokens, kit.Outline, messages.Text(copy.Allow), true).Clicked() {
 					store.Actions.RequestAccessibility()
 				}
-			})
+			}).Padding(0, 16, 12, 16)
 		}
 
+		// A ready model needs no line: the switch already says ranking is on.
 		if enabled && model.State != runtime.PolishReady {
 			ui.Column(c).Padding(0, 16, 12, 16).Gap(8).Children(func() {
 				key := copy.KbdNeuralUnavailable

@@ -78,10 +78,35 @@ func TestVocabularyReadingEditor(t *testing.T) {
 			t.Fatal(err)
 		}
 		settle(tt)
-		if !hasText(tt, messages.Text(copy.VocabReadingInvalid)) {
-			t.Fatal("invalid reading failure was hidden")
+		// The failure is a callout on the field, not a line in the list.
+		failure, ok := tt.Find(messages.Text(copy.VocabReadingInvalid))
+		field, _ := tt.Find(messages.Text(copy.VocabReading))
+		if !ok || failure.Y < field.Y+field.H || failure.X > field.X+field.W {
+			t.Fatalf("invalid reading failure not attached below its field: %+v, field %+v", failure, field)
 		}
 		snapshot(t, tt, "vocabulary-reading-invalid-"+name)
+		// After a failed save the field checks every edit: still invalid
+		// keeps the callout, valid again removes it at once.
+		actions.vocabError = nil
+		if err := tt.Click(messages.Text(copy.VocabReading)); err != nil {
+			t.Fatal(err)
+		}
+		tt.Key(0, ui.KeyEnd)
+		tt.Type("1")
+		settle(tt)
+		if !hasText(tt, messages.Text(copy.VocabReadingInvalid)) {
+			t.Fatal("an edit that is still invalid cleared the failure")
+		}
+		tt.Key(0, ui.KeyBackspace)
+		settle(tt)
+		if hasText(tt, messages.Text(copy.VocabReadingInvalid)) {
+			t.Fatalf("a valid reading kept the failure: %q", tt.Texts())
+		}
+		actions.vocabError = runtime.ErrVocabularyInvalid
+		if err := tt.Click(messages.Text(copy.VocabReadingSave)); err != nil {
+			t.Fatal(err)
+		}
+		settle(tt)
 		actions.vocabError = runtime.ErrVocabularyConflict
 		if err := tt.Click(messages.Text(copy.VocabReadingSave)); err != nil {
 			t.Fatal(err)

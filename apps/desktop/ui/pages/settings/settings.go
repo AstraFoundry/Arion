@@ -245,7 +245,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		})
 
 		kit.Card(c.Key("translation-settings"), tokens).Children(func() {
-			ui.Column(c).Padding(12, 16).Children(func() { holdkey.TranslationToggle(c, store, &p.translatePicker) })
+			kit.RowFrame(ui.Column(c)).Justify(ui.Center).Children(func() { holdkey.TranslationToggle(c, store, &p.translatePicker) })
 			kit.Disclosure(c.Key("translation-details"), holdkey.TranslationEnabled(store), func() {
 				kit.Divider(c, tokens)
 				holdkey.TranslateSetting(c, store, &p.translatePicker)
@@ -337,7 +337,7 @@ func privacy(c *ui.Context, messages copy.Catalog, tokens theme.Tokens) {
 			if i > 0 {
 				kit.Divider(c, tokens)
 			}
-			ui.Row(c).Gap(12).Padding(12, 16).AlignItems(ui.Center).Children(func() {
+			kit.RowFrame(ui.Row(c)).Gap(12).AlignItems(ui.Center).Children(func() {
 				ui.Icon(c, item.icon).FontSize(16).TextColor(tokens.Muted)
 				ui.Row(c).Grow(1).Shrink(1).Gap(6).AlignItems(ui.Center).Children(func() {
 					ui.Text(c, item.title).FontSize(theme.Body).FontWeight(500).Shrink(1)

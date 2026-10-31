@@ -6,7 +6,6 @@ package polish
 import (
 	"arion.local/desktop/ui/entities/model"
 	"arion.local/desktop/ui/shared/copy"
-	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
@@ -145,13 +144,11 @@ func Context(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				if !prefs.ContextScreen || store.State.Permissions.Accessibility == runtime.ConsentGranted {
 					return
 				}
-				ui.Row(c.Key("screen-permission")).Padding(0, 16, 12, 16).Gap(8).AlignItems(ui.Center).Children(func() {
-					ui.Icon(c, icons.TriangleAlert).FontSize(14).TextColor(tokens.Warning)
-					ui.Text(c, messages.Text(copy.ContextScreenPermission)).FontSize(theme.Caption).Grow(1)
+				kit.Notice(c.Key("screen-permission"), tokens, tokens.Warning, messages.Text(copy.ContextScreenPermission), func() {
 					if kit.Button(c, tokens, kit.Outline, messages.Text(copy.Allow), true).Clicked() {
 						store.Actions.RequestAccessibility()
 					}
-				})
+				}).Padding(0, 16, 12, 16)
 			})
 		row("context-history", copy.ContextHistoryLabel, copy.ContextHistoryDetail, prefs.ContextHistory,
 			func(p *runtime.Preferences, on bool) { p.ContextHistory = on }, nil)
@@ -174,28 +171,42 @@ func Summary(store runtime.Store) string {
 	return messages.Text(copy.PolishEngineLocal)
 }
 
-// Status shows the explicit download offer, progress, or a failure with retry.
+// Status shows the explicit download offer, progress, or a failure with
+// retry. A ready model shows nothing: the switch and the chosen engine
+// already say polishing runs on this device.
 func Status(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	status(c, store, tokens, true)
 }
 
 func status(c *ui.Context, store runtime.Store, tokens theme.Tokens, showControls bool) {
+	body := statusBody(c, store, tokens, showControls)
+	if body == nil {
+		return
+	}
+	ui.Column(c).Padding(0, 16, 12, 16).Gap(8).Children(body)
+}
+
+// statusBody is the status for the model's state, or nil when it has
+// nothing to say.
+func statusBody(c *ui.Context, store runtime.Store, tokens theme.Tokens, showControls bool) func() {
 	messages := store.Copy()
 	p := store.State.Polish
 	on := store.State.Preferences.Polish
-	ui.Column(c).Padding(0, 16, 12, 16).Gap(8).Children(func() {
-		switch {
-		case p.State == runtime.PolishUnsupported:
+	switch {
+	case p.State == runtime.PolishUnsupported:
+		return func() {
 			ui.Text(c, messages.Text(copy.PolishUnsupported)).FontSize(theme.Caption).TextColor(tokens.Muted)
-		case p.State == runtime.PolishFailed:
-			ui.Row(c.Key("failed")).Gap(8).AlignItems(ui.Center).Children(func() {
-				ui.Icon(c, icons.TriangleAlert).FontSize(14).TextColor(tokens.Danger)
-				ui.Text(c, messages.Text(model.FailureKey(p.Failure))).FontSize(theme.Caption).Grow(1)
+		}
+	case p.State == runtime.PolishFailed:
+		return func() {
+			kit.Notice(c.Key("failed"), tokens, tokens.Danger, messages.Text(model.FailureKey(p.Failure)), func() {
 				if kit.Button(c, tokens, kit.Outline, messages.Text(copy.Retry), true).Clicked() {
 					store.Actions.RetryPolish()
 				}
 			})
-		case p.State == runtime.PolishProvisioning || p.State == runtime.PolishLoading:
+		}
+	case p.State == runtime.PolishProvisioning || p.State == runtime.PolishLoading:
+		return func() {
 			label := messages.Text(model.PolishPhaseLabel(p))
 			ui.Progress(c.Key("bar"), model.PolishFraction(p)).Label(label)
 			ui.Row(c).Children(func() {
@@ -208,9 +219,11 @@ func status(c *ui.Context, store runtime.Store, tokens theme.Tokens, showControl
 			if p.State == runtime.PolishProvisioning && showControls {
 				cancelDownload(c.Key("cancel-download"), store, tokens, kit.Ghost)
 			}
-		case p.State == runtime.PolishReady:
-			kit.Status(c.Key("ready"), tokens, icons.ShieldCheck, tokens.Success, messages.Text(copy.PolishReady))
-		case on && !p.Installed:
+		}
+	case p.State == runtime.PolishReady:
+		return nil
+	case on && !p.Installed:
+		return func() {
 			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 				if showControls {
 					ui.Text(c, messages.DownloadSize(p.SizeBytes)).FontSize(theme.Caption).TextColor(tokens.Muted).Grow(1)
@@ -219,10 +232,13 @@ func status(c *ui.Context, store runtime.Store, tokens theme.Tokens, showControl
 					store.Actions.DownloadPolish()
 				}
 			})
-		case !p.Installed && showControls:
+		}
+	case !p.Installed && showControls:
+		return func() {
 			ui.Text(c, messages.DownloadSize(p.SizeBytes)).FontSize(theme.Caption).TextColor(tokens.Muted)
 		}
-	})
+	}
+	return nil
 }
 
 func cancelDownload(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant) ui.Element {

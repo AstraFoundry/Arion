@@ -3,7 +3,7 @@
   "VocabReading": "拼音",
   "VocabKeyboardPending": "已保存，键盘词条尚未更新。请选择 Arion 并结束当前拼音输入，等待更新。",
   "VocabKeyboardFailed": "键盘词条更新失败，请检查拼音读音和输入法设置。词条仍保存在本机。",
-  "VocabReadingInvalid": "请使用小写拼音，音节之间以一个空格分隔。",
+  "VocabReadingInvalid": "拼音只能包含字母，音节之间用空格分隔。",
   "VocabReadingStale": "词条已修改或删除，请重新打开后编辑。",
   "VocabReadingSave": "保存",
   "VocabReadingCancel": "取消",

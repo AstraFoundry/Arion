@@ -228,7 +228,7 @@ func Portal(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 					kit.Divider(c, tokens)
 				}
 				url := a.Portal + page.Path
-				row := ui.ButtonBase(c.Key(page.Path)).Gap(12).Padding(12, 16).AlignItems(ui.Center).Label(messages.Text(page.Title))
+				row := kit.RowFrame(ui.ButtonBase(c.Key(page.Path))).Gap(12).AlignItems(ui.Center).Label(messages.Text(page.Title))
 				if row.Hovered() {
 					row.Background(tokens.AccentSoft.Alpha(0.5).Over(tokens.Card))
 				}
@@ -260,10 +260,8 @@ func Notice(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	if key == "" {
 		return
 	}
-	ui.Row(c.Key("account-notice")).Gap(6).Padding(0, 4).Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}}).Children(func() {
-		ui.Icon(c, icons.TriangleAlert).FontSize(13).TextColor(tokens.Danger).Margin(1, 0, 0, 0)
-		ui.Text(c, store.Copy().Text(key)).FontSize(theme.Caption).Shrink(1)
-	})
+	kit.Notice(c.Key("account-notice"), tokens, tokens.Danger, store.Copy().Text(key), nil).
+		Padding(0, 4).Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}})
 }
 
 // HostedSync reports that the signed-in account's access token carries the
@@ -307,7 +305,7 @@ func UsageReporting(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 
 // line is a settings row led by an icon that carries the state's color.
 func line(c *ui.Context, tokens theme.Tokens, icon *ui.SVG, color ui.Color, title, detail string, control func()) {
-	ui.Row(c).Gap(12).Padding(12, 16).AlignItems(ui.Center).Children(func() {
+	kit.RowFrame(ui.Row(c)).Gap(12).AlignItems(ui.Center).Children(func() {
 		ui.Icon(c, icon).FontSize(16).TextColor(color)
 		ui.Column(c).Grow(1).Shrink(1).Gap(2).Children(func() {
 			ui.Text(c, title).FontSize(theme.Body).FontWeight(500).ContentTransition(ui.ContentTransition{})

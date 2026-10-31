@@ -22,9 +22,7 @@ func Progress(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			kit.Status(c.Key("ready"), tokens, icons.ShieldCheck, tokens.Success, messages.Text(copy.ModelVerified)).
 				Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}})
 		case runtime.ModelFailed:
-			ui.Row(c.Key("failed")).Gap(8).AlignItems(ui.Center).Children(func() {
-				ui.Icon(c, icons.TriangleAlert).FontSize(14).TextColor(tokens.Danger)
-				ui.Text(c, messages.Text(model.FailureKey(m.Failure))).FontSize(theme.Caption).Grow(1)
+			kit.Notice(c.Key("failed"), tokens, tokens.Danger, messages.Text(model.FailureKey(m.Failure)), func() {
 				if kit.Button(c, tokens, kit.Outline, messages.Text(copy.Retry), true).Clicked() {
 					store.Actions.RetryModel()
 				}
