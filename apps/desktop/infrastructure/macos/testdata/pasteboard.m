@@ -7,6 +7,9 @@ int arion_focus_matches(void *element, int pid) { return focus_ok; }
 int arion_selection_matches(void *element, void *selection) { return selection_ok; }
 int arion_secure_input(void) { return secure; }
 int arion_frontmost_pid(void) { return 1; }
+// paste.m calls this before reading focus. The real body lives in native.m,
+// which this pasteboard unit does not link. The check never drives a web view.
+void arion_enable_web_accessibility(int pid) { (void)pid; }
 
 // Keep real pasteboard and CGEvent construction, but intercept delivery:
 // this isolated check must never type into a user's foreground application.
