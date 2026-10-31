@@ -38,6 +38,13 @@ on:
 permissions:
   contents: read
 
+# Superseded pull requests cancel. Main, tags, and signed macOS dispatch do not.
+# release.yml and signed-macos.yml keep their own groups with cancel-in-progress false.
+# github.workflow is the caller name, so this group does not collide with those.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   portable:
     runs-on: ubuntu-latest
@@ -51,9 +58,10 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Same patched toolchain as the native job and go.work. Module go lines stay lower; this SDK still enforces them.
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.25.7'
+          go-version: '1.27.3'
           cache: false
       - run: pnpm check
       - run: pnpm workflows:check
@@ -66,7 +74,28 @@ jobs:
           # Blog author profiles are read from the GitHub API at build time.
           GITHUB_TOKEN: ${{ github.token }}
 
+  # Docs-only pull requests skip Mac and Windows. Main and release skip this job and still run native.
+  scope:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    outputs:
+      native: ${{ steps.decision.outputs.native }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Decide whether the native shell is required
+        id: decision
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/ci-native-scope.mjs
+
   native-shell:
+    needs: scope
+    if: >-
+      !cancelled() &&
+      (needs.scope.result == 'success' || needs.scope.result == 'skipped') &&
+      (github.event_name != 'pull_request' || needs.scope.outputs.native == 'true')
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(inputs.native-matrix || '{"include":[{"os":"macos-26","platform":"darwin-arm64"},{"os":"windows-2022","platform":"windows-amd64"}]}') }}
@@ -85,6 +114,7 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Keep this pin identical to the portable job.
       - uses: actions/setup-go@v5
         with:
           go-version: '1.27.3'
@@ -103,6 +133,7 @@ jobs:
         uses: actions/cache@v4
         with:
           key: ${{ steps.cache-keys.outputs.native }}
+          restore-keys: ${{ steps.cache-keys.outputs.native-restore }}
           path: |
             .workspace/native-asr-migration/
             .workspace/local-rewrite/
@@ -113,6 +144,7 @@ jobs:
         uses: actions/cache@v4
         with:
           key: ${{ steps.cache-keys.outputs.go }}
+          restore-keys: ${{ steps.cache-keys.outputs.go-restore }}
           path: .workspace/ci-standard-user-go-cache/
       - name: Desktop checks (macOS)
         if: runner.os == 'macOS'
@@ -169,7 +201,9 @@ jobs:
           writeFileSync(file, bytes, { mode: 0o600 });
           appendFileSync(process.env.GITHUB_ENV, `MACOS_IME_PROVISIONING_PROFILE=${file}\n`);
           NODE
+      # Installers are for main and release. Pull requests stop after the checks above.
       - name: Build and verify desktop package
+        if: github.event_name != 'pull_request' || inputs.release
         env:
           ARION_OFFICIAL_RELEASE: ${{ inputs.release && '1' || '' }}
           MYGO_UPDATER_PRIVATE_KEY: ${{ inputs.release && secrets.MYGO_UPDATER_PRIVATE_KEY || '' }}
@@ -184,10 +218,28 @@ jobs:
         if: always() && inputs.release && runner.os == 'macOS'
         run: rm -f "$RUNNER_TEMP/ArionInput.provisionprofile"
       - name: Collect installers and verify signed updates for releases
+        if: github.event_name != 'pull_request' || inputs.release
         run: node scripts/release.mjs collect ${{ matrix.platform }} .workspace/release/${{ matrix.platform }} ${{ inputs.release && '--signed' || '--unsigned' }}
       - uses: actions/upload-artifact@v4
+        if: github.event_name != 'pull_request' || inputs.release
         with:
           name: desktop-${{ matrix.platform }}
           path: .workspace/release/${{ matrix.platform }}/
           if-no-files-found: error
           compression-level: 0
+
+  # Start native with portable. Cancel the run only after portable has already failed.
+  # Release callers grant contents: read, so this request is denied there and native finishes.
+  cancel-on-portable-failure:
+    needs: portable
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Cancel Mac and Windows jobs after portable failure
+        continue-on-error: ${{ github.event_name == 'workflow_call' || github.event_name == 'workflow_dispatch' || github.ref_type == 'tag' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh run cancel "$GITHUB_RUN_ID"
