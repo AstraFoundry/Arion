@@ -3,25 +3,25 @@
   "source": "Developer-authored regression and validation cases; xin reproduces a user-reported candidate-noise defect without retaining their message or screenshot.",
   "license": "Repository AGPL-3.0",
   "purpose": "Native candidate admission validation, not a representative user accuracy benchmark",
-  "selection": "Development cases specify the reported defect and prior acceptance; distinct validation inputs were frozen before executing the new native producer. No user learning is imported. Validation was inspected while correcting rare exact-word and weak-Chinese ordering failures; it is now regression evidence. A fresh holdout split was frozen after those policy fixes, before its first native execution.",
+  "selection": "Developer-authored product regressions. All three historical splits have been inspected and are regression material, including the file named holdout.tsv. Expectations were revised for exact-only English leadership, one promoted display form, five-letter completion admission and type-independent normal Pinyin protection. No representative or new held-out quality claim is made.",
   "fixtures": [
     {
       "file": "development.tsv",
       "split": "development",
       "cases": 20,
-      "sha256": "e213f6b55ee713d764d42a5754685bd6a7bb71c8bf382ec690968f3518771509"
+      "sha256": "ea83d3f25feab543a5191eccb35782e6eb3a24603376988765523147d54e7c8a"
     },
     {
       "file": "validation.tsv",
       "split": "validation",
       "cases": 17,
-      "sha256": "aa9b77dbe9687c31262b1ad7a9dd9878464ff224a0e3415fc9afd0aaebd639f7"
+      "sha256": "e81ed7421f6e403d9c447e2f15ae4eb1e5bd330d07c2345bfd5fb8bbcb14af76"
     },
     {
       "file": "holdout.tsv",
       "split": "holdout",
       "cases": 12,
-      "sha256": "10f75ca72d41a02fd21182564dde3b28815a57fc1bea8305be61730f9633d900"
+      "sha256": "88f1ac35d5f6b290df3b69d960271e52fa2875b5f253cbff19816e18dc81d5e6"
     }
   ]
 }

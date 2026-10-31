@@ -1,9 +1,12 @@
 #include "english.h"
 #include "english_lexicon.h"
+#include "menu.h"
 #include <cstdio>
 #include <stdexcept>
 #include <rime/algo/syllabifier.h>
 #include <rime/candidate.h>
+#include <rime/context.h>
+#include <rime/engine.h>
 #include <rime/dict/prism.h>
 #include <rime/registry.h>
 #include <rime/segmentation.h>
@@ -22,10 +25,6 @@ std::string Display(std::string text,const std::string &raw) {
     if (raw[0]>='A' && raw[0]<='Z' && raw.substr(1)==Fold(raw.substr(1))) text[0]=Upper(text[0]);
     else if (Fold(text).compare(0,raw.size(),Fold(raw))==0) text.replace(0,raw.size(),raw);
     return text;
-}
-bool WholeWord(const rime::an<rime::Candidate> &candidate,size_t start,size_t end) {
-    return candidate && candidate->start()==start && candidate->end()==end &&
-        (candidate->type()=="phrase" || candidate->type()=="user_phrase");
 }
 class PinyinSpelling final {
  public:
@@ -48,25 +47,33 @@ class BilingualTranslation final : public rime::Translation {
     BilingualTranslation(rime::an<rime::Translation> chinese,
                          arion::EnglishLexicon::Matches english,bool normal,
                          std::vector<arion::EnglishLexicon::WordPrefix> prefixes,
-                         const std::string &input,const rime::Segment &segment)
+                         const std::string &input,const rime::Segment &segment,bool mayLead)
         : chinese_(std::move(chinese)),english_(std::move(english)),normal_(normal),
           early_exact_(!normal || english_.familiar_exact),
-          foreground_lookup_(!normal && (english_.exact.Peek() || english_.suggestions.Peek())),
+          english_leads_(mayLead && !normal && input.size()>=arion::EnglishLexicon::kMixedMinimumPrefix && english_.exact.Peek()),
           prefixes_(std::move(prefixes)),
           input_(input),start_(segment.start),end_(segment.end) { Next(); }
     rime::an<rime::Candidate> Peek() override { return current_; }
     bool Next() override {
         current_.reset();
         if (phase_==Phase::ChineseHead) {
-            if (normal_ && head_<3 && WholeWord(Chinese(),start_,end_)) { ++head_; return TakeChinese(); }
-            phase_=Phase::Exact;
-        }
-        if (phase_==Phase::Exact) {
-            if (early_exact_ && TakeEnglish(english_.exact)) return true;
+            // Complete Pinyin protects full-range sentences as well as dictionary words.
+            const size_t protectedHead=normal_?3:1;
+            if (prefixes_.empty() && !english_leads_ && head_<protectedHead && Chinese() &&
+                (!head_ || (Chinese()->start()==start_ && Chinese()->end()==end_))) {
+                ++head_; return TakeChinese();
+            }
             phase_=Phase::Foreground;
         }
         if (phase_==Phase::Foreground) {
+            phase_=Phase::ChinesePage;
+            // One promoted display form, whether exact or completed. Case alternatives
+            // retain their original cursor and remain selectable in the deferred tail.
+            if (early_exact_ && TakeEnglish(english_.exact)) return true;
             if (TakeEnglish(english_.suggestions)) return true;
+        }
+        if (phase_==Phase::ChinesePage) {
+            if (prefixes_.empty() && emitted_<ARION_MENU_MAX_PAGE_SIZE && Chinese()) return TakeChinese();
             phase_=Phase::Prefixes;
         }
         if (phase_==Phase::Prefixes) {
@@ -82,19 +89,18 @@ class BilingualTranslation final : public rime::Translation {
             }
             phase_=Phase::Lookup;
         }
-        if (foreground_lookup_) {
-            const bool preferEnglish=(turn_++%3)==0;
-            if ((preferEnglish || !Chinese()) && TakeEnglish(english_.lookup)) return true;
-        }
+        // After the largest supported first page, keep both lazy tails reachable.
+        // Chinese leads each tail group; unrelated dictionary scores never compete.
+        if (Chinese() && tail_chinese_<2) { ++tail_chinese_; return TakeChinese(); }
+        tail_chinese_=0;
+        if (TakeEnglish(english_.exact) || TakeEnglish(english_.suggestions) || TakeEnglish(english_.lookup)) return true;
         if (Chinese()) return TakeChinese();
-        if (!early_exact_ && TakeEnglish(english_.exact)) return true;
-        if (TakeEnglish(english_.lookup)) return true;
         set_exhausted(true);
         return false;
     }
  private:
     rime::an<rime::Candidate> Chinese() const { return chinese_ && !chinese_->exhausted()?chinese_->Peek():nullptr; }
-    bool TakeChinese() { current_=chinese_->Peek(); chinese_->Next(); return true; }
+    bool TakeChinese() { current_=chinese_->Peek(); chinese_->Next(); ++emitted_; return true; }
     bool TakeEnglish(arion::EnglishLexicon::Cursor &cursor) {
         while (const auto *entry=cursor.Peek()) {
             const auto value=*entry;
@@ -108,19 +114,20 @@ class BilingualTranslation final : public rime::Translation {
         auto text=Display(entry.display,raw);
         if (end==last_end_ && text==last_display_) return false;
         last_end_=end; last_display_=text;
+        ++emitted_;
         current_=rime::New<rime::SimpleCandidate>("arion_english",start_,end,text,"",raw);
         return true;
     }
     rime::an<rime::Translation> chinese_;
     arion::EnglishLexicon::Matches english_;
-    bool normal_,early_exact_,foreground_lookup_;
+    bool normal_,early_exact_,english_leads_;
     std::vector<arion::EnglishLexicon::WordPrefix> prefixes_;
     size_t prefix_=0,form_=0,last_end_=0;
     std::string last_display_;
     std::string input_;
     size_t start_,end_;
-    size_t head_=0,turn_=0;
-    enum class Phase { ChineseHead, Exact, Foreground, Prefixes, Lookup };
+    size_t head_=0,emitted_=0,tail_chinese_=0;
+    enum class Phase { ChineseHead, Foreground, ChinesePage, Prefixes, Lookup };
     Phase phase_=Phase::ChineseHead;
     rime::an<rime::Candidate> current_;
 };
@@ -134,14 +141,15 @@ class BilingualTranslator final : public rime::Translator {
     rime::an<rime::Translation> Query(const std::string &input,const rime::Segment &segment) override {
         auto chinese=chinese_->Query(input,segment);
         if (!segment.HasTag("abc")) return chinese;
-        auto head=chinese && !chinese->exhausted()?chinese->Peek():nullptr;
-        const bool normal=WholeWord(head,segment.start,segment.end) && spelling_->Normal(input);
+        const bool normal=spelling_->Normal(input);
         const auto folded=Fold(input);
         auto english=lexicon_->Query(folded,normal?arion::EnglishLexicon::Completion::Lookup:arion::EnglishLexicon::Completion::Suggest);
         std::vector<arion::EnglishLexicon::WordPrefix> prefixes;
-        if (english.empty() && !spelling_->Normal(input)) prefixes=lexicon_->WordPrefixes(folded);
+        if (english.empty() && !normal) prefixes=lexicon_->WordPrefixes(folded);
         if (english.empty() && prefixes.empty()) return chinese;
-        return rime::New<BilingualTranslation>(std::move(chinese),std::move(english),normal,std::move(prefixes),input,segment);
+        return rime::New<BilingualTranslation>(std::move(chinese),std::move(english),normal,std::move(prefixes),input,segment,
+            segment.end==engine_->context()->input().size() &&
+            engine_->context()->caret_pos()==engine_->context()->input().size());
     }
  private:
     std::unique_ptr<rime::Translator> chinese_;

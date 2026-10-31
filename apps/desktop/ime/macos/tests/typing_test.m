@@ -233,7 +233,11 @@ int main(int argc, const char *argv[]) {
             type(typing, @"nihao"); press(typing, @" ", 49);
             type(typing, @"hello");
             NSUInteger title = [typing.snapshot.candidates indexOfObject:@"Hello"];
-            require(title < 9, @"sentence-initial case variant is visible");
+            while (title==NSNotFound && !typing.snapshot.lastPage) {
+                require(press(typing,@"",121),@"page to deferred exact case alternative");
+                title=[typing.snapshot.candidates indexOfObject:@"Hello"];
+            }
+            require(title < typing.pageSize, @"sentence-initial case variant remains selectable");
             press(typing, [NSString stringWithFormat:@"%lu", (unsigned long)title+1], 0);
             press(typing, @",", 43);
             require([editor.view.string isEqual:@"artificial你好Hello，"] && editor.insertions == 4,
@@ -275,11 +279,9 @@ int main(int argc, const char *argv[]) {
         run(@"Expanded English vocabulary, canonical case and lower-ranked completions", @"KBD-A13", ^{
             typing.pageSize = 5;
             for (NSArray<NSString *> *sample in @[@[@"github", @"GitHub"], @[@"javascript", @"JavaScript"],
-                    @[@"api", @"API"], @[@"frontend", @"frontend"], @[@"backend", @"backend"], @[@"workflow", @"workflow"]]) {
+                    @[@"api", @"API"], @[@"python", @"Python"], @[@"frontend", @"frontend"], @[@"backend", @"backend"], @[@"workflow", @"workflow"]]) {
                 type(typing, sample[0]);
-                NSUInteger index = [typing.snapshot.candidates indexOfObject:sample[1]];
-                require(index < 5, @"expanded source word and its canonical case appear on the first page");
-                require([typing select:index revision:typing.revision], @"expanded English word uses actual engine selection");
+                selectText(typing,sample[1]);
                 require([editor.view.string hasSuffix:sample[1]], @"canonical source spelling survives commit");
             }
             type(typing, @"artifi");
@@ -337,16 +339,33 @@ int main(int argc, const char *argv[]) {
             require(ArionRegisterTestEncryptedLearning(vault, testKey, &restartError) &&
                     [engine startWithData:data userDirectory:user error:&restartError], @"restart real engine after English learning inspection");
         });
+        run(@"mixed admission protects Chinese through both native page sizes", @"KBD-A13", ^{
+            for (NSNumber *size in @[@5,@9]) {
+                typing.pageSize=size.unsignedIntegerValue;
+                for (NSString *code in @[@"hel",@"hell",@"compu",@"softw",@"women",@"change",@"dj",@"gdp",@"danci",@"womenqugongyuan"]) {
+                    type(typing,code);record(code,typing,editor);
+                    require([typing.snapshot.candidates.firstObject characterAtIndex:0]>127,
+                            @"short exact English, completion, abbreviation and whole Pinyin retain Chinese first");
+                    NSUInteger english=0;
+                    for (NSString *candidate in typing.snapshot.candidates) english+=EnglishAdmissionWord(candidate.UTF8String);
+                    require(english<=1,@"English variants and completions cannot crowd either first page");
+                    [typing cancel];
+                }
+            }
+        });
         run(@"English candidate panel rendering", @"KBD-A13", ^{
             ArionCandidatePanel *panel = [ArionCandidatePanel new];
             @try {
-                for (NSString *word in @[@"artificial", @"can", @"artifi", @"hel", @"github", @"frontend", @"xin", @"shi"]) {
-                    type(typing, word);
-                    record(word, typing, editor);
-                    [panel showCandidates:typing.snapshot.candidates highlighted:typing.snapshot.highlighted lastPage:typing.snapshot.lastPage
-                        revision:typing.revision caretRect:NSMakeRect(80, 300, 1, 20)];
-                    savePanel(panel, report, [NSString stringWithFormat:@"english-macos-%@.png", word]);
-                    [typing cancel];
+                for (NSNumber *size in @[@5,@9]) {
+                    typing.pageSize=size.unsignedIntegerValue;
+                    for (NSString *word in @[@"artificial", @"can", @"artifi", @"hel", @"github", @"frontend", @"xin", @"shi"]) {
+                        type(typing, word);
+                        record([NSString stringWithFormat:@"%@ page %@",word,size], typing, editor);
+                        [panel showCandidates:typing.snapshot.candidates highlighted:typing.snapshot.highlighted lastPage:typing.snapshot.lastPage
+                            revision:typing.revision caretRect:NSMakeRect(80, 300, 1, 20)];
+                        savePanel(panel, report, [NSString stringWithFormat:@"english-macos-%@-%@.png", word,size]);
+                        [typing cancel];
+                    }
                 }
             } @finally { [panel hide]; }
         });
