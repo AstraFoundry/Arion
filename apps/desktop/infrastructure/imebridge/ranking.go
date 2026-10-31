@@ -42,7 +42,7 @@ func (m *IME) ConfigureKeyboardRankingStages(fast, settled ports.KeyboardRanker)
 		budget := 100 * time.Millisecond
 		if i == 1 {
 			debounce = 150 * time.Millisecond
-			budget = 900 * time.Millisecond
+			budget = 3 * time.Second
 		}
 		scheduler, err := application.NewKeyboardRanking(ranker, budget, debounce)
 		if err != nil {
@@ -123,12 +123,17 @@ func (m *IME) receiveRankingLocked(msg message) {
 		return
 	}
 	req.Application = m.client
+	req.AllowCompletion = req.AllowCompletion && m.completionCapable
 	for tier, scheduler := range []*application.KeyboardRanking{m.rankingFast, m.ranking} {
 		if scheduler == nil {
 			continue
 		}
 		conn, activation := m.conn, m.activation
-		outcome := scheduler.Submit(*req)
+		laneRequest := *req
+		if tier == 0 {
+			laneRequest.AllowCompletion = false
+		}
+		outcome := scheduler.Submit(laneRequest)
 		go func(tier int, scheduler *application.KeyboardRanking) {
 			out := <-outcome
 			m.mu.Lock()
@@ -145,7 +150,7 @@ func (m *IME) receiveRankingLocked(msg message) {
 			}
 			// An abstaining settled model has no new evidence; it must not undo a
 			// valid fast promotion or suppress a still-running fast response.
-			if tier == 1 && out.Err == nil && (out.Result.Decision == "abstained_no_context" || out.Result.Decision == "abstained_no_comparable_candidates") {
+			if tier == 1 && out.Err == nil && (out.Result.Decision == "abstained_uncertain" || out.Result.Decision == "abstained_no_context" || out.Result.Decision == "abstained_no_comparable_candidates") {
 				return
 			}
 			reply := message{Op: "keyboard_ranked", Revision: msg.Revision, Status: "unavailable"}

@@ -13,6 +13,7 @@ type contextTargets struct {
 	reads, captures, discards int
 	app                       string
 	sensitive                 bool
+	selected                  string
 }
 
 func (t *contextTargets) Capture(_ context.Context, id contracts.Identity) (contracts.TargetSnapshot, error) {
@@ -21,7 +22,7 @@ func (t *contextTargets) Capture(_ context.Context, id contracts.Identity) (cont
 }
 func (t *contextTargets) ReadContext(_ context.Context, id contracts.Identity, token contracts.TargetToken) (contracts.ContextSnapshot, error) {
 	t.reads++
-	return contracts.ContextSnapshot{Identity: id, Target: token, SafeToRead: true, Before: "beforepreedit", After: "after", Screen: "window"}, nil
+	return contracts.ContextSnapshot{Identity: id, Target: token, SafeToRead: true, Before: "beforepreedit", Selected: t.selected, After: "after", Screen: "window"}, nil
 }
 func (t *contextTargets) Discard(contracts.TargetToken) { t.discards++ }
 
@@ -31,10 +32,16 @@ func (f contextRankFunc) RankKeyboard(ctx context.Context, r contracts.KeyboardR
 	return f(ctx, r)
 }
 func TestKeyboardContextConsentAndTarget(t *testing.T) {
-	for _, mode := range []string{"off", "matching", "foreign", "secure", "denied", "changed-mark"} {
+	for _, mode := range []string{"off", "matching", "foreign", "secure", "denied", "changed-mark", "selected-mark", "foreign-selection"} {
 		t.Run(mode, func(t *testing.T) {
 			target := &contextTargets{app: "editor", sensitive: mode == "secure"}
 			req := contracts.KeyboardRankRequest{Identity: contracts.Identity{SessionID: "session", Generation: 1}, Application: "editor", Preedit: "preedit", Revision: 1, Input: "word", Candidates: []domain.KeyboardCandidate{{Candidate: domain.Candidate{ID: "c0", Text: "字", Source: "phrase"}, End: 4}}}
+			if mode == "selected-mark" {
+				target.selected = "preedit"
+			}
+			if mode == "foreign-selection" {
+				target.selected = "other"
+			}
 			if mode == "foreign" {
 				target.app = "other"
 			}
@@ -53,26 +60,29 @@ func TestKeyboardContextConsentAndTarget(t *testing.T) {
 				traceReason = reason
 			}, targets: target, cursor: func() bool { return true }, enabled: func() bool { return mode != "off" }, ranker: contextRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
 				called = true
+				if mode == "selected-mark" && r.Before != "beforepreedit" {
+					t.Fatal("selected preedit removed twice")
+				}
 				if mode == "matching" && (r.Before != "before" || r.After != "after" || r.Screen != "window") {
 					t.Fatal("context omitted")
 				}
 				return contracts.KeyboardRankResult{}, nil
 			})}
 			_, err := ranker.RankKeyboard(context.Background(), req)
-			if mode == "matching" || mode == "off" {
+			if mode == "matching" || mode == "off" || mode == "selected-mark" {
 				if err != nil || !called {
 					t.Fatal(err)
 				}
 			} else if err == nil || called {
 				t.Fatal("unsafe request admitted")
 			}
-			if mode != "matching" && mode != "changed-mark" && target.reads != 0 {
+			if mode != "matching" && mode != "changed-mark" && mode != "selected-mark" && mode != "foreign-selection" && target.reads != 0 {
 				t.Fatal("unsafe text read")
 			}
 			if (mode == "off" || mode == "denied") && target.captures != 0 {
 				t.Fatal("unnecessary capture")
 			}
-			expected := map[string]string{"foreign": "context_target", "secure": "context_target", "denied": "context_target", "changed-mark": "context_marked_mismatch"}[mode]
+			expected := map[string]string{"foreign": "context_target", "secure": "context_target", "denied": "context_target", "changed-mark": "context_marked_mismatch", "foreign-selection": "context_marked_mismatch"}[mode]
 			if traceReason != expected {
 				t.Fatalf("trace %q, want %q", traceReason, expected)
 			}

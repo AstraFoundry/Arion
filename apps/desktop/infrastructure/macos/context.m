@@ -109,8 +109,8 @@ static NSString *string_for_range(AXUIElementRef element, CFRange range, NSStrin
     return @"";
 }
 
-int arion_cursor_context(void *element, long max, char **before, char **after) {
-    *before = *after = NULL;
+int arion_cursor_context(void *element, long max, char **before, char **after, char **selected) {
+    *before = *after = *selected = NULL;
     if (!element) return ARION_CONTEXT_FAILED;
     @autoreleasepool {
         AXUIElementRef el = (AXUIElementRef)element;
@@ -122,7 +122,7 @@ int arion_cursor_context(void *element, long max, char **before, char **after) {
         }
         BOOL ok = CFGetTypeID(rangeValue) == AXValueGetTypeID() && AXValueGetValue(rangeValue, kAXValueCFRangeType, &selection);
         CFRelease(rangeValue);
-        if (!ok) return ARION_CONTEXT_FAILED;
+        if (!ok || selection.location<0 || selection.length<0 || selection.length>max*2) return ARION_CONTEXT_FAILED;
         NSString *value = nil;
         CFTypeRef raw = NULL;
         if (AXUIElementCopyAttributeValue(el, kAXValueAttribute, &raw) == kAXErrorSuccess && raw) {
@@ -139,7 +139,9 @@ int arion_cursor_context(void *element, long max, char **before, char **after) {
         // any script after the Go side trims by character.
         CFIndex span = (CFIndex)max * 2;
         CFIndex from = MAX(0, selection.location - span);
+        if (selection.location>total || selection.length>total-selection.location) return ARION_CONTEXT_FAILED;
         CFIndex end = selection.location + selection.length;
+        *selected = copy_utf8(string_for_range(el, selection, value));
         *before = copy_utf8(string_for_range(el, CFRangeMake(from, selection.location - from), value));
         *after = copy_utf8(string_for_range(el, CFRangeMake(end, MAX(0, MIN(span, total - end))), value));
         return ARION_CONTEXT_OK;

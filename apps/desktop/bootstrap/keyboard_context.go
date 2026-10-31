@@ -61,10 +61,13 @@ func (r keyboardContext) RankKeyboard(ctx context.Context, req contracts.Keyboar
 	if r.cursor() {
 		// The native host supplies its exact owned marked text. Refuse a changed
 		// caret instead of treating that uncommitted spelling as preceding context.
-		if req.Preedit == "" || !strings.HasSuffix(snapshot.Before, req.Preedit) {
+		// Some providers expose the exact preedit as the AX selection instead.
+		if req.Preedit == "" || (snapshot.Selected != req.Preedit && !(snapshot.Selected == "" && strings.HasSuffix(snapshot.Before, req.Preedit))) {
 			return fail("context_marked_mismatch", domain.Fail(domain.CodeTargetChanged, "keyboard marked text changed"))
 		}
-		snapshot.Before = strings.TrimSuffix(snapshot.Before, req.Preedit)
+		if snapshot.Selected == "" {
+			snapshot.Before = strings.TrimSuffix(snapshot.Before, req.Preedit)
+		}
 	}
 	bounded := (domain.RewriteContext{Before: snapshot.Before, After: snapshot.After}).Bounded()
 	req.Before, req.After = bounded.Before, bounded.After

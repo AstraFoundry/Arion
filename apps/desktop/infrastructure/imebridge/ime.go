@@ -45,6 +45,7 @@ type IME struct {
 	rankingFast            *application.KeyboardRanking
 	rankingSettledRevision uint64
 	rankingCapable         bool
+	completionCapable      bool
 	rankingRevision        uint64
 	vocabularyCapable      bool
 	vocabularyDelivery     *vocabularyDelivery
@@ -261,7 +262,11 @@ func (m *IME) serve(conn net.Conn) {
 	m.conn = conn
 	m.vocabularyCapable = false
 	m.rankingCapable = false
+	m.completionCapable = false
 	for _, capability := range hello.Capabilities {
+		if capability == "keyboard-completion-v1" {
+			m.completionCapable = true
+		}
 		if capability == rankingCapability {
 			m.rankingCapable = true
 		}
@@ -535,6 +540,7 @@ func (m *IME) Commit(ctx context.Context, request contracts.CommitRequest) (cont
 func (m *IME) BeginUpdate() {
 	m.mu.Lock()
 	m.updating = true
+	m.invalidateRankingLocked()
 	m.invalidateVocabularyLocked()
 	m.mu.Unlock()
 }

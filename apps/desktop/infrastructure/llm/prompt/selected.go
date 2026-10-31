@@ -36,6 +36,7 @@ type Message struct {
 // The zero value keeps thinking off. Adapters translate that policy; this
 // struct does not carry a provider field.
 type ChatRequest struct {
+	Grammar        string          `json:"grammar,omitempty"`
 	Messages       []Message       `json:"messages"`
 	ResponseFormat any             `json:"response_format,omitempty"`
 	Temperature    float64         `json:"temperature"`

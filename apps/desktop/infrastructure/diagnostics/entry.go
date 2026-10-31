@@ -79,7 +79,7 @@ func (e Entry) valid() bool {
 		return false
 	}
 	switch e.Outcome {
-	case "no_context", "no_comparable_candidates", "", "absent", "discovering", "pending", "installed", "selected", "learned", "cleared", "not_found", "outside", "too_large", "rewrite", "no_pair", "markup", "length", "new_number", "unsupported_content", "negation_dropped", "final_value_dropped", "content_dropped", "uncertainty_dropped", "context_copied", "ok", "failed", "cancelled", "unselected", "provisioning", "loading", "ready", "unsupported", "off", "downloading", "verifying", "extracting", "granted", "denied", "restricted", "undetermined", "accepted", "timeout", "unavailable", "preview", "applied", "not_applied", "unknown", "copied", "unchanged", "empty", "truncated", "too_long", "meaning_changed", "unsafe", "invalid", "rejected":
+	case "uncertain", "generated", "no_context", "no_comparable_candidates", "", "absent", "discovering", "pending", "installed", "selected", "learned", "cleared", "not_found", "outside", "too_large", "rewrite", "no_pair", "markup", "length", "new_number", "unsupported_content", "negation_dropped", "final_value_dropped", "content_dropped", "uncertainty_dropped", "context_copied", "ok", "failed", "cancelled", "unselected", "provisioning", "loading", "ready", "unsupported", "off", "downloading", "verifying", "extracting", "granted", "denied", "restricted", "undetermined", "accepted", "timeout", "unavailable", "preview", "applied", "not_applied", "unknown", "copied", "unchanged", "empty", "truncated", "too_long", "meaning_changed", "unsafe", "invalid", "rejected":
 	default:
 		return false
 	}
@@ -94,7 +94,7 @@ func (e Entry) valid() bool {
 		return false
 	}
 	switch e.Reason {
-	case "no_comparable_candidates", "navigation", "input_bounds", "caret_not_at_end", "non_chinese", "stale_revision", "ranking_disabled", "freeze", "invalid_request", "superseded", "delivery_failed", "proposal_sent", "context_target", "context_capture", "context_read", "context_marked_mismatch", "context_bounds", "", "idle", "focus_lost", "cleared", "next_dictation", "max_time", "abandoned", "no_baseline":
+	case "completion_phonetic_mismatch", "no_comparable_candidates", "navigation", "input_bounds", "caret_not_at_end", "non_chinese", "stale_revision", "ranking_disabled", "freeze", "invalid_request", "superseded", "delivery_failed", "proposal_sent", "context_target", "context_capture", "context_read", "context_marked_mismatch", "context_bounds", "", "idle", "focus_lost", "cleared", "next_dictation", "max_time", "abandoned", "no_baseline":
 	default:
 		return false
 	}

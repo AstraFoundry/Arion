@@ -80,14 +80,19 @@ func screenText(status C.int, out *C.char, ocrMs C.double) (ScreenText, error) {
 
 // cursorContext reads text around the selection of an AX element.
 func cursorContext(element unsafe.Pointer, max int) (before, after string, ok bool) {
-	var b, a *C.char
-	if C.arion_cursor_context(element, C.long(max), &b, &a) != C.ARION_CONTEXT_OK {
-		return "", "", false
+	before, after, _, ok = cursorContextSelection(element, max)
+	return
+}
+
+func cursorContextSelection(element unsafe.Pointer, max int) (before, after, selected string, ok bool) {
+	var b, a, s *C.char
+	if C.arion_cursor_context(element, C.long(max), &b, &a, &s) != C.ARION_CONTEXT_OK {
+		return "", "", "", false
 	}
-	before, after = C.GoString(b), C.GoString(a)
-	C.free(unsafe.Pointer(b))
-	C.free(unsafe.Pointer(a))
-	return before, after, true
+	defer C.free(unsafe.Pointer(b))
+	defer C.free(unsafe.Pointer(a))
+	defer C.free(unsafe.Pointer(s))
+	return C.GoString(b), C.GoString(a), C.GoString(s), true
 }
 
 // ReadWindowText reads the captured target window's visible Accessibility text.
