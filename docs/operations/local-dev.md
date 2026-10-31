@@ -81,7 +81,7 @@ Grant microphone, Accessibility, and Input Monitoring to **Arion Dev** once afte
 | System input-method setup is unavailable | Development does not own the installed input method. Use the signed release workflow for IME acceptance. |
 | Dictation corrections are not learned in an editor | Edit learning needs readable `AXValue`. Test in Notes or TextEdit. Electron editors, terminals, and many browsers do not expose the required value. |
 
-For shortcut delivery acceptance, verify both polishing and translation: no editable focus copies the processed result; an empty editable field accepts normal paste; moving the caret or focusing another editable field still pastes there. Check the editor and actual clipboard contents as well as the completion label. Then change code, rebuild, reopen the same signed development identity, and repeat without changing OS authorization.
+For shortcut delivery acceptance, verify both polishing and translation: no editable focus copies the processed result; an empty editable field accepts normal paste; moving the caret or focusing another editable field still pastes there. Check the editor and actual clipboard contents as well as the completion label. On macOS and Windows, also focus a Feishu (Lark) chat composer and a Claude composer (Claude Desktop, and Claude in a browser). Each should insert once while the caret is in the composer, and copy when focus is a button or a read-only transcript. Then change code, rebuild, reopen the same signed development identity, and repeat without changing OS authorization.
 
 ### Offline keyboard checks
 

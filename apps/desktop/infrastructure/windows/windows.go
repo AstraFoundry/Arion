@@ -324,8 +324,9 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
 	}
-	// Keep Win32's explicit readonly/disabled checks; UIA also recognizes
-	// editors that do not expose a standard Edit window or native caret.
+	// Keep Win32's explicit readonly/disabled checks. UI Automation also
+	// recognizes composers that are not a standard Edit window and do not
+	// publish a native caret, including Chromium groups with a writable caret.
 	if !standardEdit && enabled != 0 && known {
 		editable = metadataEditable
 	}

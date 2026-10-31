@@ -25,6 +25,7 @@ import (
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
+	"arion.local/desktop/infrastructure/focusclass"
 )
 
 // AuthStatus mirrors the OS consent state of a capability.
@@ -162,7 +163,7 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 	role, subrole := C.GoString(&native.role[0]), C.GoString(&native.subrole[0])
 	bundle := C.GoString(&native.bundle[0])
 	secure := native.secure_input == 1 || subrole == "AXSecureTextField"
-	known := native.element != nil && fieldKind(role, subrole) != domain.FieldUnknown
+	known := native.element != nil && focusclass.FieldKind(role, subrole) != domain.FieldUnknown
 	tgt := &target{element: native.element, selection: native.selection, identity: id, pid: int(native.pid), readable: native.value_readable == 1, secure: secure, app: bundle, created: time.Now()}
 	tgt.contextReadable = known && !secure && tgt.readable
 	tgt.route = RouteClipboard
@@ -173,7 +174,7 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 	t.mu.Unlock()
 	return contracts.TargetSnapshot{
 		Identity: id, Target: token, Sensitive: secure, Application: bundle,
-		Field: fieldKind(role, subrole), Site: C.GoString(&native.site[0]), ApplicationName: C.GoString(&native.app_name[0]),
+		Field: focusclass.FieldKind(role, subrole), Site: C.GoString(&native.site[0]), ApplicationName: C.GoString(&native.app_name[0]),
 	}, nil
 }
 
@@ -199,22 +200,9 @@ func (t *Targets) Peek(_ context.Context, owner int) (contracts.TargetSnapshot, 
 	role, subrole := C.GoString(&native.role[0]), C.GoString(&native.subrole[0])
 	return contracts.TargetSnapshot{
 		Application: C.GoString(&native.bundle[0]), ApplicationName: C.GoString(&native.app_name[0]),
-		Field: fieldKind(role, subrole), Site: C.GoString(&native.site[0]),
+		Field: focusclass.FieldKind(role, subrole), Site: C.GoString(&native.site[0]),
 		Sensitive: native.secure_input == 1 || subrole == "AXSecureTextField",
 	}, nil
-}
-
-// fieldKind maps AX roles to field types. It follows Chatterfly's context
-// builder (search-field subrole is search, text fields and areas are text)
-// and also counts editable combo boxes, which web search boxes report.
-func fieldKind(role, subrole string) domain.FieldKind {
-	switch {
-	case subrole == "AXSearchField":
-		return domain.FieldSearch
-	case role == "AXTextField" || role == "AXTextArea" || role == "AXComboBox":
-		return domain.FieldText
-	}
-	return domain.FieldUnknown
 }
 
 func (t *Targets) evictLocked() {
@@ -351,19 +339,34 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 // adoptLiveCursor points tgt at the editable field focused now.
 // paste is false when nothing editable is focused. secure is set when the
 // focused field must not receive text.
+func macObservation(native C.arion_target) focusclass.MacObservation {
+	return focusclass.MacObservation{
+		Role: C.GoString(&native.role[0]), Subrole: C.GoString(&native.subrole[0]),
+		ValueSettable: native.value_settable == 1, SelectedTextSettable: native.selected_text_settable == 1,
+		SelectedRangeSettable: native.selected_range_settable == 1, EditableAncestor: native.editable_ancestor == 1,
+		Secure: native.secure_input == 1, HasSelection: native.selection != nil,
+		Focused: native.element != nil, ExplicitlyUnfocused: native.no_input == 1,
+	}
+}
+
 func adoptLiveCursor(tgt *target) (paste bool, secure bool, noInput bool) {
 	var native C.arion_target
 	if C.arion_capture_target(&native, 0) != C.ARION_TARGET_OK {
 		return false, false, false
 	}
-	role, subrole := C.GoString(&native.role[0]), C.GoString(&native.subrole[0])
-	liveSecure := native.secure_input == 1 || subrole == "AXSecureTextField"
+	obs := macObservation(native)
+	decision := focusclass.DecideMac(obs)
 	ownProcess := int(native.pid) == os.Getpid()
-	editable := native.element != nil && !ownProcess && (native.editable == 1 && fieldKind(role, subrole) != domain.FieldUnknown)
-	if !editable || liveSecure {
+	liveSecure := (obs.Secure || obs.Subrole == "AXSecureTextField") && native.element != nil && !ownProcess
+	// Dictation must not paste into Arion's own windows. That is not a
+	// positive observation that the user has no editor open.
+	if ownProcess || !decision.Editable || liveSecure {
 		C.arion_release(native.element)
 		C.arion_release(native.selection)
-		return false, liveSecure && native.element != nil && !ownProcess, !liveSecure && !ownProcess && (native.no_input == 1 || (native.selection == nil && fieldKind(role, subrole) == domain.FieldUnknown && role != ""))
+		if ownProcess {
+			return false, false, false
+		}
+		return false, liveSecure, decision.NoInput
 	}
 	if tgt.element == nil || C.arion_focus_matches(tgt.element, C.int(tgt.pid)) != 1 {
 		tgt.follow = false

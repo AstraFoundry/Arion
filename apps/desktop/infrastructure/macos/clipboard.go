@@ -11,6 +11,8 @@ import (
 	"errors"
 	"os"
 	"unsafe"
+
+	"arion.local/desktop/infrastructure/focusclass"
 )
 
 // TryClipboard holds the same gate as dictation's paste transaction. The UI
@@ -83,4 +85,12 @@ func (t *HistoryTarget) Anchor() (int, int, int, int, bool) {
 }
 
 // NoInput never treats permission or provider uncertainty as an empty editor.
-func (t *Targets) NoInput() bool { return C.arion_no_input() == 1 }
+func (t *Targets) NoInput() bool {
+	var native C.arion_target
+	if C.arion_capture_target(&native, 0) != C.ARION_TARGET_OK {
+		return false
+	}
+	C.arion_release(native.element)
+	C.arion_release(native.selection)
+	return focusclass.DecideMac(macObservation(native)).NoInput
+}

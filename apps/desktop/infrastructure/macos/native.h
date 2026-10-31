@@ -26,6 +26,11 @@ typedef struct {
     int secure_input;
     int value_readable;
     int editable;
+    // Edit signals are facts. focusclass.DecideMac decides insertion.
+    int value_settable;
+    int selected_text_settable;
+    int selected_range_settable;
+    int editable_ancestor;
     int no_input;
     char role[64];
     char subrole[64];
@@ -64,7 +69,9 @@ int arion_history_activate(int pid);
 int arion_history_post(int pid, void *element, long long revision);
 void *arion_history_focus(int pid, int *secure, int *no_input);
 int arion_history_check(int pid, void *element);
-int arion_no_input(void);
+// arion_enable_web_accessibility asks Chromium and Electron to publish the
+// web accessibility tree. Native apps ignore the attributes.
+void arion_enable_web_accessibility(int pid);
 int arion_history_anchor(void *element, double *x, double *y, double *width, double *height);
 int arion_ime_register(const char *bundle_path);
 int arion_ime_validate_payload(const char *bundle_path, const char *bundle_id);

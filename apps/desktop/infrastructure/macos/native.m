@@ -10,6 +10,7 @@
 #import "../../ime/macos/source_maintenance.h"
 #include <fcntl.h>
 #include <stdio.h>
+#include <string.h>
 #include <errno.h>
 
 int arion_mic_status(void) {
@@ -43,6 +44,130 @@ static void copy_string(CFTypeRef value, char *out, size_t size) {
     if (value && CFGetTypeID(value) == CFStringGetTypeID()) {
         CFStringGetCString((CFStringRef)value, out, (CFIndex)size, kCFStringEncodingUTF8);
     }
+}
+
+void arion_enable_web_accessibility(int pid) {
+    if (!AXIsProcessTrusted() || pid <= 0 || pid == getpid()) return;
+    AXUIElementRef app = AXUIElementCreateApplication(pid);
+    if (!app) return;
+    AXUIElementSetMessagingTimeout(app, 0.2f);
+    // Chromium hides contenteditable composers until an assistive client opts in.
+    AXUIElementSetAttributeValue(app, CFSTR("AXManualAccessibility"), kCFBooleanTrue);
+    AXUIElementSetAttributeValue(app, CFSTR("AXEnhancedUserInterface"), kCFBooleanTrue);
+    CFRelease(app);
+}
+
+static int ax_settable(AXUIElementRef element, CFStringRef attribute) {
+    Boolean settable = false;
+    if (!element || AXUIElementIsAttributeSettable(element, attribute, &settable) != kAXErrorSuccess) return 0;
+    return settable ? 1 : 0;
+}
+
+static int ax_has_element(AXUIElementRef element, CFStringRef attribute) {
+    CFTypeRef value = NULL;
+    if (!element || AXUIElementCopyAttributeValue(element, attribute, &value) != kAXErrorSuccess || !value) return 0;
+    int ok = CFGetTypeID(value) == AXUIElementGetTypeID();
+    CFRelease(value);
+    return ok;
+}
+
+static int ax_focused(AXUIElementRef element) {
+    CFTypeRef value = NULL;
+    if (!element || AXUIElementCopyAttributeValue(element, kAXFocusedAttribute, &value) != kAXErrorSuccess || !value) return 0;
+    int on = 0;
+    if (CFGetTypeID(value) == CFBooleanGetTypeID()) on = CFBooleanGetValue((CFBooleanRef)value) ? 1 : 0;
+    else if (CFGetTypeID(value) == CFNumberGetTypeID()) {
+        int number = 0;
+        CFNumberGetValue((CFNumberRef)value, kCFNumberIntType, &number);
+        on = number != 0;
+    }
+    CFRelease(value);
+    return on;
+}
+
+// read_edit_signals records role and writability. It does not decide that
+// the element can accept text; focusclass.DecideMac does.
+static void read_edit_signals(AXUIElementRef element, arion_target *out) {
+    CFTypeRef role = NULL, subrole = NULL;
+    AXUIElementCopyAttributeValue(element, kAXRoleAttribute, &role);
+    AXUIElementCopyAttributeValue(element, kAXSubroleAttribute, &subrole);
+    copy_string(role, out->role, sizeof(out->role));
+    copy_string(subrole, out->subrole, sizeof(out->subrole));
+    if (role) CFRelease(role);
+    if (subrole) CFRelease(subrole);
+    out->value_settable = ax_settable(element, kAXValueAttribute);
+    out->selected_text_settable = ax_settable(element, kAXSelectedTextAttribute);
+    out->selected_range_settable = ax_settable(element, kAXSelectedTextRangeAttribute);
+    out->editable_ancestor = ax_has_element(element, CFSTR("AXEditableAncestor")) ||
+        ax_has_element(element, CFSTR("AXHighestEditableAncestor"));
+    out->editable = out->value_settable || out->selected_text_settable;
+}
+
+static int ax_control_role(const char *role) {
+    static const char *controls[] = {
+        "AXButton", "AXCheckBox", "AXRadioButton", "AXPopUpButton", "AXMenuButton",
+        "AXMenuItem", "AXLink", "AXSlider", "AXImage", "AXIncrementor",
+        "AXDisclosureTriangle", "AXMenu", "AXToolbar", "AXScrollBar", "AXTabGroup",
+        "AXSheet", "AXWindow",
+    };
+    for (unsigned i = 0; i < sizeof(controls) / sizeof(controls[0]); i++) {
+        if (strcmp(role, controls[i]) == 0) return 1;
+    }
+    return 0;
+}
+
+static void copy_edit_signals(arion_target *out, const arion_target *probe) {
+    memcpy(out->role, probe->role, sizeof(out->role));
+    memcpy(out->subrole, probe->subrole, sizeof(out->subrole));
+    out->value_settable = probe->value_settable;
+    out->selected_text_settable = probe->selected_text_settable;
+    out->selected_range_settable = probe->selected_range_settable;
+    out->editable_ancestor = probe->editable_ancestor;
+    out->editable = probe->editable;
+}
+
+// find_focused_text copies signals from a focused descendant. The captured
+// element stays the system focus so later focus checks still match.
+static int find_focused_text(AXUIElementRef element, arion_target *out, int depth, int *count) {
+    if (!element || depth > 3 || *count > 24) return 0;
+    CFTypeRef children = NULL;
+    if (AXUIElementCopyAttributeValue(element, kAXChildrenAttribute, &children) != kAXErrorSuccess || !children) return 0;
+    if (CFGetTypeID(children) != CFArrayGetTypeID()) {
+        CFRelease(children);
+        return 0;
+    }
+    int found = 0;
+    CFIndex total = CFArrayGetCount((CFArrayRef)children);
+    for (CFIndex i = 0; i < total && *count <= 24 && !found; i++) {
+        AXUIElementRef child = (AXUIElementRef)CFArrayGetValueAtIndex((CFArrayRef)children, i);
+        if (!child || CFGetTypeID(child) != AXUIElementGetTypeID()) continue;
+        (*count)++;
+        AXUIElementSetMessagingTimeout(child, 0.05f);
+        if (ax_focused(child)) {
+            arion_target probe;
+            memset(&probe, 0, sizeof(probe));
+            read_edit_signals(child, &probe);
+            if (ax_control_role(probe.role)) continue;
+            int useful = probe.editable_ancestor || probe.value_settable || probe.selected_text_settable;
+            if (useful) {
+                copy_edit_signals(out, &probe);
+                found = 1;
+                break;
+            }
+        }
+        found = find_focused_text(child, out, depth + 1, count);
+    }
+    CFRelease(children);
+    return found;
+}
+
+// adopt_focused_text runs only when the system focus is the web or scroll
+// container. A composer under that container can still be the focused node.
+static void adopt_focused_text(AXUIElementRef element, arion_target *out) {
+    if (!element || !out || out->editable_ancestor) return;
+    if (strcmp(out->role, "AXWebArea") != 0 && strcmp(out->role, "AXScrollArea") != 0) return;
+    int count = 0;
+    find_focused_text(element, out, 0, &count);
 }
 
 static AXUIElementRef focused_element(int *error, int *no_input, int secure) {
@@ -109,16 +234,13 @@ int arion_capture_target(arion_target *out, int read_site) {
         if (app.bundleIdentifier) strlcpy(out->bundle, app.bundleIdentifier.UTF8String, sizeof(out->bundle));
         if (app.localizedName) strlcpy(out->app_name, app.localizedName.UTF8String, sizeof(out->app_name));
         out->secure_input = IsSecureEventInputEnabled() ? 1 : 0;
+        arion_enable_web_accessibility(out->pid);
         int error = 0;
         AXUIElementRef element = focused_element(&error, &out->no_input, out->secure_input);
         if (!element) return ARION_TARGET_OK;
-        CFTypeRef role = NULL, subrole = NULL;
-        AXUIElementCopyAttributeValue(element, kAXRoleAttribute, &role);
-        AXUIElementCopyAttributeValue(element, kAXSubroleAttribute, &subrole);
-        copy_string(role, out->role, sizeof(out->role));
-        copy_string(subrole, out->subrole, sizeof(out->subrole));
-        if (role) CFRelease(role);
-        if (subrole) CFRelease(subrole);
+        AXUIElementSetMessagingTimeout(element, 0.2f);
+        read_edit_signals(element, out);
+        adopt_focused_text(element, out);
         CFTypeRef value = NULL;
         if (AXUIElementCopyAttributeValue(element, kAXValueAttribute, &value) == kAXErrorSuccess && value) {
             out->value_readable = CFGetTypeID(value) == CFStringGetTypeID() ? 1 : 0;
@@ -127,11 +249,6 @@ int arion_capture_target(arion_target *out, int read_site) {
         int secure = out->secure_input || strcmp(out->subrole, "AXSecureTextField") == 0;
         if (read_site && !secure) copy_site(element, out->site, sizeof(out->site));
         if (!secure) out->selection = (void *)selected_range(element);
-        Boolean valueSettable = false, selectedTextSettable = false;
-        AXUIElementIsAttributeSettable(element, kAXValueAttribute, &valueSettable);
-        AXUIElementIsAttributeSettable(element, kAXSelectedTextAttribute, &selectedTextSettable);
-        out->editable = valueSettable || selectedTextSettable;
-
         out->element = (void *)element; // retained; released by arion_release
         return ARION_TARGET_OK;
     }
