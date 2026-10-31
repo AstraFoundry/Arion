@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 SUITE ?= tests/e2e/desktop-scenarios.json
 export SUITE DRIVER OUT
-.PHONY: build check contributors-update core-check desktop-check desktop-dev desktop-production desktop-status desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check
+.PHONY: build check contributors-update core-check desktop-check desktop-dev desktop-production desktop-status desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help hooks i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check
 
 # Make treats the component as a second goal; validate before any recipes run.
 ifneq ($(filter build,$(MAKECMDGOALS)),)
@@ -41,6 +41,9 @@ endif
 
 install: ## Install the pinned pnpm workspace with its frozen lockfile
 	@pnpm install --frozen-lockfile
+
+hooks: ## Point this checkout at the pre-push format and repository check
+	@node scripts/install-git-hooks.mjs
 
 check: docs workflows-check test ## Run portable repository and automation gates
 
@@ -161,4 +164,4 @@ notifications-prepare: ## Build an isolated native notification consent probe
 	pnpm notifications:prepare
 
 
-.PHONY: build check contributors-update core-check desktop-check desktop-dev desktop-production desktop-status desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check
+.PHONY: build check contributors-update core-check desktop-check desktop-dev desktop-production desktop-status desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help hooks i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check

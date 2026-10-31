@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { cpSync, copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildParallelism } from './build-parallelism.mjs';
 import { pinnedFile } from './lib/pinned-file.mjs';
 import { verifyWindowsASRPackage } from './lib/windows-pe.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -56,7 +57,9 @@ if (platform === 'darwin-arm64') {
   // uses ggml's own thread pool and must run without a compiler redistributable.
   if (platform === 'windows-amd64') flags.push('-DGGML_OPENMP=OFF');
   run('cmake', flags);
-  run('cmake', ['--build', build, '--config', 'Release', '--target', 'speech-cli', '--parallel', '6']);
+  const jobs = String(buildParallelism());
+  console.log(`ci-build-jobs: ${jobs}`);
+  run('cmake', ['--build', build, '--config', 'Release', '--target', 'speech-cli', '--parallel', jobs]);
   const executable = platform.startsWith('windows') ? 'speech.exe' : 'speech';
   const binary = [path.join(build, executable), path.join(build, 'Release', executable)].find(existsSync);
   if (!binary) throw new Error('Native ASR CPU build did not produce speech');

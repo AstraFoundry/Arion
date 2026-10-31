@@ -5,6 +5,7 @@ import {existsSync,mkdirSync,readFileSync,writeFileSync,statSync,lstatSync} from
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {isDeepStrictEqual} from 'node:util';
+import {buildParallelism} from '../build-parallelism.mjs';
 import {pinnedFile} from './pinned-file.mjs';
 import {verifiedCorrectionIdentity} from './keyboard-correction-patch.mjs';
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -67,7 +68,9 @@ export function buildMacKeyboardRuntime({manifest,work,architectures=manifest.en
    '-DBoost_NO_BOOST_CMAKE=ON','-DBoost_NO_SYSTEM_PATHS=ON',`-DBOOST_ROOT=${directory}/boost/boost_1_89_0`,`-DCMAKE_PREFIX_PATH=${deps}`,`-DCMAKE_INCLUDE_PATH=${deps}/include`,`-DCMAKE_LIBRARY_PATH=${deps}/lib`],'configure');
   const compile=readFileSync(path.join(build,'compile_commands.json'),'utf8');
   if(['/opt/homebrew/include','/usr/local/include'].some(prefix=>compile.includes(prefix)))throw new Error('Rime build selected unpinned system headers.');
-  run('cmake',['--build',build,'--target','rime','rime_deployer','--parallel','4'],'compile');
+  const jobs=String(buildParallelism());
+  console.log(`ci-build-jobs: ${jobs}`);
+  run('cmake',['--build',build,'--target','rime','rime_deployer','--parallel',jobs],'compile');
   const library=`build/lib/librime.${manifest.engine.version}.dylib`,deployer='build/bin/rime_deployer';
   const actual=command('lipo',['-archs',path.join(directory,library)]).split(/\s+/).sort();
   if(!isDeepStrictEqual(actual,identity.architectures))throw new Error('Built Rime architectures differ.');

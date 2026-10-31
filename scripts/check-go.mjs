@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const mode = process.argv[2];
-if (!['core', 'desktop', 'format', 'sync', 'updates'].includes(mode)) throw new Error('Use core, desktop, format, sync, or updates');
-const modules = mode === 'format' ? ['packages/core', 'models', 'apps/desktop', 'services/sync', 'services/updates'] : mode === 'core' ? ['packages/core', 'models'] : mode === 'sync' ? ['services/sync'] : mode === 'updates' ? ['services/updates'] : ['apps/desktop'];
+if (!['core', 'desktop', 'format', 'format-check', 'sync', 'updates'].includes(mode)) throw new Error('Use core, desktop, format, format-check, sync, or updates');
+const modules = mode === 'format' || mode === 'format-check' ? ['packages/core', 'models', 'apps/desktop', 'services/sync', 'services/updates'] : mode === 'core' ? ['packages/core', 'models'] : mode === 'sync' ? ['services/sync'] : mode === 'updates' ? ['services/updates'] : ['apps/desktop'];
 function sourceFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
     if (['build', 'dist'].includes(entry.name)) return [];
@@ -29,7 +29,10 @@ for (const module of modules) {
   const env = { ...process.env, ...(module === 'apps/desktop' ? { CGO_ENABLED: '1' } : { GOWORK: 'off' }) };
   const files = sourceFiles(cwd);
   if (mode === 'format') run('gofmt', ['-w', ...files], cwd, env);
-  else {
+  else if (mode === 'format-check') {
+    const unformatted = run('gofmt', ['-l', ...files], cwd, env, true).trim();
+    if (unformatted) { console.error(`Unformatted Go files:\n${unformatted}`); process.exit(1); }
+  } else {
     const unformatted = run('gofmt', ['-l', ...files], cwd, env, true).trim();
     if (unformatted) { console.error(`Unformatted Go files:\n${unformatted}`); process.exit(1); }
     // Cache compilation, but execute every desktop test on each native CI run.
