@@ -26,14 +26,9 @@ func load(name string) *ui.SVG {
 
 var (
 	CornerDownLeft    = load("corner-down-left")
-	Image             = load("image")
 	File              = load("file")
-	Folder            = load("folder")
 	Pin               = load("pin")
 	Trash             = load("trash")
-	Ellipsis          = load("ellipsis")
-	Link              = load("link")
-	Accessibility     = load("accessibility")
 	ArrowDown         = load("arrow-down")
 	ArrowRight        = load("arrow-right")
 	ArrowUp           = load("arrow-up")
@@ -52,12 +47,10 @@ var (
 	Clipboard         = load("clipboard")
 	Clock             = load("clock")
 	Code              = load("code")
-	Copy              = load("copy")
 	Cpu               = load("cpu")
 	Download          = load("download")
 	Gauge             = load("gauge")
 	GitHub            = load("github")
-	Globe             = load("globe")
 	Google            = load("google")
 	GripVertical      = load("grip-vertical")
 	HardDriveDownload = load("hard-drive-download")
@@ -71,7 +64,6 @@ var (
 	Pencil            = load("pencil")
 	Plus              = load("plus")
 	Power             = load("power")
-	RotateCw          = load("rotate-cw")
 	Search            = load("search")
 	Settings          = load("settings")
 	ShieldCheck       = load("shield-check")
@@ -79,7 +71,6 @@ var (
 	TriangleAlert     = load("triangle-alert")
 	Type              = load("type")
 	X                 = load("x")
-	Zap               = load("zap")
 )
 
 // Cloud polishing provider marks. ChatGPT uses the OpenAI mark.

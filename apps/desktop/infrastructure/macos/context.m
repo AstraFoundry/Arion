@@ -3,9 +3,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #import <Cocoa/Cocoa.h>
 #import <ImageIO/ImageIO.h>
-#import <ScreenCaptureKit/ScreenCaptureKit.h>
 #import <Vision/Vision.h>
-#include <stdatomic.h>
 #include "context.h"
 
 static double millis_since(CFAbsoluteTime start) { return (CFAbsoluteTimeGetCurrent() - start) * 1000.0; }
@@ -93,88 +91,6 @@ int arion_ocr_image(const void *bytes, long length, int level, char **out, doubl
         CGImageRelease(image);
         return status;
     }
-}
-
-// frontmost_window_id is the first on-screen, normal-layer window of pid in
-// the window server's front-to-back order.
-static CGWindowID frontmost_window_id(int pid) {
-    CGWindowID found = kCGNullWindowID;
-    CFArrayRef windows = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements, kCGNullWindowID);
-    if (!windows) return found;
-    for (NSDictionary *w in (__bridge NSArray *)windows) {
-        if ([w[(id)kCGWindowOwnerPID] intValue] == pid && [w[(id)kCGWindowLayer] intValue] == 0) {
-            found = [w[(id)kCGWindowNumber] unsignedIntValue];
-            break;
-        }
-    }
-    CFRelease(windows);
-    return found;
-}
-
-// A capture outlives its caller after a timeout; the completion then
-// releases the image itself.
-@interface ArionCapture : NSObject
-@property(nonatomic) dispatch_semaphore_t done;
-@property(nonatomic) CGImageRef image;
-@property(nonatomic) int status;
-@property(atomic) BOOL abandoned;
-@end
-@implementation ArionCapture
-@end
-
-int arion_ocr_window(int pid, int level, double timeout_seconds, char **out, double *capture_ms, double *ocr_ms) {
-    *out = NULL;
-    *capture_ms = *ocr_ms = 0;
-    if (@available(macOS 14.0, *)) {
-        if (!NSClassFromString(@"SCScreenshotManager")) return ARION_CONTEXT_UNSUPPORTED;
-        if (!CGPreflightScreenCaptureAccess()) return ARION_CONTEXT_NO_PERMISSION;
-        CGWindowID windowID = frontmost_window_id(pid);
-        if (windowID == kCGNullWindowID) return ARION_CONTEXT_NO_WINDOW;
-        CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
-        ArionCapture *capture = [ArionCapture new];
-        capture.done = dispatch_semaphore_create(0);
-        capture.status = ARION_CONTEXT_FAILED;
-        [SCShareableContent getShareableContentExcludingDesktopWindows:YES onScreenWindowsOnly:YES completionHandler:^(SCShareableContent *content, NSError *error) {
-            SCWindow *target = nil;
-            for (SCWindow *w in content.windows) {
-                if (w.windowID == windowID) target = w;
-            }
-            if (!target) {
-                capture.status = ARION_CONTEXT_NO_WINDOW;
-                dispatch_semaphore_signal(capture.done);
-                return;
-            }
-            SCContentFilter *filter = [[SCContentFilter alloc] initWithDesktopIndependentWindow:target];
-            SCStreamConfiguration *config = [[SCStreamConfiguration alloc] init];
-            config.width = (size_t)(target.frame.size.width * filter.pointPixelScale);
-            config.height = (size_t)(target.frame.size.height * filter.pointPixelScale);
-            config.showsCursor = NO;
-            // Looked up at run time: a class reference would keep the app
-            // from launching on macOS 13, where the class does not exist.
-            id manager = NSClassFromString(@"SCScreenshotManager");
-            [manager captureImageWithFilter:filter configuration:config completionHandler:^(CGImageRef image, NSError *captureError) {
-                if (image && !capture.abandoned) {
-                    capture.image = CGImageRetain(image);
-                    capture.status = ARION_CONTEXT_OK;
-                }
-                dispatch_semaphore_signal(capture.done);
-            }];
-        }];
-        if (dispatch_semaphore_wait(capture.done, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeout_seconds * NSEC_PER_SEC))) != 0) {
-            capture.abandoned = YES;
-            return ARION_CONTEXT_TIMEOUT;
-        }
-        *capture_ms = millis_since(start);
-        if (capture.status != ARION_CONTEXT_OK) return capture.status;
-        int status;
-        @autoreleasepool {
-            status = recognize(capture.image, level, out, ocr_ms);
-        }
-        CGImageRelease(capture.image);
-        capture.image = NULL;
-        return status;
-    }
-    return ARION_CONTEXT_UNSUPPORTED;
 }
 
 static NSString *string_for_range(AXUIElementRef element, CFRange range, NSString *value) {

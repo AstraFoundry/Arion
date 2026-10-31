@@ -4,7 +4,7 @@ package macos
 
 /*
 #cgo CFLAGS: -x objective-c -fobjc-arc
-#cgo LDFLAGS: -framework Vision -framework ImageIO -framework CoreGraphics -framework ScreenCaptureKit
+#cgo LDFLAGS: -framework Vision -framework ImageIO -framework CoreGraphics
 #include <stdlib.h>
 #include "context.h"
 */
@@ -54,7 +54,7 @@ func (p Permissions) RequestScreenRecording() {
 const PaneScreenRecording Pane = "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture"
 
 // RecognizeImage recognizes the text of an encoded image with Vision, in
-// reading order. It is the same recognizer RecognizeWindow uses.
+// reading order. Product window context uses ReadWindowText.
 func RecognizeImage(data []byte, level OCRLevel) (ScreenText, error) {
 	if len(data) == 0 {
 		return ScreenText{}, domain.Fail(domain.CodeContractUnsupported, "empty image")
@@ -62,36 +62,18 @@ func RecognizeImage(data []byte, level OCRLevel) (ScreenText, error) {
 	var out *C.char
 	var ms C.double
 	status := C.arion_ocr_image(unsafe.Pointer(&data[0]), C.long(len(data)), C.int(level), &out, &ms)
-	return screenText(status, out, 0, ms)
+	return screenText(status, out, ms)
 }
 
-// RecognizeWindow is the historical OCR benchmark control. It captures the
-// frontmost window of pid; product context uses ReadWindowText instead.
-func RecognizeWindow(pid int, level OCRLevel, timeout time.Duration) (ScreenText, error) {
-	var out *C.char
-	var captureMs, ocrMs C.double
-	status := C.arion_ocr_window(C.int(pid), C.int(level), C.double(timeout.Seconds()), &out, &captureMs, &ocrMs)
-	return screenText(status, out, captureMs, ocrMs)
-}
-
-func screenText(status C.int, out *C.char, captureMs, ocrMs C.double) (ScreenText, error) {
+func screenText(status C.int, out *C.char, ocrMs C.double) (ScreenText, error) {
 	text := ""
 	if out != nil {
 		text = C.GoString(out)
 		C.free(unsafe.Pointer(out))
 	}
-	result := ScreenText{Text: text, CaptureMs: float64(captureMs), OCRMs: float64(ocrMs)}
-	switch status {
-	case C.ARION_CONTEXT_OK:
+	result := ScreenText{Text: text, OCRMs: float64(ocrMs)}
+	if status == C.ARION_CONTEXT_OK {
 		return result, nil
-	case C.ARION_CONTEXT_NO_PERMISSION:
-		return result, domain.Fail(domain.CodePermissionDenied, "screen recording")
-	case C.ARION_CONTEXT_UNSUPPORTED:
-		return result, domain.Fail(domain.CodeTargetUnsupported, "window capture needs macOS 14")
-	case C.ARION_CONTEXT_NO_WINDOW:
-		return result, domain.Fail(domain.CodeTargetUnsupported, "no capturable window")
-	case C.ARION_CONTEXT_TIMEOUT:
-		return result, domain.Fail(domain.CodeTargetUnsupported, "window capture timed out")
 	}
 	return result, domain.Fail(domain.CodeContractUnsupported, "text recognition failed")
 }
