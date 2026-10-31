@@ -347,49 +347,13 @@ func TestSettingsAccountPortal(t *testing.T) {
 		en.Text(copy.AccPortalConnections), en.Text(copy.AccPortalProducts), en.Text(copy.AccPortalData))
 	snapshot(t, tt, "settings-account-portal")
 
-	state.Account.Portal = ""
-	settle(tt)
-	expect(t, tt, false, en.Text(copy.AccPortalGroup))
-}
-
-// Signed in, Settings says whether consented usage is being reported. Off,
-// it links the portal's data page and checks again for a new token; on, it
-// only links the page. A custom issuer keeps the status without a link.
-func TestSettingsAccountUsageReporting(t *testing.T) {
-	state, actions, store := fixture()
-	en := copy.For(copy.English)
-	signedIn(state, false)
-	tt := openAccount(t, store)
-	click := clicker(t, tt)
-	expect(t, tt, true, en.Text(copy.AccUsageGroup), en.Text(copy.AccUsageOff), en.Text(copy.AccUsageOffDetail), en.Text(copy.AccUsageManage))
-	snapshot(t, tt, "settings-account-usage-off")
-	click(en.Text(copy.AccCheckAgain))
-	if !actions.called("refresh-account") {
-		t.Fatalf("check again did not refresh: %v", actions.calls)
-	}
-	click(en.Text(copy.AccUsageManage))
-	if got := tt.OpenedURLs(); len(got) != 1 || got[0] != "https://astrafoundry.si/account/data" {
-		t.Fatalf("opened %q", got)
-	}
-
-	state.Account.UsageReporting = true
-	settle(tt)
-	expect(t, tt, true, en.Text(copy.AccUsageOn), en.Text(copy.AccUsageOnDetail), en.Text(copy.AccUsageManage))
-	expect(t, tt, false, en.Text(copy.AccUsageOff), en.Text(copy.AccCheckAgain))
-	snapshot(t, tt, "settings-account-usage-on")
-
-	state.Account.Portal = ""
-	settle(tt)
-	expect(t, tt, true, en.Text(copy.AccUsageOn))
-	expect(t, tt, false, en.Text(copy.AccUsageManage))
-
-	state.Account.Portal = "https://astrafoundry.si/account"
-	state.Account.UsageReporting = false
 	state.Preferences.UILanguage = runtime.LanguageChinese
-	zh := copy.For(copy.SimplifiedChinese)
+	tt = openAccount(t, store)
+	snapshot(t, tt, "settings-account-portal-zh")
+
+	state.Account.Portal = ""
 	settle(tt)
-	expect(t, tt, true, zh.Text(copy.AccUsageGroup), zh.Text(copy.AccUsageOff), zh.Text(copy.AccUsageOffDetail))
-	snapshot(t, tt, "settings-account-usage-off-zh")
+	expect(t, tt, false, store.Copy().Text(copy.AccPortalGroup))
 }
 
 // Product terms are available before authentication, including custom issuers.

@@ -49,7 +49,7 @@ The loopback answers `200` with `Cache-Control: no-store`, `Referrer-Policy: no-
 
 The onboarding step `Account` follows Welcome (`entities/onboarding`) and is skipped when the account is disabled. Signed out, it offers **Continue with Google**, **Continue with GitHub** and **Continue with email**. Each calls `SignIn`, which opens the issuer's sign-in page in the browser, where the same methods sign in or create an account. Before leaving Arion, the sign-in choices show a caption linking to the Arion site’s **Terms of Use** and **Privacy Policy**, in the current interface language. The platform website’s terms are not the Arion product terms; the notice must be visible before any browser/provider redirect. The muted gray secondary footer button is **Continue locally**, which moves on with no account and no network. A custom issuer (`Account.Portal` empty) gets one **Sign in** button instead. While `Phase` is `signing_in`, the step shows the browser wait with Cancel (`CancelSignIn`). The step does not move on while a sign-in, refresh, or sign-out is running (`Account.Busy`).
 
-The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. Its hover and selected fills are the sidebar's neutral grays. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card reports automatic restoration and offers **Sign out**, which revokes and deletes that token without requiring a session in memory. There is no Reconnect control. In onboarding, Continue may move on while background recovery waits for connectivity. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in with the hosted-sync entitlement, a Hosted sync card follows. Without the entitlement, views do not offer a waitlist. A Usage data row follows while signed in. Links to the AstraFoundry account portal follow (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
+The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. Its hover and selected fills are the sidebar's neutral grays. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card reports automatic restoration and offers **Sign out**, which revokes and deletes that token without requiring a session in memory. There is no Reconnect control. In onboarding, Continue may move on while background recovery waits for connectivity. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in with the hosted-sync entitlement, a Hosted sync card follows. Without the entitlement, views do not offer a waitlist. Links to the AstraFoundry account portal follow (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
 
 `features/signin` draws the account card and, when the entitlement is present, the hosted-sync card. `entities/account` maps state to copy keys.
 
@@ -188,10 +188,11 @@ minutes. Authorization refusals stop collection and sending until a fresh token
 allows them; token expiry waits for the existing account maintenance flow.
 Offline and scripted E2E profiles do not start reporting.
 
-Settings › Account shows a Usage data row while signed in: reporting is on only
-while the current token carries consent and the platform has not refused it.
-Manage opens the portal's `/account/data` page (standard issuer only). When off,
-Check again refreshes the session so a choice made on the web takes effect.
+Usage consent is handled during browser authentication in onboarding. Settings ›
+Account does not repeat the consent status or offer a manual refresh control.
+The account portal's Data link opens `/account/data` (standard issuer only), where
+users can manage consent. Changes reach Arion through automatic token renewal;
+the server checks current consent on every report.
 The platform caps sources per account day and accepts dates within 32 days back
 and one day ahead of its UTC day; the 31-day ledger stays inside that window.
 
