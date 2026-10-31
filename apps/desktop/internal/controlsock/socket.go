@@ -8,7 +8,9 @@ import (
 	"os"
 )
 
-// Listen binds path and sets the socket mode to 0600.
+// Listen binds path and limits it to the current user.
+// POSIX mode bits are set to 0600 after bind, which replaces the umask.
+// Windows ignores those bits, so the socket file DACL is replaced instead.
 func Listen(path string) (net.Listener, error) {
 	if err := os.Remove(path); err != nil && !errors.Is(err, os.ErrNotExist) {
 		return nil, err
@@ -17,7 +19,7 @@ func Listen(path string) (net.Listener, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := os.Chmod(path, 0o600); err != nil {
+	if err := restrictOwner(path); err != nil {
 		listener.Close()
 		_ = os.Remove(path)
 		return nil, err
