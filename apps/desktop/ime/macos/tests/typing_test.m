@@ -1349,6 +1349,34 @@ int main(int argc, const char *argv[]) {
             require([typing handleEvent:key(@" ", 49, NSEventModifierFlagShift)] && typing.ascii, @"legacy chord switches");
             require(!modifier(typing, 56, 0, 1.1) && typing.ascii, @"chord release keeps the selected mode");
         });
+        run(@"Caps Lock selects the mode and Shift does not", @"KBD-A16", ^{
+            typing.languageSwitch = ARION_LANGUAGE_CAPS_LOCK;
+            type(typing, @"arion");
+            require(modifier(typing, 57, NSEventModifierFlagCapsLock, 1) && typing.ascii &&
+                    [editor.view.string isEqual:@"arion"] && !editor.view.hasMarkedText,
+                    @"Caps Lock on commits raw spelling and selects English");
+            require(modifier(typing, 57, NSEventModifierFlagCapsLock, 1.05) && typing.ascii,
+                    @"the same Caps Lock level does not switch again");
+            require(modifier(typing, 57, 0, 1.2) && !typing.ascii, @"Caps Lock off selects Chinese");
+            require(!modifier(typing, 56, NSEventModifierFlagShift, 2) && !modifier(typing, 56, 0, 2.1) && !typing.ascii,
+                    @"standalone Shift does not switch");
+            require([typing handleEvent:key(@" ", 49, NSEventModifierFlagShift)] && typing.ascii,
+                    @"Shift+Space still switches");
+        });
+        run(@"short Control switches and a chord does not", @"KBD-A16", ^{
+            typing.languageSwitch = ARION_LANGUAGE_CONTROL;
+            require(!modifier(typing, 59, NSEventModifierFlagControl, 1) && !typing.ascii, @"Control press waits for release");
+            require(modifier(typing, 59, 0, 1.1) && typing.ascii, @"short left Control switches");
+            require(!modifier(typing, 62, NSEventModifierFlagControl, 2) && modifier(typing, 62, 0, 2.1) && !typing.ascii,
+                    @"short right Control switches back");
+            modifier(typing, 59, NSEventModifierFlagControl, 3);
+            [typing handleEvent:key(@"a", 0, NSEventModifierFlagControl)];
+            require(!modifier(typing, 59, 0, 3.1) && !typing.ascii, @"Control chord does not switch");
+            modifier(typing, 59, NSEventModifierFlagControl, 4);
+            require(!modifier(typing, 59, 0, 4.4) && !typing.ascii, @"long Control does not switch");
+            require(!modifier(typing, 56, NSEventModifierFlagShift, 5) && !modifier(typing, 56, 0, 5.1) && !typing.ascii,
+                    @"Shift does not switch while Control is the binding");
+        });
         run(@"symbols commit directly without candidate composition", @"KBD-A02", ^{
             NSArray *inputs = @[@"/", @"\\", @"%", @"$", @"*", @"~", @"<", @">", @"[", @"]", @"{", @"}", @"|", @"^", @"_", @"(", @")", @"!", @"?", @";", @":", @"'", @"'", @"\"", @"\""];
             NSArray *outputs = @[@"、", @"、", @"%", @"￥", @"*", @"～", @"《", @"》", @"【", @"】", @"｛", @"｝", @"|", @"……", @"——", @"（", @"）", @"！", @"？", @"；", @"：", @"‘", @"’", @"“", @"”"];

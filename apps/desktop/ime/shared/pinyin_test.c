@@ -140,6 +140,8 @@ int main(void) {
     assert(!arion_shift_transition(&tap, 1, 1, 1, 0, 0, 5.0));
     arion_shift_reset(&tap);
     assert(!arion_shift_transition(&tap, 1, 0, 1, 0, 0, 5.1));
+    assert(arion_caps_lock_language(1) == 1);
+    assert(arion_caps_lock_language(0) == 0);
     assert(arion_key_action(' ', 1, 1) == ARION_KEY_TOGGLE_ASCII);
     assert(arion_key_action('.', 4, 0) == ARION_KEY_TOGGLE_PUNCTUATION);
     assert(arion_key_action('.', 4, 1) == ARION_KEY_PASS);

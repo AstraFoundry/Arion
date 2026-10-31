@@ -261,15 +261,41 @@ var fuzzyOptions = []fuzzyOption{
 	{runtime.FuzzyUANUANG, copy.KbdFuzzyUANUANG},
 }
 
-// Keys lists the input method's fixed keys.
+// Keys lists the input method's keys. Chinese/English is the one the user can change.
 func Keys(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
+	prefs := store.State.Preferences.Keyboard
 	kit.Card(c, tokens).Children(func() {
-		for i, row := range [][2]copy.Key{{copy.KbdSwitchLanguage, copy.KbdSwitchLanguageKeys},
-			{copy.KbdChooseKeys, copy.KbdChooseKeysValue}, {copy.KbdPageKeys, copy.KbdPageKeysValue}} {
-			if i > 0 {
-				kit.Divider(c, tokens)
+		selected := prefs.ActiveLanguageSwitch()
+		detail := ""
+		switch selected {
+		case runtime.LanguageSwitchCapsLock:
+			key := copy.KbdSwitchCapsLockDetail
+			if !windows(store) {
+				key = copy.KbdSwitchCapsLockMac
 			}
+			detail = messages.Text(key)
+		case runtime.LanguageSwitchControl:
+			detail = messages.Text(copy.KbdSwitchControlDetail)
+		}
+		kit.Row(c, tokens, messages.Text(copy.KbdSwitchLanguage), detail, func() {
+			label := func(key runtime.LanguageSwitch) string {
+				switch key {
+				case runtime.LanguageSwitchCapsLock:
+					return messages.Text(copy.KbdSwitchCapsLock)
+				case runtime.LanguageSwitchControl:
+					return messages.Text(copy.KbdSwitchControl)
+				default:
+					return messages.Text(copy.KbdSwitchLanguageKeys)
+				}
+			}
+			if kit.Select(c.Key("language-switch"), &selected, runtime.LanguageSwitches, label, nil).
+				Label(messages.Text(copy.KbdSwitchLanguage)).Width(160).Changed() {
+				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Keyboard.LanguageSwitch = selected })
+			}
+		})
+		for _, row := range [][2]copy.Key{{copy.KbdChooseKeys, copy.KbdChooseKeysValue}, {copy.KbdPageKeys, copy.KbdPageKeysValue}} {
+			kit.Divider(c, tokens)
 			kit.Row(c, tokens, messages.Text(row[0]), "", func() {
 				ui.Text(c, messages.Text(row[1])).FontSize(theme.Body).TextColor(tokens.Muted)
 			})

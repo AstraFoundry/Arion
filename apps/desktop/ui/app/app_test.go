@@ -1624,6 +1624,19 @@ func TestWindowsKeyboardSettings(t *testing.T) {
 			if state.Preferences.Keyboard.PageSize != 6 {
 				t.Fatalf("Windows page-size preference was not saved: %+v", state.Preferences.Keyboard)
 			}
+			if err := tt.Click(messages.Text(copy.KbdSwitchLanguageKeys)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if err := tt.Click(messages.Text(copy.KbdSwitchCapsLock)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if state.Preferences.Keyboard.LanguageSwitch != runtime.LanguageSwitchCapsLock || !hasText(tt, messages.Text(copy.KbdSwitchCapsLockDetail)) || hasText(tt, messages.Text(copy.KbdSwitchCapsLockMac)) {
+				t.Fatalf("Windows language switch note is wrong: %+v %q", state.Preferences.Keyboard, tt.Texts())
+			}
+			reveal(t, tt, messages.Text(copy.KbdSwitchCapsLockDetail))
+			snapshot(t, tt, "settings-windows-language-switch-caps-"+string(language))
 			if err := tt.Click(messages.Text(copy.IMEInstall)); err != nil {
 				t.Fatal(err)
 			}
@@ -1677,6 +1690,52 @@ func TestWindowsKeyboardSettings(t *testing.T) {
 					t.Fatalf("Windows failure uses the wrong platform copy: %q", tt.Texts())
 				}
 			}
+		})
+	}
+}
+
+func TestLanguageSwitchKey(t *testing.T) {
+	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		t.Run(string(language), func(t *testing.T) {
+			state, _, store := fixture()
+			state.Preferences.UILanguage = language
+			state.InputMethod = runtime.InputMethodSelected
+			messages := store.Copy()
+			page := settings.NewPage()
+			page.Section = settings.Keyboard
+			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+			settle(tt)
+			if state.Preferences.Keyboard.ActiveLanguageSwitch() != runtime.LanguageSwitchShift {
+				t.Fatalf("language switch default: %+v", state.Preferences.Keyboard)
+			}
+			reveal(t, tt, messages.Text(copy.KbdSwitchLanguage))
+			snapshot(t, tt, "settings-language-switch-shift-"+string(language))
+			if err := tt.Click(messages.Text(copy.KbdSwitchLanguageKeys)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if err := tt.Click(messages.Text(copy.KbdSwitchCapsLock)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if state.Preferences.Keyboard.LanguageSwitch != runtime.LanguageSwitchCapsLock || !hasText(tt, messages.Text(copy.KbdSwitchCapsLockMac)) {
+				t.Fatalf("language switch was not saved as Caps Lock: %+v %q", state.Preferences.Keyboard, tt.Texts())
+			}
+			reveal(t, tt, messages.Text(copy.KbdSwitchCapsLockMac))
+			snapshot(t, tt, "settings-language-switch-caps-"+string(language))
+			if err := tt.Click(messages.Text(copy.KbdSwitchCapsLock)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if err := tt.Click(messages.Text(copy.KbdSwitchControl)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if state.Preferences.Keyboard.LanguageSwitch != runtime.LanguageSwitchControl || !hasText(tt, messages.Text(copy.KbdSwitchControlDetail)) {
+				t.Fatalf("language switch was not saved as Ctrl: %+v %q", state.Preferences.Keyboard, tt.Texts())
+			}
+			reveal(t, tt, messages.Text(copy.KbdSwitchControlDetail))
+			snapshot(t, tt, "settings-language-switch-ctrl-"+string(language))
 		})
 	}
 }

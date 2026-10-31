@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import "keyboard.h"
+#include "../shared/input.h"
 
 // What an explicit switch changed, for its caret badge.
 typedef NS_ENUM(NSInteger, ArionTypingSwitch) {
@@ -40,6 +41,10 @@ typedef NS_ENUM(NSInteger, ArionTypingSwitch) {
 @property BOOL emojiSuggestions;
 @property(nonatomic) BOOL typoCorrection;
 @property(nonatomic) uint32_t fuzzyPinyin;
+// ARION_LANGUAGE_SHIFT, CAPS_LOCK, or CONTROL. Empty settings stay Shift.
+@property NSInteger languageSwitch;
+// Aligns to the Caps Lock light when that key is the language switch.
+- (void)applyCapsLock:(BOOL)on;
 - (instancetype)initWithEngine:(ArionKeyboardEngine *)engine;
 - (BOOL)activate:(id)client error:(NSError **)error;
 - (void)deactivate;

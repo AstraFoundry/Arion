@@ -14,7 +14,7 @@ The input menu (menu bar input source menu) shows a selected IMK source's own it
 | Group | Chatterfly | Doubao | Arion |
 | --- | --- | --- | --- |
 | Voice | 语音输入 (fn); 语音指令 (双击 fn); Skills 设置 | 语音输入 (长按 fn/单击右 option) | — |
-| Mode | 切换至英文输入 (⇧) / 切换至中文输入 (⇧) | 切换至英文输入, with ⇧ shown as the key equivalent | 切换至英文输入 (⇧) / 切换至中文输入 (⇧) |
+| Mode | 切换至英文输入 (⇧) / 切换至中文输入 (⇧) | 切换至英文输入, with ⇧ shown as the key equivalent | 切换至英文输入 / 切换至中文输入, with the configured key (⇧, Caps Lock, or Ctrl) |
 | Width | 使用全角输入 | 切换至全角输入 | — |
 | Punctuation | 使用英文标点输入 (^.) | 中文下使用英文标点 | — |
 | Keyboard data | — | — | 复制待输入文本 (only with recovery text); 重置已学词语 |
@@ -28,7 +28,7 @@ Doubao also declares `TICapsLockLanguageSwitchCapable` and `tsInputMethodCharact
 
 Implemented with existing capabilities:
 
-- Action wording with the standalone-Shift shortcut (KBD-04): **Switch to English (⇧)** / **Switch to Chinese (⇧)**. The old label was **English — Shift**, which did not say whether it named the current mode or the action.
+- Action wording with the configured shortcut (KBD-04): **Switch to English ({key})** / **Switch to Chinese ({key})**. Shift stays ⇧. Caps Lock and Ctrl use their setting names. The old label was **English — Shift**, which did not say whether it named the current mode or the action.
 - Separators group the mode switch, keyboard data and the app.
 - **Open Arion** activates the app that shipped the input method. The build writes its bundle ID to `ArionAppIdentifier` in the input method's `Info.plist`. The item is omitted when LaunchServices cannot resolve that app.
 
@@ -36,4 +36,4 @@ Not implemented, because each needs a product decision and a spec:
 
 - **Voice input item.** It needs a new IME → app bridge operation that starts dictation, and a title that follows the configured dictation key.
 - **Full-width and English punctuation toggles.** The schema defines one punctuation table for `half_shape` and `full_shape` and no switches. Rime's `full_shape`/`ascii_punct` options would need schema switches, persisted state in `keyboard.json` and caret-badge feedback.
-- **Caps Lock language switching** (`TICapsLockLanguageSwitchCapable`). It changes KBD-04's switch contract.
+- **System Caps Lock input-source switching** (`TICapsLockLanguageSwitchCapable`). Arion's Caps Lock binding toggles its own Chinese/English mode. It does not ask macOS to leave the input source for ABC.

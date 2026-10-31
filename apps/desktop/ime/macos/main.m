@@ -76,6 +76,7 @@ static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel 
     BOOL emojiSuggestions = YES, typoCorrection = NO, neuralRanking = NO;
     uint32_t fuzzyPinyin = 0;
     NSString *dictationKey = nil;
+    typing.languageSwitch = ARION_LANGUAGE_SHIFT;
     NSData *data = [NSData dataWithContentsOfFile:[applicationSupport() stringByAppendingPathComponent:@"keyboard.json"]];
     NSDictionary *settings = data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
     if ([settings isKindOfClass:NSDictionary.class]) {
@@ -107,6 +108,11 @@ static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel 
             fuzzyPinyin = [value unsignedIntValue];
         value = settings[@"dictationKey"];
         if ([value isKindOfClass:NSString.class]) dictationKey = value;
+        value = settings[@"languageSwitch"];
+        if ([value isKindOfClass:NSString.class]) {
+            if ([value isEqual:@"caps_lock"]) typing.languageSwitch = ARION_LANGUAGE_CAPS_LOCK;
+            else if ([value isEqual:@"control"]) typing.languageSwitch = ARION_LANGUAGE_CONTROL;
+        }
     }
     typing.pageSize = pageSize;
     typing.emojiSuggestions = emojiSuggestions;
@@ -154,6 +160,17 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
     if (!labels.count) return NSLocalizedString(@"KeyboardVoiceInput", nil);
     return [NSLocalizedString(@"KeyboardVoiceInputKey", nil) stringByReplacingOccurrencesOfString:@"{key}"
         withString:[labels componentsJoinedByString:@"+"]];
+}
+
+static NSString *languageSwitchLegend(NSInteger binding) {
+    if (binding == ARION_LANGUAGE_CAPS_LOCK) return NSLocalizedString(@"KbdSwitchCapsLock", nil);
+    if (binding == ARION_LANGUAGE_CONTROL) return NSLocalizedString(@"KbdSwitchControl", nil);
+    return @"⇧";
+}
+
+static NSString *languageSwitchTitle(BOOL ascii, NSInteger binding) {
+    NSString *key = ascii ? @"KeyboardSwitchChinese" : @"KeyboardSwitchEnglish";
+    return [NSLocalizedString(key, nil) stringByReplacingOccurrencesOfString:@"{key}" withString:languageSwitchLegend(binding)];
 }
 
 @implementation ArionBridge
@@ -351,6 +368,7 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
     self.dictationKey = applyKeyboardSettings(self.typing, self.candidateWindow);
     self.languageWindow.appearance = self.candidateWindow.appearance;
     self.keyboardReady = [self.typing activate:sender error:nil];
+    if (self.keyboardReady) [self.typing applyCapsLock:(NSEvent.modifierFlags & NSEventModifierFlagCapsLock) != 0];
     self.clientBundle = [sender respondsToSelector:@selector(bundleIdentifier)] ? [sender bundleIdentifier] : @"";
     [ArionBridge shared].active = self;
     [[ArionBridge shared] send:self.activationMessage];
@@ -463,9 +481,11 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
     voice.enabled = bridge.fd >= 0 && bridge.active == self;
     [menu addItem:voice];
     [menu addItem:NSMenuItem.separatorItem];
-    NSString *key = (!self.keyboardReady || !self.typing.available) ? @"KeyboardUnavailable" :
-        (self.typing.ascii ? @"KeyboardSwitchChinese" : @"KeyboardSwitchEnglish");
-    NSMenuItem *item = [self menuItem:key action:@selector(toggleLanguage:)];
+    NSString *key = (!self.keyboardReady || !self.typing.available) ? @"KeyboardUnavailable" : nil;
+    NSMenuItem *item = key ? [self menuItem:key action:@selector(toggleLanguage:)] :
+        [[NSMenuItem alloc] initWithTitle:languageSwitchTitle(self.typing.ascii, self.typing.languageSwitch)
+            action:@selector(toggleLanguage:) keyEquivalent:@""];
+    if (!key) item.target = self;
     item.enabled = self.keyboardReady && self.typing.available;
     [menu addItem:item];
     NSMenuItem *width = [self menuItem:self.typing.fullWidth ? @"KeyboardUseHalfWidth" : @"KeyboardUseFullWidth"

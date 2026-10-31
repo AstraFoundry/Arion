@@ -116,6 +116,16 @@ func TestKeyboardPreferences(t *testing.T) {
 	if normalized.Keyboard != DefaultKeyboardPreferences() || !slices.Contains(repairs, "keyboard") {
 		t.Fatalf("invalid keyboard choice not explicitly repaired: %+v %v", normalized.Keyboard, repairs)
 	}
+	kept := DefaultKeyboardPreferences()
+	kept.LanguageSwitch = LanguageSwitchCapsLock
+	old.Keyboard = kept
+	if normalized, repairs = old.Normalize("darwin"); normalized.Keyboard != kept || len(repairs) != 0 {
+		t.Fatalf("caps lock language switch was not retained: %+v %v", normalized.Keyboard, repairs)
+	}
+	old.Keyboard.LanguageSwitch = "alt"
+	if normalized, repairs = old.Normalize("darwin"); normalized.Keyboard.LanguageSwitch != "" || normalized.Keyboard.ActiveLanguageSwitch() != LanguageSwitchShift || !slices.Contains(repairs, "keyboard") {
+		t.Fatalf("unknown language switch was not repaired to Shift: %+v %v", normalized.Keyboard, repairs)
+	}
 }
 
 func TestPolishEnginePreference(t *testing.T) {

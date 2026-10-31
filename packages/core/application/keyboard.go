@@ -134,6 +134,30 @@ func luminance(s string) float64 {
 // CandidatePageSizes are the selectable candidates per page.
 var CandidatePageSizes = []int{5, 6, 7, 9}
 
+// LanguageSwitch is the key that toggles Chinese and English inside the
+// input method (KBD-04). An empty value means Shift.
+type LanguageSwitch string
+
+const (
+	LanguageSwitchShift    LanguageSwitch = "shift"
+	LanguageSwitchCapsLock LanguageSwitch = "caps_lock"
+	LanguageSwitchControl  LanguageSwitch = "control"
+)
+
+// LanguageSwitches are the selectable keys, Shift first.
+var LanguageSwitches = []LanguageSwitch{LanguageSwitchShift, LanguageSwitchCapsLock, LanguageSwitchControl}
+
+// ActiveLanguageSwitch reports the key in effect. Empty and unknown values
+// are Shift.
+func (k KeyboardPreferences) ActiveLanguageSwitch() LanguageSwitch {
+	switch k.LanguageSwitch {
+	case LanguageSwitchCapsLock, LanguageSwitchControl:
+		return k.LanguageSwitch
+	default:
+		return LanguageSwitchShift
+	}
+}
+
 // KeyboardPreferences configure Arion's own input method (ADR 017). The input
 // method runs without the app; it reads them from a file the app keeps
 // current, when a client activates it.
@@ -155,6 +179,9 @@ type KeyboardPreferences struct {
 	ContextScreen bool `json:"contextScreen"`
 	// FuzzyPinyin is a stable bit set shared with the native keyboard ABI.
 	FuzzyPinyin uint32 `json:"fuzzyPinyin"`
+	// LanguageSwitch chooses the Chinese/English key. Empty means Shift, so
+	// profiles written before the choice keep the original gesture.
+	LanguageSwitch LanguageSwitch `json:"languageSwitch,omitempty"`
 }
 
 const (
@@ -204,6 +231,11 @@ func (k KeyboardPreferences) normalize() (KeyboardPreferences, bool) {
 	}
 	if !slices.Contains(CandidateAccents, k.Accent) || k.Accent == AccentCustom && k.AccentColor == "" {
 		k.Accent, repaired = defaults.Accent, true
+	}
+	switch k.LanguageSwitch {
+	case "", LanguageSwitchShift, LanguageSwitchCapsLock, LanguageSwitchControl:
+	default:
+		k.LanguageSwitch, repaired = "", true
 	}
 	return k, repaired
 }

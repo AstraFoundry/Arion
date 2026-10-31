@@ -7,6 +7,9 @@ struct NativeKey {
     int modifiers=0;
     unsigned shiftSide=0;
     bool shift=false;
+    unsigned controlSide=0;
+    bool control=false;
+    bool capsLock=false;
     bool repeated=false;
 };
 
@@ -38,11 +41,19 @@ inline NativeKey windowsKey(WPARAM key,LPARAM details,const BYTE state[256],HKL 
     if ((state[VK_LWIN]|state[VK_RWIN])&0x80) value.modifiers|=1<<26;
     value.repeated=(details&(1ull<<30))!=0;
     value.shift=key==VK_SHIFT || key==VK_LSHIFT || key==VK_RSHIFT;
+    value.control=key==VK_CONTROL || key==VK_LCONTROL || key==VK_RCONTROL;
+    value.capsLock=key==VK_CAPITAL;
     if (value.shift) {
         UINT side=key==VK_SHIFT ? MapVirtualKeyExW(static_cast<UINT>((details>>16)&0xff),MAPVK_VSC_TO_VK_EX,layout) : static_cast<UINT>(key);
         value.shiftSide=side==VK_LSHIFT ? 1 : side==VK_RSHIFT ? 2 : 0;
         return value;
     }
+    if (value.control) {
+        UINT side=key==VK_CONTROL ? MapVirtualKeyExW(static_cast<UINT>((details>>16)&0xff),MAPVK_VSC_TO_VK_EX,layout) : static_cast<UINT>(key);
+        value.controlSide=side==VK_LCONTROL ? 1 : side==VK_RCONTROL ? 2 : 0;
+        return value;
+    }
+    if (value.capsLock) return value;
     value.symbol=windowsNamedKey(key);
     if (value.symbol>=0) return value;
     // Shortcut classification uses the printable base key, not a control code.

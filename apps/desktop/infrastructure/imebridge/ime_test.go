@@ -403,7 +403,7 @@ func TestCancelledCancelDisconnectsToClearNativeOwnership(t *testing.T) {
 func TestWriteKeyboardSettings(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "Arion", "keyboard.json")
 	want := application.KeyboardPreferences{PageSize: 6, CandidateSize: application.CandidateLarge, Appearance: application.AppearanceDark, Accent: application.AccentBlue,
-		TypoCorrection: true, FuzzyPinyin: application.FuzzyZZH | application.FuzzyIANIANG}
+		TypoCorrection: true, FuzzyPinyin: application.FuzzyZZH | application.FuzzyIANIANG, LanguageSwitch: application.LanguageSwitchCapsLock}
 	if err := WriteKeyboardSettings(path, want, application.HoldRightCommand); err != nil {
 		t.Fatal(err)
 	}
@@ -417,6 +417,7 @@ func TestWriteKeyboardSettings(t *testing.T) {
 		raw["appearance"] != "dark" || raw["accent"] != "blue" ||
 		raw["emojiSuggestions"] != false ||
 		raw["typoCorrection"] != true || raw["fuzzyPinyin"] != float64(want.FuzzyPinyin) ||
+		raw["languageSwitch"] != "caps_lock" ||
 		raw["dictationKey"] != "right_command" {
 		t.Fatalf("unexpected settings file %s (%v)", data, err)
 	}
