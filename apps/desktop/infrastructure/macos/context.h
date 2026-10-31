@@ -3,7 +3,7 @@
 
 enum {
     ARION_CONTEXT_OK = 0,
-    ARION_CONTEXT_UNSUPPORTED = 1, // macOS before 14 for window capture
+    ARION_CONTEXT_UNSUPPORTED = 1, // visible accessibility text produced no lines
     ARION_CONTEXT_NO_PERMISSION = 2,
     ARION_CONTEXT_NO_WINDOW = 3,
     ARION_CONTEXT_FAILED = 4,
@@ -22,11 +22,6 @@ void arion_screen_request(void);
 // arion_ocr_image recognizes the text of an encoded image (PNG/JPEG) in
 // reading order. *out is malloc'd UTF-8 the caller frees.
 int arion_ocr_image(const void *bytes, long length, int level, char **out, double *ms);
-
-// arion_ocr_window captures the frontmost on-screen window of pid with
-// ScreenCaptureKit and recognizes its text. The image never leaves this
-// function. *out is malloc'd UTF-8 the caller frees.
-int arion_ocr_window(int pid, int level, double timeout_seconds, char **out, double *capture_ms, double *ocr_ms);
 
 // Reads visible text from the captured element's window using Accessibility.
 // No screenshots or OCR; returns no partial text on a limit or focus change.
