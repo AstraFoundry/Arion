@@ -1,5 +1,6 @@
 # Operations
 
+- [Local CI](local-ci.md) — disposable Linux runners, fork routing, native coverage and rollback.
 - [Local rewriting](local-rewrite.md) — selected GGUF model, two-stage prompts, private runtime and delivery policy.
 - [Windows input method](windows-input-method.md) — TSF setup, shared Pinyin integration, security boundary and native verification.
 - [Local development](local-dev.md) — actual repository commands, module toolchains, and [macOS development build and TCC permission diagnostics](local-dev.md#macos-development-build-and-tcc-permission-diagnostics).

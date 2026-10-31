@@ -17,7 +17,8 @@ concurrency:
 
 jobs:
   preflight:
-    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    runs-on: ${{ fromJSON(vars.LOCAL_CI_ENABLED == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && '["self-hosted","Linux","ARM64","af-arion-linux"]' || '["ubuntu-latest"]') }}
     outputs:
       native-matrix: ${{ steps.matrix.outputs.value }}
     steps:
@@ -73,8 +74,9 @@ jobs:
       APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
 
   draft-release:
+    timeout-minutes: 30
     needs: checks
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.LOCAL_CI_ENABLED == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && '["self-hosted","Linux","ARM64","af-arion-linux"]' || '["ubuntu-latest"]') }}
     permissions:
       contents: write
     steps:
