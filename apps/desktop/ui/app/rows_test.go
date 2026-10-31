@@ -25,6 +25,11 @@ func TestSettingsRowsShareHeight(t *testing.T) {
 	}, 560, 320)
 	settle(tt)
 	snapshot(t, tt, "settings-rows")
+	// The pitch between row centers is RowHeight. Select and Segmented
+	// size from their padding plus the platform text line box, so those
+	// rows can exceed the minimum: about 0.6 DIP on Windows and 2 DIP
+	// on Linux. macOS fits. A second line of text still fails.
+	const rowPitchSlack float32 = 2
 	var previous float32
 	for i, title := range titles {
 		r, ok := tt.Find(title)
@@ -32,8 +37,11 @@ func TestSettingsRowsShareHeight(t *testing.T) {
 			t.Fatalf("%s row not rendered", title)
 		}
 		center := r.Y + r.H/2
-		if i > 0 && center-previous != theme.RowHeight {
-			t.Errorf("%s row starts %v below the previous row, want %v", title, center-previous, theme.RowHeight)
+		if i > 0 {
+			pitch := center - previous
+			if pitch < theme.RowHeight-rowPitchSlack || pitch > theme.RowHeight+rowPitchSlack {
+				t.Errorf("%s row starts %v below the previous row, want %v±%v", title, pitch, theme.RowHeight, rowPitchSlack)
+			}
 		}
 		previous = center
 	}
