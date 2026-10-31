@@ -5,9 +5,9 @@ holdout-tian	tian	-	0	1
 holdout-cheng	cheng	-	0	1
 holdout-xue	xue	-	0	1
 holdout-engin	engin	engine	99	0
-holdout-electr	electr	electric	99	0
-holdout-hospit	hospit	hospital	99	0
-holdout-microph	microph	microphone	99	0
-holdout-fan	fan	fan	99	0
-holdout-map	map	map	99	0
-holdout-terminal	terminal	terminal	99	0
+holdout-electr	electr	electricity	1	0
+holdout-hospit	hospit	hospital	1	0
+holdout-microph	microph	microphone	1	0
+holdout-fan	fan	fan	1	0
+holdout-map	map	map	1	0
+holdout-terminal	terminal	terminal	1	0

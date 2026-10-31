@@ -12,6 +12,7 @@
 namespace arion {
 class EnglishLexicon final : public std::enable_shared_from_this<EnglishLexicon> {
  public:
+    static constexpr size_t kMixedMinimumPrefix = 5;
     struct Entry { std::string key, display; uint32_t rank; };
     struct WordPrefix { size_t bytes; std::vector<Entry> forms; };
     enum class Completion { Suggest, Lookup };

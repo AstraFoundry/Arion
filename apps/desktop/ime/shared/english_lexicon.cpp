@@ -61,7 +61,7 @@ std::shared_ptr<const EnglishLexicon> EnglishLexicon::Load(const std::filesystem
         }
         seen[rank]=true;
         const uint32_t id=static_cast<uint32_t>(lexicon->words_.size());
-        const size_t minimum=word.count>=kSuggestionMinimumCount?std::max(size_t(3),(key.size()+1)/2):0;
+        const size_t minimum=word.count>=kSuggestionMinimumCount?std::max(kMixedMinimumPrefix,(key.size()+1)/2):0;
         lexicon->indexes_[minimum].words.push_back(id);
         lexicon->words_.push_back(std::move(word));
     }

@@ -6,6 +6,8 @@
 extern "C" {
 #endif
 
+enum { ARION_MENU_MAX_PAGE_SIZE = 9 };
+
 typedef struct ArionPinyinMenu {
     char **texts;
     size_t *indices;

@@ -59,7 +59,7 @@ int arion_menu_build_typed(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,
                           int (*kind)(void *,uintptr_t,size_t,ArionCandidateMetadata *),void *kind_context) {
     int expanded=menu->expanded;
     arion_menu_dispose(menu);
-    if (page_size<1 || page_size>9) return 0;
+    if (page_size<1 || page_size>ARION_MENU_MAX_PAGE_SIZE) return 0;
     menu->page_size=page_size;
     menu->expanded=expanded;
     menu->kind=kind; menu->kind_context=kind_context;
@@ -143,7 +143,7 @@ int arion_menu_prepare(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session) {
 int arion_menu_turn(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,int delta) {
     if ((delta!=1 && delta!=-1) || (delta<0 && menu->page==0)) return 0;
     size_t page=delta>0 ? menu->page+1 : menu->page-1;
-    if (page>SIZE_MAX/9-1 || !arion_menu_load(menu,api,session,page*menu->page_size) || page*menu->page_size>=menu->count) return 0;
+    if (page>SIZE_MAX/ARION_MENU_MAX_PAGE_SIZE-1 || !arion_menu_load(menu,api,session,page*menu->page_size) || page*menu->page_size>=menu->count) return 0;
     menu->page=page; menu->highlight=page*menu->page_size;
     if (page<menu->top_row) menu->top_row=page;
     if (page>=menu->top_row+expanded_rows) menu->top_row=page+1-expanded_rows;
