@@ -19,6 +19,7 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Installed Chatterfly keyboard](chatterfly-installed-keyboard.md) — matching installed bytes, XNet loaders, model enablement, bounded provisioning search, stored cloud preference and real keyboard probes.
 - [Chatterfly candidate UI](chatterfly-candidate-ui.md) — shipped candidate-bar size presets, light/dark themes and input-menu icon format behind Arion's candidate bar.
 - [English candidate admission](english-candidate-admission.md) — vendor-grounded exact/suggestion/lookup separation, full-Pinyin evidence, conservative local policy and validation limits.
+- [Contextual Pinyin generation](contextual-pinyin-generation.md) — current commercial generation/context paths, separate open-source generation scheduling and local mixed-initial feasibility results with explicit quality limits.
 - [Typing-time candidate re-ranking](context-ranking.md) — current Doubao MLP/LLM fusion and Chatterfly LM/LTR/conditional generation call paths, evidence limits and Arion's local context ranker.
 - [General LLM keyboard alignment](llm-ime-alignment.md) — implemented ID-only local/provider adapter, latest-revision scheduler, measured 2B pilot, native integration design and evaluation/adoption gates.
 - [Original Rime LLM reranker reproduction](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/rime-llm-reranker-v1/README.md`) — 100 authored real-candidate fixtures, actual local inference, typing latency, parser/cache defects and model-free report replay.
