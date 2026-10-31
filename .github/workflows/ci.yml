@@ -253,9 +253,11 @@ jobs:
           writeFileSync(file, bytes, { mode: 0o600 });
           appendFileSync(process.env.GITHUB_ENV, `MACOS_IME_PROVISIONING_PROFILE=${file}\n`);
           NODE
-      # Installers are for main and release. Pull requests stop after the checks above.
+      # Installer assembly and signing run only when a caller sets release: true
+      # (tagged releases and the signed macOS dispatch). Pull requests and
+      # pushes to main stop after the checks above.
       - name: Build and verify desktop package
-        if: github.event_name != 'pull_request' || inputs.release
+        if: inputs.release
         env:
           ARION_OFFICIAL_RELEASE: ${{ inputs.release && '1' || '' }}
           MYGO_UPDATER_PRIVATE_KEY: ${{ inputs.release && secrets.MYGO_UPDATER_PRIVATE_KEY || '' }}
@@ -270,10 +272,10 @@ jobs:
         if: always() && inputs.release && runner.os == 'macOS'
         run: rm -f "$RUNNER_TEMP/ArionInput.provisionprofile"
       - name: Collect installers and verify signed updates for releases
-        if: github.event_name != 'pull_request' || inputs.release
-        run: node scripts/release.mjs collect ${{ matrix.platform }} .workspace/release/${{ matrix.platform }} ${{ inputs.release && '--signed' || '--unsigned' }}
+        if: inputs.release
+        run: node scripts/release.mjs collect ${{ matrix.platform }} .workspace/release/${{ matrix.platform }} --signed
       - uses: actions/upload-artifact@v4
-        if: github.event_name != 'pull_request' || inputs.release
+        if: inputs.release
         with:
           name: desktop-${{ matrix.platform }}
           path: .workspace/release/${{ matrix.platform }}/

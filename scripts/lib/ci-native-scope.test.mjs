@@ -61,7 +61,10 @@ test('CI pins one Go toolchain and keeps release concurrency', () => {
   assert.deepEqual([...ci.matchAll(/go-version: '([^']+)'/g)].map(match => match[1]), ['1.27.3', '1.27.3', '1.27.3']);
   assert.match(ci, /cancel-in-progress: \$\{\{ github\.event_name == 'pull_request' \}\}/);
   assert.match(ci, /check-windows-keyboard-ci\.ps1/);
-  assert.equal([...ci.matchAll(/github\.event_name != 'pull_request' \|\| inputs\.release/g)].length, 3);
+  assert.equal([...ci.matchAll(/github\.event_name != 'pull_request' \|\| inputs\.release/g)].length, 0);
+  assert.equal([...ci.matchAll(/^ {8}if: inputs\.release$/gm)].length, 3);
+  assert.match(ci, /collect \$\{\{ matrix\.platform \}\} \.workspace\/release\/\$\{\{ matrix\.platform \}\} --signed/);
+  assert.doesNotMatch(ci, /--unsigned/);
   assert.match(ci, /github\.event_name == 'workflow_call' \|\| github\.event_name == 'workflow_dispatch' \|\| github\.ref_type == 'tag'/);
   assert.match(ci, /native-restore/);
   assert.match(ci, /go-restore/);
