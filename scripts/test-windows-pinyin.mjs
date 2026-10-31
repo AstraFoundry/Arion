@@ -1,7 +1,8 @@
 // Actual conversion through the same shared core and encrypted Rime backend
 // used by the Windows input method. This is not installed-editor acceptance.
 import {englishAdmissionFixtures} from './lib/english-admission-fixtures.mjs';
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
+import { cachedSpawn } from './lib/windows-compile-cache.mjs';
 import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -23,7 +24,11 @@ const sourceNames = ['pinyin.c', 'pinyin.h', 'menu.c', 'menu.h', 'input.c', 'inp
   'ranking_unicode_data.h', 'emoji.cpp', 'spelling.cpp', 'personal_vocabulary.cpp', 'personal_vocabulary_store.cpp', 'english.cpp', 'english_lexicon.cpp', 'emoji.h', 'spelling.h', 'personal_vocabulary.h', 'personal_vocabulary_store.h', 'personal_vocabulary_bridge.h', 'english.h', 'english_lexicon.h', 'spelling_options.h', 'emoji_data.h', 'pinyin_native_test.cpp', 'english_admission_cases.h'];
 const sourceIdentities = Object.fromEntries(sourceNames.map(name => [name, hash(path.join(source, name))]));
 const runtimeSha256 = hash(library);
-const run = (command, args) => execFileSync(command, args, { cwd: root, stdio: 'inherit', windowsHide: true });
+const run = (command, args) => {
+  const result = cachedSpawn(command, args, { cwd: root, stdio: 'inherit', windowsHide: true });
+  if (result.error) throw result.error;
+  if (result.status !== 0) throw new Error(`${command} failed (${result.status})`);
+};
 const c = process.env.CC ?? 'gcc', cxx = process.env.CXX ?? 'g++';
 const pinyin = path.join(runDirectory, 'pinyin.o');
 const menu = path.join(runDirectory, 'menu.o');

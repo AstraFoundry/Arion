@@ -1,7 +1,8 @@
 import { buildCandidateFonts } from './lib/windows-candidate-fonts.mjs';
 // The production TSF key sink edits an owned ITextStoreACP document. No profile
 // registration, global selection, real editor typing or persistent user data.
-import {spawn,spawnSync} from 'node:child_process';
+import {spawn} from 'node:child_process';
+import {cachedSpawn} from './lib/windows-compile-cache.mjs';
 import {createHash} from 'node:crypto';
 import {cpSync,mkdirSync,mkdtempSync,readFileSync,writeFileSync,existsSync} from 'node:fs';
 import path from 'node:path';
@@ -35,7 +36,7 @@ const runtimeSources=[path.join(root,'apps/desktop/resources/windows-amd64/keybo
 report.runtimeSources=Object.fromEntries(runtimeSources.map(file=>[path.relative(root,file),hash(file)]));
 const save=()=>writeFileSync(path.join(directory,'report.json'),JSON.stringify(report,null,2)+'\n');
 function run(command,args){
-  const result=spawnSync(command,args,{cwd:root,encoding:'utf8',windowsHide:true,timeout:180000});
+  const result=cachedSpawn(command,args,{cwd:root,encoding:'utf8',windowsHide:true,timeout:180000});
   report.commands.push({command,args,status:result.status,stdout:result.stdout,stderr:result.stderr,error:result.error?.message}); save();
   process.stdout.write(result.stdout??''); process.stderr.write(result.stderr??'');
   if(result.error)throw result.error;

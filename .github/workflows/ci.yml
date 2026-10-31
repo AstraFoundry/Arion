@@ -138,6 +138,7 @@ jobs:
             .workspace/native-asr-migration/
             .workspace/local-rewrite/
             .workspace/keyboard-runtime/
+            .workspace/windows-compile-cache/
             .workspace/native-download-cache/
       - name: Restore standard-user Go cache
         if: runner.os == 'Windows'

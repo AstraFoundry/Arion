@@ -1,5 +1,5 @@
 // Native COM contract checks only; no TSF registration or input-profile changes.
-import { spawnSync } from 'node:child_process';
+import { cachedSpawn } from './lib/windows-compile-cache.mjs';
 import { createHash } from 'node:crypto';
 import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -19,7 +19,7 @@ files.push('scripts/test-windows-language-bar.mjs');
 const report = { schema: 1, boundary: 'Native isolated language-bar COM contracts with mock ITfMenu/ITfLangBarItemSink and real GDI icons; no registration, activation, popup display or system input-menu acceptance claim', directory, sources: {}, commands: [], status: 'running' };
 const save = () => writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`);
 function run(phase, command, args) {
-  const result = spawnSync(command, args, { cwd: directory, encoding: 'utf8', windowsHide: true, timeout: 120000, maxBuffer: 8 * 1024 * 1024 });
+  const result = cachedSpawn(command, args, { cwd: directory, encoding: 'utf8', windowsHide: true, timeout: 120000, maxBuffer: 8 * 1024 * 1024 });
   report.commands.push({ phase, command, args, status: result.status, error: result.error?.message, stdout: result.stdout, stderr: result.stderr });
   save();
   process.stdout.write(result.stdout ?? ''); process.stderr.write(result.stderr ?? '');
