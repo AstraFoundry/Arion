@@ -161,12 +161,20 @@ func (trace *contextTrace) Write(data []byte) (int, error) {
 func (trace *contextTrace) snapshot(cutoff time.Time) contextObservation {
 	trace.mu.Lock()
 	defer trace.mu.Unlock()
-	if !trace.cancelledAt.IsZero() && trace.cancelledAt.Before(cutoff) {
+	// cancelling() is recorded before CommandContext kills the child.
+	// Windows can stamp that kill's stdout EOF in the same instant, so an
+	// event that is not strictly earlier is cleanup, not prior progress.
+	onCancel := !trace.cancelledAt.IsZero() && trace.cancelledAt.Before(cutoff)
+	if onCancel {
 		cutoff = trace.cancelledAt
 	}
 	observation := trace.observation
 	for stage, event := range observation.events {
-		if event.After(cutoff) {
+		drop := event.After(cutoff)
+		if onCancel && !event.IsZero() && !event.Before(cutoff) {
+			drop = true
+		}
+		if drop {
 			observation.events[stage] = time.Time{}
 		}
 	}
