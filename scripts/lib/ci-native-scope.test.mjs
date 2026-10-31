@@ -58,7 +58,7 @@ test('CI pins one Go toolchain and keeps release concurrency', () => {
   const ci = readFileSync(path.join(root, '.github/workflows/ci.yml'), 'utf8');
   const release = readFileSync(path.join(root, '.github/workflows/release.yml'), 'utf8');
   const signed = readFileSync(path.join(root, '.github/workflows/signed-macos.yml'), 'utf8');
-  assert.deepEqual([...ci.matchAll(/go-version: '([^']+)'/g)].map(match => match[1]), ['1.27.3', '1.27.3']);
+  assert.deepEqual([...ci.matchAll(/go-version: '([^']+)'/g)].map(match => match[1]), ['1.27.3', '1.27.3', '1.27.3']);
   assert.match(ci, /cancel-in-progress: \$\{\{ github\.event_name == 'pull_request' \}\}/);
   assert.match(ci, /check-windows-keyboard-ci\.ps1/);
   assert.equal([...ci.matchAll(/github\.event_name != 'pull_request' \|\| inputs\.release/g)].length, 3);

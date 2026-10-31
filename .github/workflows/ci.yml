@@ -45,26 +45,58 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# Blobless checkouts keep commit history and skip historical blobs.
+# This repository's commits and trees are about 3.4 MiB. Blobs are about 1.1 GiB
+# uncompressed (pack 261 MiB). The current tree is about 68 MiB.
+
 jobs:
   portable:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 0
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           run_install: false
       - uses: actions/setup-node@v4
+        id: node
         with:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # Same patched toolchain as the native job and go.work. Module go lines stay lower; this SDK still enforces them.
+      # The module and build cache restores from main when these sums match.
       - uses: actions/setup-go@v5
+        id: go
         with:
           go-version: '1.27.3'
-          cache: false
+          cache: true
+          cache-dependency-path: |
+            go.work.sum
+            apps/desktop/go.sum
+            services/sync/go.sum
+            third_party/mygo/go.sum
+      - name: Restore actionlint
+        id: actionlint-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .workspace/tools/actionlint
+          key: actionlint-${{ hashFiles('scripts/lib/workflow-check.mjs') }}-${{ runner.os }}-${{ runner.arch }}
+      - name: Record setup caches
+        run: |
+          node scripts/ci-cache-report.mjs setup-node "${{ steps.node.outputs.cache-hit }}"
+          node scripts/ci-cache-report.mjs setup-go "${{ steps.go.outputs.cache-hit }}"
+          node scripts/ci-cache-report.mjs actionlint "${{ steps.actionlint-cache.outputs.cache-hit }}"
       - run: pnpm check
       - run: pnpm workflows:check
+      - name: Save actionlint
+        if: success() && github.ref == 'refs/heads/main' && steps.actionlint-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .workspace/tools/actionlint
+          key: actionlint-${{ hashFiles('scripts/lib/workflow-check.mjs') }}-${{ runner.os }}-${{ runner.arch }}
       - run: pnpm test
       - run: pnpm updater:check
       - run: pnpm notifications:check
@@ -83,7 +115,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          filter: blob:none
+          fetch-depth: 0
       - name: Decide whether the native shell is required
         id: decision
         env:
@@ -106,19 +139,29 @@ jobs:
       XDG_CACHE_HOME: ${{ github.workspace }}/.workspace/native-download-cache
     steps:
       - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 0
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           run_install: false
       - uses: actions/setup-node@v4
+        id: node
         with:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # Keep this pin identical to the portable job.
       - uses: actions/setup-go@v5
+        id: go
         with:
           go-version: '1.27.3'
-          cache-dependency-path: apps/desktop/go.sum
+          cache: true
+          cache-dependency-path: |
+            go.work.sum
+            apps/desktop/go.sum
+            services/sync/go.sum
+            third_party/mygo/go.sum
       - name: Require native MLX toolchain
         if: matrix.platform == 'darwin-arm64'
         run: |
@@ -129,8 +172,12 @@ jobs:
       - name: Identify native build caches
         id: cache-keys
         run: node scripts/native-ci-cache-key.mjs
+      # Restore from main. Pull requests do not save these trees: GitHub hides a
+      # pull-request cache from main and from every other pull request, and a
+      # large per-PR entry can evict the shared one.
       - name: Restore native dependency builds
-        uses: actions/cache@v4
+        id: native-cache
+        uses: actions/cache/restore@v4
         with:
           key: ${{ steps.cache-keys.outputs.native }}
           restore-keys: ${{ steps.cache-keys.outputs.native-restore }}
@@ -141,18 +188,22 @@ jobs:
             .workspace/windows-compile-cache/
             .workspace/native-download-cache/
       - name: Restore standard-user Go cache
+        id: go-cache
         if: runner.os == 'Windows'
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           key: ${{ steps.cache-keys.outputs.go }}
           restore-keys: ${{ steps.cache-keys.outputs.go-restore }}
           path: .workspace/ci-standard-user-go-cache/
+      - name: Record dependency caches
+        run: |
+          node scripts/ci-cache-report.mjs setup-node "${{ steps.node.outputs.cache-hit }}"
+          node scripts/ci-cache-report.mjs setup-go "${{ steps.go.outputs.cache-hit }}"
+          node scripts/ci-cache-report.mjs native "${{ steps.native-cache.outputs.cache-hit }}" "${{ steps.cache-keys.outputs.native }}" "${{ steps.cache-keys.outputs.native-restore }}"
+          node scripts/ci-cache-report.mjs standard-user-go "${{ steps.go-cache.outputs.cache-hit }}" "${{ steps.cache-keys.outputs.go }}" "${{ steps.cache-keys.outputs.go-restore }}"
       - name: Desktop checks (macOS)
         if: runner.os == 'macOS'
         run: pnpm desktop:check
-      - name: Windows updater regression checks
-        if: runner.os == 'Windows'
-        run: pnpm updater:check
       - name: Native window tests (macOS)
         if: runner.os == 'macOS' && !inputs.skip-e2e
         run: pnpm e2e:native
@@ -228,6 +279,74 @@ jobs:
           path: .workspace/release/${{ matrix.platform }}/
           if-no-files-found: error
           compression-level: 0
+      - name: Save native dependency builds
+        if: success() && github.ref == 'refs/heads/main' && steps.native-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          key: ${{ steps.cache-keys.outputs.native }}
+          path: |
+            .workspace/native-asr-migration/
+            .workspace/local-rewrite/
+            .workspace/keyboard-runtime/
+            .workspace/windows-compile-cache/
+            .workspace/native-download-cache/
+      - name: Save standard-user Go cache
+        if: success() && runner.os == 'Windows' && github.ref == 'refs/heads/main' && steps.go-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          key: ${{ steps.cache-keys.outputs.go }}
+          path: .workspace/ci-standard-user-go-cache/
+
+  # Windows installer regression, in parallel with the native keyboard suite.
+  windows-updater:
+    needs: scope
+    if: >-
+      !cancelled() &&
+      (needs.scope.result == 'success' || needs.scope.result == 'skipped') &&
+      (github.event_name != 'pull_request' || needs.scope.outputs.native == 'true') &&
+      contains(inputs.native-matrix || 'windows-amd64', 'windows-amd64')
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/setup-go@v5
+        id: go
+        with:
+          go-version: '1.27.3'
+          cache: true
+          cache-dependency-path: third_party/mygo/go.sum
+      - name: Record setup caches
+        run: node scripts/ci-cache-report.mjs setup-go "${{ steps.go.outputs.cache-hit }}"
+      - name: Windows updater regression checks
+        run: node scripts/check-updater.mjs
+
+  # Fail when a required check was skipped. A green portable job must not hide
+  # a missing native or Windows updater result.
+  required-checks:
+    needs: [portable, scope, native-shell, windows-updater]
+    if: always() && !cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 0
+      - name: Require the checks this event must run
+        env:
+          EVENT: ${{ github.event_name }}
+          PORTABLE: ${{ needs.portable.result }}
+          SCOPE: ${{ needs.scope.result }}
+          NATIVE: ${{ needs.native-shell.result }}
+          NATIVE_OUTPUT: ${{ needs.scope.outputs.native }}
+          WINDOWS_UPDATER: ${{ needs.windows-updater.result }}
+          WINDOWS_REQUIRED: ${{ contains(inputs.native-matrix || 'windows-amd64', 'windows-amd64') }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/ci-required-checks.mjs
 
   # Start native with portable. Cancel the run only after portable has already failed.
   # Release callers grant contents: read, so this request is denied there and native finishes.

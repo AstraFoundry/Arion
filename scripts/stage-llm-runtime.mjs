@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, chmodSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildParallelism } from './build-parallelism.mjs';
 import { pinnedFile } from './lib/pinned-file.mjs';
 import { verifyWindowsLLMPackage } from './lib/windows-pe.mjs';
 
@@ -46,9 +47,11 @@ if (platform === 'windows-amd64') {
     '-DLLAMA_BUILD_NUMBER=11734', `-DLLAMA_BUILD_COMMIT=${spec.source.revision}`, '-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded'];
   // Compile the same source twice, first the x64 baseline and then the bounded
   // AVX2 feature set checked by the worker before it chooses that executable.
+  const jobs = String(buildParallelism());
+  console.log(`ci-build-jobs: ${jobs}`);
   for (const [name, enabled] of [['llama-server.exe', 'OFF'], ['llama-server-avx2.exe', 'ON']]) {
     run('cmake', [...flags, ...['SSE42', 'AVX', 'AVX2', 'FMA', 'F16C', 'BMI2'].map(feature => `-DGGML_${feature}=${enabled}`)]);
-    run('cmake', ['--build', build, '--config', 'Release', '--target', 'llama-server', '--parallel', '6']);
+    run('cmake', ['--build', build, '--config', 'Release', '--target', 'llama-server', '--parallel', jobs]);
     const binary = [path.join(build, 'bin', 'llama-server.exe'), path.join(build, 'bin', 'Release', 'llama-server.exe')].find(existsSync);
     if (!binary) throw new Error(`Pinned Windows GGUF build did not produce ${name}`);
     copyFileSync(binary, path.join(destination, name));

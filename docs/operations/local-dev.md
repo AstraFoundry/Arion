@@ -6,7 +6,7 @@ Current optional rewriting uses the [selected staged GGUF configuration](local-r
 
 ## Foundation checks
 
-Use Node from `.nvmrc` (24) and exact pnpm 10.33.0 from `package.json`. The public workspace has dependency-free product driver tooling and a committed lockfile; install with `make install` / `pnpm install --frozen-lockfile`. npm/yarn installation is rejected. Native dependencies remain Go modules.
+Use Node from `.nvmrc` (24) and exact pnpm 10.33.0 from `package.json`. The public workspace has dependency-free product driver tooling and a committed lockfile; install with `make install` / `pnpm install --frozen-lockfile`. npm/yarn installation is rejected. Native dependencies remain Go modules. `pnpm install` and `make hooks` set `core.hooksPath` to `.githooks`. The pre-push hook runs `gofmt` across the Go modules and `node scripts/check-repository.mjs` (the same work as `pnpm check`). It does not run desktop tests, native E2E, or `go test`. GitHub Actions does not install the hook.
 
 ```sh
 make install

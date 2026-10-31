@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildParallelism } from './build-parallelism.mjs';
 import { pinnedFile } from './lib/pinned-file.mjs';
 import { stageKeyboardData } from './lib/keyboard-data.mjs';
 import { verifiedCorrectionIdentity } from './lib/keyboard-correction-patch.mjs';
@@ -11,6 +12,8 @@ import { verifyWindowsPEDependencies } from './lib/windows-pe.mjs';
 import { verifyWindowsKeyboardRuntime } from './lib/windows-keyboard.mjs';
 
 if (process.platform !== 'win32' || process.arch !== 'x64') throw new Error('Windows keyboard runtime requires native Windows x64.');
+const jobs = String(buildParallelism());
+console.log(`ci-build-jobs: ${jobs}`);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const manifestPath = path.join(root, 'scripts/keyboard-runtime.json');
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
@@ -52,7 +55,7 @@ const flags = ['-G', 'Ninja', '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_POLICY_VERS
 function build(name, sourceDirectory, options, targets = [], install = true) {
   const directory = path.join(work, 'build', name);
   run('cmake', ['-S', sourceDirectory, '-B', directory, ...flags, ...options]);
-  run('cmake', ['--build', directory, '--parallel', process.env.ARION_KEYBOARD_BUILD_JOBS ?? '6', ...(targets.length ? ['--target', ...targets] : [])]);
+  run('cmake', ['--build', directory, '--parallel', jobs, ...(targets.length ? ['--target', ...targets] : [])]);
   if (install) run('cmake', ['--install', directory]);
   return directory;
 }
