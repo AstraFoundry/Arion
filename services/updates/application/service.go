@@ -2,7 +2,10 @@ package application
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"net/url"
+	"path"
 	"sync"
 	"time"
 
@@ -136,14 +139,93 @@ func (s *Service) InstallerURL(ctx context.Context, channel domain.Channel, targ
 	return s.bucket.PresignGet(domain.FileKey(release.Installer.Name), s.presignTTL, s.now())
 }
 
-// FileURL returns a short-lived download URL of a release file. Whether
-// the object exists is answered by the bucket at download time.
-func (s *Service) FileURL(name string) (string, error) {
+// FileURL returns a short-lived download URL of a release file that a
+// published channel index or manifest names. Staged and withdrawn objects
+// stay in the bucket until the platform deletes them, and are not signed
+// for download. Whether a named object still exists is answered by the
+// bucket at download time.
+func (s *Service) FileURL(ctx context.Context, name string) (string, error) {
 	name, err := domain.ParseFileName(name)
 	if err != nil {
 		return "", err
 	}
+	published, err := s.publishedFile(ctx, name)
+	if err != nil {
+		return "", err
+	}
+	if !published {
+		return "", ErrNoRelease
+	}
 	return s.bucket.PresignGet(domain.FileKey(name), s.presignTTL, s.now())
+}
+
+func (s *Service) publishedFile(ctx context.Context, name string) (bool, error) {
+	for _, channel := range []domain.Channel{domain.Stable, domain.Beta} {
+		index, err := s.index(ctx, channel)
+		if errors.Is(err, ErrNoRelease) {
+			continue
+		}
+		if err != nil {
+			return false, err
+		}
+		for target, release := range index.Targets {
+			if release.Installer.Name == name || release.Update.Name == name {
+				return true, nil
+			}
+			data, err := s.read(ctx, domain.ManifestKey(channel, target), domain.MaxManifestSize)
+			if errors.Is(err, ErrNoRelease) {
+				continue
+			}
+			if err != nil {
+				return false, err
+			}
+			if manifestNamesFile(data, name) {
+				return true, nil
+			}
+		}
+	}
+	return false, nil
+}
+
+func manifestNamesFile(data []byte, name string) bool {
+	var manifest struct {
+		URL    string `json:"url"`
+		Deltas []struct {
+			URL string `json:"url"`
+		} `json:"deltas"`
+		Previous []struct {
+			URL string `json:"url"`
+		} `json:"previous"`
+	}
+	if json.Unmarshal(data, &manifest) != nil {
+		return false
+	}
+	if fileNameFromURL(manifest.URL) == name {
+		return true
+	}
+	for _, item := range manifest.Deltas {
+		if fileNameFromURL(item.URL) == name {
+			return true
+		}
+	}
+	for _, item := range manifest.Previous {
+		if fileNameFromURL(item.URL) == name {
+			return true
+		}
+	}
+	return false
+}
+
+func fileNameFromURL(raw string) string {
+	parsed, err := url.Parse(raw)
+	if err != nil || parsed.Path == "" {
+		return ""
+	}
+	name := path.Base(parsed.Path)
+	if _, err := domain.ParseFileName(name); err != nil {
+		return ""
+	}
+	return name
 }
 
 func (s *Service) index(ctx context.Context, channel domain.Channel) (domain.Index, error) {

@@ -252,6 +252,11 @@ func ExtractArchive(r io.Reader, dir string) error {
 			return fmt.Errorf("invalid path in update archive: %q", hdr.Name)
 		}
 		target := filepath.Join(dir, filepath.FromSlash(name))
+		// A lexical check accepts "a → ." then "a/b → ..". Refuse any existing
+		// symlink on the path before creating parents or writing the entry.
+		if err := rejectSymlinkTraversal(dir, name); err != nil {
+			return err
+		}
 		mode := fs.FileMode(hdr.Mode).Perm()
 		switch hdr.Typeflag {
 		case tar.TypeDir:
@@ -288,6 +293,31 @@ func ExtractArchive(r io.Reader, dir string) error {
 			return fmt.Errorf("unsupported entry in update archive: %q", hdr.Name)
 		}
 	}
+}
+
+// rejectSymlinkTraversal reports an archive path whose existing parent, or
+// the entry itself, is a symbolic link. The check uses Lstat, so a link is
+// not followed into another directory.
+func rejectSymlinkTraversal(dir, name string) error {
+	current := dir
+	for _, part := range strings.Split(filepath.FromSlash(name), string(os.PathSeparator)) {
+		if part == "" || part == "." {
+			continue
+		}
+		next := filepath.Join(current, part)
+		info, err := os.Lstat(next)
+		if errors.Is(err, os.ErrNotExist) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		if info.Mode()&os.ModeSymlink != 0 {
+			return fmt.Errorf("update archive path %q traverses a symlink", name)
+		}
+		current = next
+	}
+	return nil
 }
 
 // ReleaseNotes returns the section of a Markdown changelog under the

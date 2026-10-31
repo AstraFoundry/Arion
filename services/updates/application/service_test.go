@@ -99,7 +99,7 @@ func TestReleaseAndDownloads(t *testing.T) {
 	if _, err := svc.InstallerURL(context.Background(), domain.Beta, "windows-amd64"); !errors.Is(err, ErrNoRelease) {
 		t.Fatalf("missing target: %v", err)
 	}
-	if _, err := svc.FileURL("../secret"); !errors.Is(err, domain.ErrInvalidFile) {
+	if _, err := svc.FileURL(context.Background(), "../secret"); !errors.Is(err, domain.ErrInvalidFile) {
 		t.Fatalf("traversal: %v", err)
 	}
 }

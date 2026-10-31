@@ -13,7 +13,9 @@ import (
 	"fmt"
 	"io"
 	"math/big"
+	"net"
 	"net/http"
+	"net/url"
 	"slices"
 	"strings"
 	"sync"
@@ -87,9 +89,17 @@ func New(opt Options) (*Provider, error) {
 	if len(algs) == 0 {
 		return nil, errors.New("jwt alg allow-list is empty")
 	}
+	if err := ValidateFetchURL(opt.Issuer); err != nil {
+		return nil, err
+	}
+	if opt.JWKSURL != "" {
+		if err := ValidateFetchURL(opt.JWKSURL); err != nil {
+			return nil, err
+		}
+	}
 	client := opt.HTTP
 	if client == nil {
-		client = &http.Client{Timeout: 5 * time.Second}
+		client = &http.Client{Timeout: 5 * time.Second, CheckRedirect: refuseUnsafeRedirect}
 	}
 	return &Provider{
 		issuer:      opt.Issuer,
@@ -381,6 +391,9 @@ func (p *Provider) resolveURL(ctx context.Context) (string, error) {
 		return p.resolvedURL, nil
 	}
 	endpoint := strings.TrimRight(p.issuer, "/") + "/.well-known/openid-configuration"
+	if err := ValidateFetchURL(endpoint); err != nil {
+		return "", err
+	}
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
 	if err != nil {
 		return "", err
@@ -402,8 +415,45 @@ func (p *Provider) resolveURL(ctx context.Context) (string, error) {
 	if doc.JWKSURI == "" {
 		return "", errors.New("discovery response has no jwks_uri")
 	}
+	if err := ValidateFetchURL(doc.JWKSURI); err != nil {
+		return "", err
+	}
 	p.resolvedURL = doc.JWKSURI
 	return doc.JWKSURI, nil
+}
+
+// ValidateFetchURL accepts the issuer and JWKS URLs the relay may request.
+// Link-local addresses and the cloud metadata name are rejected. Loopback and
+// ordinary hosts stay available for tests and self-hosted issuers. An
+// operator-configured issuer can still name a public host; this stops a
+// discovery document from pointing the relay at instance metadata.
+func ValidateFetchURL(raw string) error {
+	parsed, err := url.Parse(raw)
+	if err != nil || parsed.Host == "" || parsed.User != nil || parsed.Opaque != "" {
+		return errors.New("jwks url rejected")
+	}
+	switch parsed.Scheme {
+	case "https", "http":
+	default:
+		return errors.New("jwks url rejected")
+	}
+	host := parsed.Hostname()
+	if strings.EqualFold(host, "metadata.google.internal") {
+		return errors.New("jwks url rejected")
+	}
+	if ip := net.ParseIP(host); ip != nil {
+		if ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast() || ip.IsUnspecified() || ip.IsMulticast() {
+			return errors.New("jwks url rejected")
+		}
+	}
+	return nil
+}
+
+func refuseUnsafeRedirect(req *http.Request, via []*http.Request) error {
+	if len(via) >= 3 {
+		return errors.New("jwks url rejected")
+	}
+	return ValidateFetchURL(req.URL.String())
 }
 
 type jwk struct {

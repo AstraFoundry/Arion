@@ -26,8 +26,9 @@ type Callback struct {
 
 // Server serves one callback.
 type Server struct {
-	srv *http.Server
-	ch  chan Callback
+	srv   *http.Server
+	ch    chan Callback
+	state string
 }
 
 // ErrAddress reports a listener that is not on the IPv4 loopback.
@@ -37,7 +38,11 @@ var ErrAddress = errors.New("listener is not on 127.0.0.1")
 // and serves GET path. page renders the response body when it is not nil;
 // otherwise the response is empty. It returns the redirect URI on
 // 127.0.0.1. Cancelling ctx closes the server.
-func Start(ctx context.Context, addr, path string, page func() []byte) (*Server, string, error) {
+//
+// state, when set, is checked before a callback is accepted. A different
+// state is answered and discarded, so a local caller cannot consume the
+// single callback slot. An empty state keeps the first callback, for tests.
+func Start(ctx context.Context, addr, path string, page func() []byte, state string) (*Server, string, error) {
 	ln, err := net.Listen("tcp", addr)
 	if err != nil {
 		return nil, "", err
@@ -47,11 +52,18 @@ func Start(ctx context.Context, addr, path string, page func() []byte) (*Server,
 		_ = ln.Close()
 		return nil, "", ErrAddress
 	}
-	s := &Server{ch: make(chan Callback, 1)}
+	s := &Server{ch: make(chan Callback, 1), state: state}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET "+path, func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query()
 		cb := Callback{State: q.Get("state"), Code: q.Get("code"), Error: q.Get("error")}
+		if s.state != "" && !MatchState(s.state, cb.State) {
+			// Do not fill the one callback slot. The real redirect can still
+			// arrive. The body stays empty so this is not the success page.
+			w.Header().Set("Cache-Control", "no-store")
+			w.WriteHeader(http.StatusOK)
+			return
+		}
 		select {
 		case s.ch <- cb:
 		default:

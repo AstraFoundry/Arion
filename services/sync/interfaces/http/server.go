@@ -7,6 +7,7 @@ import (
 	"errors"
 	"io"
 	"log/slog"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -36,12 +37,13 @@ type Deps struct {
 // New returns the relay's HTTP handler.
 func New(deps Deps) http.Handler {
 	server := &handler{
-		svc:     deps.Service,
-		ready:   deps.Ready,
-		log:     deps.Log,
-		maxBody: deps.MaxBody,
-		now:     deps.Now,
-		limit:   &limiter{limit: deps.RatePerMinute, hits: map[string][]time.Time{}},
+		svc:           deps.Service,
+		ready:         deps.Ready,
+		log:           deps.Log,
+		maxBody:       deps.MaxBody,
+		now:           deps.Now,
+		limit:         &limiter{limit: deps.RatePerMinute, hits: map[string][]time.Time{}},
+		securityLimit: &limiter{limit: deps.RatePerMinute, hits: map[string][]time.Time{}},
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", server.health)
@@ -70,12 +72,13 @@ func New(deps Deps) http.Handler {
 }
 
 type handler struct {
-	svc     *application.Service
-	ready   func(context.Context) error
-	log     *slog.Logger
-	maxBody int
-	now     func() time.Time
-	limit   *limiter
+	svc           *application.Service
+	ready         func(context.Context) error
+	log           *slog.Logger
+	maxBody       int
+	now           func() time.Time
+	limit         *limiter
+	securityLimit *limiter
 }
 
 func (h *handler) health(w http.ResponseWriter, _ *http.Request) {
@@ -284,6 +287,11 @@ func (h *handler) ack(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) security(w http.ResponseWriter, r *http.Request) {
+	// This route has no device proof. A claimed device id must not buy a
+	// separate budget, and the body is not read until the client is allowed.
+	if !h.allowSecurity(w, r) {
+		return
+	}
 	media := r.Header.Get("Content-Type")
 	if media != "application/secevent+jwt" && !strings.HasPrefix(media, "application/secevent+jwt;") {
 		writeJSON(w, http.StatusBadRequest, setError{Err: "invalid_request", Description: "content type rejected"})
@@ -298,6 +306,18 @@ func (h *handler) security(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
+}
+
+func (h *handler) allowSecurity(w http.ResponseWriter, r *http.Request) bool {
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil || host == "" {
+		host = "-"
+	}
+	if h.securityLimit.allow(host, h.now()) {
+		return true
+	}
+	writeError(w, h.log, domain.Fail(domain.CodeRateLimited))
+	return false
 }
 
 func (h *handler) allow(w http.ResponseWriter, r *http.Request) bool {

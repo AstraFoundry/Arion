@@ -511,8 +511,12 @@ func TestSignInStateMismatch(t *testing.T) {
 	iss := newIssuer(t)
 	iss.mode = "mismatch"
 	store := &memStore{}
-	_, err := iss.service(store).SignIn(context.Background())
-	if !errors.Is(err, ErrStateMismatch) {
+	svc := iss.service(store)
+	// A wrong state must not finish the attempt. The listener keeps waiting
+	// so a later, matching redirect can still be accepted.
+	svc.cfg.SignInTimeout = 200 * time.Millisecond
+	_, err := svc.SignIn(context.Background())
+	if !errors.Is(err, ErrSignInTimeout) {
 		t.Fatalf("err = %v", err)
 	}
 	noSecret(t, err)

@@ -77,7 +77,7 @@ func (h *handler) update(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(data)
 		return
 	}
-	location, err := h.svc.FileURL(name)
+	location, err := h.svc.FileURL(r.Context(), name)
 	if err != nil {
 		h.fail(w, err)
 		return

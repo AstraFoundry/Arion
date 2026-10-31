@@ -52,7 +52,7 @@ func get(h http.Handler, path string) *httptest.ResponseRecorder {
 
 func TestRoutes(t *testing.T) {
 	b := &bucket{objects: map[string]string{
-		"channels/beta/update-darwin-arm64.json": `{"version":"0.1.0-alpha.6","url":"https://api.arion.example/v1/updates/a.tar.gz","size":9,"signature":"c2ln"}`,
+		"channels/beta/update-darwin-arm64.json": `{"version":"0.1.0-alpha.6","url":"https://api.arion.example/v1/updates/a.tar.gz","size":9,"signature":"c2ln","deltas":[{"from":"0.1.0","url":"https://api.arion.example/v1/updates/a.delta","size":4,"signature":"c2ln"}]}`,
 		"channels/beta/index.json":               `{"schema":"astrafoundry.release-channel.v1","product":"arion","channel":"beta","updatedAt":"2026-10-20T00:00:00Z","targets":{"darwin-arm64":{"version":"0.1.0-alpha.6","prerelease":true,"publishedAt":"2026-10-20T00:00:00Z","notes":"","installer":{"name":"Arion.0.1.0-alpha.6.arm64.dmg","size":10,"sha256":"` + sum + `"},"update":{"name":"a.tar.gz","size":9,"sha256":"` + sum + `"}}}}`,
 	}}
 	h := server(t, b)
@@ -73,6 +73,16 @@ func TestRoutes(t *testing.T) {
 	rec = get(h, "/v1/updates/a.tar.gz")
 	if rec.Code != http.StatusFound || rec.Header().Get("Location") != "https://bucket.example/files/a.tar.gz?signed" {
 		t.Fatalf("file redirect: %d %s", rec.Code, rec.Header().Get("Location"))
+	}
+	rec = get(h, "/v1/updates/a.delta")
+	if rec.Code != http.StatusFound || rec.Header().Get("Location") != "https://bucket.example/files/a.delta?signed" {
+		t.Fatalf("delta redirect: %d %s", rec.Code, rec.Header().Get("Location"))
+	}
+	rec = get(h, "/v1/updates/staged.tar.gz")
+	var unpublished struct{ Code string }
+	_ = json.Unmarshal(rec.Body.Bytes(), &unpublished)
+	if rec.Code != http.StatusNotFound || unpublished.Code != "NO_RELEASE" {
+		t.Fatalf("unpublished file: %d %s", rec.Code, rec.Body)
 	}
 	if rec := get(h, "/v1/updates/..%2Fsecret"); rec.Code != http.StatusBadRequest {
 		t.Fatalf("traversal: %d", rec.Code)
