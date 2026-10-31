@@ -51,7 +51,8 @@ concurrency:
 
 jobs:
   portable:
-    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    runs-on: ${{ fromJSON(vars.LOCAL_CI_ENABLED == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && '["self-hosted","Linux","ARM64","af-arion-linux"]' || '["ubuntu-latest"]') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -108,8 +109,9 @@ jobs:
 
   # Docs-only pull requests skip Mac and Windows. Main and release skip this job and still run native.
   scope:
+    timeout-minutes: 5
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.LOCAL_CI_ENABLED == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && '["self-hosted","Linux","ARM64","af-arion-linux"]' || '["ubuntu-latest"]') }}
     outputs:
       native: ${{ steps.decision.outputs.native }}
     steps:
@@ -330,9 +332,10 @@ jobs:
   # Fail when a required check was skipped. A green portable job must not hide
   # a missing native or Windows updater result.
   required-checks:
+    timeout-minutes: 5
     needs: [portable, scope, native-shell, windows-updater]
     if: always() && !cancelled()
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.LOCAL_CI_ENABLED == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && '["self-hosted","Linux","ARM64","af-arion-linux"]' || '["ubuntu-latest"]') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -353,9 +356,10 @@ jobs:
   # Start native with portable. Cancel the run only after portable has already failed.
   # Release callers grant contents: read, so this request is denied there and native finishes.
   cancel-on-portable-failure:
+    timeout-minutes: 5
     needs: portable
     if: failure()
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.LOCAL_CI_ENABLED == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && '["self-hosted","Linux","ARM64","af-arion-linux"]' || '["ubuntu-latest"]') }}
     permissions:
       actions: write
     steps:

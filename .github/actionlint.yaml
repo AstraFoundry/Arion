@@ -1,3 +1,4 @@
 self-hosted-runner:
   labels:
     - arion-benchmark
+    - af-arion-linux
