@@ -1,6 +1,7 @@
 name: Release
 
-# Tagged releases run the same checks and packaging as pull requests.
+# Tagged releases call ci.yml with release: true, including packaging and signing.
+# Pull requests use that same workflow for checks and do not package installers.
 # Only complete, verified sets are staged in release storage and a GitHub draft;
 # publishing a channel stays a manual decision in the AstraFoundry admin.
 on:

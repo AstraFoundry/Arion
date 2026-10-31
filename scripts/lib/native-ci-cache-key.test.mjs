@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { cacheKey, nativeInput } from '../native-ci-cache-key.mjs';
+import { cacheKey, nativeInput, runnerCacheIdentity, scopedCacheNames } from '../native-ci-cache-key.mjs';
 
 test('cache identity changes with source, build settings and toolchain, independently of file order', t => {
   const root = mkdtempSync(path.join(os.tmpdir(), 'arion-ci-cache-'));
@@ -33,4 +33,36 @@ test('native inputs cover runtime pins, build scripts, patches and ASR sources w
   for (const file of ['apps/desktop/ui/app/app.go', 'apps/site/app/page.tsx', 'scripts/lib/native-ci-cache-key.test.mjs']) {
     assert.equal(nativeInput(file), false, file);
   }
+});
+
+test('exact cache keys omit checkout path and ImageVersion, and restore stays on the same toolchain', t => {
+  const root = mkdtempSync(path.join(os.tmpdir(), 'arion-ci-cache-'));
+  const other = mkdtempSync(path.join(os.tmpdir(), 'arion-ci-cache-other-'));
+  t.after(() => {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(other, { recursive: true, force: true });
+  });
+  writeFileSync(path.join(root, 'source'), 'original');
+  writeFileSync(path.join(other, 'source'), 'original');
+  const identity = runnerCacheIdentity({
+    platform: 'darwin', arch: 'arm64', imageOS: 'macos26', cmake: 'cmake 4',
+    environment: { CC: '' }, compiler: ['Apple clang 17'],
+  });
+  assert.equal(Object.hasOwn(identity, 'root'), false);
+  assert.equal(Object.hasOwn(identity, 'image'), false);
+  assert.equal(Object.hasOwn(identity, 'ImageVersion'), false);
+  const content = cacheKey(root, ['source'], identity);
+  assert.equal(cacheKey(other, ['source'], identity), content);
+  const names = scopedCacheNames('native', identity, content);
+  assert.equal(names.key.startsWith(names.restore), true);
+  assert.match(names.restore, /^native-v2-darwin-arm64-macos26-[a-f0-9]{64}-$/);
+  writeFileSync(path.join(root, 'source'), 'patched');
+  const changed = scopedCacheNames('native', identity, cacheKey(root, ['source'], identity));
+  assert.equal(changed.restore, names.restore);
+  assert.notEqual(changed.key, names.key);
+  const compiler = runnerCacheIdentity({ ...identity, compiler: ['Apple clang 18'] });
+  assert.notEqual(scopedCacheNames('native', compiler, content).restore, names.restore);
+  assert.throws(() => scopedCacheNames('native', { ...identity, root: '/Users/runner/work/Arion/Arion' }, content), /root/);
+  assert.throws(() => scopedCacheNames('native', { ...identity, ImageVersion: '20261028.1' }, content), /ImageVersion/);
+  assert.throws(() => scopedCacheNames('native', { ...identity, image: ['macos26', '20261028.1'] }, content), /image/);
 });
