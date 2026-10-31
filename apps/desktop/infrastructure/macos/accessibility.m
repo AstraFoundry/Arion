@@ -125,10 +125,20 @@ int arion_history_anchor(void *element, double *x, double *y, double *width, dou
         id subrole = ax_attribute(field, kAXSubroleAttribute);
         if ([subrole isEqual:(__bridge NSString *)kAXSecureTextFieldSubrole]) return 0;
         id selection = ax_attribute(field, kAXSelectedTextRangeAttribute);
-        BOOL editable = [role isEqual:(__bridge NSString *)kAXTextFieldRole] ||
+        BOOL standard = [role isEqual:(__bridge NSString *)kAXTextFieldRole] ||
             [role isEqual:(__bridge NSString *)kAXTextAreaRole] ||
             [role isEqual:(__bridge NSString *)kAXComboBoxRole];
-        if (!editable) return 0;
+        // Same containers as focusclass.richTextContainer. An editable ancestor
+        // is how Chromium and WebKit mark contenteditable composers that are
+        // not native text fields.
+        BOOL container = [role isEqual:@"AXGroup"] || [role isEqual:@"AXStaticText"] ||
+            [role isEqual:@"AXUnknown"] || [role isEqual:@"AXWebArea"] ||
+            [role isEqual:@"AXScrollArea"] || [role isEqual:@"AXHeading"] ||
+            [role isEqual:@"AXListItem"] || [role isEqual:@"AXCell"] || [role isEqual:@"AXRow"];
+        id ancestor = ax_attribute(field, CFSTR("AXEditableAncestor"));
+        if (!ancestor) ancestor = ax_attribute(field, CFSTR("AXHighestEditableAncestor"));
+        BOOL rich = container && ancestor && CFGetTypeID((__bridge CFTypeRef)ancestor) == AXUIElementGetTypeID();
+        if (!standard && !rich) return 0;
         CGRect frame = CGRectZero;
         if (selection && CFGetTypeID((__bridge CFTypeRef)selection) == AXValueGetTypeID()) {
             CFTypeRef bounds = NULL;
@@ -138,7 +148,7 @@ int arion_history_anchor(void *element, double *x, double *y, double *width, dou
                 CFRelease(bounds);
             }
         }
-        if (frame.size.height <= 0 && (!editable || !ax_frame(field, &frame))) return 0;
+        if (frame.size.height <= 0 && !ax_frame(field, &frame)) return 0;
         if (!isfinite(frame.origin.x) || !isfinite(frame.origin.y) || !isfinite(frame.size.width) ||
             !isfinite(frame.size.height) || frame.size.width < 0 || frame.size.height <= 0) return 0;
         *x = frame.origin.x; *y = frame.origin.y; *width = frame.size.width; *height = frame.size.height;
@@ -146,22 +156,3 @@ int arion_history_anchor(void *element, double *x, double *y, double *width, dou
     }
 }
 
-// A positive no-input observation may choose copy-only dictation before an
-// IME session starts. An unavailable provider never authorizes that route.
-int arion_no_input(void) {
-    if (!AXIsProcessTrusted() || arion_secure_input()) return 0;
-    int secure = 0, absent = 0;
-    void *focused = arion_history_focus(arion_frontmost_pid(), &secure, &absent);
-    if (!focused) return absent;
-    @autoreleasepool {
-        AXUIElementRef field = (AXUIElementRef)focused;
-        id role = ax_attribute(field, kAXRoleAttribute);
-        id selection = ax_attribute(field, kAXSelectedTextRangeAttribute);
-        BOOL input = [role isEqual:(__bridge NSString *)kAXTextFieldRole] ||
-            [role isEqual:(__bridge NSString *)kAXTextAreaRole] ||
-            [role isEqual:(__bridge NSString *)kAXComboBoxRole] || selection != nil;
-        int noInput = !secure && [role isKindOfClass:NSString.class] && [(NSString *)role length] > 0 && !input;
-        CFRelease(focused);
-        return noInput;
-    }
-}

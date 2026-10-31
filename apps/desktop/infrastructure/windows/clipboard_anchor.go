@@ -7,6 +7,8 @@ import (
 	"runtime"
 	"syscall"
 	"unsafe"
+
+	"arion.local/desktop/infrastructure/focusclass"
 )
 
 var (
@@ -39,6 +41,111 @@ func (o *historyCOM) release() {
 	}
 }
 func historyOK(hr uintptr) bool { return int32(hr) >= 0 }
+
+// VARIANT is 24 bytes on Windows x64. VT_BOOL is 11 and carries a VARIANT_BOOL.
+func rangeReadOnly(r *historyCOM) (readOnly, known bool) {
+	var attribute struct {
+		Kind     uint16
+		Reserved [3]uint16
+		Data     [2]uint64
+	}
+	ok := historyOK(r.call(9, 40015, uintptr(unsafe.Pointer(&attribute)))) // GetAttributeValue(IsReadOnly)
+	vt := attribute.Kind
+	readonly := int16(attribute.Data[0])
+	historyVariantClear.Call(uintptr(unsafe.Pointer(&attribute)))
+	if !ok || vt != 11 {
+		return false, false
+	}
+	return readonly != 0, true
+}
+
+func textPatternReadOnly(text *historyCOM) (readOnly, known bool) {
+	var document *historyCOM
+	if !historyOK(text.call(7, uintptr(unsafe.Pointer(&document)))) || document == nil { // DocumentRange
+		document.release()
+		return false, false
+	}
+	defer document.release()
+	return rangeReadOnly(document)
+}
+
+func parentElement(client, element *historyCOM) *historyCOM {
+	var walker *historyCOM
+	if !historyOK(client.call(14, uintptr(unsafe.Pointer(&walker)))) || walker == nil { // ControlViewWalker
+		walker.release()
+		return nil
+	}
+	defer walker.release()
+	var parent *historyCOM
+	if !historyOK(walker.call(3, uintptr(unsafe.Pointer(element)), uintptr(unsafe.Pointer(&parent)))) || parent == nil {
+		parent.release()
+		return nil
+	}
+	return parent
+}
+
+// caretSelectionEditable reports whether a text selection at the caret is
+// writable. The focused composer is often a group with no text pattern; the
+// pattern then belongs to an ancestor document whose own range is read-only.
+// A failed query on the focused element is uncertain. A failed query further
+// up the tree adds no signal.
+func caretSelectionEditable(client, element *historyCOM) (editable, uncertain bool) {
+	current := element
+	owned := false
+	defer func() {
+		if owned && current != nil {
+			current.release()
+		}
+	}()
+	for depth := 0; depth < 6 && current != nil; depth++ {
+		text, known := historyPattern(current, 10014) // TextPattern
+		if !known {
+			return false, depth == 0
+		}
+		if text != nil {
+			editable, uncertain = selectionNotReadOnly(text)
+			text.release()
+			return editable, uncertain
+		}
+		parent := parentElement(client, current)
+		if owned {
+			current.release()
+		}
+		current = parent
+		owned = true
+	}
+	return false, false
+}
+
+func selectionNotReadOnly(text *historyCOM) (editable, uncertain bool) {
+	var ranges *historyCOM
+	if !historyOK(text.call(5, uintptr(unsafe.Pointer(&ranges)))) { // GetSelection
+		ranges.release()
+		return false, true
+	}
+	if ranges == nil {
+		return false, false
+	}
+	defer ranges.release()
+	var length int32
+	if !historyOK(ranges.call(3, uintptr(unsafe.Pointer(&length)))) { // Length
+		return false, true
+	}
+	if length <= 0 {
+		return false, false
+	}
+	var rng *historyCOM
+	if !historyOK(ranges.call(4, 0, uintptr(unsafe.Pointer(&rng)))) || rng == nil { // GetElement(0)
+		rng.release()
+		return false, true
+	}
+	defer rng.release()
+	readOnly, known := rangeReadOnly(rng)
+	if !known {
+		return false, false
+	}
+	return !readOnly, false
+}
 
 type historyRect struct{ Left, Top, Right, Bottom int32 }
 type historyInput struct {
@@ -97,6 +204,7 @@ func readHistoryInput(pid uint32) (*historyInput, bool) {
 	if !historyOK(i.element.call(21, uintptr(unsafe.Pointer(&kind)))) {
 		return nil, false
 	}
+	obs := focusclass.WinObservation{ControlType: kind}
 	value, known := historyPattern(i.element, 10002)
 	if !known {
 		return nil, false
@@ -108,43 +216,45 @@ func readHistoryInput(pid uint32) (*historyInput, bool) {
 		if !ok {
 			return nil, false
 		}
-		i.editable = readonly == 0
+		obs.ValuePattern = true
+		obs.ValueReadOnly = readonly != 0
 	} else {
 		text, known := historyPattern(i.element, 10014)
 		if !known {
 			return nil, false
 		}
 		if text != nil {
-			var document *historyCOM
-			ok := historyOK(text.call(7, uintptr(unsafe.Pointer(&document)))) && document != nil
+			readOnly, knownAttr := textPatternReadOnly(text)
 			text.release()
-			if !ok {
-				return nil, false
-			}
-			// VARIANT is 24 bytes on Windows x64; VT_BOOL carries a VARIANT_BOOL.
-			var attribute struct {
-				Kind     uint16
-				Reserved [3]uint16
-				Data     [2]uint64
-			}
-			ok = historyOK(document.call(9, 40015, uintptr(unsafe.Pointer(&attribute))))
-			document.release()
-			vt := attribute.Kind
-			readonly := int16(attribute.Data[0])
-			historyVariantClear.Call(uintptr(unsafe.Pointer(&attribute)))
-			if !ok || vt != 11 {
-				return nil, false
-			}
-			i.editable = readonly == 0
-		} else {
-			// Edit without an advertised value/text provider has unknown capability.
-			if kind == 50004 || kind == 50030 {
-				return nil, false
+			obs.TextPattern = true
+			obs.TextReadOnly = readOnly
+			obs.TextReadOnlyKnown = knownAttr
+		}
+		// TextEditPattern and the caret are extra positive signals. A failed
+		// query must not erase a text pattern that already answered.
+		edit, editKnown := historyPattern(i.element, 10032) // TextEditPattern
+		if editKnown && edit != nil {
+			edit.release()
+			obs.TextEditPattern = true
+		}
+		if focusclass.WindowsCaretHost(kind) && !obs.TextEditPattern {
+			caret, uncertain := caretSelectionEditable(i.client, i.element)
+			obs.CaretEditable = caret
+			if !(obs.TextPattern && obs.TextReadOnlyKnown) {
+				obs.CaretUncertain = uncertain
 			}
 		}
 	}
-	if i.editable && !historyOK(i.element.call(43, uintptr(unsafe.Pointer(&i.bounds)))) {
+	decision := focusclass.DecideWindows(obs)
+	if !decision.Known {
 		return nil, false
+	}
+	i.editable = decision.Editable
+	i.secure = decision.Secure
+	// Bounds place the history picker. A missing rectangle does not change
+	// whether the focused control can accept text.
+	if i.editable && !historyOK(i.element.call(43, uintptr(unsafe.Pointer(&i.bounds)))) {
+		i.bounds = historyRect{}
 	}
 	success = true
 	return i, true

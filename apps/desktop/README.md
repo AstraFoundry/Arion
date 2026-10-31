@@ -9,7 +9,7 @@ MyGo native Go module: the menu bar app, its windows (overlay pill, menu bar pan
 | `infrastructure/audio` | miniaudio capture (CoreAudio/WASAPI, 16 kHz mono) and real-time fixture replay |
 | `infrastructure/asr` | Resident native Qwen3-ASR workers, cancellable chunked previews and final-tail flush |
 | `infrastructure/provision`, `modelruntime` | Verified model downloads and the resident bundle chosen by evaluation |
-| `infrastructure/macos`, `windows` | Permissions, target capture and insertion routes ([ADR 003](../../docs/decisions/003-insertion-routes.md)); hold-key listeners (listen-only event tap, low-level keyboard hook) |
+| `infrastructure/macos`, `windows`, `focusclass` | Permissions, target capture and insertion routes ([ADR 003](../../docs/decisions/003-insertion-routes.md)). `focusclass` decides editable focus from accessibility facts on both platforms. Hold-key listeners are a listen-only event tap and a low-level keyboard hook |
 | `infrastructure/holdkey` | Pure interpretation of raw key events into dictation and translation shortcut gestures (single keys, modifier combinations, hold, tap, chord), tested on every OS |
 | `infrastructure/settings`, `secrets`, `vocabulary`, `usage` | Preferences JSON, OS-kept key, encrypted vocabulary with learned entries and their counts, per-day usage counts |
 | `infrastructure/wordseg` | Local OS word boundaries for correction learning |

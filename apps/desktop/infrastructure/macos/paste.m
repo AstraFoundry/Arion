@@ -188,6 +188,7 @@ void *arion_history_focus(int pid, int *secure, int *no_input) {
         *secure = arion_secure_input();
         if (no_input) *no_input = 0;
         if (!AXIsProcessTrusted()) return NULL;
+        arion_enable_web_accessibility(pid);
         AXUIElementRef app = AXUIElementCreateApplication(pid);
         AXUIElementSetMessagingTimeout(app,0.2);
         AXUIElementRef element = arion_copy_focus(app, *secure, no_input, NULL);
