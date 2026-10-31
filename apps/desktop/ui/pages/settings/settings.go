@@ -68,6 +68,7 @@ const (
 
 // Page keeps the window's own state.
 type Page struct {
+	developer       diagnostics.DeveloperEntry
 	clipboardPicker holdkey.PickerState
 	holdPicker      holdkey.PickerState
 	translatePicker holdkey.PickerState
@@ -311,12 +312,13 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 				kit.Mark(c, 44).Margin(-4)
 				ui.Column(c).Gap(2).Children(func() {
 					ui.Text(c, messages.Text(copy.Title)).FontSize(theme.Heading).FontWeight(600)
-					ui.Text(c, messages.Version(store.State.Version)).FontSize(theme.Caption).TextColor(tokens.Muted).Selectable()
+					p.developer.Version(c, store, tokens)
 				})
 			})
 		})
 		update.Card(c, store, tokens)
 		diagnostics.Card(c, store, tokens)
+		p.developer.Card(c, store, tokens)
 		kit.Group(c, tokens, messages.Text(copy.NavPrivacy), func() { privacy(c, messages, tokens) })
 		if aboutLinks(c, store, tokens) {
 			p.about = aboutContributors

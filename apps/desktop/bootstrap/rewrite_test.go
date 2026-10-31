@@ -10,6 +10,7 @@ import (
 
 	"arion.local/core/application"
 	"arion.local/core/contracts"
+	"arion.local/desktop/infrastructure/keyboardmodel"
 	"arion.local/desktop/infrastructure/modelruntime"
 	"arion.local/desktop/infrastructure/provision"
 	"arion.local/desktop/infrastructure/rewriting"
@@ -30,7 +31,7 @@ func TestRewritePolicyKeepsSeparateLocalAndCloudBudgets(t *testing.T) {
 
 // RWT-A06: loading or missing workers must not silently disable polishing.
 func TestRewritePolicyPreservesChoiceBeforeWorkerReady(t *testing.T) {
-	a := &App{prefs: application.DefaultPreferences("darwin"), rewriter: &rewriting.Service{}}
+	a := &App{prefs: application.DefaultPreferences("darwin"), keyboardModel: &keyboardmodel.Service{}, rewriter: &rewriting.Service{}}
 	a.prefs.Punctuation = "omit"
 	if policy := a.rewritePolicy(); policy.Enabled || policy.Punctuation != "" {
 		t.Fatal("polish off still configures a cleanup prompt")
@@ -57,7 +58,7 @@ func TestSupersededPolishDownloadDoesNotStart(t *testing.T) {
 	}}
 	service := rewriting.New(models.Catalog{Rewriters: []models.Rewriter{model}}, provision.NewStore(t.TempDir()), t.TempDir(), 1, "test")
 	defer service.Disable()
-	a := &App{prefs: application.DefaultPreferences("darwin"), rewriter: service}
+	a := &App{prefs: application.DefaultPreferences("darwin"), keyboardModel: &keyboardmodel.Service{}, rewriter: service}
 	a.prefs.Polish = true
 	// Hold the first operation so the UI can cancel a queued confirmation,
 	// switch away and then select local again before any operation starts.
@@ -97,7 +98,7 @@ func TestOriginalRemainsCopyableAfterCleanup(t *testing.T) {
 }
 
 func TestRewritePolicyForcesTranslationWhenPolishIsOff(t *testing.T) {
-	a := &App{prefs: application.DefaultPreferences("darwin"), rewriter: &rewriting.Service{}}
+	a := &App{prefs: application.DefaultPreferences("darwin"), keyboardModel: &keyboardmodel.Service{}, rewriter: &rewriting.Service{}}
 	a.prefs.Polish = false
 	a.prefs.TranslateLanguage = "zh-CN"
 	a.setTranslating(true)

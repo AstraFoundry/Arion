@@ -151,8 +151,12 @@ int main(int argc, const char *argv[]) {
         run(@"local neural promotion preserves commit and rejects stale replies", @"RNK-A02 RNK-A03 RNK-A07", ^{
             require(!typing.neuralRanking, @"neural ranking defaults off");
             __block NSDictionary *request=nil;
-            __block NSUInteger epoch=0;
-            typing.rankingChanged=^(NSDictionary *snapshot,NSUInteger revision) { request=snapshot; epoch=revision; };
+            __block NSUInteger epoch=0, frozenEpoch=0;
+            typing.rankingChanged=^(NSDictionary *snapshot,NSUInteger revision) {
+                if (!snapshot) frozenEpoch=revision;
+                else require(revision>frozenEpoch, @"request epoch must follow freeze epoch");
+                request=snapshot; epoch=revision;
+            };
             typing.neuralRanking=YES;
             type(typing,@"nihao"); press(typing,@" ",49);
             type(typing,@"xian");
@@ -164,6 +168,13 @@ int main(int argc, const char *argv[]) {
                 @"rankResult":@{@"session_id":@"test",@"generation":@1,@"revision":@(epoch),@"candidates":order}};
             [typing applyRankingMessage:reply activation:@"test"];
             require([typing.snapshot.candidates[0] isEqual:selected[@"text"]], @"existing candidate is promoted");
+            NSDictionary *settled=@{@"activation":@"test",@"revision":@(epoch),@"status":@"ok",
+                @"rankResult":@{@"session_id":@"test",@"generation":@1,@"revision":@(epoch),@"candidates":original}};
+            [typing applyRankingMessage:settled activation:@"test"];
+            require([typing.snapshot.candidates[0] isEqual:original[0][@"text"]], @"settled pass uses original candidate identities");
+            [typing applyRankingMessage:reply activation:@"test"];
+            require([typing.snapshot.candidates[0] isEqual:selected[@"text"]], @"same revision remains eligible before navigation");
+
             press(typing,@" ",49);
             require([editor.view.string hasSuffix:selected[@"text"]] && editor.insertions==2, @"Space commits promoted engine candidate once");
             type(typing,@"xian");
@@ -173,6 +184,20 @@ int main(int argc, const char *argv[]) {
             press(typing,@"\x1b",53);
             [typing applyRankingMessage:reply activation:@"test"];
             require(!typing.composing && editor.insertions==2, @"canceled reply cannot insert text");
+        });
+        run(@"incomparable candidates emit content-free ranking skip", @"RNK-A02", ^{
+            __block NSUInteger skipped=0;
+            __block NSString *lastReason=nil;
+            typing.rankingSkipped=^(NSString *reason, NSUInteger count, NSUInteger revision) {
+                require(count<2 && revision>0, @"skip reports only bounded eligible count and revision");
+                if ([reason isEqual:@"no_comparable_candidates"]) skipped++;
+                lastReason=reason;
+            };
+            typing.rankingChanged=^(NSDictionary *snapshot, NSUInteger revision) { (void)revision; if (snapshot) lastReason=nil; };
+            typing.neuralRanking=YES;
+            type(typing,@"zizhufangti");
+            require(skipped>0 && [lastReason isEqual:@"no_comparable_candidates"], @"final mixed-coverage composition reports eligibility skip");
+            press(typing,@"\x1b",53);
         });
         run(@"real full-Pinyin commit", @"KBD-A01", ^{
             type(typing, @"nihao");

@@ -458,3 +458,15 @@ func (f *followed) release() {
 
 // UTF16Length counts host string units for AX range conversion (CTR-A05).
 func UTF16Length(text string) int { return len(utf16.Encode([]rune(text))) }
+
+// Discard releases a captured target that was used only for context.
+func (t *Targets) Discard(token contracts.TargetToken) {
+	t.mu.Lock()
+	target := t.targets[token]
+	delete(t.targets, token)
+	t.mu.Unlock()
+	if target != nil {
+		C.arion_release(target.element)
+		C.arion_release(target.selection)
+	}
+}

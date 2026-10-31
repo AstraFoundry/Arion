@@ -47,3 +47,14 @@ func TestKeyboardProjectionUsesOnlyExplicitCurrentReadings(t *testing.T) {
 		t.Fatal("duplicate identity accepted")
 	}
 }
+
+func TestDefaultKeyboardPinyinIsOnlyADictionarySuggestion(t *testing.T) {
+	readings := map[string][]string{"行": {"xing2", "hang2"}, "吕": {"lü3"}, "坏": {"bad-value"}}
+	for _, test := range []struct{ text, want string }{
+		{"行吕", "xing lv"}, {"Arion", ""}, {"行A", ""}, {"行未知", ""}, {"坏", ""}, {"", ""},
+	} {
+		if got := DefaultKeyboardPinyin(test.text, readings); got != test.want {
+			t.Errorf("%q: got %q, want %q", test.text, got, test.want)
+		}
+	}
+}

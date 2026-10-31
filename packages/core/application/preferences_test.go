@@ -111,7 +111,7 @@ func TestKeyboardPreferences(t *testing.T) {
 	if normalized, repairs := old.Normalize("darwin"); normalized.Keyboard != old.Keyboard || len(repairs) != 0 {
 		t.Fatalf("valid keyboard choice changed: %+v %v", normalized.Keyboard, repairs)
 	}
-	old.Keyboard = KeyboardPreferences{PageSize: 12, CandidateSize: "huge", Appearance: "sepia", Accent: "teal", EmojiSuggestions: true}
+	old.Keyboard = KeyboardPreferences{PageSize: 12, CandidateSize: "huge", Appearance: "sepia", Accent: "teal", EmojiSuggestions: true, ContextCursor: true, ContextScreen: true}
 	normalized, repairs := old.Normalize("darwin")
 	if normalized.Keyboard != DefaultKeyboardPreferences() || !slices.Contains(repairs, "keyboard") {
 		t.Fatalf("invalid keyboard choice not explicitly repaired: %+v %v", normalized.Keyboard, repairs)
@@ -268,5 +268,30 @@ func TestAccountDisplayIsIssuerScoped(t *testing.T) {
 	repaired, _ := legacy.Normalize("darwin")
 	if repaired.AccountName != "" {
 		t.Fatal("unscoped legacy profile retained")
+	}
+}
+
+func TestKeyboardContextDefaultsAndDeveloperSession(t *testing.T) {
+	p := DefaultPreferences("darwin")
+	if !p.Keyboard.ContextCursor || !p.Keyboard.ContextScreen || p.Keyboard.NeuralRanking || p.DeveloperMode {
+		t.Fatal(p.Keyboard)
+	}
+	if err := json.Unmarshal([]byte(`{"keyboard":{"contextCursor":false,"contextScreen":false},"developerMode":true}`), &p); err != nil {
+		t.Fatal(err)
+	}
+	if p.Keyboard.ContextCursor || p.Keyboard.ContextScreen || p.DeveloperMode {
+		t.Fatal("stored choices or session boundary changed")
+	}
+	p.DeveloperMode = true
+	data, err := json.Marshal(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored := DefaultPreferences("darwin")
+	if err := json.Unmarshal(data, &restored); err != nil {
+		t.Fatal(err)
+	}
+	if restored.DeveloperMode {
+		t.Fatal("developer mode persisted")
 	}
 }

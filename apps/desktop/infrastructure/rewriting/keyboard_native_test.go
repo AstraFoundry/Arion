@@ -28,12 +28,12 @@ func TestLocalKeyboardWorker(t *testing.T) {
 	}
 	defer c.Close()
 	s := &Service{client: c}
-	scheduler, err := application.NewKeyboardRanking(&ranking.Ranker{Chat: s}, 750*time.Millisecond, 75*time.Millisecond)
+	scheduler, err := application.NewKeyboardRanking(&ranking.Ranker{Chat: s}, 900*time.Millisecond, 150*time.Millisecond)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer scheduler.Close()
-	req := contracts.KeyboardRankRequest{Identity: contracts.Identity{SessionID: "synthetic", Generation: 1}, Revision: 1, Input: "xian", Before: "这条", Candidates: []domain.KeyboardCandidate{
+	req := contracts.KeyboardRankRequest{Identity: contracts.Identity{SessionID: "synthetic", Generation: 1}, Revision: 1, Input: "xian", Before: "这条", After: "连接两端", Screen: "线路连接", Candidates: []domain.KeyboardCandidate{
 		{Candidate: domain.Candidate{ID: "c0", Text: "西安", Source: "phrase"}, End: 4},
 		{Candidate: domain.Candidate{ID: "c1", Text: "线", Source: "phrase"}, End: 4}}}
 	started := time.Now()

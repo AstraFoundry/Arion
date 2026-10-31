@@ -12,8 +12,11 @@ const (
 
 const (
 	KbdNeuralRanking            Key = "KbdNeuralRanking"
+	DeveloperMode               Key = "DeveloperMode"
+	DeveloperModeDetail         Key = "DeveloperModeDetail"
+	KbdContextCursor            Key = "KbdContextCursor"
+	KbdContextScreen            Key = "KbdContextScreen"
 	KbdNeuralDetail             Key = "KbdNeuralDetail"
-	KbdNeuralReady              Key = "KbdNeuralReady"
 	KbdNeuralUnavailable        Key = "KbdNeuralUnavailable"
 	KbdNeuralMissing            Key = "KbdNeuralMissing"
 	FormatVocabReadingVariant   Key = "FormatVocabReadingVariant"
@@ -418,7 +421,6 @@ const (
 	VocabReading              Key = "VocabReading"
 	VocabKeyboardPending      Key = "VocabKeyboardPending"
 	VocabKeyboardFailed       Key = "VocabKeyboardFailed"
-	VocabReadingPlaceholder   Key = "VocabReadingPlaceholder"
 	VocabReadingInvalid       Key = "VocabReadingInvalid"
 	VocabReadingStale         Key = "VocabReadingStale"
 	VocabReadingSave          Key = "VocabReadingSave"

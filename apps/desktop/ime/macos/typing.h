@@ -33,6 +33,7 @@ typedef NS_ENUM(NSInteger, ArionTypingSwitch) {
 @property BOOL contextRanking;
 @property(nonatomic) BOOL neuralRanking;
 // Nil snapshot freezes inference; callbacks run on the native owner thread.
+@property(copy) void (^rankingSkipped)(NSString *reason, NSUInteger count, NSUInteger revision);
 @property(copy) void (^rankingChanged)(NSDictionary *snapshot, NSUInteger revision);
 - (void)freezeRanking;
 - (void)applyRankingMessage:(NSDictionary *)message activation:(NSString *)activation;

@@ -14,7 +14,7 @@ export function cacheKey(root, files, identity) {
 
 export function nativeInput(file) {
   return file === 'scripts/native-ci-cache-key.mjs' || file === 'apps/desktop/desktop.json' ||
-    file.startsWith('apps/desktop/native/') || file.startsWith('apps/desktop/ime/shared/') ||
+    file.startsWith('apps/desktop/runtime/') || file.startsWith('apps/desktop/native/') || file.startsWith('apps/desktop/ime/shared/') ||
     (file.startsWith('scripts/') && !file.endsWith('.test.mjs') &&
       (/^scripts\/(?:stage-|.*runtime\.json$)/.test(file) || file.startsWith('scripts/lib/') || file.startsWith('scripts/cmake/')));
 }
