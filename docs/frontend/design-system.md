@@ -89,7 +89,7 @@ The macOS consent guide is a whole window floating over System Settings: its car
 | `IconButton` | 28 DIP ghost square with a tooltip naming it |
 | `Style` | The button anatomy for custom content (the dictation toggle) |
 | `Card`, `Group`, `Row`, `Divider`, `SectionTitle` | Grouped settings surfaces |
-| `RowFrame` | Settings row geometry shared by `Row`, `TipRow`, `LinkRow` and hand-built card rows: `theme.RowHeight` (52 DIP) with 10 × 16 DIP insets, so a switch row and a button, select or segmented row line up; only content that needs more room is taller |
+| `RowFrame` | Settings row geometry shared by `Row`, `TipRow`, `LinkRow` and hand-built card rows: `theme.RowHeight` (52 DIP) with 10 × 16 DIP insets, so a switch row and a button, select or segmented row line up; only content that needs more room is taller. A Select or Segmented control follows the platform text line box and can leave its row up to 2 DIP over that height |
 | `Status` | Colored icon plus a word in text ink |
 | `Notice` | A problem that is not one field's value: a `Danger` or `Warning` alert glyph, the message in `Text` ink, and an optional fixing action at the trailing edge ([Feedback](#feedback-errors-warnings-and-states)) |
 | `Pill` | The dictation HUD surface, shared by the live pill and illustrations |
