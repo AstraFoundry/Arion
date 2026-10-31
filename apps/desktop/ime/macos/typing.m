@@ -550,7 +550,7 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
     self.rankingCandidates = candidates; self.rankingSlots = slots;
     // Freeze and the new proposal are distinct messages on the bridge.
     self.rankingRevision++;
-    self.rankingChanged(@{@"allowCompletion":@(_menu.metadata[0].start==0 && _menu.metadata[0].end==strlen(input)),@"input":@(input),@"preedit":self.snapshot.preedit ?: @"",@"before":self.context ?: @"",@"candidates":candidates},self.rankingRevision);
+    self.rankingChanged(@{@"allowCompletion":(_menu.metadata[0].start==0 && _menu.metadata[0].end==strlen(input) ? @YES : @NO),@"input":@(input),@"preedit":self.snapshot.preedit ?: @"",@"before":self.context ?: @"",@"candidates":candidates},self.rankingRevision);
 }
 - (void)applyRankingMessage:(NSDictionary *)message activation:(NSString *)activation {
     uint64_t revision=0, generation=0, resultRevision=0;

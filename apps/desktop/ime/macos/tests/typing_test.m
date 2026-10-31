@@ -193,6 +193,9 @@ int main(int argc, const char *argv[]) {
             typing.contextRanking=NO;
             type(typing,@"chonggyxia");
             require(request!=nil && [request[@"allowCompletion"] boolValue], @"single full-range candidate can request completion");
+            NSData *requestJSON=[NSJSONSerialization dataWithJSONObject:request options:0 error:nil];
+            NSDictionary *wireRequest=requestJSON ? [NSJSONSerialization JSONObjectWithData:requestJSON options:0 error:nil] : nil;
+            require(wireRequest && CFGetTypeID((__bridge CFTypeRef)wireRequest[@"allowCompletion"])==CFBooleanGetTypeID(), @"completion capability serializes as a JSON boolean for the Go bridge");
             NSDictionary *reply=@{@"activation":@"test",@"revision":@(epoch),@"status":@"ok",
                 @"rankResult":@{@"session_id":@"test",@"generation":@1,@"revision":@(epoch),
                     @"completion":@{@"input":@"chonggyxia",@"text":@"重构一下",@"reading":@"chong gou yi xia"}}};
