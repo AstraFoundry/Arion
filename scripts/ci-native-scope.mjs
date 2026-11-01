@@ -19,6 +19,11 @@ export function isDocumentationOnlyPath(file) {
   return documentationPrefixes.some(prefix => normalized.startsWith(prefix));
 }
 
+export function portableTestsRequired(files) {
+  return !Array.isArray(files) || files.length === 0 ||
+    files.some(file => !isDocumentationOnlyPath(file) || file.startsWith('apps/site/'));
+}
+
 export function nativeShellRequired(files) {
   if (!Array.isArray(files) || files.length === 0) return true;
   return files.some(file => !isDocumentationOnlyPath(file));
@@ -48,8 +53,9 @@ export function changedFiles(base, cwd = root) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const base = process.env.BASE_SHA;
   if (!base) throw new Error('ci-native-scope.mjs requires BASE_SHA.');
-  const native = nativeShellRequired(changedFiles(base));
-  const line = `native=${native ? 'true' : 'false'}\n`;
+  const files = changedFiles(base);
+  const native = nativeShellRequired(files);
+  const line = `native=${native}\ntests=${portableTestsRequired(files)}\n`;
   if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, line);
   console.log(line.trim());
 }

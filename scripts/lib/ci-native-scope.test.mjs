@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { isDocumentationOnlyPath, nativeShellRequired } from '../ci-native-scope.mjs';
+import { isDocumentationOnlyPath, nativeShellRequired, portableTestsRequired } from '../ci-native-scope.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -75,4 +75,18 @@ test('CI pins one Go toolchain and keeps release concurrency', () => {
   assert.match(signed, /group: signed-macos-\$\{\{ github\.ref \}\}/);
   assert.match(signed, /cancel-in-progress: false/);
   assert.doesNotMatch(ci, /paths-ignore:/);
+});
+
+
+test('only documentation skips portable tests; site changes and unknown diffs keep them', () => {
+  assert.equal(portableTestsRequired(['docs/operations/README.md', 'README.md']), false);
+  for (const files of [[], null, ['apps/site/app/page.tsx'], ['docs/README.md', 'scripts/test.mjs'], ['specs/README.md']]) {
+    assert.equal(portableTestsRequired(files), true);
+  }
+});
+
+test('main uses a unique concurrency group and never cancels on portable failure', () => {
+  const ci = readFileSync(path.join(root, '.github/workflows/ci.yml'), 'utf8');
+  assert.match(ci, /github\.event_name == 'pull_request' && github\.ref \|\| github\.run_id/);
+  assert.match(ci, /if: failure\(\) && github\.event_name == 'pull_request'/);
 });

@@ -2,7 +2,8 @@
 # execute under a real standard user's loaded profile, including DPAPI.
 [CmdletBinding()]
 param([switch]$Child, [string]$Repository, [string]$Node, [string]$GoExecutable, [string]$GoVersion,
-    [string]$ExpectedSID, [string]$Station, [string]$Desktop)
+    [string]$ExpectedSID, [string]$Station, [string]$Desktop,
+    [ValidateSet('all', 'desktop', 'keyboard')][string]$Suite = 'all')
 $ErrorActionPreference = 'Stop'
 
 if ($Child) {
@@ -46,7 +47,7 @@ if ($Child) {
     foreach ($name in @('build', 'mod')) {
         $destination = Join-Path $cache $name
         New-Item -ItemType Directory -Path $destination -Force | Out-Null
-        Copy-CIGoCache (Join-Path $cacheSeed $name) $destination
+        if ($Suite -ne 'keyboard') { Copy-CIGoCache (Join-Path $cacheSeed $name) $destination }
         $owner = (Get-Acl -LiteralPath $destination).GetOwner([Security.Principal.SecurityIdentifier]).Value
         if ($owner -ne $ExpectedSID) { throw 'The active Go cache must be owned by the standard test user.' }
     }
@@ -76,14 +77,19 @@ if ($Child) {
         # ordinary token and its real profile temp directory, too.
         # Validate the private native ABI before the longer Go desktop suite.
         $timer = [Diagnostics.Stopwatch]::StartNew()
-        & $Node (Join-Path $Repository 'scripts/check-windows-keyboard.mjs')
+        if ($Suite -ne 'desktop') {
+            & $Node (Join-Path $Repository 'scripts/check-windows-keyboard.mjs')
         if ($LASTEXITCODE -ne 0) { throw 'Standard-user native keyboard checks failed.' }
-        Write-Output "Standard-user native keyboard checks: $($timer.Elapsed.TotalSeconds) seconds"
-        $timer.Restart()
-        & $Node (Join-Path $Repository 'scripts/check-go.mjs') desktop
-        $testExitCode = $LASTEXITCODE
-        Write-Output "Standard-user desktop tests and vet: $($timer.Elapsed.TotalSeconds) seconds"
-        if ($testExitCode -eq 0) {
+            Write-Output "Standard-user native keyboard checks: $($timer.Elapsed.TotalSeconds) seconds"
+        }
+        $testExitCode = 0
+        if ($Suite -ne 'keyboard') {
+            $timer.Restart()
+            & $Node (Join-Path $Repository 'scripts/check-go.mjs') desktop
+            $testExitCode = $LASTEXITCODE
+            Write-Output "Standard-user desktop tests and vet: $($timer.Elapsed.TotalSeconds) seconds"
+        }
+        if ($testExitCode -eq 0 -and $Suite -ne 'keyboard') {
             foreach ($name in @('build', 'mod')) { Copy-CIGoCache (Join-Path $cache $name) (Join-Path $cacheSeed $name) }
             Write-Output 'Exported standard-user Go compiler and module caches without profile or ACL data.'
         }
@@ -137,8 +143,8 @@ try {
     $desktopAccess = Grant-KeyboardCIDesktopAccess $user.SID.Value
     Write-Output "Temporary keyboard CI desktop: $($desktopAccess.StationName)\$($desktopAccess.DesktopName), SID $($user.SID.Value)"
     $credential = [Management.Automation.PSCredential]::new("$env:COMPUTERNAME\$account", $password)
-    $arguments = '-NoProfile -File "{0}" -Child -Repository "{1}" -Node "{2}" -ExpectedSID "{3}" -Station "{4}" -Desktop "{5}" -GoExecutable "{6}" -GoVersion "{7}"' -f `
-        $PSCommandPath, $Repository, $Node, $user.SID.Value, $desktopAccess.StationName, $desktopAccess.DesktopName, $GoExecutable, $GoVersion
+    $arguments = '-NoProfile -File "{0}" -Child -Repository "{1}" -Node "{2}" -ExpectedSID "{3}" -Station "{4}" -Desktop "{5}" -GoExecutable "{6}" -GoVersion "{7}" -Suite "{8}"' -f `
+        $PSCommandPath, $Repository, $Node, $user.SID.Value, $desktopAccess.StationName, $desktopAccess.DesktopName, $GoExecutable, $GoVersion, $Suite
     # Only the tool search path is forwarded; release credentials and other
     # workflow environment variables are not inherited by the test process.
     $testProcess = Start-Process -FilePath (Join-Path $PSHOME 'pwsh.exe') -ArgumentList $arguments `

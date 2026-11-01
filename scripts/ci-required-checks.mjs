@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { changedFiles, nativeShellRequired } from './ci-native-scope.mjs';
+import { changedFiles, nativeShellRequired, portableTestsRequired } from './ci-native-scope.mjs';
 
 const passed = result => result === 'success';
 const absent = result => result === 'skipped' || result === 'success';
@@ -8,11 +8,12 @@ const absent = result => result === 'skipped' || result === 'success';
 // A skipped required job does not fail a GitHub Actions workflow by itself.
 // This gate fails the run when a check that must run did not succeed.
 export function evaluateRequiredChecks({
-  event, portable, scope, native, nativeOutput = '', windowsUpdater, windowsRequired,
+  event, portable, scope, native, nativeOutput = '', testsOutput = 'true', windowsUpdater, windowsRequired,
 }) {
   const failures = [];
   if (!passed(portable)) failures.push('portable checks did not succeed');
   if (event === 'pull_request') {
+    if (testsOutput !== 'true' && testsOutput !== 'false') failures.push('scope tests output must be true or false');
     if (!passed(scope)) failures.push('pull request scope did not succeed');
     if (nativeOutput !== 'true' && nativeOutput !== 'false') failures.push('scope native output must be true or false');
     if (nativeOutput === 'true' && !passed(native)) failures.push('native shell was required and did not succeed');
@@ -38,14 +39,16 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     scope: process.env.SCOPE,
     native: process.env.NATIVE,
     nativeOutput: process.env.NATIVE_OUTPUT ?? '',
+    testsOutput: process.env.TESTS_OUTPUT ?? '',
     windowsUpdater: process.env.WINDOWS_UPDATER,
     windowsRequired: process.env.WINDOWS_REQUIRED === 'true',
   };
   const failures = evaluateRequiredChecks(input);
-  if (input.event === 'pull_request' && input.nativeOutput === 'false') {
+  if (input.event === 'pull_request' && (input.nativeOutput === 'false' || input.testsOutput === 'false')) {
     const files = changedFiles(process.env.BASE_SHA);
     console.log(`ci-scope recheck: ${files.length} files`);
-    if (documentationScopeMismatch(files)) failures.push('scope reported documentation-only, but the pull request diff is not');
+    if (input.testsOutput === 'false' && portableTestsRequired(files)) failures.push('scope skipped portable tests for a non-documentation diff');
+    if (input.nativeOutput === 'false' && documentationScopeMismatch(files)) failures.push('scope reported documentation-only, but the pull request diff is not');
   }
   if (failures.length) {
     for (const failure of failures) console.error(`ci-required: ${failure}`);
