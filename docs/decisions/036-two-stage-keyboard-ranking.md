@@ -2,11 +2,11 @@
 
 ## Status
 
-Accepted. Supersedes the single-worker scheduling and context scope in [ADR 031](031-local-keyboard-neural-ranking.md).
+Accepted. The settled deadline and negotiated whole-input completion are updated by [ADR 038](038-contextual-keyboard-completion.md). Supersedes the single-worker scheduling and context scope in [ADR 031](031-local-keyboard-neural-ranking.md).
 
 ## Decision
 
-The verified connection advertises `keyboard-ranking-v2`, so old hosts that accept only one proposal do not receive this protocol. Use separate latest-only scheduler lanes: the pinned `chinese-ime-lm` worker starts on each eligible composition revision, with a 100 ms budget and no debounce; the resident local polishing model starts after a 150 ms pause, with a 900 ms total budget. These are configured limits, not measured latency guarantees. The native candidate menu appears immediately. Both passes receive the original snapshot; a settled result supersedes a late fast result. Native hosts rebuild from engine identities before applying either promotion. Navigation, commit, cancellation, voice takeover and focus changes revoke both lanes. A new native request increments its epoch after the preceding freeze notification, so the bridge does not reject it as a duplicate.
+The verified connection advertises `keyboard-ranking-v2`, so old hosts that accept only one proposal do not receive this protocol. Use separate latest-only scheduler lanes: the pinned `chinese-ime-lm` worker starts on each eligible composition revision, with a 100 ms budget and no debounce; the resident local polishing model starts after a 150 ms pause, with the total budget now defined in ADR 038. These are configured limits, not measured latency guarantees. The native candidate menu appears immediately. Both passes receive the original snapshot; a settled result supersedes a late fast result. Native hosts rebuild from engine identities before applying either promotion. Navigation, commit, cancellation, voice takeover and focus changes revoke both lanes. A new native request increments its epoch after the preceding freeze notification, so the bridge does not reject it as a duplicate.
 
 The architecture follows the inspected [msime runtime](https://github.com/metasequoiaime/msime/blob/0e2824c8a2bff6a010e7a40525ff348d0a1a231b/crates/input-runtime/src/runtime.rs). The fast model uses its `chinese-ime-lm` reference implementation and `best_where` policy: only whole-input candidates compete, and a trusted dictionary leader is retained. The settled pass reuses Arion's existing Qwen worker, rather than msime's desktop model. This architecture is not a claim of equal quality to msime or a completed model-selection benchmark.
 

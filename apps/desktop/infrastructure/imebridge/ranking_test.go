@@ -252,3 +252,86 @@ func TestNativeRankingSkipDiagnostics(t *testing.T) {
 		t.Fatal(counts)
 	}
 }
+
+func TestCompletionCapabilityIsNegotiated(t *testing.T) {
+	for _, enabled := range []bool{false, true} {
+		m := New("", nil, nil)
+		t.Cleanup(m.Close)
+		m.RequireClientVerification(func(PeerIdentity, ClientHello) error { return nil })
+		err := m.ConfigureKeyboardRanking(keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+			if r.AllowCompletion != enabled {
+				t.Errorf("capability = %v", r.AllowCompletion)
+			}
+			if !enabled {
+				return rankAnswer(r), nil
+			}
+			return contracts.KeyboardRankResult{Identity: r.Identity, Revision: r.Revision, Completion: &domain.KeyboardCompletion{Input: r.Input, Text: "重构一下", Reading: "chong gou yi xia"}}, nil
+		}))
+		if err != nil {
+			t.Fatal(err)
+		}
+		caps := []string{rankingCapability}
+		if enabled {
+			caps = append(caps, "keyboard-completion-v1")
+		}
+		alive := new(atomic.Bool)
+		alive.Store(true)
+		h, _ := verifiedHost(t, m, message{Op: "hello", Build: "completion-test", Capabilities: caps}, alive)
+		wait(t, func() bool { return m.ConnectedBuild() != "" })
+		h.send(t, message{Op: "activate", Activation: "editor"})
+		wait(t, m.ActiveClient)
+		req := rankRequest(1)
+		req.RankRequest.AllowCompletion = true
+		if enabled {
+			req.RankRequest.Input = "chonggyxia"
+			req.RankRequest.Candidates = req.RankRequest.Candidates[:1]
+			req.RankRequest.Candidates[0].End = 10
+		}
+		h.send(t, req)
+		reply := h.read(t)
+		if reply.Status != "ok" || reply.RankResult == nil || (reply.RankResult.Completion != nil) != enabled {
+			t.Fatal(reply)
+		}
+	}
+}
+
+func TestNativeRankingApplicationAcknowledgment(t *testing.T) {
+	m, _ := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	applied := 0
+	m.OnKeyboardRankingDiagnostic(func(reason string, _ int) {
+		if reason == "proposal_applied" {
+			applied++
+		}
+	})
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.rankingRevision = 4
+	ack := message{Op: "keyboard_rank_applied", Activation: "editor", Revision: 4}
+	m.receiveRankingLocked(ack)
+	if applied != 0 {
+		t.Fatal("ack without a sent proposal was recorded")
+	}
+	m.rankingProposalRevision = 4
+	foreign := ack
+	foreign.Activation = "other"
+	m.receiveRankingLocked(foreign)
+	stale := ack
+	stale.Revision = 3
+	m.receiveRankingLocked(stale)
+	if applied != 0 {
+		t.Fatal("foreign or stale ack was recorded")
+	}
+	m.receiveRankingLocked(ack)
+	m.receiveRankingLocked(ack)
+	if applied != 1 || m.rankingRevision != 4 {
+		t.Fatal("ack was duplicated or changed composition ownership")
+	}
+	m.rankingProposalRevision = 4
+	m.invalidateRankingLocked()
+	m.receiveRankingLocked(ack)
+	if applied != 1 {
+		t.Fatal("frozen proposal was acknowledged")
+	}
+}

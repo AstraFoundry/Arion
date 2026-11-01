@@ -218,7 +218,7 @@ static NSString *languageSwitchTitle(BOOL ascii, NSInteger binding) {
     self.fd = fd;
     self.connection = NSUUID.UUID.UUIDString;
     [self writeMessage:@{@"op": @"hello", @"build": hostBuildIdentity, @"protocol":@1,
-        @"capabilities":@[@"keyboard-vocabulary-v1",@"keyboard-ranking-v2"]}];
+        @"capabilities":@[@"keyboard-vocabulary-v1",@"keyboard-ranking-v2",@"keyboard-completion-v1"]}];
     if (self.fd < 0) { close(reader); return NO; }
     NSString *connection = self.connection;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -322,6 +322,13 @@ static NSString *languageSwitchTitle(BOOL ascii, NSInteger binding) {
                 message[@"rankRequest"]=request;
             }
             [bridge send:message];
+        };
+        self.typing.rankingApplied = ^(NSUInteger revision) {
+            ArionInputController *controller=weakSelf;
+            ArionBridge *bridge=[ArionBridge shared];
+            NSString *activation=controller.composition.activation;
+            if (bridge.fd<0 || bridge.active!=controller || !activation.length || controller.composition.session.length) return;
+            [bridge send:@{@"op":@"keyboard_rank_applied",@"activation":activation,@"revision":@(revision)}];
         };
         self.typing.rankingSkipped = ^(NSString *reason, NSUInteger count, NSUInteger revision) {
             ArionInputController *controller=weakSelf;

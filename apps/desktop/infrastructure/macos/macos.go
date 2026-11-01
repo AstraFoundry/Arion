@@ -257,7 +257,7 @@ func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token 
 	}
 	snap.SafeToRead = true
 	if t.ReadCursor != nil && t.ReadCursor() {
-		snap.Before, snap.After, _ = cursorContext(element, domain.MaxCursorContext)
+		snap.Before, snap.After, snap.Selected, _ = cursorContextSelection(element, domain.MaxCursorContext)
 	}
 	if t.ReadScreen != nil && t.ReadScreen() {
 		timeout := t.ScreenTimeout

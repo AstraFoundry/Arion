@@ -37,7 +37,8 @@ static BOOL ax_frame(AXUIElementRef element, CGRect *frame) {
 static int ax_collect(AXUIElementRef element, CGRect clip, int depth, int *count,
                       double deadline, NSMutableArray<NSString *> *lines, NSUInteger *length) {
     if (ax_now() >= deadline) return ARION_CONTEXT_TIMEOUT;
-    if (depth > 32 || ++*count > 512) return ARION_CONTEXT_FAILED;
+    if (depth > ARION_AX_MAX_DEPTH) return ARION_CONTEXT_DEPTH_LIMIT;
+    if (++*count > ARION_AX_MAX_NODES) return ARION_CONTEXT_NODE_LIMIT;
     AXUIElementSetMessagingTimeout(element, (float)MIN(0.05, deadline - ax_now()));
     id subrole = ax_attribute(element, kAXSubroleAttribute);
     if ([subrole isEqual:(__bridge NSString *)kAXSecureTextFieldSubrole]) return ARION_CONTEXT_OK;
@@ -56,8 +57,8 @@ static int ax_collect(AXUIElementRef element, CGRect clip, int depth, int *count
         if (range && CFGetTypeID((__bridge CFTypeRef)range) == AXValueGetTypeID()) {
             CFRange visibleRange;
             if (!AXValueGetValue((__bridge AXValueRef)range, kAXValueCFRangeType, &visibleRange) ||
-                visibleRange.location < 0 || visibleRange.length < 0) return ARION_CONTEXT_FAILED;
-            if ((NSUInteger)visibleRange.length > 32768 - *length) return ARION_CONTEXT_FAILED;
+                visibleRange.location < 0 || visibleRange.length < 0) return ARION_CONTEXT_INVALID_RANGE;
+            if ((NSUInteger)visibleRange.length > ARION_AX_MAX_TEXT - *length) return ARION_CONTEXT_TEXT_LIMIT;
             CFTypeRef value = NULL;
             AXUIElementCopyParameterizedAttributeValue(element, kAXStringForRangeParameterizedAttribute,
                                                        (__bridge CFTypeRef)range, &value);
@@ -68,10 +69,17 @@ static int ax_collect(AXUIElementRef element, CGRect clip, int depth, int *count
         }
     } else if ([role isEqual:(__bridge NSString *)kAXStaticTextRole]) {
         id value = ax_attribute(element, kAXValueAttribute);
-        if ([value isKindOfClass:[NSString class]]) text = value;
+        if ([value isKindOfClass:[NSString class]] && [value length]) {
+            text = value;
+        } else {
+            // Providers such as Qt expose static labels as AXTitle. This
+            // role-specific label is visible text, not an editable document.
+            id title = ax_attribute(element, kAXTitleAttribute);
+            if ([title isKindOfClass:[NSString class]]) text = title;
+        }
     }
     if (text.length) {
-        if (*length + text.length > 32768) return ARION_CONTEXT_FAILED;
+        if (*length + text.length > ARION_AX_MAX_TEXT) return ARION_CONTEXT_TEXT_LIMIT;
         [lines addObject:text];
         *length += text.length;
     }
@@ -100,7 +108,7 @@ int arion_accessibility_window(void *element, int pid, double timeout_seconds, c
         if (!window || CFGetTypeID((__bridge CFTypeRef)window) != AXUIElementGetTypeID()) return ARION_CONTEXT_NO_WINDOW;
         AXUIElementSetMessagingTimeout((__bridge AXUIElementRef)window, 0.05f);
         CGRect frame;
-        if (!ax_frame((__bridge AXUIElementRef)window, &frame)) return ARION_CONTEXT_FAILED;
+        if (!ax_frame((__bridge AXUIElementRef)window, &frame)) return ARION_CONTEXT_WINDOW_FRAME;
         int count = 0;
         NSUInteger length = 0;
         NSMutableArray<NSString *> *lines = [NSMutableArray array];

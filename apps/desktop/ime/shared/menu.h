@@ -30,6 +30,10 @@ int arion_menu_build(ArionPinyinMenu *menu, RimeApi *api, uintptr_t session,
 int arion_menu_build_typed(ArionPinyinMenu *menu, RimeApi *api, uintptr_t session,
     size_t page_size, ArionMenuRank rank, void *context,
     int (*kind)(void *, uintptr_t, size_t, ArionCandidateMetadata *), void *kind_context);
+// The engine already owns the fused display order, including protected lanes.
+int arion_menu_build_fused(ArionPinyinMenu *menu, RimeApi *api, uintptr_t session,
+    size_t page_size,
+    int (*kind)(void *, uintptr_t, size_t, ArionCandidateMetadata *), void *kind_context);
 int arion_menu_load(ArionPinyinMenu *menu, RimeApi *api, uintptr_t session, size_t index);
 int arion_menu_turn(ArionPinyinMenu *menu, RimeApi *api, uintptr_t session, int delta);
 int arion_menu_move(ArionPinyinMenu *menu, int delta);

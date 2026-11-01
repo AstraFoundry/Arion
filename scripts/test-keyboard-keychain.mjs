@@ -87,7 +87,7 @@ if (mode.startsWith('--prepare')) {
   manifest.sourceIdentities = ['keyboard.h', 'keyboard.m', 'learning.h', 'learning.mm', 'learning_crypto.swift',
     '../shared/pinyin.h', '../shared/pinyin.c', '../shared/input.h', '../shared/input.c',
     '../shared/menu.h', '../shared/menu.c', '../shared/learning.h', '../shared/learning.cpp',
-    '../shared/emoji.h', '../shared/emoji.cpp', '../shared/english.h', '../shared/english.cpp', '../shared/english_lexicon.cpp', '../shared/english_lexicon.h',
+    '../shared/completion.h', '../shared/completion.cpp', '../shared/emoji.h', '../shared/emoji.cpp', '../shared/english.h', '../shared/english.cpp', '../shared/english_lexicon.cpp', '../shared/english_lexicon.h',
     '../shared/learning_rime.h', '../shared/learning_rime.cpp', '../shared/ranking.h', '../shared/ranking.cpp',
     '../shared/ranking_bridge.h', '../shared/ranking_unicode.h', '../shared/ranking_unicode.cpp',
     '../shared/ranking_unicode_data.h', 'tests/keychain_learning_test.m']

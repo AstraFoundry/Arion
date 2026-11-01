@@ -8,6 +8,18 @@ enum {
     ARION_CONTEXT_NO_WINDOW = 3,
     ARION_CONTEXT_FAILED = 4,
     ARION_CONTEXT_TIMEOUT = 5,
+    ARION_CONTEXT_NODE_LIMIT = 6,
+    ARION_CONTEXT_DEPTH_LIMIT = 7,
+    ARION_CONTEXT_TEXT_LIMIT = 8,
+    ARION_CONTEXT_INVALID_RANGE = 9,
+    ARION_CONTEXT_WINDOW_FRAME = 10,
+};
+
+// Window traversal limits are shared by dictation and keyboard context.
+enum {
+    ARION_AX_MAX_NODES = 4096,
+    ARION_AX_MAX_DEPTH = 64,
+    ARION_AX_MAX_TEXT = 32768,
 };
 
 // Text recognition levels of Vision.
@@ -29,6 +41,6 @@ int arion_accessibility_window(void *element, int pid, double timeout_seconds, c
 
 // arion_cursor_context reads up to max characters before and after the
 // focused element's selection. Strings are malloc'd UTF-8 the caller frees.
-int arion_cursor_context(void *element, long max, char **before, char **after);
+int arion_cursor_context(void *element, long max, char **before, char **after, char **selected);
 
 #endif

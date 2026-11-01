@@ -132,3 +132,40 @@ func TestKeyboardRankingRejectsIncompatiblePromotion(t *testing.T) {
 		})
 	}
 }
+
+func TestKeyboardCompletionOwnershipAndCoverage(t *testing.T) {
+	req := keyRequest(1)
+	req.Input = "chonggyxia"
+	req.AllowCompletion = true
+	req.Candidates = req.Candidates[:1]
+	req.Candidates[0].End = len(req.Input)
+	r := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return contracts.KeyboardRankResult{Identity: r.Identity, Revision: r.Revision, Completion: &domain.KeyboardCompletion{Input: r.Input, Text: "重构一下", Reading: "chong gou yi xia"}}, nil
+	})
+	scheduler, err := NewKeyboardRanking(r, time.Second, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer scheduler.Close()
+	out := receiveRank(t, scheduler.Submit(req))
+	if !scheduler.CanApply(out) {
+		t.Fatal(out.Err)
+	}
+	scheduler.Freeze()
+	if scheduler.CanApply(out) {
+		t.Fatal("frozen completion admitted")
+	}
+	req.Revision++
+	req.AllowCompletion = false
+	denied := receiveRank(t, scheduler.Submit(req))
+	if denied.Err == nil {
+		t.Fatal("old host admitted new text")
+	}
+	req.Revision++
+	req.AllowCompletion = true
+	req.Input = "chonggyxi"
+	denied = receiveRank(t, scheduler.Submit(req))
+	if denied.Err == nil {
+		t.Fatal("incomplete pronunciation admitted")
+	}
+}

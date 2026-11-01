@@ -38,7 +38,7 @@ func StopContext(stop *atomic.Bool) (context.Context, context.CancelFunc) {
 // Complete runs an independent bounded chat task on the resident model.
 // Erasing the slot prevents ranking and rewriting from sharing private state.
 func (e *Engine) Complete(ctx context.Context, req prompt.ChatRequest) (result engine.Result, err error) {
-	if len(req.Messages) == 0 || len(req.Messages) > 16 || req.MaxTokens <= 0 || req.MaxTokens > 256 {
+	if len(req.Grammar) > 256*1024 || len(req.Messages) == 0 || len(req.Messages) > 16 || req.MaxTokens <= 0 || req.MaxTokens > 256 {
 		return result, errors.New("invalid completion bounds")
 	}
 	if err = ctx.Err(); err != nil {

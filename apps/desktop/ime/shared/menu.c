@@ -55,8 +55,8 @@ int arion_menu_load(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,size_t 
     }
     return 1;
 }
-int arion_menu_build_typed(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,size_t page_size,ArionMenuRank rank,void *context,
-                          int (*kind)(void *,uintptr_t,size_t,ArionCandidateMetadata *),void *kind_context) {
+static int build_typed(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,size_t page_size,ArionMenuRank rank,void *context,
+                          int (*kind)(void *,uintptr_t,size_t,ArionCandidateMetadata *),void *kind_context, int preserve_order) {
     int expanded=menu->expanded;
     arion_menu_dispose(menu);
     if (page_size<1 || page_size>ARION_MENU_MAX_PAGE_SIZE) return 0;
@@ -70,7 +70,7 @@ int arion_menu_build_typed(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,
         if (text_count>=rank_window) break;
         if (!arion_menu_load(menu,api,session,menu->count+page_size*3-1)) return 0;
     }
-    if (menu->count) {
+    if (menu->count && !preserve_order) {
         const size_t count=menu->count;
         size_t text_count=0, emoji_count=0;
         for (size_t i=0;i<count;i++) if (menu->metadata[i].emoji) emoji_count++; else text_count++;
@@ -122,6 +122,14 @@ int arion_menu_build_typed(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,
         menu->texts=texts; menu->indices=indices; menu->metadata=types;
     }
     return 1;
+}
+int arion_menu_build_typed(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,size_t page_size,ArionMenuRank rank,void *context,
+                          int (*kind)(void *,uintptr_t,size_t,ArionCandidateMetadata *),void *kind_context) {
+    return build_typed(menu,api,session,page_size,rank,context,kind,kind_context,0);
+}
+int arion_menu_build_fused(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,size_t page_size,
+                          int (*kind)(void *,uintptr_t,size_t,ArionCandidateMetadata *),void *kind_context) {
+    return build_typed(menu,api,session,page_size,NULL,NULL,kind,kind_context,1);
 }
 int arion_menu_build(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,size_t page_size,ArionMenuRank rank,void *context) {
     return arion_menu_build_typed(menu,api,session,page_size,rank,context,NULL,NULL);

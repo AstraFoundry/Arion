@@ -80,14 +80,19 @@ func screenText(status C.int, out *C.char, ocrMs C.double) (ScreenText, error) {
 
 // cursorContext reads text around the selection of an AX element.
 func cursorContext(element unsafe.Pointer, max int) (before, after string, ok bool) {
-	var b, a *C.char
-	if C.arion_cursor_context(element, C.long(max), &b, &a) != C.ARION_CONTEXT_OK {
-		return "", "", false
+	before, after, _, ok = cursorContextSelection(element, max)
+	return
+}
+
+func cursorContextSelection(element unsafe.Pointer, max int) (before, after, selected string, ok bool) {
+	var b, a, s *C.char
+	if C.arion_cursor_context(element, C.long(max), &b, &a, &s) != C.ARION_CONTEXT_OK {
+		return "", "", "", false
 	}
-	before, after = C.GoString(b), C.GoString(a)
-	C.free(unsafe.Pointer(b))
-	C.free(unsafe.Pointer(a))
-	return before, after, true
+	defer C.free(unsafe.Pointer(b))
+	defer C.free(unsafe.Pointer(a))
+	defer C.free(unsafe.Pointer(s))
+	return C.GoString(b), C.GoString(a), C.GoString(s), true
 }
 
 // ReadWindowText reads the captured target window's visible Accessibility text.
@@ -109,8 +114,20 @@ func ReadWindowText(element unsafe.Pointer, pid int, timeout time.Duration) (Scr
 		return result, domain.Fail(domain.CodePermissionDenied, "accessibility")
 	case C.ARION_CONTEXT_NO_WINDOW:
 		return result, domain.Fail(domain.CodeTargetChanged, "context target changed")
+	case C.ARION_CONTEXT_NODE_LIMIT:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowNodes)
+	case C.ARION_CONTEXT_DEPTH_LIMIT:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowDepth)
+	case C.ARION_CONTEXT_TEXT_LIMIT:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowText)
+	case C.ARION_CONTEXT_INVALID_RANGE:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowRange)
+	case C.ARION_CONTEXT_WINDOW_FRAME:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowFrame)
+	case C.ARION_CONTEXT_UNSUPPORTED:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowEmpty)
 	case C.ARION_CONTEXT_TIMEOUT:
-		return result, domain.Fail(domain.CodeTargetUnsupported, "accessibility read timed out")
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowTimeout)
 	}
 	return result, domain.Fail(domain.CodeTargetUnsupported, "visible accessibility text unavailable or exceeds bounds")
 }

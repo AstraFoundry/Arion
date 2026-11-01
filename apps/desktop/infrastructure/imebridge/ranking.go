@@ -42,7 +42,7 @@ func (m *IME) ConfigureKeyboardRankingStages(fast, settled ports.KeyboardRanker)
 		budget := 100 * time.Millisecond
 		if i == 1 {
 			debounce = 150 * time.Millisecond
-			budget = 900 * time.Millisecond
+			budget = 3 * time.Second
 		}
 		scheduler, err := application.NewKeyboardRanking(ranker, budget, debounce)
 		if err != nil {
@@ -77,6 +77,7 @@ func (m *IME) ConfigureKeyboardRankingStages(fast, settled ports.KeyboardRanker)
 }
 
 func (m *IME) invalidateRankingLocked() {
+	m.rankingProposalRevision = 0
 	if m.ranking != nil {
 		m.ranking.Freeze()
 	}
@@ -92,11 +93,19 @@ func (m *IME) receiveRankingLocked(msg message) {
 		!m.clientVerified || !m.peer.Alive() || m.updating || m.token != "" || m.closed {
 		return
 	}
+	if msg.Op == "keyboard_rank_applied" {
+		if msg.Revision != 0 && msg.Revision == m.rankingRevision && msg.Revision == m.rankingProposalRevision {
+			m.rankingProposalRevision = 0
+			m.traceRankingLocked("proposal_applied", 0)
+		}
+		return
+	}
 	if msg.Revision == 0 || msg.Revision <= m.rankingRevision {
 		m.traceRankingLocked("stale_revision", 0)
 		return
 	}
 	m.rankingRevision = msg.Revision
+	m.rankingProposalRevision = 0
 	if m.ranking == nil && m.rankingFast == nil {
 		m.traceRankingLocked("ranking_disabled", 0)
 		return
@@ -123,12 +132,17 @@ func (m *IME) receiveRankingLocked(msg message) {
 		return
 	}
 	req.Application = m.client
+	req.AllowCompletion = req.AllowCompletion && m.completionCapable
 	for tier, scheduler := range []*application.KeyboardRanking{m.rankingFast, m.ranking} {
 		if scheduler == nil {
 			continue
 		}
 		conn, activation := m.conn, m.activation
-		outcome := scheduler.Submit(*req)
+		laneRequest := *req
+		if tier == 0 {
+			laneRequest.AllowCompletion = false
+		}
+		outcome := scheduler.Submit(laneRequest)
 		go func(tier int, scheduler *application.KeyboardRanking) {
 			out := <-outcome
 			m.mu.Lock()
@@ -145,7 +159,7 @@ func (m *IME) receiveRankingLocked(msg message) {
 			}
 			// An abstaining settled model has no new evidence; it must not undo a
 			// valid fast promotion or suppress a still-running fast response.
-			if tier == 1 && out.Err == nil && (out.Result.Decision == "abstained_no_context" || out.Result.Decision == "abstained_no_comparable_candidates") {
+			if tier == 1 && out.Err == nil && (out.Result.Decision == "abstained_uncertain" || out.Result.Decision == "abstained_no_context" || out.Result.Decision == "abstained_no_comparable_candidates") {
 				return
 			}
 			reply := message{Op: "keyboard_ranked", Revision: msg.Revision, Status: "unavailable"}
@@ -164,6 +178,7 @@ func (m *IME) receiveRankingLocked(msg message) {
 			if err := m.sendLocked(ctx, reply); err != nil {
 				m.traceRankingLocked("delivery_failed", len(req.Candidates))
 			} else if reply.Status == "ok" {
+				m.rankingProposalRevision = msg.Revision
 				m.traceRankingLocked("proposal_sent", len(req.Candidates))
 			}
 		}(tier, scheduler)

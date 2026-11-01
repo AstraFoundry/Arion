@@ -12,7 +12,7 @@ import (
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/diagnostics"
 	"arion.local/desktop/infrastructure/keyboardmodel"
-	"arion.local/desktop/infrastructure/llm/ranking"
+	"arion.local/desktop/infrastructure/llm/completion"
 	"arion.local/desktop/infrastructure/rewriting"
 )
 
@@ -39,7 +39,7 @@ func (a *App) configureKeyboardRanking() {
 	var fast, ranker ports.KeyboardRanker
 	if a.state.Preferences.Keyboard.NeuralRanking {
 		fast = observedKeyboardRanker{ranker: a.keyboardContextRanker(a.keyboardModel, false), modelID: keyboardmodel.ModelID, record: a.recordKeyboardDiagnostic}
-		ranker = observedKeyboardRanker{ranker: a.keyboardContextRanker(&ranking.Ranker{Chat: a.rewriter}, true), modelID: rewriting.DefaultModel, record: a.recordKeyboardDiagnostic}
+		ranker = observedKeyboardRanker{ranker: a.keyboardContextRanker(&completion.Ranker{Chat: a.rewriter}, true), modelID: rewriting.DefaultModel, record: a.recordKeyboardDiagnostic}
 	}
 	a.record("keyboard_ranking_configuration", receiver.ConfigureKeyboardRankingStages(fast, ranker))
 }
@@ -65,12 +65,19 @@ func (r observedKeyboardRanker) RankKeyboard(ctx context.Context, req contracts.
 		outcome = "unavailable"
 	case err != nil:
 		outcome = "rejected"
+	case result.Decision == "abstained_uncertain":
+		outcome = "uncertain"
 	case result.Decision == "abstained_no_context":
 		outcome = "no_context"
 	case result.Decision == "abstained_no_comparable_candidates":
 		outcome = "no_comparable_candidates"
+	case result.Completion != nil:
+		outcome = "generated"
 	case len(req.Candidates) > 0 && len(result.Candidates) > 0 && result.Candidates[0].ID != req.Candidates[0].ID:
 		outcome = "accepted"
+	}
+	if errors.Is(err, completion.ErrPhoneticMismatch) {
+		r.record(diagnostics.Entry{Event: "keyboard_ranking_trace", Reason: "completion_phonetic_mismatch", Count: len(req.Candidates)})
 	}
 	r.record(diagnostics.Entry{Event: "keyboard_ranking", ModelID: r.modelID, Outcome: outcome, DurationMs: float64(time.Since(started).Microseconds()) / 1000, Count: len(req.Candidates), Code: diagnostics.Failure(err)})
 	return result, err

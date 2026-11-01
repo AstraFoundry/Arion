@@ -17,6 +17,17 @@ const (
 	DetailInputMethodProtocolUnsupported = "input method protocol unsupported"
 )
 
+// Context read details are closed diagnostic categories, never field content.
+const (
+	DetailContextWindowNodes   = "context_window_nodes"
+	DetailContextWindowDepth   = "context_window_depth"
+	DetailContextWindowText    = "context_window_text"
+	DetailContextWindowRange   = "context_window_range"
+	DetailContextWindowFrame   = "context_window_frame"
+	DetailContextWindowEmpty   = "context_window_empty"
+	DetailContextWindowTimeout = "context_window_timeout"
+)
+
 // DetailTranslationModel identifies a voice-translation session whose model
 // is missing or failed to run.
 const DetailTranslationModel = "translation model"
