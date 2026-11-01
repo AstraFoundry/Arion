@@ -1,4 +1,4 @@
-name: Signed macOS build
+name: Windows installer build
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: signed-macos-${{ github.ref }}
+  group: windows-installer-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
     uses: ./.github/workflows/ci.yml
     with:
       release: true
-      native-matrix: '{"include":[{"os":"macos-26","platform":"darwin-arm64"}]}'
+      native-matrix: '{"include":[{"os":"windows-2022","platform":"windows-amd64"}]}'
     secrets:
       MYGO_UPDATER_PRIVATE_KEY: ${{ secrets.MYGO_UPDATER_PRIVATE_KEY }}
       MACOS_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
