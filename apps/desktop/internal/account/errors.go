@@ -24,6 +24,7 @@ const (
 	CodeWaitlist      Code = "WAITLIST"
 	CodeEntitlement   Code = "ENTITLEMENT"
 	CodeBrowser       Code = "BROWSER"
+	CodeUsageConsent  Code = "USAGE_CONSENT"
 )
 
 // Error is the failure type methods return. The Error string never includes

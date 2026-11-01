@@ -18,6 +18,7 @@ import (
 	"arion.local/desktop/ui/features/polish"
 	"arion.local/desktop/ui/features/signin"
 	"arion.local/desktop/ui/features/uilanguage"
+	"arion.local/desktop/ui/features/usagesharing"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
@@ -57,11 +58,14 @@ type Page struct {
 	switched         time.Time
 	keyboard         keyboard.State
 	cloud            cloud.Nav
+	// shareUsage is the sign-in page's usage-sharing box.
+	shareUsage bool
 }
 
 // NewPage starts the flow; its cloud step folds the provider lists behind
-// Change once one is in use, so the step fits the window.
-func NewPage() *Page { return &Page{cloud: cloud.Nav{Compact: true}} }
+// Change once one is in use, so the step fits the window. The sign-in page's
+// usage-sharing box starts checked.
+func NewPage() *Page { return &Page{cloud: cloud.Nav{Compact: true}, shareUsage: true} }
 
 // Render draws the current step beside its illustration.
 func (p *Page) Render(c *ui.Context, store runtime.Store) {
@@ -429,10 +433,11 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 			}
 			// A custom issuer's sign-in methods are unknown: one button.
 			if state.Account.Portal == "" {
-				signin.Start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn))
+				signin.Start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn), p.shareUsage)
 			} else {
-				signin.Methods(c, store, tokens)
+				signin.Methods(c, store, tokens, p.shareUsage)
 			}
+			usagesharing.Box(c, store, tokens, &p.shareUsage)
 			signin.Terms(c, store, tokens)
 			signin.Notice(c, store, tokens)
 		})

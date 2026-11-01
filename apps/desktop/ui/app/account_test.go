@@ -394,3 +394,73 @@ func TestOnboardingTermsAndLocalContinuation(t *testing.T) {
 		}
 	}
 }
+
+// The sign-in page carries a usage-sharing box, checked by default. Its
+// state goes with whichever sign-in button is pressed; there is no separate
+// step.
+func TestOnboardingSignInOffersUsageSharingBox(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		state, actions, store := fixture()
+		state.Preferences.UILanguage = locale
+		messages := store.Copy()
+		page := onboarding.NewPage()
+		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+		settle(tt)
+		click := clicker(t, tt)
+		click(messages.Text(copy.OnbStart))
+		expect(t, tt, true, messages.Text(copy.AccUsageShare), messages.Text(copy.AccUsageShareDetail))
+		snapshot(t, tt, "onboarding-account-share-usage-"+string(locale))
+		click(messages.Text(copy.AccContinueGoogle))
+		if !actions.called("sign-in:share") {
+			t.Fatalf("default box not passed to sign-in: %v", actions.calls)
+		}
+		actions.calls = nil
+		click(messages.Text(copy.AccUsageShare))
+		click(messages.Text(copy.AccContinueEmail))
+		if !actions.called("sign-in") || actions.called("sign-in:share") {
+			t.Fatalf("unchecked box shared usage: %v", actions.calls)
+		}
+		signedIn(state, false)
+		settle(tt)
+		expect(t, tt, false, messages.Text(copy.AccUsageShareDetail))
+		click(messages.Text(copy.Continue))
+		expect(t, tt, true, messages.Text(copy.OnbMicTitle))
+	}
+}
+
+// Settings › Account changes the answer with a switch while signed in.
+func TestSettingsAccountUsageSharingSwitch(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		state, actions, store := fixture()
+		state.Preferences.UILanguage = locale
+		messages := store.Copy()
+		tt := openAccount(t, store)
+		expect(t, tt, false, messages.Text(copy.AccUsageShare))
+		signedIn(state, false)
+		state.Account.UsageSharing = runtime.UsageNotShared
+		tt = openAccount(t, store)
+		expect(t, tt, true, messages.Text(copy.AccUsageShare), messages.Text(copy.AccUsageShareDetail))
+		snapshot(t, tt, "settings-account-usage-sharing-"+string(locale))
+		// The switch sits at the row's trailing edge, level with its title.
+		toggle := func() {
+			t.Helper()
+			title, ok := tt.Find(messages.Text(copy.AccUsageShare))
+			if !ok {
+				t.Fatalf("no usage sharing row: %q", tt.Texts())
+			}
+			tt.ClickAt(SettingsWidth-60, title.Y+title.H)
+			settle(tt)
+		}
+		toggle()
+		if !actions.called("usage:share") {
+			t.Fatalf("calls = %v, want usage:share", actions.calls)
+		}
+		actions.calls = nil
+		state.Account.UsageSharing = runtime.UsageShared
+		settle(tt)
+		toggle()
+		if !actions.called("usage:private") {
+			t.Fatalf("calls = %v, want usage:private", actions.calls)
+		}
+	}
+}

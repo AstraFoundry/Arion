@@ -120,6 +120,8 @@ func ErrorMessage(code, detail string) copy.Key {
 		return copy.AccRevokeUnconfirmed
 	case runtime.AccountCodeWaitlist:
 		return copy.AccWaitlistFailed
+	case runtime.AccountCodeUsageConsent:
+		return copy.AccErrUsageConsent
 	case runtime.AccountCodeEntitlement:
 		return copy.AccErrEntitlement
 	case runtime.AccountCodeBrowser:

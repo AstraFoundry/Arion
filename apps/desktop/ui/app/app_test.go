@@ -55,7 +55,6 @@ func (r *recorder) StopLevelMonitor()          { r.call("monitor-stop") }
 func (r *recorder) CopyText(text string) bool  { r.call("copy:" + text); return true }
 func (r *recorder) OpenSettings()              { r.call("settings") }
 func (r *recorder) CompleteOnboarding()        { r.call("complete") }
-func (r *recorder) SignIn()                    { r.call("sign-in") }
 func (r *recorder) CancelSignIn()              { r.call("cancel-sign-in") }
 func (r *recorder) RefreshAccount()            { r.call("refresh-account") }
 func (r *recorder) SignOut()                   { r.call("sign-out") }
@@ -66,6 +65,15 @@ func (r *recorder) CancelCloud()               { r.call("cloud-cancel") }
 func (r *recorder) DisconnectCloud()           { r.call("cloud-disconnect") }
 func (r *recorder) ActivateCloud(provider string) {
 	r.call("cloud-activate:" + provider)
+}
+func (r *recorder) SignIn(shareUsage bool) {
+	r.call("sign-in")
+	if shareUsage {
+		r.call("sign-in:share")
+	}
+}
+func (r *recorder) SetUsageSharing(share bool) {
+	r.call(map[bool]string{true: "usage:share", false: "usage:private"}[share])
 }
 func (r *recorder) ListCloudModels() { r.call("cloud-models") }
 func (r *recorder) ConnectCloudKey(provider, key string) {

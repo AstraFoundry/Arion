@@ -164,6 +164,9 @@ type App struct {
 	accounts           *account.Service
 	accountMaintenance accountMaintenance
 	usageUpload        usageUploadState
+	// shareOnSignIn is the sign-in page's usage-sharing box for the
+	// sign-in in flight.
+	shareOnSignIn      bool
 	accountMu          sync.Mutex
 	accountSeq         uint64
 	accountCancel      context.CancelFunc

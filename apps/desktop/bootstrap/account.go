@@ -15,11 +15,12 @@ import (
 // token is available from Session. Views read State.Account instead.
 func (a *App) Account() *account.Service { return a.accounts }
 
-func (x actions) SignIn() {
+func (x actions) SignIn(shareUsage bool) {
 	a := x.a
 	if a.state.Account.Busy() {
 		return
 	}
+	a.shareOnSignIn = shareUsage
 	a.suspendProductNotifications()
 	a.suspendUsageUpload()
 	ctx, seq := a.beginAccount()
@@ -43,6 +44,7 @@ func (x actions) SignIn() {
 
 func (x actions) CancelSignIn() {
 	a := x.a
+	a.shareOnSignIn = false
 	_, seq := a.beginAccount()
 	a.accounts.Cancel()
 	a.post(func() {
@@ -218,6 +220,10 @@ func (a *App) accountReady(seq uint64, ctx context.Context) bool {
 
 func (a *App) finishAccount(session account.Session, err error) {
 	a.state.Account.Credential = arion.CredentialUnknown
+	// The sign-in page's box belongs to that sign-in only; a later refresh
+	// never reuses it.
+	share := a.shareOnSignIn
+	a.shareOnSignIn = false
 	if err != nil {
 		a.state.Account.ErrorCode = string(account.CodeOf(err))
 		a.state.Account.ErrorDetail = account.DetailOf(err)
@@ -239,9 +245,95 @@ func (a *App) finishAccount(session account.Session, err error) {
 	a.state.Account.ErrorDetail = ""
 	a.state.Account.Waitlist = arion.AccountWaitlist{}
 	a.state.Account.SignOut = arion.AccountSignOut{}
+	// A checked box records consent unless the account already shares;
+	// otherwise the platform's record is read as it is.
+	if share && !session.UsageConsent {
+		actions{a}.SetUsageSharing(true)
+		return
+	}
+	a.loadUsageSharing()
+}
+
+// loadUsageSharing reads the signed-in account's answer to sharing usage
+// data. The platform is the record: the answer replaces the token's claim, so
+// a choice made on the web or another device applies here too.
+func (a *App) loadUsageSharing() {
+	if a.state.Account.Disabled || a.opts.Offline || a.harness != nil {
+		return
+	}
+	seq, subject := a.currentAccountSeq(), a.state.Account.Subject
+	a.state.Account.UsageLoading = true
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		session, answer, err := a.accounts.ReadUsageConsent(ctx)
+		a.post(func() {
+			if !a.accountLive(seq) || a.state.Account.Subject != subject {
+				return
+			}
+			a.state.Account.UsageLoading = false
+			if err != nil {
+				a.state.Account.ErrorCode = string(account.CodeOf(err))
+				a.state.Account.ErrorDetail = account.DetailOf(err)
+				return
+			}
+			a.state.Account.UsageSharing = usageSharingOf(answer)
+			a.configureUsageUpload(session)
+		})
+	}()
+}
+
+// SetUsageSharing records an answer from the sign-in page's box or the
+// settings switch. Reporting follows the platform's confirmation, not the request.
+func (x actions) SetUsageSharing(share bool) {
+	a := x.a
+	if !a.state.Account.SignedIn() || a.state.Account.UsageSaving {
+		return
+	}
+	seq, subject := a.currentAccountSeq(), a.state.Account.Subject
+	a.state.Account.UsageSaving = true
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		session, err := a.accounts.RecordUsageConsent(ctx, share)
+		a.post(func() {
+			if !a.accountLive(seq) || a.state.Account.Subject != subject {
+				return
+			}
+			a.state.Account.UsageSaving = false
+			if err != nil {
+				a.state.Account.ErrorCode = string(account.CodeOf(err))
+				a.state.Account.ErrorDetail = account.DetailOf(err)
+				return
+			}
+			a.state.Account.UsageSharing = usageSharingOf(account.UsageConsent{Accepted: share, Decided: true})
+			// A token the platform refused before consent may report now.
+			a.usageUpload.deniedToken = ""
+			a.configureUsageUpload(session)
+		})
+	}()
+}
+
+func usageSharingOf(answer account.UsageConsent) arion.UsageSharing {
+	switch {
+	case !answer.Decided:
+		return arion.UsageUndecided
+	case answer.Accepted:
+		return arion.UsageShared
+	}
+	return arion.UsageNotShared
+}
+
+func (a *App) currentAccountSeq() uint64 {
+	a.accountMu.Lock()
+	defer a.accountMu.Unlock()
+	return a.accountSeq
 }
 
 func (a *App) applySession(session account.Session, phase arion.AccountPhase) {
+	if a.state.Account.Subject != session.Subject {
+		a.resetUsageSharing()
+	}
 	a.state.Account.Phase = phase
 	a.state.Account.Subject = session.Subject
 	name, email := session.Profile.Name, session.Profile.Email
@@ -286,6 +378,15 @@ func (a *App) clearAccountProfile() {
 	a.state.Account.PictureData = nil
 	a.state.Account.Locale = ""
 	a.state.Account.HostedSync = false
+	a.resetUsageSharing()
+}
+
+// resetUsageSharing forgets the answer of an account that is no longer
+// signed in here.
+func (a *App) resetUsageSharing() {
+	a.state.Account.UsageSharing = arion.UsageUnknown
+	a.state.Account.UsageLoading = false
+	a.state.Account.UsageSaving = false
 }
 
 func (a *App) finishSignOut(result account.SignOutResult, err error) {

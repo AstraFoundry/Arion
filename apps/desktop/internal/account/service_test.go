@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -86,6 +87,11 @@ type issuer struct {
 	waitBody       string
 	waitAuth       string
 	waitRequest    string
+	consentHits    int
+	consentAuth    string
+	consentRequest string
+	consentStatus  int
+	consentBody    string
 	withEnt        bool
 	ent            any
 	badID          bool
@@ -100,6 +106,10 @@ type issuer struct {
 	// serves the profile from UserInfo.
 	bareID       bool
 	userInfoAuth []string
+	// consentAccepted and consentDecided are the account's recorded usage
+	// answer the fake platform returns and updates.
+	consentAccepted bool
+	consentDecided  bool
 }
 
 func newIssuer(t *testing.T) *issuer {
@@ -114,6 +124,7 @@ func newIssuer(t *testing.T) *issuer {
 		catalogID:      "wl_hosted_sync",
 		waitStatus:     http.StatusCreated,
 		waitBody:       `{"id":"entry-1","status":"pending"}`,
+		consentStatus:  http.StatusOK,
 		withEnt:        true,
 		now:            time.Unix(1_700_000_000, 0).UTC(),
 	}
@@ -125,6 +136,7 @@ func newIssuer(t *testing.T) *issuer {
 	mux.HandleFunc("/api/auth/oauth2/userinfo", s.userinfo)
 	mux.HandleFunc("/api/v1/catalog/products/"+CatalogProduct, s.catalog)
 	mux.HandleFunc("/api/v1/me/waitlists/", s.waitlist)
+	mux.HandleFunc("/api/v1/usage/consent", s.usageConsent)
 	mux.HandleFunc("/stolen", s.stolen)
 	s.srv = httptest.NewServer(mux)
 	t.Cleanup(s.srv.Close)
@@ -392,6 +404,36 @@ func (s *issuer) waitlist(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		s.t.Errorf("waitlist method %s", r.Method)
 	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_, _ = w.Write([]byte(payload))
+}
+
+func (s *issuer) usageConsent(w http.ResponseWriter, r *http.Request) {
+	body, _ := io.ReadAll(r.Body)
+	s.mu.Lock()
+	s.consentHits++
+	s.consentAuth = r.Header.Get("Authorization")
+	switch r.Method {
+	case http.MethodGet:
+		if r.URL.Query().Get("productSlug") != "arion" {
+			s.t.Errorf("usage consent query %s", r.URL.RawQuery)
+		}
+	case http.MethodPut:
+		s.consentRequest = string(body)
+		var asked struct {
+			Accepted bool `json:"accepted"`
+		}
+		_ = json.Unmarshal(body, &asked)
+		s.consentAccepted, s.consentDecided = asked.Accepted, true
+	default:
+		s.t.Errorf("usage consent method %s", r.Method)
+	}
+	status, payload := s.consentStatus, s.consentBody
+	if payload == "" {
+		payload = `{"data":{"accepted":` + strconv.FormatBool(s.consentAccepted) + `,"decided":` + strconv.FormatBool(s.consentDecided) + `,"version":"usage-v1"}}`
+	}
+	s.mu.Unlock()
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	_, _ = w.Write([]byte(payload))

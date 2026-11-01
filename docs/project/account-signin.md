@@ -18,10 +18,11 @@ These `runtime.Actions` methods return immediately. Work continues off the main 
 
 | Method | Effect |
 | --- | --- |
-| `SignIn()` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. |
+| `SignIn(shareUsage)` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. `shareUsage` is the onboarding sign-in page's **Share data to join the product improvement program** box; when checked, consent is recorded once signed in ([consent](#consented-usage-reporting)). Settings passes `false`. |
 | `CancelSignIn()` | Invalidates the in-flight sign-in or refresh. A callback that arrives afterwards is not exchanged. A refresh token already stored for that attempt is deleted and revoked. |
 | `RefreshAccount()` | Explicit entitlement recheck; rotates the stored refresh token and replaces the in-memory access token. Phase `refreshing`. |
 | `SignOut()` | Revokes the refresh token, then deletes that credential item. Local keys and local memory stay. |
+| `SetUsageSharing(share)` | Records the signed-in account's answer to sharing usage data, from the Settings › Account switch or a checked sign-in box. `UsageSaving` while it runs; the platform's confirmation sets `UsageSharing` and starts or stops reporting. |
 | `CheckStoredAccount()` | Reads whether a refresh token is stored, with `Service.Stored`. This does nothing unless `Phase` is `signed_out` and `Credential` is unknown. A result is dropped when a sign-in, refresh, cancel or sign-out started during the read. |
 
 One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_PROGRESS`. `JoinHostedSyncWaitlist` does the same while one is running; views do not call it.
@@ -47,7 +48,7 @@ The loopback answers `200` with `Cache-Control: no-store`, `Referrer-Policy: no-
 
 ## Views
 
-The onboarding step `Account` follows Welcome (`entities/onboarding`) and is skipped when the account is disabled. Signed out, it offers **Continue with Google**, **Continue with GitHub** and **Continue with email**. Each calls `SignIn`, which opens the issuer's sign-in page in the browser, where the same methods sign in or create an account. Before leaving Arion, the sign-in choices show a caption linking to the Arion site’s **Terms of Use** and **Privacy Policy**, in the current interface language. The platform website’s terms are not the Arion product terms; the notice must be visible before any browser/provider redirect. The muted gray secondary footer button is **Continue locally**, which moves on with no account and no network. A custom issuer (`Account.Portal` empty) gets one **Sign in** button instead. While `Phase` is `signing_in`, the step shows the browser wait with Cancel (`CancelSignIn`). The step does not move on while a sign-in, refresh, or sign-out is running (`Account.Busy`).
+The onboarding step `Account` follows Welcome (`entities/onboarding`) and is skipped when the account is disabled. Signed out, it offers **Continue with Google**, **Continue with GitHub** and **Continue with email**. Each calls `SignIn`, which opens the issuer's sign-in page in the browser, where the same methods sign in or create an account. Below them is a **Share data to join the product improvement program** box, checked by default, whose state goes with the pressed button ([consent](#consented-usage-reporting)). Before leaving Arion, the sign-in choices show a caption linking to the Arion site’s **Terms of Use** and **Privacy Policy**, in the current interface language. The platform website’s terms are not the Arion product terms; the notice must be visible before any browser/provider redirect. The muted gray secondary footer button is **Continue locally**, which moves on with no account and no network. A custom issuer (`Account.Portal` empty) gets one **Sign in** button instead. While `Phase` is `signing_in`, the step shows the browser wait with Cancel (`CancelSignIn`). The step does not move on while a sign-in, refresh, or sign-out is running (`Account.Busy`).
 
 The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. Its hover and selected fills are the sidebar's neutral grays. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card reports automatic restoration and offers **Sign out**, which revokes and deletes that token without requiring a session in memory. There is no Reconnect control. In onboarding, Continue may move on while background recovery waits for connectivity. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in with the hosted-sync entitlement, a Hosted sync card follows. Without the entitlement, views do not offer a waitlist. Links to the AstraFoundry account portal follow (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
 
@@ -129,7 +130,7 @@ An empty `409` has no discriminator in the platform contract, so the access toke
 
 ### Errors
 
-`*Error` implements `Is` by code. `CodeOf` and `DetailOf` are the UI mapping. Codes: `SIGN_IN_IN_PROGRESS`, `SIGN_IN_TIMEOUT`, `SIGN_IN_CANCELLED`, `STATE_MISMATCH`, `AUTHORIZATION`, `TOKEN`, `DISCOVERY`, `SECURE_STORE`, `NOT_SIGNED_IN`, `REFRESH`, `REVOKE`, `WAITLIST`, `ENTITLEMENT`, `BROWSER`.
+`*Error` implements `Is` by code. `CodeOf` and `DetailOf` are the UI mapping. Codes: `SIGN_IN_IN_PROGRESS`, `SIGN_IN_TIMEOUT`, `SIGN_IN_CANCELLED`, `STATE_MISMATCH`, `AUTHORIZATION`, `TOKEN`, `DISCOVERY`, `SECURE_STORE`, `NOT_SIGNED_IN`, `REFRESH`, `REVOKE`, `WAITLIST`, `ENTITLEMENT`, `BROWSER`, `USAGE_CONSENT`.
 
 Sentinels: `ErrSignInInProgress`, `ErrSignInTimeout`, `ErrSignInCancelled`, `ErrStateMismatch`, `ErrNotSignedIn`, `ErrNotFound`, `ErrUnsupported`, `ErrRefreshTokenTooLarge`.
 
@@ -157,11 +158,41 @@ OS-authorized [product notifications](product-notifications.md) use the current 
 
 ## Consented usage reporting
 
+Signing in identifies the account; sharing usage data is the account's own
+answer, held by the platform, so the web portal, other devices and this app see
+the same choice. Arion never treats signing in alone as permission.
+
+The onboarding sign-in page shows a **Share data to join the product improvement program** box, checked by default (daily
+dictation count, speaking time and words; never audio or text) below the sign-in
+buttons. There is no separate step. Its state goes with whichever button is
+pressed. When checked, a successful sign-in records consent unless the account
+already shares. Unchecked records nothing, so an account keeps an earlier
+answer. The box belongs to that sign-in: a failure, cancel or later refresh
+drops it.
+
+After every other successful sign-in or refresh, `Service.ReadUsageConsent`
+reads the answer with `GET {issuer}/api/v1/usage/consent?productSlug=arion` and
+the access token (`UsageLoading` meanwhile). It is `undecided`, `shared` or
+`not_shared` (`Account.UsageSharing`) and replaces the token's claim for
+reporting. Settings › Account shows a **Share data to join the product improvement program** switch while signed
+in.
+
+The box and the switch record the answer with `Service.RecordUsageConsent`:
+`PUT {issuer}/api/v1/usage/consent` and the access token, body
+`{"productSlug":"arion","accepted":bool}`. The platform stores the notice
+version and a timestamp and keeps a history of acceptance and withdrawal. An
+acceptance must name `usage-v1`, and a recorded answer must echo the choice and
+be decided; otherwise the session is left unchanged and the view shows
+`USAGE_CONSENT`. A confirmed choice updates the session at once, clears an
+earlier authorization refusal of the same token, and reporting starts or stops
+with it. Another account signing in starts unknown.
+
 The access token carries `usage_consent_version=usage-v1` and a valid
 `usage_consent_at` timestamp only after the platform records explicit agreement.
-Missing/older claims leave reporting disabled. The desktop never treats sign-in
-alone as permission. A newly accepted choice reaches an existing desktop session
-at its next token refresh; the server checks current consent on every report.
+Missing/older claims leave reporting disabled until the platform's read says
+otherwise. A choice made later on the web reaches an existing desktop session
+at its next token refresh, which reads the choice again; the server checks
+current consent on every report.
 
 The same committed usage event that updates Overview also updates a separate
 account-scoped ledger. Only events committed while signed in and consented are
@@ -188,11 +219,8 @@ minutes. Authorization refusals stop collection and sending until a fresh token
 allows them; token expiry waits for the existing account maintenance flow.
 Offline and scripted E2E profiles do not start reporting.
 
-Usage consent is handled during browser authentication in onboarding. Settings ›
-Account does not repeat the consent status or offer a manual refresh control.
-The account portal's Data link opens `/account/data` (standard issuer only), where
-users can manage consent. Changes reach Arion through automatic token renewal;
-the server checks current consent on every report.
+The account portal's Data link opens `/account/data` (standard issuer only),
+where users can also withdraw or re-enable sharing.
 The platform caps sources per account day and accepts dates within 32 days back
 and one day ahead of its UTC day; the 31-day ledger stays inside that window.
 
