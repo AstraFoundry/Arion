@@ -671,7 +671,9 @@ type Actions interface {
 	ExportDiagnostics()
 	CompleteOnboarding()
 	// SignIn starts the system-browser sign-in. It returns immediately.
-	SignIn()
+	// shareUsage is the answer the user gave to the usage notice before
+	// signing in; it is recorded with the account once sign-in succeeds.
+	SignIn(shareUsage bool)
 	// CancelSignIn invalidates the in-flight sign-in or refresh.
 	CancelSignIn()
 	// RefreshAccount restores a session from the stored refresh token.

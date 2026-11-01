@@ -18,7 +18,7 @@ These `runtime.Actions` methods return immediately. Work continues off the main 
 
 | Method | Effect |
 | --- | --- |
-| `SignIn()` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. |
+| `SignIn(shareUsage)` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. `shareUsage` is the answer to the usage notice every sign-in entry shows first; it is recorded with the account once sign-in succeeds ([consent](#consented-usage-reporting)). |
 | `CancelSignIn()` | Invalidates the in-flight sign-in or refresh. A callback that arrives afterwards is not exchanged. A refresh token already stored for that attempt is deleted and revoked. |
 | `RefreshAccount()` | Explicit entitlement recheck; rotates the stored refresh token and replaces the in-memory access token. Phase `refreshing`. |
 | `SignOut()` | Revokes the refresh token, then deletes that credential item. Local keys and local memory stay. |
@@ -129,7 +129,7 @@ An empty `409` has no discriminator in the platform contract, so the access toke
 
 ### Errors
 
-`*Error` implements `Is` by code. `CodeOf` and `DetailOf` are the UI mapping. Codes: `SIGN_IN_IN_PROGRESS`, `SIGN_IN_TIMEOUT`, `SIGN_IN_CANCELLED`, `STATE_MISMATCH`, `AUTHORIZATION`, `TOKEN`, `DISCOVERY`, `SECURE_STORE`, `NOT_SIGNED_IN`, `REFRESH`, `REVOKE`, `WAITLIST`, `ENTITLEMENT`, `BROWSER`.
+`*Error` implements `Is` by code. `CodeOf` and `DetailOf` are the UI mapping. Codes: `SIGN_IN_IN_PROGRESS`, `SIGN_IN_TIMEOUT`, `SIGN_IN_CANCELLED`, `STATE_MISMATCH`, `AUTHORIZATION`, `TOKEN`, `DISCOVERY`, `SECURE_STORE`, `NOT_SIGNED_IN`, `REFRESH`, `REVOKE`, `WAITLIST`, `ENTITLEMENT`, `BROWSER`, `USAGE_CONSENT`.
 
 Sentinels: `ErrSignInInProgress`, `ErrSignInTimeout`, `ErrSignInCancelled`, `ErrStateMismatch`, `ErrNotSignedIn`, `ErrNotFound`, `ErrUnsupported`, `ErrRefreshTokenTooLarge`.
 
@@ -157,11 +157,30 @@ OS-authorized [product notifications](product-notifications.md) use the current 
 
 ## Consented usage reporting
 
+The desktop asks before it opens the browser. Every sign-in entry (the account
+card, the onboarding account step and its Google, GitHub and email buttons)
+first shows the usage notice: overview statistics (daily dictation counts,
+speaking time and word counts, never audio or dictated text) are uploaded and
+analyzed, with **Cancel**, **Don't upload** and **Upload**. Both answers
+continue to the browser; Cancel or Escape starts nothing. Registering and
+signing in share the browser page, so the notice does not depend on which one
+the user picks there, and the website no longer asks.
+
+After sign-in, `Service.RecordUsageConsent` sends the answer to the platform
+with `PUT {issuer}/api/v1/usage/consent` and the access token, body
+`{"productSlug":"arion","accepted":bool}`. It is skipped when the token's claim
+already holds that answer. The platform stores the notice version and a
+timestamp and keeps a history of acceptance and withdrawal. The answer must name
+the choice and, for an acceptance, `usage-v1`; otherwise the session is left
+unchanged and Settings shows `USAGE_CONSENT` with no upload. A confirmed
+choice updates the session at once and reporting starts or stops with it.
+
 The access token carries `usage_consent_version=usage-v1` and a valid
 `usage_consent_at` timestamp only after the platform records explicit agreement.
 Missing/older claims leave reporting disabled. The desktop never treats sign-in
-alone as permission. A newly accepted choice reaches an existing desktop session
-at its next token refresh; the server checks current consent on every report.
+alone as permission, and a restored session relies on those claims. A choice
+made later on the web reaches an existing desktop session at its next token
+refresh; the server checks current consent on every report.
 
 The same committed usage event that updates Overview also updates a separate
 account-scoped ledger. Only events committed while signed in and consented are
@@ -188,11 +207,11 @@ minutes. Authorization refusals stop collection and sending until a fresh token
 allows them; token expiry waits for the existing account maintenance flow.
 Offline and scripted E2E profiles do not start reporting.
 
-Usage consent is handled during browser authentication in onboarding. Settings ›
-Account does not repeat the consent status or offer a manual refresh control.
-The account portal's Data link opens `/account/data` (standard issuer only), where
-users can manage consent. Changes reach Arion through automatic token renewal;
-the server checks current consent on every report.
+Usage consent is asked in the app's usage notice before browser sign-in.
+Settings › Account does not repeat the consent status or offer a manual refresh
+control. The account portal's Data link opens `/account/data` (standard issuer
+only), where users can withdraw or re-enable it. Changes made there reach Arion
+through automatic token renewal; the server checks current consent on every report.
 The platform caps sources per account day and accepts dates within 32 days back
 and one day ahead of its UTC day; the 31-day ledger stays inside that window.
 

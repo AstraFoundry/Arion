@@ -15,11 +15,12 @@ import (
 // token is available from Session. Views read State.Account instead.
 func (a *App) Account() *account.Service { return a.accounts }
 
-func (x actions) SignIn() {
+func (x actions) SignIn(shareUsage bool) {
 	a := x.a
 	if a.state.Account.Busy() {
 		return
 	}
+	a.usageChoice = &shareUsage
 	a.suspendProductNotifications()
 	a.suspendUsageUpload()
 	ctx, seq := a.beginAccount()
@@ -43,6 +44,7 @@ func (x actions) SignIn() {
 
 func (x actions) CancelSignIn() {
 	a := x.a
+	a.usageChoice = nil
 	_, seq := a.beginAccount()
 	a.accounts.Cancel()
 	a.post(func() {
@@ -218,6 +220,8 @@ func (a *App) accountReady(seq uint64, ctx context.Context) bool {
 
 func (a *App) finishAccount(session account.Session, err error) {
 	a.state.Account.Credential = arion.CredentialUnknown
+	choice := a.usageChoice
+	a.usageChoice = nil
 	if err != nil {
 		a.state.Account.ErrorCode = string(account.CodeOf(err))
 		a.state.Account.ErrorDetail = account.DetailOf(err)
@@ -239,6 +243,35 @@ func (a *App) finishAccount(session account.Session, err error) {
 	a.state.Account.ErrorDetail = ""
 	a.state.Account.Waitlist = arion.AccountWaitlist{}
 	a.state.Account.SignOut = arion.AccountSignOut{}
+	if choice != nil && *choice != session.UsageConsent {
+		a.recordUsageConsent(*choice)
+	}
+}
+
+// recordUsageConsent sends the answer to the usage notice, given before
+// sign-in, to the account. Reporting starts only once the service confirms
+// it. A failure keeps reporting off and shows a notice; the web account can
+// still change the choice.
+func (a *App) recordUsageConsent(accepted bool) {
+	a.accountMu.Lock()
+	seq := a.accountSeq
+	a.accountMu.Unlock()
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		session, err := a.accounts.RecordUsageConsent(ctx, accepted)
+		a.post(func() {
+			if !a.accountLive(seq) {
+				return
+			}
+			if err != nil {
+				a.state.Account.ErrorCode = string(account.CodeOf(err))
+				a.state.Account.ErrorDetail = account.DetailOf(err)
+				return
+			}
+			a.applySession(session, a.state.Account.Phase)
+		})
+	}()
 }
 
 func (a *App) applySession(session account.Session, phase arion.AccountPhase) {

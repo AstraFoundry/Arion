@@ -89,6 +89,7 @@ const (
 	AccountCodeWaitlist      = "WAITLIST"
 	AccountCodeEntitlement   = "ENTITLEMENT"
 	AccountCodeBrowser       = "BROWSER"
+	AccountCodeUsageConsent  = "USAGE_CONSENT"
 )
 
 // AccountCodes lists every ErrorCode the service reports.
@@ -96,7 +97,7 @@ var AccountCodes = []string{
 	AccountCodeInProgress, AccountCodeTimeout, AccountCodeCancelled, AccountCodeStateMismatch,
 	AccountCodeAuthorization, AccountCodeToken, AccountCodeDiscovery, AccountCodeStore,
 	AccountCodeNotSignedIn, AccountCodeRefresh, AccountCodeRevoke, AccountCodeWaitlist,
-	AccountCodeEntitlement, AccountCodeBrowser,
+	AccountCodeEntitlement, AccountCodeBrowser, AccountCodeUsageConsent,
 }
 
 // Busy reports a sign-in, refresh or sign-out in flight. Starting another

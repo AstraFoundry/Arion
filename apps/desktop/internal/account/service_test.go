@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -86,6 +87,11 @@ type issuer struct {
 	waitBody       string
 	waitAuth       string
 	waitRequest    string
+	consentHits    int
+	consentAuth    string
+	consentRequest string
+	consentStatus  int
+	consentBody    string
 	withEnt        bool
 	ent            any
 	badID          bool
@@ -114,6 +120,7 @@ func newIssuer(t *testing.T) *issuer {
 		catalogID:      "wl_hosted_sync",
 		waitStatus:     http.StatusCreated,
 		waitBody:       `{"id":"entry-1","status":"pending"}`,
+		consentStatus:  http.StatusOK,
 		withEnt:        true,
 		now:            time.Unix(1_700_000_000, 0).UTC(),
 	}
@@ -125,6 +132,7 @@ func newIssuer(t *testing.T) *issuer {
 	mux.HandleFunc("/api/auth/oauth2/userinfo", s.userinfo)
 	mux.HandleFunc("/api/v1/catalog/products/"+CatalogProduct, s.catalog)
 	mux.HandleFunc("/api/v1/me/waitlists/", s.waitlist)
+	mux.HandleFunc("/api/v1/usage/consent", s.usageConsent)
 	mux.HandleFunc("/stolen", s.stolen)
 	s.srv = httptest.NewServer(mux)
 	t.Cleanup(s.srv.Close)
@@ -391,6 +399,29 @@ func (s *issuer) waitlist(w http.ResponseWriter, r *http.Request) {
 	s.mu.Unlock()
 	if r.Method != http.MethodPost {
 		s.t.Errorf("waitlist method %s", r.Method)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_, _ = w.Write([]byte(payload))
+}
+
+func (s *issuer) usageConsent(w http.ResponseWriter, r *http.Request) {
+	body, _ := io.ReadAll(r.Body)
+	s.mu.Lock()
+	s.consentHits++
+	s.consentAuth = r.Header.Get("Authorization")
+	s.consentRequest = string(body)
+	status, payload := s.consentStatus, s.consentBody
+	s.mu.Unlock()
+	if r.Method != http.MethodPut {
+		s.t.Errorf("usage consent method %s", r.Method)
+	}
+	if payload == "" {
+		var asked struct {
+			Accepted bool `json:"accepted"`
+		}
+		_ = json.Unmarshal(body, &asked)
+		payload = `{"data":{"accepted":` + strconv.FormatBool(asked.Accepted) + `,"version":"usage-v1"}}`
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)

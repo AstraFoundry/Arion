@@ -112,7 +112,7 @@ func stringsContainTokenBreak(token string) bool {
 }
 
 func validUsageConsent(claims map[string]any) bool {
-	if claims["usage_consent_version"] != "usage-v1" {
+	if claims["usage_consent_version"] != UsageConsentVersion {
 		return false
 	}
 	_, err := time.Parse(time.RFC3339, stringClaim(claims, "usage_consent_at"))

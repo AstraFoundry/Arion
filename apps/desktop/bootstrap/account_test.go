@@ -61,3 +61,31 @@ func TestApplySessionRemembersAccountDisplay(t *testing.T) {
 		t.Fatalf("other subject kept Ada: %+v %+v", a.state.Account, a.state.Preferences)
 	}
 }
+
+// The answer to the usage notice belongs to one sign-in: a finished,
+// failed or cancelled sign-in consumes it, so a later refresh never reuses it.
+func TestUsageChoiceIsConsumedByTheSignInItBelongsTo(t *testing.T) {
+	svc, err := account.New(account.Config{Issuer: account.DefaultIssuer}, account.Dependencies{Store: &maintenanceStore{}, Browser: func(string) error { return nil }})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tc := range []struct {
+		name    string
+		session account.Session
+		err     error
+	}{
+		{"recorded already", account.Session{Issuer: account.DefaultIssuer, Subject: "user-1", UsageConsent: true}, nil},
+		{"failed", account.Session{}, account.Wrap(account.CodeAuthorization, "access_denied", nil)},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			a := &App{accounts: svc, prefStore: settings.Store{Path: filepath.Join(t.TempDir(), "preferences.json")}}
+			a.state.Preferences = application.DefaultPreferences("darwin")
+			agreed := true
+			a.usageChoice = &agreed
+			a.finishAccount(tc.session, tc.err)
+			if a.usageChoice != nil {
+				t.Fatal("the choice outlived its sign-in")
+			}
+		})
+	}
+}

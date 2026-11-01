@@ -55,7 +55,11 @@ func TestOnboardingAccountStep(t *testing.T) {
 	for _, method := range []copy.Key{copy.AccContinueGoogle, copy.AccContinueGitHub, copy.AccContinueEmail} {
 		actions.calls = nil
 		click(en.Text(method))
-		if !actions.called("sign-in") {
+		if actions.called("sign-in") {
+			t.Fatalf("%s started the sign-in before the usage notice was answered", method)
+		}
+		click(en.Text(copy.AccUsageNoticeAgree))
+		if !actions.called("sign-in:share") {
 			t.Fatalf("%s did not start the browser sign-in", method)
 		}
 	}
@@ -104,7 +108,8 @@ func TestOnboardingAccountCustomIssuer(t *testing.T) {
 	click(en.Text(copy.OnbStart))
 	expect(t, tt, false, en.Text(copy.AccContinueGoogle))
 	click(en.Text(copy.AccSignIn))
-	if !actions.called("sign-in") {
+	click(en.Text(copy.AccUsageNoticeAgree))
+	if !actions.called("sign-in:share") {
 		t.Fatal("sign-in not started")
 	}
 }
@@ -151,7 +156,8 @@ func TestSettingsAccountSignedOut(t *testing.T) {
 	expect(t, tt, false, en.Text(copy.AccSyncGroup))
 	snapshot(t, tt, "settings-account-signed-out")
 	clicker(t, tt)(en.Text(copy.AccSignIn))
-	if !actions.called("sign-in") {
+	clicker(t, tt)(en.Text(copy.AccUsageNoticeAgree))
+	if !actions.called("sign-in:share") {
 		t.Fatal("sign-in not started")
 	}
 	state.Account.Phase = runtime.AccountSigningIn
@@ -391,6 +397,50 @@ func TestOnboardingTermsAndLocalContinuation(t *testing.T) {
 			}
 			click(messages.Text(copy.OnbContinueLocally))
 			expect(t, tt, true, messages.Text(copy.OnbMicTitle))
+		}
+	}
+}
+
+// Registering and signing in share one browser page, so the app asks about
+// usage data before it opens: agreeing and declining both continue, with the
+// answer; cancelling signs nothing in.
+func TestSignInAsksAboutUsageFirst(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		for _, tc := range []struct {
+			name   string
+			answer copy.Key
+			want   string
+		}{
+			{"agree", copy.AccUsageNoticeAgree, "sign-in:share"},
+			{"decline", copy.AccUsageNoticeDecline, "sign-in:private"},
+			{"cancel", copy.AccUsageNoticeCancel, ""},
+		} {
+			t.Run(string(locale)+"/"+tc.name, func(t *testing.T) {
+				state, actions, store := fixture()
+				state.Preferences.UILanguage = locale
+				messages := store.Copy()
+				tt := openAccount(t, store)
+				click := clicker(t, tt)
+				click(messages.Text(copy.AccSignIn))
+				expect(t, tt, true, messages.Text(copy.AccUsageNoticeTitle), messages.Text(copy.AccUsageNoticeBody),
+					messages.Text(copy.AccUsageNoticeCancel), messages.Text(copy.AccUsageNoticeDecline), messages.Text(copy.AccUsageNoticeAgree))
+				if actions.called("sign-in") {
+					t.Fatal("sign-in started before the notice was answered")
+				}
+				if tc.name == "agree" {
+					snapshot(t, tt, "settings-account-usage-notice-"+string(locale))
+				}
+				click(messages.Text(tc.answer))
+				expect(t, tt, false, messages.Text(copy.AccUsageNoticeTitle))
+				switch {
+				case tc.want == "" && actions.called("sign-in"):
+					t.Fatal("cancel started a sign-in")
+				case tc.want != "" && !actions.called(tc.want):
+					t.Fatalf("calls = %v, want %s", actions.calls, tc.want)
+				case tc.want != "" && actions.called(map[string]string{"sign-in:share": "sign-in:private", "sign-in:private": "sign-in:share"}[tc.want]):
+					t.Fatalf("calls = %v, recorded the other answer", actions.calls)
+				}
+			})
 		}
 	}
 }

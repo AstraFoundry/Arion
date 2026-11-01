@@ -22,8 +22,25 @@ func Start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.
 	if store.State.Account.Disabled {
 		return
 	}
-	if kit.Button(c.Key("sign-in"), tokens, variant, label, !store.State.Account.Busy()).Clicked() {
-		store.Actions.SignIn()
+	askUsage(c, store, "sign-in", kit.Button(c.Key("sign-in"), tokens, variant, label, !store.State.Account.Busy()))
+}
+
+// askUsage opens the usage notice when entry is clicked, and starts the
+// sign-in with the answer. Registering and signing in share the browser page,
+// so both pass through it. Cancelling, or closing it with Escape, signs
+// nothing in and records nothing.
+func askUsage(c *ui.Context, store runtime.Store, key string, entry ui.Element) {
+	open := ui.Local(entry, "usage-notice", func() bool { return false })
+	if entry.Clicked() {
+		*open = true
+	}
+	messages := store.Copy()
+	switch ui.AlertDialog(c.Key(key+"-usage-notice"), open, messages.Text(copy.AccUsageNoticeTitle), messages.Text(copy.AccUsageNoticeBody),
+		messages.Text(copy.AccUsageNoticeCancel), messages.Text(copy.AccUsageNoticeDecline), messages.Text(copy.AccUsageNoticeAgree)) {
+	case 1:
+		store.Actions.SignIn(false)
+	case 2:
+		store.Actions.SignIn(true)
 	}
 }
 
@@ -50,9 +67,7 @@ func Methods(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				ui.Image(c, method.icon).Size(15, 15)
 				ui.Text(c, messages.Text(method.label)).FontSize(theme.Body).FontWeight(500).SingleLine()
 			})
-			if button.Clicked() {
-				store.Actions.SignIn()
-			}
+			askUsage(c, store, "sign-in-"+method.key, button)
 		}
 	})
 }
