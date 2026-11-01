@@ -14,9 +14,9 @@ export function cacheKey(root, files, identity) {
 
 export function nativeInput(file) {
   return file === 'scripts/native-ci-cache-key.mjs' || file === 'apps/desktop/desktop.json' ||
-    file.startsWith('apps/desktop/runtime/') || file.startsWith('apps/desktop/native/') || file.startsWith('apps/desktop/ime/shared/') ||
+    file.startsWith('apps/desktop/runtime/') || file.startsWith('apps/desktop/native/') || file.startsWith('apps/desktop/ime/') ||
     (file.startsWith('scripts/') && !file.endsWith('.test.mjs') &&
-      (/^scripts\/(?:stage-|.*runtime\.json$)/.test(file) || file.startsWith('scripts/lib/') || file.startsWith('scripts/cmake/')));
+      (/^scripts\/(?:stage-|.*runtime\.json$)/.test(file) || /^scripts\/lib\/(?:keyboard-|windows-|build-ime-|pinned-file\.)/.test(file) || file.startsWith('scripts/cmake/') || file === 'scripts/build-parallelism.mjs'));
 }
 
 // Identity is content and toolchain only. The checkout path is not included:
@@ -67,7 +67,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       : [run(process.env.CXX ?? 'g++', ['--version']), run(process.env.CC ?? 'gcc', ['--version'])],
   });
   const native = scopedCacheNames('native', identity, cacheKey(root, files.filter(nativeInput), identity));
-  const goIdentity = runnerCacheIdentity({ ...identity, go: process.platform === 'win32' ? run('go', ['version']) : '' });
+  const goIdentity = runnerCacheIdentity({ ...identity, go: process.platform === 'win32' && process.env.ARION_CI_SUITE !== 'keyboard' ? run('go', ['version']) : '' });
   const go = scopedCacheNames('standard-user-go', goIdentity, cacheKey(root, files.filter(file => /\.(?:go|mod|sum|h|c|cc|cpp|m|mm)$/.test(file) || file === 'go.work' || file.startsWith('scripts/') && file.endsWith('.ps1')), goIdentity));
   console.log(JSON.stringify({ native, go, identity, imageVersion: process.env.ImageVersion ?? '' }, null, 2));
   if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `native=${native.key}\nnative-restore=${native.restore}\ngo=${go.key}\ngo-restore=${go.restore}\n`);

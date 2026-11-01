@@ -131,6 +131,9 @@ jobs:
         with:
           filter: blob:none
           fetch-depth: 0
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/ci-native-scope.mjs
       - name: Decide whether the native shell is required
         id: decision
         env:
@@ -150,6 +153,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       # Native audio capture and MyGo require cgo.
+      ARION_CI_SUITE: ${{ matrix.suite || 'all' }}
       CGO_ENABLED: '1'
       XDG_CACHE_HOME: ${{ github.workspace }}/.workspace/native-download-cache
     steps:
@@ -161,7 +165,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       # Keep this pin identical to the portable job.
-      - if: matrix.suite != 'keyboard' || runner.os == 'Windows'
+      - if: matrix.suite != 'keyboard'
         uses: actions/setup-go@v5
         id: go
         with:
@@ -193,7 +197,10 @@ jobs:
         with:
           key: ${{ steps.cache-keys.outputs.native }}
           restore-keys: ${{ steps.cache-keys.outputs.native-restore }}
+          # Preserve the cache path version used by main; trim unused trees before saving.
           path: |
+            .workspace/native-asr-migration/
+            .workspace/local-rewrite/
             .workspace/keyboard-runtime/
             .workspace/windows-compile-cache/
             .workspace/native-download-cache/
@@ -293,12 +300,19 @@ jobs:
           path: .workspace/release/${{ matrix.platform }}/
           if-no-files-found: error
           compression-level: 0
+      - name: Trim unused native build trees
+        if: success() && !inputs.release && matrix.suite != 'desktop' && github.ref == 'refs/heads/main'
+        run: |
+          node --input-type=module -e "import { rmSync } from 'node:fs'; for (const name of ['native-asr-migration', 'local-rewrite']) rmSync('.workspace/' + name, { recursive: true, force: true });"
       - name: Save native dependency builds
         if: success() && (matrix.suite != 'desktop' || inputs.release) && github.ref == 'refs/heads/main' && steps.native-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           key: ${{ steps.cache-keys.outputs.native }}
+          # Preserve the cache path version used by main; trim unused trees before saving.
           path: |
+            .workspace/native-asr-migration/
+            .workspace/local-rewrite/
             .workspace/keyboard-runtime/
             .workspace/windows-compile-cache/
             .workspace/native-download-cache/
@@ -352,6 +366,9 @@ jobs:
         with:
           filter: blob:none
           fetch-depth: 0
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/ci-cache-prune.mjs
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -373,6 +390,10 @@ jobs:
         with:
           filter: blob:none
           fetch-depth: 0
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/ci-required-checks.mjs
+            /scripts/ci-native-scope.mjs
       - name: Require the checks this event must run
         env:
           EVENT: ${{ github.event_name }}

@@ -23,43 +23,47 @@ if ($Child) {
     $env:TMP = $env:TEMP
     New-Item -ItemType Directory -Path $env:TEMP -Force | Out-Null
     Set-Location -LiteralPath $Repository
-    # Credentialed process creation rebuilds PATH. Select the parent's installed
-    # SDK explicitly instead of letting an older image SDK download a toolchain.
-    if (![IO.Path]::IsPathRooted($GoExecutable) -or !(Test-Path -LiteralPath $GoExecutable -PathType Leaf)) {
-        throw 'The parent must provide its installed Go executable.'
-    }
-    $env:GO = $GoExecutable
-    $env:PATH = (Split-Path -Parent $GoExecutable) + [IO.Path]::PathSeparator + $env:PATH
-    $env:GOTOOLCHAIN = 'local'
-    if (!$GoVersion) { throw 'The parent must provide its actual Go SDK version.' }
-    $actualGoVersion = & $GoExecutable version
-    if ($LASTEXITCODE -ne 0 -or $actualGoVersion -ne $GoVersion) {
-        throw "Unexpected standard-user Go toolchain: $actualGoVersion; expected $GoVersion"
-    }
-    $resolvedGo = (Get-Command go -CommandType Application | Select-Object -First 1).Source
-    if ($resolvedGo -ne $GoExecutable) { throw 'The standard-user PATH does not select the pinned Go executable.' }
-    . (Join-Path $PSScriptRoot 'lib/windows-ci-go-cache.ps1')
-    $cacheSeed = Join-Path $Repository '.workspace/ci-standard-user-go-cache'
-    $cache = Join-Path $Repository '.workspace/windows-standard-user-go'
-    New-Item -ItemType Directory -Path $cache -Force | Out-Null
-    $env:GOCACHE = Join-Path $cache 'build'
-    $env:GOMODCACHE = Join-Path $cache 'mod'
-    foreach ($name in @('build', 'mod')) {
-        $destination = Join-Path $cache $name
-        New-Item -ItemType Directory -Path $destination -Force | Out-Null
-        if ($Suite -ne 'keyboard') { Copy-CIGoCache (Join-Path $cacheSeed $name) $destination }
-        $owner = (Get-Acl -LiteralPath $destination).GetOwner([Security.Principal.SecurityIdentifier]).Value
-        if ($owner -ne $ExpectedSID) { throw 'The active Go cache must be owned by the standard test user.' }
+    if ($Suite -ne 'keyboard') {
+        # Credentialed process creation rebuilds PATH. Select the parent's installed
+        # SDK explicitly instead of letting an older image SDK download a toolchain.
+        if (![IO.Path]::IsPathRooted($GoExecutable) -or !(Test-Path -LiteralPath $GoExecutable -PathType Leaf)) {
+            throw 'The parent must provide its installed Go executable.'
+        }
+        $env:GO = $GoExecutable
+        $env:PATH = (Split-Path -Parent $GoExecutable) + [IO.Path]::PathSeparator + $env:PATH
+        $env:GOTOOLCHAIN = 'local'
+        if (!$GoVersion) { throw 'The parent must provide its actual Go SDK version.' }
+        $actualGoVersion = & $GoExecutable version
+        if ($LASTEXITCODE -ne 0 -or $actualGoVersion -ne $GoVersion) {
+            throw "Unexpected standard-user Go toolchain: $actualGoVersion; expected $GoVersion"
+        }
+        $resolvedGo = (Get-Command go -CommandType Application | Select-Object -First 1).Source
+        if ($resolvedGo -ne $GoExecutable) { throw 'The standard-user PATH does not select the pinned Go executable.' }
+        . (Join-Path $PSScriptRoot 'lib/windows-ci-go-cache.ps1')
+        $cacheSeed = Join-Path $Repository '.workspace/ci-standard-user-go-cache'
+        $cache = Join-Path $Repository '.workspace/windows-standard-user-go'
+        New-Item -ItemType Directory -Path $cache -Force | Out-Null
+        $env:GOCACHE = Join-Path $cache 'build'
+        $env:GOMODCACHE = Join-Path $cache 'mod'
+        foreach ($name in @('build', 'mod')) {
+            $destination = Join-Path $cache $name
+            New-Item -ItemType Directory -Path $destination -Force | Out-Null
+            Copy-CIGoCache (Join-Path $cacheSeed $name) $destination
+            $owner = (Get-Acl -LiteralPath $destination).GetOwner([Security.Principal.SecurityIdentifier]).Value
+            if ($owner -ne $ExpectedSID) { throw 'The active Go cache must be owned by the standard test user.' }
+        }
+        Write-Output "Standard-user Go caches: $cache (owner $ExpectedSID)"
     }
     $env:XDG_CACHE_HOME = Join-Path $Repository '.workspace/native-download-cache'
-    Write-Output "Standard-user Go caches: $cache (owner $ExpectedSID)"
     $testExitCode = 1
     try {
         $preflightDirectory = Join-Path $Repository '.workspace/tests/windows-keyboard-ci'
         New-Item -ItemType Directory -Path $preflightDirectory -Force | Out-Null
-        @{ executable = $GoExecutable; version = $actualGoVersion; toolchain = $env:GOTOOLCHAIN;
-            sha256 = (Get-FileHash -LiteralPath $GoExecutable -Algorithm SHA256).Hash } |
-            ConvertTo-Json | Tee-Object -FilePath (Join-Path $preflightDirectory 'go-toolchain.json')
+        if ($Suite -ne 'keyboard') {
+            @{ executable = $GoExecutable; version = $actualGoVersion; toolchain = $env:GOTOOLCHAIN;
+                sha256 = (Get-FileHash -LiteralPath $GoExecutable -Algorithm SHA256).Hash } |
+                ConvertTo-Json | Tee-Object -FilePath (Join-Path $preflightDirectory 'go-toolchain.json')
+        }
         $preflightSource = Join-Path $Repository 'apps/desktop/ime/windows/ci_preflight.cpp'
         $preflightBinary = Join-Path $preflightDirectory 'preflight.exe'
         $compiler = (Get-Command g++ -CommandType Application | Select-Object -First 1).Source
@@ -79,7 +83,7 @@ if ($Child) {
         $timer = [Diagnostics.Stopwatch]::StartNew()
         if ($Suite -ne 'desktop') {
             & $Node (Join-Path $Repository 'scripts/check-windows-keyboard.mjs')
-        if ($LASTEXITCODE -ne 0) { throw 'Standard-user native keyboard checks failed.' }
+            if ($LASTEXITCODE -ne 0) { throw 'Standard-user native keyboard checks failed.' }
             Write-Output "Standard-user native keyboard checks: $($timer.Elapsed.TotalSeconds) seconds"
         }
         $testExitCode = 0
@@ -117,11 +121,13 @@ if ($Repository -ne (Resolve-Path -LiteralPath $env:GITHUB_WORKSPACE).Path) {
 }
 & (Join-Path $PSScriptRoot 'test-windows-keyboard-ci-desktop.ps1')
 $Node = (Get-Command node -CommandType Application | Select-Object -First 1).Source
-$GoExecutable = (Get-Command go -CommandType Application | Select-Object -First 1).Source
-$env:GOTOOLCHAIN = 'local'
-$GoVersion = & $GoExecutable version
-if ($LASTEXITCODE -ne 0 -or $GoVersion -notmatch '^go version go\d+\.\d+\.\d+ windows/amd64$') {
-    throw "The installed native Go SDK is unavailable: $GoVersion"
+if ($Suite -ne 'keyboard') {
+    $GoExecutable = (Get-Command go -CommandType Application | Select-Object -First 1).Source
+    $env:GOTOOLCHAIN = 'local'
+    $GoVersion = & $GoExecutable version
+    if ($LASTEXITCODE -ne 0 -or $GoVersion -notmatch '^go version go\d+\.\d+\.\d+ windows/amd64$') {
+        throw "The installed native Go SDK is unavailable: $GoVersion"
+    }
 }
 $account = 'arion-test-' + [Guid]::NewGuid().ToString('N').Substring(0, 8)
 $password = ConvertTo-SecureString ('Aa1!' + [Convert]::ToBase64String([Security.Cryptography.RandomNumberGenerator]::GetBytes(32))) -AsPlainText -Force
