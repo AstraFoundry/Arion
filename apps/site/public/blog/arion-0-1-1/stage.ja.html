@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Mock recordings for the "Arion 0.1.1" post (Japanese copy). The hash picks
+      the scene: #dictation, #polish, #translate, #keyboard or #clipboard.
+      Illustrations only: nothing is recorded and no model runs. Loaded in a
+      sandboxed frame; follows the system color scheme. Engine: stage.js.
+    -->
+    <link rel="stylesheet" href="stage.css" />
+    <script>
+      window.ARION_COPY = {
+        "menu": [
+          "ファイル",
+          "編集",
+          "表示",
+          "ウインドウ"
+        ],
+        "clock": "日 10:00",
+        "inserted": "入力しました",
+        "keys": {
+          "enter": "↩",
+          "space": "Space",
+          "shift": "⇧ Shift",
+          "clipboard": [
+            "⌘",
+            "⇧",
+            "V"
+          ]
+        },
+        "dictation": {
+          "app": "チームチャット",
+          "channels": [
+            "# release",
+            "# design",
+            "# feedback"
+          ],
+          "thread": [
+            {
+              "who": "Lena",
+              "text": "インストーラーの署名が終わりました。0.1.1 は今日出せますか？"
+            }
+          ],
+          "me": "自分",
+          "composer": "# release へのメッセージ",
+          "key": "右 Option",
+          "hold": "押して話す",
+          "partials": [
+            "この PR を",
+            "この PR を main に",
+            "この PR を main にマージする前に、",
+            "この PR を main にマージする前に、CI を回しておいて"
+          ],
+          "final": "この PR を main にマージする前に、CI を回しておいて。"
+        },
+        "translate": {
+          "app": "チームチャット",
+          "channels": [
+            "# release",
+            "# design",
+            "# feedback"
+          ],
+          "thread": [
+            {
+              "who": "Maya",
+              "text": "Is the hotfix going out today?"
+            }
+          ],
+          "me": "自分",
+          "composer": "# release へのメッセージ",
+          "key": "右 Command",
+          "hold": "English に翻訳",
+          "partials": [
+            "このバグは",
+            "このバグは今夜直して、",
+            "このバグは今夜直して、明日の朝リリースします"
+          ],
+          "final": "I'll fix this bug tonight and ship the release tomorrow morning."
+        },
+        "polish": {
+          "app": "新規メッセージ",
+          "to": "宛先",
+          "toValue": "デザインチーム",
+          "subject": "件名",
+          "subjectValue": "レビュー日程の変更",
+          "key": "右 Option",
+          "hold": "押して話す",
+          "partials": [
+            "えーと、",
+            "えーと、水曜、",
+            "えーと、水曜、じゃなくて、木曜の15時に打ち合わせで、",
+            "えーと、水曜、じゃなくて、木曜の15時に打ち合わせで、あの、",
+            "えーと、水曜、じゃなくて、木曜の15時に打ち合わせで、あの、デザイン案を持ってきてください"
+          ],
+          "final": "皆さま\n\n木曜の15時に打ち合わせです。デザイン案を持ってきてください。\n\nよろしくお願いします",
+          "heardLabel": "聞き取った言葉",
+          "heard": [
+            [
+              "えーと、",
+              1
+            ],
+            [
+              "水曜、じゃなくて、",
+              1
+            ],
+            [
+              "木曜の15時に打ち合わせで、",
+              0
+            ],
+            [
+              "あの、",
+              1
+            ],
+            [
+              "デザイン案を持ってきてください",
+              0
+            ]
+          ],
+          "scene": "シーン：メール"
+        },
+        "keyboard": {
+          "app": "メモ",
+          "title": "結婚式のスピーチ",
+          "intro": "本日はお集まりいただきありがとうございます。",
+          "before": "两年前，我们在婚礼上许下",
+          "rank": "前の文で並べ替え",
+          "chinese": "中",
+          "english": "A"
+        },
+        "clipboard": {
+          "app": "週報",
+          "title": "今週の進捗",
+          "lines": [
+            "0.1.1 のインストーラーは署名と公証が完了。"
+          ],
+          "before": "リリース前の確認：",
+          "label": "クリップボード",
+          "rows": [
+            {
+              "kind": "text",
+              "text": "make check && make desktop-check"
+            },
+            {
+              "kind": "image",
+              "text": "スクリーンショット 1280 × 800"
+            },
+            {
+              "kind": "file",
+              "text": "リリースノート",
+              "tag": "PDF"
+            },
+            {
+              "kind": "link",
+              "text": "github.com/AstraFoundry/Arion"
+            }
+          ],
+          "query": "make"
+        }
+      };
+    </script>
+    <script src="stage.js" defer></script>
+  </head>
+  <body></body>
+</html>
