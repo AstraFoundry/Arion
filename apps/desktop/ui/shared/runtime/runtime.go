@@ -28,6 +28,7 @@ type (
 	KeyModifiers        = application.KeyModifiers
 	Shortcut            = application.Shortcut
 	KeyboardPreferences = application.KeyboardPreferences
+	LanguageSwitch      = application.LanguageSwitch
 	CandidateSize       = application.CandidateSize
 	CandidateAppearance = application.CandidateAppearance
 	CandidateAccent     = application.CandidateAccent
@@ -138,6 +139,12 @@ var GainStops = application.GainStops
 var (
 	CandidatePageSizes = application.CandidatePageSizes
 	CandidateAccents   = application.CandidateAccents
+	LanguageSwitches   = application.LanguageSwitches
+)
+
+const (
+	LanguageSwitchShift    = application.LanguageSwitchShift
+	LanguageSwitchCapsLock = application.LanguageSwitchCapsLock
 )
 
 const (

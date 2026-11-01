@@ -78,10 +78,14 @@ int main() {
         require(menu.entries[i].flags==(expected[i]?0u:TF_LBMENUF_SEPARATOR),"enabled items and separators");
     }
     require(entry(menu,KeyboardMenuAction::Voice).text==nativeVoiceTitle(state.dictationKey),"localized voice accelerator");
-    require(entry(menu,KeyboardMenuAction::Language).text==nativeCopy(NativeCopy::SwitchEnglish),"Chinese mode action");
+    require(entry(menu,KeyboardMenuAction::Language).text==nativeLanguageTitle(false,state.languageSwitch),"Chinese mode action");
     state.ascii=true; state.fullWidth=true; state.englishPunctuation=true;
     Menu modes; require(bar->InitMenu(&modes)==S_OK,"alternate mode menu");
-    require(entry(modes,KeyboardMenuAction::Language).text==nativeCopy(NativeCopy::SwitchChinese),"English mode action");
+    require(entry(modes,KeyboardMenuAction::Language).text==nativeLanguageTitle(true,state.languageSwitch),"English mode action");
+    state.languageSwitch=L"caps_lock";
+    Menu capsLock; require(bar->InitMenu(&capsLock)==S_OK,"caps lock menu");
+    require(entry(capsLock,KeyboardMenuAction::Language).text==nativeLanguageTitle(true,state.languageSwitch),"caps lock binding is named");
+    state.languageSwitch.clear();
     require(entry(modes,KeyboardMenuAction::Width).text==nativeCopy(NativeCopy::HalfWidth),"full-width mode action");
     require(entry(modes,KeyboardMenuAction::Punctuation).text==nativeCopy(NativeCopy::ChinesePunctuation),"punctuation mode action");
     for (UINT id=1;id<=7;++id) require(bar->OnMenuSelect(id)==S_OK,"enabled native action dispatched");

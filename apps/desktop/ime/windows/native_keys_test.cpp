@@ -13,5 +13,8 @@ int main() {
     if (arion_key_action(space.symbol,space.modifiers,0)!=ARION_KEY_TOGGLE_ASCII) return 4;
     auto left=windowsKey(VK_SHIFT,0x002a0000,state,layout),right=windowsKey(VK_SHIFT,0x00360000,state,layout);
     if (!left.shift || left.shiftSide!=1 || !right.shift || right.shiftSide!=2) return 5;
+    auto caps=windowsKey(VK_CAPITAL,0,state,layout);
+    if (!caps.capsLock || caps.symbol!=-1 || caps.shift) return 6;
+    if (arion_caps_lock_language(1)!=1 || arion_caps_lock_language(0)!=0) return 7;
     std::cout<<"PASS: native named keys/Shift sides and shared shortcut/mode policy; no engine processing or input injection.\n";
 }

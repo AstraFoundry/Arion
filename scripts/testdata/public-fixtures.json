@@ -104,36 +104,36 @@
     {
       "path": "apps/desktop/ime/shared/testdata/english-admission-v1/development.tsv",
       "originalPath": "benchmarks/corpora/ime-english-admission-v1/development.tsv",
-      "sha256": "e213f6b55ee713d764d42a5754685bd6a7bb71c8bf382ec690968f3518771509",
-      "sizeBytes": 735,
+      "sha256": "ea83d3f25feab543a5191eccb35782e6eb3a24603376988765523147d54e7c8a",
+      "sizeBytes": 715,
       "licensePath": "LICENSE"
     },
     {
       "path": "apps/desktop/ime/shared/testdata/english-admission-v1/validation.tsv",
       "originalPath": "benchmarks/corpora/ime-english-admission-v1/validation.tsv",
-      "sha256": "aa9b77dbe9687c31262b1ad7a9dd9878464ff224a0e3415fc9afd0aaebd639f7",
-      "sizeBytes": 620,
+      "sha256": "e81ed7421f6e403d9c447e2f15ae4eb1e5bd330d07c2345bfd5fb8bbcb14af76",
+      "sizeBytes": 603,
       "licensePath": "LICENSE"
     },
     {
       "path": "apps/desktop/ime/shared/testdata/english-admission-v1/holdout.tsv",
       "originalPath": "benchmarks/corpora/ime-english-admission-v1/holdout.tsv",
-      "sha256": "10f75ca72d41a02fd21182564dde3b28815a57fc1bea8305be61730f9633d900",
-      "sizeBytes": 410,
+      "sha256": "88f1ac35d5f6b290df3b69d960271e52fa2875b5f253cbff19816e18dc81d5e6",
+      "sizeBytes": 407,
       "licensePath": "LICENSE"
     },
     {
       "path": "apps/desktop/ime/shared/testdata/english-admission-v1/provenance.json",
       "originalPath": "benchmarks/corpora/ime-english-admission-v1/provenance.json",
-      "sha256": "f85738caf0e024f27c4d2ca68b42407816f5f0c1ffc6459d9cc7e8f4751673c4",
-      "sizeBytes": 1282,
+      "sha256": "67cb3851dca9977ac02a6fb5f43dec0208e4b7ba25fe3ecc8e207206708e5ea1",
+      "sizeBytes": 1264,
       "licensePath": "LICENSE"
     },
     {
       "path": "apps/desktop/ime/shared/testdata/english-admission-v1/README.md",
       "originalPath": "benchmarks/corpora/ime-english-admission-v1/README.md",
-      "sha256": "e5ec220e407d501e79be2b09c122371ffeba8ff3850c86515e85d7f55f61d403",
-      "sizeBytes": 1263,
+      "sha256": "8a44c5abf3b527084bae889bd559f544457cf2a3170b6a1ca86f85a5d422c52a",
+      "sizeBytes": 1538,
       "licensePath": "LICENSE"
     },
     {

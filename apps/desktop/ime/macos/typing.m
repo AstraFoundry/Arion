@@ -148,6 +148,43 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
     [self.engine setASCII:!self.ascii session:self.session];
     if ([self refresh:nil] && self.modeChanged) self.modeChanged(ArionTypingSwitchLanguage);
 }
+// english commits pending raw spelling first, the same rule as a short Shift.
+- (BOOL)switchLanguageTo:(BOOL)english {
+    if (!self.session || !self.available || self.engineGeneration != self.engine.generation) return YES;
+    if (self.ascii == english) return YES;
+    if (english && self.composing) {
+        uintptr_t session = self.session;
+        if (!arion_pinyin_commit_raw(self.engine.api, session)) { NSBeep(); return YES; }
+        if (![self refresh:nil] || !self.live || self.session != session) return YES;
+    }
+    [self toggleASCII];
+    return YES;
+}
+- (void)applyCapsLock:(BOOL)on {
+    if (self.languageSwitch != ARION_LANGUAGE_CAPS_LOCK) return;
+    // Seed the last flags so the next Caps Lock edge is measured from the light.
+    self.lastModifierFlags = NSEvent.modifierFlags;
+    [self switchLanguageTo:arion_caps_lock_language(on)];
+}
+- (BOOL)handleFlags:(NSEvent *)event flags:(NSEventModifierFlags)flags previous:(NSEventModifierFlags)previous changes:(NSEventModifierFlags)changes {
+    unsigned short keyCode = event.keyCode;
+    BOOL anonymous = keyCode == 0 || keyCode == 255;
+    if (self.languageSwitch == ARION_LANGUAGE_CAPS_LOCK) {
+        BOOL capsKey = keyCode == 57 || (anonymous && changes == NSEventModifierFlagCapsLock);
+        if (!capsKey) return NO;
+        BOOL on = (flags & NSEventModifierFlagCapsLock) != 0;
+        if (on == ((previous & NSEventModifierFlagCapsLock) != 0)) return YES;
+        return [self switchLanguageTo:arion_caps_lock_language(on)];
+    }
+    BOOL down = (flags & NSEventModifierFlagShift) != 0;
+    BOOL keyMatch = keyCode == 56 || keyCode == 60 || (anonymous && changes == NSEventModifierFlagShift);
+    NSEventModifierFlags mask = NSEventModifierFlagCommand | NSEventModifierFlagControl |
+        NSEventModifierFlagOption | NSEventModifierFlagCapsLock | NSEventModifierFlagFunction;
+    BOOL toggle = arion_shift_transition(&_shiftTap, keyMatch, down, anonymous ? 0 : keyCode,
+        (flags & mask) != 0, flags == previous, event.timestamp);
+    if (!toggle) return NO;
+    return [self switchLanguageTo:!self.ascii];
+}
 - (BOOL)fullWidth {
     return self.engine.fullWidth;
 }
@@ -242,25 +279,9 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
     NSEventModifierFlags changes = (flags ^ previousFlags) & NSEventModifierFlagDeviceIndependentFlagsMask;
     self.lastModifierFlags = flags;
     if (event.type == NSEventTypeFlagsChanged) {
-        BOOL shift = (flags & NSEventModifierFlagShift) != 0;
-        unsigned short keyCode = event.keyCode;
-        // Some IMK clients omit the modifier keycode. Recognize Shift only
-        // when the flag transition identifies that modifier unambiguously.
-        BOOL anonymous = keyCode == 0 || keyCode == 255;
-        BOOL shiftKey = keyCode == 56 || keyCode == 60 || (anonymous && changes == NSEventModifierFlagShift);
-        BOOL otherModifiers = (flags & (NSEventModifierFlagCommand | NSEventModifierFlagControl |
-                                      NSEventModifierFlagOption | NSEventModifierFlagCapsLock | NSEventModifierFlagFunction)) != 0;
-        BOOL toggle = arion_shift_transition(&_shiftTap, shiftKey, shift, anonymous ? 0 : keyCode,
-            otherModifiers, flags == previousFlags, event.timestamp);
-        if (toggle) {
-            if (!self.ascii && self.composing) {
-                uintptr_t session = self.session;
-                if (!arion_pinyin_commit_raw(self.engine.api, session)) { NSBeep(); return YES; }
-                if (![self refresh:nil] || !self.live || self.session != session) return YES;
-            }
-            [self toggleASCII];
-        }
-        return toggle;
+        // Some IMK clients omit the modifier keycode. Recognize the bound
+        // modifier only when the flag transition identifies it unambiguously.
+        return [self handleFlags:event flags:flags previous:previousFlags changes:changes];
     }
     if (event.type != NSEventTypeKeyDown) return NO;
     arion_shift_interrupt(&_shiftTap);

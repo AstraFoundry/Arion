@@ -47,7 +47,7 @@ inline constexpr GUID ArionInputModeItem={0x2c77a81e,0x41cc,0x4178,{0xa3,0xa7,0x
 enum class KeyboardMenuAction { Voice=1,Language,Width,Punctuation,CopyPending,Reset,OpenApp };
 struct KeyboardMenuState {
     bool available=false,ascii=false,fullWidth=false,englishPunctuation=false,voice=false;
-    std::wstring failure,dictationKey;
+    std::wstring failure,dictationKey,languageSwitch;
     bool pending=false;
 };
 class LanguageBar final : public ITfLangBarItemButton,public ITfSource {
@@ -69,7 +69,7 @@ class LanguageBar final : public ITfLangBarItemButton,public ITfSource {
         item(KeyboardMenuAction::Voice,nativeVoiceTitle(current.dictationKey),current.voice);
         separator();
         if (!current.failure.empty()) { items.push_back({0,TF_LBMENUF_GRAYED,current.failure}); separator(); }
-        item(KeyboardMenuAction::Language,nativeCopy(current.available?(current.ascii?NativeCopy::SwitchChinese:NativeCopy::SwitchEnglish):NativeCopy::Unavailable),current.available);
+        item(KeyboardMenuAction::Language,current.available?nativeLanguageTitle(current.ascii,current.languageSwitch):nativeCopy(NativeCopy::Unavailable),current.available);
         item(KeyboardMenuAction::Width,nativeCopy(current.fullWidth?NativeCopy::HalfWidth:NativeCopy::FullWidth),current.available);
         item(KeyboardMenuAction::Punctuation,nativeCopy(current.englishPunctuation?NativeCopy::ChinesePunctuation:NativeCopy::EnglishPunctuation),current.available);
         separator();

@@ -10,7 +10,14 @@ struct KeyboardSettings {
     uint32_t fuzzyPinyin=0;
     CandidatePalette palette;
     std::wstring dictationKey;
+    // "shift" (default, including absent or unknown) or "caps_lock".
+    std::wstring languageSwitch;
 };
+enum class LanguageSwitchKind { Shift, CapsLock };
+inline LanguageSwitchKind languageSwitchKind(const std::wstring &value) {
+    if (value==L"caps_lock") return LanguageSwitchKind::CapsLock;
+    return LanguageSwitchKind::Shift;
+}
 inline bool keyboardColor(const Json *value,COLORREF &color) {
     if (!value || value->type!=Json::String || value->string.size()!=7 || value->string[0]!=L'#') return false;
     unsigned number=0;
@@ -34,6 +41,9 @@ inline KeyboardSettings readKeyboardSettings(const std::wstring &path) {
         if (field && field->type==Json::Number && field->number<=ARION_FUZZY_MASK &&
             field->number==static_cast<uint32_t>(field->number)) settings.fuzzyPinyin=static_cast<uint32_t>(field->number);
         field=value.get(L"dictationKey"); if (field && field->type==Json::String) settings.dictationKey=field->string;
+        field=value.get(L"languageSwitch");
+        if (field && field->type==Json::String && (field->string==L"shift" || field->string==L"caps_lock"))
+            settings.languageSwitch=field->string;
         field=value.get(L"appearance"); if (field && field->type==Json::String) { if (field->string==L"dark") dark=true; else if (field->string==L"light") dark=false; }
     }
     // Base colors are platform surfaces; the app supplies the resolved accent

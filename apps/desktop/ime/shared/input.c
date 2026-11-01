@@ -17,6 +17,7 @@ int arion_shift_transition(ArionShiftTap *state, int shift_key, int down,
 }
 void arion_shift_interrupt(ArionShiftTap *state) { state->pending = 0; }
 void arion_shift_reset(ArionShiftTap *state) { memset(state, 0, sizeof(*state)); }
+int arion_caps_lock_language(int caps_on) { return caps_on ? 1 : 0; }
 ArionKeyAction arion_key_action(int key, int modifiers, int ascii) {
     const int shortcuts = 4 | 8 | (1 << 26);
     if (key == ' ' && (modifiers & 1) && !(modifiers & shortcuts)) return ARION_KEY_TOGGLE_ASCII;
