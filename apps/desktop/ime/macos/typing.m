@@ -564,10 +564,10 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
     if (completion) {
         if (![completion isKindOfClass:NSDictionary.class] || ![completion[@"input"] isKindOfClass:NSString.class] ||
             ![completion[@"text"] isKindOfClass:NSString.class] || ![self verify]) return;
-        if (!arion_completion_insert(self.session,[completion[@"input"] UTF8String],[completion[@"text"] UTF8String])) return;
+        if (!arion_completion_insert(self.session,[completion[@"input"] UTF8String],[completion[@"text"] UTF8String],_menu.indices,_menu.count)) return;
         // Rebuild from real engine candidates. Do not allow the old pair ranker
         // to supersede the contextual completion before it is displayed.
-        if (!arion_menu_build_typed(&_menu,self.engine.api,self.session,self.pageSize,NULL,NULL,sharedMenuMetadata,NULL) || ![self publishRankedMenu]) {
+        if (!arion_menu_build_fused(&_menu,self.engine.api,self.session,self.pageSize,sharedMenuMetadata,NULL) || ![self publishRankedMenu]) {
             self.recoveryText=self.snapshot.preedit; self.available=NO; [self cancel]; return;
         }
         if (self.rankingApplied) self.rankingApplied(revision);

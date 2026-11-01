@@ -185,6 +185,60 @@ int main(int argc, const char *argv[]) {
             [typing applyRankingMessage:reply activation:@"test"];
             require(!typing.composing && editor.insertions==2, @"canceled reply cannot insert text");
         });
+        for (NSString *mode in @[@"new", @"duplicate", @"original", @"late", @"page", @"rejected"]) {
+            run([@"completion retains fast ranking " stringByAppendingString:mode], @"RNK-A08 RNK-A09", ^{
+                __block NSDictionary *request=nil; __block NSUInteger epoch=0;
+                typing.neuralRanking=YES; typing.contextRanking=NO;
+                typing.rankingChanged=^(NSDictionary *snapshot,NSUInteger revision){request=snapshot;epoch=revision;};
+                type(typing,@"xian");
+                NSArray *unranked=typing.snapshot.candidates.copy;
+                NSArray *candidates=request[@"candidates"];
+                require(candidates.count>=2,@"real engine supplies comparable candidates");
+                NSMutableArray *order=[candidates mutableCopy];
+                NSDictionary *promoted=order[1]; [order removeObjectAtIndex:1]; [order insertObject:promoted atIndex:0];
+                NSDictionary *fast=@{@"activation":@"test",@"revision":@(epoch),@"status":@"ok",
+                    @"rankResult":@{@"session_id":@"test",@"generation":@1,@"revision":@(epoch),@"candidates":order}};
+                [typing applyRankingMessage:fast activation:@"test"];
+                NSArray *ranked=typing.snapshot.candidates.copy;
+                require([ranked[0] isEqual:promoted[@"text"]],@"fast promotion is visible before generation");
+                NSString *generated=[mode isEqual:@"duplicate"]?ranked[0]:@"跣";
+                NSDictionary *reply=@{@"activation":@"test",@"revision":@(epoch),@"status":@"ok",
+                    @"rankResult":@{@"session_id":@"test",@"generation":@1,@"revision":@(epoch),
+                        @"completion":@{@"input":[mode isEqual:@"rejected"]?@"wrong":@"xian",@"text":generated}}};
+                [typing applyRankingMessage:reply activation:@"test"];
+                if ([mode isEqual:@"rejected"]) {
+                    require([ranked isEqual:typing.snapshot.candidates],@"rejected generation leaves fast ranking intact");
+                    press(typing,@"\x1b",53);
+                    return;
+                }
+                if ([mode isEqual:@"new"]) {
+                    ArionCandidatePanel *panel=[ArionCandidatePanel new];
+                    NSArray *stages=@[unranked,ranked,typing.snapshot.candidates];
+                    for (NSUInteger stage=0;stage<stages.count;stage++) for (NSUInteger dark=0;dark<2;dark++) {
+                        panel.appearance=dark?ArionCandidateAppearanceDark:ArionCandidateAppearanceLight;
+                        [panel showCandidates:stages[stage] highlighted:0 lastPage:NO revision:typing.revision caretRect:NSMakeRect(80,300,1,20)];
+                        savePanel(panel,report,[NSString stringWithFormat:@"fusion-macos-%lu-%@.png",(unsigned long)stage,dark?@"dark":@"light"]);
+                    }
+                    [panel hide];
+                }
+                NSMutableArray *expected=[NSMutableArray arrayWithObject:generated];
+                for (NSString *item in ranked) if (![item isEqual:generated]) [expected addObject:item];
+                NSUInteger compared=MIN(expected.count,typing.snapshot.candidates.count);
+                require(compared>=3 && [[expected subarrayWithRange:NSMakeRange(0,compared)]
+                    isEqual:[typing.snapshot.candidates subarrayWithRange:NSMakeRange(0,compared)]],
+                    @"generated choice leads the fast-ranked baseline with duplicate suppression");
+                require(editor.insertions==0,@"fusion does not commit");
+                if ([mode isEqual:@"late"]) {
+                    NSArray *fused=typing.snapshot.candidates.copy;
+                    [typing applyRankingMessage:fast activation:@"test"];
+                    require([fused isEqual:typing.snapshot.candidates],@"late fast reply cannot overwrite fusion");
+                }
+                NSString *selected=[mode isEqual:@"page"]?ranked.lastObject:([mode isEqual:@"original"]?ranked[0]:generated);
+                selectText(typing,selected);
+                require([editor.view.string isEqual:selected] && editor.insertions==1,
+                    @"fused displayed candidate commits its actual engine identity once");
+            });
+        }
         run(@"generated whole-input candidate commits through the engine", @"RNK-A09", ^{
             __block NSDictionary *request=nil;
             __block NSUInteger epoch=0;

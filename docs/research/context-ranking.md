@@ -79,3 +79,14 @@ The unchanged `FuJiK0/rime-llm-reranker` filter was executed over real Rime snap
 ## General LLM alignment follow-up
 
 The [general LLM alignment](llm-ime-alignment.md) implements a separate Go ID-only selector over the existing local worker/provider completion interface and a latest-request application scheduler. The [actual 2B pilot](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/llm-ime-alignment-v1/README.md`) reaches 68/100 versus producer 56/100 with eight breakages; 76 scored model calls take approximately 404 ms p50 / 515 ms p95. The installed native keyboard does not invoke this experimental path. Native integration, provider consent and release gates remain explicit.
+
+## Ranked-candidate fusion follow-up
+
+Current installed Mach-O observations refine the earlier architectural evidence:
+
+- Doubao 1.0.3, OimeEngine SHA-256 `d671cf611eb915600e8abfd4783578c5690e34d813898ad8aeddc564397c9bb0`: `UpdateResult` calls `CanditateSortByFeature` at `0x209d3c` before `MergeCloud` at `0x209e6c`. `MergeCloudLLM` calls `MakeLLMCandidate` and `PromoteByDecisionTree`.
+- Chatterfly 1.0.10.13541, executable SHA-256 `1add2da41cc93dc71fcf13649d74d039aadd28fe455c5da304daba43e5530f31`: `GetConvertData` calls `StartGenerateModelInferenceAsync` at `0x100a7e21c` and `SortCandsByLtr` at `0x100a7e32c`. `FuseGenerateCand` separately calls `InsertGenerateCandToFuseList` and `InsertLocalCandToFuseList`.
+
+These are LLVM disassembly observations with selected instruction bytes checked against the installed Mach-O, plus fresh REA identity metadata. No decompiler was available; neither competitor was executed or attached for this follow-up. They support local ranking and asynchronous generated/local candidate fusion, but do not establish unconditional first-position insertion, the active server policy, or unchanged relative order of every remaining candidate.
+
+Arion's independent policy is specified by [ADR 038](../decisions/038-contextual-keyboard-completion.md): preserve the current fast-ranked baseline when inserting accepted generated text. Its fast model currently selects one existing ID for stable promotion, not a complete learned permutation. Native tests inject protocol results into real Rime/AppKit to verify fusion and selection; they do not measure competitor parity or model quality.
