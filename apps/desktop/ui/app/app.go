@@ -11,12 +11,13 @@ import (
 	"arion.local/desktop/ui/pages/trayhint"
 	"arion.local/desktop/ui/pages/updatereminder"
 	"arion.local/desktop/ui/shared/runtime"
+	"arion.local/desktop/ui/shared/typography"
 	"github.com/egoist/mygo/ui"
 )
 
 func Clipboard(store runtime.Store) View {
 	page := &clipboard.Page{}
-	return View{Content: ui.View(func(c *ui.Context) { page.Render(c, store) }).WithClipboardWriter(func(text string) { store.Actions.CopyText(text) }), Close: func() {}}
+	return View{Content: view(func(c *ui.Context) { page.Render(c, store) }).WithClipboardWriter(func(text string) { store.Actions.CopyText(text) }), Close: func() {}}
 }
 
 const ClipboardWidth = clipboard.Width
@@ -50,30 +51,30 @@ type View struct {
 
 func Overlay(store runtime.Store) View {
 	page := overlay.NewPage()
-	return View{Content: ui.View(func(c *ui.Context) { page.Render(c, store) }), Close: func() {}}
+	return View{Content: view(func(c *ui.Context) { page.Render(c, store) }), Close: func() {}}
 }
 
 func Guide(store runtime.Store) View {
-	return View{Content: ui.View(func(c *ui.Context) { guide.Render(c, store) }), Close: func() {}}
+	return View{Content: view(func(c *ui.Context) { guide.Render(c, store) }), Close: func() {}}
 }
 
 func TrayHint(store runtime.Store) View {
-	return View{Content: ui.View(func(c *ui.Context) { trayhint.Render(c, store) }), Close: func() {}}
+	return View{Content: view(func(c *ui.Context) { trayhint.Render(c, store) }), Close: func() {}}
 }
 
 func Panel(store runtime.Store) View {
 	page := &menubar.Panel{}
-	return View{Content: ui.View(func(c *ui.Context) { page.Render(c, store) }).WithClipboardWriter(func(text string) { store.Actions.CopyText(text) }), Close: func() {}}
+	return View{Content: view(func(c *ui.Context) { page.Render(c, store) }).WithClipboardWriter(func(text string) { store.Actions.CopyText(text) }), Close: func() {}}
 }
 
 func Settings(store runtime.Store) View {
 	page := settings.NewPage()
-	return View{Content: ui.View(func(c *ui.Context) { page.Render(c, store) }), Close: func() { page.Close(store) }}
+	return View{Content: view(func(c *ui.Context) { page.Render(c, store) }), Close: func() { page.Close(store) }}
 }
 
 func Onboarding(store runtime.Store) View {
 	page := onboarding.NewPage()
-	return View{Content: ui.View(func(c *ui.Context) { page.Render(c, store) }), Close: func() { page.Close(store) }}
+	return View{Content: view(func(c *ui.Context) { page.Render(c, store) }), Close: func() { page.Close(store) }}
 }
 
 // GuideHeightFor sizes each System Settings guide for its content.
@@ -81,12 +82,26 @@ func GuideHeightFor(pane runtime.GuidePane) int { return guide.HeightFor(pane) }
 
 // UpdateReminder is the separate passive reminder; bootstrap owns its window.
 func UpdateReminder(store runtime.Store) View {
-	return View{Content: ui.View(func(c *ui.Context) { updatereminder.Render(c, store) }), Close: func() {}}
+	return View{Content: view(func(c *ui.Context) { updatereminder.Render(c, store) }), Close: func() {}}
 }
 
 const ClipboardPreviewWidth = clipboard.PreviewWidth
 const ClipboardPreviewHeight = clipboard.PreviewHeight
 
 func ClipboardPreview(item runtime.Clip, bitmap *ui.Bitmap) View {
-	return View{Content: ui.View(func(c *ui.Context) { clipboard.Preview(c, item, bitmap) }), Close: func() {}}
+	return View{Content: view(func(c *ui.Context) { clipboard.Preview(c, item, bitmap) }), Close: func() {}}
+}
+
+// view applies the platform interface family to every window and its overlays.
+func view(render func(*ui.Context)) *ui.Content {
+	return ui.View(interfaceView(render))
+}
+
+func interfaceView(render func(*ui.Context)) func(*ui.Context) {
+	return func(c *ui.Context) {
+		theme := *c.Theme()
+		theme.Font = typography.Family
+		c.SetTheme(&theme)
+		render(c)
+	}
 }
