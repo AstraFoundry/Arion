@@ -40,43 +40,44 @@ type message struct {
 }
 
 type IME struct {
-	onRankingDiagnostic    func(string, int)
-	ranking                *application.KeyboardRanking
-	rankingFast            *application.KeyboardRanking
-	rankingSettledRevision uint64
-	rankingCapable         bool
-	completionCapable      bool
-	rankingRevision        uint64
-	vocabularyCapable      bool
-	vocabularyDelivery     *vocabularyDelivery
-	vocabularyRequest      uint64
-	vocabulary             *vocabularyExchange
-	path                   string
-	mu                     sync.Mutex
-	conn                   net.Conn
-	listener               net.Listener
-	releaseSocket          func()
-	build                  string
-	verifyClient           ClientVerifier
-	clientVerified         bool
-	clientError            error
-	peer                   PeerIdentity
-	admission              uint64
-	publishedAdmission     uint64
-	verifying              int
-	changed                chan struct{}
-	updating               bool
-	closed                 bool
-	activation, client     string
-	identity               contracts.Identity
-	token                  contracts.TargetToken
-	revision               uint64
-	committing             bool
-	ack                    chan bool
-	begin                  chan bool
-	requireBegin           bool
-	onLeave                func()
-	onDictate              func()
+	onRankingDiagnostic     func(string, int)
+	ranking                 *application.KeyboardRanking
+	rankingFast             *application.KeyboardRanking
+	rankingSettledRevision  uint64
+	rankingProposalRevision uint64
+	rankingCapable          bool
+	completionCapable       bool
+	rankingRevision         uint64
+	vocabularyCapable       bool
+	vocabularyDelivery      *vocabularyDelivery
+	vocabularyRequest       uint64
+	vocabulary              *vocabularyExchange
+	path                    string
+	mu                      sync.Mutex
+	conn                    net.Conn
+	listener                net.Listener
+	releaseSocket           func()
+	build                   string
+	verifyClient            ClientVerifier
+	clientVerified          bool
+	clientError             error
+	peer                    PeerIdentity
+	admission               uint64
+	publishedAdmission      uint64
+	verifying               int
+	changed                 chan struct{}
+	updating                bool
+	closed                  bool
+	activation, client      string
+	identity                contracts.Identity
+	token                   contracts.TargetToken
+	revision                uint64
+	committing              bool
+	ack                     chan bool
+	begin                   chan bool
+	requireBegin            bool
+	onLeave                 func()
+	onDictate               func()
 }
 
 // New serves the socket at path. onLeave runs when an owned session loses
@@ -296,7 +297,7 @@ func (m *IME) serve(conn net.Conn) {
 			break
 		}
 		switch msg.Op {
-		case "keyboard_rank", "keyboard_freeze", "keyboard_rank_skipped":
+		case "keyboard_rank", "keyboard_freeze", "keyboard_rank_skipped", "keyboard_rank_applied":
 			m.receiveRankingLocked(msg)
 		case "vocabulary_state", "vocabulary_published":
 			m.receiveVocabularyLocked(msg)

@@ -18,7 +18,9 @@ Native insertion replaces only the current unselected whole-input Rime menu with
 
 Context acquisition reuses Accessibility. AX exposes a marked composition either before a collapsed caret or as the exact selected text. Both representations require an exact preedit match; selected preedit is not removed a second time from preceding text. Unrelated selections, changed targets, unreadable windows and oversized context still reject the request. No OCR or cross-field cached context is substituted.
 
-Developer-mode diagnostics distinguish a generated proposal, uncertain abstention and `completion_phonetic_mismatch`, without recording text. Bridge delivery remains distinct from native application. Maintenance now cancels active inference immediately; the old short deadline had masked that missing cancellation.
+The shared macOS window reader uses [CTX-02](../../specs/009-contextual-rewrite.md#rewrite-context) bounds, sized for observed Chromium/Electron depth and native list breadth, and accepts static labels exposed through `AXTitle`. It still rejects partial reads, hidden/secure/offscreen branches and target changes. Keyboard developer traces distinguish node, depth, text, range, geometry, empty and timeout failures.
+
+Developer-mode diagnostics distinguish a generated proposal, uncertain abstention and `completion_phonetic_mismatch`, without recording text. Bridge delivery remains distinct from native application. The macOS host acknowledges publication to its candidate snapshot; `proposal_applied` is recorded only for a pending sent proposal at the current activation/revision, before a completion freezes later replies. This does not confirm user selection or OS rendering. Maintenance now cancels active inference immediately; the old short deadline had masked that missing cancellation.
 
 ## Evidence and validation
 

@@ -570,6 +570,7 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
         if (!arion_menu_build_typed(&_menu,self.engine.api,self.session,self.pageSize,NULL,NULL,sharedMenuMetadata,NULL) || ![self publishRankedMenu]) {
             self.recoveryText=self.snapshot.preedit; self.available=NO; [self cancel]; return;
         }
+        if (self.rankingApplied) self.rankingApplied(revision);
         [self freezeRanking];
         return;
     }
@@ -585,6 +586,6 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
     for (NSUInteger i=0;i<order.count;++i) if (![order[i][@"id"] isEqual:expected[i][@"id"]]) return;
     size_t slots[27]; for (NSUInteger i=0;i<self.rankingSlots.count;++i) slots[i]=self.rankingSlots[i].unsignedIntegerValue;
     if (![self verify] || ![self buildMenu] || !arion_menu_promote_slots(&_menu,slots,self.rankingSlots.count,chosen)) return;
-    [self publishRankedMenu];
+    if ([self publishRankedMenu] && self.rankingApplied) self.rankingApplied(revision);
 }
 @end

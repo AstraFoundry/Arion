@@ -8,6 +8,18 @@ enum {
     ARION_CONTEXT_NO_WINDOW = 3,
     ARION_CONTEXT_FAILED = 4,
     ARION_CONTEXT_TIMEOUT = 5,
+    ARION_CONTEXT_NODE_LIMIT = 6,
+    ARION_CONTEXT_DEPTH_LIMIT = 7,
+    ARION_CONTEXT_TEXT_LIMIT = 8,
+    ARION_CONTEXT_INVALID_RANGE = 9,
+    ARION_CONTEXT_WINDOW_FRAME = 10,
+};
+
+// Window traversal limits are shared by dictation and keyboard context.
+enum {
+    ARION_AX_MAX_NODES = 4096,
+    ARION_AX_MAX_DEPTH = 64,
+    ARION_AX_MAX_TEXT = 32768,
 };
 
 // Text recognition levels of Vision.

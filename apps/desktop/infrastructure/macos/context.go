@@ -114,8 +114,20 @@ func ReadWindowText(element unsafe.Pointer, pid int, timeout time.Duration) (Scr
 		return result, domain.Fail(domain.CodePermissionDenied, "accessibility")
 	case C.ARION_CONTEXT_NO_WINDOW:
 		return result, domain.Fail(domain.CodeTargetChanged, "context target changed")
+	case C.ARION_CONTEXT_NODE_LIMIT:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowNodes)
+	case C.ARION_CONTEXT_DEPTH_LIMIT:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowDepth)
+	case C.ARION_CONTEXT_TEXT_LIMIT:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowText)
+	case C.ARION_CONTEXT_INVALID_RANGE:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowRange)
+	case C.ARION_CONTEXT_WINDOW_FRAME:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowFrame)
+	case C.ARION_CONTEXT_UNSUPPORTED:
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowEmpty)
 	case C.ARION_CONTEXT_TIMEOUT:
-		return result, domain.Fail(domain.CodeTargetUnsupported, "accessibility read timed out")
+		return result, domain.Fail(domain.CodeTargetUnsupported, domain.DetailContextWindowTimeout)
 	}
 	return result, domain.Fail(domain.CodeTargetUnsupported, "visible accessibility text unavailable or exceeds bounds")
 }

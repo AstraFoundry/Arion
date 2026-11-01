@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"arion.local/core/contracts"
@@ -14,6 +15,7 @@ type contextTargets struct {
 	app                       string
 	sensitive                 bool
 	selected                  string
+	readError                 error
 }
 
 func (t *contextTargets) Capture(_ context.Context, id contracts.Identity) (contracts.TargetSnapshot, error) {
@@ -22,6 +24,9 @@ func (t *contextTargets) Capture(_ context.Context, id contracts.Identity) (cont
 }
 func (t *contextTargets) ReadContext(_ context.Context, id contracts.Identity, token contracts.TargetToken) (contracts.ContextSnapshot, error) {
 	t.reads++
+	if t.readError != nil {
+		return contracts.ContextSnapshot{}, t.readError
+	}
 	return contracts.ContextSnapshot{Identity: id, Target: token, SafeToRead: true, Before: "beforepreedit", Selected: t.selected, After: "after", Screen: "window"}, nil
 }
 func (t *contextTargets) Discard(contracts.TargetToken) { t.discards++ }
@@ -88,6 +93,33 @@ func TestKeyboardContextConsentAndTarget(t *testing.T) {
 			}
 			if target.discards != target.captures {
 				t.Fatal("captured target retained")
+			}
+		})
+	}
+}
+
+func TestKeyboardWindowFailureReasons(t *testing.T) {
+	reasons := []string{domain.DetailContextWindowNodes, domain.DetailContextWindowDepth, domain.DetailContextWindowText,
+		domain.DetailContextWindowRange, domain.DetailContextWindowFrame, domain.DetailContextWindowEmpty, domain.DetailContextWindowTimeout,
+		"private error canary"}
+	for _, detail := range reasons {
+		t.Run(detail, func(t *testing.T) {
+			target := &contextTargets{app: "editor", readError: fmt.Errorf("read failed: %w", domain.Fail(domain.CodeTargetUnsupported, detail))}
+			reason := ""
+			r := keyboardContext{targets: target, enabled: func() bool { return true }, cursor: func() bool { return false },
+				trace: func(s string, _ error) { reason = s },
+				ranker: contextRankFunc(func(context.Context, contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+					t.Fatal("model called after failed read")
+					return contracts.KeyboardRankResult{}, nil
+				})}
+			req := contracts.KeyboardRankRequest{Identity: contracts.Identity{SessionID: "session", Generation: 1}, Application: "editor", Revision: 1, Input: "word", Candidates: []domain.KeyboardCandidate{{Candidate: domain.Candidate{ID: "c0", Text: "字", Source: "phrase"}, End: 4}}}
+			_, err := r.RankKeyboard(context.Background(), req)
+			expected := detail
+			if detail == "private error canary" {
+				expected = "context_read"
+			}
+			if domain.CodeOf(err) != domain.CodeTargetUnsupported || reason != expected {
+				t.Fatalf("reason=%q code=%q", reason, domain.CodeOf(err))
 			}
 		})
 	}

@@ -294,3 +294,44 @@ func TestCompletionCapabilityIsNegotiated(t *testing.T) {
 		}
 	}
 }
+
+func TestNativeRankingApplicationAcknowledgment(t *testing.T) {
+	m, _ := rankingHost(t, func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return rankAnswer(r), nil
+	})
+	applied := 0
+	m.OnKeyboardRankingDiagnostic(func(reason string, _ int) {
+		if reason == "proposal_applied" {
+			applied++
+		}
+	})
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.rankingRevision = 4
+	ack := message{Op: "keyboard_rank_applied", Activation: "editor", Revision: 4}
+	m.receiveRankingLocked(ack)
+	if applied != 0 {
+		t.Fatal("ack without a sent proposal was recorded")
+	}
+	m.rankingProposalRevision = 4
+	foreign := ack
+	foreign.Activation = "other"
+	m.receiveRankingLocked(foreign)
+	stale := ack
+	stale.Revision = 3
+	m.receiveRankingLocked(stale)
+	if applied != 0 {
+		t.Fatal("foreign or stale ack was recorded")
+	}
+	m.receiveRankingLocked(ack)
+	m.receiveRankingLocked(ack)
+	if applied != 1 || m.rankingRevision != 4 {
+		t.Fatal("ack was duplicated or changed composition ownership")
+	}
+	m.rankingProposalRevision = 4
+	m.invalidateRankingLocked()
+	m.receiveRankingLocked(ack)
+	if applied != 1 {
+		t.Fatal("frozen proposal was acknowledged")
+	}
+}

@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"context"
+	"errors"
 	"strings"
 
 	"arion.local/core/contracts"
@@ -50,7 +51,18 @@ func (r keyboardContext) RankKeyboard(ctx context.Context, req contracts.Keyboar
 	}
 	snapshot, err := r.targets.ReadContext(ctx, req.Identity, target.Target)
 	if err != nil {
-		return fail("context_read", err)
+		reason := "context_read"
+		var failure *domain.Error
+		if errors.As(err, &failure) {
+			switch failure.Detail {
+			case domain.DetailContextWindowNodes, domain.DetailContextWindowDepth,
+				domain.DetailContextWindowText, domain.DetailContextWindowRange,
+				domain.DetailContextWindowFrame, domain.DetailContextWindowEmpty,
+				domain.DetailContextWindowTimeout:
+				reason = failure.Detail
+			}
+		}
+		return fail(reason, err)
 	}
 	if !snapshot.SafeToRead || snapshot.Target != target.Target || snapshot.Identity != req.Identity {
 		return fail("context_read", domain.Fail(domain.CodeTargetUnsupported, "keyboard context unreadable"))

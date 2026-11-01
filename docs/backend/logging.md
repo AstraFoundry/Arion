@@ -56,7 +56,13 @@ Detailed ranking events are recorded only in session-only developer mode: in Abo
 | `freeze` / `superseded` / `stale_revision` | Composition ownership was revoked, a result lost to newer work, or an old native message arrived. Superseded work includes cancellation during debounce. |
 | `ranking_disabled` / `invalid_request` | No configured ranking lane or an invalid snapshot identity. |
 | `context_target` / `context_capture` / `context_read` | Target admission, capture or Accessibility read failed; the stable code distinguishes permission, unsupported and changed targets. |
+| `context_window_nodes` / `context_window_depth` | The shared macOS window traversal exceeded its node or depth bound; no partial text is used. |
+| `context_window_text` / `context_window_range` | Window text exceeded its bound or the provider returned an invalid visible character range. |
+| `context_window_frame` / `context_window_empty` / `context_window_timeout` | Captured window geometry was unavailable, no visible text was collected, or the read deadline expired. |
 | `context_marked_mismatch` / `context_bounds` | Captured caret text did not end in the owned preedit, or window context exceeded its bound. |
 | `proposal_sent` / `delivery_failed` | The bridge sent the proposal or transport failed. Delivery does not prove native application. |
+| `proposal_applied` | The verified native host acknowledged publication to its candidate snapshot for a pending proposal at the current activation/revision. This is not a user selection or proof of final OS rendering. |
 
 Native trace messages are admitted only for the verified live activation and a fresh revision. Reasons/counts are validated before recording; exports accept only the closed schema. A model can keep the first candidate. Negotiated macOS whole-input completion may add a provisional first candidate under [ADR 038](../decisions/038-contextual-keyboard-completion.md); it does not overwrite an existing candidate or committed text. Neither waiting nor enabling context guarantees a visible update.
+
+The shared macOS window reader serves dictation and keyboard context. Its platform bounds are owned by [CTX-02](../../specs/009-contextual-rewrite.md#rewrite-context). Keyboard developer traces preserve the closed read-failure categories above; they do not store AX attributes, text, titles, app identities or raw error details. Unknown adapter errors remain `context_read`.

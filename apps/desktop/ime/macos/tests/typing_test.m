@@ -192,6 +192,8 @@ int main(int argc, const char *argv[]) {
             typing.neuralRanking=YES;
             typing.contextRanking=NO;
             type(typing,@"chonggyxia");
+            __block NSUInteger appliedRevision=0;
+            typing.rankingApplied=^(NSUInteger revision){appliedRevision=revision;};
             require(request!=nil && [request[@"allowCompletion"] boolValue], @"single full-range candidate can request completion");
             NSData *requestJSON=[NSJSONSerialization dataWithJSONObject:request options:0 error:nil];
             NSDictionary *wireRequest=requestJSON ? [NSJSONSerialization JSONObjectWithData:requestJSON options:0 error:nil] : nil;
@@ -212,6 +214,7 @@ int main(int argc, const char *argv[]) {
             [panel hide];
             require([typing.snapshot.candidates[0] isEqual:@"重构一下"] && editor.insertions==0,
                     @"generated candidate becomes provisional first choice without inserting");
+            require(appliedRevision==[reply[@"revision"] unsignedIntegerValue], @"generated snapshot acknowledges the originating request before freezing");
             record(@"generated candidate",typing,editor);
             press(typing,@" ",49);
             require([editor.view.string isEqual:@"重构一下"] && editor.insertions==1, @"Space commits new engine candidate exactly once");
