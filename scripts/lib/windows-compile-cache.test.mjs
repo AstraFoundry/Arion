@@ -55,6 +55,8 @@ test('a repeated compile reuses the output and a header change compiles again', 
   assert.equal(cachedSpawn(file, args, options).status, 0);
   assert.equal(readFileSync(count, 'utf8'), '1');
   const first = readFileSync(output);
+  assert.equal(cachedSpawn(file, args, options).status, 0);
+  assert.equal(readFileSync(count, 'utf8'), '1', 'an existing output must not become a compiler input');
   rmSync(output);
   assert.equal(cachedSpawn(file, [args[0], '-I', directory, '-c', source, '-o', path.join(directory, 'other.o')], options).status, 0);
   assert.equal(readFileSync(count, 'utf8'), '1');
@@ -92,4 +94,17 @@ test('running a test binary is not treated as a compile', t => {
   const result = cachedSpawn(program, ['-o', 'not-a-compiler'], { encoding: 'utf8' });
   assert.equal(result.status, 0);
   assert.match(result.stdout, /ran/);
+});
+
+
+test('Objective-C imports participate in cache invalidation', t => {
+  const directory = mkdtempSync(path.join(tmpdir(), 'arion-objc-cache-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const header = path.join(directory, 'widget.h');
+  const source = path.join(directory, 'widget.mm');
+  writeFileSync(header, 'original');
+  writeFileSync(source, '#import "widget.h"\n');
+  assert.deepEqual(compilationInputs(['-c', source, '-o', path.join(directory, 'widget.o')]), [source, header]);
+  rmSync(header);
+  assert.equal(compilationInputs(['-c', source, '-o', path.join(directory, 'widget.o')]), null);
 });

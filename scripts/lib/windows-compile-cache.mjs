@@ -63,7 +63,7 @@ export function compilationInputs(args) {
     if (!sourceExtensions.has(extension)) return true;
     let text;
     try { text = readFileSync(resolved, 'utf8'); } catch { return false; }
-    for (const match of text.matchAll(/^\s*#\s*include\s*(["<])([^">]+)[">]/gm)) {
+    for (const match of text.matchAll(/^\s*#\s*(?:include|import)\s*(["<])([^">]+)[">]/gm)) {
       const quoted = match[1] === '"';
       const include = resolveInclude(resolved, match[2], directories, quoted);
       if (!include) {
@@ -76,6 +76,7 @@ export function compilationInputs(args) {
   }
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
+    if (arg === '-o') { index += 1; continue; }
     if (arg === '-include' && args[index + 1] && !add(args[index + 1])) return null;
     if (!arg || arg.startsWith('-') || arg.startsWith('@')) continue;
     if (!existsSync(arg)) continue;
