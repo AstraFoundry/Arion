@@ -395,8 +395,9 @@ func TestOnboardingTermsAndLocalContinuation(t *testing.T) {
 	}
 }
 
-// The sign-in page carries an unchecked "Share usage data" box. Its state
-// goes with whichever sign-in button is pressed; there is no separate step.
+// The sign-in page carries a usage-sharing box, checked by default. Its
+// state goes with whichever sign-in button is pressed; there is no separate
+// step.
 func TestOnboardingSignInOffersUsageSharingBox(t *testing.T) {
 	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
 		state, actions, store := fixture()
@@ -408,16 +409,16 @@ func TestOnboardingSignInOffersUsageSharingBox(t *testing.T) {
 		click := clicker(t, tt)
 		click(messages.Text(copy.OnbStart))
 		expect(t, tt, true, messages.Text(copy.AccUsageShare), messages.Text(copy.AccUsageShareDetail))
+		snapshot(t, tt, "onboarding-account-share-usage-"+string(locale))
 		click(messages.Text(copy.AccContinueGoogle))
-		if !actions.called("sign-in") || actions.called("sign-in:share") {
-			t.Fatalf("unchecked box shared usage: %v", actions.calls)
+		if !actions.called("sign-in:share") {
+			t.Fatalf("default box not passed to sign-in: %v", actions.calls)
 		}
 		actions.calls = nil
 		click(messages.Text(copy.AccUsageShare))
-		snapshot(t, tt, "onboarding-account-share-usage-"+string(locale))
 		click(messages.Text(copy.AccContinueEmail))
-		if !actions.called("sign-in:share") {
-			t.Fatalf("checked box not passed to sign-in: %v", actions.calls)
+		if !actions.called("sign-in") || actions.called("sign-in:share") {
+			t.Fatalf("unchecked box shared usage: %v", actions.calls)
 		}
 		signedIn(state, false)
 		settle(tt)

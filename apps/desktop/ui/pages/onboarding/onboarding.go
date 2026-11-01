@@ -58,13 +58,14 @@ type Page struct {
 	switched         time.Time
 	keyboard         keyboard.State
 	cloud            cloud.Nav
-	// shareUsage is the sign-in page's "Share usage data" box.
+	// shareUsage is the sign-in page's usage-sharing box.
 	shareUsage bool
 }
 
 // NewPage starts the flow; its cloud step folds the provider lists behind
-// Change once one is in use, so the step fits the window.
-func NewPage() *Page { return &Page{cloud: cloud.Nav{Compact: true}} }
+// Change once one is in use, so the step fits the window. The sign-in page's
+// usage-sharing box starts checked.
+func NewPage() *Page { return &Page{cloud: cloud.Nav{Compact: true}, shareUsage: true} }
 
 // Render draws the current step beside its illustration.
 func (p *Page) Render(c *ui.Context, store runtime.Store) {

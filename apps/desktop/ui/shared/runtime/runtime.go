@@ -671,7 +671,7 @@ type Actions interface {
 	ExportDiagnostics()
 	CompleteOnboarding()
 	// SignIn starts the system-browser sign-in. It returns immediately.
-	// shareUsage is the sign-in page's "Share usage data" box: when checked,
+	// shareUsage is the sign-in page's usage-sharing box: when checked,
 	// Arion records consent once signed in. Unchecked records nothing, so an
 	// earlier answer stays.
 	SignIn(shareUsage bool)

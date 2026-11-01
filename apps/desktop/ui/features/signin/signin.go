@@ -18,7 +18,7 @@ import (
 )
 
 // Start is the button that opens the browser sign-in. shareUsage is the
-// page's "Share usage data" box, false where the page has none.
+// page's usage-sharing box, false where the page has none.
 func Start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant, label string, shareUsage bool) {
 	if store.State.Account.Disabled {
 		return
@@ -31,7 +31,7 @@ func Start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.
 // Methods are the ways to sign in or create an AstraFoundry account. Each
 // opens the same browser sign-in, where the issuer's page offers them all;
 // the button only says which one the user means to pick there. shareUsage is
-// the page's "Share usage data" box.
+// the page's usage-sharing box.
 func Methods(c *ui.Context, store runtime.Store, tokens theme.Tokens, shareUsage bool) {
 	if store.State.Account.Disabled {
 		return

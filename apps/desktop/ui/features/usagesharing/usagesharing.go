@@ -30,8 +30,8 @@ func Switch(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
-// Box is the sign-in page's "Share usage data" check box, unchecked until the
-// user checks it. Checking it answers nothing until the sign-in succeeds.
+// Box is the sign-in page's usage-sharing check box. The page starts it
+// checked; it answers nothing until the sign-in succeeds.
 func Box(c *ui.Context, store runtime.Store, tokens theme.Tokens, share *bool) {
 	messages := store.Copy()
 	ui.Column(c).Gap(2).Children(func() {
