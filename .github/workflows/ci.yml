@@ -165,7 +165,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       # Keep this pin identical to the portable job.
-      - if: matrix.suite != 'keyboard'
+      - if: matrix.suite != 'keyboard' || runner.os == 'Windows'
         uses: actions/setup-go@v5
         id: go
         with:
@@ -206,7 +206,7 @@ jobs:
             .workspace/native-download-cache/
       - name: Restore standard-user Go cache
         id: go-cache
-        if: runner.os == 'Windows' && matrix.suite != 'keyboard'
+        if: runner.os == 'Windows'
         uses: actions/cache/restore@v4
         with:
           key: ${{ steps.cache-keys.outputs.go }}
@@ -317,7 +317,7 @@ jobs:
             .workspace/windows-compile-cache/
             .workspace/native-download-cache/
       - name: Save standard-user Go cache
-        if: success() && runner.os == 'Windows' && matrix.suite != 'keyboard' && github.ref == 'refs/heads/main' && steps.go-cache.outputs.cache-hit != 'true'
+        if: success() && runner.os == 'Windows' && github.ref == 'refs/heads/main' && steps.go-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           key: ${{ steps.cache-keys.outputs.go }}

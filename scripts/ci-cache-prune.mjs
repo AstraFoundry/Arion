@@ -10,7 +10,8 @@ export function obsoleteNativeCaches(caches, keep = 2) {
     if (cache.ref !== 'refs/heads/main') continue;
     const family = cache.key.match(/^(native|standard-user-go)-v\d+-(darwin|win32)-(arm64|x64)-([a-zA-Z0-9]+)-/);
     if (!family) continue;
-    const group = family.slice(1).join('-');
+    const suite = cache.key.match(/-(desktop|keyboard)-[a-f0-9]{64}$/)?.[1] ?? 'shared';
+    const group = [...family.slice(1), suite].join('-');
     if (!groups.has(group)) groups.set(group, []);
     groups.get(group).push(cache);
   }

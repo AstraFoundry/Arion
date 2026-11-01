@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { cacheKey, nativeInput, runnerCacheIdentity, scopedCacheNames } from '../native-ci-cache-key.mjs';
+import { cacheKey, nativeInput, runnerCacheIdentity, scopedCacheNames, shardGoCacheNames } from '../native-ci-cache-key.mjs';
 
 test('cache identity changes with source, build settings and toolchain, independently of file order', t => {
   const root = mkdtempSync(path.join(os.tmpdir(), 'arion-ci-cache-'));
@@ -66,4 +66,12 @@ test('exact cache keys omit checkout path and ImageVersion, and restore stays on
   assert.throws(() => scopedCacheNames('native', { ...identity, root: '/Users/runner/work/Arion/Arion' }, content), /root/);
   assert.throws(() => scopedCacheNames('native', { ...identity, ImageVersion: '20261028.1' }, content), /ImageVersion/);
   assert.throws(() => scopedCacheNames('native', { ...identity, image: ['macos26', '20261028.1'] }, content), /image/);
+});
+
+
+test('Windows shards save independent compiler caches while restoring the shared main seed', () => {
+  const shared = { key: 'toolchain-content', restore: 'toolchain-' };
+  assert.deepEqual(shardGoCacheNames(shared, 'desktop'), { key: 'toolchain-desktop-content', restore: 'toolchain-desktop-\ntoolchain-' });
+  assert.deepEqual(shardGoCacheNames(shared, 'keyboard'), { key: 'toolchain-keyboard-content', restore: 'toolchain-keyboard-\ntoolchain-' });
+  assert.deepEqual(shardGoCacheNames(shared, 'all'), shared);
 });

@@ -12,3 +12,12 @@ test('retain the newest entries per platform and cache family; preserve unrelate
   assert.deepEqual(obsoleteNativeCaches(caches).map(cache => cache.id), [2, 1, 2, 1, 2, 1]);
   assert.throws(() => obsoleteNativeCaches(caches, 0), /positive/);
 });
+
+
+test('one Windows shard cannot evict the other shard compiler cache', () => {
+  const caches = [];
+  for (const suite of ['desktop', 'keyboard']) {
+    for (let id = 1; id <= 3; id += 1) caches.push({ id, key: `standard-user-go-v2-win32-x64-win22-toolchain-${suite}-${String(id).repeat(64)}`, ref: 'refs/heads/main', created_at: `2026-01-0${id}T00:00:00Z` });
+  }
+  assert.deepEqual(obsoleteNativeCaches(caches).map(cache => cache.id), [1, 1]);
+});
