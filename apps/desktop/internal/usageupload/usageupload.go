@@ -37,12 +37,11 @@ func (s Session) Key() string {
 }
 
 type Day struct {
-	Date           string `json:"date"`
-	Visited        bool   `json:"visited"`
-	Sessions       int    `json:"sessions"`
-	SpeechMs       int64  `json:"speechMs"`
-	Words          int    `json:"words"`
-	WordsPerMinute int    `json:"wordsPerMinute,omitempty"`
+	Date     string `json:"date"`
+	Visited  bool   `json:"visited"`
+	Sessions int    `json:"sessions"`
+	SpeechMs int64  `json:"speechMs"`
+	Words    int    `json:"words"`
 }
 
 func (d Day) Valid() bool {
