@@ -171,8 +171,13 @@ func TestWindowsPackagedSpeech(t *testing.T) {
 		t.Fatalf("packaged application control socket: %v", err)
 	}
 	reader := bufio.NewReader(conn)
+	var lastFocus editorFocusSnapshot
 	call := func(op string, values map[string]string) map[string]any {
 		t.Helper()
+		if focus := currentEditorFocus(); focus != lastFocus {
+			record(map[string]any{"event": "focus", "beforeCommand": op, "state": focus})
+			lastFocus = focus
+		}
 		request := map[string]string{"op": op}
 		for key, value := range values {
 			request[key] = value
@@ -220,6 +225,12 @@ func TestWindowsPackagedSpeech(t *testing.T) {
 	}
 	wait("model", "state", "ready")
 	first, second := startWindowsEditor(t), startWindowsEditor(t)
+	t.Cleanup(func() {
+		if !t.Failed() {
+			return
+		}
+		record(map[string]any{"event": "editor-final-state", "failed": true, "focus": currentEditorFocus(), "windowA": first.window, "windowB": second.window, "editorA": first.text(), "editorB": second.text(), "charactersA": first.characters.Load(), "charactersB": second.characters.Load()})
+	})
 	reset := func() {
 		call("reset", nil)
 		first.setText("")
@@ -239,29 +250,8 @@ func TestWindowsPackagedSpeech(t *testing.T) {
 			t.Fatalf("unsafe delivery into owned editors: %q / %q", first.text(), second.text())
 		}
 	}
-	reset()
-	dictate(fixture)
-	observed := wait("session", "state", "completed")
-	if observed["commitCount"] != float64(1) {
-		t.Fatalf("commit count: %+v", observed)
-	}
-	if !within(5*time.Second, func() bool {
-		return normalizeSpeechText(first.text()) == "anyhow we want to help got a job for us"
-	}) {
-		t.Fatalf("recognized text did not reach the owned editor: %q", first.text())
-	}
-	before := first.characters.Load()
-	call("commit-reviewed", nil)
-	observed = call("commit-reviewed", nil)
-	time.Sleep(200 * time.Millisecond)
-	if first.characters.Load() != before || observed["commitCount"] != float64(1) || second.text() != "" {
-		t.Fatal("duplicate confirmation delivered text more than once")
-	}
-	record(map[string]any{"event": "scenario", "id": "offline-recognition-exact-once", "observations": observed, "editorA": first.text(), "editorB": second.text(), "characterCount": first.characters.Load()})
-	for _, fault := range []string{"cancel", "focus-change"} {
-		reset()
-		call("delay-final", nil)
-		dictate(fixture)
+	waitFinal := func() {
+		t.Helper()
 		wait("session", "state", "finalizing")
 		if !within(2*time.Minute, func() bool {
 			observed := call("state", nil)
@@ -270,6 +260,43 @@ func TestWindowsPackagedSpeech(t *testing.T) {
 		}) {
 			t.Fatal("real recognition never reached the delayed final-result gate")
 		}
+	}
+	reset()
+	call("delay-final", nil)
+	dictate(fixture)
+	waitFinal()
+	// Establish the owned recipient immediately before releasing delivery.
+	// A focus assertion before several seconds of inference is not ownership
+	// of the interactive desktop throughout that interval.
+	first.focus(t)
+	call("release-final", nil)
+	observed := wait("session", "state", "completed")
+	if observed["commitCount"] != float64(1) {
+		t.Fatalf("commit count: %+v", observed)
+	}
+	// SendInput acknowledges posting, not dispatch. Punctuation-insensitive
+	// recognition scoring must not be used as an editor-drain barrier.
+	expectedHash := state(observed, "commit", "textSHA256")
+	if !within(5*time.Second, func() bool { return speechTextDelivered(first, expectedHash) }) {
+		t.Fatalf("recognized text did not reach the owned editor: %q; observations: %+v", first.text(), observed)
+	}
+	if normalizeSpeechText(first.text()) != "anyhow we want to help got a job for us" {
+		t.Fatalf("unexpected recognition: %q", first.text())
+	}
+	record(map[string]any{"event": "first-delivery", "observations": observed, "editorA": first.text(), "editorB": second.text()})
+	before := first.characters.Load()
+	call("commit-reviewed", nil)
+	observed = call("commit-reviewed", nil)
+	time.Sleep(200 * time.Millisecond)
+	if first.characters.Load() != before || observed["commitCount"] != float64(1) || second.text() != "" {
+		t.Fatalf("duplicate confirmation: characters=%d -> %d, commits=%v, editorA=%q, editorB=%q", before, first.characters.Load(), observed["commitCount"], first.text(), second.text())
+	}
+	record(map[string]any{"event": "scenario", "id": "offline-recognition-exact-once", "observations": observed, "editorA": first.text(), "editorB": second.text(), "characterCount": first.characters.Load()})
+	for _, fault := range []string{"cancel", "focus-change"} {
+		reset()
+		call("delay-final", nil)
+		dictate(fixture)
+		waitFinal()
 		if fault == "cancel" {
 			call("cancel", nil)
 		} else {
@@ -340,4 +367,35 @@ func normalizeSpeechText(text string) string {
 	return strings.Join(strings.FieldsFunc(strings.ToLower(text), func(r rune) bool {
 		return !unicode.IsLetter(r) && !unicode.IsNumber(r)
 	}), " ")
+}
+
+func speechTextDelivered(editor *windowsEditor, expectedHash string) bool {
+	digest := sha256.Sum256([]byte(editor.text()))
+	return hex.EncodeToString(digest[:]) == expectedHash
+}
+
+// A trailing punctuation message is still part of the first delivery, even
+// though the old normalized-text predicate already considers it complete.
+func TestWindowsSpeechDeliveryWaitsForPunctuation(t *testing.T) {
+	editor := startWindowsEditor(t)
+	const prefix = "Anyhow we want to help got a job for us"
+	const complete = prefix + "?"
+	digest := sha256.Sum256([]byte(complete))
+	expectedHash := hex.EncodeToString(digest[:])
+	editor.setText(prefix)
+	editor.selectRange(uintptr(len(prefix)), uintptr(len(prefix)))
+	if normalizeSpeechText(editor.text()) != normalizeSpeechText(complete) {
+		t.Fatal("fixture did not reach the formerly premature completion condition")
+	}
+	if speechTextDelivered(editor, expectedHash) {
+		t.Fatal("delivery completed before the terminal punctuation was dispatched")
+	}
+	before := editor.characters.Load()
+	if ok, _, err := procPostMessageW.Call(editor.edit, 0x0102, '?', 0); ok == 0 {
+		t.Fatal(err)
+	}
+	eventually(t, "terminal punctuation dispatched", func() bool { return speechTextDelivered(editor, expectedHash) })
+	if editor.characters.Load() != before+1 {
+		t.Fatal("fixture did not dispatch the remaining first-delivery character")
+	}
 }

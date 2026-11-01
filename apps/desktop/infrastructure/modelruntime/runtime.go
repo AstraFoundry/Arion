@@ -179,6 +179,15 @@ func (m *Manager) artifactIDs(bundle models.Bundle) []string {
 // Activate provisions (downloading only what is missing), verifies and
 // loads a bundle, then swaps it in once no session holds the old one.
 func (m *Manager) Activate(ctx context.Context, bundle models.Bundle) error {
+	return m.activate(ctx, bundle, true)
+}
+
+// LoadInstalled verifies and loads local files without authorizing network access.
+func (m *Manager) LoadInstalled(ctx context.Context, bundle models.Bundle) error {
+	return m.activate(ctx, bundle, false)
+}
+
+func (m *Manager) activate(ctx context.Context, bundle models.Bundle, download bool) error {
 	m.setStatus(func(s *Status) {
 		*s = Status{State: StateProvisioning, Bundle: bundle.ID, Total: m.catalog.DownloadBytes(bundle)}
 	})
@@ -189,9 +198,16 @@ func (m *Manager) Activate(ctx context.Context, bundle models.Bundle) error {
 		if !ok {
 			return m.failed(bundle, domain.Fail(domain.CodeModelUnsupported, "unknown artifact"))
 		}
-		dir, err := m.store.Ensure(ctx, artifact, func(id string, phase provision.Phase, done, total int64) {
-			m.setStatus(func(s *Status) { s.Artifact, s.Phase, s.Done = id, phase, completed+done })
-		})
+		var dir string
+		var err error
+		if download {
+			dir, err = m.store.Ensure(ctx, artifact, func(id string, phase provision.Phase, done, total int64) {
+				m.setStatus(func(s *Status) { s.Artifact, s.Phase, s.Done = id, phase, completed+done })
+			})
+		} else {
+			dir, err = m.store.Installed(artifact)
+		}
+
 		if err != nil {
 			return m.failed(bundle, err)
 		}

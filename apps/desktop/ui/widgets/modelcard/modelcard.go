@@ -32,8 +32,14 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, compact boo
 				if !m.Automatic {
 					source = messages.Text(copy.PanelChosen)
 				}
+				if m.State == runtime.ModelAwaitingDownload {
+					source = messages.DownloadSize(m.Active.SizeBytes)
+				}
 				ui.Text(c, source).FontSize(theme.Caption).TextColor(tokens.Muted)
 			})
+			if m.State == runtime.ModelAwaitingDownload {
+				provision.DownloadButton(c, store, tokens)
+			}
 			if !m.Automatic && !compact {
 				if kit.Button(c, tokens, kit.Outline, messages.Text(copy.ModelUseRecommend), true).Clicked() {
 					store.Actions.UseRecommendedBundle()
@@ -48,6 +54,8 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, compact boo
 			ui.Text(c, reason).FontSize(theme.Caption).TextColor(tokens.Muted)
 			modelchoice.Metrics(c, tokens, store.Copy(), m.Active)
 		}
-		provision.Progress(c, store, tokens)
+		if m.State != runtime.ModelAwaitingDownload {
+			provision.Progress(c, store, tokens)
+		}
 	})
 }

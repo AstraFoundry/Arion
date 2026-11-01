@@ -46,4 +46,4 @@ Posts are Markdown in `content/blog/<slug>/<locale>.md`, rendered at build time 
 
 ## Product terms
 
-`/terms/` and its localized routes contain Arion’s product terms, separate from the AstraFoundry website terms. The desktop onboarding account step links here before opening browser authentication. The footer and sitemap include the page; its links preserve the reader’s locale for the privacy page and point to the repository license for software rights.
+`/terms/` and its localized routes contain Arion’s product terms, separate from the AstraFoundry website terms. The desktop Settings account card links here before opening browser authentication. The footer and sitemap include the page; its links preserve the reader’s locale for the privacy page and point to the repository license for software rights.

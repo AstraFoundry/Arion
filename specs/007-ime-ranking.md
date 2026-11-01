@@ -2,7 +2,7 @@
 
 ## IME integration
 
-IME-01: On supported systems, onboarding offers optional input-method setup after Accessibility; users may defer to Keyboard settings. Both surfaces reuse explicit install, enable/retry, switch and status controls. Installation is distinct from app startup and shows immediate progress. Continue requires actual selection and completed activation; copied, registered or enabled alone is not completion. In-flight file replacement cannot be skipped; activation may be cancelled or deferred. Unsupported systems omit setup in both directions.
+IME-01: Input-method setup is optional and lives in Settings > Keyboard after onboarding. Explicit install, enable/retry, switch and status controls distinguish installed/enabled from actually selected and connected. Installation is distinct from app startup and shows immediate progress. In-flight file replacement must finish; activation may be cancelled. Unsupported systems omit setup.
 
 An explicit installation of a missing source continues into a bounded activation attempt; updating an existing host preserves prior selection without starting an unrelated setup attempt. Activation validates installed bytes, subscribes to enabled/selected-source notifications before requesting registration/enablement, queries discovery, enables parent before child, observes actual enablement, selects the child mode and verifies actual selection plus the expected executable's host connection. The attempt has a 30-second deadline; host connection is separately bounded to 15 seconds within it. Notification wakes observation, with 250 ms polling to cover coalesced/missed notifications and non-UI clients. A notification alone does not establish that Arion changed. Enablement is requested once per attempt; selection can retry within its deadline. Background refresh never registers, enables or selects. Repeat clicks cannot create competing attempts.
 
@@ -76,7 +76,7 @@ RNK-05: Short candidate ranking must coexist with ASR without breaking audio dea
 
 | ID | Scenario |
 | --- | --- |
-| IME-A01 | Install/enable/retry/select/remove on actual OS → observed discovery, parent/child enablement, selection and expected-build connection; delayed discovery/consent, denial/timeout, cancellation/defer/window close, duplicate attempts and settings recovery; retry retains installed bytes; optional onboarding gates on completed selection |
+| IME-A01 | Install/enable/retry/select/remove on actual OS → observed discovery, parent/child enablement, selection and expected-build connection; delayed discovery/consent, denial/timeout, cancellation/defer/window close, duplicate attempts and settings recovery; retry retains installed bytes; required onboarding does not install or wait for the optional input method |
 | IME-A06 | macOS update → old host exits before promotion, prior selection and expected new-build connection; Windows stable core publication → selected live core retained, cached factory/facade can activate new core after safe release, no profile toggle; legacy direct migration stays idle; failures restore metadata/preserve recovery copies; desktop restart recovers orphaned IPC without replacing a live listener |
 | IME-A02 | Streaming draft revisions → owned composition only; final confirmation commits once |
 | IME-A03 | Cancel/deactivate/target change → clear owned composition; late callbacks ignored |

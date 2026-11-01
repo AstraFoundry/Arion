@@ -18,6 +18,11 @@ func Progress(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	m := store.State.Model
 	ui.Column(c).Gap(8).Children(func() {
 		switch m.State {
+		case runtime.ModelAwaitingDownload:
+			ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
+				ui.Text(c, messages.DownloadSize(m.Active.SizeBytes)).FontSize(theme.Caption).TextColor(tokens.Muted).Grow(1)
+				DownloadButton(c, store, tokens)
+			})
 		case runtime.ModelReady:
 			kit.Status(c.Key("ready"), tokens, icons.ShieldCheck, tokens.Success, messages.Text(copy.ModelVerified)).
 				Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}})
@@ -44,4 +49,11 @@ func Progress(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			})
 		}
 	})
+}
+
+// DownloadButton confirms recognition provisioning with the shared compact action.
+func DownloadButton(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	if kit.Button(c.Key("download-model"), tokens, kit.Primary, store.Copy().Text(copy.OnbDownload), true).Clicked() {
+		store.Actions.RetryModel()
+	}
 }

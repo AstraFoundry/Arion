@@ -96,13 +96,7 @@ func Remaining(d runtime.Dictation, now time.Time) time.Duration {
 }
 
 // Active reports a session that holds the microphone or pending work.
-func Active(d runtime.Dictation) bool {
-	switch d.State {
-	case runtime.StatePreparing, runtime.StateCapturing, runtime.StateFinalizing, runtime.StateReviewing, runtime.StateCommitting:
-		return true
-	}
-	return false
-}
+func Active(d runtime.Dictation) bool { return d.Active() }
 
 // Notice explains a failure with its next step.
 type Notice struct {

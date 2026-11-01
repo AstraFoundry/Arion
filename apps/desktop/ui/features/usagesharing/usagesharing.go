@@ -1,5 +1,4 @@
 // Package usagesharing is the account's choice to share daily usage totals.
-// The onboarding sign-in page offers it as a box beside the sign-in buttons;
 // Settings › Account changes it with a switch.
 package usagesharing
 
@@ -27,15 +26,5 @@ func Switch(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				store.Actions.SetUsageSharing(shared)
 			}
 		})
-	})
-}
-
-// Box is the sign-in page's usage-sharing check box. The page starts it
-// checked; it answers nothing until the sign-in succeeds.
-func Box(c *ui.Context, store runtime.Store, tokens theme.Tokens, share *bool) {
-	messages := store.Copy()
-	ui.Column(c).Gap(2).Children(func() {
-		ui.Checkbox(c.Key("share-usage"), share, messages.Text(copy.AccUsageShare)).Disabled(store.State.Account.Busy())
-		ui.Text(c, messages.Text(copy.AccUsageShareDetail)).FontSize(theme.Caption).TextColor(tokens.Muted).Margin(0, 0, 0, 24)
 	})
 }

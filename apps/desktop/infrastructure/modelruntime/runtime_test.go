@@ -1,6 +1,10 @@
 package modelruntime
 
 import (
+	"arion.local/desktop/infrastructure/provision"
+	"context"
+	"errors"
+	"net/http"
 	"strings"
 	"testing"
 
@@ -73,3 +77,31 @@ func TestEmbeddedNativeAdoption(t *testing.T) {
 		}
 	}
 }
+
+// Missing local weights must never turn startup loading into a download.
+func TestLoadInstalledNeverDownloadsMissingWeights(t *testing.T) {
+	catalog, err := models.Parse([]byte(catalogJSON("")))
+	if err != nil {
+		t.Fatal(err)
+	}
+	requests := 0
+	store := provision.NewStore(t.TempDir())
+	store.Client = &http.Client{Transport: roundTripFunc(func(*http.Request) (*http.Response, error) { requests++; return nil, errors.New("unexpected network") })}
+	manager := NewManager(catalog, store, 1)
+	if manager.Installed(catalog.Bundles[0]) {
+		t.Fatal("empty cache reported installed")
+	}
+	if err := manager.LoadInstalled(context.Background(), catalog.Bundles[0]); err == nil {
+		t.Fatal("missing weights loaded")
+	}
+	if requests != 0 {
+		t.Fatal("local loading attempted network")
+	}
+	if manager.Status().State != StateFailed {
+		t.Fatal("missing weights were not reported")
+	}
+}
+
+type roundTripFunc func(*http.Request) (*http.Response, error)
+
+func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }

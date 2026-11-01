@@ -69,7 +69,8 @@ func TestHoldKeyRevocationStopsListener(t *testing.T) {
 
 func TestHoldKeyRestartRejectsQueuedEventsFromOldListener(t *testing.T) {
 	p := &holdPlatform{}
-	a := &App{platform: p, testingHold: true}
+	a := readinessApp(t)
+	a.platform = p
 	a.state.Preferences.HoldKey = application.HoldRightOption
 	a.startHoldKey()
 	old := p.sink
@@ -81,11 +82,11 @@ func TestHoldKeyRestartRejectsQueuedEventsFromOldListener(t *testing.T) {
 	}
 }
 
-// The onboarding test hears both keys and says which went down, so each
-// key step acknowledges only its own.
-func TestHoldKeyTestRecordsWhichKeyWentDown(t *testing.T) {
+// Real shortcut events identify the pressed key without intercepting dictation.
+func TestHoldKeyRecordsWhichKeyWentDown(t *testing.T) {
 	p := &multiHoldPlatform{}
-	a := &App{platform: p, testingHold: true}
+	a := readinessApp(t)
+	a.platform = p
 	a.state.Preferences.HoldKey = application.HoldRightOption
 	a.state.Preferences.TranslateKey = application.HoldRightCommand
 	a.startHoldKey()
@@ -95,7 +96,7 @@ func TestHoldKeyTestRecordsWhichKeyWentDown(t *testing.T) {
 		t.Fatalf("translation key press not recorded: %+v", a.state.Hold)
 	}
 	if a.state.Hold.Holding {
-		t.Fatal("test press started dictation")
+		t.Fatal("unavailable model started dictation")
 	}
 }
 

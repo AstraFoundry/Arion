@@ -4,6 +4,8 @@
 
 Accepted. Amends where [ADR 011](011-live-local-rewriting.md), [ADR 012](012-context-scene-selection.md) and [ADR 013](013-rewrite-context-on-device.md) place their controls (Settings › Model), and the activation rule of [ADR 022](022-cloud-polishing.md). Issue [#23](https://github.com/AstraFoundry/Arion/issues/23).
 
+Onboarding placement is superseded by [ADR 039](039-focused-onboarding.md); optional configuration now lives in Settings.
+
 ## Context
 
 Settings › Model had grown into the settings of the whole path from speech to inserted text: recognition, polishing and where it runs, punctuation, Match the app and context. It kept the name of one part and an order shaped by when each feature arrived. Punctuation stayed visible but disabled while polishing was off.

@@ -12,7 +12,13 @@ Research commands qualified with `/path/to/Arion-evaluation` run in the private 
 - `make -C /path/to/Arion-evaluation bench-run CONFIG=benchmarks/configs/desktop-models.json …`: real-time model comparison through the production pipeline. The private `scripts/export-catalog.mjs` verifies a completed raw run and hashes, then exports content-free aggregates with exact source identities. After review, public `node scripts/catalog-evaluation.mjs <reviewed-summary.json> --reviewed` imports that JSON into `models/evaluations/<runId>.json` and updates catalog report links; it does not read a private raw-run directory.
 - Windows: `CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc go vet ./...` and `go build` compile the app and native E2E test binary; execution needs Windows.
 
+Go formatting commands use paths relative to each module so longer Windows worktree roots do not exhaust the OS command-line length limit.
+
 Command references use Arion's Makefile and package scripts only for project-authored documentation. Frozen benchmark evidence retains its historical command context. Imported upstream Markdown listed as local source files in `scripts/keyboard-runtime.json` retains its upstream commands only while its bytes match the pinned SHA-256; changed notices fail the check. Link, JSON and project-command checks remain enabled.
+
+## Windows pipe identity fixture
+
+The pipe peer-proof test runs directly under an ordinary medium-integrity token. From an elevated development shell, it first verifies that production rejects the elevated token, then launches the same test executable with a restricted, non-elevated medium-integrity token. The child performs the real named-pipe connection, kernel PID/SID/session checks and held-process lifetime checks. Token setup or child execution failure fails the test. No account, UAC setting or desktop ACL is changed. Low-integrity refusal remains a separate test. This fixture does not replace the standard-user profile and DPAPI acceptance in the Windows keyboard CI launcher.
 
 ## Required implementation evidence
 

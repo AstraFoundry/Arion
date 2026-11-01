@@ -18,7 +18,7 @@ These `runtime.Actions` methods return immediately. Work continues off the main 
 
 | Method | Effect |
 | --- | --- |
-| `SignIn(shareUsage)` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. `shareUsage` is the onboarding sign-in page's **Share data to join the product improvement program** box; when checked, consent is recorded once signed in ([consent](#consented-usage-reporting)). Settings passes `false`. |
+| `SignIn(shareUsage)` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. `shareUsage` is a service consent argument; Settings passes `false` and uses the separate account switch to change consent. |
 | `CancelSignIn()` | Invalidates the in-flight sign-in or refresh. A callback that arrives afterwards is not exchanged. A refresh token already stored for that attempt is deleted and revoked. |
 | `RefreshAccount()` | Explicit entitlement recheck; rotates the stored refresh token and replaces the in-memory access token. Phase `refreshing`. |
 | `SignOut()` | Revokes the refresh token, then deletes that credential item. Local keys and local memory stay. |
@@ -48,9 +48,9 @@ The loopback answers `200` with `Cache-Control: no-store`, `Referrer-Policy: no-
 
 ## Views
 
-The onboarding step `Account` follows Welcome (`entities/onboarding`) and is skipped when the account is disabled. Signed out, it offers **Continue with Google**, **Continue with GitHub** and **Continue with email**. Each calls `SignIn`, which opens the issuer's sign-in page in the browser, where the same methods sign in or create an account. Below them is a **Share data to join the product improvement program** box, checked by default, whose state goes with the pressed button ([consent](#consented-usage-reporting)). Before leaving Arion, the sign-in choices show a caption linking to the Arion site’s **Terms of Use** and **Privacy Policy**, in the current interface language. The platform website’s terms are not the Arion product terms; the notice must be visible before any browser/provider redirect. The muted gray secondary footer button is **Continue locally**, which moves on with no account and no network. A custom issuer (`Account.Portal` empty) gets one **Sign in** button instead. While `Phase` is `signing_in`, the step shows the browser wait with Cancel (`CancelSignIn`). The step does not move on while a sign-in, refresh, or sign-out is running (`Account.Busy`).
+Account setup is optional and begins in Settings > Account after required onboarding. The signed-out card offers Sign in and localized product Terms of Use and Privacy Policy links before opening browser authentication. Sign-in does not authorize usage sharing.
 
-The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. Its hover and selected fills are the sidebar's neutral grays. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card reports automatic restoration and offers **Sign out**, which revokes and deletes that token without requiring a session in memory. There is no Reconnect control. In onboarding, Continue may move on while background recovery waits for connectivity. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in with the hosted-sync entitlement, a Hosted sync card follows. Without the entitlement, views do not offer a waitlist. Links to the AstraFoundry account portal follow (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
+The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. Its hover and selected fills are the sidebar's neutral grays. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card reports automatic restoration and offers **Sign out**, which revokes and deletes that token without requiring a session in memory. There is no Reconnect control. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in with the hosted-sync entitlement, a Hosted sync card follows. Without the entitlement, views do not offer a waitlist. Links to the AstraFoundry account portal follow (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
 
 `features/signin` draws the account card and, when the entitlement is present, the hosted-sync card. `entities/account` maps state to copy keys.
 
@@ -162,22 +162,16 @@ Signing in identifies the account; sharing usage data is the account's own
 answer, held by the platform, so the web portal, other devices and this app see
 the same choice. Arion never treats signing in alone as permission.
 
-The onboarding sign-in page shows a **Share data to join the product improvement program** box, checked by default (daily
-dictation count, speaking time and words; never audio or text) below the sign-in
-buttons. There is no separate step. Its state goes with whichever button is
-pressed. When checked, a successful sign-in records consent unless the account
-already shares. Unchecked records nothing, so an account keeps an earlier
-answer. The box belongs to that sign-in: a failure, cancel or later refresh
-drops it.
+Onboarding has no sign-in or usage-sharing prompt. Settings sign-in passes no consent; the account switch remains the explicit place to change the answer. The service retains its consent-bound sign-in contract for callers that explicitly supply it.
 
-After every other successful sign-in or refresh, `Service.ReadUsageConsent`
+After successful sign-in or refresh, `Service.ReadUsageConsent`
 reads the answer with `GET {issuer}/api/v1/usage/consent?productSlug=arion` and
 the access token (`UsageLoading` meanwhile). It is `undecided`, `shared` or
 `not_shared` (`Account.UsageSharing`) and replaces the token's claim for
 reporting. Settings › Account shows a **Share data to join the product improvement program** switch while signed
 in.
 
-The box and the switch record the answer with `Service.RecordUsageConsent`:
+The switch records the answer with `Service.RecordUsageConsent`:
 `PUT {issuer}/api/v1/usage/consent` and the access token, body
 `{"productSlug":"arion","accepted":bool}`. The platform stores the notice
 version and a timestamp and keeps a history of acceptance and withdrawal. An

@@ -79,8 +79,7 @@ func (r *recorder) ListCloudModels() { r.call("cloud-models") }
 func (r *recorder) ConnectCloudKey(provider, key string) {
 	r.call("cloud-key:" + provider + ":" + key)
 }
-func (r *recorder) Quit()                    { r.call("quit") }
-func (r *recorder) TestHoldKey(testing bool) { r.call("test-hold") }
+func (r *recorder) Quit() { r.call("quit") }
 func (r *recorder) RemoveReplacement(id string) {
 	r.call("remove:" + id)
 	r.state.Vocabulary = slices.DeleteFunc(r.state.Vocabulary, func(entry runtime.Replacement) bool { return entry.ID == id })
@@ -777,130 +776,6 @@ func TestDarkAppearance(t *testing.T) {
 	}
 }
 
-func TestOnboardingFlow(t *testing.T) {
-	state, actions, store := fixture()
-	state.Permissions = runtime.Permissions{Microphone: runtime.ConsentUndetermined, Accessibility: runtime.ConsentUndetermined}
-	state.Model = runtime.Model{State: runtime.ModelProvisioning, Phase: runtime.PhaseDownloading, Done: 21 << 20, Total: 134 << 20, Active: state.Model.Active, Automatic: true, LatencyMeasured: true}
-	page := onboarding.NewPage()
-	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
-	settle(tt)
-	snapshot(t, tt, "onboarding-1-welcome")
-	click := func(label string) {
-		t.Helper()
-		if err := tt.Click(label); err != nil {
-			t.Fatalf("%s: %v (texts %q)", label, err, tt.Texts())
-		}
-		settle(tt)
-	}
-	click(copy.For(copy.English).Text(copy.OnbStart))
-	snapshot(t, tt, "onboarding-2-account")
-	click(copy.For(copy.English).Text(copy.OnbContinueLocally))
-	if actions.called("sign-in") {
-		t.Fatal("continuing locally started a sign-in")
-	}
-	if !hasText(tt, copy.For(copy.English).Text(copy.OnbMicTitle)) {
-		t.Fatalf("microphone step missing: %q", tt.Texts())
-	}
-	snapshot(t, tt, "onboarding-3-microphone")
-	// Continue stays disabled until consent exists.
-	click(copy.For(copy.English).Text(copy.Continue))
-	if !hasText(tt, copy.For(copy.English).Text(copy.OnbMicTitle)) {
-		t.Fatal("advanced without microphone consent")
-	}
-	click(copy.For(copy.English).Text(copy.OnbMicAllow))
-	if !actions.called("request-mic") {
-		t.Fatal("microphone not requested")
-	}
-	state.Permissions.Microphone = runtime.ConsentGranted
-	state.MonitorLevels = levels(40)
-	settle(tt)
-	snapshot(t, tt, "onboarding-3-microphone-granted")
-	click(copy.For(copy.English).Text(copy.Continue))
-	snapshot(t, tt, "onboarding-4-accessibility")
-	click(copy.For(copy.English).Text(copy.OnbAXAllow))
-	if !actions.called("request-ax") || !hasText(tt, copy.For(copy.English).Text(copy.OnbAXWaiting)) {
-		t.Fatalf("accessibility request: %v %q", actions.calls, tt.Texts())
-	}
-	snapshot(t, tt, "onboarding-4-accessibility-waiting")
-	state.Permissions.Accessibility = runtime.ConsentGranted
-	deadline := time.Now().Add(2 * time.Second)
-	for !hasText(tt, copy.For(copy.English).Text(copy.OnbIMETitle)) && time.Now().Before(deadline) {
-		tt.Frame()
-		time.Sleep(20 * time.Millisecond)
-	}
-	if !hasText(tt, copy.For(copy.English).Text(copy.OnbIMETitle)) {
-		t.Fatalf("did not advance after accessibility grant: %q", tt.Texts())
-	}
-	settle(tt)
-	snapshot(t, tt, "onboarding-input-method-absent")
-	click(copy.For(copy.English).Text(copy.Continue))
-	if !hasText(tt, copy.For(copy.English).Text(copy.OnbIMETitle)) {
-		t.Fatal("unconfigured input source advanced without an explicit skip")
-	}
-	click(copy.For(copy.English).Text(copy.IMEInstall))
-	if !actions.called("install-ime") {
-		t.Fatal("onboarding did not reuse installation or changed dictation mode")
-	}
-	click(copy.For(copy.English).Text(copy.Continue))
-	if !hasText(tt, copy.For(copy.English).Text(copy.OnbIMETitle)) {
-		t.Fatal("enabled source counted as current selection")
-	}
-	state.InputMethod = runtime.InputMethodPending
-	settle(tt)
-	click(copy.For(copy.English).Text(copy.IMESetup))
-	if !actions.called("ime-settings") {
-		t.Fatal("onboarding did not open the shared settings guide action")
-	}
-	snapshot(t, tt, "onboarding-input-method-pending")
-	state.InputMethod = runtime.InputMethodSelected
-	settle(tt)
-	snapshot(t, tt, "onboarding-input-method-selected")
-	click(copy.For(copy.English).Text(copy.Continue))
-	snapshot(t, tt, "onboarding-5-model")
-	click(copy.For(copy.English).Text(copy.Continue))
-	// Polishing stays off; the cloud step is skipped.
-	if !hasText(tt, copy.For(copy.English).Text(copy.OnbPolishTitle)) {
-		t.Fatalf("polish step missing: %q", tt.Texts())
-	}
-	snapshot(t, tt, "onboarding-5-polish")
-	click(copy.For(copy.English).Text(copy.Continue))
-	if !actions.called("test-hold") {
-		t.Fatal("hold key test mode not entered")
-	}
-	// A key that cannot listen holds the step until Input Monitoring is granted.
-	state.Hold = runtime.Hold{Failure: runtime.CodePermissionDenied}
-	settle(tt)
-	if !hasText(tt, copy.For(copy.English).Text(copy.HoldKeyNeedsMonitoring)) {
-		t.Fatalf("missing consent not explained: %q", tt.Texts())
-	}
-	snapshot(t, tt, "onboarding-6-hold-key-consent")
-	click(copy.For(copy.English).Text(copy.Continue))
-	if !hasText(tt, copy.For(copy.English).Text(copy.OnbHoldKeyTitle)) {
-		t.Fatal("onboarding moved past a hold key that cannot listen")
-	}
-	state.Hold = runtime.Hold{Active: true}
-	settle(tt)
-	snapshot(t, tt, "onboarding-6-hold-key")
-	state.Hold.Pressed, state.Hold.PressedKey = time.Now().Add(time.Second), state.Preferences.HoldKey
-	settle(tt)
-	if !hasText(tt, copy.For(copy.English).Text(copy.OnbHoldKeyHeard)) {
-		t.Fatalf("hold key press not acknowledged: %q", tt.Texts())
-	}
-	snapshot(t, tt, "onboarding-6-hold-key-heard")
-	click(copy.For(copy.English).Text(copy.Continue))
-	// Polishing stayed off, so voice translation is skipped.
-	if !hasText(tt, copy.For(copy.English).Text(copy.OnbTryTitle)) {
-		t.Fatalf("try step missing: %q", tt.Texts())
-	}
-	snapshot(t, tt, "onboarding-7-try")
-	click(copy.For(copy.English).Text(copy.Continue))
-	snapshot(t, tt, "onboarding-8-done")
-	click(copy.For(copy.English).Text(copy.OnbFinish))
-	if !actions.called("complete") {
-		t.Fatal("onboarding not completed")
-	}
-}
-
 func TestOnboardingLanguageClearsCaptionButtons(t *testing.T) {
 	for _, chrome := range []struct {
 		name string
@@ -1259,47 +1134,6 @@ func TestPermissionGuide(t *testing.T) {
 	tt.SetDark(true)
 	rest(tt, 200*time.Millisecond)
 	snapshot(t, tt, "dark-guide")
-}
-
-func TestOnboardingInputMethodDeferral(t *testing.T) {
-	for _, locale := range []copy.Locale{copy.English, copy.SimplifiedChinese} {
-		state, actions, store := fixture()
-		state.Preferences.UILanguage = runtime.UILanguage(locale)
-		page := onboarding.NewPage()
-		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
-		settle(tt)
-		messages := copy.For(locale)
-		click := func(key copy.Key) {
-			t.Helper()
-			if err := tt.Click(messages.Text(key)); err != nil {
-				t.Fatalf("%s: %v", key, err)
-			}
-			settle(tt)
-		}
-		for _, key := range []copy.Key{copy.OnbStart, copy.OnbContinueLocally, copy.Continue, copy.Continue} {
-			click(key)
-		}
-		state.InputMethod = runtime.InputMethodPending
-		settle(tt)
-		snapshot(t, tt, "onboarding-input-method-pending-"+string(locale))
-		state.InputMethodInstalling = true
-		settle(tt)
-		click(copy.Back)
-		click(copy.OnbIMELater)
-		if !hasText(tt, messages.Text(copy.OnbIMETitle)) {
-			t.Fatal("left input setup while installation was in flight")
-		}
-		state.InputMethodInstalling = false
-		state.InputMethod = runtime.InputMethodSelected
-		settle(tt)
-		snapshot(t, tt, "onboarding-input-method-selected-"+string(locale))
-		state.InputMethod = runtime.InputMethodPending
-		settle(tt)
-		click(copy.OnbIMELater)
-		if !hasText(tt, messages.Text(copy.OnbModelTitle)) || actions.called("install-ime") {
-			t.Fatal("deferring setup installed an input source or changed dictation mode")
-		}
-	}
 }
 
 func TestSwitchPermissionGuides(t *testing.T) {

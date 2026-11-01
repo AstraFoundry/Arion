@@ -6,6 +6,8 @@ The current runtime, templates and delivery policy are superseded by [ADR 018](0
 
 Accepted (product decision). Supersedes the review-before-insert rule of [ADR 008](008-contextual-rewrite-evaluation.md) for the final rewrite; ADR 008's evaluation boundary otherwise stands. The mid-speech text-model preview is superseded by [ADR 023](023-final-only-polishing.md). Segment closure and the final rewrite remain. [ADR 034](034-clipboard-history.md) removes the menu-bar transcript recovery controls while keeping original recognition separate from delivered text in the active session.
 
+Onboarding placement is superseded by [ADR 039](039-focused-onboarding.md); optional configuration now lives in Settings.
+
 ## Context
 
 Typeless, Doubao and Chatterfly show text being corrected while the user is still speaking, and insert a polished result when they stop ([competitor research](../research/competitor-rewrite.md)). Arion's earlier Qwen diagnostics ([report](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/qwen-pipeline-diagnostic-v1/README.md`)) measured 0.6B–4B checkpoints in a Python worker that recomputed the whole prompt per request: 4B took 6–15 s, too slow for interactive use, and smaller checkpoints rarely applied spoken self-corrections.

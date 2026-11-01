@@ -232,11 +232,12 @@ type Dictation struct {
 type ModelState string
 
 const (
-	ModelUnselected   ModelState = "unselected"
-	ModelProvisioning ModelState = "provisioning"
-	ModelLoading      ModelState = "loading"
-	ModelReady        ModelState = "ready"
-	ModelFailed       ModelState = "failed"
+	ModelAwaitingDownload ModelState = "awaiting_download"
+	ModelUnselected       ModelState = "unselected"
+	ModelProvisioning     ModelState = "provisioning"
+	ModelLoading          ModelState = "loading"
+	ModelReady            ModelState = "ready"
+	ModelFailed           ModelState = "failed"
 )
 
 // ProvisionPhase is the step of a download.
@@ -626,9 +627,7 @@ type Actions interface {
 	CloseTrayHint()
 	// RecordShortcut starts native capture for owner, or restores activation for an empty owner.
 	RecordShortcut(owner string)
-	// TestHoldKey makes hold key presses only report Hold.Pressed, for
-	// the onboarding check, instead of starting dictation.
-	TestHoldKey(testing bool)
+
 	RefreshDevices()
 	StartLevelMonitor()
 	StopLevelMonitor()
@@ -763,3 +762,12 @@ func ParseHoldShortcut(platform string, key HoldKey) (Shortcut, bool) {
 
 // HoldKeysConflict reports overlapping dictation and translation keys.
 func HoldKeysConflict(a, b HoldKey) bool { return application.HoldKeysConflict(a, b) }
+
+// Active reports whether dictation owns capture or pending delivery work.
+func (d Dictation) Active() bool {
+	switch d.State {
+	case StatePreparing, StateCapturing, StateFinalizing, StateReviewing, StateCommitting:
+		return true
+	}
+	return false
+}

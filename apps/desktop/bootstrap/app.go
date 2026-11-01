@@ -119,7 +119,6 @@ type App struct {
 	guide                           *guideSession
 	trayHint                        *mygo.Window
 	views                           map[*mygo.Window]uiapp.View
-	testingHold                     bool
 	escapeActive                    bool
 	hold                            application.HoldGesture
 	harness                         *harness
@@ -530,7 +529,9 @@ func (a *App) ready() {
 	a.startClipboard()
 	a.createOverlay()
 	a.state.Model.Bundles = a.bundles()
-	a.runResource(func() { a.activate(a.state.Preferences.ModelOverride) })
+	override := a.state.Preferences.ModelOverride
+	download := a.state.Preferences.OnboardingCompleted || a.opts.SkipOnboarding
+	a.runResource(func() { a.activateModel(override, download) })
 	go a.pollPermissions()
 	go a.refreshDevicesAsync()
 	mygo.Power.OnSuspend(func() { a.record("power_suspend", nil); a.resetHoldGesture(); a.core.Cancel() })
@@ -811,7 +812,10 @@ func (a *App) bundles() []arion.Bundle {
 }
 
 // activate provisions and loads the override, or the automatic choice.
-func (a *App) activate(override string) {
+func (a *App) activate(override string) { a.activateModel(override, true) }
+
+// activateModel leaves missing first-run resources awaiting explicit consent.
+func (a *App) activateModel(override string, download bool) {
 	id := override
 	if id == "" {
 		id = a.recommended
@@ -831,7 +835,17 @@ func (a *App) activate(override string) {
 			}
 		}
 	})
-	if err := a.manager.Activate(contextBackground(), bundle); err != nil {
+	if !download && !a.manager.Installed(bundle) {
+		a.post(func() { a.state.Model.State = arion.ModelAwaitingDownload })
+		return
+	}
+	var err error
+	if download {
+		err = a.manager.Activate(contextBackground(), bundle)
+	} else {
+		err = a.manager.LoadInstalled(contextBackground(), bundle)
+	}
+	if err != nil {
 		a.record("model_activate", err)
 	}
 }

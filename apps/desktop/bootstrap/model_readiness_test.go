@@ -12,7 +12,9 @@ import (
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/holdkey"
 	"arion.local/desktop/infrastructure/modelruntime"
+	"arion.local/desktop/infrastructure/provision"
 	arion "arion.local/desktop/ui/shared/runtime"
+	"arion.local/models"
 )
 
 type readinessAudio struct{}
@@ -39,7 +41,7 @@ func readinessApp(t *testing.T) *App {
 }
 
 func TestHoldWaitsForModelWithoutArmingDelayedCapture(t *testing.T) {
-	for _, state := range []arion.ModelState{arion.ModelUnselected, arion.ModelProvisioning, arion.ModelLoading, arion.ModelFailed} {
+	for _, state := range []arion.ModelState{arion.ModelAwaitingDownload, arion.ModelUnselected, arion.ModelProvisioning, arion.ModelLoading, arion.ModelFailed} {
 		t.Run(string(state), func(t *testing.T) {
 			a := readinessApp(t)
 			a.state.Model.State = state
@@ -55,7 +57,7 @@ func TestHoldWaitsForModelWithoutArmingDelayedCapture(t *testing.T) {
 				t.Fatal("a rejected gesture armed a delayed capture")
 			}
 			a.onHoldKeyEvent(a.state.Preferences.HoldKey, holdkey.Down, at.Add(3*time.Second))
-			if a.core.Snapshot().State != domain.Preparing || !a.state.Hold.Holding {
+			if a.core.Snapshot().State != domain.Preparing || !a.state.Hold.Holding || !a.state.Hold.Pressed.Equal(at.Add(3*time.Second)) {
 				t.Fatal("a fresh gesture did not start after readiness")
 			}
 		})
@@ -123,5 +125,30 @@ func TestLateUnavailableModelFailureDoesNotOverwriteReady(t *testing.T) {
 		Error: domain.CodeModelMissing, Detail: "no verified model loaded"})
 	if a.state.Dictation.State != domain.Idle || a.state.Dictation.Failure != "" {
 		t.Fatalf("late unavailable error contradicted ready: %+v", a.state.Dictation)
+	}
+}
+
+func TestFirstRunWaitsForRecognitionDownloadConfirmation(t *testing.T) {
+	catalog, err := models.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle, _, err := modelruntime.SelectDefault(catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	store := provision.NewStore(t.TempDir())
+	manager := modelruntime.NewManager(catalog, store, 1)
+	a := &App{catalog: catalog, manager: manager, recommended: bundle.ID}
+	a.state.Model.Bundles = []arion.Bundle{{ID: bundle.ID, SizeBytes: catalog.DownloadBytes(bundle)}}
+	a.activateModel("", false)
+	for _, apply := range a.queue {
+		apply()
+	}
+	if a.state.Model.State != arion.ModelAwaitingDownload || a.state.Model.Active.ID != bundle.ID || a.state.Model.Active.SizeBytes <= 0 {
+		t.Fatalf("first-run state: %+v", a.state.Model)
+	}
+	if manager.Status().State != modelruntime.StateUnselected {
+		t.Fatal("startup began provisioning before consent")
 	}
 }

@@ -125,17 +125,6 @@ func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, translati
 	})
 }
 
-// FreeTranslatePicker exposes translation enablement and refuses dictation
-// conflicts during onboarding rather than moving the key just tested.
-func FreeTranslatePicker(c *ui.Context, store runtime.Store, state *PickerState) {
-	ui.Column(c).Gap(12).Children(func() {
-		TranslationToggle(c, store, state)
-		if TranslationEnabled(store) {
-			TranslatePicker(c, store, state)
-		}
-	})
-}
-
 // TranslationEnabled reports whether a translation shortcut is assigned.
 func TranslationEnabled(store runtime.Store) bool {
 	key := store.State.Preferences.TranslateKey
@@ -172,7 +161,7 @@ func LanguageName(messages copy.Catalog, language runtime.TranslationLanguage) s
 }
 
 // TranslateLanguagePicker selects the target language for voice
-// translation; its list scrolls, so it fits the onboarding window.
+// translation; its list scrolls within the settings window.
 func TranslateLanguagePicker(c *ui.Context, store runtime.Store) {
 	messages := store.Copy()
 	selected := store.State.Preferences.TranslateLanguage

@@ -4,6 +4,8 @@
 
 Accepted. Amends SYNC-02 of [003](../../specs/003-memory-sync.md), which assumed no account login, and adds SYNC-08–10.
 
+Onboarding placement is superseded by [ADR 039](039-focused-onboarding.md); optional configuration now lives in Settings.
+
 ## Context
 
 [003](../../specs/003-memory-sync.md) defines a self-hosted relay that stores only ciphertext and authenticates devices. AstraFoundry will also run a hosted relay at `api.arion.astrafoundry.si`. A hosted relay needs to know who may use it, which tenant a request belongs to and what quota applies, and it must act when the account behind a tenant is deleted, banned or revokes Arion. Access to the hosted relay is an entitlement (`arion.sync.hosted`) granted from the AstraFoundry waitlist; AstraFoundry accounts are an OpenID Connect provider at issuer `https://astrafoundry.si`. Endpoints, claims, clients and event payloads are defined normatively by the [platform contracts](https://github.com/AstraFoundry/astrafoundry.si/blob/main/docs/project/platform-contracts.md) (`astrafoundry.si` repository, `docs/project/platform-contracts.md`); this ADR records Arion's side.
