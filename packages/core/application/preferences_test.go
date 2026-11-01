@@ -126,6 +126,11 @@ func TestKeyboardPreferences(t *testing.T) {
 	if normalized, repairs = old.Normalize("darwin"); normalized.Keyboard.LanguageSwitch != "" || normalized.Keyboard.ActiveLanguageSwitch() != LanguageSwitchShift || !slices.Contains(repairs, "keyboard") {
 		t.Fatalf("unknown language switch was not repaired to Shift: %+v %v", normalized.Keyboard, repairs)
 	}
+	old.Keyboard = DefaultKeyboardPreferences()
+	old.Keyboard.LanguageSwitch = "control"
+	if normalized, repairs = old.Normalize("darwin"); normalized.Keyboard.LanguageSwitch != "" || normalized.Keyboard.ActiveLanguageSwitch() != LanguageSwitchShift || !slices.Contains(repairs, "keyboard") {
+		t.Fatalf("stored control language switch was not repaired to Shift: %+v %v", normalized.Keyboard, repairs)
+	}
 }
 
 func TestPolishEnginePreference(t *testing.T) {

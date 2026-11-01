@@ -141,21 +141,18 @@ type LanguageSwitch string
 const (
 	LanguageSwitchShift    LanguageSwitch = "shift"
 	LanguageSwitchCapsLock LanguageSwitch = "caps_lock"
-	LanguageSwitchControl  LanguageSwitch = "control"
 )
 
 // LanguageSwitches are the selectable keys, Shift first.
-var LanguageSwitches = []LanguageSwitch{LanguageSwitchShift, LanguageSwitchCapsLock, LanguageSwitchControl}
+var LanguageSwitches = []LanguageSwitch{LanguageSwitchShift, LanguageSwitchCapsLock}
 
-// ActiveLanguageSwitch reports the key in effect. Empty and unknown values
-// are Shift.
+// ActiveLanguageSwitch reports the key in effect. Empty and unknown values,
+// including a stored control binding, are Shift.
 func (k KeyboardPreferences) ActiveLanguageSwitch() LanguageSwitch {
-	switch k.LanguageSwitch {
-	case LanguageSwitchCapsLock, LanguageSwitchControl:
+	if k.LanguageSwitch == LanguageSwitchCapsLock {
 		return k.LanguageSwitch
-	default:
-		return LanguageSwitchShift
 	}
+	return LanguageSwitchShift
 }
 
 // KeyboardPreferences configure Arion's own input method (ADR 017). The input
@@ -233,7 +230,7 @@ func (k KeyboardPreferences) normalize() (KeyboardPreferences, bool) {
 		k.Accent, repaired = defaults.Accent, true
 	}
 	switch k.LanguageSwitch {
-	case "", LanguageSwitchShift, LanguageSwitchCapsLock, LanguageSwitchControl:
+	case "", LanguageSwitchShift, LanguageSwitchCapsLock:
 	default:
 		k.LanguageSwitch, repaired = "", true
 	}

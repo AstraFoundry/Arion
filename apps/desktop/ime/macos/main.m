@@ -109,10 +109,7 @@ static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel 
         value = settings[@"dictationKey"];
         if ([value isKindOfClass:NSString.class]) dictationKey = value;
         value = settings[@"languageSwitch"];
-        if ([value isKindOfClass:NSString.class]) {
-            if ([value isEqual:@"caps_lock"]) typing.languageSwitch = ARION_LANGUAGE_CAPS_LOCK;
-            else if ([value isEqual:@"control"]) typing.languageSwitch = ARION_LANGUAGE_CONTROL;
-        }
+        if ([value isKindOfClass:NSString.class] && [value isEqual:@"caps_lock"]) typing.languageSwitch = ARION_LANGUAGE_CAPS_LOCK;
     }
     typing.pageSize = pageSize;
     typing.emojiSuggestions = emojiSuggestions;
@@ -164,7 +161,6 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
 
 static NSString *languageSwitchLegend(NSInteger binding) {
     if (binding == ARION_LANGUAGE_CAPS_LOCK) return NSLocalizedString(@"KbdSwitchCapsLock", nil);
-    if (binding == ARION_LANGUAGE_CONTROL) return NSLocalizedString(@"KbdSwitchControl", nil);
     return @"⇧";
 }
 

@@ -145,7 +145,6 @@ var (
 const (
 	LanguageSwitchShift    = application.LanguageSwitchShift
 	LanguageSwitchCapsLock = application.LanguageSwitchCapsLock
-	LanguageSwitchControl  = application.LanguageSwitchControl
 )
 
 const (

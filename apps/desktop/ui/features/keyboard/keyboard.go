@@ -268,26 +268,19 @@ func Keys(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	kit.Card(c, tokens).Children(func() {
 		selected := prefs.ActiveLanguageSwitch()
 		detail := ""
-		switch selected {
-		case runtime.LanguageSwitchCapsLock:
+		if selected == runtime.LanguageSwitchCapsLock {
 			key := copy.KbdSwitchCapsLockDetail
 			if !windows(store) {
 				key = copy.KbdSwitchCapsLockMac
 			}
 			detail = messages.Text(key)
-		case runtime.LanguageSwitchControl:
-			detail = messages.Text(copy.KbdSwitchControlDetail)
 		}
 		kit.Row(c, tokens, messages.Text(copy.KbdSwitchLanguage), detail, func() {
 			label := func(key runtime.LanguageSwitch) string {
-				switch key {
-				case runtime.LanguageSwitchCapsLock:
+				if key == runtime.LanguageSwitchCapsLock {
 					return messages.Text(copy.KbdSwitchCapsLock)
-				case runtime.LanguageSwitchControl:
-					return messages.Text(copy.KbdSwitchControl)
-				default:
-					return messages.Text(copy.KbdSwitchLanguageKeys)
 				}
+				return messages.Text(copy.KbdSwitchLanguageKeys)
 			}
 			if kit.Select(c.Key("language-switch"), &selected, runtime.LanguageSwitches, label, nil).
 				Label(messages.Text(copy.KbdSwitchLanguage)).Width(160).Changed() {

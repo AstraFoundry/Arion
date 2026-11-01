@@ -15,9 +15,6 @@ int main() {
     if (!left.shift || left.shiftSide!=1 || !right.shift || right.shiftSide!=2) return 5;
     auto caps=windowsKey(VK_CAPITAL,0,state,layout);
     if (!caps.capsLock || caps.symbol!=-1 || caps.shift) return 6;
-    state[VK_SHIFT]=0; state[VK_CONTROL]=0x80;
-    auto lctrl=windowsKey(VK_LCONTROL,0,state,layout),rctrl=windowsKey(VK_RCONTROL,0,state,layout);
-    if (!lctrl.control || lctrl.controlSide!=1 || lctrl.symbol!=-1 || !rctrl.control || rctrl.controlSide!=2) return 7;
-    if (arion_caps_lock_language(1)!=1 || arion_caps_lock_language(0)!=0) return 8;
+    if (arion_caps_lock_language(1)!=1 || arion_caps_lock_language(0)!=0) return 7;
     std::cout<<"PASS: native named keys/Shift sides and shared shortcut/mode policy; no engine processing or input injection.\n";
 }

@@ -85,9 +85,6 @@ int main() {
     state.languageSwitch=L"caps_lock";
     Menu capsLock; require(bar->InitMenu(&capsLock)==S_OK,"caps lock menu");
     require(entry(capsLock,KeyboardMenuAction::Language).text==nativeLanguageTitle(true,state.languageSwitch),"caps lock binding is named");
-    state.languageSwitch=L"control";
-    Menu control; require(bar->InitMenu(&control)==S_OK,"control menu");
-    require(entry(control,KeyboardMenuAction::Language).text==nativeLanguageTitle(true,state.languageSwitch),"control binding is named");
     state.languageSwitch.clear();
     require(entry(modes,KeyboardMenuAction::Width).text==nativeCopy(NativeCopy::HalfWidth),"full-width mode action");
     require(entry(modes,KeyboardMenuAction::Punctuation).text==nativeCopy(NativeCopy::ChinesePunctuation),"punctuation mode action");

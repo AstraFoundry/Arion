@@ -293,12 +293,11 @@ class Service final : public ITfTextInputProcessorEx, public ITfThreadMgrEventSi
         auto native=windowsKey(key,details,state,GetKeyboardLayout(0));
         const auto kind=languageSwitchKind(settings.languageSwitch);
         if ((key==0 || key==255) && kind==LanguageSwitchKind::Shift && ((state[VK_SHIFT]&0x80)!=0)!=static_cast<bool>(shiftTap.held)) { native.shift=true; native.shiftSide=0; }
-        if ((key==0 || key==255) && kind==LanguageSwitchKind::Control && ((state[VK_CONTROL]&0x80)!=0)!=static_cast<bool>(shiftTap.held)) { native.control=true; native.controlSide=0; }
         return native;
     }
     bool wantsKey(const NativeKey &key) {
         const auto kind=languageSwitchKind(settings.languageSwitch);
-        const bool bound=(kind==LanguageSwitchKind::Shift && key.shift) || (kind==LanguageSwitchKind::Control && key.control) || (kind==LanguageSwitchKind::CapsLock && key.capsLock);
+        const bool bound=(kind==LanguageSwitchKind::Shift && key.shift) || (kind==LanguageSwitchKind::CapsLock && key.capsLock);
         if (!session.empty() || typing->composing() || shiftTap.held || bound) return true;
         return typing->available() && arion_key_action(key.symbol,key.modifiers,typing->isASCII())!=ARION_KEY_PASS;
     }
@@ -617,7 +616,7 @@ public:
         if (!eaten) return E_POINTER;
         auto native=nativeKey(key,details);
         const auto kind=languageSwitchKind(settings.languageSwitch);
-        const bool release=((kind==LanguageSwitchKind::Shift && native.shift) || (kind==LanguageSwitchKind::Control && native.control)) && shiftTap.held;
+        const bool release=kind==LanguageSwitchKind::Shift && native.shift && shiftTap.held;
         const bool caps=kind==LanguageSwitchKind::CapsLock && native.capsLock;
         *eaten=target==context && focused && typing->available() && (release || caps);
         return S_OK;
@@ -630,7 +629,6 @@ public:
         const auto kind=languageSwitchKind(settings.languageSwitch);
         if (kind==LanguageSwitchKind::CapsLock && native.capsLock) { *eaten=TRUE; return S_OK; }
         if (kind==LanguageSwitchKind::Shift && native.shift) { if (typing->available()) arion_shift_transition(&shiftTap,1,1,native.shiftSide,native.modifiers&~1,shiftTap.held && (!native.shiftSide || native.shiftSide==shiftTap.side),GetTickCount64()/1000.0); return S_OK; }
-        if (kind==LanguageSwitchKind::Control && native.control) { if (typing->available()) arion_shift_transition(&shiftTap,1,1,native.controlSide,native.modifiers&~4,shiftTap.held && (!native.controlSide || native.controlSide==shiftTap.side),GetTickCount64()/1000.0); return S_OK; }
         arion_shift_interrupt(&shiftTap);
         TypingCommand command; command.key=native; *eaten=keyRequest(command); return S_OK;
     }
@@ -646,9 +644,7 @@ public:
             }
             *eaten=TRUE; return S_OK;
         }
-        const bool shift=kind==LanguageSwitchKind::Shift && native.shift && arion_shift_transition(&shiftTap,1,0,native.shiftSide,native.modifiers&~1,0,GetTickCount64()/1000.0);
-        const bool control=kind==LanguageSwitchKind::Control && native.control && arion_shift_transition(&shiftTap,1,0,native.controlSide,native.modifiers&~4,0,GetTickCount64()/1000.0);
-        if (shift || control) { TypingCommand command; command.kind=TypingCommand::ShiftASCII; *eaten=keyRequest(command); }
+        if (kind==LanguageSwitchKind::Shift && native.shift && arion_shift_transition(&shiftTap,1,0,native.shiftSide,native.modifiers&~1,0,GetTickCount64()/1000.0)) { TypingCommand command; command.kind=TypingCommand::ShiftASCII; *eaten=keyRequest(command); }
         return S_OK;
     }
     HRESULT STDMETHODCALLTYPE OnPreservedKey(ITfContext*,REFGUID,BOOL *eaten) override { if (!eaten) return E_POINTER; *eaten=FALSE; return S_OK; }

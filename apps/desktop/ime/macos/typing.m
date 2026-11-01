@@ -176,14 +176,10 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
         if (on == ((previous & NSEventModifierFlagCapsLock) != 0)) return YES;
         return [self switchLanguageTo:arion_caps_lock_language(on)];
     }
-    BOOL control = self.languageSwitch == ARION_LANGUAGE_CONTROL;
-    BOOL down = control ? (flags & NSEventModifierFlagControl) != 0 : (flags & NSEventModifierFlagShift) != 0;
-    BOOL keyMatch = control
-        ? (keyCode == 59 || keyCode == 62 || (anonymous && changes == NSEventModifierFlagControl))
-        : (keyCode == 56 || keyCode == 60 || (anonymous && changes == NSEventModifierFlagShift));
-    NSEventModifierFlags mask = control
-        ? (NSEventModifierFlagCommand | NSEventModifierFlagOption | NSEventModifierFlagShift | NSEventModifierFlagCapsLock | NSEventModifierFlagFunction)
-        : (NSEventModifierFlagCommand | NSEventModifierFlagControl | NSEventModifierFlagOption | NSEventModifierFlagCapsLock | NSEventModifierFlagFunction);
+    BOOL down = (flags & NSEventModifierFlagShift) != 0;
+    BOOL keyMatch = keyCode == 56 || keyCode == 60 || (anonymous && changes == NSEventModifierFlagShift);
+    NSEventModifierFlags mask = NSEventModifierFlagCommand | NSEventModifierFlagControl |
+        NSEventModifierFlagOption | NSEventModifierFlagCapsLock | NSEventModifierFlagFunction;
     BOOL toggle = arion_shift_transition(&_shiftTap, keyMatch, down, anonymous ? 0 : keyCode,
         (flags & mask) != 0, flags == previous, event.timestamp);
     if (!toggle) return NO;

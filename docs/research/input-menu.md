@@ -14,7 +14,7 @@ The input menu (menu bar input source menu) shows a selected IMK source's own it
 | Group | Chatterfly | Doubao | Arion |
 | --- | --- | --- | --- |
 | Voice | 语音输入 (fn); 语音指令 (双击 fn); Skills 设置 | 语音输入 (长按 fn/单击右 option) | — |
-| Mode | 切换至英文输入 (⇧) / 切换至中文输入 (⇧) | 切换至英文输入, with ⇧ shown as the key equivalent | 切换至英文输入 / 切换至中文输入, with the configured key (⇧, Caps Lock, or Ctrl) |
+| Mode | 切换至英文输入 (⇧) / 切换至中文输入 (⇧) | 切换至英文输入, with ⇧ shown as the key equivalent | 切换至英文输入 / 切换至中文输入, with the configured key (⇧ or Caps Lock) |
 | Width | 使用全角输入 | 切换至全角输入 | — |
 | Punctuation | 使用英文标点输入 (^.) | 中文下使用英文标点 | — |
 | Keyboard data | — | — | 复制待输入文本 (only with recovery text); 重置已学词语 |
@@ -28,7 +28,7 @@ Doubao also declares `TICapsLockLanguageSwitchCapable` and `tsInputMethodCharact
 
 Implemented with existing capabilities:
 
-- Action wording with the configured shortcut (KBD-04): **Switch to English ({key})** / **Switch to Chinese ({key})**. Shift stays ⇧. Caps Lock and Ctrl use their setting names. The old label was **English — Shift**, which did not say whether it named the current mode or the action.
+- Action wording with the configured shortcut (KBD-04): **Switch to English ({key})** / **Switch to Chinese ({key})**. Shift stays ⇧. Caps Lock uses that key name. The old label was **English — Shift**, which did not say whether it named the current mode or the action.
 - Separators group the mode switch, keyboard data and the app.
 - **Open Arion** activates the app that shipped the input method. The build writes its bundle ID to `ArionAppIdentifier` in the input method's `Info.plist`. The item is omitted when LaunchServices cannot resolve that app.
 

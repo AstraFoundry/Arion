@@ -21,8 +21,7 @@ void arion_shift_reset(ArionShiftTap *state);
 /* languageSwitch values shared by both hosts (KBD-04). */
 enum {
     ARION_LANGUAGE_SHIFT = 0,
-    ARION_LANGUAGE_CAPS_LOCK = 1,
-    ARION_LANGUAGE_CONTROL = 2
+    ARION_LANGUAGE_CAPS_LOCK = 1
 };
 /* Caps Lock on selects English (1). Caps Lock off selects Chinese (0). */
 int arion_caps_lock_language(int caps_on);

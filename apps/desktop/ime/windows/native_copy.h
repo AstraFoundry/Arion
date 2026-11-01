@@ -9,10 +9,8 @@ inline const wchar_t *nativeCopy(NativeCopy key) {
 }
 inline std::wstring nativeLanguageTitle(bool ascii, const std::wstring &key) {
     std::wstring title=nativeCopy(ascii?NativeCopy::SwitchChinese:NativeCopy::SwitchEnglish);
-    const bool chinese=PRIMARYLANGID(GetUserDefaultUILanguage())==LANG_CHINESE;
     const wchar_t *legend=L"Shift";
-    if (key==L"caps_lock") legend=chinese?L"大写锁定":L"Caps Lock";
-    else if (key==L"control") legend=L"Ctrl";
+    if (key==L"caps_lock") legend=L"Caps Lock";
     const std::wstring token=L"{key}";
     const auto at=title.find(token);
     if (at!=std::wstring::npos) title.replace(at, token.size(), legend);
