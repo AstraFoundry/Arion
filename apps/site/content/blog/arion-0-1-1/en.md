@@ -16,7 +16,7 @@ Arion is a local-first voice and Pinyin input method. Hold a key and speak, in C
 
 Between the first alpha and 0.1.1 we shipped 21 preview builds, and early users helped us tune shortcuts, the candidate bar, polishing rules and the update flow in the editors they actually use. 0.1.1 brings that work together into the first version we recommend for everyday use. Here is what it does, organized by what you'll use it for, followed by what it doesn't do yet.
 
-<embed-frame src="/blog/arion-0-1-1/stage.en.html#dictation" title="Demo: holding Right Option to dictate into a chat box" ratio="16/10" caption="Hold Right Option in a chat box and speak. The draft stays in the pill; on release the sentence is typed once. A mock recording: no sound is captured."></embed-frame>
+<embed-frame src="/blog/arion-0-1-1/stage.en.html#dictation" poster="./posters/dictation.en.webp" title="Demo: holding Right Option to dictate into a chat box" ratio="16/10" caption="Hold Right Option in a chat box and speak. The draft stays in the pill; on release the sentence is typed once. A mock recording: no sound is captured."></embed-frame>
 
 ## Hold to talk, release to type
 
@@ -32,7 +32,7 @@ If you dictate quietly at a shared desk, Settings has a software input gain from
 
 Polishing is off by default. When you turn it on, a local language model tidies each dictation after you release the key: it drops fillers like "um" and "so", keeps only the correction when you change your mind mid-sentence ("Wednesday, no wait, Thursday" becomes "Thursday"), and formats the text for the app you're in.
 
-<embed-frame src="/blog/arion-0-1-1/stage.en.html#polish" title="Demo: dictating an email with polishing on" ratio="16/10" caption="Dictating an email with fillers and a correction. After release, the local model drops the struck-through words and adds a greeting and sign-off in email form. A mock recording."></embed-frame>
+<embed-frame src="/blog/arion-0-1-1/stage.en.html#polish" poster="./posters/polish.en.webp" title="Demo: dictating an email with polishing on" ratio="16/10" caption="Dictating an email with fillers and a correction. After release, the local model drops the struck-through words and adds a greeting and sign-off in email form. A mock recording."></embed-frame>
 
 The local polishing model is Qwen3.5-2B (Q4_K_M GGUF, about 1.3 GB), run through llama.cpp on macOS and Windows. With **Match the app** on, Arion picks a scene for each dictation from the kind of field you're in, the web site's host and the app's identifier: chat, email, a work message, a prompt for an AI assistant, search, or a list. The scene sets the layout and leaves the content alone, and choosing it reads only that metadata, never the text in the field.[^scene]
 
@@ -46,7 +46,7 @@ If you'd rather use a cloud model, sign in with ChatGPT or add an API key for Op
 
 Voice translation has its own shortcut: Right Command on macOS, Right Ctrl on Windows. Hold it and speak in your language; Arion recognizes what you said, fixes sound-alike words and proper nouns, and types the sentence in your target language.
 
-<embed-frame src="/blog/arion-0-1-1/stage.en.html#translate" title="Demo: holding Right Command to answer in Chinese" ratio="16/10" caption="A teammate asks in Chinese. Hold Right Command and answer in English: the pill shows the English draft, and the Chinese translation is typed on release. A mock recording."></embed-frame>
+<embed-frame src="/blog/arion-0-1-1/stage.en.html#translate" poster="./posters/translate.en.webp" title="Demo: holding Right Command to answer in Chinese" ratio="16/10" caption="A teammate asks in Chinese. Hold Right Command and answer in English: the pill shows the English draft, and the Chinese translation is typed on release. A mock recording."></embed-frame>
 
 There are 12 target languages: English, 简体中文, 繁體中文, 日本語, 한국어, Español, Français, Deutsch, Português, Italiano, Русский and العربية. Translation uses the same local or cloud model as polishing, so it runs even when polishing is off. If the model is missing, times out or returns output that fails validation, the translation fails with a notice in the pill and nothing untranslated is typed into the conversation; the source text stays only in that session's memory. Edits you make to a translation are not learned as corrections, so target-language spellings never leak into your vocabulary.
 
@@ -64,7 +64,7 @@ Vocabulary, learned corrections and clipboard history are encrypted with AES-256
 
 Arion includes an offline full-Pinyin input method: an IMK input method on macOS and a TSF input method on Windows, sharing one Rime schema, candidate ranking and learning logic. Tap <kbd>Shift</kbd> to switch between Chinese and English, and the badge by the cursor flips to show the mode. On macOS, the input menu also toggles full-width characters and English punctuation, and <kbd>Ctrl</kbd> <kbd>.</kbd> switches punctuation.
 
-<embed-frame src="/blog/arion-0-1-1/stage.en.html#keyboard" title="Demo: Pinyin candidates reordered by context, then Shift to English" ratio="16/10" caption="Typing shi yan after 我们在婚礼上许下 (“we made at our wedding”). The candidate bar opens in its usual order, then local ranking moves 誓言 (“vows”) to the front; tapping Shift flips the badge from 中 to A. A mock recording."></embed-frame>
+<embed-frame src="/blog/arion-0-1-1/stage.en.html#keyboard" poster="./posters/keyboard.en.webp" title="Demo: Pinyin candidates reordered by context, then Shift to English" ratio="16/10" caption="Typing shi yan after 我们在婚礼上许下 (“we made at our wedding”). The candidate bar opens in its usual order, then local ranking moves 誓言 (“vows”) to the front; tapping Shift flips the badge from 中 to A. A mock recording."></embed-frame>
 
 Candidate ranking pays attention to what you just wrote. The base layer only remembers which words you committed next to each other in the same app within the last 120 seconds, and one confirmation can move a candidate up by at most two places, so a single slip can't take over the first slot. Across 50 homophone pairs, from the second occurrence on, frequency learning alone put the intended word first 32.2% of the time; with these word pairings it was 88.7%.[^imk]
 
@@ -76,7 +76,7 @@ The keyboard also completes English words and prefixes in Chinese mode, offers E
 
 Clipboard history is off by default. Turn it on and Arion keeps the text, links, images and file references you copy. Press <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>V</kbd> (<kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>V</kbd> on Windows) to open a compact picker at your cursor, where you can search and pin items, and hovering over an image or long text shows a preview. Press Return to paste the selection into the field you came from; when there is no field, it is copied instead.
 
-<embed-frame src="/blog/arion-0-1-1/stage.en.html#clipboard" title="Demo: searching clipboard history and pasting a command" ratio="16/10" caption="Opening clipboard history at the cursor, hovering over a screenshot to preview it, then searching for make and pressing Return to paste the command into the document. A mock recording."></embed-frame>
+<embed-frame src="/blog/arion-0-1-1/stage.en.html#clipboard" poster="./posters/clipboard.en.webp" title="Demo: searching clipboard history and pasting a command" ratio="16/10" caption="Opening clipboard history at the cursor, hovering over a screenshot to preview it, then searching for make and pressing Return to paste the command into the document. A mock recording."></embed-frame>
 
 For files, only the reference is kept, never the file's contents, and folders are skipped. By default the history holds 200 items and 100 MB in total; past that, the oldest unpinned items go first, and nothing expires with age. The whole history is encrypted with its own key. The clipboard Arion borrows to type a dictation never enters the history.[^clipboard]
 

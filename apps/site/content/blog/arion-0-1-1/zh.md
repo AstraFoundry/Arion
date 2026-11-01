@@ -16,7 +16,7 @@ Arion 是一个本地优先的语音与拼音输入法。按住一个键说话�
 
 从第一个 alpha 到 0.1.1，我们发布了 21 个预览版本，和最早的一批用户一起在真实的编辑器里调整快捷键、候选框、润色规则和更新流程。0.1.1 汇总了这些改动，是我们推荐日常使用的第一个版本。下面按使用场景介绍它能做什么，最后一节写明它还没有做到的事。
 
-<embed-frame src="/blog/arion-0-1-1/stage.zh.html#dictation" title="演示：在聊天输入框里按住右 Option 听写" ratio="16/10" caption="在聊天输入框里按住右 Option 说话。草稿只出现在胶囊里，松开后整句写进输入框。模拟录屏，未录制任何声音。"></embed-frame>
+<embed-frame src="/blog/arion-0-1-1/stage.zh.html#dictation" poster="./posters/dictation.zh.webp" title="演示：在聊天输入框里按住右 Option 听写" ratio="16/10" caption="在聊天输入框里按住右 Option 说话。草稿只出现在胶囊里，松开后整句写进输入框。模拟录屏，未录制任何声音。"></embed-frame>
 
 ## 按住说话，松开上屏
 
@@ -32,7 +32,7 @@ Arion 是一个本地优先的语音与拼音输入法。按住一个键说话�
 
 润色默认关闭。打开后，Arion 会在你松开按键后用本地语言模型把这句话整理一遍：去掉「嗯」「那个」这样的语气词，处理说到一半的改口，比如「周三，不对，周四」只保留「周四」，再按当前应用调整格式。
 
-<embed-frame src="/blog/arion-0-1-1/stage.zh.html#polish" title="演示：在邮件里口述并润色" ratio="16/10" caption="在邮件正文里口述一段带语气词和改口的话。松开后，本地模型去掉被划掉的部分，并按邮件的格式写入问候和结尾。模拟录屏。"></embed-frame>
+<embed-frame src="/blog/arion-0-1-1/stage.zh.html#polish" poster="./posters/polish.zh.webp" title="演示：在邮件里口述并润色" ratio="16/10" caption="在邮件正文里口述一段带语气词和改口的话。松开后，本地模型去掉被划掉的部分，并按邮件的格式写入问候和结尾。模拟录屏。"></embed-frame>
 
 本地润色模型是 Qwen3.5-2B（Q4_K_M GGUF，约 1.3 GB），通过 llama.cpp 在 macOS 和 Windows 上运行。「按应用调整格式」开启时，Arion 会根据焦点所在的输入框类型、网页域名和应用标识，为每次听写选择一种场景：聊天、邮件、工作消息、给 AI 的提示词、搜索或列表。场景只决定版式，不改变内容；判断时只读取这些元数据，不读取输入框里的文字。[^scene]
 
@@ -46,7 +46,7 @@ Arion 是一个本地优先的语音与拼音输入法。按住一个键说话�
 
 语音翻译有自己的快捷键：macOS 上默认是右 Command，Windows 上是右 Ctrl。按住它用中文说话，Arion 会先识别原文、纠正同音词和专有名词，再写出目标语言的句子。
 
-<embed-frame src="/blog/arion-0-1-1/stage.zh.html#translate" title="演示：按住右 Command 用中文说话，写入英文回复" ratio="16/10" caption="同事用英文提问。按住右 Command 用中文回答，胶囊里显示中文草稿，松开后输入框里是英文译文。模拟录屏。"></embed-frame>
+<embed-frame src="/blog/arion-0-1-1/stage.zh.html#translate" poster="./posters/translate.zh.webp" title="演示：按住右 Command 用中文说话，写入英文回复" ratio="16/10" caption="同事用英文提问。按住右 Command 用中文回答，胶囊里显示中文草稿，松开后输入框里是英文译文。模拟录屏。"></embed-frame>
 
 目标语言可以选 12 种：English、简体中文、繁體中文、日本語、한국어、Español、Français、Deutsch、Português、Italiano、Русский 和 العربية。翻译和润色共用同一套本地或云端模型，所以即使关闭了润色，按下翻译键时也会调用它。如果模型缺失、超时或输出没有通过校验，这次翻译会直接失败并在胶囊里提示，不会把没翻译的原文写进对话框；原文只保留在这次会话的内存里。你在译文上做的修改不会被当作纠错学习，以免目标语言的写法混进你的中文词库。
 
@@ -64,7 +64,7 @@ Arion 是一个本地优先的语音与拼音输入法。按住一个键说话�
 
 Arion 自带一个离线的全拼输入法：macOS 上是 IMK 输入法，Windows 上是 TSF 输入法，两端共用同一套 Rime 方案、候选排序和学习逻辑。轻按 <kbd>Shift</kbd> 切换中英文，光标旁的标识会翻转，显示当前模式。macOS 的输入法菜单里还可以切换全角字符和英文标点，<kbd>Ctrl</kbd> <kbd>.</kbd> 切换标点。
 
-<embed-frame src="/blog/arion-0-1-1/stage.zh.html#keyboard" title="演示：拼音候选按前文重排，再轻按 Shift 切换英文" ratio="16/10" caption="在「我们在婚礼上许下」之后输入 shi yan。候选框先按原顺序出现，本地排序参考前文把「誓言」提到第一位；轻按 Shift 后，光标旁的标识从「中」翻成「英」。模拟录屏。"></embed-frame>
+<embed-frame src="/blog/arion-0-1-1/stage.zh.html#keyboard" poster="./posters/keyboard.zh.webp" title="演示：拼音候选按前文重排，再轻按 Shift 切换英文" ratio="16/10" caption="在「我们在婚礼上许下」之后输入 shi yan。候选框先按原顺序出现，本地排序参考前文把「誓言」提到第一位；轻按 Shift 后，光标旁的标识从「中」翻成「英」。模拟录屏。"></embed-frame>
 
 候选排序会参考你刚才写了什么。最基础的一层只记录最近 120 秒内、同一个应用里确认上屏的前后词搭配，一次确认最多把候选往前提两位，避免一次误选就占据首位。在 50 对同音词的测试中，从第二次出现开始，只靠词频学习时首选命中率是 32.2%，加上前后词搭配后是 88.7%。[^imk]
 
@@ -76,7 +76,7 @@ Arion 自带一个离线的全拼输入法：macOS 上是 IMK 输入法，Window
 
 剪贴板历史默认关闭，打开后会记录你复制的文字、链接、图片和文件引用。按 <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>V</kbd>（Windows 上是 <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>V</kbd>）会在光标旁打开一个紧凑的选择器，可以搜索、置顶，鼠标停留在图片或长文本上会显示预览。按回车会把选中的内容粘贴到原来的输入框；找不到输入框时，则复制到剪贴板。
 
-<embed-frame src="/blog/arion-0-1-1/stage.zh.html#clipboard" title="演示：用剪贴板历史搜索并粘贴一条命令" ratio="16/10" caption="在光标处打开剪贴板历史，鼠标停在截图上显示预览，搜索 make 后按回车，把命令粘贴回文档。模拟录屏。"></embed-frame>
+<embed-frame src="/blog/arion-0-1-1/stage.zh.html#clipboard" poster="./posters/clipboard.zh.webp" title="演示：用剪贴板历史搜索并粘贴一条命令" ratio="16/10" caption="在光标处打开剪贴板历史，鼠标停在截图上显示预览，搜索 make 后按回车，把命令粘贴回文档。模拟录屏。"></embed-frame>
 
 文件只保存引用，不复制文件内容；文件夹不会被记录。历史默认保留 200 条、总共 100 MB，超出时从最早的未置顶记录开始清理，不按时间过期。整个历史用独立的密钥加密保存。听写过程中 Arion 为了插入文字而临时使用的剪贴板，不会进入历史。[^clipboard]
 
