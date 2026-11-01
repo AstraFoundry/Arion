@@ -13,7 +13,7 @@ This section defines testing strategy, code-review expectations, and quality gat
 - [Foundation validation](validation.md) — actual local results and remaining coverage.
 - [macOS keyboard shortcut incident](keyboard-shortcut-incident.md) — Shift and Right Option root causes, repairs and acceptance evidence.
 - [Security review](security-review.md) — findings with severity and status, fixes made and open owner decisions.
-- [`code-review.md`](code-review.md) — code-review checklist.
+- [`code-review.md`](code-review.md) — code-review checklist, PR format and screenshot workflow.
 - [`agent-skills.md`](agent-skills.md) — installed Agent Skills for UI craft and anti-slop.
 
 ## Quality principles
@@ -29,7 +29,10 @@ This section defines testing strategy, code-review expectations, and quality gat
 - Unit tests cover domain logic and critical paths.
 - Integration tests cover repository and external-service boundaries.
 - Documentation is updated if behavior or conventions changed.
-- No hardcoded strings, redundant copy, duplicated code, or fallback cleverness.
+- User-facing copy is centralized and concise, preserving accessible names and necessary guidance.
+- Existing implementations of the same business rule are reused; similar code shape alone does not require abstraction.
+- Failures are not silently masked. Spec-approved recovery paths are tested and preserve privacy, cancellation and target-identity guarantees.
+- Documentation changes pass `pnpm check` before handoff, even without a commit. Additional checks follow [testing](testing.md); report results and checks not run with reasons. Repository static checks do not establish native functionality.
 
 ## Arion release evidence
 

@@ -24,7 +24,7 @@ FSD uses six layers. Each layer has a single responsibility and a strict downwar
 
 ## `widgets`
 
-- Self-contained UI blocks that belong to a page or a feature.
+- Self-contained UI blocks composed by pages. Widgets may compose features; features must not import widgets.
 - Examples: header, sidebar, dashboard card, order summary panel.
 - Can compose features and entities, but should remain focused on one visual block.
 

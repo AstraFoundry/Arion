@@ -28,7 +28,7 @@ import { t } from 'shared/i18n';
 
 ## No redundant copy
 
-- Do not repeat information already shown by a title, icon, selected state, or surrounding section.
+- Do not repeat self-evident information already shown by a title, icon, selected state, or surrounding section. Accessible names and guidance needed to understand or complete an action are not redundant copy.
 - Prefer concise labels over explanatory text when the state is self-evident.
 - Remove disabled placeholder actions unless they teach a real next step.
 - Errors, warnings and guidance follow the desktop [feedback patterns](design-system.md#feedback-errors-warnings-and-states): a field's error is attached to the field, any other problem is a notice with its fix, and text is never colored to signal severity.

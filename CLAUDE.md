@@ -5,11 +5,11 @@
 
 ---
 
-## ⚠️ Before you start
+## Before you start
 
-1. **Read the docs first.** Do not assume conventions; this project is documented so agents do not have to guess.
-2. **Ask when boundaries are unclear.** If a requirement, layer boundary, business rule, or technology choice is ambiguous, ask the user before proceeding.
-3. **Check logs and docs before inventing workarounds.** When something does not behave as expected, inspect logs, tests, and the relevant `docs/` file. Do not add fallback logic to bypass a problem you have not understood.
+1. **Read the relevant docs first.** Use the task routes below, then inspect the affected code, tests and recent logs. Do not read unrelated domains by default.
+2. **Resolve uncertainty before changing behavior.** Search the relevant specs and docs, read the layer/slice README, and inspect existing evidence. If product requirements, layer boundaries or technology choices remain unclear or conflict, ask a concise, specific question before implementing the affected part. Choose local implementation details independently within established constraints.
+3. **Fix causes, not symptoms.** Investigate unexpected behavior before adding recovery logic. Do not hide failures behind silent defaults or bypasses.
 
 ---
 
@@ -26,53 +26,19 @@ If an agent tool restricts access to the current project, add the private checko
 
 ## Documentation map
 
-### Understand the project
+Use [the documentation index](docs/README.md) for the full map and [document authority and conflicts](docs/README.md#document-authority-and-conflicts). Read the entries relevant to the task and follow their domain-specific links.
 
-- [`docs/README.md`](docs/README.md) — top-level index and domain map.
-- [`docs/project/README.md`](docs/project/README.md) — product scope, goals, and selected stack.
-- [`docs/project/architecture.md`](docs/project/architecture.md) — system architecture, module boundaries, and data flow.
-
-### Start implementation
-
-- [`specs/README.md`](specs/README.md) — normative product requirements and acceptance criteria.
-- [`docs/project/agent-handoff.md`](docs/project/agent-handoff.md) — task dependencies and implementation entry points.
-- [`docs/research/README.md`](docs/research/README.md) — competitor evidence and framework research.
-- [`docs/project/repository.md`](docs/project/repository.md) — Go monorepo ownership and package boundaries.
-
-### Write frontend code
-
-- [`docs/frontend/README.md`](docs/frontend/README.md) — Feature-Sliced Design (FSD) entry point.
-- [`docs/frontend/fsd-overview.md`](docs/frontend/fsd-overview.md) — what FSD is and why it is used here.
-- [`docs/frontend/layers.md`](docs/frontend/layers.md) — responsibilities of `app`, `pages`, `widgets`, `features`, `entities`, `shared`.
-- [`docs/frontend/slices.md`](docs/frontend/slices.md) — how to split code into slices.
-- [`docs/frontend/segments.md`](docs/frontend/segments.md) — `ui`, `model`, `lib`, `api`, `config` segments.
-- [`docs/frontend/public-api.md`](docs/frontend/public-api.md) — public API and re-export rules.
-- [`docs/frontend/import-rules.md`](docs/frontend/import-rules.md) — cross-layer and cross-slice import rules.
-- [`docs/frontend/i18n.md`](docs/frontend/i18n.md) — interface languages, typed copy keys, formatting and completeness gates.
-- [`docs/frontend/site.md`](docs/frontend/site.md) and [`docs/frontend/blog.md`](docs/frontend/blog.md) — the `apps/site` marketing site (the only TypeScript/React code) and its blog.
-- [`docs/frontend/ui-patterns.md`](docs/frontend/ui-patterns.md) — semantic styling, no hardcoded copy, no redundant copy.
-- [`docs/quality/agent-skills.md`](docs/quality/agent-skills.md) — Agent Skills for UI craft, motion, and anti-slop. Apply them when writing or reviewing UI.
-
-### Write backend code
-
-- [`docs/backend/README.md`](docs/backend/README.md) — Domain-Driven Design (DDD) entry point.
-- [`docs/backend/domain.md`](docs/backend/domain.md) — entities, value objects, aggregates, domain services, domain events.
-- [`docs/backend/application.md`](docs/backend/application.md) — use cases, application services, transactions, DTOs.
-- [`docs/backend/infrastructure.md`](docs/backend/infrastructure.md) — persistence, external services, messaging, configuration.
-- [`docs/backend/interfaces.md`](docs/backend/interfaces.md) — HTTP/CLI/event adapters, controllers, input validation.
-- [`docs/backend/api-conventions.md`](docs/backend/api-conventions.md) — response format, error codes, versioning.
-- [`docs/backend/database.md`](docs/backend/database.md) — database, migrations, ID strategy.
-- [`docs/backend/logging.md`](docs/backend/logging.md) — logging, tracing, and masking.
-
-### Operations and quality
-
-- [`docs/operations/README.md`](docs/operations/README.md) — local development, CI/CD, deployment.
-- [`tools/driver/README.md`](tools/driver/README.md) — public product driver contract and owned E2E scenarios.
-- [`docs/project/repository-split.md`](docs/project/repository-split.md) — private evaluation ownership and evidence references.
-- [`docs/quality/e2e.md`](docs/quality/e2e.md) — actual native window and product OS scenarios.
-- [`docs/quality/README.md`](docs/quality/README.md) — testing strategy and code-review expectations.
-- [`docs/quality/agent-skills.md`](docs/quality/agent-skills.md) — installed Agent Skills (canonical `.claude/skills/`; `.agents` is a symlink to `.claude`).
-- [`docs/decisions/README.md`](docs/decisions/README.md) — architecture decision records (ADRs).
+| Task | Read before implementation |
+| --- | --- |
+| New to the project | [Product scope](docs/project/README.md), [architecture](docs/project/architecture.md) |
+| Product behavior or module boundaries | Relevant [specifications](specs/README.md), [handoff](docs/project/agent-handoff.md), [repository ownership](docs/project/repository.md) |
+| Desktop UI | [Frontend conventions](docs/frontend/README.md), [UI craft skills](docs/quality/agent-skills.md) |
+| Marketing site or blog | [Site](docs/frontend/site.md), [blog](docs/frontend/blog.md); apply relevant [UI craft skills](docs/quality/agent-skills.md) for UI work |
+| Backend or core logic | [Backend conventions](docs/backend/README.md) |
+| Build, configuration or deployment | [Operations](docs/operations/README.md) |
+| Experiments, evaluation or drivers | [008 Evaluation](specs/008-evaluation.md), [repository split](docs/project/repository-split.md), [product driver](tools/driver/README.md) |
+| Validation or review | [Quality](docs/quality/README.md), [testing](docs/quality/testing.md), [native E2E](docs/quality/e2e.md) |
+| Creating a pull request | [Pull request conventions](docs/quality/code-review.md#pull-request-conventions) |
 
 ---
 
@@ -86,24 +52,17 @@ If an agent tool restricts access to the current project, add the private checko
 ### Forbidden patterns
 
 - **No hardcoded strings.** All user-facing text must be defined in a single place (i18n keys, constants, configuration) and referenced by identifier.
-- **No redundant UI copy.** Do not repeat information that is already conveyed by a title, icon, selected state, or surrounding context.
-- **No duplicated implementations.** If a piece of logic already exists, reuse it or extract it to the correct layer/slice. Do not copy-paste with minor variations.
-- **No fallback/clever bypass logic.** Do not mask a root cause with a default value, a silent catch, or a conditional shortcut. Face the actual problem and fix it, or ask the user.
+- **No redundant UI copy.** Do not repeat self-evident information. Preserve accessible names and guidance needed to understand or complete an action.
+- **No duplicated implementations.** Reuse existing implementations of the same business rule or extract them to the correct layer/slice. Similar code shape alone does not justify a shared abstraction.
+- **No silent failure masking.** Do not mask a root cause with a default value, a silent catch, or a conditional shortcut. Recovery or degraded behavior explicitly approved by the specs must follow its documented conditions, expose failures as required, and be tested. It must not bypass privacy, cancellation or target-identity guarantees.
 - **No assumptions about hidden requirements.** If a feature is not documented and the intent is unclear, ask.
-
-### When something is unclear
-
-1. Search the current `docs/` for the topic.
-2. Read the relevant layer/slice README.
-3. Inspect recent logs, tests, or existing code.
-4. If still unclear, ask the user with a concise, specific question.
 
 ---
 
 ## Frontend: Feature-Sliced Design (FSD)
 
 - A page is an orchestration layer. It composes widgets and features and reads routing data. It must not contain business logic or reusable UI.
-- A widget is a self-contained block of UI that belongs to a page or a feature.
+- A widget is a self-contained UI block composed by pages; it may compose features. Features must not import widgets.
 - A feature owns a complete user scenario (e.g., "create order"). It contains UI, model, API, and logic that are specific to that scenario.
 - An entity owns domain data and rules (e.g., `User`, `Order`). It has no UI and no HTTP client logic.
 - `shared` contains framework-agnostic utilities, UI primitives, and configuration that can be used by any layer.
@@ -148,7 +107,7 @@ After completing a task, update the documentation if the task has changed any of
 7. Give an ADR the next unused number and add it to [`docs/decisions/README.md`](docs/decisions/README.md); never reuse a number. Index every new document in its directory `README.md`.
 8. `README.md`, `README.zh-CN.md` and `README.ja.md` carry the same facts and the same local links; change them together. `AGENTS.md` mirrors this file, so edit only `CLAUDE.md`.
 9. A document written for a generic stack (TypeScript examples) must open with its Arion mapping, as [`docs/frontend/layers.md`](docs/frontend/layers.md) and [`docs/backend/README.md`](docs/backend/README.md) do.
-10. Run `pnpm check` before committing documentation: it rejects broken links, documented `pnpm` scripts and `make` targets that do not exist, unlinked documents, duplicate or unindexed ADR numbers and translated READMEs whose links differ from `README.md`.
+10. Run `pnpm check` before handing off documentation changes, whether or not committing. It validates repository structure and documentation; it does not establish native functionality. Run additional checks appropriate to the change under [testing](docs/quality/testing.md), and report results and any checks not run with their reasons.
 
 ---
 
@@ -170,14 +129,7 @@ Example: `feat(orders): add checkout use case`.
 
 ## Pull request conventions
 
-- **Title:** the same Conventional Commits form as a commit subject.
-- **Body:** English, in these sections, in this order:
-  1. `## Summary` — what changes and why, one numbered item per independent change. Cite the spec acceptance IDs and ADRs involved.
-  2. `## Changes` — grouped by area (e.g. **Desktop IME**, **Site**). Name the files and what changed in each. Include doc, spec and ADR updates, and corrections made in passing (e.g. a doc that disagreed with the code).
-  3. `## Screenshots` — required for any visible UI change, on the site or in the desktop app. Show every changed state: each locale whose layout differs, mobile width for the site, and intermediate animation frames when the change is motion. Lay out pairs in Markdown tables with a bold label per cell.
-  4. `## Testing` — every check that ran and its result (e.g. `pnpm site:check`, native tests, a browser check). Under **Not run**, list each check that could not run here (e.g. native tests that need macOS) and the exact command or manual step a reviewer should use.
-- **Screenshot hosting:** never commit screenshots to the feature branch. Push them to a separate image-only branch (`claude/pr-screenshots-<topic>`, under `pr-screenshots/`). Link them as `https://github.com/AstraFoundry/Arion/blob/<branch>/pr-screenshots/<file>.png?raw=true`. Say in the body that the branch can be deleted after merge.
-- **Claims:** describe only verified results. Do not present unverified behavior as working.
+Follow [the PR format and screenshot workflow](docs/quality/code-review.md#pull-request-conventions) when creating or updating a PR. Describe only verified results and explicitly identify checks not run.
 
 ---
 

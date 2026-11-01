@@ -1,6 +1,6 @@
 # Documentation
 
-This directory is the single source of truth for how this project is built, organized, and evolved by agents.
+This directory documents how this project is built, organized, and evolved by agents. Read the domains relevant to the task and follow their links; unrelated domains do not need to be read for every change.
 
 ## Product implementation
 
@@ -28,3 +28,12 @@ This directory is the single source of truth for how this project is built, orga
 3. Before writing backend code, read [`backend/README.md`](backend/README.md).
 4. Before changing deployment, build, or operational behavior, read [`operations/README.md`](operations/README.md).
 5. If you change behavior, architecture, or conventions, update the relevant doc in the same change set.
+
+## Document authority and conflicts
+
+- [Specifications](../specs/README.md) define product requirements and acceptance criteria.
+- Adopted [ADRs](decisions/README.md) record technical decisions; proposals and research are not production commitments.
+- Architecture and domain documentation explain implementation boundaries and workflows within those requirements and decisions.
+- Code and tests show the current implementation and evidence, which may not yet satisfy the documented requirements.
+
+When sources conflict, identify the discrepancy rather than silently choosing one or changing a requirement to match the code. Check whether an adopted decision explicitly supersedes the older guidance. If the intended product behavior, boundary or technology choice remains unresolved, ask before implementing the affected part. Local implementation details within established constraints can be decided independently.
