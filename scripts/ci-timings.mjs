@@ -25,6 +25,7 @@ export function jobTiming(run, job) {
   return {
     run_id: run.databaseId, job_id: job.id, attempt: job.run_attempt, event: run.event,
     branch: run.headBranch, job: job.name, conclusion: job.conclusion ?? job.status,
+    reused_result: Boolean(job.run_attempt > 1 && job.created_at && job.started_at && job.started_at < job.created_at),
     timestamp_anomaly: Boolean(job.started_at && job.completed_at && job.completed_at < job.started_at || job.created_at && job.started_at && job.started_at < job.created_at),
     dependency_wait_seconds: seconds(run.createdAt, job.created_at),
     queue_seconds: queue,
@@ -40,7 +41,7 @@ export function summarize(rows) {
     return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
   };
   return [...new Set(rows.map(row => row.job))].map(job => {
-    const samples = rows.filter(row => row.job === job && row.conclusion === 'success' && row.runtime_seconds !== null);
+    const samples = rows.filter(row => row.job === job && row.conclusion === 'success' && row.runtime_seconds !== null && !row.reused_result);
     return { job, successful_samples: samples.length, ...Object.fromEntries(
       ['dependency_wait_seconds', 'queue_seconds', 'preparation_seconds', 'checks_seconds', 'runtime_seconds'].map(key => {
         const values = samples.map(row => row[key]).filter(value => value !== null);

@@ -33,3 +33,12 @@ test('API timestamp anomalies are explicit and never become negative queue durat
   assert.equal(row.queue_seconds, null);
   assert.equal(row.runtime_seconds, 60);
 });
+
+
+test('retry metadata carrying an earlier successful result is retained but not counted as another execution', () => {
+  const original = jobTiming(run, { ...job, run_attempt: 1 });
+  const carried = jobTiming(run, { ...job, id: 3, run_attempt: 2, created_at: '2026-01-01T00:03:00Z' });
+  assert.equal(carried.reused_result, true);
+  assert.equal(carried.runtime_seconds, 60);
+  assert.equal(summarize([original, carried])[0].successful_samples, 1);
+});
