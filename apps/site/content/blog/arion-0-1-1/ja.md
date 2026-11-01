@@ -7,7 +7,7 @@ category: announcement
 tags: [リリース, 音声入力, ピンイン入力, オフライン]
 image: /blog/arion-0-1-1/cover.webp
 imageAlt: チャットの入力欄を拡大した模擬録画。画面下の Arion の音声入力ピルに英語の下書きが表示され、右下のオーバーレイは右 Option キーを押していることを示している
-draft: true
+draft: false
 ---
 
 本日、最初の正式リリースとなる Arion 0.1.1 を公開しました。Apple シリコン搭載の Mac（macOS 14 以降）と Windows x64 に対応し、AGPL-3.0 のオープンソースとして無料でダウンロードできます。

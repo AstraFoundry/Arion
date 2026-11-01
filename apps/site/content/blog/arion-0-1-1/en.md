@@ -7,7 +7,7 @@ category: announcement
 tags: [release, dictation, pinyin keyboard, offline]
 image: /blog/arion-0-1-1/cover.webp
 imageAlt: A mock screen recording zoomed in on a chat message box, with Arion's dictation pill showing an English draft and a key overlay showing Right Option held
-draft: true
+draft: false
 ---
 
 Arion 0.1.1 is out today, our first stable release. It runs on Apple silicon Macs (macOS 14 or later) and Windows x64, and is free and open source under AGPL-3.0.

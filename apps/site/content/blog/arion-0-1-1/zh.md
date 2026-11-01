@@ -7,7 +7,7 @@ category: announcement
 tags: [发布, 语音输入, 拼音输入法, 离线]
 image: /blog/arion-0-1-1/cover.webp
 imageAlt: 模拟录屏：聊天窗口的输入框已放大，屏幕下方的 Arion 听写胶囊正显示一句英文草稿，右下角提示正按住右 Option 键
-draft: true
+draft: false
 ---
 
 Arion 0.1.1 今天发布，这是我们的第一个正式版本，支持 Apple 芯片 Mac（macOS 14 及以上）和 Windows x64，以 AGPL-3.0 协议开源，免费下载。
