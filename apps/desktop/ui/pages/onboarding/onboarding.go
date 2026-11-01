@@ -138,6 +138,14 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 						button.TextColor(tokens.Muted)
 					}
 					button.OnClick(func() { p.move(c, 1, store) })
+				case onboarding.Usage:
+					// Either answer moves on; the platform records it meanwhile.
+					answer := func(share bool) {
+						p.move(c, 1, store)
+						store.Actions.SetUsageSharing(share)
+					}
+					kit.Button(c.Key("usage-decline"), tokens, kit.Ghost, messages.Text(copy.OnbUsageDecline), onboarding.Ready(step, state)).OnClick(func() { answer(false) })
+					kit.Button(c.Key("usage-share"), tokens, kit.Primary, messages.Text(copy.OnbUsageShare), onboarding.Ready(step, state)).OnClick(func() { answer(true) })
 				case onboarding.InputMethod:
 					if !onboarding.Ready(step, state) {
 						kit.Button(c.Key("later"), tokens, kit.Ghost, messages.Text(copy.OnbIMELater), !state.InputMethodInstalling).OnClick(func() {
@@ -436,6 +444,8 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 			signin.Terms(c, store, tokens)
 			signin.Notice(c, store, tokens)
 		})
+	case onboarding.Usage:
+		heading(c, tokens, messages.Text(copy.OnbUsageTitle), messages.Text(copy.OnbUsageBody))
 	case onboarding.Finished:
 		ui.Column(c).Gap(16).Children(func() {
 			mark := ui.Box(c).Size(56, 56).Radius(28).Background(tokens.Success)

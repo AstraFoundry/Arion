@@ -23,6 +23,18 @@ const (
 	AccountWaitlistError           AccountWaitlistPhase = "error"
 )
 
+// UsageSharing is an account's answer to sharing usage data.
+type UsageSharing string
+
+const (
+	// UsageUnknown: not read for this account, or the read failed.
+	UsageUnknown UsageSharing = ""
+	// UsageUndecided: the account has not answered the current notice.
+	UsageUndecided UsageSharing = "undecided"
+	UsageShared    UsageSharing = "shared"
+	UsageNotShared UsageSharing = "not_shared"
+)
+
 // AccountCredential is what the credential store last said about a refresh
 // token while signed out. Startup and account views read it off the main
 // thread; the credential check itself never contacts the network.
@@ -63,10 +75,21 @@ type Account struct {
 	// UsageReporting is true while this session sends consented daily usage:
 	// the token carries current consent and the platform has not refused it.
 	UsageReporting bool
-	ErrorCode      string
-	ErrorDetail    string
-	Waitlist       AccountWaitlist
-	SignOut        AccountSignOut
+	// UsageSharing is the signed-in account's answer to sharing usage data,
+	// read from the platform after each sign-in or refresh. It is a choice
+	// separate from signing in.
+	UsageSharing UsageSharing
+	// UsageAsk is set when the account had not answered once Arion read its
+	// choice; the onboarding usage step applies until the account changes.
+	UsageAsk bool
+	// UsageLoading and UsageSaving are true while the choice is read or a
+	// new answer is recorded.
+	UsageLoading bool
+	UsageSaving  bool
+	ErrorCode    string
+	ErrorDetail  string
+	Waitlist     AccountWaitlist
+	SignOut      AccountSignOut
 	// Credential is meaningful while signed out; any sign-in, refresh,
 	// cancel or sign-out resets it to CredentialUnknown.
 	Credential AccountCredential

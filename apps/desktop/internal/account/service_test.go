@@ -106,6 +106,10 @@ type issuer struct {
 	// serves the profile from UserInfo.
 	bareID       bool
 	userInfoAuth []string
+	// consentAccepted and consentDecided are the account's recorded usage
+	// answer the fake platform returns and updates.
+	consentAccepted bool
+	consentDecided  bool
 }
 
 func newIssuer(t *testing.T) *issuer {
@@ -410,19 +414,26 @@ func (s *issuer) usageConsent(w http.ResponseWriter, r *http.Request) {
 	s.mu.Lock()
 	s.consentHits++
 	s.consentAuth = r.Header.Get("Authorization")
-	s.consentRequest = string(body)
-	status, payload := s.consentStatus, s.consentBody
-	s.mu.Unlock()
-	if r.Method != http.MethodPut {
-		s.t.Errorf("usage consent method %s", r.Method)
-	}
-	if payload == "" {
+	switch r.Method {
+	case http.MethodGet:
+		if r.URL.Query().Get("productSlug") != "arion" {
+			s.t.Errorf("usage consent query %s", r.URL.RawQuery)
+		}
+	case http.MethodPut:
+		s.consentRequest = string(body)
 		var asked struct {
 			Accepted bool `json:"accepted"`
 		}
 		_ = json.Unmarshal(body, &asked)
-		payload = `{"data":{"accepted":` + strconv.FormatBool(asked.Accepted) + `,"version":"usage-v1"}}`
+		s.consentAccepted, s.consentDecided = asked.Accepted, true
+	default:
+		s.t.Errorf("usage consent method %s", r.Method)
 	}
+	status, payload := s.consentStatus, s.consentBody
+	if payload == "" {
+		payload = `{"data":{"accepted":` + strconv.FormatBool(s.consentAccepted) + `,"decided":` + strconv.FormatBool(s.consentDecided) + `,"version":"usage-v1"}}`
+	}
+	s.mu.Unlock()
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	_, _ = w.Write([]byte(payload))

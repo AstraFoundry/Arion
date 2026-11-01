@@ -62,30 +62,31 @@ func TestApplySessionRemembersAccountDisplay(t *testing.T) {
 	}
 }
 
-// The answer to the usage notice belongs to one sign-in: a finished,
-// failed or cancelled sign-in consumes it, so a later refresh never reuses it.
-func TestUsageChoiceIsConsumedByTheSignInItBelongsTo(t *testing.T) {
-	svc, err := account.New(account.Config{Issuer: account.DefaultIssuer}, account.Dependencies{Store: &maintenanceStore{}, Browser: func(string) error { return nil }})
-	if err != nil {
-		t.Fatal(err)
+// Usage sharing is the account's own answer: another account signing in
+// starts unknown and is asked again only if it never answered.
+func TestApplySessionForgetsAnotherAccountsUsageAnswer(t *testing.T) {
+	a := &App{prefStore: settings.Store{Path: filepath.Join(t.TempDir(), "preferences.json")}}
+	a.state.Preferences = application.DefaultPreferences("darwin")
+	a.applySession(account.Session{Issuer: account.DefaultIssuer, Subject: "user-1"}, arion.AccountSignedIn)
+	a.state.Account.UsageSharing, a.state.Account.UsageAsk = arion.UsageShared, true
+	a.applySession(account.Session{Issuer: account.DefaultIssuer, Subject: "user-1"}, arion.AccountSignedIn)
+	if a.state.Account.UsageSharing != arion.UsageShared || !a.state.Account.UsageAsk {
+		t.Fatalf("a refresh of the same account lost its answer: %+v", a.state.Account)
 	}
-	for _, tc := range []struct {
-		name    string
-		session account.Session
-		err     error
-	}{
-		{"recorded already", account.Session{Issuer: account.DefaultIssuer, Subject: "user-1", UsageConsent: true}, nil},
-		{"failed", account.Session{}, account.Wrap(account.CodeAuthorization, "access_denied", nil)},
+	a.applySession(account.Session{Issuer: account.DefaultIssuer, Subject: "user-2"}, arion.AccountSignedIn)
+	if a.state.Account.UsageSharing != arion.UsageUnknown || a.state.Account.UsageAsk {
+		t.Fatalf("user-2 inherited user-1's answer: %+v", a.state.Account)
+	}
+}
+
+func TestUsageSharingSeparatesUndecidedFromDeclined(t *testing.T) {
+	for answer, want := range map[account.UsageConsent]arion.UsageSharing{
+		{}:                              arion.UsageUndecided,
+		{Decided: true}:                 arion.UsageNotShared,
+		{Accepted: true, Decided: true}: arion.UsageShared,
 	} {
-		t.Run(tc.name, func(t *testing.T) {
-			a := &App{accounts: svc, prefStore: settings.Store{Path: filepath.Join(t.TempDir(), "preferences.json")}}
-			a.state.Preferences = application.DefaultPreferences("darwin")
-			agreed := true
-			a.usageChoice = &agreed
-			a.finishAccount(tc.session, tc.err)
-			if a.usageChoice != nil {
-				t.Fatal("the choice outlived its sign-in")
-			}
-		})
+		if got := usageSharingOf(answer); got != want {
+			t.Fatalf("%+v = %s, want %s", answer, got, want)
+		}
 	}
 }

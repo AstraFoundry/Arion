@@ -86,3 +86,21 @@ func TestUsagePayloadFailureKeepsSnapshotPending(t *testing.T) {
 		t.Fatal("invalid success response discarded usage or disabled collection")
 	}
 }
+
+// After the platform refused a token without consent, sharing from Arion
+// reports with that same token once the platform records the answer.
+func TestUsageUploadFollowsANewAnswerOnTheSameToken(t *testing.T) {
+	a := &App{}
+	a.opts.DataDir = t.TempDir()
+	a.state.Account.Phase = arion.AccountSignedIn
+	// An unreachable loopback issuer keeps the first flush off the network.
+	session := account.Session{Issuer: "http://127.0.0.1:1", Subject: "user-1", AccessToken: "token"}
+	a.usageUpload.session = session
+	a.usageUpload.deniedToken = "token"
+	session.UsageConsent = true
+	a.usageUpload.deniedToken = ""
+	a.configureUsageUpload(session)
+	if !a.usageUpload.session.UsageConsent || !a.state.Account.UsageReporting {
+		t.Fatalf("recorded consent did not start reporting: %+v", a.usageUpload.session)
+	}
+}

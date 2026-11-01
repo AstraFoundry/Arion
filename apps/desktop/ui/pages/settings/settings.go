@@ -19,6 +19,7 @@ import (
 	"arion.local/desktop/ui/features/signin"
 	"arion.local/desktop/ui/features/uilanguage"
 	"arion.local/desktop/ui/features/update"
+	"arion.local/desktop/ui/features/usagesharing"
 	"arion.local/desktop/ui/features/vocabulary"
 	"arion.local/desktop/ui/shared/assets"
 	"arion.local/desktop/ui/shared/config"
@@ -288,6 +289,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		clipboard.Settings(c, store, tokens, func() { holdkey.ClipboardSetting(c, store, &p.clipboardPicker) })
 	case Account:
 		signin.Card(c, store, tokens)
+		usagesharing.Switch(c, store, tokens)
 		if store.State.Account.SignedIn() {
 			if store.State.Account.HostedSync {
 				kit.Group(c, tokens, messages.Text(copy.AccSyncGroup), func() { signin.HostedSync(c, store, tokens) })

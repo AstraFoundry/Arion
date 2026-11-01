@@ -671,9 +671,8 @@ type Actions interface {
 	ExportDiagnostics()
 	CompleteOnboarding()
 	// SignIn starts the system-browser sign-in. It returns immediately.
-	// shareUsage is the answer the user gave to the usage notice before
-	// signing in; it is recorded with the account once sign-in succeeds.
-	SignIn(shareUsage bool)
+	// Signing in never answers whether usage data is shared.
+	SignIn()
 	// CancelSignIn invalidates the in-flight sign-in or refresh.
 	CancelSignIn()
 	// RefreshAccount restores a session from the stored refresh token.
@@ -684,6 +683,9 @@ type Actions interface {
 	// whether a refresh token is stored, into State.Account.Credential.
 	// It does nothing unless signed out with the credential unknown.
 	CheckStoredAccount()
+	// SetUsageSharing records the signed-in account's answer to sharing
+	// usage data, from the onboarding usage step or the settings switch.
+	SetUsageSharing(share bool)
 	// JoinHostedSyncWaitlist joins the hosted-sync waitlist for the signed-in user.
 	JoinHostedSyncWaitlist()
 	// SignInChatGPT opens the ChatGPT sign-in in the browser for cloud

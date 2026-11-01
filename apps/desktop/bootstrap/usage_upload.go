@@ -67,7 +67,7 @@ func (a *App) configureUsageUpload(session account.Session) {
 		return
 	}
 	u := &a.usageUpload
-	if u.session.Issuer == session.Issuer && u.session.Subject == session.Subject && u.session.AccessToken == session.AccessToken {
+	if u.session.Issuer == session.Issuer && u.session.Subject == session.Subject && u.session.AccessToken == session.AccessToken && u.session.UsageConsent == session.UsageConsent {
 		return
 	}
 	a.suspendUsageUpload()

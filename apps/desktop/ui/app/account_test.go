@@ -55,11 +55,7 @@ func TestOnboardingAccountStep(t *testing.T) {
 	for _, method := range []copy.Key{copy.AccContinueGoogle, copy.AccContinueGitHub, copy.AccContinueEmail} {
 		actions.calls = nil
 		click(en.Text(method))
-		if actions.called("sign-in") {
-			t.Fatalf("%s started the sign-in before the usage notice was answered", method)
-		}
-		click(en.Text(copy.AccUsageNoticeAgree))
-		if !actions.called("sign-in:share") {
+		if !actions.called("sign-in") {
 			t.Fatalf("%s did not start the browser sign-in", method)
 		}
 	}
@@ -108,8 +104,7 @@ func TestOnboardingAccountCustomIssuer(t *testing.T) {
 	click(en.Text(copy.OnbStart))
 	expect(t, tt, false, en.Text(copy.AccContinueGoogle))
 	click(en.Text(copy.AccSignIn))
-	click(en.Text(copy.AccUsageNoticeAgree))
-	if !actions.called("sign-in:share") {
+	if !actions.called("sign-in") {
 		t.Fatal("sign-in not started")
 	}
 }
@@ -156,8 +151,7 @@ func TestSettingsAccountSignedOut(t *testing.T) {
 	expect(t, tt, false, en.Text(copy.AccSyncGroup))
 	snapshot(t, tt, "settings-account-signed-out")
 	clicker(t, tt)(en.Text(copy.AccSignIn))
-	clicker(t, tt)(en.Text(copy.AccUsageNoticeAgree))
-	if !actions.called("sign-in:share") {
+	if !actions.called("sign-in") {
 		t.Fatal("sign-in not started")
 	}
 	state.Account.Phase = runtime.AccountSigningIn
@@ -401,46 +395,102 @@ func TestOnboardingTermsAndLocalContinuation(t *testing.T) {
 	}
 }
 
-// Registering and signing in share one browser page, so the app asks about
-// usage data before it opens: agreeing and declining both continue, with the
-// answer; cancelling signs nothing in.
-func TestSignInAsksAboutUsageFirst(t *testing.T) {
+// Signing in never answers whether usage is shared: an account that never
+// answered gets its own onboarding step after the account step, and either
+// answer moves on.
+func TestOnboardingAsksAboutUsageAfterSignIn(t *testing.T) {
 	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
-		for _, tc := range []struct {
-			name   string
-			answer copy.Key
-			want   string
-		}{
-			{"agree", copy.AccUsageNoticeAgree, "sign-in:share"},
-			{"decline", copy.AccUsageNoticeDecline, "sign-in:private"},
-			{"cancel", copy.AccUsageNoticeCancel, ""},
-		} {
-			t.Run(string(locale)+"/"+tc.name, func(t *testing.T) {
-				state, actions, store := fixture()
-				state.Preferences.UILanguage = locale
-				messages := store.Copy()
-				tt := openAccount(t, store)
-				click := clicker(t, tt)
-				click(messages.Text(copy.AccSignIn))
-				expect(t, tt, true, messages.Text(copy.AccUsageNoticeTitle), messages.Text(copy.AccUsageNoticeBody),
-					messages.Text(copy.AccUsageNoticeCancel), messages.Text(copy.AccUsageNoticeDecline), messages.Text(copy.AccUsageNoticeAgree))
-				if actions.called("sign-in") {
-					t.Fatal("sign-in started before the notice was answered")
-				}
-				if tc.name == "agree" {
-					snapshot(t, tt, "settings-account-usage-notice-"+string(locale))
-				}
-				click(messages.Text(tc.answer))
-				expect(t, tt, false, messages.Text(copy.AccUsageNoticeTitle))
-				switch {
-				case tc.want == "" && actions.called("sign-in"):
-					t.Fatal("cancel started a sign-in")
-				case tc.want != "" && !actions.called(tc.want):
-					t.Fatalf("calls = %v, want %s", actions.calls, tc.want)
-				case tc.want != "" && actions.called(map[string]string{"sign-in:share": "sign-in:private", "sign-in:private": "sign-in:share"}[tc.want]):
-					t.Fatalf("calls = %v, recorded the other answer", actions.calls)
-				}
-			})
+		for share, want := range map[bool]string{true: "usage:share", false: "usage:private"} {
+			state, actions, store := fixture()
+			state.Preferences.UILanguage = locale
+			messages := store.Copy()
+			page := onboarding.NewPage()
+			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+			settle(tt)
+			click := clicker(t, tt)
+			click(messages.Text(copy.OnbStart))
+			click(messages.Text(copy.AccContinueGoogle))
+			if !actions.called("sign-in") || actions.called("usage:share") || actions.called("usage:private") {
+				t.Fatalf("sign-in answered usage sharing: %v", actions.calls)
+			}
+			signedIn(state, false)
+			state.Account.UsageLoading = true
+			settle(tt)
+			expect(t, tt, true, messages.Text(copy.Continue))
+			if err := tt.Click(messages.Text(copy.Continue)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			expect(t, tt, true, messages.Text(copy.OnbAccountTitle))
+			state.Account.UsageLoading = false
+			state.Account.UsageSharing, state.Account.UsageAsk = runtime.UsageUndecided, true
+			click(messages.Text(copy.Continue))
+			expect(t, tt, true, messages.Text(copy.OnbUsageTitle), messages.Text(copy.OnbUsageBody), messages.Text(copy.OnbUsageShare), messages.Text(copy.OnbUsageDecline))
+			if share {
+				snapshot(t, tt, "onboarding-usage-"+string(locale))
+			}
+			click(messages.Text(map[bool]copy.Key{true: copy.OnbUsageShare, false: copy.OnbUsageDecline}[share]))
+			if !actions.called(want) {
+				t.Fatalf("calls = %v, want %s", actions.calls, want)
+			}
+			expect(t, tt, true, messages.Text(copy.OnbMicTitle))
+		}
+	}
+}
+
+// An account that answered before, and a local start, never see the step.
+func TestOnboardingSkipsUsageWhenAnsweredOrLocal(t *testing.T) {
+	state, _, store := fixture()
+	en := copy.For(copy.English)
+	page := onboarding.NewPage()
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+	settle(tt)
+	click := clicker(t, tt)
+	click(en.Text(copy.OnbStart))
+	click(en.Text(copy.OnbContinueLocally))
+	expect(t, tt, true, en.Text(copy.OnbMicTitle))
+	click(en.Text(copy.Back))
+	signedIn(state, false)
+	state.Account.UsageSharing = runtime.UsageNotShared
+	settle(tt)
+	click(en.Text(copy.Continue))
+	expect(t, tt, true, en.Text(copy.OnbMicTitle))
+	expect(t, tt, false, en.Text(copy.OnbUsageTitle))
+}
+
+// Settings › Account changes the answer with a switch while signed in.
+func TestSettingsAccountUsageSharingSwitch(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		state, actions, store := fixture()
+		state.Preferences.UILanguage = locale
+		messages := store.Copy()
+		tt := openAccount(t, store)
+		expect(t, tt, false, messages.Text(copy.AccUsageShare))
+		signedIn(state, false)
+		state.Account.UsageSharing = runtime.UsageNotShared
+		tt = openAccount(t, store)
+		expect(t, tt, true, messages.Text(copy.AccUsageShare), messages.Text(copy.AccUsageShareDetail))
+		snapshot(t, tt, "settings-account-usage-sharing-"+string(locale))
+		// The switch sits at the row's trailing edge, level with its title.
+		toggle := func() {
+			t.Helper()
+			title, ok := tt.Find(messages.Text(copy.AccUsageShare))
+			if !ok {
+				t.Fatalf("no usage sharing row: %q", tt.Texts())
+			}
+			tt.ClickAt(SettingsWidth-60, title.Y+title.H)
+			settle(tt)
+		}
+		toggle()
+		if !actions.called("usage:share") {
+			t.Fatalf("calls = %v, want usage:share", actions.calls)
+		}
+		actions.calls = nil
+		state.Account.UsageSharing = runtime.UsageShared
+		settle(tt)
+		toggle()
+		if !actions.called("usage:private") {
+			t.Fatalf("calls = %v, want usage:private", actions.calls)
 		}
 	}
 }

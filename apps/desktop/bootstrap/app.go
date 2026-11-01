@@ -164,8 +164,6 @@ type App struct {
 	accounts           *account.Service
 	accountMaintenance accountMaintenance
 	usageUpload        usageUploadState
-	// usageChoice is the answer to the usage notice for the sign-in in flight.
-	usageChoice        *bool
 	accountMu          sync.Mutex
 	accountSeq         uint64
 	accountCancel      context.CancelFunc

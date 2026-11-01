@@ -18,10 +18,11 @@ These `runtime.Actions` methods return immediately. Work continues off the main 
 
 | Method | Effect |
 | --- | --- |
-| `SignIn(shareUsage)` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. `shareUsage` is the answer to the usage notice every sign-in entry shows first; it is recorded with the account once sign-in succeeds ([consent](#consented-usage-reporting)). |
+| `SignIn()` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. Signing in never answers whether usage is shared ([consent](#consented-usage-reporting)). |
 | `CancelSignIn()` | Invalidates the in-flight sign-in or refresh. A callback that arrives afterwards is not exchanged. A refresh token already stored for that attempt is deleted and revoked. |
 | `RefreshAccount()` | Explicit entitlement recheck; rotates the stored refresh token and replaces the in-memory access token. Phase `refreshing`. |
 | `SignOut()` | Revokes the refresh token, then deletes that credential item. Local keys and local memory stay. |
+| `SetUsageSharing(share)` | Records the signed-in account's answer to sharing usage data, from the onboarding usage step or the Settings › Account switch. `UsageSaving` while it runs; the platform's confirmation sets `UsageSharing` and starts or stops reporting. |
 | `CheckStoredAccount()` | Reads whether a refresh token is stored, with `Service.Stored`. This does nothing unless `Phase` is `signed_out` and `Credential` is unknown. A result is dropped when a sign-in, refresh, cancel or sign-out started during the read. |
 
 One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_PROGRESS`. `JoinHostedSyncWaitlist` does the same while one is running; views do not call it.
@@ -157,30 +158,38 @@ OS-authorized [product notifications](product-notifications.md) use the current 
 
 ## Consented usage reporting
 
-The desktop asks before it opens the browser. Every sign-in entry (the account
-card, the onboarding account step and its Google, GitHub and email buttons)
-first shows the usage notice: overview statistics (daily dictation counts,
-speaking time and word counts, never audio or dictated text) are uploaded and
-analyzed, with **Cancel**, **Don't upload** and **Upload**. Both answers
-continue to the browser; Cancel or Escape starts nothing. Registering and
-signing in share the browser page, so the notice does not depend on which one
-the user picks there, and the website no longer asks.
+Signing in and sharing usage data are separate choices. Signing in only
+identifies the account; it never answers, and Arion never treats it as
+permission. The answer belongs to the account on the platform, so the web
+portal, other devices and this app see the same choice.
 
-After sign-in, `Service.RecordUsageConsent` sends the answer to the platform
-with `PUT {issuer}/api/v1/usage/consent` and the access token, body
-`{"productSlug":"arion","accepted":bool}`. It is skipped when the token's claim
-already holds that answer. The platform stores the notice version and a
-timestamp and keeps a history of acceptance and withdrawal. The answer must name
-the choice and, for an acceptance, `usage-v1`; otherwise the session is left
-unchanged and Settings shows `USAGE_CONSENT` with no upload. A confirmed
-choice updates the session at once and reporting starts or stops with it.
+After every successful sign-in or refresh, `Service.ReadUsageConsent` reads it
+with `GET {issuer}/api/v1/usage/consent?productSlug=arion` and the access token
+(`UsageLoading` meanwhile). The answer is `undecided`, `shared` or `not_shared`
+(`Account.UsageSharing`) and replaces the token's claim for reporting. An
+account that has never answered sets `Account.UsageAsk`: onboarding then shows
+its **Usage** step after the account step, with **Share** and **Don't share**;
+either moves on. The account step does not move on while the choice is being
+read. An account that answered before, a local start and a custom issuer never
+see the step. Settings › Account shows a **Share usage data** switch while
+signed in.
+
+Both record the answer with `Service.RecordUsageConsent`:
+`PUT {issuer}/api/v1/usage/consent` and the access token, body
+`{"productSlug":"arion","accepted":bool}`. The platform stores the notice
+version and a timestamp and keeps a history of acceptance and withdrawal. An
+acceptance must name `usage-v1`, and a recorded answer must echo the choice and
+be decided; otherwise the session is left unchanged and the view shows
+`USAGE_CONSENT`. A confirmed choice updates the session at once, clears an
+earlier authorization refusal of the same token, and reporting starts or stops
+with it. Another account signing in starts unknown.
 
 The access token carries `usage_consent_version=usage-v1` and a valid
 `usage_consent_at` timestamp only after the platform records explicit agreement.
-Missing/older claims leave reporting disabled. The desktop never treats sign-in
-alone as permission, and a restored session relies on those claims. A choice
-made later on the web reaches an existing desktop session at its next token
-refresh; the server checks current consent on every report.
+Missing/older claims leave reporting disabled until the platform's read says
+otherwise. A choice made later on the web reaches an existing desktop session
+at its next token refresh, which reads the choice again; the server checks
+current consent on every report.
 
 The same committed usage event that updates Overview also updates a separate
 account-scoped ledger. Only events committed while signed in and consented are
@@ -207,11 +216,8 @@ minutes. Authorization refusals stop collection and sending until a fresh token
 allows them; token expiry waits for the existing account maintenance flow.
 Offline and scripted E2E profiles do not start reporting.
 
-Usage consent is asked in the app's usage notice before browser sign-in.
-Settings › Account does not repeat the consent status or offer a manual refresh
-control. The account portal's Data link opens `/account/data` (standard issuer
-only), where users can withdraw or re-enable it. Changes made there reach Arion
-through automatic token renewal; the server checks current consent on every report.
+The account portal's Data link opens `/account/data` (standard issuer only),
+where users can also withdraw or re-enable sharing.
 The platform caps sources per account day and accepts dates within 32 days back
 and one day ahead of its UTC day; the 31-day ledger stays inside that window.
 
