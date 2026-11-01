@@ -671,8 +671,10 @@ type Actions interface {
 	ExportDiagnostics()
 	CompleteOnboarding()
 	// SignIn starts the system-browser sign-in. It returns immediately.
-	// Signing in never answers whether usage data is shared.
-	SignIn()
+	// shareUsage is the sign-in page's "Share usage data" box: when checked,
+	// Arion records consent once signed in. Unchecked records nothing, so an
+	// earlier answer stays.
+	SignIn(shareUsage bool)
 	// CancelSignIn invalidates the in-flight sign-in or refresh.
 	CancelSignIn()
 	// RefreshAccount restores a session from the stored refresh token.
@@ -684,7 +686,7 @@ type Actions interface {
 	// It does nothing unless signed out with the credential unknown.
 	CheckStoredAccount()
 	// SetUsageSharing records the signed-in account's answer to sharing
-	// usage data, from the onboarding usage step or the settings switch.
+	// usage data from the Settings › Account switch.
 	SetUsageSharing(share bool)
 	// JoinHostedSyncWaitlist joins the hosted-sync waitlist for the signed-in user.
 	JoinHostedSyncWaitlist()

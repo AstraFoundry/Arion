@@ -47,24 +47,3 @@ func TestTranslationStepsFollowHoldKey(t *testing.T) {
 		t.Fatalf("translation offered without a hold key: %d", flow.Step())
 	}
 }
-
-func TestUsageStepAsksOnlyAnUndecidedSignedInAccount(t *testing.T) {
-	state := &runtime.State{Account: runtime.Account{Phase: runtime.AccountSignedIn, Subject: "user-1", UsageLoading: true}}
-	flow := Flow{Index: int(Account)}
-	if flow.Move(1, state) {
-		t.Fatal("left the account step before its usage choice was read")
-	}
-	state.Account.UsageLoading = false
-	state.Account.UsageSharing = runtime.UsageNotShared
-	if !flow.Move(1, state) || flow.Step() != Microphone {
-		t.Fatalf("asked an account that already answered: %d", flow.Step())
-	}
-	state.Account.UsageSharing, state.Account.UsageAsk = runtime.UsageUndecided, true
-	if !flow.Move(-1, state) || flow.Step() != Usage {
-		t.Fatalf("skipped an undecided account: %d", flow.Step())
-	}
-	state.Account.Phase = runtime.AccountSignedOut
-	if !flow.Move(-1, state) || flow.Step() != Account {
-		t.Fatalf("asked a signed-out start: %d", flow.Step())
-	}
-}

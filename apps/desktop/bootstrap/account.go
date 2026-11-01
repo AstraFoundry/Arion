@@ -15,11 +15,12 @@ import (
 // token is available from Session. Views read State.Account instead.
 func (a *App) Account() *account.Service { return a.accounts }
 
-func (x actions) SignIn() {
+func (x actions) SignIn(shareUsage bool) {
 	a := x.a
 	if a.state.Account.Busy() {
 		return
 	}
+	a.shareOnSignIn = shareUsage
 	a.suspendProductNotifications()
 	a.suspendUsageUpload()
 	ctx, seq := a.beginAccount()
@@ -43,6 +44,7 @@ func (x actions) SignIn() {
 
 func (x actions) CancelSignIn() {
 	a := x.a
+	a.shareOnSignIn = false
 	_, seq := a.beginAccount()
 	a.accounts.Cancel()
 	a.post(func() {
@@ -218,6 +220,10 @@ func (a *App) accountReady(seq uint64, ctx context.Context) bool {
 
 func (a *App) finishAccount(session account.Session, err error) {
 	a.state.Account.Credential = arion.CredentialUnknown
+	// The sign-in page's box belongs to that sign-in only; a later refresh
+	// never reuses it.
+	share := a.shareOnSignIn
+	a.shareOnSignIn = false
 	if err != nil {
 		a.state.Account.ErrorCode = string(account.CodeOf(err))
 		a.state.Account.ErrorDetail = account.DetailOf(err)
@@ -239,6 +245,12 @@ func (a *App) finishAccount(session account.Session, err error) {
 	a.state.Account.ErrorDetail = ""
 	a.state.Account.Waitlist = arion.AccountWaitlist{}
 	a.state.Account.SignOut = arion.AccountSignOut{}
+	// A checked box records consent unless the account already shares;
+	// otherwise the platform's record is read as it is.
+	if share && !session.UsageConsent {
+		actions{a}.SetUsageSharing(true)
+		return
+	}
 	a.loadUsageSharing()
 }
 
@@ -266,16 +278,13 @@ func (a *App) loadUsageSharing() {
 				return
 			}
 			a.state.Account.UsageSharing = usageSharingOf(answer)
-			if a.state.Account.UsageSharing == arion.UsageUndecided {
-				a.state.Account.UsageAsk = true
-			}
 			a.configureUsageUpload(session)
 		})
 	}()
 }
 
-// SetUsageSharing records an answer given in the usage step or the settings
-// switch. Reporting follows the platform's confirmation, not the request.
+// SetUsageSharing records an answer from the sign-in page's box or the
+// settings switch. Reporting follows the platform's confirmation, not the request.
 func (x actions) SetUsageSharing(share bool) {
 	a := x.a
 	if !a.state.Account.SignedIn() || a.state.Account.UsageSaving {
@@ -376,7 +385,6 @@ func (a *App) clearAccountProfile() {
 // signed in here.
 func (a *App) resetUsageSharing() {
 	a.state.Account.UsageSharing = arion.UsageUnknown
-	a.state.Account.UsageAsk = false
 	a.state.Account.UsageLoading = false
 	a.state.Account.UsageSaving = false
 }

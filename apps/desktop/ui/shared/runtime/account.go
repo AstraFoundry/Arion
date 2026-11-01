@@ -79,9 +79,6 @@ type Account struct {
 	// read from the platform after each sign-in or refresh. It is a choice
 	// separate from signing in.
 	UsageSharing UsageSharing
-	// UsageAsk is set when the account had not answered once Arion read its
-	// choice; the onboarding usage step applies until the account changes.
-	UsageAsk bool
 	// UsageLoading and UsageSaving are true while the choice is read or a
 	// new answer is recorded.
 	UsageLoading bool

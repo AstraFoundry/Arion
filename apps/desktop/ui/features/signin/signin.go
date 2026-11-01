@@ -17,20 +17,22 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Start is the button that opens the browser sign-in.
-func Start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant, label string) {
+// Start is the button that opens the browser sign-in. shareUsage is the
+// page's "Share usage data" box, false where the page has none.
+func Start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant, label string, shareUsage bool) {
 	if store.State.Account.Disabled {
 		return
 	}
 	if kit.Button(c.Key("sign-in"), tokens, variant, label, !store.State.Account.Busy()).Clicked() {
-		store.Actions.SignIn()
+		store.Actions.SignIn(shareUsage)
 	}
 }
 
 // Methods are the ways to sign in or create an AstraFoundry account. Each
 // opens the same browser sign-in, where the issuer's page offers them all;
-// the button only says which one the user means to pick there.
-func Methods(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+// the button only says which one the user means to pick there. shareUsage is
+// the page's "Share usage data" box.
+func Methods(c *ui.Context, store runtime.Store, tokens theme.Tokens, shareUsage bool) {
 	if store.State.Account.Disabled {
 		return
 	}
@@ -51,7 +53,7 @@ func Methods(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				ui.Text(c, messages.Text(method.label)).FontSize(theme.Body).FontWeight(500).SingleLine()
 			})
 			if button.Clicked() {
-				store.Actions.SignIn()
+				store.Actions.SignIn(shareUsage)
 			}
 		}
 	})
@@ -87,7 +89,7 @@ func card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				title = messages.Text(copy.AccTitle)
 			}
 			kit.Row(c, tokens, title, "", func() {
-				Start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn))
+				Start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn), false)
 			})
 		case account.Waiting:
 			kit.Row(c, tokens, messages.Text(copy.AccTitle), messages.Text(copy.AccWaiting), func() {

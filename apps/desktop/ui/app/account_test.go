@@ -395,67 +395,36 @@ func TestOnboardingTermsAndLocalContinuation(t *testing.T) {
 	}
 }
 
-// Signing in never answers whether usage is shared: an account that never
-// answered gets its own onboarding step after the account step, and either
-// answer moves on.
-func TestOnboardingAsksAboutUsageAfterSignIn(t *testing.T) {
+// The sign-in page carries an unchecked "Share usage data" box. Its state
+// goes with whichever sign-in button is pressed; there is no separate step.
+func TestOnboardingSignInOffersUsageSharingBox(t *testing.T) {
 	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
-		for share, want := range map[bool]string{true: "usage:share", false: "usage:private"} {
-			state, actions, store := fixture()
-			state.Preferences.UILanguage = locale
-			messages := store.Copy()
-			page := onboarding.NewPage()
-			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
-			settle(tt)
-			click := clicker(t, tt)
-			click(messages.Text(copy.OnbStart))
-			click(messages.Text(copy.AccContinueGoogle))
-			if !actions.called("sign-in") || actions.called("usage:share") || actions.called("usage:private") {
-				t.Fatalf("sign-in answered usage sharing: %v", actions.calls)
-			}
-			signedIn(state, false)
-			state.Account.UsageLoading = true
-			settle(tt)
-			expect(t, tt, true, messages.Text(copy.Continue))
-			if err := tt.Click(messages.Text(copy.Continue)); err != nil {
-				t.Fatal(err)
-			}
-			settle(tt)
-			expect(t, tt, true, messages.Text(copy.OnbAccountTitle))
-			state.Account.UsageLoading = false
-			state.Account.UsageSharing, state.Account.UsageAsk = runtime.UsageUndecided, true
-			click(messages.Text(copy.Continue))
-			expect(t, tt, true, messages.Text(copy.OnbUsageTitle), messages.Text(copy.OnbUsageBody), messages.Text(copy.OnbUsageShare), messages.Text(copy.OnbUsageDecline))
-			if share {
-				snapshot(t, tt, "onboarding-usage-"+string(locale))
-			}
-			click(messages.Text(map[bool]copy.Key{true: copy.OnbUsageShare, false: copy.OnbUsageDecline}[share]))
-			if !actions.called(want) {
-				t.Fatalf("calls = %v, want %s", actions.calls, want)
-			}
-			expect(t, tt, true, messages.Text(copy.OnbMicTitle))
+		state, actions, store := fixture()
+		state.Preferences.UILanguage = locale
+		messages := store.Copy()
+		page := onboarding.NewPage()
+		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+		settle(tt)
+		click := clicker(t, tt)
+		click(messages.Text(copy.OnbStart))
+		expect(t, tt, true, messages.Text(copy.AccUsageShare), messages.Text(copy.AccUsageShareDetail))
+		click(messages.Text(copy.AccContinueGoogle))
+		if !actions.called("sign-in") || actions.called("sign-in:share") {
+			t.Fatalf("unchecked box shared usage: %v", actions.calls)
 		}
+		actions.calls = nil
+		click(messages.Text(copy.AccUsageShare))
+		snapshot(t, tt, "onboarding-account-share-usage-"+string(locale))
+		click(messages.Text(copy.AccContinueEmail))
+		if !actions.called("sign-in:share") {
+			t.Fatalf("checked box not passed to sign-in: %v", actions.calls)
+		}
+		signedIn(state, false)
+		settle(tt)
+		expect(t, tt, false, messages.Text(copy.AccUsageShareDetail))
+		click(messages.Text(copy.Continue))
+		expect(t, tt, true, messages.Text(copy.OnbMicTitle))
 	}
-}
-
-// An account that answered before, and a local start, never see the step.
-func TestOnboardingSkipsUsageWhenAnsweredOrLocal(t *testing.T) {
-	state, _, store := fixture()
-	en := copy.For(copy.English)
-	page := onboarding.NewPage()
-	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
-	settle(tt)
-	click := clicker(t, tt)
-	click(en.Text(copy.OnbStart))
-	click(en.Text(copy.OnbContinueLocally))
-	expect(t, tt, true, en.Text(copy.OnbMicTitle))
-	click(en.Text(copy.Back))
-	signedIn(state, false)
-	state.Account.UsageSharing = runtime.UsageNotShared
-	settle(tt)
-	click(en.Text(copy.Continue))
-	expect(t, tt, true, en.Text(copy.OnbMicTitle))
-	expect(t, tt, false, en.Text(copy.OnbUsageTitle))
 }
 
 // Settings › Account changes the answer with a switch while signed in.

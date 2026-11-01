@@ -12,9 +12,6 @@ const (
 	// Google, GitHub or email in the browser, or continuing locally, the
 	// default (SYNC-10). Dictation never waits on it.
 	Account
-	// Usage asks a signed-in account that never answered whether to share
-	// daily usage totals. Signing in does not answer it.
-	Usage
 	Microphone
 	Accessibility
 	InputMethod
@@ -38,7 +35,7 @@ const (
 )
 
 // Steps is the page order.
-var Steps = []Step{Welcome, Account, Usage, Microphone, Accessibility, InputMethod, Model, Polish, Cloud, HoldKey, Translate, TranslateKey, Try, Finished}
+var Steps = []Step{Welcome, Account, Microphone, Accessibility, InputMethod, Model, Polish, Cloud, HoldKey, Translate, TranslateKey, Try, Finished}
 
 // Flow is the user's position; Direction drives the page slide.
 type Flow struct {
@@ -70,11 +67,8 @@ func Ready(step Step, s *runtime.State) bool {
 		}
 		return s.Polish.State == runtime.PolishProvisioning || s.Polish.State == runtime.PolishLoading || s.Polish.State == runtime.PolishReady
 	case Account:
-		// A sign-in in flight is cancelled or finished, and the account's
-		// usage choice read, before moving on.
-		return !s.Account.Busy() && !s.Account.UsageLoading
-	case Usage:
-		return !s.Account.UsageSaving
+		// A sign-in in flight is cancelled or finished before moving on.
+		return !s.Account.Busy()
 	}
 	return true
 }
@@ -102,8 +96,6 @@ func Skipped(step Step, s *runtime.State) bool {
 	switch step {
 	case Account:
 		return s.Account.Disabled
-	case Usage:
-		return !s.Account.SignedIn() || !s.Account.UsageAsk
 	case InputMethod:
 		return s.InputMethod == runtime.InputMethodUnsupported
 	case Cloud:
