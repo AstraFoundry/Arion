@@ -85,16 +85,14 @@ func (a *App) onHoldKeyEvent(key application.HoldKey, e holdkey.Event, at time.T
 			a.onHoldKeyEvent(key, holdkey.Down, pending.at)
 		}
 	}
-	if a.testingHold {
-		if e == holdkey.Down {
-			if key == "" {
-				key = a.state.Preferences.HoldKey
-			}
-			a.state.Hold.Pressed, a.state.Hold.PressedKey = at, key
-			a.invalidate()
+	if e == holdkey.Down {
+		if key == "" {
+			key = a.state.Preferences.HoldKey
 		}
-		return
+		a.state.Hold.Pressed, a.state.Hold.PressedKey = at, key
+		a.invalidate()
 	}
+
 	if e == holdkey.Up && a.holdKey != "" && key != "" && key != a.holdKey {
 		return
 	}

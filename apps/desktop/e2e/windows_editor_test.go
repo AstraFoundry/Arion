@@ -65,6 +65,37 @@ type editorMessage struct {
 	Private        uint32
 }
 
+type editorThreadInfo struct {
+	Size, Flags                                        uint32
+	Active, Focus, Capture, MenuOwner, MoveSize, Caret uintptr
+	Left, Top, Right, Bottom                           int32
+}
+
+func threadFocus(thread uintptr) uintptr {
+	info := editorThreadInfo{Size: uint32(unsafe.Sizeof(editorThreadInfo{}))}
+	ok, _, _ := user32.NewProc("GetGUIThreadInfo").Call(thread, uintptr(unsafe.Pointer(&info)))
+	if ok == 0 {
+		return 0
+	}
+	return info.Focus
+}
+
+type editorFocusSnapshot struct {
+	Window  uintptr `json:"window"`
+	Control uintptr `json:"control"`
+	Process uint32  `json:"process"`
+}
+
+func currentEditorFocus() editorFocusSnapshot {
+	var state editorFocusSnapshot
+	state.Window, _, _ = procGetForegroundWindow.Call()
+	if state.Window != 0 {
+		thread, _, _ := procGetWindowThreadPID.Call(state.Window, uintptr(unsafe.Pointer(&state.Process)))
+		state.Control = threadFocus(thread)
+	}
+	return state
+}
+
 // windowsEditor owns an actual standard Win32 EDIT, a password EDIT, and a
 // noneditable control. Its dedicated OS thread pumps real input messages.
 // It avoids dependence on packaged Notepad's version, process model or tabs.
@@ -154,34 +185,24 @@ func (editor *windowsEditor) focusControl(t *testing.T, control uintptr) {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 	self, _, _ := procGetCurrentThreadId.Call()
-	eventually(t, "owned editor foreground", func() bool {
+	eventually(t, "owned editor foreground and focus", func() bool {
 		foreground, _, _ := procGetForegroundWindow.Call()
-		if foreground == editor.window {
-			return true
+		if foreground != editor.window {
+			procKeybdEvent.Call(vkShift, 0, 0, 0)
+			procKeybdEvent.Call(vkShift, 0, keyUp, 0)
+			current, _, _ := procGetWindowThreadPID.Call(foreground, 0)
+			procAttachThreadInput.Call(self, current, 1)
+			procSetForegroundWindow.Call(editor.window)
+			procAttachThreadInput.Call(self, current, 0)
 		}
-		procKeybdEvent.Call(vkShift, 0, 0, 0)
-		procKeybdEvent.Call(vkShift, 0, keyUp, 0)
-		current, _, _ := procGetWindowThreadPID.Call(foreground, 0)
-		procAttachThreadInput.Call(self, current, 1)
-		procSetForegroundWindow.Call(editor.window)
-		procAttachThreadInput.Call(self, current, 0)
-		foreground, _, _ = procGetForegroundWindow.Call()
-		return foreground == editor.window
-	})
-	thread, _, _ := procGetWindowThreadPID.Call(editor.window, 0)
-	procAttachThreadInput.Call(self, thread, 1)
-	procSetFocus.Call(control)
-	procAttachThreadInput.Call(self, thread, 0)
-	// Assert actual GUI-thread focus rather than assuming SetFocus succeeded.
-	eventually(t, "owned editor focus", func() bool {
-		info := struct {
-			Size, Flags                                        uint32
-			Active, Focus, Capture, MenuOwner, MoveSize, Caret uintptr
-			Left, Top, Right, Bottom                           int32
-		}{Size: 72}
-		info.Size = uint32(unsafe.Sizeof(info))
-		ok, _, _ := user32.NewProc("GetGUIThreadInfo").Call(thread, uintptr(unsafe.Pointer(&info)))
-		return ok != 0 && info.Focus == control
+		thread, _, _ := procGetWindowThreadPID.Call(editor.window, 0)
+		procAttachThreadInput.Call(self, thread, 1)
+		procSetFocus.Call(control)
+		procAttachThreadInput.Call(self, thread, 0)
+		// A background thread can retain its last focused control. Checking
+		// that control alone does not establish the global input recipient.
+		state := currentEditorFocus()
+		return state.Window == editor.window && state.Control == control
 	})
 }
 

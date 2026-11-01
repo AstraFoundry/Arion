@@ -72,14 +72,16 @@ func TestPolishRowStates(t *testing.T) {
 	snapshot(t, tt, "settings-polish-unsupported-zh-CN")
 }
 
-func TestOnboardingLocalPolishDownload(t *testing.T) {
+func TestLocalPolishDownloadChoice(t *testing.T) {
 	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
 		t.Run(string(locale), func(t *testing.T) {
 			state, actions, store := fixture()
 			state.Preferences.UILanguage = locale
 			state.Polish = runtime.Polish{State: runtime.PolishOff, SizeBytes: 1280835840}
-			page := onboarding.NewPage()
-			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+			tt := ui.NewTester(func(c *ui.Context) {
+				theme.Apply(c)
+				ui.Column(c).Width(420).Children(func() { polish.Choice(c, store, theme.Resolve(false)) })
+			}, 500, 560)
 			settle(tt)
 			messages := store.Copy()
 			click := func(key copy.Key) {
@@ -88,9 +90,6 @@ func TestOnboardingLocalPolishDownload(t *testing.T) {
 					t.Fatal(err)
 				}
 				settle(tt)
-			}
-			for _, key := range []copy.Key{copy.OnbStart, copy.OnbContinueLocally, copy.Continue, copy.Continue, copy.OnbIMELater, copy.Continue} {
-				click(key)
 			}
 			click(copy.PolishEngineLocal)
 			if !state.Preferences.Polish || actions.called("download-polish") || !hasText(tt, messages.Text(copy.PolishDownload)) {
@@ -104,11 +103,7 @@ func TestOnboardingLocalPolishDownload(t *testing.T) {
 			if hasText(tt, messages.Text(copy.PolishReady)) {
 				t.Fatal("unprovisioned local choice already shows a ready check")
 			}
-			snapshot(t, tt, "onboarding-polish-confirm-"+string(locale))
-			click(copy.Continue)
-			if !hasText(tt, messages.Text(copy.OnbPolishTitle)) {
-				t.Fatal("continued before confirming the local download")
-			}
+			snapshot(t, tt, "polish-choice-confirm-"+string(locale))
 			click(copy.PolishDownload)
 			if !actions.called("download-polish") {
 				t.Fatal("confirmation did not request the download")
@@ -140,7 +135,7 @@ func TestOnboardingLocalPolishDownload(t *testing.T) {
 			if cancelCount != 1 {
 				t.Fatal("cancel action is duplicated below the progress bar")
 			}
-			snapshot(t, tt, "onboarding-polish-download-"+string(locale))
+			snapshot(t, tt, "polish-choice-download-"+string(locale))
 			click(copy.PolishCancelDownload)
 			rest(tt, theme.Disclosure.Duration)
 			tt.Frame()
@@ -152,18 +147,13 @@ func TestOnboardingLocalPolishDownload(t *testing.T) {
 			state.Polish.State, state.Polish.Failure = runtime.PolishFailed, runtime.CodeProvisioningFailed
 			settle(tt)
 			assertLocalStatus(messages.Text(copy.Retry))
-			snapshot(t, tt, "onboarding-polish-failed-"+string(locale))
+			snapshot(t, tt, "polish-choice-failed-"+string(locale))
 			click(copy.Retry)
 			if !actions.called("retry-polish") {
 				t.Fatal("download failure had no retry action")
 			}
 			state.Polish.State = runtime.PolishProvisioning
 			settle(tt)
-			click(copy.Continue)
-			if !hasText(tt, messages.Text(copy.OnbHoldKeyTitle)) {
-				t.Fatal("confirmed download prevented continuing setup")
-			}
-			click(copy.Back)
 			state.Polish.State, state.Polish.Installed, state.Polish.Failure = runtime.PolishReady, true, ""
 			rest(tt, theme.Disclosure.Duration)
 			tt.Frame()
@@ -176,7 +166,7 @@ func TestOnboardingLocalPolishDownload(t *testing.T) {
 			if hasText(tt, messages.Text(copy.PolishDownload)) || hasText(tt, messages.Text(copy.PolishCancelDownload)) {
 				t.Fatal("installed local model still offered download controls")
 			}
-			snapshot(t, tt, "onboarding-polish-ready-"+string(locale))
+			snapshot(t, tt, "polish-choice-ready-"+string(locale))
 		})
 	}
 }
@@ -404,7 +394,7 @@ func TestNoTechnicalModelNames(t *testing.T) {
 		onb := onboarding.NewPage()
 		ot := ui.NewTester(func(c *ui.Context) { onb.Render(c, store) }, OnboardingWidth, OnboardingHeight)
 		settle(ot)
-		for _, label := range []copy.Key{copy.OnbStart, copy.OnbContinueLocally, copy.Continue, copy.Continue, copy.OnbIMELater} {
+		for _, label := range []copy.Key{copy.OnbStart} {
 			if err := ot.Click(messages.Text(label)); err != nil {
 				t.Fatalf("%s: %v", label, err)
 			}
@@ -415,15 +405,6 @@ func TestNoTechnicalModelNames(t *testing.T) {
 		}
 		check("onboarding", ot.Texts())
 		snapshot(t, ot, "onboarding-5-model-"+string(locale))
-		if err := ot.Click(messages.Text(copy.Continue)); err != nil {
-			t.Fatal(err)
-		}
-		settle(ot)
-		if !hasText(ot, messages.Text(copy.OnbPolishTitle)) || !hasText(ot, messages.Text(copy.PolishEngineLocal)) {
-			t.Fatalf("onboarding polish step: %q", ot.Texts())
-		}
-		check("onboarding polish", ot.Texts())
-		snapshot(t, ot, "onboarding-6-polish-"+string(locale))
 	}
 }
 

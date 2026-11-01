@@ -3,6 +3,8 @@ package bootstrap
 import (
 	"bufio"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"net"
 	"os"
@@ -24,26 +26,28 @@ import (
 // recognition, correction, target capture and insertion stay the product's.
 type harness struct {
 	// routeOverride is test-only fault injection, never a saved preference.
-	routeOverride atomic.Value
-	app           *App
-	audio         *scriptedAudio
-	delayFinal    atomic.Bool
-	finalPending  atomic.Bool
-	release       chan struct{}
-	releaseMu     sync.Mutex
-	loseAck       atomic.Bool
-	commits       atomic.Int32
-	audioStarts   atomic.Int32
-	captureLive   atomic.Bool
-	lastOutcome   atomic.Value
-	lastFailure   atomic.Value
-	sessionState  atomic.Value
+	routeOverride  atomic.Value
+	app            *App
+	audio          *scriptedAudio
+	delayFinal     atomic.Bool
+	finalPending   atomic.Bool
+	release        chan struct{}
+	releaseMu      sync.Mutex
+	loseAck        atomic.Bool
+	commits        atomic.Int32
+	commitTextHash atomic.Value
+	audioStarts    atomic.Int32
+	captureLive    atomic.Bool
+	lastOutcome    atomic.Value
+	lastFailure    atomic.Value
+	sessionState   atomic.Value
 }
 
 func newHarness() *harness {
 	h := &harness{audio: &scriptedAudio{}, release: make(chan struct{})}
 	h.audio.h = h
 	h.lastOutcome.Store("")
+	h.commitTextHash.Store("")
 	h.lastFailure.Store("")
 	h.sessionState.Store(string(domain.Idle))
 	return h
@@ -151,6 +155,8 @@ type countingTargets struct {
 }
 
 func (t countingTargets) Commit(ctx context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {
+	digest := sha256.Sum256([]byte(request.Text))
+	t.h.commitTextHash.Store(hex.EncodeToString(digest[:]))
 	t.h.commits.Add(1)
 	result, err := t.Targets.Commit(ctx, request)
 	if err == nil && t.h.loseAck.Load() {
@@ -180,7 +186,7 @@ func (h *harness) observations() map[string]any {
 	modeValue := string(h.app.dictationMode())
 	return map[string]any{
 		"session":               map[string]any{"state": h.sessionState.Load()},
-		"commit":                map[string]any{"status": h.lastOutcome.Load()},
+		"commit":                map[string]any{"status": h.lastOutcome.Load(), "textSHA256": h.commitTextHash.Load()},
 		"error":                 map[string]any{"code": h.lastFailure.Load()},
 		"commitCount":           int(h.commits.Load()),
 		"insertionAttemptCount": int(h.commits.Load()),
@@ -235,6 +241,7 @@ func (h *harness) client(conn net.Conn) {
 			reply["pid"] = os.Getpid()
 		case "reset":
 			h.commits.Store(0)
+			h.commitTextHash.Store("")
 			h.audioStarts.Store(0)
 			h.lastOutcome.Store("")
 			h.lastFailure.Store("")

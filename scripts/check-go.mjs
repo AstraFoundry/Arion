@@ -27,7 +27,8 @@ for (const module of modules) {
   const cwd = path.join(root, module);
   // Portable modules build without the workspace; the desktop links cgo speech runtimes.
   const env = { ...process.env, ...(module === 'apps/desktop' ? { CGO_ENABLED: '1' } : { GOWORK: 'off' }) };
-  const files = sourceFiles(cwd);
+  // Relative paths keep Windows formatting commands within its command-line limit.
+  const files = sourceFiles(cwd).map(file => path.relative(cwd, file));
   if (mode === 'format') run('gofmt', ['-w', ...files], cwd, env);
   else if (mode === 'format-check') {
     const unformatted = run('gofmt', ['-l', ...files], cwd, env, true).trim();

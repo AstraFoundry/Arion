@@ -22,6 +22,10 @@ Views read `runtime.State` and request `runtime.Actions`; the composition root m
 
 Vocabulary reading edits distinguish encrypted saving from native keyboard application. A pending notice remains until the current snapshot is acknowledged; failure preserves entries and points to readings/input-method setup. Later acknowledgements for older edits cannot hide a newer pending deletion or failure. These notices use the existing English/Simplified Chinese catalogs and are omitted for an initially empty keyboard projection.
 
+## Onboarding
+
+The required sequence and completion gates are owned by [DSK-14](../../specs/001-desktop-input.md). The combined shortcut/practice page uses the existing recorder and actual dictation, with download retry and revoked-permission actions. Optional configuration remains in Settings, opened on completion.
+
 ## Documents
 
 - [`fsd-overview.md`](fsd-overview.md) — what FSD is and why it is used.

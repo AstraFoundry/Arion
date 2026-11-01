@@ -31,8 +31,10 @@ func (x actions) OpenMicrophoneSettings() {
 func (x actions) CloseGuide()    { x.a.closeGuide(true) }
 func (x actions) CloseTrayHint() { x.a.closeTrayHint() }
 func (x actions) RetryModel() {
-	if !x.a.updateApplying() {
-		x.a.runResource(func() { x.a.activate(x.a.state.Preferences.ModelOverride) })
+	if !x.a.updateApplying() && x.a.state.Model.State != arion.ModelProvisioning && x.a.state.Model.State != arion.ModelLoading {
+		override := x.a.state.Preferences.ModelOverride
+		x.a.state.Model.State = arion.ModelProvisioning
+		x.a.runResource(func() { x.a.activate(override) })
 	}
 }
 func (x actions) DownloadPolish()           { x.a.startPolish(true) }
@@ -89,8 +91,6 @@ func (x actions) RetryShortcutListener() {
 	x.a.core.Cancel()
 	x.a.startHoldKey()
 }
-
-func (x actions) TestHoldKey(testing bool) { x.a.testingHold = testing }
 
 func (x actions) UseBundle(id string) {
 	if x.a.updateApplying() {

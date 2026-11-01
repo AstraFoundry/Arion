@@ -3,10 +3,8 @@ package app
 import (
 	"strings"
 	"testing"
-	"time"
 
 	"arion.local/desktop/ui/features/cloud"
-	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/pages/settings"
 	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
@@ -367,88 +365,6 @@ func TestSettingsCloudModel(t *testing.T) {
 	settle(tt)
 	if hasText(tt, en.Text(copy.MatchAppLabel)) || !hasText(tt, en.Text(copy.PolishUnsupported)) || hasText(tt, en.Text(copy.CloudTitle)) {
 		t.Fatalf("local on an unsupported platform: %q", tt.Texts())
-	}
-}
-
-// Onboarding asks about polishing on its own page and adds the cloud page
-// only when the cloud is chosen; back leaves a provider page first.
-func TestOnboardingCloudPolish(t *testing.T) {
-	state, _, store := fixture()
-	state.Permissions = runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted}
-	state.Polish = runtime.Polish{State: runtime.PolishOff, SizeBytes: 1430 << 20}
-	state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected}
-	page := onboarding.NewPage()
-	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
-	settle(tt)
-	en := copy.For(copy.English)
-	click := func(label string) {
-		t.Helper()
-		if err := tt.Click(label); err != nil {
-			t.Fatalf("%s: %v (%q)", label, err, tt.Texts())
-		}
-		settle(tt)
-	}
-	for _, label := range []copy.Key{copy.OnbStart, copy.OnbContinueLocally, copy.Continue, copy.Continue, copy.OnbIMELater, copy.Continue} {
-		click(en.Text(label))
-	}
-	if !hasText(tt, en.Text(copy.OnbPolishTitle)) || !hasText(tt, en.DownloadSize(1430<<20)) {
-		t.Fatalf("polish step: %q", tt.Texts())
-	}
-	click(en.Text(copy.PolishEngineCloud))
-	if !state.Preferences.Polish || state.Preferences.PolishEngine != runtime.PolishCloud {
-		t.Fatalf("cloud not chosen: %+v", state.Preferences)
-	}
-	snapshot(t, tt, "onboarding-6-polish-cloud")
-	click(en.Text(copy.Continue))
-	if !hasText(tt, en.Text(copy.CloudTitle)) {
-		t.Fatalf("cloud step: %q", tt.Texts())
-	}
-	if !hasText(tt, en.Text(copy.Skip)) {
-		t.Fatalf("cloud step offers no skip: %q", tt.Texts())
-	}
-	snapshot(t, tt, "onboarding-7-cloud")
-	click(config.CloudProviders[runtime.CloudChatGPT])
-	if !hasText(tt, en.Text(copy.CloudChatGPTSignIn)) {
-		t.Fatalf("chatgpt page: %q", tt.Texts())
-	}
-	snapshot(t, tt, "onboarding-7-cloud-chatgpt")
-	click(en.Text(copy.Back))
-	if !hasText(tt, en.Text(copy.CloudTitle)) {
-		t.Fatalf("back to the list: %q", tt.Texts())
-	}
-	// Once a provider is in use, the step folds the lists behind Change and
-	// continues on the provider's default model.
-	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudChatGPT, Email: "me@example.com",
-		Models: []string{"gpt-6-luna", "gpt-6-sol"}, Saved: []string{runtime.CloudChatGPT}}
-	state.Preferences.CloudModel = "gpt-6-luna"
-	settle(tt)
-	rest(tt, time.Second)
-	if !hasText(tt, en.Text(copy.CloudInUse)) || hasText(tt, en.Text(copy.CloudAPIKeys)) || !hasText(tt, en.Text(copy.Continue)) || hasText(tt, en.Text(copy.Skip)) {
-		t.Fatalf("connected step: %q", tt.Texts())
-	}
-	snapshot(t, tt, "onboarding-7-cloud-connected")
-	click(en.Text(copy.CloudChange))
-	if !hasText(tt, en.Text(copy.CloudAPIKeys)) || hasText(tt, en.Text(copy.CloudDisconnect)) {
-		t.Fatalf("change: %q", tt.Texts())
-	}
-	rest(tt, time.Second)
-	snapshot(t, tt, "onboarding-7-cloud-change")
-	// Back leaves Change before the step.
-	click(en.Text(copy.Back))
-	if !hasText(tt, en.Text(copy.CloudDisconnect)) || hasText(tt, en.Text(copy.CloudAPIKeys)) {
-		t.Fatalf("back from change: %q", tt.Texts())
-	}
-	state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected}
-	state.Preferences.CloudModel = ""
-	settle(tt)
-	click(en.Text(copy.Back))
-	click(en.Text(copy.PolishOff))
-	if state.Preferences.Polish {
-		t.Fatal("off kept polishing on")
-	}
-	click(en.Text(copy.Continue))
-	if !hasText(tt, en.Text(copy.OnbHoldKeyTitle)) {
-		t.Fatalf("cloud step not skipped: %q", tt.Texts())
 	}
 }
 

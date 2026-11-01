@@ -1,24 +1,15 @@
-// Package onboarding is the first-run flow: the choice between signing in
-// to AstraFoundry and staying local, permissions, the automatically chosen
-// model, the dictation key, voice translation and its key, and a first
-// dictation, each step beside an illustration of what it enables.
+// Package onboarding prepares offline dictation before optional Settings.
 package onboarding
 
 import (
 	"time"
 
-	"arion.local/desktop/ui/entities/account"
 	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/entities/onboarding"
-	"arion.local/desktop/ui/features/cloud"
 	"arion.local/desktop/ui/features/holdkey"
-	"arion.local/desktop/ui/features/keyboard"
 	"arion.local/desktop/ui/features/microphone"
 	"arion.local/desktop/ui/features/permissions"
-	"arion.local/desktop/ui/features/polish"
-	"arion.local/desktop/ui/features/signin"
 	"arion.local/desktop/ui/features/uilanguage"
-	"arion.local/desktop/ui/features/usagesharing"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
@@ -44,28 +35,18 @@ const (
 
 // Page keeps the flow's own state.
 type Page struct {
-	holdPicker       holdkey.PickerState
-	translatePicker  holdkey.PickerState
-	flow             onboarding.Flow
-	entered          time.Time
-	monitoring       bool
-	testing          bool
-	practice         string
-	keyboardPractice string
-	axRequested      bool
-	axGranted        time.Time
-	tested           runtime.HoldKey
-	switched         time.Time
-	keyboard         keyboard.State
-	cloud            cloud.Nav
-	// shareUsage is the sign-in page's usage-sharing box.
-	shareUsage bool
+	holdPicker  holdkey.PickerState
+	flow        onboarding.Flow
+	monitoring  bool
+	practice    string
+	axRequested bool
+	axGranted   time.Time
+	chosen      runtime.HoldKey
+	switched    time.Time
 }
 
-// NewPage starts the flow; its cloud step folds the provider lists behind
-// Change once one is in use, so the step fits the window. The sign-in page's
-// usage-sharing box starts checked.
-func NewPage() *Page { return &Page{cloud: cloud.Nav{Compact: true}, shareUsage: true} }
+// NewPage starts the required setup. Optional configuration stays in Settings.
+func NewPage() *Page { return &Page{} }
 
 // Render draws the current step beside its illustration.
 func (p *Page) Render(c *ui.Context, store runtime.Store) {
@@ -73,9 +54,11 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	tokens := theme.Apply(c)
 	state := store.State
 	step := p.flow.Step()
-	if p.entered.IsZero() {
-		p.entered = c.Now()
+	if step == onboarding.Finished && !onboarding.Ready(step, state) {
+		p.flow.Move(-1, state)
+		step = p.flow.Step()
 	}
+
 	p.sync(c, store, step)
 	bar := c.TitleBar()
 	top := max(bar.Height, 28) + 16
@@ -87,18 +70,16 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	}
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Background(tokens.Canvas).Children(func() {
 		ui.Column(c).Width(Pane).Children(func() {
-			switch key := testedKey(step, state); {
-			case key != "" && keyfigure.Shows(key):
-				label := copy.HoldKeyFigureLabel
-				if step == onboarding.TranslateKey {
-					label = copy.TranslateKeyFigureLabel
+			key := state.Preferences.HoldKey
+			if step == onboarding.Try && keyfigure.Shows(key) {
+				pressed := time.Time{}
+				if state.Hold.PressedKey == key {
+					pressed = state.Hold.Pressed
 				}
-				keyfigure.Render(c, tokens, messages, label, key, p.switched, p.heard(step, state))
-			case step == onboarding.Translate || step == onboarding.TranslateKey:
-				showcase.Translate(c, tokens, messages, state.Preferences.TranslateLanguage, holdname.Legend(state.Preferences.TranslateKey))
-			default:
+				keyfigure.Render(c, tokens, messages, copy.HoldKeyFigureLabel, key, p.switched, pressed)
+			} else {
 				scene, levels := illustration(step, state)
-				showcase.Render(c, tokens, messages, scene, holdname.Legend(state.Preferences.HoldKey), levels)
+				showcase.Render(c, tokens, messages, scene, holdname.Legend(key), levels)
 			}
 			ui.Box(c).Absolute().Top(0).Left(0).Right(0).Height(top).DragWindow()
 		})
@@ -120,48 +101,16 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			})
 			ui.Row(c).Padding(16, Inset, 24, Inset).Gap(8).AlignItems(ui.Center).Children(func() {
 				if p.flow.Index > 0 && step != onboarding.Finished {
-					kit.Button(c.Key("back"), tokens, kit.Ghost, messages.Text(copy.Back), step != onboarding.InputMethod || !state.InputMethodInstalling).OnClick(func() {
-						// The cloud step's provider page goes back to its list first.
-						if step != onboarding.Cloud || !p.cloud.Back() {
-							p.move(c, -1, store)
-						}
+					kit.Button(c.Key("back"), tokens, kit.Ghost, messages.Text(copy.Back), true).OnClick(func() {
+						p.move(c, -1, store)
 					})
 				}
 				ui.Spacer(c)
 				switch step {
 				case onboarding.Welcome:
 					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.OnbStart), true).OnClick(func() { p.move(c, 1, store) })
-				case onboarding.Account:
-					// Signed out, moving on is continuing locally.
-					label, variant := messages.Text(copy.Continue), kit.Primary
-					if account.StageOf(state.Account) == account.SignedOut {
-						label, variant = messages.Text(copy.OnbContinueLocally), kit.Ghost
-					}
-					button := kit.Button(c.Key("next"), tokens, variant, label, onboarding.Ready(step, state))
-					if variant == kit.Ghost {
-						button.TextColor(tokens.Muted)
-					}
-					button.OnClick(func() { p.move(c, 1, store) })
-				case onboarding.InputMethod:
-					if !onboarding.Ready(step, state) {
-						kit.Button(c.Key("later"), tokens, kit.Ghost, messages.Text(copy.OnbIMELater), !state.InputMethodInstalling).OnClick(func() {
-							if p.flow.SkipInputMethod(state) {
-								store.Actions.CancelInputMethodSetup()
-								p.entered = c.Now()
-							}
-						})
-					}
-					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state) && !state.InputMethodInstalling).OnClick(func() { p.move(c, 1, store) })
-				case onboarding.Cloud:
-					// The page's own sign-in or Connect is the main action until
-					// a model is chosen; moving on before that is skipping.
-					label, variant := messages.Text(copy.Continue), kit.Primary
-					if state.Cloud.Phase != runtime.CloudConnected || state.Preferences.CloudModel == "" {
-						label, variant = messages.Text(copy.Skip), kit.Ghost
-					}
-					kit.Button(c.Key("next"), tokens, variant, label, !state.Cloud.Busy()).OnClick(func() { p.move(c, 1, store) })
 				case onboarding.Finished:
-					kit.Button(c.Key("finish"), tokens, kit.Primary, messages.Text(copy.OnbFinish), true).OnClick(func() {
+					kit.Button(c.Key("finish"), tokens, kit.Primary, messages.Text(copy.OnbFinish), onboarding.Ready(step, state)).OnClick(func() {
 						p.release(store)
 						store.Actions.CompleteOnboarding()
 					})
@@ -194,7 +143,7 @@ func illustration(step onboarding.Step, state *runtime.State) (showcase.Scene, [
 			return showcase.Listening, state.MonitorLevels
 		}
 		return showcase.Listening, nil
-	case onboarding.HoldKey:
+	case onboarding.Try:
 		return showcase.Listening, nil
 	case onboarding.Accessibility, onboarding.Finished:
 		return showcase.Inserted, nil
@@ -203,18 +152,12 @@ func illustration(step onboarding.Step, state *runtime.State) (showcase.Scene, [
 }
 
 func (p *Page) move(c *ui.Context, delta int, store runtime.Store) {
-	previous := p.flow.Step()
-	moved := p.flow.Move(delta, store.State)
-	if moved && previous == onboarding.InputMethod {
-		store.Actions.CancelInputMethodSetup()
-	}
-	if moved {
-		p.entered = c.Now()
+	if p.flow.Move(delta, store.State) {
+		p.axGranted = time.Time{}
 	}
 }
 
-// sync runs the microphone monitor and hold key test only on their steps,
-// and reads whether a sign-in is stored on the account step.
+// sync limits microphone monitoring and shortcut recording to their pages.
 func (p *Page) sync(c *ui.Context, store runtime.Store, step onboarding.Step) {
 	monitor := step == onboarding.Microphone && store.State.Permissions.Microphone == runtime.ConsentGranted
 	if monitor != p.monitoring {
@@ -225,58 +168,16 @@ func (p *Page) sync(c *ui.Context, store runtime.Store, step onboarding.Step) {
 			store.Actions.StopLevelMonitor()
 		}
 	}
-	if step == onboarding.Account {
-		signin.Check(store)
-	}
-	if step != onboarding.HoldKey {
+	if step != onboarding.Try {
 		p.holdPicker.Close(store)
-	}
-	if step != onboarding.TranslateKey {
-		p.translatePicker.Close(store)
-	}
-
-	key := testedKey(step, store.State)
-	testing := step == onboarding.HoldKey || step == onboarding.TranslateKey
-	// Another key starts the test over.
-	if testing && key != p.tested {
-		if p.tested != "" {
-			p.entered, p.switched = c.Now(), c.Now()
+		p.chosen = ""
+		p.switched = time.Time{}
+	} else if key := store.State.Preferences.HoldKey; key != p.chosen {
+		if p.chosen != "" {
+			p.switched = c.Now()
 		}
-		p.tested = key
+		p.chosen = key
 	}
-	if !testing {
-		// Each key step arrives without the figure's switch dip.
-		p.tested = ""
-	}
-	if testing != p.testing {
-		p.testing = testing
-		store.Actions.TestHoldKey(testing)
-	}
-}
-
-// testedKey is the key a step lets the user try: the dictation key, or the
-// translation key unless it is off.
-func testedKey(step onboarding.Step, state *runtime.State) runtime.HoldKey {
-	switch step {
-	case onboarding.HoldKey:
-		return state.Preferences.HoldKey
-	case onboarding.TranslateKey:
-		if key := state.Preferences.TranslateKey; key != runtime.HoldOff {
-			return key
-		}
-	}
-	return ""
-}
-
-// heard is when the key test last heard the step's key, or zero: a press
-// before the step, before another key was chosen, or of the other key does
-// not count.
-func (p *Page) heard(step onboarding.Step, state *runtime.State) time.Time {
-	key := testedKey(step, state)
-	if state.Hold.PressedKey == key && state.Hold.Pressed.After(p.entered) {
-		return state.Hold.Pressed
-	}
-	return time.Time{}
 }
 
 // Close releases resources if the window closes mid-flow.
@@ -284,15 +185,9 @@ func (p *Page) Close(store runtime.Store) { p.release(store) }
 
 func (p *Page) release(store runtime.Store) {
 	p.holdPicker.Close(store)
-	p.translatePicker.Close(store)
-	store.Actions.CancelInputMethodSetup()
 	if p.monitoring {
 		p.monitoring = false
 		store.Actions.StopLevelMonitor()
-	}
-	if p.testing {
-		p.testing = false
-		store.Actions.TestHoldKey(false)
 	}
 }
 
@@ -301,18 +196,6 @@ func heading(c *ui.Context, tokens theme.Tokens, title, body string) {
 		ui.Text(c, title).FontSize(theme.Title + 4).FontWeight(650)
 		ui.Text(c, body).FontSize(theme.Body).TextColor(tokens.Muted).MaxWidth(380)
 	})
-}
-
-// tryKey asks for a press of the step's key, and confirms one once heard.
-func (p *Page) tryKey(c *ui.Context, store runtime.Store, tokens theme.Tokens, step onboarding.Step) {
-	messages := store.Copy()
-	switch {
-	case !store.State.Hold.Active:
-	case !p.heard(step, store.State).IsZero():
-		kit.Status(c.Key("heard"), tokens, icons.CircleCheck, tokens.Success, messages.Text(copy.OnbHoldKeyHeard))
-	default:
-		ui.Text(c.Key("press"), messages.Text(copy.OnbHoldKeyPress)).FontSize(theme.Caption).FontWeight(500).TextColor(tokens.Muted)
-	}
 }
 
 func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, step onboarding.Step) {
@@ -360,86 +243,30 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 				})
 			}
 		})
-	case onboarding.InputMethod:
-		ui.Text(c, messages.Text(copy.OnbIMETitle)).FontSize(theme.Title + 4).FontWeight(650)
-		ui.Column(c).Width(Content).Gap(12).Children(func() {
-			keyboard.Setup(c, store, tokens, &p.keyboard)
-			if state.InputMethod == runtime.InputMethodPending || state.InputMethod == runtime.InputMethodDiscovering {
-				ui.Text(c, messages.Text(copy.OnbIMEPending)).FontSize(theme.Body).TextColor(tokens.Muted)
-			}
-			if keyboard.Ready(store) {
-				if state.InputMethod != runtime.InputMethodSelected {
-					ui.Text(c, messages.Text(copy.OnbIMETest)).FontSize(theme.Body).TextColor(tokens.Muted)
-				}
-				ui.TextArea(c.Key("keyboard-practice"), &p.keyboardPractice).Placeholder(messages.Text(copy.OnbIMEPlaceholder)).Height(64)
-			}
-		})
 	case onboarding.Model:
 		heading(c, tokens, messages.Text(copy.OnbModelTitle), messages.Text(copy.OnbModelBody))
-		// Recognition and the optional polishing are set up together.
+		// Explicit download confirmation precedes permission setup.
 		ui.Column(c).Width(Content).Gap(12).Children(func() {
 			modelcard.Render(c, store, tokens, true)
 		})
-	case onboarding.Polish:
-		heading(c, tokens, messages.Text(copy.OnbPolishTitle), messages.Text(copy.OnbPolishBody))
-		ui.Column(c).Width(Content).Children(func() { polish.Choice(c, store, tokens) })
-	case onboarding.Cloud:
-		ui.Text(c.Key("cloud-title"), cloud.Title(store, &p.cloud)).FontSize(theme.Title + 4).FontWeight(650).ContentTransition(ui.ContentTransition{})
-		ui.Column(c.Key("cloud-" + p.cloud.Provider)).Width(Content).Gap(2 * theme.GapRelated).Transition(ui.ElementTransition{Animation: &theme.Page, Enter: &ui.Motion{Y: 8}}).
-			Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
-	case onboarding.HoldKey:
-		heading(c, tokens, messages.Text(copy.OnbHoldKeyTitle), messages.Text(copy.OnbHoldKeyBody))
-		ui.Column(c).Gap(12).Children(func() {
-			// The figure beside the step shows the chosen key and each press.
-			ui.Row(c).Children(func() { holdkey.Picker(c, store, &p.holdPicker) })
-			holdkey.ListenerStatus(c, store, tokens)
-			p.tryKey(c, store, tokens, step)
-		})
-	case onboarding.Translate:
-		heading(c, tokens, messages.Text(copy.OnbTranslateTitle), messages.Text(copy.OnbTranslateBody))
-		ui.Column(c).Gap(12).Children(func() {
-			holdkey.TranslationToggle(c, store, &p.translatePicker)
-			if holdkey.TranslationEnabled(store) {
-				ui.Row(c).Children(func() { holdkey.TranslateLanguagePicker(c, store) })
-			}
-		})
-	case onboarding.TranslateKey:
-		heading(c, tokens, messages.Text(copy.OnbTranslateKeyTitle), messages.Text(copy.OnbTranslateKeyBody))
-		ui.Column(c).Gap(12).Children(func() {
-			// Recording refuses an assignment already used for dictation.
-			ui.Row(c).Children(func() { holdkey.FreeTranslatePicker(c, store, &p.translatePicker) })
-			holdkey.ListenerStatus(c, store, tokens)
-			if testedKey(step, state) != "" {
-				p.tryKey(c, store, tokens, step)
-			}
-		})
 	case onboarding.Try:
 		heading(c, tokens, messages.Text(copy.OnbTryTitle), messages.Text(copy.OnbTryBody))
-		ui.Column(c).Width(Content).Gap(10).Children(func() {
-			ui.TextArea(c.Key("practice"), &p.practice).Placeholder(messages.Text(copy.OnbTryPlaceholder)).Height(96)
-			if state.Model.State != runtime.ModelReady {
+		ui.Column(c).Width(Content).Gap(12).Children(func() {
+			ui.Row(c).Children(func() { holdkey.Picker(c, store, &p.holdPicker) })
+			holdkey.ListenerStatus(c, store, tokens)
+			if state.Permissions.Microphone != runtime.ConsentGranted {
+				permissions.Request(c, store, tokens, permissions.Microphone, messages.Text(copy.OnbMicAllow), true)
+			}
+			if state.Permissions.Accessibility != runtime.ConsentGranted {
+				if kit.Button(c, tokens, kit.Primary, messages.Text(copy.OnbAXAllow), true).Clicked() {
+					store.Actions.RequestAccessibility()
+				}
+			}
+			if state.Model.State == runtime.ModelReady {
+				ui.TextArea(c.Key("practice"), &p.practice).Label(messages.Text(copy.OnbTryPlaceholder)).Placeholder(messages.Text(copy.OnbTryPlaceholder)).Height(96)
+			} else {
 				modelcard.Render(c, store, tokens, true)
 			}
-		})
-	case onboarding.Account:
-		ui.Text(c, messages.Text(copy.OnbAccountTitle)).FontSize(theme.Title + 4).FontWeight(650)
-		ui.Column(c).Width(Content).Gap(12).Children(func() {
-			if account.StageOf(state.Account) != account.SignedOut {
-				signin.Card(c, store, tokens)
-				if state.Account.SignedIn() {
-					signin.HostedSync(c, store, tokens)
-				}
-				return
-			}
-			// A custom issuer's sign-in methods are unknown: one button.
-			if state.Account.Portal == "" {
-				signin.Start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn), p.shareUsage)
-			} else {
-				signin.Methods(c, store, tokens, p.shareUsage)
-			}
-			usagesharing.Box(c, store, tokens, &p.shareUsage)
-			signin.Terms(c, store, tokens)
-			signin.Notice(c, store, tokens)
 		})
 	case onboarding.Finished:
 		ui.Column(c).Gap(16).Children(func() {

@@ -17,46 +17,14 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Start is the button that opens the browser sign-in. shareUsage is the
-// page's usage-sharing box, false where the page has none.
-func Start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant, label string, shareUsage bool) {
+// Start opens browser sign-in without changing account usage consent.
+func start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant, label string) {
 	if store.State.Account.Disabled {
 		return
 	}
 	if kit.Button(c.Key("sign-in"), tokens, variant, label, !store.State.Account.Busy()).Clicked() {
-		store.Actions.SignIn(shareUsage)
+		store.Actions.SignIn(false)
 	}
-}
-
-// Methods are the ways to sign in or create an AstraFoundry account. Each
-// opens the same browser sign-in, where the issuer's page offers them all;
-// the button only says which one the user means to pick there. shareUsage is
-// the page's usage-sharing box.
-func Methods(c *ui.Context, store runtime.Store, tokens theme.Tokens, shareUsage bool) {
-	if store.State.Account.Disabled {
-		return
-	}
-	messages := store.Copy()
-	enabled := !store.State.Account.Busy()
-	ui.Column(c).Gap(8).AlignItems(ui.Stretch).Children(func() {
-		for _, method := range []struct {
-			key   string
-			icon  *ui.SVG
-			label copy.Key
-		}{{"google", icons.Google, copy.AccContinueGoogle}, {"github", icons.GitHub, copy.AccContinueGitHub}, {"email", icons.Mail, copy.AccContinueEmail}} {
-			button := ui.ButtonBase(c.Key("sign-in-"+method.key)).Height(36).Padding(0, 14).Gap(10).Radius(theme.RadiusControl).
-				Justify(ui.Center).AlignItems(ui.Center).Disabled(!enabled)
-			kit.Style(button, tokens, kit.Outline, enabled)
-			button.Children(func() {
-				// An image keeps the Google mark's own colors; an icon would tint it.
-				ui.Image(c, method.icon).Size(15, 15)
-				ui.Text(c, messages.Text(method.label)).FontSize(theme.Body).FontWeight(500).SingleLine()
-			})
-			if button.Clicked() {
-				store.Actions.SignIn(shareUsage)
-			}
-		}
-	})
 }
 
 // Check asks once, while an account view shows, whether a refresh token is
@@ -74,6 +42,9 @@ func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	}
 	ui.Column(c).Gap(theme.GapRelated).Children(func() {
 		card(c, store, tokens)
+		if account.StageOf(store.State.Account) == account.SignedOut {
+			Terms(c, store, tokens)
+		}
 		Notice(c, store, tokens)
 	})
 }
@@ -89,7 +60,7 @@ func card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				title = messages.Text(copy.AccTitle)
 			}
 			kit.Row(c, tokens, title, "", func() {
-				Start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn), false)
+				start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn))
 			})
 		case account.Waiting:
 			kit.Row(c, tokens, messages.Text(copy.AccTitle), messages.Text(copy.AccWaiting), func() {

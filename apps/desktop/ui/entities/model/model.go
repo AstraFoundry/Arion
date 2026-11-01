@@ -35,7 +35,7 @@ func PhaseLabel(m runtime.Model) copy.Key {
 
 // NeedsAction reports a recognition model the user must choose or retry.
 func NeedsAction(m runtime.Model) bool {
-	return m.State == runtime.ModelUnselected || m.State == runtime.ModelFailed
+	return m.State == runtime.ModelAwaitingDownload || m.State == runtime.ModelUnselected || m.State == runtime.ModelFailed
 }
 
 // Busy reports work in progress.

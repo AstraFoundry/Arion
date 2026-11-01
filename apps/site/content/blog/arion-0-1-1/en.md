@@ -92,7 +92,7 @@ There is no cloud speech recognition. Once the models are downloaded, dictation 
 
 ## Get started
 
-Choose your platform on the [download page](/#download). The Mac build requires macOS 14 or later on Apple silicon, and the Windows build is an x64 installer. On first launch, onboarding requests the required system permissions, walks through setting your dictation key and downloading the recognition model, and lets you enable polishing and voice translation.
+Choose your platform on the [download page](/#download). The Mac build requires macOS 14 or later on Apple silicon, and the Windows build is an x64 installer. On first launch, confirm the recognition-model download, grant the required permissions, then choose your dictation key and try speaking. Polishing and voice translation are optional settings available afterward.
 
 If you are already on an alpha build, check Settings › About for updates; if 0.1.1 does not appear, download and install it once manually.
 

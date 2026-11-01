@@ -3,7 +3,6 @@ package app
 import (
 	"testing"
 
-	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/pages/settings"
 	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
@@ -33,100 +32,6 @@ func expect(t *testing.T, tt *ui.Tester, show bool, texts ...string) {
 
 func signedIn(state *runtime.State, hosted bool) {
 	state.Account = runtime.Account{Issuer: state.Account.Issuer, Portal: state.Account.Portal, Phase: runtime.AccountSignedIn, Subject: "sub-1", Name: "Ada Lovelace", Email: "ada@example.com", HostedSync: hosted}
-}
-
-// The account step follows the welcome. It offers Google, GitHub and email,
-// which all open the browser sign-in, beside continuing locally; the
-// sign-in waits on the browser with a cancel, explains failures, and once
-// signed in shows the profile, plus hosted sync when the account has it.
-func TestOnboardingAccountStep(t *testing.T) {
-	state, actions, store := fixture()
-	en := copy.For(copy.English)
-	page := onboarding.NewPage()
-	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
-	settle(tt)
-	click := clicker(t, tt)
-	click(en.Text(copy.OnbStart))
-	expect(t, tt, true, en.Text(copy.OnbAccountTitle), en.Text(copy.OnbContinueLocally), en.Text(copy.AccContinueGoogle),
-		en.Text(copy.AccContinueGitHub), en.Text(copy.AccContinueEmail))
-	expect(t, tt, false, en.Text(copy.Continue))
-	snapshot(t, tt, "onboarding-account-choice")
-
-	for _, method := range []copy.Key{copy.AccContinueGoogle, copy.AccContinueGitHub, copy.AccContinueEmail} {
-		actions.calls = nil
-		click(en.Text(method))
-		if !actions.called("sign-in") {
-			t.Fatalf("%s did not start the browser sign-in", method)
-		}
-	}
-	state.Account.Phase = runtime.AccountSigningIn
-	settle(tt)
-	expect(t, tt, true, en.Text(copy.AccWaiting), en.Text(copy.AccCancel))
-	expect(t, tt, false, en.Text(copy.AccContinueGoogle))
-	snapshot(t, tt, "onboarding-account-waiting")
-	click(en.Text(copy.AccCancel))
-	if !actions.called("cancel-sign-in") {
-		t.Fatal("cancel not requested")
-	}
-	state.Account = runtime.Account{Portal: state.Account.Portal, Phase: runtime.AccountSignedOut, ErrorCode: runtime.AccountCodeCancelled}
-	settle(tt)
-	expect(t, tt, true, en.Text(copy.OnbContinueLocally), en.Text(copy.AccContinueGoogle))
-	expect(t, tt, false, en.Text(copy.AccErrGeneric))
-
-	state.Account = runtime.Account{Portal: state.Account.Portal, Phase: runtime.AccountSignedOut, ErrorCode: runtime.AccountCodeAuthorization, ErrorDetail: "access_denied"}
-	settle(tt)
-	expect(t, tt, true, en.Text(copy.AccErrDenied))
-	snapshot(t, tt, "onboarding-account-denied")
-
-	signedIn(state, false)
-	settle(tt)
-	expect(t, tt, true, "Ada Lovelace", "ada@example.com", en.Text(copy.Continue))
-	expect(t, tt, false, en.Text(copy.AccErrDenied), en.Text(copy.OnbContinueLocally), en.Text(copy.AccSyncGroup), en.Text(copy.AccSyncAvailable))
-	snapshot(t, tt, "onboarding-account-signed-in")
-
-	signedIn(state, true)
-	settle(tt)
-	expect(t, tt, true, en.Text(copy.AccSyncAvailable), en.Text(copy.AccSyncDeviceLater))
-	click(en.Text(copy.Continue))
-	expect(t, tt, true, en.Text(copy.OnbMicTitle))
-}
-
-// A custom issuer's sign-in methods are unknown, so the step offers one
-// sign-in instead of Google, GitHub and email.
-func TestOnboardingAccountCustomIssuer(t *testing.T) {
-	state, actions, store := fixture()
-	state.Account = runtime.Account{Issuer: "https://accounts.example.org", Phase: runtime.AccountSignedOut, Credential: runtime.CredentialAbsent}
-	en := copy.For(copy.English)
-	page := onboarding.NewPage()
-	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
-	settle(tt)
-	click := clicker(t, tt)
-	click(en.Text(copy.OnbStart))
-	expect(t, tt, false, en.Text(copy.AccContinueGoogle))
-	click(en.Text(copy.AccSignIn))
-	if !actions.called("sign-in") {
-		t.Fatal("sign-in not started")
-	}
-}
-
-// A sign-in in flight holds the step: Continue waits until it finishes.
-func TestOnboardingAccountWaitsForSignIn(t *testing.T) {
-	state, _, store := fixture()
-	en := copy.For(copy.English)
-	page := onboarding.NewPage()
-	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
-	settle(tt)
-	click := clicker(t, tt)
-	click(en.Text(copy.OnbStart))
-	signedIn(state, false)
-	state.Account.Phase = runtime.AccountRefreshing
-	settle(tt)
-	click(en.Text(copy.Continue))
-	expect(t, tt, true, en.Text(copy.OnbAccountTitle))
-	state.Account.Phase = runtime.AccountSignedIn
-	settle(tt)
-	click(en.Text(copy.Continue))
-	expect(t, tt, true, en.Text(copy.OnbMicTitle))
 }
 
 func openAccount(t *testing.T, store runtime.Store) *ui.Tester {
@@ -271,31 +176,6 @@ func TestSettingsAccountUnreadableStore(t *testing.T) {
 	}
 }
 
-// The onboarding account step shares automatic restoration.
-func TestOnboardingAccountStoredSession(t *testing.T) {
-	state, actions, store := fixture()
-	en := copy.For(copy.English)
-	page := onboarding.NewPage()
-	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
-	settle(tt)
-	if actions.called("check-stored") {
-		t.Fatal("credential store read before the account step")
-	}
-	click := clicker(t, tt)
-	click(en.Text(copy.OnbStart))
-	if !actions.called("check-stored") {
-		t.Fatal("credential store not read on the account step")
-	}
-	state.Account.Credential = runtime.CredentialStored
-	settle(tt)
-	expect(t, tt, true, en.Text(copy.AccSignOut))
-	expect(t, tt, false, en.Text(copy.AccReconnect))
-	expect(t, tt, false, en.Text(copy.AccContinueGoogle))
-	snapshot(t, tt, "onboarding-account-stored")
-	click(en.Text(copy.Continue))
-	expect(t, tt, true, en.Text(copy.OnbMicTitle))
-}
-
 func TestDeviceCenterHidesAccountSettings(t *testing.T) {
 	state, actions, store := fixture()
 	state.Account.Disabled = true
@@ -356,78 +236,6 @@ func TestSettingsAccountPortal(t *testing.T) {
 	expect(t, tt, false, store.Copy().Text(copy.AccPortalGroup))
 }
 
-// Product terms are available before authentication, including custom issuers.
-func TestOnboardingTermsAndLocalContinuation(t *testing.T) {
-	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
-		for _, custom := range []bool{false, true} {
-			state, actions, store := fixture()
-			state.Preferences.UILanguage = locale
-			if custom {
-				state.Account.Portal = ""
-			}
-			messages := store.Copy()
-			page := onboarding.NewPage()
-			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
-			settle(tt)
-			click := clicker(t, tt)
-			click(messages.Text(copy.OnbStart))
-			expect(t, tt, true, messages.Text(copy.AccTermsNotice), messages.Text(copy.AccTerms), messages.Text(copy.AccPrivacy))
-			actions.calls = nil
-			click(messages.Text(copy.AccTerms))
-			click(messages.Text(copy.AccPrivacy))
-			origin := config.SiteURL
-			if locale == runtime.LanguageChinese {
-				origin += "/zh"
-			}
-			urls := tt.OpenedURLs()
-			if len(urls) != 2 || urls[0] != origin+config.TermsPath || urls[1] != origin+config.PrivacyPath {
-				t.Fatalf("unexpected legal destinations: %v", urls)
-			}
-			if actions.called("sign-in") {
-				t.Fatal("reading terms must not start authentication")
-			}
-			if !custom {
-				snapshot(t, tt, "onboarding-terms-"+string(locale))
-			}
-			click(messages.Text(copy.OnbContinueLocally))
-			expect(t, tt, true, messages.Text(copy.OnbMicTitle))
-		}
-	}
-}
-
-// The sign-in page carries a usage-sharing box, checked by default. Its
-// state goes with whichever sign-in button is pressed; there is no separate
-// step.
-func TestOnboardingSignInOffersUsageSharingBox(t *testing.T) {
-	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
-		state, actions, store := fixture()
-		state.Preferences.UILanguage = locale
-		messages := store.Copy()
-		page := onboarding.NewPage()
-		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
-		settle(tt)
-		click := clicker(t, tt)
-		click(messages.Text(copy.OnbStart))
-		expect(t, tt, true, messages.Text(copy.AccUsageShare), messages.Text(copy.AccUsageShareDetail))
-		snapshot(t, tt, "onboarding-account-share-usage-"+string(locale))
-		click(messages.Text(copy.AccContinueGoogle))
-		if !actions.called("sign-in:share") {
-			t.Fatalf("default box not passed to sign-in: %v", actions.calls)
-		}
-		actions.calls = nil
-		click(messages.Text(copy.AccUsageShare))
-		click(messages.Text(copy.AccContinueEmail))
-		if !actions.called("sign-in") || actions.called("sign-in:share") {
-			t.Fatalf("unchecked box shared usage: %v", actions.calls)
-		}
-		signedIn(state, false)
-		settle(tt)
-		expect(t, tt, false, messages.Text(copy.AccUsageShareDetail))
-		click(messages.Text(copy.Continue))
-		expect(t, tt, true, messages.Text(copy.OnbMicTitle))
-	}
-}
-
 // Settings › Account changes the answer with a switch while signed in.
 func TestSettingsAccountUsageSharingSwitch(t *testing.T) {
 	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
@@ -461,6 +269,39 @@ func TestSettingsAccountUsageSharingSwitch(t *testing.T) {
 		toggle()
 		if !actions.called("usage:private") {
 			t.Fatalf("calls = %v, want usage:private", actions.calls)
+		}
+	}
+}
+
+func TestSettingsAccountTerms(t *testing.T) {
+	for _, locale := range []copy.Locale{copy.English, copy.SimplifiedChinese} {
+		for _, issuer := range []string{"standard", "custom"} {
+			t.Run(string(locale)+"/"+issuer, func(t *testing.T) {
+				state, actions, store := fixture()
+				if issuer == "custom" {
+					state.Account.Portal = ""
+				}
+				state.Preferences.UILanguage = runtime.UILanguage(locale)
+				tt := openAccount(t, store)
+				messages := store.Copy()
+				click := clicker(t, tt)
+				expect(t, tt, true, messages.Text(copy.AccTerms), messages.Text(copy.AccPrivacy))
+				click(messages.Text(copy.AccTerms))
+				click(messages.Text(copy.AccPrivacy))
+				origin := config.SiteURL
+				if locale == copy.SimplifiedChinese {
+					origin += "/zh"
+				}
+				urls := tt.OpenedURLs()
+				if len(urls) != 2 || urls[0] != origin+config.TermsPath || urls[1] != origin+config.PrivacyPath || actions.called("sign-in") {
+					t.Fatalf("terms links: %v", urls)
+				}
+				click(messages.Text(copy.AccSignIn))
+				if !actions.called("sign-in") || actions.called("sign-in:share") {
+					t.Fatal("sign-in implied usage consent")
+				}
+				snapshot(t, tt, "settings-account-terms-"+string(locale))
+			})
 		}
 	}
 }

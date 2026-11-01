@@ -139,12 +139,12 @@ func TestShortcutInfoIconShowsOnlyBehavior(t *testing.T) {
 	}
 }
 
-func TestOnboardingRecorderRejectsDictationConflictAndCanRetry(t *testing.T) {
+func TestTranslationRecorderRejectsDictationConflictAndCanRetry(t *testing.T) {
 	state := &runtime.State{Preferences: runtime.Preferences{UILanguage: runtime.LanguageEnglish, HoldKey: "ctrl+space", TranslateKey: "alt+enter"}}
 	actions := &shortcutActions{state: state}
 	store := runtime.Store{State: state, Actions: actions}
 	editor := &PickerState{}
-	tt := ui.NewTester(func(c *ui.Context) { theme.Apply(c); FreeTranslatePicker(c, store, editor) }, 500, 200)
+	tt := ui.NewTester(func(c *ui.Context) { theme.Apply(c); TranslatePicker(c, store, editor) }, 500, 200)
 	if err := tt.Click(store.Copy().Text(copy.TranslateKeyEdit)); err != nil {
 		t.Fatal(err)
 	}
