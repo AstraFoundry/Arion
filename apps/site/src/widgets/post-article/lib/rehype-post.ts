@@ -104,6 +104,7 @@ function requireSize(node: Element, what: string) {
 const MEDIA_PROPERTIES: Record<string, readonly string[]> = {
   img: ["src"],
   "video-clip": ["src", "poster"],
+  "embed-frame": ["poster"],
 };
 
 export interface MediaOptions {

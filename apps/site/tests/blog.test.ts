@@ -174,6 +174,13 @@ describe("post markdown", () => {
     expect(elements(tree).map((node) => node.tagName)).toEqual(["embed-frame"]);
   });
 
+  it("resolves an embed poster like other post media", async () => {
+    const [frame] = elements(
+      await hast('<embed-frame src="/blog/a/demo.html" title="Demo" ratio="16/9" poster="./demo.webp"></embed-frame>'),
+    );
+    expect(frame.properties).toMatchObject({ src: "/blog/a/demo.html", poster: "/resolved/./demo.webp" });
+  });
+
   it("rejects embeds inside a sentence and invalid embed attributes", async () => {
     await expect(
       hast('Try <embed-frame src="/a.html" title="Demo" ratio="16/9"></embed-frame> now.'),

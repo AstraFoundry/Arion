@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Mock recordings for the "Arion 0.1.1" post (English copy). The hash picks
+      the scene: #dictation, #polish, #translate, #keyboard or #clipboard.
+      Illustrations only: nothing is recorded and no model runs. Loaded in a
+      sandboxed frame; follows the system color scheme. Engine: stage.js.
+    -->
+    <link rel="stylesheet" href="stage.css" />
+    <script>
+      window.ARION_COPY = {
+        "menu": [
+          "File",
+          "Edit",
+          "View",
+          "Window"
+        ],
+        "clock": "Sun 10:00",
+        "inserted": "Inserted",
+        "keys": {
+          "enter": "↩",
+          "space": "Space",
+          "shift": "⇧ Shift",
+          "clipboard": [
+            "⌘",
+            "⇧",
+            "V"
+          ]
+        },
+        "dictation": {
+          "app": "Team Chat",
+          "channels": [
+            "# release",
+            "# design",
+            "# feedback"
+          ],
+          "thread": [
+            {
+              "who": "Lena",
+              "text": "Installers are signed. Can 0.1.1 go out today?"
+            }
+          ],
+          "me": "Me",
+          "composer": "Message # release",
+          "key": "Right Option",
+          "hold": "Hold to talk",
+          "partials": [
+            "Before we",
+            "Before we merge this PR",
+            "Before we merge this PR into main,",
+            "Before we merge this PR into main, let's run CI"
+          ],
+          "final": "Before we merge this PR into main, let's run CI."
+        },
+        "translate": {
+          "app": "Team Chat",
+          "channels": [
+            "# release",
+            "# design",
+            "# feedback"
+          ],
+          "thread": [
+            {
+              "who": "Lin",
+              "text": "今天能把 hotfix 发出去吗？"
+            }
+          ],
+          "me": "Me",
+          "composer": "Message # release",
+          "key": "Right Command",
+          "hold": "Translate to 简体中文",
+          "partials": [
+            "I'll fix this bug",
+            "I'll fix this bug tonight",
+            "I'll fix this bug tonight and ship it tomorrow morning"
+          ],
+          "final": "这个 bug 我今晚修好，明天早上发版。"
+        },
+        "polish": {
+          "app": "New Message",
+          "to": "To",
+          "toValue": "Design team",
+          "subject": "Subject",
+          "subjectValue": "Review moved",
+          "key": "Right Option",
+          "hold": "Hold to talk",
+          "partials": [
+            "Um, so,",
+            "Um, so, we meet Wednesday,",
+            "Um, so, we meet Wednesday, no wait, Thursday at three,",
+            "Um, so, we meet Wednesday, no wait, Thursday at three, uh,",
+            "Um, so, we meet Wednesday, no wait, Thursday at three, uh, bring the design files"
+          ],
+          "final": "Hi all,\n\nWe meet Thursday at three. Please bring the design files.\n\nThanks",
+          "heardLabel": "Heard",
+          "heard": [
+            [
+              "Um, so, ",
+              1
+            ],
+            [
+              "we meet ",
+              0
+            ],
+            [
+              "Wednesday, no wait, ",
+              1
+            ],
+            [
+              "Thursday at three, ",
+              0
+            ],
+            [
+              "uh, ",
+              1
+            ],
+            [
+              "bring the design files",
+              0
+            ]
+          ],
+          "scene": "Scene: Email"
+        },
+        "keyboard": {
+          "app": "Notes",
+          "title": "Wedding toast",
+          "intro": "Thank you all for being here today.",
+          "before": "两年前，我们在婚礼上许下",
+          "rank": "Reranked by context",
+          "chinese": "中",
+          "english": "A"
+        },
+        "clipboard": {
+          "app": "Weekly Update",
+          "title": "This week",
+          "lines": [
+            "0.1.1 installers are signed and notarized."
+          ],
+          "before": "Before release: ",
+          "label": "Clipboard",
+          "rows": [
+            {
+              "kind": "text",
+              "text": "make check && make desktop-check"
+            },
+            {
+              "kind": "image",
+              "text": "Screenshot 1280 × 800"
+            },
+            {
+              "kind": "file",
+              "text": "Release notes",
+              "tag": "PDF"
+            },
+            {
+              "kind": "link",
+              "text": "github.com/AstraFoundry/Arion"
+            }
+          ],
+          "query": "make"
+        }
+      };
+    </script>
+    <script src="stage.js" defer></script>
+  </head>
+  <body></body>
+</html>

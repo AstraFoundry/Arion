@@ -71,7 +71,7 @@ Markdown is GitHub-flavored: tables, footnotes (`[^note]`), task lists, striketh
 
 ### Media sources
 
-Every image, the front matter `image`, and `<video-clip>` `src` or `poster` may be written three ways:
+Every image, the front matter `image`, `<video-clip>` `src` or `poster`, and `<embed-frame>` `poster` may be written three ways:
 
 | Written as | Example | Resolves to |
 | --- | --- | --- |
@@ -99,7 +99,7 @@ Write each on its own line (a block embed inside a sentence fails the build).
 
 | Element | Attributes | Behavior |
 | --- | --- | --- |
-| `<embed-frame>` | `src`, `title` (required), `ratio` (`16/9`) or `height` (px), `caption` | Interactive HTML in an iframe, loaded lazily. A file under `public/blog/<slug>/` runs sandboxed (`allow-scripts`, opaque origin). Another site is not contacted until the reader presses the "Load content from {host}" button. |
+| `<embed-frame>` | `src`, `title` (required), `ratio` (`16/9`) or `height` (px), `poster`, `caption` | Interactive HTML in an iframe. The box is sized from `ratio` or `height` and shows the `poster` (a still of the page's first frame) until the page loads. A file under `public/blog/<slug>/` is created when the frame comes within one viewport height, runs sandboxed (`allow-scripts`, opaque origin) and fades in over the poster after its load event. Another site is not contacted until the reader presses the "Load content from {host}" button. |
 | `<video-clip>` | `src`, `poster`, `width`/`height` (read from the poster when omitted), `caption`, `autoplay`, `loop` | `preload="none"`: only the poster loads up front. `autoplay` makes a muted loop that plays while half in view and pauses off screen; under reduced motion it shows controls instead. |
 | `<dictation-pill>` | `state` (`listening` with `draft`, `inserted`, `learned` with `term`), `label` (required), `caption` | The site's live `DictationPill` on a stage, as a labelled, inert illustration. |
 

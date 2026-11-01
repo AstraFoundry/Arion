@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Mock recordings for the "Arion 0.1.1" post (Simplified Chinese copy). The hash picks
+      the scene: #dictation, #polish, #translate, #keyboard or #clipboard.
+      Illustrations only: nothing is recorded and no model runs. Loaded in a
+      sandboxed frame; follows the system color scheme. Engine: stage.js.
+    -->
+    <link rel="stylesheet" href="stage.css" />
+    <script>
+      window.ARION_COPY = {
+        "menu": [
+          "文件",
+          "编辑",
+          "显示",
+          "窗口"
+        ],
+        "clock": "周日 10:00",
+        "inserted": "已插入",
+        "keys": {
+          "enter": "↩",
+          "space": "空格",
+          "shift": "⇧ Shift",
+          "clipboard": [
+            "⌘",
+            "⇧",
+            "V"
+          ]
+        },
+        "dictation": {
+          "app": "团队聊天",
+          "channels": [
+            "# 发布",
+            "# 设计",
+            "# 用户反馈"
+          ],
+          "thread": [
+            {
+              "who": "Lena",
+              "text": "安装包签好名了，今天能发 0.1.1 吗？"
+            }
+          ],
+          "me": "我",
+          "composer": "发送消息到 # 发布",
+          "key": "右 Option",
+          "hold": "按住说话",
+          "partials": [
+            "把这个",
+            "把这个 PR",
+            "把这个 PR merge 到",
+            "把这个 PR merge 到 main 之前，",
+            "把这个 PR merge 到 main 之前，先跑一下 CI"
+          ],
+          "final": "把这个 PR merge 到 main 之前，先跑一下 CI。"
+        },
+        "translate": {
+          "app": "团队聊天",
+          "channels": [
+            "# 发布",
+            "# 设计",
+            "# 用户反馈"
+          ],
+          "thread": [
+            {
+              "who": "Maya",
+              "text": "Is the hotfix going out today?"
+            }
+          ],
+          "me": "我",
+          "composer": "发送消息到 # 发布",
+          "key": "右 Command",
+          "hold": "翻译为 English",
+          "partials": [
+            "这个 bug",
+            "这个 bug 我今晚修好，",
+            "这个 bug 我今晚修好，明早发版"
+          ],
+          "final": "I'll fix this bug tonight and ship the release tomorrow morning."
+        },
+        "polish": {
+          "app": "新邮件",
+          "to": "收件人",
+          "toValue": "设计组",
+          "subject": "主题",
+          "subjectValue": "评审时间调整",
+          "key": "右 Option",
+          "hold": "按住说话",
+          "partials": [
+            "嗯，那个，",
+            "嗯，那个，我们周三，",
+            "嗯，那个，我们周三，不对，周四下午三点",
+            "嗯，那个，我们周三，不对，周四下午三点开会，呃，",
+            "嗯，那个，我们周三，不对，周四下午三点开会，呃，记得带上设计稿"
+          ],
+          "final": "大家好，\n\n我们周四下午三点开会，记得带上设计稿。\n\n谢谢",
+          "heardLabel": "听到的",
+          "heard": [
+            [
+              "嗯，那个，",
+              1
+            ],
+            [
+              "我们",
+              0
+            ],
+            [
+              "周三，不对，",
+              1
+            ],
+            [
+              "周四下午三点开会，",
+              0
+            ],
+            [
+              "呃，",
+              1
+            ],
+            [
+              "记得带上设计稿",
+              0
+            ]
+          ],
+          "scene": "场景：邮件"
+        },
+        "keyboard": {
+          "app": "备忘录",
+          "title": "婚礼致辞",
+          "intro": "谢谢大家今天来到这里。",
+          "before": "两年前，我们在婚礼上许下",
+          "rank": "按前文重排",
+          "chinese": "中",
+          "english": "英"
+        },
+        "clipboard": {
+          "app": "周报",
+          "title": "本周进展",
+          "lines": [
+            "0.1.1 安装包已完成签名与公证。"
+          ],
+          "before": "发版前检查：",
+          "label": "剪贴板",
+          "rows": [
+            {
+              "kind": "text",
+              "text": "make check && make desktop-check"
+            },
+            {
+              "kind": "image",
+              "text": "截图 1280 × 800"
+            },
+            {
+              "kind": "file",
+              "text": "发布说明",
+              "tag": "PDF"
+            },
+            {
+              "kind": "link",
+              "text": "github.com/AstraFoundry/Arion"
+            }
+          ],
+          "query": "make"
+        }
+      };
+    </script>
+    <script src="stage.js" defer></script>
+  </head>
+  <body></body>
+</html>
