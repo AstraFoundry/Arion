@@ -1,6 +1,6 @@
 //go:build windows
 
-// Package typography owns the bundled speech-interface font.
+// Package typography owns the bundled Windows interface font.
 package typography
 
 import (
@@ -11,7 +11,7 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Family is shared by the speech preview and transcript views.
+// Family is shared by all Windows interface and speech views.
 const Family = "Source Han Sans SC"
 
 //go:embed fonts/SourceHanSansSC-Regular.otf
@@ -30,7 +30,7 @@ func Register() error {
 	registration.Do(func() {
 		for _, data := range [][]byte{regular, medium} {
 			if err := ui.RegisterFont(data, Family); err != nil {
-				registration.err = fmt.Errorf("register speech font: %w", err)
+				registration.err = fmt.Errorf("register interface font: %w", err)
 				return
 			}
 		}
