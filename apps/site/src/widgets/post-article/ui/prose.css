@@ -266,9 +266,10 @@ html:is(:lang(zh-CN), :lang(ja)) .post-prose > blockquote {
 /*
  * A Markdown figure takes the wide column but never upscales its image: a
  * small image keeps its size, a tall one is capped by the viewport, and the
- * caption (zero width, then stretched) is as wide as the image.
+ * caption (zero width, then stretched) is as wide as the image. Embeds
+ * (`.post-media`) have no intrinsic width, so they keep the full wide column.
  */
-.post-prose > figure {
+.post-prose > figure:not(.post-media) {
   width: fit-content;
   max-width: 100%;
   justify-self: center;
