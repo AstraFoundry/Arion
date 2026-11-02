@@ -71,7 +71,9 @@ func (p *Panel) Render(c *ui.Context, store arion.Store) {
 			})
 		}
 		ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
-			footerButton(c, tokens, icons.Clipboard, messages.Text(copy.ClipboardTitle), store.Actions.OpenClipboard)
+			if store.State.Preferences.Clipboard.Enabled {
+				footerButton(c, tokens, icons.Clipboard, messages.Text(copy.ClipboardTitle), store.Actions.OpenClipboard)
+			}
 			footerButton(c, tokens, icons.Settings, messages.Text(copy.SettingsMenu), store.Actions.OpenSettings)
 			ui.Spacer(c)
 			footerButton(c, tokens, icons.Power, messages.Text(copy.Quit), store.Actions.Quit)

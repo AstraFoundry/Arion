@@ -608,7 +608,7 @@
   "KbdNeuralUnavailable": "本地模型不可用，继续使用常规排序。",
   "KbdNeuralMissing": "下载本地模型后即可使用智能排序。",
   "ClipboardTitle": "剪贴板",
-  "ClipboardEnabled": "保存剪贴板历史",
+  "ClipboardEnabled": "剪贴板历史",
   "ClipboardPrivacy": "在本机加密保存，文件保留在原位置。听写仅在没有输入框、直接复制时收录。",
   "ClipboardOff": "剪贴板历史未开启",
   "ClipboardEnable": "开启历史记录",

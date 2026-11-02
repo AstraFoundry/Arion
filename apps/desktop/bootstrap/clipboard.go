@@ -83,12 +83,16 @@ func (a *App) configureClipboard(previous application.ClipboardPreferences) {
 	active := p.Enabled
 	if !active {
 		a.clipboard.pendingDictations = nil
+		a.clipboard.windowSeq++
+		a.clipboard.pasteSeq++
+		actions{a}.CloseClipboard()
+		a.dismissClipboardPreview()
 	}
 	revision, _ := clipboardos.Revision()
 	a.clipboard.capture.Configure(active, revision)
 	a.clipboard.collecting.Store(active)
 	a.clipboard.observed.Store(revision)
-	if p.Shortcut != previous.Shortcut {
+	if p.Enabled != previous.Enabled || p.Shortcut != previous.Shortcut {
 		a.registerClipboardShortcut()
 	}
 	if p.Enabled && a.clipboard.service == nil && !a.state.Clipboard.Busy {
@@ -101,6 +105,10 @@ func (a *App) registerClipboardShortcut() {
 	if cc.shortcut != "" {
 		mygo.GlobalShortcut.Unregister(cc.shortcut)
 		cc.shortcut = ""
+	}
+	if !a.state.Preferences.Clipboard.Enabled {
+		a.state.Clipboard.ShortcutFailed = false
+		return
 	}
 	if a.state.Hold.Recording != "" {
 		return

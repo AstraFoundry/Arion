@@ -4,7 +4,7 @@ User-approved P0: local clipboard history on macOS Apple silicon and Windows x64
 
 ## Requirements
 
-CLP-01: Collection is off until explicitly enabled. Disabling collection preserves existing history; enabling baselines the current clipboard without importing content copied while stopped. The history never feeds polishing, account sync, diagnostics or a network request.
+CLP-01: Clipboard history is off until explicitly enabled. The setting is the master switch for collection and access: while disabled, unregister the history shortcut, hide menu-bar/tray entries, reject picker/delivery actions and close any open picker or preview. Cancel pending selections that have not posted a paste. Disabling preserves existing history and the saved shortcut/limits; enabling baselines the current clipboard without importing content copied while stopped. The history never feeds polishing, account sync, diagnostics or a network request.
 
 CLP-02: Capture exact plain text (including line breaks), links, PNG-compatible images/screenshots, and ordered groups of ordinary local file references. Never copy referenced file bytes into history. Exclude folders and nonregular filesystem resources; a mixed group retains only ordinary files in their original order. A folder-only copy is unsupported. Legacy folder-containing records are hidden and cannot be delivered; refresh removes their pin protection so configured count/storage limits can evict them. File moves/renames are not tracked. Missing/inaccessible references cannot be pasted as valid resources.
 
@@ -22,7 +22,7 @@ CLP-08: Use English and Simplified Chinese catalogs, existing Sunbeam primitives
 
 ## Acceptance
 
-- CLP-A01: opt-in, off/on baseline and no network/context coupling.
+- CLP-A01: opt-in, disabled shortcut/menu/picker/delivery entry points, pending-selection cancellation, preserved history/settings, off/on baseline and no network/context coupling.
 - CLP-A02: exact multiline/Unicode text, images without source files, ordered ordinary-file groups, folder-only/mixed/symlink exclusions, missing references and no source-file mutation.
 - CLP-A03: input-target dictation writes/restores and history operations excluded; confirmed no-input copied dictation recorded only when enabled; denied/uncertain/secure/cancelled cases excluded; identical later user copy accepted; concurrent user clipboard change preserved.
 - CLP-A04: stable typed dedup/pins, deterministic count/space retention with no age expiry, protected-capacity and oversize failures.

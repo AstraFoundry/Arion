@@ -608,7 +608,7 @@
   "KbdNeuralUnavailable": "Local model unavailable. Standard ranking remains active.",
   "KbdNeuralMissing": "Download the local model to use candidate ranking.",
   "ClipboardTitle": "Clipboard",
-  "ClipboardEnabled": "Save clipboard history",
+  "ClipboardEnabled": "Clipboard history",
   "ClipboardPrivacy": "Encrypted on this device. Files stay in place. Dictation is saved only when copied without an active text field.",
   "ClipboardOff": "Clipboard history is off",
   "ClipboardEnable": "Enable history",

@@ -15,7 +15,7 @@ import (
 func (x actions) OpenClipboard() {
 	a := x.a
 	cc := a.clipboard
-	if cc == nil || cc.delivering || a.updateApplying() {
+	if cc == nil || !a.state.Preferences.Clipboard.Enabled || cc.delivering || a.updateApplying() {
 		return
 	}
 	if a.clipboardWin != nil {

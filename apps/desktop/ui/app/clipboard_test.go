@@ -390,6 +390,7 @@ func TestMenuPanelHeightFollowsVisibleContent(t *testing.T) {
 		t.Run(string(locale), func(t *testing.T) {
 			state, _, store := fixture()
 			state.Preferences.UILanguage = locale
+			state.Preferences.Clipboard.Enabled = true
 			panel := &menubar.Panel{}
 			tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store))
 			for _, variant := range []struct {
@@ -426,6 +427,35 @@ func TestMenuPanelHeightFollowsVisibleContent(t *testing.T) {
 					t.Fatal("ready panel reserves empty transcript space")
 				}
 				snapshot(t, tt, "panel-compact-"+variant.name+"-"+string(locale))
+			}
+		})
+	}
+}
+
+// CLP-A01/CLP-A06: the history preference controls every entry point.
+func TestClipboardMenuEntryFollowsEnablement(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		t.Run(string(locale), func(t *testing.T) {
+			state, rec, store := fixture()
+			state.Preferences.UILanguage = locale
+			panel := &menubar.Panel{}
+			tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store))
+			label := store.Copy().Text(copy.ClipboardTitle)
+			for _, enabled := range []bool{false, true, false, true} {
+				state.Preferences.Clipboard.Enabled = enabled
+				settle(tt)
+				if hasText(tt, label) != enabled {
+					t.Fatalf("clipboard entry visibility differs from enabled=%t", enabled)
+				}
+				if !hasText(tt, store.Copy().Text(copy.SettingsMenu)) || !hasText(tt, store.Copy().Text(copy.Quit)) {
+					t.Fatal("disabling clipboard removed other footer actions")
+				}
+				if enabled {
+					rec.calls = nil
+					if err := tt.Click(label); err != nil || !rec.called("clipboard-open") {
+						t.Fatalf("enabled clipboard entry did not open history: %v", err)
+					}
+				}
 			}
 		})
 	}

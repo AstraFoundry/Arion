@@ -174,14 +174,20 @@ func TestClipboardInForeignFullscreenSpace(t *testing.T) {
 		return state.Fullscreen && !state.Transitioning && state.Active
 	})
 	var original arion.Clipboard
+	var enabled bool
 	app.Update(func(s *arion.State) {
 		original = s.Clipboard
+		enabled = s.Preferences.Clipboard.Enabled
+		s.Preferences.Clipboard.Enabled = true
 		p := arion.ClipboardText("Owned clipboard history fixture")
 		s.Clipboard.Items = []arion.Clip{{ID: p.ID(), Payload: p}}
 	})
 	defer func() {
 		mygo.RunOnMain(func() { app.Store().Actions.CloseClipboard() })
-		app.Update(func(s *arion.State) { s.Clipboard = original })
+		app.Update(func(s *arion.State) {
+			s.Clipboard = original
+			s.Preferences.Clipboard.Enabled = enabled
+		})
 	}()
 	for cycle := 0; cycle < 2; cycle++ {
 		mygo.RunOnMain(func() { app.Store().Actions.OpenClipboard() })

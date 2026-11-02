@@ -36,18 +36,14 @@ func (a *App) copyTranscript(text string) bool {
 func (x actions) CopyClipboard(id string) {
 	a := x.a
 	cc := a.clipboard
-	if cc == nil || cc.delivering || a.state.Clipboard.Using || a.updateApplying() {
+	if cc == nil || !a.state.Preferences.Clipboard.Enabled || cc.delivering || a.state.Clipboard.Using || a.updateApplying() {
 		return
 	}
 	item, ok := a.clipboardItem(id)
 	if !ok {
 		return
 	}
-	seq := cc.windowSeq
 	a.withClipboardResource(item, func() {
-		if cc.windowSeq != seq {
-			return
-		}
 		unlock, ok := clipboardos.TryLock()
 		if !ok {
 			a.state.Clipboard.Error = copy.ClipboardWriteFailed
@@ -71,19 +67,14 @@ func (x actions) PasteClipboard(id string) {
 
 	a := x.a
 	cc := a.clipboard
-	if cc == nil || cc.delivering || a.state.Clipboard.Using || a.updateApplying() {
+	if cc == nil || !a.state.Preferences.Clipboard.Enabled || cc.delivering || a.state.Clipboard.Using || a.updateApplying() {
 		return
 	}
 	item, ok := a.clipboardItem(id)
 	if !ok {
 		return
 	}
-	windowSeq := cc.windowSeq
-	a.withClipboardResource(item, func() {
-		if cc.windowSeq == windowSeq {
-			a.pasteClipboard(item)
-		}
-	})
+	a.withClipboardResource(item, func() { a.pasteClipboard(item) })
 }
 
 func (a *App) pasteClipboard(item domain.Clip) {
@@ -176,6 +167,7 @@ func (a *App) withClipboardResource(item domain.Clip, done func()) {
 	}
 	a.state.Clipboard.Using = true
 	a.resourceJobs.Add(1)
+	windowSeq := a.clipboard.windowSeq
 	go func() {
 		err := clipboardos.ValidateFiles(item.Payload)
 		var meta arion.ClipboardMeta
@@ -189,6 +181,9 @@ func (a *App) withClipboardResource(item domain.Clip, done func()) {
 		a.post(func() {
 			defer a.resourceJobs.Add(-1)
 			a.state.Clipboard.Using = false
+			if a.clipboard.windowSeq != windowSeq {
+				return
+			}
 			if _, ok := a.clipboardItem(item.ID); !ok {
 				return
 			}

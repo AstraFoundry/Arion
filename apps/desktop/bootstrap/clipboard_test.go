@@ -1,6 +1,9 @@
 package bootstrap
 
 import (
+	"bytes"
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -26,6 +29,7 @@ func clipboardFixture(t *testing.T) *App {
 		t.Fatal(err)
 	}
 	p := application.DefaultPreferences(runtime.GOOS)
+	p.Clipboard.Enabled = true
 	return &App{prefs: p, prefStore: settings.Store{Path: filepath.Join(dir, "preferences.json")}, state: arion.State{Preferences: p}, clipboard: &clipboardController{service: application.NewClipboard(repo)}, queueReady: make(chan struct{}, 1)}
 }
 func finishClipboardWork(t *testing.T, a *App) {
@@ -97,6 +101,113 @@ func TestClipboardClosingDuringValidationCancelsPaste(t *testing.T) {
 	finishClipboardWork(t, a)
 	if a.state.Clipboard.Error != "" || a.clipboard.delivering || a.resourceJobs.Load() != 0 {
 		t.Fatal("closed picker attempted a paste")
+	}
+}
+
+// CLP-A01: disabling blocks open/delivery without changing saved history.
+func TestClipboardDisabledBlocksActionsAndKeepsHistory(t *testing.T) {
+	a := clipboardFixture(t)
+	payload := domain.ClipTextPayload("Retained history")
+	items, err := a.clipboard.service.Capture(payload, a.prefs.Clipboard.Limits, time.Now())
+	if err != nil {
+		t.Fatal(err)
+	}
+	a.state.Clipboard.Items = items
+	path := filepath.Join(filepath.Dir(a.prefStore.Path), "clipboard.bin")
+	before, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a.clipboard.pendingDictations = items
+	a.clipboard.shortcut = "ctrl+shift+k"
+	a.state.Clipboard.ShortcutFailed = true
+	previous := a.state.Preferences.Clipboard
+	a.state.Preferences.Clipboard.Enabled = false
+	a.configureClipboard(previous)
+	for _, copyOnly := range []bool{false, true} {
+		a.state.Clipboard.CopyOnly = copyOnly
+		actions{a}.OpenClipboard()
+		actions{a}.CopyClipboard(payload.ID())
+		actions{a}.PasteClipboard(payload.ID())
+	}
+	if a.clipboardWin != nil || a.state.Clipboard.Using || a.resourceJobs.Load() != 0 || a.state.Clipboard.Error != "" {
+		t.Fatal("disabled history opened or attempted a delivery")
+	}
+	if a.clipboard.shortcut != "" || a.state.Clipboard.ShortcutFailed || a.clipboard.collecting.Load() || len(a.clipboard.pendingDictations) != 0 {
+		t.Fatal("disabled history retained activation or collection")
+	}
+	after, err := os.ReadFile(path)
+	if err != nil || !bytes.Equal(before, after) || len(a.state.Clipboard.Items) != 1 {
+		t.Fatal("disabling changed the saved history")
+	}
+	// The native recorder suspends shortcut registration while re-enabling;
+	// existing history must remain immediately available in memory.
+	a.state.Hold.Recording = "clipboard"
+	previous = a.state.Preferences.Clipboard
+	a.state.Preferences.Clipboard.Enabled = true
+	a.configureClipboard(previous)
+	if !a.clipboard.collecting.Load() || len(a.state.Clipboard.Items) != 1 {
+		t.Fatal("re-enabling lost retained history or did not resume collection")
+	}
+}
+
+func TestClipboardDisablingCancelsPendingSelection(t *testing.T) {
+	for _, copyOnly := range []bool{false, true} {
+		t.Run(fmt.Sprintf("copy-only-%t", copyOnly), func(t *testing.T) {
+			a := clipboardFixture(t)
+			payload := domain.ClipTextPayload("Cancelled by disable")
+			a.state.Clipboard.Items = []domain.Clip{{ID: payload.ID(), Payload: payload}}
+			a.state.Clipboard.CopyOnly = copyOnly
+			actions{a}.PasteClipboard(payload.ID())
+			previous := a.state.Preferences.Clipboard
+			a.state.Preferences.Clipboard.Enabled = false
+			a.configureClipboard(previous)
+			finishClipboardWork(t, a)
+			if a.state.Clipboard.Error != "" || a.clipboard.delivering || a.resourceJobs.Load() != 0 {
+				t.Fatal("disabled history continued its pending selection")
+			}
+		})
+	}
+}
+
+func TestClipboardDisablingDropsStaleValidationFailure(t *testing.T) {
+	a := clipboardFixture(t)
+	payload := domain.ClipPayload{Kind: domain.ClipFiles, Files: []string{filepath.Join(t.TempDir(), "missing")}}
+	a.state.Clipboard.Items = []domain.Clip{{ID: payload.ID(), Payload: payload}}
+	actions{a}.PasteClipboard(payload.ID())
+	previous := a.state.Preferences.Clipboard
+	a.state.Preferences.Clipboard.Enabled = false
+	a.configureClipboard(previous)
+	finishClipboardWork(t, a)
+	if a.state.Clipboard.Error != "" || len(a.state.Clipboard.Meta) != 0 {
+		t.Fatal("disabled selection published stale validation state")
+	}
+}
+
+type clipboardDeliveryTarget struct{ activated, checked, pasted, closed int }
+
+func (*clipboardDeliveryTarget) Anchor() (int, int, int, int, bool) { return 0, 0, 0, 0, false }
+func (t *clipboardDeliveryTarget) Activate() error                  { t.activated++; return nil }
+func (*clipboardDeliveryTarget) Ready() bool                        { return true }
+func (t *clipboardDeliveryTarget) Check() error {
+	t.checked++
+	return errors.New("unexpected target check after cancellation")
+}
+func (t *clipboardDeliveryTarget) Paste(uint64) error { t.pasted++; return nil }
+func (t *clipboardDeliveryTarget) Close()             { t.closed++ }
+
+func TestClipboardDisablingCancelsUnpostedDelivery(t *testing.T) {
+	a := clipboardFixture(t)
+	target := &clipboardDeliveryTarget{}
+	a.clipboard.target = target
+	payload := domain.ClipTextPayload("Not posted after disable")
+	a.pasteClipboard(domain.Clip{ID: payload.ID(), Payload: payload})
+	previous := a.state.Preferences.Clipboard
+	a.state.Preferences.Clipboard.Enabled = false
+	a.configureClipboard(previous)
+	finishClipboardWork(t, a)
+	if target.activated != 1 || target.checked != 0 || target.pasted != 0 || target.closed != 1 || a.clipboard.delivering || a.resourceJobs.Load() != 0 || a.state.Clipboard.Error != "" {
+		t.Fatalf("disabled delivery was not canceled: %+v", target)
 	}
 }
 

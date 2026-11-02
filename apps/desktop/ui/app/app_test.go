@@ -318,6 +318,7 @@ func TestOverlayPhases(t *testing.T) {
 
 func TestMenuBarPanel(t *testing.T) {
 	state, actions, store := fixture()
+	state.Preferences.Clipboard.Enabled = true
 	panel := &menubar.Panel{}
 	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store))
 	tt.SetSize(PanelWidth, PanelHeightFor(store))

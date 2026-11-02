@@ -108,10 +108,14 @@ func (a *App) createTray() {
 		}
 		items := []*mygo.MenuItem{
 			{Label: label, Click: func(*mygo.MenuItem, *mygo.Window) { actions{a}.ToggleDictation() }},
-			{Label: a.ui.Copy().Text(copy.ClipboardTitle), Click: func(*mygo.MenuItem, *mygo.Window) { actions{a}.OpenClipboard() }},
-			mygo.Separator(),
-			{Label: a.ui.Copy().Text(copy.TraySettings), Accelerator: "CmdOrCtrl+,", Click: func(*mygo.MenuItem, *mygo.Window) { a.openSettings() }},
 		}
+		if a.state.Preferences.Clipboard.Enabled {
+			items = append(items, &mygo.MenuItem{Label: a.ui.Copy().Text(copy.ClipboardTitle), Click: func(*mygo.MenuItem, *mygo.Window) { actions{a}.OpenClipboard() }})
+		}
+		items = append(items,
+			mygo.Separator(),
+			&mygo.MenuItem{Label: a.ui.Copy().Text(copy.TraySettings), Accelerator: "CmdOrCtrl+,", Click: func(*mygo.MenuItem, *mygo.Window) { a.openSettings() }},
+		)
 		if notice, ok := update.Notice(a.ui); ok {
 			items = append(items, &mygo.MenuItem{Label: notice, Click: func(*mygo.MenuItem, *mygo.Window) { actions{a}.OpenUpdate() }})
 		}
