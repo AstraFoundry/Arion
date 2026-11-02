@@ -8,7 +8,11 @@
 // Chromium and WebKit contenteditable composers are included when they
 // expose an editable-text ancestor or a caret whose text range is writable,
 // including when the focused node is a group or static text inside the
-// composer rather than a native text field.
+// composer rather than a native text field. External dictation on macOS and
+// Windows does not use this classification to refuse a paste. It posts one
+// system paste into the frontmost other application. The classification still
+// identifies a positive absence of input for clipboard history and the
+// non-shortcut route.
 package focusclass
 
 import "arion.local/core/domain"

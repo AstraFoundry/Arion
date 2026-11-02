@@ -1,14 +1,15 @@
 //go:build windows
 
 // Package windows implements target capture and insertion with Win32:
-// foreground/focus identity, SendInput Unicode events and a guarded
-// clipboard paste (ADR 003).
+// foreground identity and one guarded Ctrl-V paste into the frontmost
+// other application (ADR 003). Secure fields are refused.
 package windows
 
 import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"os"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -29,7 +30,6 @@ var (
 	user32                       = syscall.NewLazyDLL("user32.dll")
 	kernel32                     = syscall.NewLazyDLL("kernel32.dll")
 	shell32                      = syscall.NewLazyDLL("shell32.dll")
-	procIsWindowEnabled          = user32.NewProc("IsWindowEnabled")
 	procGetForegroundWindow      = user32.NewProc("GetForegroundWindow")
 	procGetWindowThreadProcessId = user32.NewProc("GetWindowThreadProcessId")
 	procGetGUIThreadInfo         = user32.NewProc("GetGUIThreadInfo")
@@ -51,17 +51,15 @@ var (
 )
 
 const (
-	gwlStyle         = ^uintptr(15) // GWL_STYLE (-16)
-	esPassword       = 0x0020
-	esReadOnly       = 0x0800
-	inputKeyboard    = 1
-	keyeventfUnicode = 0x0004
-	keyeventfKeyUp   = 0x0002
-	vkControl        = 0x11
-	vkV              = 0x56
-	cfUnicodeText    = 13
-	gmemMoveable     = 0x0002
-	gmemZeroInit     = 0x0040
+	gwlStyle       = ^uintptr(15) // GWL_STYLE (-16)
+	esPassword     = 0x0020
+	inputKeyboard  = 1
+	keyeventfKeyUp = 0x0002
+	vkControl      = 0x11
+	vkV            = 0x56
+	cfUnicodeText  = 13
+	gmemMoveable   = 0x0002
+	gmemZeroInit   = 0x0040
 )
 
 // clipboardHistoryExclusion is the registered clipboard format whose presence
@@ -296,66 +294,40 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 		return result, nil
 	}
 	foreground, _, _ := procGetForegroundWindow.Call()
+	if foreground == 0 {
+		return copyResult(false)
+	}
+	var pid uint32
+	procGetWindowThreadProcessId.Call(foreground, uintptr(unsafe.Pointer(&pid)))
+	// Dictation must not paste into Arion. That is not a positive observation
+	// that the user has no editor open.
+	if pid == uint32(os.Getpid()) {
+		return copyResult(false)
+	}
 	current := focusState(foreground)
 	focus := current.Focus
 	class := strings.ToLower(className(focus))
-	enabled, _, _ := procIsWindowEnabled.Call(focus)
 	standardEdit := class == "edit" || strings.HasPrefix(class, "richedit")
 	style, _, _ := procGetWindowLongW.Call(focus, gwlStyle)
-	editable := focus != 0 && enabled != 0 && (standardEdit || current.Caret != 0) && (!standardEdit || style&esReadOnly == 0)
 	if standardEdit && style&esPassword != 0 {
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
 	}
-	var pid uint32
-	if foreground != 0 {
-		procGetWindowThreadProcessId.Call(foreground, uintptr(unsafe.Pointer(&pid)))
-	}
-	metadataEditable, secure, known := dictationInput(pid)
+	_, secure, _ := dictationInput(pid)
 	if ctx.Err() != nil {
 		result.Failure = domain.CodeCancelled
 		return result, nil
 	}
 	if now, _, _ := procGetForegroundWindow.Call(); now != foreground || (now != 0 && focusOf(now) != focus) {
-		result.Failure = domain.CodeTargetChanged
-		return result, nil
+		return copyResult(false)
 	}
 	if secure {
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
 	}
-	// Keep Win32's explicit readonly/disabled checks. UI Automation also
-	// recognizes composers that are not a standard Edit window and do not
-	// publish a native caret, including Chromium groups with a writable caret.
-	if !standardEdit && enabled != 0 && known {
-		editable = metadataEditable
-	}
-	if foreground == 0 || !editable {
-		noInput := (known && !metadataEditable) || (standardEdit && enabled != 0 && style&esReadOnly != 0)
-		return copyResult(noInput)
-	}
 	tgt.foreground, tgt.focus = foreground, focus
-	if ctx.Err() != nil {
-		result.Failure = domain.CodeCancelled
-		return result, nil
-	}
-	if tgt.clipboard {
-		if !paste(request.Text) {
-			result.Failure = domain.CodeTargetUnsupported
-			return result, nil
-		}
-	} else {
-		posted, failure := typeText(ctx, singleLine(request.Text), func() bool {
-			foreground, _, _ := procGetForegroundWindow.Call()
-			return foreground == tgt.foreground && focusOf(foreground) == tgt.focus
-		})
-		if !posted && failure == domain.CodeTargetChanged {
-			return copyResult(false)
-		}
-		if posted {
-			result.Outcome = contracts.Unknown
-		}
-		result.Failure = failure
+	if !paste(request.Text) {
+		result.Failure = domain.CodeTargetUnsupported
 		return result, nil
 	}
 	result.Outcome = contracts.Unknown
@@ -374,10 +346,6 @@ func editSelection(hwnd uintptr) (start, end uint32, ok bool) {
 // call into a pointer; the memory is owned by the global allocator, not Go.
 func memory(address uintptr) unsafe.Pointer { return *(*unsafe.Pointer)(unsafe.Pointer(&address)) }
 
-func singleLine(text string) string {
-	return strings.Join(strings.Fields(strings.NewReplacer("\r\n", " ", "\n", " ", "\r", " ").Replace(text)), " ")
-}
-
 func send(inputs []keyboardInput) bool {
 	return sendCount(inputs) == len(inputs)
 }
@@ -388,34 +356,6 @@ func sendCount(inputs []keyboardInput) int {
 	}
 	sent, _, _ := procSendInput.Call(uintptr(len(inputs)), uintptr(unsafe.Pointer(&inputs[0])), unsafe.Sizeof(inputs[0]))
 	return int(sent)
-}
-
-// typeText sends UTF-16 units as Unicode key events in small batches.
-// Once any input is posted, cancellation or a partial send cannot claim that
-// nothing was applied: Windows supplies no editor acknowledgement.
-func typeText(ctx context.Context, text string, focused func() bool) (posted bool, failure domain.ErrorCode) {
-	units := utf16.Encode([]rune(text))
-	for start := 0; start < len(units); start += 16 {
-		if ctx.Err() != nil {
-			return posted, domain.CodeCancelled
-		}
-		if !focused() {
-			return posted, domain.CodeTargetChanged
-		}
-		var batch []keyboardInput
-		for _, unit := range units[start:min(start+16, len(units))] {
-			batch = append(batch,
-				keyboardInput{Type: inputKeyboard, Scan: unit, Flags: keyeventfUnicode},
-				keyboardInput{Type: inputKeyboard, Scan: unit, Flags: keyeventfUnicode | keyeventfKeyUp})
-		}
-		sent := sendCount(batch)
-		posted = posted || sent > 0
-		if sent != len(batch) {
-			return posted, domain.CodeTargetUnsupported
-		}
-		time.Sleep(4 * time.Millisecond)
-	}
-	return posted, ""
 }
 
 func readClipboardText() (string, bool) {

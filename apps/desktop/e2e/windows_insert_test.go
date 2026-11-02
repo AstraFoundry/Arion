@@ -9,7 +9,6 @@ import (
 	"syscall"
 	"testing"
 	"time"
-	"unicode/utf16"
 	"unsafe"
 
 	"arion.local/core/contracts"
@@ -23,8 +22,8 @@ func identity() contracts.Identity {
 	return contracts.Identity{SessionID: "windows-e2e", Generation: 1}
 }
 
-// DSK-A02 on Windows: the production adapter types Unicode text, including
-// CJK, into the captured editor exactly once.
+// DSK-A02 on Windows: the production adapter pastes text, including CJK,
+// into the captured editor exactly once.
 func TestWindowsInsertsIntoOwnedEditor(t *testing.T) {
 	editor := startWindowsEditor(t)
 	editor.focus(t)
@@ -44,9 +43,6 @@ func TestWindowsInsertsIntoOwnedEditor(t *testing.T) {
 	time.Sleep(300 * time.Millisecond)
 	if got := editor.text(); got != text {
 		t.Fatalf("editor text %q", got)
-	}
-	if got, want := int(editor.characters.Load()), len(utf16.Encode([]rune(text))); got != want {
-		t.Fatalf("native WM_CHAR count %d, want %d", got, want)
 	}
 	result, err = targets.Commit(context.Background(), contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text})
 	if err != nil || result.Outcome != contracts.NotApplied || result.Failure != domain.CodeTargetChanged || editor.text() != text {
@@ -120,9 +116,8 @@ func TestWindowsCommitOwnership(t *testing.T) {
 	}
 }
 
-// DSK-A04: cancellation during SendInput delivery stops later batches and
-// preserves the unknown outcome of input that was already posted.
-func TestWindowsCancellationDuringDelivery(t *testing.T) {
+// Paste keeps line breaks. The former Unicode route collapsed them.
+func TestWindowsPasteKeepsLineBreaks(t *testing.T) {
 	editor := startWindowsEditor(t)
 	editor.focus(t)
 	targets := windows.NewTargets(nil, func() windows.Delivery { return windows.DeliveryAutomatic })
@@ -130,40 +125,13 @@ func TestWindowsCancellationDuringDelivery(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	results := make(chan contracts.CommitResult, 1)
-	go func() {
-		result, _ := targets.Commit(ctx, contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: strings.Repeat("x", 6000)})
-		results <- result
-	}()
-	eventually(t, "first input batch delivered", func() bool { return editor.characters.Load() > 0 })
-	cancel()
-	select {
-	case result := <-results:
-		if result.Outcome != contracts.Unknown || result.Failure != domain.CodeCancelled {
-			t.Fatalf("cancel during delivery: %+v", result)
-		}
-	case <-time.After(5 * time.Second):
-		t.Fatal("cancelled delivery did not stop")
+	const text = "first line\nsecond line"
+	result, err := targets.Commit(context.Background(), contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text})
+	if err != nil || result.Outcome != contracts.Unknown || result.Failure != "" {
+		t.Fatalf("multiline paste: %+v %v", result, err)
 	}
-	if count := len(editor.text()); count == 0 || count >= 6000 {
-		t.Fatalf("cancelled delivery inserted %d of 6000 characters", count)
-	}
-	// SendInput acknowledges posting, not dispatch. Allow the bounded already
-	// posted batch to drain before checking that delivery remains quiescent.
-	last, quietSince := editor.characters.Load(), time.Now()
-	eventually(t, "posted input drained", func() bool {
-		current := editor.characters.Load()
-		if current != last {
-			last, quietSince = current, time.Now()
-		}
-		return time.Since(quietSince) >= 100*time.Millisecond && int(current) == len(editor.text())
-	})
-	count := editor.characters.Load()
-	time.Sleep(100 * time.Millisecond)
-	if got := editor.characters.Load(); got != count {
-		t.Fatalf("late input after cancellation: %d -> %d", count, got)
+	if !within(5*time.Second, func() bool { return editor.text() == text }) {
+		t.Fatalf("editor text %q", editor.text())
 	}
 }
 
@@ -232,9 +200,10 @@ func TestWindowsFocusChangeInsertsIntoFocusedEditor(t *testing.T) {
 	}
 }
 
-// DSK-A03: a focused button has no insertion point. Copy the processed text
-// without sending keys, for both an absent initial caret and a lost caret.
-func TestWindowsCopiesWithoutEditableFocus(t *testing.T) {
+// A focused button or read-only edit is not classified as an editor. External
+// delivery still posts one paste. The owned controls do not accept it, and
+// the previous clipboard is restored.
+func TestWindowsPastesWithoutEditableFocus(t *testing.T) {
 	for _, delivery := range []windows.Delivery{windows.DeliveryAutomatic, windows.DeliveryClipboard} {
 		for _, initial := range []string{"button", "editor"} {
 			for _, readOnly := range []bool{false, true} {
@@ -269,17 +238,17 @@ func TestWindowsCopiesWithoutEditableFocus(t *testing.T) {
 					})
 					request := contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text}
 					result, err := targets.Commit(context.Background(), request)
-					if err != nil || result.Outcome != contracts.Copied || result.Failure != "" {
+					if err != nil || result.Outcome != contracts.Unknown || result.Failure != "" {
 						t.Fatalf("noneditable focus: %+v %v", result, err)
 					}
-					if got := mygo.Clipboard.ReadText(); got != text {
-						t.Fatalf("clipboard text %q, want %q", got, text)
+					if got := mygo.Clipboard.ReadText(); got == text {
+						t.Fatalf("dictated text remained on the clipboard: %q", got)
 					}
 					if editor.text() != "" || editor.characters.Load() != 0 || editor.changes.Load() != 0 {
-						t.Fatal("clipboard-only delivery edited a field")
+						t.Fatal("noneditable control accepted the paste")
 					}
 					if duplicate, _ := targets.Commit(context.Background(), request); duplicate.Outcome != contracts.NotApplied {
-						t.Fatal("clipboard-only target reused")
+						t.Fatal("pasted target reused")
 					}
 				})
 			}
