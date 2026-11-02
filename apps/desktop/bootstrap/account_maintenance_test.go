@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"arion.local/desktop/internal/account"
-	"arion.local/desktop/internal/usageupload"
 	arion "arion.local/desktop/ui/shared/runtime"
 )
 
@@ -90,6 +89,13 @@ func TestAccountAutomaticRecovery(t *testing.T) {
 		switch r.URL.Path {
 		case "/.well-known/openid-configuration":
 			fmt.Fprintf(w, `{"issuer":%q,"authorization_endpoint":%q,"token_endpoint":%q}`, issuerURL, issuerURL+"/authorize", issuerURL+"/token")
+		case "/api/v1/usage/consent":
+			if r.Method != http.MethodGet {
+				t.Errorf("unexpected consent method %s", r.Method)
+				w.WriteHeader(http.StatusMethodNotAllowed)
+				return
+			}
+			fmt.Fprintf(w, `{"data":{"accepted":false,"decided":false,"version":%q}}`, account.UsageConsentVersion)
 		case "/token":
 			switch mode {
 			case "blocked":
@@ -110,14 +116,6 @@ func TestAccountAutomaticRecovery(t *testing.T) {
 				token := "e30." + base64.RawURLEncoding.EncodeToString([]byte(`{"sub":"user","ent":[]}`)) + ".sig"
 				fmt.Fprintf(w, `{"access_token":%q,"refresh_token":"rotated","expires_in":3600}`, token)
 			}
-		case "/api/v1/usage/consent":
-			// A restored session reads the platform's usage answer. An
-			// undecided response keeps recovery from recording an error.
-			if r.Method != http.MethodGet || r.URL.Query().Get("productSlug") != usageupload.Product {
-				t.Errorf("usage consent %s %s", r.Method, r.URL.RawQuery)
-			}
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprintf(w, `{"data":{"accepted":false,"decided":false,"version":%q}}`, account.UsageConsentVersion)
 		default:
 			t.Errorf("unexpected endpoint %s", r.URL.Path)
 			w.WriteHeader(404)
@@ -157,7 +155,10 @@ func TestAccountAutomaticRecovery(t *testing.T) {
 	a.maintainAccount(time.Now())
 	pump(func() bool { return a.state.Account.Credential == arion.CredentialStored })
 	a.maintainAccount(time.Now())
-	pump(func() bool { return a.state.Account.Phase == arion.AccountSignedIn })
+	pump(func() bool { return a.state.Account.Phase == arion.AccountSignedIn && !a.state.Account.UsageLoading })
+	if a.state.Account.ErrorCode != "" || a.state.Account.UsageSharing != arion.UsageUndecided {
+		t.Fatalf("restoration did not load the account's consent: %+v", a.state.Account)
+	}
 	if token, _ := store.Get(); token != "rotated" {
 		t.Fatal("refresh token was not rotated")
 	}
@@ -166,7 +167,7 @@ func TestAccountAutomaticRecovery(t *testing.T) {
 	}
 	mode = "offline"
 	a.refreshAccount(true)
-	pump(func() bool { return !a.state.Account.Busy() })
+	pump(func() bool { return !a.state.Account.Busy() && !a.state.Account.UsageLoading })
 	if !a.state.Account.SignedIn() || a.state.Account.ErrorCode != "" || a.accountMaintenance.retry == 0 {
 		t.Fatal("temporary failure lost identity or did not retry")
 	}
@@ -176,7 +177,7 @@ func TestAccountAutomaticRecovery(t *testing.T) {
 	// A due retry recovers without a user action, including after sleep.
 	mode = ""
 	a.maintainAccount(time.Now().Add(5 * time.Minute))
-	pump(func() bool { return !a.state.Account.Busy() })
+	pump(func() bool { return !a.state.Account.Busy() && !a.state.Account.UsageLoading })
 	if a.accountMaintenance.retry != 0 {
 		t.Fatal("successful retry did not reset backoff")
 	}
