@@ -10,6 +10,34 @@ import (
 	"arion.local/core/domain"
 )
 
+func TestReadOnlyStandardEditRefusesOnlyThatStyle(t *testing.T) {
+	if !readOnlyStandardEdit("Edit", esReadOnly) || !readOnlyStandardEdit("RichEdit50W", esReadOnly|esPassword) {
+		t.Fatal("read-only edit or rich edit was treated as writable")
+	}
+	if readOnlyStandardEdit("Edit", 0) || readOnlyStandardEdit("Edit", esPassword) {
+		t.Fatal("writable edit was treated as read-only")
+	}
+	if readOnlyStandardEdit("Button", esReadOnly) || readOnlyStandardEdit("Chrome_RenderWidgetHostHWND", esReadOnly) || readOnlyStandardEdit("", esReadOnly) {
+		t.Fatal("non-edit window was treated as a read-only edit")
+	}
+}
+
+func TestSameProcessOwnedEditorIsNotArion(t *testing.T) {
+	const self uint32 = 42
+	if !sameProcessIsArion(self, self, "MyGoWindow") {
+		t.Fatal("Arion shell was treated as another application")
+	}
+	if !sameProcessIsArion(self, self, "MyGoFlyoutShadow") {
+		t.Fatal("Arion flyout was treated as another application")
+	}
+	if sameProcessIsArion(self, self, OwnedEditorClassPrefix+"3") {
+		t.Fatal("owned editor fixture was treated as Arion")
+	}
+	if sameProcessIsArion(self, 99, "Notepad") || sameProcessIsArion(self, 0, "MyGoWindow") {
+		t.Fatal("another or unreadable process was treated as Arion")
+	}
+}
+
 // These cases use invalid native handles and must return before any OS input
 // or UI Automation read. Actual editor delivery is tested in e2e.
 func TestCommitRejectsStaleIdentityWithoutConsumingTarget(t *testing.T) {

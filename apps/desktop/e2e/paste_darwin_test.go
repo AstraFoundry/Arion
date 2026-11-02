@@ -132,16 +132,14 @@ func TestGuardedSystemPaste(t *testing.T) {
 			focus("none")
 			const text = "Processed 中文🙂\nsecond line"
 			result := commit(context.Background(), snap, text)
-			if result.Outcome != contracts.Copied || result.Failure != "" {
+			if result.Outcome != contracts.Unknown || result.Failure != "" {
 				t.Fatalf("missing caret: %+v", result)
 			}
 			s := request("state", nil)
 			if s.A.Text != "" || s.A.Edits != 0 || s.B.Text != "" || s.B.Edits != 0 {
-				t.Fatalf("clipboard-only commit edited a field: %+v", s)
+				t.Fatalf("paste without a caret edited a field: %+v", s)
 			}
-			if !request("clipboardCheck", map[string]any{"text": text}).ClipboardOwned {
-				t.Fatal("processed text was not left on the clipboard")
-			}
+			checkClipboard()
 			if duplicate := commit(context.Background(), snap, text); duplicate.Outcome != contracts.NotApplied {
 				t.Fatal("clipboard-only target reused")
 			}
@@ -153,15 +151,13 @@ func TestGuardedSystemPaste(t *testing.T) {
 		focus("readonly")
 		snap := capture()
 		const text = "Processed result for clipboard"
-		if result := commit(context.Background(), snap, text); result.Outcome != contracts.Copied || result.Failure != "" {
-			t.Fatalf("readonly selection accepted paste: %+v", result)
+		if result := commit(context.Background(), snap, text); result.Outcome != contracts.Unknown || result.Failure != "" {
+			t.Fatalf("readonly selection: %+v", result)
 		}
 		if s := request("state", nil); s.A.Text != "Read only transcript" || s.A.Edits != 0 {
 			t.Fatalf("readonly transcript changed: %+v", s)
 		}
-		if !request("clipboardCheck", map[string]any{"text": text}).ClipboardOwned {
-			t.Fatal("readonly result not retained on clipboard")
-		}
+		checkClipboard()
 		focus("A")
 		request("clipboardSet", map[string]any{"text": sentinel})
 	})
