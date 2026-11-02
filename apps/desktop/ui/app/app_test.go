@@ -848,7 +848,11 @@ func TestInterfaceLanguageSwitch(t *testing.T) {
 	}
 	settle(panelTester)
 	settle(onboardingTester)
-	if !hasText(settingsTester, "界面语言") || !hasText(panelTester, "结束") || !hasText(onboardingTester, "开始设置") {
+	// Welcome keeps account sign-in, so the first step shows the account
+	// title and local continue action. "Get started" appears only when
+	// the account is disabled.
+	zh := copy.For(copy.SimplifiedChinese)
+	if !hasText(settingsTester, "界面语言") || !hasText(panelTester, "结束") || !hasText(onboardingTester, zh.Text(copy.OnbAccountTitle)) || !hasText(onboardingTester, zh.Text(copy.OnbContinueLocally)) {
 		t.Fatalf("views did not switch: %q %q %q", settingsTester.Texts(), panelTester.Texts(), onboardingTester.Texts())
 	}
 	if state.Dictation.SessionID != "active" || state.Dictation.Draft != draft {
@@ -866,8 +870,10 @@ func TestInterfaceLanguageSwitch(t *testing.T) {
 	}
 	settle(settingsTester)
 	settle(panelTester)
-	if state.Preferences.UILanguage != runtime.LanguageEnglish || !hasText(panelTester, "Finish") || !hasText(settingsTester, "Interface language") {
-		t.Fatal("switch back to English failed")
+	settle(onboardingTester)
+	en := copy.For(copy.English)
+	if state.Preferences.UILanguage != runtime.LanguageEnglish || !hasText(panelTester, "Finish") || !hasText(settingsTester, "Interface language") || !hasText(onboardingTester, en.Text(copy.OnbAccountTitle)) || hasText(onboardingTester, zh.Text(copy.OnbAccountTitle)) {
+		t.Fatalf("switch back to English failed: %q %q %q", settingsTester.Texts(), panelTester.Texts(), onboardingTester.Texts())
 	}
 }
 
