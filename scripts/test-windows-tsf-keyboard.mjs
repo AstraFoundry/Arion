@@ -89,7 +89,7 @@ try{
     });
   };
   assert.equal((await receive()).ready,true);
-  const command=async text=>{fixture.stdin.write(text+'\n');return receive();};
+  const command=async text=>{fixture.stdin.write(text+'\n');const result=await receive();if(text==='menu')assert.equal(result.pageIndexHR,0,'TSF candidate page indices must be readable');return result;};
   const key=async(code,modifiers=0,up=false)=>{const result=await command(`key:${code}:${modifiers}${up?':up':''}`);report.lastKey={code,result,stderr};save();return result;};
   const type=async value=>{
     assert.match(value,/^[a-z']+$/,'Fixture typing supports lowercase letters and apostrophes.');
@@ -102,7 +102,7 @@ try{
   const choose=async text=>{
     for(let attempt=0;attempt<20;attempt++){
       let menu=await command('menu');const index=menu.strings.indexOf(text);
-      if(index>=0){const page=Math.floor(index/9);while(menu.page<page){await key(34);menu=await command('menu');}while(menu.page>page){await key(33);menu=await command('menu');}assert.equal((await key(49+index%9)).eaten,true);return;}
+      if(index>=0){const page=menu.pageStarts.findLastIndex(start=>start<=index);assert.ok(page>=0,'candidate has a declared TSF page');while(menu.page<page){await key(34);menu=await command('menu');}while(menu.page>page){await key(33);menu=await command('menu');}assert.equal((await key(49+index-menu.pageStarts[page])).eaten,true);return;}
       await key(34);
     }
     throw new Error(`Real engine candidate not found: ${text}`);
@@ -115,6 +115,11 @@ try{
   async function test(name,action){await action();report.cases.push({name,status:'passed'});save();console.log(`PASS ${name}`);}
   await test('Native hello announces private-password-safe protocol 2',async()=>{const hello=await waitMessage(message=>message.op==='hello');assert.equal(hello.protocol,2);});
   const settingsFile=path.join(directory,'profile/keyboard.json');
+  await test('New profile exposes six candidates per TSF page',async()=>{
+    assert.equal(existsSync(settingsFile),false);await command('reset');await type('ni');
+    const menu=await command('menu');assert.equal(menu.visible,true);assert.equal(menu.page,0);
+    assert.deepEqual(menu.pageStarts.slice(0,2),[0,6]);await key(27);
+  });
   const contextFile=path.join(directory,'profile/learning/arion_context.arion-userdb');
   const contextBytes=()=>existsSync(contextFile)?readFileSync(contextFile):null;
   await test('Chinese mode offers English words and commits their displayed identity through TSF',async()=>{
@@ -130,7 +135,7 @@ try{
   });
   await test('Typed native Emoji has protected text slots and commits exactly once without Chinese context learning',async()=>{
     await command('reset');await type('xiaolian');const menu=await command('menu');
-    assert.equal(menu.visible,true);const index=menu.strings.indexOf('😊');assert.ok(index>=3 && index<9,JSON.stringify(menu));
+    assert.equal(menu.visible,true);const index=menu.strings.indexOf('😊');assert.ok(index>=3 && index<(menu.pageStarts[1]??menu.strings.length),JSON.stringify(menu));
     const before=contextBytes();await key(49+index);assert.equal(await document(),'A🙂😊Z');await pause(350);assert.equal(await document(),'A🙂😊Z');
     assert.deepEqual(contextBytes(),before,'Emoji commit must not rewrite the Chinese context store');
   });
@@ -139,7 +144,7 @@ try{
     const before=contextBytes();await choose('😊');assert.equal(await document(),'A🙂你😊Z');await pause(350);assert.deepEqual(contextBytes(),before);
   });
   const highlightEmoji=async()=>{
-    let menu=await command('menu');const index=menu.strings.indexOf('😊');assert.ok(index>=3 && index<9);
+    let menu=await command('menu');const index=menu.strings.indexOf('😊');assert.ok(index>=3 && index<(menu.pageStarts[1]??menu.strings.length));
     await key(34);await key(33);menu=await command('menu');assert.equal(menu.page,0);
     for(let i=0;i<index;i++)await key(39);
     assert.equal((await command('menu')).selection,index);
@@ -179,7 +184,7 @@ try{
   await test('Engine does not process a key before a granted write lock',async()=>{await command('reset');await command('block');assert.equal((await key(78)).eaten,false);await command('unblock');await type('i');assert.equal(await document(),'A🙂iZ');await key(27);});
   await test('User replacement survives stale composition cleanup',async()=>{await command('reset');await type('ni');await command('replace');await new Promise(resolve=>setTimeout(resolve,350));assert.equal(await document(),'A🙂userZ');});
   await test('Focus loss restores only unchanged marked text',async()=>{await command('reset');await type('ni');await command('password');await new Promise(resolve=>setTimeout(resolve,350));assert.equal(await document(),'A🙂中Z');await command('edit');});
-  await test('Zero-width caret anchors an actual nonactivating candidate window',async()=>{await command('reset');await command('zerocaret');await type('ni');const menu=await command('menu');assert.equal(menu.visible,true);assert.ok(menu.strings.length>=9);assert.ok(menu.width>0&&menu.height>0);await key(27);await command('caret');});
+  await test('Zero-width caret anchors an actual nonactivating candidate window',async()=>{await command('reset');await command('zerocaret');await type('ni');const menu=await command('menu');assert.equal(menu.visible,true);assert.ok(menu.strings.length>=menu.pageStarts[1]);assert.ok(menu.width>0&&menu.height>0);await key(27);await command('caret');});
   await test('Delayed browser layout restores each current candidate revision through read-only sessions',async()=>{
     await command('reset');await command('zerocaret');await command('delaylayout');
     for(const letter of 'nihao'){
@@ -203,7 +208,7 @@ try{
     await command('keyboardfocus');await command('instantlayout');await type('ni');assert.equal((await command('menu')).visible,true);await key(27);await command('layout');await pause(30);assert.equal((await command('menu')).visible,false);
   });
   await test('Number selection commits the TSF accessible candidate ordering',async()=>{await command('reset');await type('ni');const menu=await command('menu');assert.equal((await key(50)).eaten,true);assert.equal(await document(),`A🙂${menu.strings[1]}Z`);});
-  await test('Expanded six-row native menu selects another row by mouse',async()=>{await command('reset');await type('ni');await key(34);const menu=await command('menu');assert.equal(menu.page,1);assert.ok(menu.height>32*2);await command('click:1');assert.equal(await document(),`A🙂${menu.strings[9]}Z`);});
+  await test('Expanded six-row native menu selects another row by mouse',async()=>{await command('reset');await type('ni');await key(34);const menu=await command('menu');assert.equal(menu.page,1);assert.ok(menu.height>32*2);await command('click:1');assert.equal(await document(),`A🙂${menu.strings[menu.pageStarts[menu.page]]}Z`);});
   await test('Hidden stale native candidate click cannot insert',async()=>{await command('reset');await type('ni');await command('cacheclick');await key(27);await command('staleclick');assert.equal(await document(),'A🙂中Z');});
   await test('Return commits raw Pinyin rather than a candidate display string',async()=>{await command('reset');await type('nihao');await key(13);assert.equal(await document(),'A🙂nihaoZ');});
   await test('Apostrophe typing reaches the raw engine input before Shift switching',async()=>{await command('reset');await type("ni'hao");await key(13);assert.equal(await document(),"A🙂ni'haoZ");});
@@ -253,7 +258,12 @@ try{
     await command('reset');await type('ni');await command('keyboardblur');await command('keyboardblur');await pause(80);assert.equal(await document(),'A🙂中Z');assert.equal((await key(78)).eaten,false);await command('keyboardfocus');await begin('keyboard-blur-voice');voice('keyboard-blur-voice','mark','voice draft',1);await pause(80);assert.equal(await document(),'A🙂中voice draftZ');const after=messages.length;await command('keyboardblur');await pause(100);assert.equal(await document(),'A🙂中Z');assert.equal([...connections].some(socket=>!socket.destroyed),false);voice('keyboard-blur-voice','commit','LATE',2);peer.write(JSON.stringify({op:'begin',activation:currentActivation,session:'blurred-begin'})+'\n');await pause(80);assert.equal(messages.slice(after).some(message=>message.op==='begun'&&message.session==='blurred-begin'),false);assert.equal(await document(),'A🙂中Z');await command('keyboardfocus');await type('ni');await key(27);
   });
   await test('App bridge disconnect cannot erase a keyboard composition',async()=>{await command('reset');await type('ni');const pending=await document();for(const socket of connections)socket.destroy();await new Promise(resolve=>server.close(resolve));server=null;await pause(350);assert.equal(await document(),pending);await key(32);assert.equal(await document(),'A🙂你Z');});
-  await test('Saved candidate preferences refresh without the desktop app',async()=>{await command('reset');writeFileSync(path.join(directory,'profile/keyboard.json'),JSON.stringify({pageSize:5,candidateSize:'large',appearance:'dark',highlight:{dark:{fill:'#123456',text:'#ffffff'},light:{fill:'#abcdef',text:'#14110f'}}}));await pause(350);await type('ni');const menu=await command('menu');await key(34);const expanded=await command('menu');report.lastSettingsMenus={before:menu,expanded};save();assert.equal(expanded.page,1);assert.ok(expanded.height>36*2);await key(49);assert.equal(await document(),`A🙂${menu.strings[5]}Z`);});
+  await test('Explicit nine-candidate preference retains paging and last-slot selection',async()=>{
+    await command('reset');writeFileSync(settingsFile,JSON.stringify({pageSize:9}));await pause(350);await type('ni');
+    const menu=await command('menu');assert.deepEqual(menu.pageStarts.slice(0,2),[0,9]);
+    assert.equal((await key(57)).eaten,true);assert.equal(await document(),`A🙂${menu.strings[8]}Z`);
+  });
+  await test('Saved candidate preferences refresh without the desktop app',async()=>{await command('reset');writeFileSync(path.join(directory,'profile/keyboard.json'),JSON.stringify({pageSize:5,candidateSize:'large',appearance:'dark',highlight:{dark:{fill:'#123456',text:'#ffffff'},light:{fill:'#abcdef',text:'#14110f'}}}));await pause(350);await type('ni');const menu=await command('menu');await key(34);const expanded=await command('menu');report.lastSettingsMenus={before:menu,expanded};save();assert.deepEqual(menu.pageStarts.slice(0,2),[0,5]);assert.equal(expanded.page,1);assert.ok(expanded.height>36*2);await key(49);assert.equal(await document(),`A🙂${menu.strings[5]}Z`);});
   fixture.stdin.write('quit\n');
   const exit=await Promise.race([exited,new Promise((_,reject)=>{const timer=setTimeout(()=>reject(new Error('Fixture shutdown timed out')),5000);timer.unref();})]);
   assert.equal(exit.code,0);fixture=null;

@@ -123,11 +123,14 @@ int main(int count,char **arguments) {
     std::vector<NativeCandidate> compact;
     const std::wstring words=L"\u7684\u90fd\u5230\u5bf9\u5171\u591a\u70b9\u4f46\u6253";
     for (size_t i=0;i<words.size();++i) compact.push_back({words.substr(i,1),L"",100+i,false});
+    const std::vector<NativeCandidate> defaultRow(compact.begin(),compact.begin()+6);
+    require(panel.show(owner,caret,defaultRow,0,false,true,9,colors),"show default six-candidate row");
+    require(!panel.show(owner,caret,compact,0,false,true,9,colors),"default row refuses more than six candidates");
     for (bool dark:{false,true}) {
         colors.surface=dark?RGB(32,32,32):RGB(255,255,255); colors.text=dark?RGB(245,245,245):RGB(20,17,15); colors.border=dark?RGB(70,70,70):RGB(215,215,215);
         colors.muted=dark?RGB(145,145,145):RGB(110,110,110);
         for (size_t selected=0;selected<compact.size();++selected) {
-            require(panel.show(owner,caret,compact,selected,false,true,10+selected,colors),"show compact nine-candidate row");
+            require(panel.show(owner,caret,compact,selected,false,true,10+selected,colors,compact.size()),"show explicit compact nine-candidate row");
             RECT bounds{}; GetClientRect(panel.handle(),&bounds);
             require(bounds.right<MulDiv(500,static_cast<int>(GetDpiForWindow(owner)),96),"single-character row no longer reserves oversized cells");
             SurfaceCapture surface(panel.handle());

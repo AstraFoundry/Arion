@@ -16,6 +16,10 @@ Go formatting commands use paths relative to each module so longer Windows workt
 
 Command references use Arion's Makefile and package scripts only for project-authored documentation. Frozen benchmark evidence retains its historical command context. Imported upstream Markdown listed as local source files in `scripts/keyboard-runtime.json` retains its upstream commands only while its bytes match the pinned SHA-256; changed notices fail the check. Link, JSON and project-command checks remain enabled.
 
+## Windows candidate-page regression
+
+The native candidate-window fixture exercises the default page bound in [KBD-03](../../specs/007-ime-ranking.md) and an explicitly sized nine-candidate row. The TSF owned-editor fixture exposes `ITfCandidateListUIElement.GetPageIndex` results; selection and expanded-row tests use those actual page starts instead of assuming a fixed page size. It verifies a new profile and an explicit saved nine-candidate preference separately. These checks run under `pnpm keyboard:windows:check` on Windows.
+
 ## Windows pipe identity fixture
 
 The pipe peer-proof test runs directly under an ordinary medium-integrity token. From an elevated development shell, it first verifies that production rejects the elevated token, then launches the same test executable with a restricted, non-elevated medium-integrity token. The child performs the real named-pipe connection, kernel PID/SID/session checks and held-process lifetime checks. Token setup or child execution failure fails the test. No account, UAC setting or desktop ACL is changed. Low-integrity refusal remains a separate test. This fixture does not replace the standard-user profile and DPAPI acceptance in the Windows keyboard CI launcher.

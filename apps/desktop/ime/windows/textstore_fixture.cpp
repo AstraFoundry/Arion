@@ -271,6 +271,7 @@ static LRESULT CALLBACK dispatch(HWND window, UINT message, WPARAM wp, LPARAM lp
         else if (*command=="menu") {
             ITfUIElementMgr *elements=nullptr; IEnumTfUIElements *enumerator=nullptr; bool first=true;
             std::cout << "{\"strings\":["; UINT selection=0,page=0,count=0;
+            std::vector<UINT> pageStarts; HRESULT pageIndexResult=S_OK;
             if (SUCCEEDED(manager->QueryInterface(IID_ITfUIElementMgr,reinterpret_cast<void**>(&elements)))) {
                 if (SUCCEEDED(elements->EnumUIElements(&enumerator))) {
                     ITfUIElement *element=nullptr; ULONG fetched=0;
@@ -278,6 +279,9 @@ static LRESULT CALLBACK dispatch(HWND window, UINT message, WPARAM wp, LPARAM lp
                         ITfCandidateListUIElement *list=nullptr;
                         if (SUCCEEDED(element->QueryInterface(IID_ITfCandidateListUIElement,reinterpret_cast<void**>(&list)))) {
                             list->GetCount(&count); list->GetSelection(&selection); list->GetCurrentPage(&page);
+                            UINT pages=0; pageStarts.resize(count);
+                            pageIndexResult=list->GetPageIndex(pageStarts.data(),count,&pages);
+                            if (SUCCEEDED(pageIndexResult)) pageStarts.resize(pages); else pageStarts.clear();
                             for (UINT i=0;i<std::min<UINT>(count,256);++i) { BSTR value=nullptr; if (SUCCEEDED(list->GetString(i,&value))) { if (!first) std::cout << ','; std::cout << ::quoted(std::wstring(value,SysStringLen(value))); first=false; SysFreeString(value); } }
                             list->Release();
                         }
@@ -288,7 +292,9 @@ static LRESULT CALLBACK dispatch(HWND window, UINT message, WPARAM wp, LPARAM lp
                 elements->Release();
             }
             HWND candidates=candidateWindow(); RECT area{}; if (candidates) GetWindowRect(candidates,&area);
-            std::cout << "],\"selection\":" << selection << ",\"page\":" << page << ",\"visible\":" << (candidates?"true":"false") << ",\"x\":" << area.left << ",\"y\":" << area.top << ",\"width\":" << area.right-area.left << ",\"height\":" << area.bottom-area.top << "}" << std::endl;
+            std::cout << "],\"pageStarts\":[";
+            for (size_t i=0;i<pageStarts.size();++i) { if (i) std::cout << ','; std::cout << pageStarts[i]; }
+            std::cout << "],\"pageIndexHR\":" << static_cast<long>(pageIndexResult) << ",\"selection\":" << selection << ",\"page\":" << page << ",\"visible\":" << (candidates?"true":"false") << ",\"x\":" << area.left << ",\"y\":" << area.top << ",\"width\":" << area.right-area.left << ",\"height\":" << area.bottom-area.top << "}" << std::endl;
         }
         else if (*command=="mode") { auto item=button(); BSTR value=nullptr; if (item) item->GetText(&value); std::cout << "{\"mode\":" << ::quoted(value?std::wstring(value,SysStringLen(value)):L"") << "}" << std::endl; if (value) SysFreeString(value); if (item) item->Release(); }
         else if (*command=="badge") {
