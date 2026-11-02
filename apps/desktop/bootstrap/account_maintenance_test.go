@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"arion.local/desktop/internal/account"
+	"arion.local/desktop/internal/usageupload"
 	arion "arion.local/desktop/ui/shared/runtime"
 )
 
@@ -109,6 +110,14 @@ func TestAccountAutomaticRecovery(t *testing.T) {
 				token := "e30." + base64.RawURLEncoding.EncodeToString([]byte(`{"sub":"user","ent":[]}`)) + ".sig"
 				fmt.Fprintf(w, `{"access_token":%q,"refresh_token":"rotated","expires_in":3600}`, token)
 			}
+		case "/api/v1/usage/consent":
+			// A restored session reads the platform's usage answer. An
+			// undecided response keeps recovery from recording an error.
+			if r.Method != http.MethodGet || r.URL.Query().Get("productSlug") != usageupload.Product {
+				t.Errorf("usage consent %s %s", r.Method, r.URL.RawQuery)
+			}
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintf(w, `{"data":{"accepted":false,"decided":false,"version":%q}}`, account.UsageConsentVersion)
 		default:
 			t.Errorf("unexpected endpoint %s", r.URL.Path)
 			w.WriteHeader(404)
