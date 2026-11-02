@@ -4,7 +4,7 @@
 
 Accepted. Amends SYNC-02 of [003](../../specs/003-memory-sync.md), which assumed no account login, and adds SYNC-08–10.
 
-Onboarding placement is superseded by [ADR 039](039-focused-onboarding.md); optional configuration now lives in Settings.
+The account step returns in onboarding under [ADR 040](040-onboarding-account-polish-translation.md). Sign-in still does not grant usage consent.
 
 ## Context
 

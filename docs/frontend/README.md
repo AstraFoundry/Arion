@@ -24,7 +24,7 @@ Vocabulary reading edits distinguish encrypted saving from native keyboard appli
 
 ## Onboarding
 
-The required sequence and completion gates are owned by [DSK-14](../../specs/001-desktop-input.md). The combined shortcut/practice page uses the existing recorder and actual dictation, with download retry and revoked-permission actions. Optional configuration remains in Settings, opened on completion.
+The required sequence and completion gates are owned by [DSK-14](../../specs/001-desktop-input.md). Welcome includes account sign-in. Polish includes cloud setup when that engine is selected. Microphone and Accessibility share a settings-style card and keep a granted status on the row. The polish shortcut and translation each have their own page, with a practice field. Keyboard setup remains in Settings, which opens on completion.
 
 ## Documents
 

@@ -21,8 +21,12 @@ func TestOnboardingFlow(t *testing.T) {
 			settle(tt)
 			messages := store.Copy()
 			click := func(key copy.Key) { t.Helper(); clicker(t, tt)(messages.Text(key)) }
+			expect(t, tt, true, messages.Text(copy.OnbWelcomeTitle), messages.Text(copy.OnbAccountTitle), messages.Text(copy.AccContinueGoogle), messages.Text(copy.AccTerms), messages.Text(copy.OnbContinueLocally))
 			snapshot(t, tt, "onboarding-welcome-"+string(locale))
-			click(copy.OnbStart)
+			click(copy.OnbContinueLocally)
+			if actions.called("sign-in") || actions.called("sign-in:share") {
+				t.Fatal("continuing locally started sign-in")
+			}
 			expect(t, tt, true, messages.Text(copy.OnbModelTitle), messages.DownloadSize(state.Model.Active.SizeBytes))
 			if actions.called("retry") {
 				t.Fatal("opening setup downloaded a model")
@@ -42,28 +46,42 @@ func TestOnboardingFlow(t *testing.T) {
 			state.Model.State = runtime.ModelProvisioning
 			settle(tt)
 			click(copy.Continue)
-			expect(t, tt, true, messages.Text(copy.OnbMicTitle))
+			expect(t, tt, true, messages.Text(copy.OnbPolishTitle), messages.Text(copy.PolishOff), messages.Text(copy.PolishEngineLocal), messages.Text(copy.PolishEngineCloud))
+			snapshot(t, tt, "onboarding-polish-"+string(locale))
+			click(copy.PolishEngineLocal)
 			click(copy.Continue)
-			expect(t, tt, true, messages.Text(copy.OnbMicTitle))
-			click(copy.OnbMicAllow)
+			expect(t, tt, true, messages.Text(copy.OnbPolishTitle))
+			if actions.called("download-polish") {
+				t.Fatal("selecting local polish downloaded it")
+			}
+			click(copy.PolishOff)
+			click(copy.Continue)
+			expect(t, tt, true, messages.Text(copy.OnbPermissionsTitle), messages.Text(copy.MicPermission), messages.Text(copy.AXPermission), messages.Text(copy.Allow))
+			expect(t, tt, false, messages.Text(copy.StatusUndetermined))
+			click(copy.Continue)
+			expect(t, tt, true, messages.Text(copy.OnbPermissionsTitle))
+			click(copy.Allow)
 			if !actions.called("request-mic") {
 				t.Fatal("microphone not requested")
 			}
 			state.Permissions.Microphone = runtime.ConsentGranted
 			settle(tt)
-			snapshot(t, tt, "onboarding-microphone-"+string(locale))
-			click(copy.Continue)
-			expect(t, tt, true, messages.Text(copy.OnbAXTitle))
-			snapshot(t, tt, "onboarding-accessibility-"+string(locale))
-			// External consent is observed before continuing.
+			expect(t, tt, true, messages.Text(copy.MicPermission), messages.Text(copy.StatusGranted), messages.Text(copy.AXPermission), messages.Text(copy.Allow))
+			expect(t, tt, false, messages.Text(copy.StatusUndetermined))
+			snapshot(t, tt, "onboarding-permissions-"+string(locale))
+			click(copy.Allow)
+			if !actions.called("request-ax") {
+				t.Fatal("accessibility not requested")
+			}
 			state.Permissions.Accessibility = runtime.ConsentGranted
 			settle(tt)
+			expect(t, tt, true, messages.Text(copy.MicPermission), messages.Text(copy.AXPermission), messages.Text(copy.StatusGranted))
 			click(copy.Continue)
-			expect(t, tt, true, messages.Text(copy.OnbTryTitle))
-			expect(t, tt, false, messages.Text(copy.OnbTryPlaceholder))
+			expect(t, tt, true, messages.Text(copy.OnbDictateTitle), messages.Text(copy.PolishLabel), messages.Text(copy.HoldKeyEdit))
+			expect(t, tt, false, messages.Text(copy.TranslateGroup), messages.Text(copy.OnbTryPlaceholder))
 			snapshot(t, tt, "onboarding-practice-downloading-"+string(locale))
 			click(copy.Continue)
-			expect(t, tt, true, messages.Text(copy.OnbTryTitle))
+			expect(t, tt, true, messages.Text(copy.OnbDictateTitle))
 			state.Model.State = runtime.ModelFailed
 			settle(tt)
 			click(copy.Retry)
@@ -72,36 +90,71 @@ func TestOnboardingFlow(t *testing.T) {
 			settle(tt)
 			snapshot(t, tt, "onboarding-practice-permission-"+string(locale))
 			click(copy.Continue)
-			expect(t, tt, true, messages.Text(copy.OnbTryTitle))
+			expect(t, tt, true, messages.Text(copy.OnbDictateTitle))
 			state.Hold = runtime.Hold{Active: true}
 			settle(tt)
-			expect(t, tt, true, messages.Text(copy.OnbTryPlaceholder), messages.Text(copy.HoldKeyEdit))
+			expect(t, tt, true, messages.Text(copy.OnbTryPlaceholder))
 			snapshot(t, tt, "onboarding-practice-"+string(locale))
+			click(copy.Continue)
+			expect(t, tt, true, messages.Text(copy.OnbTranslateTitle), messages.Text(copy.TranslateGroup))
+			expect(t, tt, false, messages.Text(copy.TranslateKeyEdit))
+			click(copy.TranslateEnabled)
+			expect(t, tt, true, messages.Text(copy.TranslateKeyEdit), messages.Text(copy.TranslateLanguageLabel), messages.Text(copy.OnbTryPlaceholder))
 			state.Dictation.State = runtime.StateFinalizing
 			settle(tt)
-			click(copy.Continue)
-			expect(t, tt, true, messages.Text(copy.OnbTryTitle))
+			click(copy.OnbFinish)
+			expect(t, tt, true, messages.Text(copy.OnbTranslateTitle))
 			state.Dictation.State = runtime.StateCompleted
 			settle(tt)
-			click(copy.Continue)
-			expect(t, tt, true, messages.Text(copy.OnbDoneTitle))
+			expect(t, tt, true, messages.Text(copy.OnbDoneBody))
 			snapshot(t, tt, "onboarding-complete-"+string(locale))
-			// Losing readiness must restore actionable controls, even on the last page.
 			state.Permissions.Microphone = runtime.ConsentDenied
 			settle(tt)
-			expect(t, tt, true, messages.Text(copy.OnbTryTitle), messages.Text(copy.OpenSettings))
+			expect(t, tt, true, messages.Text(copy.OnbTranslateTitle), messages.Text(copy.OpenSettings), messages.Text(copy.MicPermission))
 			state.Permissions.Microphone = runtime.ConsentGranted
 			settle(tt)
-			click(copy.Continue)
 			click(copy.OnbFinish)
 			if !actions.called("complete") {
 				t.Fatal("onboarding not completed")
 			}
-			for _, call := range []string{"sign-in", "install-ime", "download-polish", "check-stored"} {
+			if !actions.called("check-stored") {
+				t.Fatal("welcome page did not look for a stored sign-in")
+			}
+			for _, call := range []string{"sign-in", "sign-in:share", "install-ime", "download-polish"} {
 				if actions.called(call) {
-					t.Fatalf("required flow triggered optional action %s", call)
+					t.Fatalf("setup triggered %s", call)
 				}
 			}
 		})
 	}
+}
+
+func TestOnboardingCloudStepAndCustomIssuer(t *testing.T) {
+	state, actions, store := fixture()
+	state.Account.Portal = ""
+	state.Model.State = runtime.ModelReady
+	page := onboarding.NewPage()
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+	settle(tt)
+	messages := store.Copy()
+	click := func(key copy.Key) { t.Helper(); clicker(t, tt)(messages.Text(key)) }
+	expect(t, tt, true, messages.Text(copy.OnbWelcomeTitle), messages.Text(copy.AccSignIn), messages.Text(copy.AccTerms))
+	expect(t, tt, false, messages.Text(copy.AccContinueGoogle))
+	click(copy.OnbContinueLocally)
+	if actions.called("sign-in") {
+		t.Fatal("custom issuer local continuation started sign-in")
+	}
+	click(copy.Continue)
+	click(copy.PolishEngineCloud)
+	click(copy.Continue)
+	expect(t, tt, true, messages.Text(copy.CloudTitle), messages.Text(copy.Skip))
+	expect(t, tt, false, messages.Text(copy.OnbPolishTitle))
+	click(copy.Back)
+	expect(t, tt, true, messages.Text(copy.OnbPolishTitle))
+	click(copy.Continue)
+	expect(t, tt, true, messages.Text(copy.CloudTitle))
+	click(copy.Skip)
+	click(copy.Continue)
+	expect(t, tt, true, messages.Text(copy.OnbDictateTitle), messages.Text(copy.PolishLabel))
+	expect(t, tt, false, messages.Text(copy.TranslateGroup))
 }
