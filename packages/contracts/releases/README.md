@@ -20,6 +20,7 @@ All keys are relative to the configured prefix (standard: `arion`).
 
 Rules:
 
+- The user-requested alpha.22 rebuild is the sole current exception to immutable release files: the [guarded replacement procedure](../../../docs/operations/deployment.md#releases-and-updates) archives the original set and refuses a version currently offered by either channel. Replacement backups under `releases/<version>/replaced/<previous-sha>/` remain immutable.
 - A staged record is not offered to anyone. Only the platform publishes, by writing channel objects: manifests first, the index last.
 - `stable` holds, per target, the newest published release whose version has no prerelease part. `beta` holds the newest published release of either kind. A prerelease version can never enter `stable`.
 - Manifest URLs point at the center, `https://api.arion.astrafoundry.si/v1/updates/<name>`; the center redirects to a short-lived presigned URL of `files/<name>`. Rewriting a URL never touches a signature: MyGo signs the SHA-256 of each archive and delta, and the app verifies it with its built-in key.

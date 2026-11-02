@@ -79,7 +79,7 @@ jobs:
   draft-release:
     timeout-minutes: 30
     needs: checks
-    runs-on: ${{ fromJSON(vars.LOCAL_CI_ENABLED == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && '["self-hosted","Linux","ARM64","af-arion-linux"]' || '["ubuntu-latest"]') }}
+    runs-on: ${{ fromJSON(github.ref != 'refs/tags/v0.1.0-alpha.22' && vars.LOCAL_CI_ENABLED == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && '["self-hosted","Linux","ARM64","af-arion-linux"]' || '["ubuntu-latest"]') }}
     permissions:
       contents: write
     steps:
@@ -117,7 +117,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.ARION_RELEASES_S3_SECRET_ACCESS_KEY }}
         run: |
           aws configure set default.s3.addressing_style virtual
-          node scripts/release.mjs stage .workspace/release/verified
+          if [ "$GITHUB_REF_NAME" = "v0.1.0-alpha.22" ]; then
+            node scripts/release.mjs stage .workspace/release/verified --replace-commit b30e5c733cb1ec9af899f23f126096295ef3aaa5
+          else
+            node scripts/release.mjs stage .workspace/release/verified
+          fi
       - name: Upload verified assets to a draft release
         env:
           GH_TOKEN: ${{ github.token }}

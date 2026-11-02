@@ -4,6 +4,7 @@
 
 Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
 
+- Remove the clipboard-history entry from the menu panel; open the picker with its shortcut.
 - Add two-stage local keyboard ranking and contextual whole-input candidates, with bundled scoring resources and inference resuming after dictation.
 - Let the Chinese/English switch use Shift or Caps Lock, learn English words confirmed by switching, and require full spelling for unfamiliar uncommon English words.
 - Use reference context in final polishing and consistently apply the option to omit sentence-final punctuation.
@@ -18,6 +19,7 @@ macOS release packages require Developer ID signing and Apple notarization. Wind
 
 适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
 
+- 移除菜单面板中的剪贴板历史入口，通过快捷键打开选择器。
 - 新增两阶段本地输入法排序和结合上下文的整段候选，随包提供评分资源，并在听写结束后恢复输入法推理。
 - 支持使用 Shift 或 Caps Lock 切换中英文，学习切换时确认的英文词；不熟悉的低频英文词需完整拼写才进入候选。
 - 最终润色使用参考上下文，并统一执行省略句末标点的设置。

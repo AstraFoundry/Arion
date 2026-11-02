@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkRelease, checkReleaseChangelog, digest, githubAssetName, platformAssets, platformsForRelease, releaseMatrix, releaseStatus, stagedRecord, stagedRecordKey, stagingSettings, stagingUploads } from './lib/release.mjs';
+import { releaseRebuildPlan } from './lib/release-rebuild.mjs';
 import { checkOfficialCenter } from './lib/center-profile.mjs';
 import { macosSigningSettings } from './lib/desktop-signing.mjs';
 
@@ -50,7 +51,9 @@ if (operation === 'matrix') {
     const allFiles = [...files, 'RELEASE-STATUS.md', 'SHA256SUMS'];
     if (readFileSync(path.join(directory, 'SHA256SUMS'), 'utf8') !== checksumList(directory, files)) throw new Error('Release checksums changed after verification');
     if (operation === 'stage') {
-      stage(directory, platforms);
+      if (second !== undefined && second !== '--replace-commit') throw new Error('Unknown stage option');
+      if (second === '--replace-commit' && !mode) throw new Error('Replacement requires the previous source commit');
+      await stage(directory, platforms, mode);
       process.exit(0);
     }
     // A failed lookup must not be treated as permission to create a new release.
@@ -66,7 +69,7 @@ if (operation === 'matrix') {
 
 // Stages the verified set in the release bucket (packages/contracts/releases).
 // Nothing is published: the platform admin decides which channel offers it.
-function stage(directory, platforms) {
+async function stage(directory, platforms, expectedCommit) {
   const settings = stagingSettings(process.env);
   const prefixed = key => (settings.prefix ? `${settings.prefix}/${key}` : key);
   const aws = (args, capture = false) => spawnSync('aws', ['s3api', ...args, '--bucket', settings.bucket, '--endpoint-url', settings.endpoint, '--region', settings.region], { encoding: 'utf8', stdio: capture ? 'pipe' : ['ignore', 'ignore', 'inherit'] });
@@ -74,10 +77,41 @@ function stage(directory, platforms) {
   // A failed lookup must not be treated as permission to stage over a release.
   const existing = aws(['head-object', '--key', prefixed(stagedRecordKey(config.version))], true);
   if (existing.error) throw existing.error;
-  if (existing.status === 0) throw new Error(`Refusing to replace the staged release ${config.version}`);
-  if (!/\b404\b|Not Found/.test(existing.stderr)) throw new Error(`Release storage lookup failed: ${existing.stderr.trim()}`);
+  if (existing.status === 0 && !expectedCommit) throw new Error(`Refusing to replace the staged release ${config.version}`);
+  if (existing.status !== 0 && !/\b404\b|Not Found/.test(existing.stderr)) throw new Error(`Release storage lookup failed: ${existing.stderr.trim()}`);
+  if (expectedCommit && existing.status !== 0) throw new Error('Replacement requires an existing staged release');
   const scratch = mkdtempSync(path.join(tmpdir(), 'arion-stage-'));
   try {
+    if (expectedCommit) {
+      const previousPath = path.join(scratch, 'previous.json');
+      const read = aws(['get-object', '--key', prefixed(stagedRecordKey(config.version)), previousPath], true);
+      if (read.error || read.status !== 0) throw new Error('Cannot read the previous staged release');
+      const previousBytes = readFileSync(previousPath);
+      const previous = JSON.parse(previousBytes);
+      const channels = {};
+      for (const channel of ['stable', 'beta']) {
+        const response = await fetch(new URL(`/v1/releases/${channel}`, config.updates.url), { redirect: 'error', signal: AbortSignal.timeout(30000) });
+        if (!response.ok) throw new Error(`Cannot check the ${channel} update channel: ${response.status}`);
+        channels[channel] = await response.json();
+      }
+      const plan = releaseRebuildPlan(config, previous, expectedCommit, channels);
+      if (record.source.commit === expectedCommit) throw new Error('Replacement must contain a new source commit');
+      const backupPath = path.join(scratch, 'backup.json');
+      const backup = aws(['get-object', '--key', prefixed(plan.recordKey), backupPath], true);
+      if (backup.error) throw backup.error;
+      if (backup.status === 0) {
+        if (!readFileSync(backupPath).equals(previousBytes)) throw new Error('Existing rebuild backup does not match the original record');
+      } else {
+        if (!/\b404\b|NoSuchKey|Not Found/.test(backup.stderr)) throw new Error('Cannot check the rebuild backup');
+        for (const copy of plan.copies) {
+          const result = aws(['copy-object', '--copy-source', `${settings.bucket}/${prefixed(copy.source)}`, '--key', prefixed(copy.destination)]);
+          if (result.error || result.status !== 0) throw new Error(`Backing up ${copy.source} failed`);
+        }
+        const saved = aws(['put-object', '--key', prefixed(plan.recordKey), '--body', previousPath, '--content-type', 'application/json']);
+        if (saved.error || saved.status !== 0) throw new Error('Saving the original release record failed');
+      }
+      console.log(`Archived the original release from ${expectedCommit}; replacing its unoffered prerelease assets.`);
+    }
     for (const upload of stagingUploads(directory, record)) {
       let body = upload.path;
       if (upload.body !== undefined) writeFileSync(body = path.join(scratch, 'release.json'), upload.body);
