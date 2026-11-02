@@ -9,6 +9,7 @@ import { developmentSigningIdentity, macOSDesktopProcesses, requireDesktopStoppe
 import { inspectIMEProvisioning } from './lib/ime-provisioning.mjs';
 import { prepareCenterBuild } from './lib/center-profile.mjs';
 import { macosSigningSettings, requireIMEProvisioningSettings, prepareMacOSSigning, stripAppleCredentials } from './lib/desktop-signing.mjs';
+import { requireDesktopToolchain } from './lib/desktop-toolchain.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const envFile = path.join(root, '.env');
@@ -18,6 +19,7 @@ const operation = process.argv[2];
 if (!['build', 'dev'].includes(operation)) throw new Error('Use desktop-command.mjs build|dev');
 if (!['darwin', 'win32'].includes(process.platform)) throw new Error('Native desktop commands require macOS or Windows');
 if (process.platform === 'darwin' && process.arch !== 'arm64') throw new Error('macOS desktop builds require Apple silicon; Intel macOS is unsupported');
+requireDesktopToolchain();
 const config = JSON.parse(readFileSync(path.join(desktop, 'desktop.json'), 'utf8'));
 const settings = operation === 'build' && process.platform === 'darwin' ? requireIMEProvisioningSettings(macosSigningSettings(process.env)) : null;
 let developmentIdentity;
