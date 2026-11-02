@@ -1,6 +1,6 @@
 # Site blog (`apps/site`)
 
-The blog lives at `/blog/` (and `/zh/blog/`, `/ja/blog/`) on the marketing site. Posts are Markdown files in the repository, rendered to static HTML at build time like every other page ([site conventions](site.md)). The layout follows long-form publishing practice (and Anthropic's articles): a ~65 character reading column, media that breaks out wider, captions and footnotes in the sans face, and an inline numbered contents list.
+The blog lives at `/blog/` (and `/zh/blog/`, `/ja/blog/`) on the marketing site. Posts are Markdown files in the repository, rendered to static HTML at build time like every other page ([site conventions](site.md)). The layout follows long-form publishing practice (and Anthropic's articles): a ~65 character reading column shared by the header, the title (sized to set on one or two lines) and the cover, body media that breaks out wider (both columns widen past 1440px to keep large screens from leaving empty sides), captions and footnotes in the sans face, and an inline numbered contents list.
 
 ## Writing a post
 

@@ -34,8 +34,9 @@ async function Byline({ post }: { post: Post }) {
 }
 
 /**
- * One post: header, cover and body on a reading grid. Text keeps a ~65
- * character measure; figures, video and embeds break out wider.
+ * One post: header, cover and body on a reading grid. The header, cover and
+ * text share one ~65 character column; figures, video and embeds in the body
+ * break out wider.
  */
 export async function PostArticle({ post }: { post: Post }) {
   const { blog } = loadMessages(post.locale);
@@ -64,10 +65,8 @@ export async function PostArticle({ post }: { post: Post }) {
           label={blog.categories[post.category]}
           className="mt-10 sm:mt-14"
         />
-        <h1 className="mt-4 text-balance font-display text-4xl leading-[1.08] font-normal tracking-[-0.02em] sm:text-[3.25rem]">
-          {post.title}
-        </h1>
-        <p className="post-summary mt-6">{post.description}</p>
+        <h1 className="post-title mt-4">{post.title}</h1>
+        <p className="post-summary mt-5">{post.description}</p>
         <Byline post={post} />
       </header>
 
@@ -80,7 +79,7 @@ export async function PostArticle({ post }: { post: Post }) {
           height={cover.height}
           fetchPriority="high"
           referrerPolicy={cover.file ? undefined : "no-referrer"}
-          className="post-wide post-cover"
+          className="post-cover"
         />
       ) : null}
 
