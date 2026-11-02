@@ -24,7 +24,7 @@ Write an ADR when the decision:
 - [010: In-app updates from GitHub releases](010-in-app-updates.md) — signed MyGo updates, automatic checks on by default; the update source is superseded by ADR 019.
 - [011: Live local rewriting](011-live-local-rewriting.md) — inserts one validated rewrite after release; the mid-speech text-model preview is superseded by ADR 023, and the runtime and templates by ADR 018.
 - [012: Scene selection from the focused field, site and app](012-context-scene-selection.md) — local metadata picks email, work, prompt, search or chat; formatting follows ADR 018.
-- [013: Rewrite context from the cursor, the screen and recent dictations](013-rewrite-context-on-device.md) — on by default and on-device only; the selector may see it, and the formatter does not.
+- [013: Rewrite context from the cursor, the screen and recent dictations](013-rewrite-context-on-device.md) — on by default; transport and formatter access are amended by ADR 024 and ADR 043.
 - [014: Learn vocabulary from the user's corrections](014-edit-learning.md) — on-device edit tracking, one-shot learning with undo, one-pass recall and bounded prompt terms.
 - [015: Hosted relay account authorization layer](015-hosted-relay-account-authorization.md) — `AccountGate` (`noop` self-host, `oidc` hosted) on top of device auth, `(issuer, subject)` tenants, security events; login never grants decryption.
 - [016: Marketing site in `apps/site`](016-marketing-site.md) — static Next.js export with the shared design package; ADR 001's no-React rule covers the desktop app only.
@@ -54,6 +54,7 @@ Write an ADR when the decision:
 - [040: Account, polish and translation in onboarding](040-onboarding-account-polish-translation.md) — those choices return inside welcome, polish and practice. Keyboard setup stays in Settings.
 - [041: Bounded keyboard context](041-bounded-keyboard-context.md) — nearby caret selection, bounded window context and content-free selection diagnostics.
 - [042: Comparative keyboard candidates](042-comparative-keyboard-candidates.md) — shared-context comparison and validated candidate ordering before generated promotion.
+- [043: Context-aware polishing](043-context-aware-polishing.md) — enabled references reach the final editor as user data; ASR repair precedes faithful fluency and numbered organization.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

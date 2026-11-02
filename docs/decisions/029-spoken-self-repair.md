@@ -4,6 +4,8 @@
 
 Accepted. Amends the formatter policy in [ADR 018](018-staged-gguf-rewriting.md) from `cleanup-rules-v1` to `cleanup-rules-v2`, and the deletion producer in [ADR 011](011-live-local-rewriting.md) from `speech-spans-v2` to `speech-spans-v3`.
 
+[ADR 043](043-context-aware-polishing.md) supersedes formatter context isolation and updates the editing policy. Earlier decisions and measurements below describe their original scope.
+
 ## Context
 
 A speaker can revise mid-utterance: 「十二月…十三月…什么十三，没有十三…十一月」. The committed text kept the abandoned months and the repair talk.

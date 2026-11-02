@@ -46,7 +46,7 @@ func testSpellingGenerationCalls(t *testing.T, source, screen string, wantSelect
 			} else {
 				formatters++
 				got := request.Messages[len(request.Messages)-1].Content
-				if got != "<source>"+wantFormatted+"</source>" {
+				if !strings.HasSuffix(got, "<source>"+wantFormatted+"</source>") || !strings.HasPrefix(got, "<context>") {
 					t.Fatalf("formatter source=%q", got)
 				}
 			}

@@ -165,8 +165,8 @@ func TestConnectKeyListsModelsAndPolishes(t *testing.T) {
 		t.Fatalf("formatter source %v", formatted)
 	}
 	raw, _ := json.Marshal(bodies[1])
-	if strings.Contains(string(raw), "CANARY") {
-		t.Fatal("context leaked to formatter")
+	if !strings.Contains(string(raw), "CANARY") || formatted["context"] == nil {
+		t.Fatal("formatter lost reference context")
 	}
 	if bodies[0]["model"] != "model-a" {
 		t.Fatalf("model %v", bodies[0]["model"])

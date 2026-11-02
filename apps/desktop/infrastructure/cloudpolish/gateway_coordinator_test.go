@@ -142,6 +142,13 @@ func TestOpenAIGatewayCoordinatorContextSwitches(t *testing.T) {
 						t.Errorf("mask=%d %s present=%v", mask, key, present)
 					}
 				}
+				formatted, _ := payloads[1]["context"].(map[string]any)
+				for key, enabled := range map[string]bool{"before_cursor": mask&1 != 0, "after_cursor": mask&1 != 0, "screen": mask&2 != 0, "history": mask&4 != 0} {
+					_, present := formatted[key]
+					if present != enabled {
+						t.Errorf("formatter mask=%d %s present=%v", mask, key, present)
+					}
+				}
 				if mask&3 == 0 && editor.reads.Load() != 0 {
 					t.Fatal("read editor with cursor and screen disabled")
 				}

@@ -4,6 +4,8 @@
 
 Accepted (product decision). Amends MEM-02 of [003](../../specs/003-memory-sync.md), which had learning only propose records, and adds MEM-04/05/07. Extends PRV-02 of [005](../../specs/005-privacy.md) and CTX-06 of [009](../../specs/009-contextual-rewrite.md).
 
+[ADR 043](043-context-aware-polishing.md) supersedes formatter context isolation and updates the editing policy. Earlier decisions and measurements below describe their original scope.
+
 ## Context
 
 Typeless, Doubao IME and Chatterfly all watch the field after dictation, notice when the user fixes a word, keep the fix and use it again ([research](../research/edit-learning.md)). They differ in where each step runs:
