@@ -60,6 +60,23 @@ int main(int argc,char **argv) {
         }();
         require(collect(retained).size()==1024,"cursor did not retain its lexicon and selected index");
         require(lexicon->Query("prefix").empty(),"personal index mutated cold membership");
+        auto unknown=lexicon->IndexSelected({"newword","newworld"},{{"newword","NewWord"}});
+        require(collect(lexicon->Query("newword",Lexicon::Completion::Suggest,unknown).exact)==std::vector<std::string>{"NewWord"},
+                "word outside bundled lexicon is unavailable or lost its typed case");
+        auto personalExact=lexicon->Query("newword",Lexicon::Completion::Suggest,unknown);
+        require(personalExact.familiar_exact && personalExact.preferred_exact,"confirmed new English word lacks exact eligibility");
+        require(collect(lexicon->Query("newwo",Lexicon::Completion::Suggest,unknown).suggestions)==std::vector<std::string>{"NewWord","newworld"},
+                "new English words lost prefix completion or pagination");
+        auto independent=lexicon->Query("newwo",Lexicon::Completion::Suggest,unknown).suggestions;
+        auto copied=independent;
+        require(independent.Next() && copied.Peek()->display=="NewWord","personal cursor copies share mutable state");
+        require(lexicon->Query("newwo").empty() && lexicon->Query("newword").empty(),"new words mutated immutable bundled lexicon");
+        auto merged=lexicon->IndexSelected({words.back(),"prefixnew"});
+        require(collect(lexicon->Query("prefix",Lexicon::Completion::Lookup,merged).lookup)==std::vector<std::string>{words.back(),"prefixnew"},
+                "bundled and new English words did not retain independent cursor tails");
+        require(!lexicon->Query("neww",Lexicon::Completion::Suggest,unknown).suggestions.Peek() &&
+                collect(lexicon->Query("neww",Lexicon::Completion::Lookup,unknown).lookup).size()==2,
+                "new English word bypassed existing automatic completion threshold");
         auto exact=lexicon->Query("pre");
         require(collect(exact.exact)==std::vector<std::string>{"pre"} && !exact.preferred_exact && !exact.familiar_exact,
                 "uncommon complete spelling was lost or gained autonomous leadership");

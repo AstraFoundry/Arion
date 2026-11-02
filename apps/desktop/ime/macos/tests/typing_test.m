@@ -183,7 +183,7 @@ int main(int argc, const char *argv[]) {
             }
             require(editor.insertions==0,@"enumerating all candidate pages never commits or learns a word");
         });
-        run(@"Only committed English selections unlock personal completion and survive restart", @"KBD-A13 KBD-A07", ^{
+        run(@"Confirmed English selections and raw language switches survive restart", @"KBD-A13 KBD-A07 KBD-A05", ^{
             typing.pageSize=9;
             type(typing,@"hebrides");
             NSUInteger index=[typing.snapshot.candidates indexOfObject:@"Hebrides"];
@@ -199,7 +199,7 @@ int main(int argc, const char *argv[]) {
             [typing cancel];
             type(typing,@"hebrides"); [typing toggleASCII]; [typing toggleASCII];
             type(typing,@"hebri");
-            require(![englishWords(typing) containsObject:@"hebrides"],@"raw language switch never learns the displayed English word");
+            require(![englishWords(typing) containsObject:@"hebrides"],@"discarding menu switch never learns the displayed English word");
             [typing cancel];
             type(typing,@"hebridesnihao"); selectText(typing,@"Hebrides");
             require(typing.composing,@"fully spelled mixed English prefix awaits suffix conversion");
@@ -213,6 +213,17 @@ int main(int argc, const char *argv[]) {
             NSSet *personal=englishWords(typing);
             require([personal containsObject:@"hebrides"] && ![personal containsObject:@"hebridean"],@"selection unlocks one word without its rare neighbours");
             [typing cancel];
+            type(typing,@"ZqvNovelWord");
+            NSUInteger insertions=editor.insertions;
+            modifier(typing,56,NSEventModifierFlagShift,1);
+            require(modifier(typing,56,0,1.1) && typing.ascii && !typing.composing &&
+                    [editor.view.string hasSuffix:@"ZqvNovelWord"] && editor.insertions==insertions+1,
+                    @"Shift confirms an unknown English spelling and commits it exactly once");
+            [typing toggleASCII];
+            type(typing,@"zqvnov");
+            require([englishWords(typing) containsObject:@"zqvnovelword"] &&
+                    [typing.snapshot.candidates containsObject:@"ZqvNovelWord"],@"raw switch learns a new word with its original case");
+            [typing cancel];
             [typing deactivate]; [engine stop];
             NSError *restartError=nil;
             NSString *vault=[user stringByAppendingPathComponent:@"encrypted"];
@@ -221,6 +232,8 @@ int main(int argc, const char *argv[]) {
                     [typing activate:editor error:&restartError],@"restart actual engine with persisted encrypted English history");
             type(typing,@"hebri");
             require([englishWords(typing) containsObject:@"hebrides"],@"English selection history survives real engine restart");
+            [typing cancel]; type(typing,@"zqvnov");
+            require([englishWords(typing) containsObject:@"zqvnovelword"],@"raw-switch English word survives real engine restart");
             [typing cancel]; [typing deactivate]; [engine stop];
             require(ArionResetEncryptedLearning(vault,&restartError),@"real finalize releases English history lease before reset");
             require(ArionRegisterTestEncryptedLearning(vault,testKey,&restartError) &&
@@ -228,6 +241,8 @@ int main(int argc, const char *argv[]) {
                     [typing activate:editor error:&restartError],@"reopen empty learning after explicit reset");
             type(typing,@"hebri");
             require(![englishWords(typing) containsObject:@"hebrides"],@"reset clears selected English completion exception");
+            [typing cancel]; type(typing,@"zqvnov");
+            require(![englishWords(typing) containsObject:@"zqvnovelword"],@"reset clears raw-switch English words");
             [typing cancel];
         });
         run(@"local neural promotion preserves commit and rejects stale replies", @"RNK-A02 RNK-A03 RNK-A07", ^{

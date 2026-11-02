@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <memory>
+#include <map>
 #include <queue>
 #include <set>
 #include <string>
@@ -26,6 +27,7 @@ class EnglishLexicon final : public std::enable_shared_from_this<EnglishLexicon>
         std::shared_ptr<const EnglishLexicon> lexicon_;
         std::vector<uint32_t> words_;
         std::array<Index,65> indexes_;
+        std::shared_ptr<const EnglishLexicon> personal_;
     };
     class Cursor {
      public:
@@ -48,6 +50,7 @@ class EnglishLexicon final : public std::enable_shared_from_this<EnglishLexicon>
         std::priority_queue<Node,std::vector<Node>,Later> queue_;
         uint32_t current_ = UINT32_MAX, exact_ = UINT32_MAX;
         size_t variant_ = 0;
+        std::vector<Cursor> personal_;
 #ifdef ARION_ENGLISH_TESTING
         size_t node_visits_ = 0;
 #endif
@@ -60,7 +63,8 @@ class EnglishLexicon final : public std::enable_shared_from_this<EnglishLexicon>
         bool empty() const { return !exact.Peek() && !suggestions.Peek() && !lookup.Peek(); }
     };
     static std::shared_ptr<const EnglishLexicon> Load(const std::filesystem::path &path);
-    std::shared_ptr<const SelectedIndex> IndexSelected(const std::set<std::string> &keys) const;
+    std::shared_ptr<const SelectedIndex> IndexSelected(const std::set<std::string> &keys,
+        const std::map<std::string,std::string> &spellings = {}) const;
     Matches Query(std::string_view input,Completion completion = Completion::Suggest,
                   std::shared_ptr<const SelectedIndex> selected = {}) const;
     std::vector<WordPrefix> WordPrefixes(std::string_view input) const;

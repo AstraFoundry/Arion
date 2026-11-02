@@ -30,6 +30,21 @@ inline void testEnglishHistory(const std::shared_ptr<arion::ime::LearningProvide
     check(history->confirm({"rareone","common"},error),"idempotent confirmation and common word selection");
     LearningBytes repeated;
     check(provider->read(file,repeated,missing,error) && repeated==sealed,"repeat and common selection do not rewrite history");
+    check(history->confirmRaw("RareOne",error) && history->confirmRaw("NewWord",error) && history->snapshot(selected,error),
+          "raw confirmation learns both bundled and unknown English words");
+    check(lexicon->Query("newword",arion::EnglishLexicon::Completion::Lookup,selected).exact.Peek()->display=="NewWord",
+          "unknown English word preserves typed case");
+    check(lexicon->Query("newwo",arion::EnglishLexicon::Completion::Suggest,selected).suggestions.Peek(),
+          "unknown English word supports later prefix completion");
+    check(lexicon->Query("newword",arion::EnglishLexicon::Completion::Lookup,empty).empty(),
+          "raw learning does not mutate an active composition snapshot");
+    check(provider->read(file,sealed,missing,error),"read raw English confirmation snapshot");
+    const std::string rawCanary="NewWord";
+    check(std::search(sealed.begin(),sealed.end(),rawCanary.begin(),rawCanary.end())==sealed.end(),"new English display spelling is never plaintext");
+    for (const char *word:{"", "a", "ni'hao", "word word", "word123", "hello-world"})
+        check(history->confirmRaw(word,error),"unsupported raw spelling is ignored");
+    check(history->confirmRaw("NewWord",error) && history->confirm({"newword"},error),"repeated new word selections are idempotent");
+    check(provider->read(file,repeated,missing,error) && repeated==sealed,"invalid and repeated raw confirmations do not rewrite history");
     check(!resetLearningVault(provider,error),"active English history lease refuses reset");
     if (provider->cooperative()) {
         EnglishHistory peer(provider,lexicon);
@@ -42,6 +57,8 @@ inline void testEnglishHistory(const std::shared_ptr<arion::ime::LearningProvide
     history=std::make_unique<EnglishHistory>(provider,lexicon);
     check(history->open(error) && history->snapshot(selected,error),"selected English survives close and reopen");
     check(lexicon->Query("rare",arion::EnglishLexicon::Completion::Lookup,selected).lookup.Peek(),"reopened history authorizes completion");
+    check(lexicon->Query("newword",arion::EnglishLexicon::Completion::Lookup,selected).exact.Peek()->display=="NewWord",
+          "new English word and case survive close and reopen");
 
     // Force the actual replacement to fail; no failed transaction may survive close.
     const auto saved=file+".saved";

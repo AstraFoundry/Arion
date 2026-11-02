@@ -9,6 +9,21 @@ static char text[] = "\xe4\xbd\xa0\xf0\x9f\x98\x80";
 static RimeCandidate candidate;
 static int invalid_cursor, invalid_candidate, commit_pending, contexts_freed, statuses_freed, commits_freed;
 static int candidate_count = 40;
+static int raw_confirmation, full_width, refuse_raw;
+static Bool option_read(RimeSessionId session, const char *name) {
+    assert(session==42);
+    return strcmp(name,"full_shape")==0 && full_width;
+}
+static void option_set(RimeSessionId session, const char *name, Bool value) {
+    assert(session==42);
+    if (strcmp(name,"full_shape")==0) full_width=value;
+    else { assert(strcmp(name,"_arion_learn_raw_english")==0); raw_confirmation=value; }
+}
+static Bool raw_key(RimeSessionId session, int key, int modifiers) {
+    assert(session==42 && key==0xff0d && modifiers==0);
+    assert(raw_confirmation && !full_width);
+    return !refuse_raw;
+}
 static const char *const *menu_fixture;
 static Bool context_read(RimeSessionId session, RimeContext *context) {
     assert(session == 42);
@@ -111,6 +126,12 @@ int main(void) {
     assert(!arion_pinyin_utf16_position("\xc0\x80", 2, &position));
 
     RIME_STRUCT(RimeApi, api);
+    api.get_option=option_read; api.set_option=option_set; api.process_key=raw_key;
+    full_width=1;
+    assert(arion_pinyin_commit_raw(&api,42) && full_width && !raw_confirmation);
+    refuse_raw=1;
+    assert(!arion_pinyin_commit_raw(&api,42) && full_width && !raw_confirmation);
+    assert(!arion_pinyin_commit_raw(&api,0) && !raw_confirmation);
     api.get_context = context_read; api.free_context = context_free;
     api.get_status = status_read; api.free_status = status_free;
     api.get_commit = commit_read; api.free_commit = commit_free;
