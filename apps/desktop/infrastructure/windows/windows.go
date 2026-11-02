@@ -93,6 +93,11 @@ type keyboardInput struct {
 	Padding uint64
 }
 
+// OwnedEditorClassPrefix is the top-level class of the native insert fixture
+// (e2e/windows_editor_test.go). That window is created in the test process.
+// It is the external editor under test, not an Arion shell window.
+const OwnedEditorClassPrefix = "ArionOwnedEditor"
+
 // Delivery mirrors the user's insertion preference.
 type Delivery string
 
@@ -140,9 +145,12 @@ func focusState(foreground uintptr) guiThreadInfo {
 
 func focusOf(foreground uintptr) uintptr { return focusState(foreground).Focus }
 
-// arionWindow reports MyGo top-level windows. Those are Arion's own UI.
-func arionWindow(hwnd uintptr) bool {
-	return strings.HasPrefix(className(hwnd), "MyGo")
+// sameProcessIsArion reports a foreground window that belongs to this process
+// and is not the native insert fixture. Another application's process is never
+// Arion. An unreadable process id is not Arion either; the caller handles a
+// missing foreground window before this check.
+func sameProcessIsArion(self, pid uint32, class string) bool {
+	return pid != 0 && pid == self && !strings.HasPrefix(class, OwnedEditorClassPrefix)
 }
 
 func className(hwnd uintptr) string {
@@ -304,9 +312,10 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 	}
 	var pid uint32
 	procGetWindowThreadProcessId.Call(foreground, uintptr(unsafe.Pointer(&pid)))
-	// Dictation must not paste into Arion's own windows. The owned editor
-	// fixture shares the test process, so process identity alone is not enough.
-	if pid == uint32(os.Getpid()) && arionWindow(foreground) {
+	// Dictation must not paste into an Arion shell. That is not a positive
+	// observation that the user has no editor open. The in-process insert
+	// fixture shares this process and still receives the paste.
+	if sameProcessIsArion(uint32(os.Getpid()), pid, className(foreground)) {
 		return copyResult(false)
 	}
 	current := focusState(foreground)

@@ -22,6 +22,10 @@ func identity() contracts.Identity {
 	return contracts.Identity{SessionID: "windows-e2e", Generation: 1}
 }
 
+func normalizeLineBreaks(text string) string {
+	return strings.NewReplacer("\r\n", "\n", "\r", "\n").Replace(text)
+}
+
 // DSK-A02 on Windows: the production adapter pastes text, including CJK,
 // into the captured editor exactly once.
 func TestWindowsInsertsIntoOwnedEditor(t *testing.T) {
@@ -130,7 +134,8 @@ func TestWindowsPasteKeepsLineBreaks(t *testing.T) {
 	if err != nil || result.Outcome != contracts.Unknown || result.Failure != "" {
 		t.Fatalf("multiline paste: %+v %v", result, err)
 	}
-	if !within(5*time.Second, func() bool { return editor.text() == text }) {
+	// A multiline EDIT reports CR LF after WM_PASTE. Either ending keeps the break.
+	if !within(5*time.Second, func() bool { return normalizeLineBreaks(editor.text()) == text }) {
 		t.Fatalf("editor text %q", editor.text())
 	}
 }

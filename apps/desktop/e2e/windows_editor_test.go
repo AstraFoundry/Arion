@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 	"unsafe"
+
+	"arion.local/desktop/infrastructure/windows"
 )
 
 var (
@@ -114,7 +116,7 @@ func startWindowsEditor(t *testing.T) *windowsEditor {
 		runtime.LockOSThread()
 		defer runtime.UnlockOSThread()
 		defer close(editor.done)
-		name, _ := syscall.UTF16PtrFromString(fmt.Sprintf("ArionOwnedEditor%d", editorSequence.Add(1)))
+		name, _ := syscall.UTF16PtrFromString(fmt.Sprintf("%s%d", windows.OwnedEditorClassPrefix, editorSequence.Add(1)))
 		class := editorWindowClass{ClassName: name, WindowProc: syscall.NewCallback(func(hwnd, msg, wparam, lparam uintptr) uintptr {
 			if msg == 0x0002 { // WM_DESTROY
 				procPostQuitMessage.Call(0)

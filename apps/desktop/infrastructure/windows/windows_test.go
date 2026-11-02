@@ -10,6 +10,22 @@ import (
 	"arion.local/core/domain"
 )
 
+func TestSameProcessOwnedEditorIsNotArion(t *testing.T) {
+	const self uint32 = 42
+	if !sameProcessIsArion(self, self, "MyGoWindow") {
+		t.Fatal("Arion shell was treated as another application")
+	}
+	if !sameProcessIsArion(self, self, "MyGoFlyoutShadow") {
+		t.Fatal("Arion flyout was treated as another application")
+	}
+	if sameProcessIsArion(self, self, OwnedEditorClassPrefix+"3") {
+		t.Fatal("owned editor fixture was treated as Arion")
+	}
+	if sameProcessIsArion(self, 99, "Notepad") || sameProcessIsArion(self, 0, "MyGoWindow") {
+		t.Fatal("another or unreadable process was treated as Arion")
+	}
+}
+
 // These cases use invalid native handles and must return before any OS input
 // or UI Automation read. Actual editor delivery is tested in e2e.
 func TestCommitRejectsStaleIdentityWithoutConsumingTarget(t *testing.T) {
