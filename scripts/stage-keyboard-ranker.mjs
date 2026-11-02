@@ -1,4 +1,4 @@
-// Build the pinned, local fast-ranking worker; including its digest-verified lightweight weights.
+// Build the pinned local worker with digest-verified fast and settled scoring weights.
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, copyFileSync, readdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import path from 'node:path';
