@@ -416,6 +416,12 @@ func TestMenuPanelHeightFollowsVisibleContent(t *testing.T) {
 				if !ok || quit.Y < 0 || quit.Y+quit.H > float32(height) {
 					t.Fatalf("%s: footer clipped at height %d: %+v", variant.name, height, quit)
 				}
+				for _, key := range []copy.Key{copy.ClipboardTitle, copy.SettingsMenu, copy.Quit} {
+					bounds, found := tt.Find(store.Copy().Text(key))
+					if !found || bounds.X < 0 || bounds.X+bounds.W > float32(PanelWidth) {
+						t.Fatalf("%s: footer action %s clipped: %+v", variant.name, key, bounds)
+					}
+				}
 				if variant.name == "ready" && height != 160 {
 					t.Fatal("ready panel reserves empty transcript space")
 				}

@@ -10,16 +10,21 @@ import (
 
 	uiapp "arion.local/desktop/ui/app"
 	"arion.local/desktop/ui/features/update"
+	"arion.local/desktop/ui/shared/assets"
 	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
+	"arion.local/desktop/ui/shared/theme"
 	"github.com/egoist/mygo"
+	"golang.org/x/image/draw"
 )
 
 func contextBackground() context.Context { return context.Background() }
 
-// trayIcon draws Arion's mark, five rounded bars, black on transparent so
-// macOS tints it; live bars stand taller while the microphone is open.
+// trayIcon uses the colored app mark on Windows and a template on macOS.
 func trayIcon(live bool) []byte {
+	if runtime.GOOS == "windows" {
+		return windowsTrayIcon(live)
+	}
 	img := image.NewNRGBA(image.Rect(0, 0, 36, 36))
 	ink := color.NRGBA{A: 255}
 	if runtime.GOOS != "darwin" {
@@ -47,6 +52,40 @@ func trayIcon(live bool) []byte {
 	return b.Bytes()
 }
 
+func windowsTrayIcon(live bool) []byte {
+	mark, err := png.Decode(bytes.NewReader(assets.MarkPNG()))
+	if err != nil {
+		panic("tray mark: " + err.Error())
+	}
+	// Compose at four times the tray size before filtering rounded edges.
+	img := image.NewNRGBA(image.Rect(0, 0, 128, 128))
+	draw.CatmullRom.Scale(img, img.Bounds(), mark, mark.Bounds(), draw.Src, nil)
+	if live {
+		// Keep the brand visible while a contrasting badge marks the open mic.
+		tokens := theme.Resolve(false)
+		edge := color.NRGBA{R: tokens.Canvas.R, G: tokens.Canvas.G, B: tokens.Canvas.B, A: tokens.Canvas.A}
+		fill := color.NRGBA{R: tokens.Live.R, G: tokens.Live.G, B: tokens.Live.B, A: tokens.Live.A}
+		for y := 76; y < 128; y++ {
+			for x := 76; x < 128; x++ {
+				distance := (x-100)*(x-100) + (y-100)*(y-100)
+				if distance <= 24*24 {
+					img.SetNRGBA(x, y, edge)
+				}
+				if distance <= 16*16 {
+					img.SetNRGBA(x, y, fill)
+				}
+			}
+		}
+	}
+	icon := image.NewNRGBA(image.Rect(0, 0, 32, 32))
+	draw.CatmullRom.Scale(icon, icon.Bounds(), img, img.Bounds(), draw.Src, nil)
+	var b bytes.Buffer
+	if err := png.Encode(&b, icon); err != nil {
+		panic("tray icon: " + err.Error())
+	}
+	return b.Bytes()
+}
+
 func (a *App) createTray() {
 	tray, err := mygo.NewTray(mygo.TrayOptions{Icon: trayIcon(false), IconIsTemplate: runtime.GOOS == "darwin", ToolTip: a.ui.Copy().Text(copy.TrayToolTip)})
 	if err != nil {
@@ -55,6 +94,10 @@ func (a *App) createTray() {
 	a.tray = tray
 	tray.OnClick(a.togglePanel)
 	tray.OnRightClick(func() {
+		if runtime.GOOS == "windows" {
+			a.togglePanel()
+			return
+		}
 		a.closeTrayHint()
 		if a.panel != nil {
 			a.panel.Close()

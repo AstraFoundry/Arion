@@ -169,4 +169,6 @@ Shortcut feedback is scoped to its setting: recording guidance uses `Muted` and 
 
 ## Menu-bar panel sizing
 
+On Windows, either mouse button on the system-tray icon opens the same panel instead of a separate native context menu. The panel footer exposes Clipboard, Settings and Quit on both platforms. Windows uses the colored app mark in the tray, with a live-microphone badge during capture; macOS retains its template glyph and native right-click menu.
+
 The ready panel is 330 × 160 DIPs after removing last-dictation content. Its height adds 62 DIPs for a visible scene card, 64 for model setup/progress, and 34 for an update notice. Bootstrap uses the same page-owned sizing at creation and when visible blocks change. No spacer reserves transcript space. Scene options use the shared select appearance, flip within the panel and scroll when their full list exceeds the available space.

@@ -3,6 +3,7 @@
 package assets
 
 import (
+	"bytes"
 	_ "embed"
 
 	"github.com/egoist/mygo/ui"
@@ -21,6 +22,9 @@ var (
 
 // Mark is the app icon, drawn wherever Arion names itself.
 var Mark = mustDecode(markPNG)
+
+// MarkPNG returns the app mark for native surfaces outside the UI renderer.
+func MarkPNG() []byte { return bytes.Clone(markPNG) }
 
 // Backdrop is the motion-blurred photograph under illustrated mock UI.
 var Backdrop = mustDecode(backdropJPEG)
