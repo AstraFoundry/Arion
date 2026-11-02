@@ -107,7 +107,7 @@ func TestKeyboardPreferences(t *testing.T) {
 		t.Fatalf("explicit Emoji preference was not retained: %+v %v", prefs.Keyboard, err)
 	}
 	old = DefaultPreferences("darwin")
-	old.Keyboard = KeyboardPreferences{PageSize: 6, CandidateSize: CandidateLarge, Appearance: AppearanceDark, Accent: AccentBlue}
+	old.Keyboard = KeyboardPreferences{PageSize: 9, CandidateSize: CandidateLarge, Appearance: AppearanceDark, Accent: AccentBlue}
 	if normalized, repairs := old.Normalize("darwin"); normalized.Keyboard != old.Keyboard || len(repairs) != 0 {
 		t.Fatalf("valid keyboard choice changed: %+v %v", normalized.Keyboard, repairs)
 	}
@@ -308,5 +308,12 @@ func TestKeyboardContextDefaultsAndDeveloperSession(t *testing.T) {
 	}
 	if restored.DeveloperMode {
 		t.Fatal("developer mode persisted")
+	}
+}
+
+// KBD-03: new profiles use six slots; explicit saved page sizes remain valid.
+func TestKeyboardDefaultPageSize(t *testing.T) {
+	if got := DefaultKeyboardPreferences().PageSize; got != 6 {
+		t.Fatalf("default page size = %d", got)
 	}
 }

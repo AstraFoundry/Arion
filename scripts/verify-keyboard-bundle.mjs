@@ -120,7 +120,7 @@ export function verifyKeyboardBundle({ root = repository, bundle = path.join(roo
   if (!isDeepStrictEqual(shippedPins, pins)) throw new Error('Keyboard source/download pins differ from the reviewed manifest.');
   for (const name of keyboardProfileFiles) if (digest(path.join(keyboard, 'data', name)) !== digest(path.join(source, '../shared/keyboard-data', name))) throw new Error(`Keyboard profile differs from reviewed source: ${name}`);
   const schema = readFileSync(path.join(keyboard, 'data/build/arion_pinyin.schema.yaml'), 'utf8');
-  if (!schema.includes('schema_id: arion_pinyin') || !schema.includes('db_class: arion_encrypted_userdb') || !schema.includes('page_size: 9')) throw new Error('Keyboard compiled schema identity, encrypted learning or page size is invalid.');
+  if (!schema.includes('schema_id: arion_pinyin') || !schema.includes('db_class: arion_encrypted_userdb') || !schema.includes('page_size: 6')) throw new Error('Keyboard compiled schema identity, encrypted learning or page size is invalid.');
   verifyEnglishProfile(path.join(keyboard, 'data'));
   const walk = directory => {
     for (const entry of readdirSync(directory, { withFileTypes: true })) {

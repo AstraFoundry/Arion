@@ -18,11 +18,11 @@ These `runtime.Actions` methods return immediately. Work continues off the main 
 
 | Method | Effect |
 | --- | --- |
-| `SignIn(shareUsage)` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. `shareUsage` is a service consent argument. Onboarding and Settings pass `false` and use the account switch to change consent. |
+| `SignIn(shareUsage)` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. `shareUsage` is an explicit consent argument. Onboarding passes its default-off checkbox choice; Settings passes `false`. |
 | `CancelSignIn()` | Invalidates the in-flight sign-in or refresh. A callback that arrives afterwards is not exchanged. A refresh token already stored for that attempt is deleted and revoked. |
 | `RefreshAccount()` | Explicit entitlement recheck; rotates the stored refresh token and replaces the in-memory access token. Phase `refreshing`. |
 | `SignOut()` | Revokes the refresh token, then deletes that credential item. Local keys and local memory stay. |
-| `SetUsageSharing(share)` | Records the signed-in account's answer to sharing usage data, from the usage-sharing switch in onboarding or Settings › Account. `UsageSaving` while it runs; the platform's confirmation sets `UsageSharing` and starts or stops reporting. |
+| `SetUsageSharing(share)` | Records the signed-in account's answer to sharing usage data, from the explicitly checked onboarding choice after sign-in or the switch in Settings › Account. `UsageSaving` while it runs; the platform's confirmation sets `UsageSharing` and starts or stops reporting. |
 | `CheckStoredAccount()` | Reads whether a refresh token is stored, with `Service.Stored`. This does nothing unless `Phase` is `signed_out` and `Credential` is unknown. A result is dropped when a sign-in, refresh, cancel or sign-out started during the read. |
 
 One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_PROGRESS`. `JoinHostedSyncWaitlist` does the same while one is running; views do not call it.
@@ -48,7 +48,7 @@ The loopback answers `200` with `Cache-Control: no-store`, `Referrer-Policy: no-
 
 ## Views
 
-Account setup is optional and shares the welcome page. That page is still shown when the account is disabled, without sign-in controls. Signed out, it offers **Continue with Google**, **Continue with GitHub** and **Continue with email**, or one **Sign in** button when the issuer is custom. Each calls `SignIn(false)`. Below them are localized links to the Arion site’s **Terms of Use** and **Privacy Policy**. The muted footer button is **Continue locally**, which moves on with no account and no network. While a sign-in is running, the page shows the browser wait with Cancel and does not move on. After sign-in, the page shows the account card and the same usage-sharing switch as Settings. Sign-in does not authorize usage sharing.
+Account setup is optional and shares the welcome page. That page is still shown when the account is disabled, without sign-in controls. Signed out, it offers **Continue with Google**, **Continue with GitHub** and **Continue with email**, or one **Sign in** button when the issuer is custom. Each passes the onboarding usage-sharing checkbox to `SignIn(shareUsage)`. Below the buttons, the terms checkbox starts checked and links to **Terms of Use** and **Privacy Policy**. Unchecking it disables every browser sign-in method. A separate optional usage-sharing checkbox starts unchecked and links to the localized **What data is sent?** page on the Arion site. The muted footer button is **Continue locally**, which moves on with no account and no network, independently of both choices. While sign-in is running, the page shows the browser wait with Cancel and does not move on. After sign-in it shows the account card, without a separate sharing page or switch. Only an explicitly checked usage choice records consent after successful sign-in; cancel/failure never carries that request into a later refresh ([ADR 044](../decisions/044-onboarding-consent.md)).
 
 The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. Its hover and selected fills are the sidebar's neutral grays. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card reports automatic restoration and offers **Sign out**, which revokes and deletes that token without requiring a session in memory. There is no Reconnect control. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in with the hosted-sync entitlement, a Hosted sync card follows. Without the entitlement, views do not offer a waitlist. Links to the AstraFoundry account portal follow (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
 
@@ -162,7 +162,7 @@ Signing in identifies the account; sharing usage data is the account's own
 answer, held by the platform, so the web portal, other devices and this app see
 the same choice. Arion never treats signing in alone as permission.
 
-Onboarding sign-in passes no consent. After sign-in, that step shows the same usage-sharing switch as Settings › Account. The switch remains the explicit place to change the answer. The service retains its consent-bound sign-in contract for callers that explicitly supply it.
+Onboarding sign-in passes its explicit default-off usage checkbox choice. A checked choice records consent after successful authentication; an unchecked choice reads the existing account answer without changing it. Settings › Account retains the switch for later changes. The disclosure at `/usage-data/` lists the exact fields, account association, exclusions and stopping behavior.
 
 After successful sign-in or refresh, `Service.ReadUsageConsent`
 reads the answer with `GET {issuer}/api/v1/usage/consent?productSlug=arion` and

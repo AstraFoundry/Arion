@@ -69,7 +69,7 @@ static NSColor *highlightColor(NSDictionary *highlight, NSString *appearance, NS
 // unknown values keep the defaults for that field. Returns the app's
 // dictation key (application.HoldKey), or nil.
 static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *panel) {
-    NSUInteger pageSize = 9;
+    NSUInteger pageSize = 6;
     ArionCandidateSize size = ArionCandidateSizeMedium;
     ArionCandidateAppearance appearance = ArionCandidateAppearanceSystem;
     NSColor *lightFill = nil, *lightText = nil, *darkFill = nil, *darkText = nil;

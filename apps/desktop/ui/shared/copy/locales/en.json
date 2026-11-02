@@ -673,5 +673,8 @@
   "KbdContextScreen": "Use window text locally",
   "DeveloperMode": "Developer mode",
   "DeveloperModeDetail": "Detailed local keyboard diagnostics until restart. Input text is never logged.",
-  "OnbDownload": "Download"
+  "OnbDownload": "Download",
+  "AccTermsAccept": "I agree to the Terms of Use and acknowledge the Privacy Policy",
+  "AccUsageAgree": "Send usage data to help improve Arion",
+  "AccUsageData": "What data is sent?"
 }

@@ -15,6 +15,7 @@ const (
 	SiteURL       = "https://arion.astrafoundry.si"
 	TermsPath     = "/terms/"
 	PrivacyPath   = "/privacy/"
+	UsageDataPath = "/usage-data/"
 	TeamURL       = "https://github.com/AstraFoundry"
 	RepositoryURL = "https://github.com/AstraFoundry/Arion"
 	XURL          = "https://x.com/AstraFoundry"

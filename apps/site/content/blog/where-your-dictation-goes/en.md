@@ -29,17 +29,19 @@ The encryption key is generated on the device and stored in the login Keychain o
 
 Local diagnostic bundles (`Settings › About`) follow the same boundary: they log only random correlation IDs, coarse model IDs, numeric durations and error codes. Automated tests (`PRV-A02`, `PRV-A10`) inject synthetic transcript, prompt, path and token canaries during test runs and fail the build if any canary byte appears in logs or exported archives.
 
-## The only three network requests
+## When Arion uses the network
 
-Once the local models are downloaded, dictation and Pinyin typing generate no network traffic (`PRV-A01`). Only three things in the application ever use the network, and none of them sends your audio:
+Once the local models are downloaded, dictation and Pinyin typing generate no network traffic (`PRV-A01`). The following operations use the network; none sends your audio:
 
 | Request | What it sends | When |
 | --- | --- | --- |
 | Model download | A request for public model files, each verified against a pinned SHA-256 digest | Once, before first use |
 | Update check | Only the selected channel (`stable` or `beta`), with no text, vocabulary or device identifier; archives are verified with an Ed25519 signature | Automatically, unless turned off |
-| Sign-in and cloud polishing | Recognized text and enabled context, never audio | Only if you sign in or connect a provider |
+| Account services | Authentication, account maintenance and product notice metadata; no dictation content | When signed in and the relevant service is enabled |
+| Cloud polishing | Recognized text and enabled context, never audio | Only if you connect a provider and select cloud polishing |
+| Optional usage sharing | Account-linked daily visit, dictation, microphone-time and word totals, with a random installation identifier | Only with confirmed explicit consent |
 
-Arion has no cloud speech recognition and no telemetry.
+Arion has no cloud speech recognition. Usage sharing is off by default; [the usage data disclosure](/usage-data/) lists the exact fields and how to stop reporting.
 
 <aside>
 

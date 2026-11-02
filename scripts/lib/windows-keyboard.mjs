@@ -88,7 +88,7 @@ export function verifyWindowsKeyboardRuntime(directory, { requireModule = true }
     if (hash(readFileSync(path.join(directory, 'data', name))) !== hash(readFileSync(path.join(root, 'apps/desktop/ime/shared/keyboard-data', name)))) throw new Error(`Windows keyboard profile differs from shared source: ${name}`);
   }
   const schema = readFileSync(path.join(directory, 'data/build/arion_pinyin.schema.yaml'), 'utf8');
-  if (!schema.includes('schema_id: arion_pinyin') || !schema.includes('db_class: arion_encrypted_userdb') || !schema.includes('page_size: 9')) throw new Error('Windows keyboard compiled schema lost its identity, encrypted learning or page size.');
+  if (!schema.includes('schema_id: arion_pinyin') || !schema.includes('db_class: arion_encrypted_userdb') || !schema.includes('page_size: 6')) throw new Error('Windows keyboard compiled schema lost its identity, encrypted learning or page size.');
   verifyEnglishProfile(path.join(directory, 'data'));
   const binaries = [path.join(directory, 'lib/ArionRime.dll')];
   if (Object.hasOwn(runtime.files, 'lib/ArionKeyboard.dll')) {

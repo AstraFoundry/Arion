@@ -55,6 +55,7 @@ Write an ADR when the decision:
 - [041: Bounded keyboard context](041-bounded-keyboard-context.md) — nearby caret selection, bounded window context and content-free selection diagnostics.
 - [042: Comparative keyboard candidates](042-comparative-keyboard-candidates.md) — shared-context comparison and validated candidate ordering before generated promotion.
 - [043: Context-aware polishing](043-context-aware-polishing.md) — enabled references reach the final editor as user data; ASR repair precedes faithful fluency and numbered organization.
+- [044: Onboarding consent beside sign-in](044-onboarding-consent.md) — checked terms, optional usage sharing and linked disclosure.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

@@ -68,7 +68,7 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
 - (instancetype)initWithEngine:(ArionKeyboardEngine *)engine {
     if ((self = [super init])) {
         self.engine = engine;
-        self.pageSize = 9;
+        self.pageSize = 6;
         self.contextRanking = YES;
         self.emojiSuggestions = YES;
     }

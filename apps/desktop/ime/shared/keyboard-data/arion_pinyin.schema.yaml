@@ -13,7 +13,7 @@ __patch:
     - arion_bilingual
   engine/filters:
     - arion_emoji
-  menu/page_size: 9
+  menu/page_size: 6
   translator/user_dict: arion_pinyin
   translator/db_class: arion_encrypted_userdb
   translator/enable_user_dict: true

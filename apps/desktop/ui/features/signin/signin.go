@@ -19,23 +19,25 @@ import (
 
 // Start opens browser sign-in without changing account usage consent.
 func Start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant, label string) {
+	start(c, store, tokens, variant, label, true, false)
+}
+
+func start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant, label string, accepted, share bool) {
 	if store.State.Account.Disabled {
 		return
 	}
-	if kit.Button(c.Key("sign-in"), tokens, variant, label, !store.State.Account.Busy()).Clicked() {
-		store.Actions.SignIn(false)
+	if kit.Button(c.Key("sign-in"), tokens, variant, label, accepted && !store.State.Account.Busy()).Clicked() {
+		store.Actions.SignIn(share)
 	}
 }
 
-// Methods are the ways to sign in or create an AstraFoundry account. Each
-// opens the same browser sign-in, where the issuer's page offers them all.
-// None of them grants usage-sharing consent.
-func Methods(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+// methods opens browser sign-in with this onboarding choice.
+func methods(c *ui.Context, store runtime.Store, tokens theme.Tokens, accepted, share bool) {
 	if store.State.Account.Disabled {
 		return
 	}
 	messages := store.Copy()
-	enabled := !store.State.Account.Busy()
+	enabled := accepted && !store.State.Account.Busy()
 	ui.Column(c).Gap(8).AlignItems(ui.Stretch).Children(func() {
 		for _, method := range []struct {
 			key   string
@@ -51,7 +53,7 @@ func Methods(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				ui.Text(c, messages.Text(method.label)).FontSize(theme.Body).FontWeight(500).SingleLine()
 			})
 			if button.Clicked() {
-				store.Actions.SignIn(false)
+				store.Actions.SignIn(share)
 			}
 		}
 	})
