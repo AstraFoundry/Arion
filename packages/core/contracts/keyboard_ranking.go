@@ -6,6 +6,7 @@ import "arion.local/core/domain"
 // Before contains only approved context; it never authorizes a host-text read.
 type KeyboardRankRequest struct {
 	Identity
+	AllowOrdering   bool                       `json:"-"`
 	AllowCompletion bool                       `json:"allowCompletion,omitempty"`
 	Revision        uint64                     `json:"revision"`
 	Application     string                     `json:"-"`

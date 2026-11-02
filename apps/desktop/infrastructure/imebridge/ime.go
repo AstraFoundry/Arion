@@ -47,6 +47,7 @@ type IME struct {
 	rankingProposalRevision uint64
 	rankingCapable          bool
 	completionCapable       bool
+	orderingCapable         bool
 	rankingRevision         uint64
 	vocabularyCapable       bool
 	vocabularyDelivery      *vocabularyDelivery
@@ -264,7 +265,11 @@ func (m *IME) serve(conn net.Conn) {
 	m.vocabularyCapable = false
 	m.rankingCapable = false
 	m.completionCapable = false
+	m.orderingCapable = false
 	for _, capability := range hello.Capabilities {
+		if capability == "keyboard-ordering-v1" {
+			m.orderingCapable = true
+		}
 		if capability == "keyboard-completion-v1" {
 			m.completionCapable = true
 		}

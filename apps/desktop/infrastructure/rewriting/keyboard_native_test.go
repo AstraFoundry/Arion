@@ -48,7 +48,7 @@ func TestLocalKeyboardWorker(t *testing.T) {
 	s.SuspendKeyboard(true)
 	req.Revision++
 	denied := <-scheduler.Submit(req)
-	if domain.CodeOf(denied.Err) != domain.CodeModelMissing {
+	if domain.CodeOf(denied.Err) != domain.CodeSessionBusy {
 		t.Fatalf("speech did not deny keyboard work: %v", denied.Err)
 	}
 }

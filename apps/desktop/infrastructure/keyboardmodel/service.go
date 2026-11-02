@@ -102,7 +102,7 @@ func (s *Service) Enable(ctx context.Context) error {
 		s.set(func(st *rewriting.Status) { st.State, st.Installed = rewriting.Loading, true })
 		load, cancel := context.WithTimeout(ctx, 5*time.Second)
 		var worker *Worker
-		worker, err = Open(load, s.executable, filepath.Join(dir, "sentence-model.safetensors"))
+		worker, err = OpenModels(load, s.executable, filepath.Join(dir, "sentence-model.safetensors"), filepath.Join(dir, "sentence-model-desktop.safetensors"))
 		cancel()
 		if err == nil {
 			s.mu.Lock()
@@ -134,7 +134,10 @@ func (s *Service) RankKeyboard(ctx context.Context, req contracts.KeyboardRankRe
 	s.mu.Lock()
 	worker, suspended := s.worker, s.suspended
 	s.mu.Unlock()
-	if worker == nil || suspended {
+	if suspended {
+		return contracts.KeyboardRankResult{}, domain.Fail(domain.CodeSessionBusy, "keyboard inference suspended for speech")
+	}
+	if worker == nil {
 		return contracts.KeyboardRankResult{}, domain.Fail(domain.CodeModelMissing, "keyboard model unavailable")
 	}
 	out, err := worker.RankKeyboard(ctx, req)
@@ -142,4 +145,21 @@ func (s *Service) RankKeyboard(ctx context.Context, req contracts.KeyboardRankRe
 		s.set(func(st *rewriting.Status) { st.State, st.Failure = rewriting.Failed, domain.CodeModelUnsupported })
 	}
 	return out, err
+}
+
+func (s *Service) ScoreKeyboard(ctx context.Context, before, after string, texts []string) ([]float64, error) {
+	s.mu.Lock()
+	worker, suspended := s.worker, s.suspended
+	s.mu.Unlock()
+	if suspended {
+		return nil, domain.Fail(domain.CodeSessionBusy, "keyboard scoring suspended for speech")
+	}
+	if worker == nil {
+		return nil, domain.Fail(domain.CodeModelMissing, "keyboard scorer unavailable")
+	}
+	scores, err := worker.ScoreKeyboard(ctx, before, after, texts)
+	if err != nil && ctx.Err() == nil && !worker.Alive() {
+		s.set(func(st *rewriting.Status) { st.State, st.Failure = rewriting.Failed, domain.CodeModelUnsupported })
+	}
+	return scores, err
 }

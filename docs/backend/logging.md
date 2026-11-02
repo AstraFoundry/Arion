@@ -49,6 +49,7 @@ Detailed ranking events are recorded only in session-only developer mode: in Abo
 
 | Reason | Meaning |
 | --- | --- |
+| `completion_comparison_rejected` | A phonetic-valid generated proposal did not win comparison against existing candidates. The original-candidate order may still change; no text or score is logged. |
 | `completion_phonetic_mismatch` | Nonempty model output failed complete syllable/dictionary validation; original candidates remain available. |
 | `no_comparable_candidates` | Native filtering left fewer than two Han candidates covering the leader's input range; count is 0 or 1. Multiword input often has one full-range sentence and several shorter prefix words. No ranking model ran; negotiated whole-input completion may still run. |
 | `navigation` / `caret_not_at_end` | The menu was navigated, expanded or paged, or the caret moved inside the composition. |
@@ -59,10 +60,11 @@ Detailed ranking events are recorded only in session-only developer mode: in Abo
 | `context_window_nodes` / `context_window_depth` | The shared macOS window traversal exceeded its node or depth bound; no partial text is used. |
 | `context_window_text` / `context_window_range` | Window text exceeded its bound or the provider returned an invalid visible character range. |
 | `context_window_frame` / `context_window_empty` / `context_window_timeout` | Captured window geometry was unavailable, no visible text was collected, or the read deadline expired. |
-| `context_marked_mismatch` / `context_bounds` | Captured caret text did not end in the owned preedit, or window context exceeded its bound. |
+| `context_marked_mismatch` / `context_bounds` | Captured caret text did not match the owned preedit; `context_bounds` identifies the historical keyboard window-byte rejection and remains readable in older logs. |
+| `context_window_selected` | Successful AX window context was selected to the keyboard screen budget under ADR 041; inference continues. No source or selected text is logged. |
 | `proposal_sent` / `delivery_failed` | The bridge sent the proposal or transport failed. Delivery does not prove native application. |
 | `proposal_applied` | The verified native host acknowledged publication to its candidate snapshot for a pending proposal at the current activation/revision. This is not a user selection or proof of final OS rendering. |
 
-Native trace messages are admitted only for the verified live activation and a fresh revision. Reasons/counts are validated before recording; exports accept only the closed schema. A model can keep the first candidate. Negotiated macOS whole-input completion may add a provisional first candidate under [ADR 038](../decisions/038-contextual-keyboard-completion.md); it does not overwrite an existing candidate or committed text. Neither waiting nor enabling context guarantees a visible update.
+Native trace messages are admitted only for the verified live activation and a fresh revision. Reasons/counts are validated before recording; exports accept only the closed schema. A speech-priority reservation reports `SESSION_BUSY` with a rejected ranking outcome; `MODEL_MISSING` identifies an absent or stopped worker. Terminal commit/error events release both keyboard lanes. A model can keep the first candidate. Negotiated macOS whole-input completion may add a provisional first candidate under [ADR 038](../decisions/038-contextual-keyboard-completion.md); it does not overwrite an existing candidate or committed text. Neither waiting nor enabling context guarantees a visible update.
 
 The shared macOS window reader serves dictation and keyboard context. Its platform bounds are owned by [CTX-02](../../specs/009-contextual-rewrite.md#rewrite-context). Keyboard developer traces preserve the closed read-failure categories above; they do not store AX attributes, text, titles, app identities or raw error details. Unknown adapter errors remain `context_read`.

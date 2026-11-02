@@ -43,3 +43,11 @@ func TestKeyboardCompletionYieldsToSpeechAndShutdown(t *testing.T) {
 		})
 	}
 }
+
+func TestKeyboardSpeechPriorityIsDistinctFromMissingModel(t *testing.T) {
+	for _, s := range []*Service{{keyboardSuspended: true}, {speechJobs: 1}} {
+		if _, err := s.Complete(context.Background(), prompt.ChatRequest{}); domain.CodeOf(err) != domain.CodeSessionBusy {
+			t.Fatalf("speech reservation mistaken for missing model: %v", err)
+		}
+	}
+}

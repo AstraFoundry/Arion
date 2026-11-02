@@ -247,11 +247,16 @@
           "url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/model-v1/sentence-model.safetensors",
           "sha256": "86ac529510cb3b4968a5e6ade83ec8080f5b34a0a681e75c362accbbd387d1c1",
           "sizeBytes": 4486280
+        },
+        "sentence-model-desktop.safetensors": {
+          "url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/model-v1/sentence-model-desktop.safetensors",
+          "sha256": "0a6ecba69bf1d39c7eb49549c716477dd6c03fdf05757773e1f50435262fb469",
+          "sizeBytes": 25480184
         }
       },
-      "prompt": "candidate-best-where-v1",
+      "prompt": "candidate-best-where-v1+comparative-scores-v1",
       "quantization": "upstream int8",
-      "conversion": "Published upstream model-v1 keyboard preset; bytes unchanged; embedded C4 Chinese and LCCC attribution retained.",
+      "conversion": "Published upstream model-v1 keyboard and desktop presets; bytes unchanged; embedded C4 Chinese and LCCC attribution retained.",
       "evaluations": []
     }
   ]

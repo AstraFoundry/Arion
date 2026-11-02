@@ -321,6 +321,24 @@ int main(int argc, const char *argv[]) {
                     @"fused displayed candidate commits its actual engine identity once");
             });
         }
+        run(@"settled order survives generated insertion", @"RNK-A09", ^{
+            __block NSDictionary *request=nil; __block NSUInteger epoch=0;
+            typing.neuralRanking=YES; typing.contextRanking=NO;
+            typing.rankingChanged=^(NSDictionary *snapshot,NSUInteger revision){request=snapshot;epoch=revision;};
+            type(typing,@"xian");
+            NSArray *candidates=request[@"candidates"];
+            require(candidates.count>=3,@"several real comparable candidates");
+            NSArray *order=[[candidates reverseObjectEnumerator] allObjects];
+            NSDictionary *reply=@{@"activation":@"test",@"revision":@(epoch),@"status":@"ok",
+                @"rankResult":@{@"session_id":@"test",@"generation":@1,@"revision":@(epoch),@"candidates":order,
+                    @"completion":@{@"input":@"xian",@"text":@"跣"}}};
+            [typing applyRankingMessage:reply activation:@"test"];
+            require([typing.snapshot.candidates[0] isEqual:@"跣"],@"accepted proposal leads");
+            require([typing.snapshot.candidates[1] isEqual:order[0][@"text"]],@"settled full order starts at second slot");
+            require(editor.insertions==0,@"ordering does not commit");
+            selectText(typing,order[0][@"text"]);
+            require([editor.view.string isEqual:order[0][@"text"]],@"reordered original commits correct engine identity");
+        });
         run(@"generated whole-input candidate commits through the engine", @"RNK-A09", ^{
             __block NSDictionary *request=nil;
             __block NSUInteger epoch=0;

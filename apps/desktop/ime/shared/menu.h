@@ -20,6 +20,7 @@ typedef struct ArionPinyinMenu {
 typedef int (*ArionMenuRank)(void *context, const char *const *texts, size_t count, const unsigned char *eligible, size_t *order);
 
 // Stable promotion within the captured comparable slots; other lanes stay fixed.
+int arion_menu_order_slots(ArionPinyinMenu *menu, const size_t *slots, size_t count, const size_t *order);
 int arion_menu_promote_slots(ArionPinyinMenu *menu, const size_t *slots, size_t count, size_t chosen);
 
 void arion_menu_dispose(ArionPinyinMenu *menu);
@@ -47,3 +48,4 @@ int arion_menu_engine_index(const ArionPinyinMenu *menu, size_t index, size_t ro
 }
 #endif
 #endif
+

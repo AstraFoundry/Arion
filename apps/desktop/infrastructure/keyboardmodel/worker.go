@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"math"
 	"os/exec"
 	"sync"
 	"time"
@@ -28,7 +29,18 @@ type Worker struct {
 
 // Open waits for model loading before any typing request is admitted.
 func Open(ctx context.Context, executable, model string) (*Worker, error) {
-	cmd := exec.Command(executable, model)
+	return openModels(ctx, executable, []string{model})
+}
+
+// OpenModels separates per-keystroke ranking from settled comparison weights.
+func OpenModels(ctx context.Context, executable, fast, settled string) (*Worker, error) {
+	if settled == "" {
+		return nil, errors.New("settled scoring model required")
+	}
+	return openModels(ctx, executable, []string{fast, settled})
+}
+func openModels(ctx context.Context, executable string, models []string) (*Worker, error) {
+	cmd := exec.Command(executable, models...)
 	input, err := cmd.StdinPipe()
 	if err != nil {
 		return nil, err
@@ -74,14 +86,6 @@ func (w *Worker) RankKeyboard(ctx context.Context, req contracts.KeyboardRankReq
 	if _, err := ranking.Prepare(req); err != nil {
 		return contracts.KeyboardRankResult{}, err
 	}
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	if err := ctx.Err(); err != nil {
-		return contracts.KeyboardRankResult{}, err
-	}
-	if w.closed {
-		return contracts.KeyboardRankResult{}, domain.Fail(domain.CodeModelMissing, "keyboard worker closed")
-	}
 	type candidate struct {
 		ID     string `json:"id"`
 		Text   string `json:"text"`
@@ -99,25 +103,74 @@ func (w *Worker) RankKeyboard(ctx context.Context, req contracts.KeyboardRankReq
 		Before     string      `json:"before"`
 		Candidates []candidate `json:"candidates"`
 	}{req.SessionID, req.Input, req.Before, candidates}
-	watchdog := time.AfterFunc(time.Second, func() { _ = w.cmd.Process.Kill() })
-	defer watchdog.Stop()
-	if err := json.NewEncoder(w.input).Encode(in); err != nil {
-		w.closeLocked()
-		return contracts.KeyboardRankResult{}, errors.New("keyboard worker write failed")
-	}
-	if !w.output.Scan() {
-		w.closeLocked()
-		return contracts.KeyboardRankResult{}, errors.New("keyboard worker response failed")
-	}
-	if err := ctx.Err(); err != nil {
+	data, err := w.exchange(ctx, in)
+	if err != nil {
 		return contracts.KeyboardRankResult{}, err
 	}
-	out, err := ranking.Apply(req, w.output.Text())
+	out, err := ranking.Apply(req, string(data))
 	if err != nil {
-		w.closeLocked()
+		w.Close()
 	}
 	out.Template = "chinese-ime-lm-0.2.0"
 	return out, err
 }
 
 func (w *Worker) Alive() bool { w.mu.Lock(); defer w.mu.Unlock(); return !w.closed }
+
+func (w *Worker) exchange(ctx context.Context, in any) ([]byte, error) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	if w.closed {
+		return nil, domain.Fail(domain.CodeModelMissing, "keyboard worker closed")
+	}
+	watchdog := time.AfterFunc(time.Second, func() { _ = w.cmd.Process.Kill() })
+	defer watchdog.Stop()
+	if err := json.NewEncoder(w.input).Encode(in); err != nil {
+		w.closeLocked()
+		return nil, errors.New("keyboard worker write failed")
+	}
+	if !w.output.Scan() {
+		w.closeLocked()
+		return nil, errors.New("keyboard worker response failed")
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	return append([]byte(nil), w.output.Bytes()...), nil
+}
+
+func (w *Worker) ScoreKeyboard(ctx context.Context, before, after string, texts []string) ([]float64, error) {
+	if len(before) > 2048 || len(after) > 2048 || len(texts) == 0 || len(texts) > 28 {
+		return nil, errors.New("keyboard score bounds")
+	}
+	for _, text := range texts {
+		if len(text) == 0 || len(text) > 256 {
+			return nil, errors.New("keyboard score text bounds")
+		}
+	}
+	request := struct {
+		Score  bool     `json:"score"`
+		Before string   `json:"before"`
+		After  string   `json:"after"`
+		Texts  []string `json:"texts"`
+	}{true, before, after, texts}
+	data, err := w.exchange(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	var result struct {
+		Scores []float64 `json:"scores"`
+	}
+	if err = json.Unmarshal(data, &result); err != nil || len(result.Scores) != len(texts) {
+		return nil, errors.New("invalid keyboard scores")
+	}
+	for _, score := range result.Scores {
+		if math.IsNaN(score) || math.IsInf(score, 0) {
+			return nil, errors.New("nonfinite keyboard score")
+		}
+	}
+	return result.Scores, nil
+}

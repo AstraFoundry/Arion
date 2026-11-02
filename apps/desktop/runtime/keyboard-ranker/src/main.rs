@@ -17,19 +17,43 @@ struct Candidate {
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Request {
+    #[serde(default)]
+    score: bool,
+    #[serde(default)]
+    after: String,
+    #[serde(default)]
     session: String,
+    #[serde(default)]
     input: String,
     before: String,
+    #[serde(default)]
     candidates: Vec<Candidate>,
+    #[serde(default)]
+    texts: Vec<String>,
 }
 fn valid(r: &Request) -> bool {
-    !r.session.is_empty()
+    if r.score {
+        return r.session.is_empty()
+            && r.input.is_empty()
+            && r.candidates.is_empty()
+            && r.before.len() <= 2048
+            && r.after.len() <= 2048
+            && !r.texts.is_empty()
+            && r.texts.len() <= 28
+            && r.texts
+                .iter()
+                .all(|text| !text.is_empty() && text.len() <= 256);
+    }
+    r.texts.is_empty()
+        && r.after.is_empty()
+        && !r.session.is_empty()
         && r.session.len() <= 128
         && !r.input.is_empty()
         && r.input.len() <= 256
         && r.before.len() <= 2048
         && !r.candidates.is_empty()
         && r.candidates.len() <= 27
+        && r.after.len() <= 2048
         && r.candidates.iter().all(|c| {
             !c.id.is_empty()
                 && c.id.len() <= 64
@@ -49,6 +73,17 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     if model.license() != "Apache-2.0" || model.attribution().is_empty() {
         return Err("missing model provenance".into());
     }
+    let scoring_model = if let Some(path) = std::env::args().nth(2) {
+        let bytes = std::fs::read(path)?;
+        let model = SentenceModel::load(&bytes)?;
+        if model.license() != "Apache-2.0" || model.attribution().is_empty() {
+            return Err("missing scoring model provenance".into());
+        }
+        Arc::new(model)
+    } else {
+        model.clone()
+    };
+    let mut scorer = Reranker::new(scoring_model);
     let mut ranker = Reranker::new(model.clone());
     let mut session = String::new();
     let mut input = io::stdin().lock();
@@ -83,9 +118,26 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         if !valid(&request) {
             return Err("invalid request".into());
         }
-        if request.session != session {
+        if !request.score && request.session != session {
             ranker = Reranker::new(model.clone());
             session = request.session.clone();
+        }
+        if request.score {
+            let suffix: String = request.after.chars().take(16).collect();
+            let texts: Vec<String> = request
+                .texts
+                .iter()
+                .map(|text| format!("{text}{suffix}"))
+                .collect();
+            let borrowed: Vec<&str> = texts.iter().map(String::as_str).collect();
+            let scores = scorer.log_probabilities(&request.before, &borrowed);
+            if scores.len() != texts.len() || scores.iter().any(|score| !score.is_finite()) {
+                return Err("invalid model scores".into());
+            }
+            serde_json::to_writer(&mut output, &serde_json::json!({"scores":scores}))?;
+            writeln!(output)?;
+            output.flush()?;
+            continue;
         }
         let texts: Vec<&str> = request.candidates.iter().map(|c| c.text.as_str()).collect();
         let chosen = ranker

@@ -42,7 +42,7 @@ func (m *IME) ConfigureKeyboardRankingStages(fast, settled ports.KeyboardRanker)
 		budget := 100 * time.Millisecond
 		if i == 1 {
 			debounce = 150 * time.Millisecond
-			budget = 3 * time.Second
+			budget = 12 * time.Second
 		}
 		scheduler, err := application.NewKeyboardRanking(ranker, budget, debounce)
 		if err != nil {
@@ -131,6 +131,7 @@ func (m *IME) receiveRankingLocked(msg message) {
 		m.invalidateRankingLocked()
 		return
 	}
+	req.AllowOrdering = m.orderingCapable
 	req.Application = m.client
 	req.AllowCompletion = req.AllowCompletion && m.completionCapable
 	for tier, scheduler := range []*application.KeyboardRanking{m.rankingFast, m.ranking} {

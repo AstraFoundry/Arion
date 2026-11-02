@@ -148,3 +148,38 @@ func TestServiceRealBundledModel(t *testing.T) {
 		t.Fatal("tampered bundled weights accepted")
 	}
 }
+
+func TestSuspendedKeyboardReportsSpeechPriority(t *testing.T) {
+	s := New(models.Catalog{}, "")
+	s.SuspendKeyboard(true)
+	if _, err := s.RankKeyboard(context.Background(), request()); domain.CodeOf(err) != domain.CodeSessionBusy {
+		t.Fatalf("speech priority mistaken for missing model: %v", err)
+	}
+	s.SuspendKeyboard(false)
+	if _, err := s.RankKeyboard(context.Background(), request()); domain.CodeOf(err) != domain.CodeModelMissing {
+		t.Fatalf("missing worker not reported: %v", err)
+	}
+}
+
+func TestRealComparativeScores(t *testing.T) {
+	binary, model := os.Getenv("ARION_TEST_KEYBOARD_BINARY"), os.Getenv("ARION_TEST_KEYBOARD_MODEL")
+	if binary == "" || model == "" {
+		t.Skip("explicit local scorer required")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	worker, err := Open(ctx, binary, model)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer worker.Close()
+	scores, err := worker.ScoreKeyboard(ctx, "尺码不合适，我想", "。", []string{"退伙", "退货"})
+	if err != nil || len(scores) != 2 || scores[1] <= scores[0] {
+		t.Fatal(scores, err)
+	}
+	canceled, stop := context.WithCancel(ctx)
+	stop()
+	if _, err = worker.ScoreKeyboard(canceled, "", "", []string{"退货"}); err == nil {
+		t.Fatal("canceled scoring accepted")
+	}
+}
