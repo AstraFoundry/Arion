@@ -7,8 +7,12 @@
  */
 
 .post-grid {
-  --post-measure: 40rem;
-  --post-breakout: 8rem;
+  /*
+   * Fixed up to 1440px, then both grow so large screens keep Anthropic's
+   * proportions (720px text, ~1160px media at 1920px) instead of empty sides.
+   */
+  --post-measure: clamp(40rem, 22rem + 20vw, 45rem);
+  --post-breakout: clamp(8rem, -16.3rem + 25vw, 14rem);
   --post-gutter: 1.25rem;
   --post-font: var(--font-display);
 
@@ -128,7 +132,7 @@ html:is(:lang(zh-CN), :lang(ja)) .post-grid {
 
 .post-prose > * {
   font-family: var(--post-font);
-  font-size: clamp(1rem, 0.96rem + 0.15vw, 1.03125rem);
+  font-size: clamp(1rem, 0.983rem + 0.066vw, 1.0625rem);
   line-height: 1.6;
   font-weight: 400;
   margin-top: 1.4em;
@@ -136,9 +140,12 @@ html:is(:lang(zh-CN), :lang(ja)) .post-grid {
   font-variant-numeric: proportional-nums oldstyle-nums;
 }
 
-/* Chinese and Japanese glyphs fill the em square, so 16px reads like 17px Latin. */
+/*
+ * Chinese and Japanese glyphs fill the em square, so 16px reads like 17px
+ * Latin; grow only with the wider column so a line stays near 40 characters.
+ */
 html:is(:lang(zh-CN), :lang(ja)) .post-prose > :not(h2, h3) {
-  font-size: 1rem;
+  font-size: clamp(1rem, 0.8125rem + 0.208vw, 1.0625rem);
   line-height: 1.8;
   font-variant-numeric: normal;
 }
