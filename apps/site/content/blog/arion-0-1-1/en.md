@@ -2,6 +2,7 @@
 title: "Arion 0.1.1: our first release"
 description: Arion 0.1.1 is available today for Apple silicon Macs and Windows x64. Dictation, polishing, translation, an offline Pinyin keyboard and clipboard history all run on your computer, open source under AGPL-3.0.
 date: 2026-11-01
+authors: stvlynn
 category: announcement
 tags: [release, dictation, pinyin keyboard, offline]
 image: /blog/arion-0-1-1/cover.webp

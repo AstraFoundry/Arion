@@ -2,6 +2,7 @@
 title: あなたの音声入力はどこへ行くのか
 description: 多くの音声入力ツールは音声をクラウドへ送りますが、OS の権限ダイアログからはその違いがわかりません。Arion における1回の音声入力のローカルメモリ上のライフサイクル、ネットワークを使う3つの場面、そして Wi-Fi を切って自分で確かめる方法を説明します。
 date: 2026-10-27
+authors: stvlynn
 category: product
 tags: [プライバシー, オフライン, 暗号化]
 image: /blog/where-your-dictation-goes/cover.webp

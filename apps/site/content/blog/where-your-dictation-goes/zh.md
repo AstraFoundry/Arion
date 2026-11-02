@@ -2,6 +2,7 @@
 title: 你的听写去了哪里
 description: 大多数语音输入法把音频发往云端，但从输入法框架的界面上看不出区别。这篇文章拆解一次按键背后的本地内存生命周期、极少数会发起网络请求的地方，以及如何关掉 Wi-Fi 自己验证。
 date: 2026-10-27
+authors: stvlynn
 category: product
 tags: [隐私, 离线, 加密]
 image: /blog/where-your-dictation-goes/cover.webp

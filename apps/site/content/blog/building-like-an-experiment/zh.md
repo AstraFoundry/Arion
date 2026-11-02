@@ -2,6 +2,7 @@
 title: 我们为什么像做实验一样做语音输入法
 description: 当模型和编程智能体让写代码和做演示变得廉价，稀缺的是确认一个改动到底有没有用。从三次与直觉相悖的实验讲起，看 Arion 如何用留出集、消融实验和成文的规范决定什么能上线。
 date: 2026-10-27
+authors: stvlynn
 category: engineering
 tags: [方法论, benchmark, 消融实验, 评测, AI 智能体]
 image: /blog/building-like-an-experiment/cover.webp
