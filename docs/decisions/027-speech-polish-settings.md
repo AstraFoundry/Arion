@@ -4,7 +4,7 @@
 
 Accepted. Amends where [ADR 011](011-live-local-rewriting.md), [ADR 012](012-context-scene-selection.md) and [ADR 013](013-rewrite-context-on-device.md) place their controls (Settings › Model), and the activation rule of [ADR 022](022-cloud-polishing.md). Issue [#23](https://github.com/AstraFoundry/Arion/issues/23).
 
-Onboarding placement is superseded by [ADR 039](039-focused-onboarding.md); optional configuration now lives in Settings.
+The polish choice and cloud pages also appear in onboarding ([ADR 040](040-onboarding-account-polish-translation.md)). Formatting and context stay in Settings.
 
 ## Context
 

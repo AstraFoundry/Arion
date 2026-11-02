@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted.
+Accepted. The placement of account, polishing and translation only in Settings is superseded by [ADR 040](040-onboarding-account-polish-translation.md). Recognition download confirmation, combined dictation practice, the keyboard remaining in Settings, and sign-in not granting usage consent remain.
 
 ## Context
 

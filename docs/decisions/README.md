@@ -50,7 +50,8 @@ Write an ADR when the decision:
 - [036: Two-stage local keyboard ranking](036-two-stage-keyboard-ranking.md) — independent fast/settled lanes and consent-gated Accessibility context.
 - [037: Keyboard context defaults and developer diagnostics](037-keyboard-context-and-developer-diagnostics.md).
 - [038: Contextual keyboard completion](038-contextual-keyboard-completion.md).
-- [039: Focused onboarding](039-focused-onboarding.md) — required offline dictation setup, explicit first download and optional configuration in Settings.
+- [039: Focused onboarding](039-focused-onboarding.md) — required offline dictation setup, explicit first download and optional configuration in Settings. Account, polish and translation placement is superseded by ADR 040.
+- [040: Account, polish and translation in onboarding](040-onboarding-account-polish-translation.md) — those choices return inside welcome, polish and practice. Keyboard setup stays in Settings.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming
