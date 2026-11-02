@@ -27,6 +27,13 @@ import (
 var clipboardGate = make(chan struct{}, 1)
 var internalClipboardRevision atomic.Uint64
 
+// Windows clipboard history can keep the clipboard open after a change.
+// These bounds cover that lock. They do not post another paste.
+const (
+	clipboardOpenBudget = 3 * time.Second
+	clipboardOpenPause  = 20 * time.Millisecond
+)
+
 var (
 	user32                       = syscall.NewLazyDLL("user32.dll")
 	kernel32                     = syscall.NewLazyDLL("kernel32.dll")
@@ -457,7 +464,7 @@ func publishClipboard(text string) bool {
 	if text == "" {
 		return false
 	}
-	if ok, _, _ := procOpenClipboard.Call(0); ok == 0 {
+	if !openClipboard() {
 		return false
 	}
 	written := writeClipboardText(text)
@@ -465,15 +472,38 @@ func publishClipboard(text string) bool {
 	return written
 }
 
+// openClipboard opens the clipboard, retrying while another owner holds it.
+func openClipboard() bool {
+	return acquireClipboard(time.Now().Add(clipboardOpenBudget), clipboardOpenPause, func() bool {
+		ok, _, _ := procOpenClipboard.Call(0)
+		return ok != 0
+	}, time.Now, time.Sleep)
+}
+
+// acquireClipboard calls try until it succeeds or the deadline has passed.
+// now and sleep are injectable so the wait can be tested without the clock.
+func acquireClipboard(deadline time.Time, pause time.Duration, try func() bool, now func() time.Time, sleep func(time.Duration)) bool {
+	for {
+		if try() {
+			return true
+		}
+		if !now().Before(deadline) {
+			return false
+		}
+		sleep(pause)
+	}
+}
+
 // paste writes the text, sends Ctrl+V and restores the previous text only
-// if no other program changed the clipboard meanwhile (DSK-A05). Only the
-// Unicode text format is preserved on Windows. The transient text is
-// excluded from clipboard history and cloud clipboard; when that mark cannot
-// be set, the previous text is put back and the paste fails.
+// if no other program changed the clipboard meanwhile (DSK-A05). Opening the
+// clipboard retries while another owner holds it. That wait is not a second
+// paste. Only the Unicode text format is preserved on Windows. The transient
+// text is excluded from clipboard history and cloud clipboard; when that
+// mark cannot be set, the previous text is put back and the paste fails.
 func paste(text string) bool {
 	clipboardGate <- struct{}{}
 	defer func() { <-clipboardGate }()
-	if ok, _, _ := procOpenClipboard.Call(0); ok == 0 {
+	if !openClipboard() {
 		return false
 	}
 	previous, hadText := readClipboardText()
@@ -495,16 +525,36 @@ func paste(text string) bool {
 		{Type: inputKeyboard, VK: vkV, Flags: keyeventfKeyUp}, {Type: inputKeyboard, VK: vkControl, Flags: keyeventfKeyUp},
 	})
 	time.Sleep(400 * time.Millisecond)
-	if current, _, _ := procGetClipboardSequence.Call(); current == owned {
+	restoreOwnedClipboard(owned, previous, hadText)
+	return true
+}
+
+// restoreOwnedClipboard puts the previous text back when this paste still
+// owns the clipboard. A changed sequence belongs to someone else (DSK-A05)
+// and is left alone. Ctrl+V has already been posted once.
+func restoreOwnedClipboard(owned uintptr, previous string, hadText bool) {
+	deadline := time.Now().Add(clipboardOpenBudget)
+	for {
+		current, _, _ := procGetClipboardSequence.Call()
+		if current != owned {
+			return
+		}
 		if ok, _, _ := procOpenClipboard.Call(0); ok != 0 {
-			procEmptyClipboard.Call()
-			if hadText {
-				writeClipboardText(previous)
+			current, _, _ = procGetClipboardSequence.Call()
+			if current == owned {
+				procEmptyClipboard.Call()
+				if hadText {
+					writeClipboardText(previous)
+				}
 			}
 			procCloseClipboard.Call()
+			return
 		}
+		if !time.Now().Before(deadline) {
+			return
+		}
+		time.Sleep(clipboardOpenPause)
 	}
-	return true
 }
 
 // OpenSettings opens a Windows Settings page such as ms-settings:privacy-microphone.

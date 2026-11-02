@@ -1313,10 +1313,10 @@ get/clear callbacks and owner-change generation checks; clipboard-only apps
 bind selection primitives without requiring a surface. Windows shares the
 drag adapter's IDataObject, vtables, native conversions and reference-counted
 objects with OleSetClipboard/OleFlushClipboard; foreign reads hold a Win32
-clipboard lock. Callback signatures are allocated once and routed by native
-object or user data. Native reads copy bytes so application data outlives
-native handles. See [Clipboard and drag data](data-transfer.md) for API and
-format mappings.
+clipboard lock and retry while another owner has it. Callback signatures are
+allocated once and routed by native object or user data. Native reads copy
+bytes so application data outlives native handles. See
+[Clipboard and drag data](data-transfer.md) for API and format mappings.
 
 ## Audio (`audio`)
 

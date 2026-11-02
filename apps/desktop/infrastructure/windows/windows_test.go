@@ -5,10 +5,40 @@ package windows
 import (
 	"context"
 	"testing"
+	"time"
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 )
+
+func TestAcquireClipboardRetriesUntilOpenOrDeadline(t *testing.T) {
+	now := time.Unix(0, 0)
+	clock := now
+	var sleeps int
+	tries := 0
+	ok := acquireClipboard(now.Add(50*time.Millisecond), 20*time.Millisecond, func() bool {
+		tries++
+		return tries == 3
+	}, func() time.Time { return clock }, func(d time.Duration) {
+		sleeps++
+		clock = clock.Add(d)
+	})
+	if !ok || tries != 3 || sleeps != 2 {
+		t.Fatalf("acquire: ok %v tries %d sleeps %d", ok, tries, sleeps)
+	}
+
+	clock = now
+	tries = 0
+	ok = acquireClipboard(now.Add(30*time.Millisecond), 20*time.Millisecond, func() bool {
+		tries++
+		return false
+	}, func() time.Time { return clock }, func(d time.Duration) {
+		clock = clock.Add(d)
+	})
+	if ok || tries != 3 {
+		t.Fatalf("deadline: ok %v tries %d", ok, tries)
+	}
+}
 
 func TestReadOnlyStandardEditRefusesOnlyThatStyle(t *testing.T) {
 	if !readOnlyStandardEdit("Edit", esReadOnly) || !readOnlyStandardEdit("RichEdit50W", esReadOnly|esPassword) {

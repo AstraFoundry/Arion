@@ -4,6 +4,7 @@ package e2e
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"syscall"
@@ -17,6 +18,87 @@ import (
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/transfer"
 )
+
+// MyGo reads the clipboard on the UI thread and stops after a short busy
+// retry. Windows clipboard history can hold the lock longer than that.
+// These helpers wait on the test goroutine, and they hold the paste gate so
+// the running history poller cannot open the clipboard at the same time.
+const clipboardWait = 5 * time.Second
+
+func clipboardRetryable(err error) bool {
+	if err == nil {
+		return false
+	}
+	if errors.Is(err, mygo.ErrClipboardChanged) {
+		return true
+	}
+	msg := strings.ToLower(err.Error())
+	return strings.Contains(msg, "the clipboard is busy") || strings.Contains(msg, "800401d0")
+}
+
+func lockClipboard(t *testing.T) func() {
+	t.Helper()
+	deadline := time.Now().Add(clipboardWait)
+	for {
+		unlock, ok := windows.TryClipboard()
+		if ok {
+			return unlock
+		}
+		if !time.Now().Before(deadline) {
+			t.Fatal("clipboard transaction still in progress")
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+}
+
+func readClipboardData(t *testing.T) transfer.Data {
+	t.Helper()
+	unlock := lockClipboard(t)
+	defer unlock()
+	deadline := time.Now().Add(clipboardWait)
+	var last error
+	for {
+		data, err := mygo.Clipboard.Read()
+		if err == nil {
+			return data
+		}
+		last = err
+		if !clipboardRetryable(err) || !time.Now().Before(deadline) {
+			t.Fatal(last)
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+}
+
+func writeClipboardData(t *testing.T, data transfer.Data) {
+	t.Helper()
+	unlock := lockClipboard(t)
+	defer unlock()
+	deadline := time.Now().Add(clipboardWait)
+	var last error
+	for {
+		last = mygo.Clipboard.Write(data)
+		if last == nil {
+			return
+		}
+		if !clipboardRetryable(last) || !time.Now().Before(deadline) {
+			t.Fatal(last)
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+}
+
+func clipboardText(t *testing.T, data transfer.Data) string {
+	t.Helper()
+	b, err := data.Read(transfer.Text)
+	if errors.Is(err, transfer.ErrFormat) {
+		return ""
+	}
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
+}
 
 func identity() contracts.Identity {
 	return contracts.Identity{SessionID: "windows-e2e", Generation: 1}
@@ -230,16 +312,11 @@ func TestWindowsPastesWithoutEditableFocus(t *testing.T) {
 						t.Fatal(err)
 					}
 					editor.focusControl(t, noneditable)
-					previous, err := mygo.Clipboard.Read()
-					if err != nil {
-						t.Fatal(err)
-					}
+					previous := readClipboardData(t)
 					const text = "Processed 中文🙂\nsecond line"
 					t.Cleanup(func() {
-						if mygo.Clipboard.ReadText() == text {
-							if err := mygo.Clipboard.Write(previous); err != nil {
-								t.Error(err)
-							}
+						if clipboardText(t, readClipboardData(t)) == text {
+							writeClipboardData(t, previous)
 						}
 					})
 					request := contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text}
@@ -248,14 +325,14 @@ func TestWindowsPastesWithoutEditableFocus(t *testing.T) {
 						if err != nil || result.Outcome != contracts.Copied || result.Failure != "" || result.NoInput {
 							t.Fatalf("readonly focus: %+v %v", result, err)
 						}
-						if got := mygo.Clipboard.ReadText(); got != text {
+						if got := clipboardText(t, readClipboardData(t)); got != text {
 							t.Fatalf("readonly text was not left on the clipboard: %q", got)
 						}
 					} else {
 						if err != nil || result.Outcome != contracts.Unknown || result.Failure != "" {
 							t.Fatalf("noneditable focus: %+v %v", result, err)
 						}
-						if got := mygo.Clipboard.ReadText(); got == text {
+						if got := clipboardText(t, readClipboardData(t)); got == text {
 							t.Fatalf("dictated text remained on the clipboard: %q", got)
 						}
 					}
@@ -276,25 +353,18 @@ func TestWindowsPasteRestoresClipboard(t *testing.T) {
 		t.Run(fmt.Sprintf("original-text-%v", original != ""), func(t *testing.T) {
 			editor := startWindowsEditor(t)
 			editor.focus(t)
-			previous, err := mygo.Clipboard.Read()
-			if err != nil {
-				t.Fatal(err)
-			}
+			previous := readClipboardData(t)
 			const text = "Paste into the editor"
 			t.Cleanup(func() {
-				if current := mygo.Clipboard.ReadText(); current == original || current == text {
-					if err := mygo.Clipboard.Write(previous); err != nil {
-						t.Error(err)
-					}
+				if current := clipboardText(t, readClipboardData(t)); current == original || current == text {
+					writeClipboardData(t, previous)
 				}
 			})
 			var contents transfer.Data
 			if original != "" {
 				contents = transfer.TextData(original)
 			}
-			if err := mygo.Clipboard.Write(contents); err != nil {
-				t.Fatal(err)
-			}
+			writeClipboardData(t, contents)
 			targets := windows.NewTargets(nil, func() windows.Delivery { return windows.DeliveryClipboard })
 			snapshot, err := targets.Capture(context.Background(), identity())
 			if err != nil {
@@ -307,10 +377,11 @@ func TestWindowsPasteRestoresClipboard(t *testing.T) {
 			if !within(5*time.Second, func() bool { return editor.text() == text }) {
 				t.Fatalf("editor text %q, want %q", editor.text(), text)
 			}
-			if got := mygo.Clipboard.ReadText(); got != original {
+			restored := readClipboardData(t)
+			if got := clipboardText(t, restored); got != original {
 				t.Fatalf("clipboard text %q, want original %q", got, original)
 			}
-			if original == "" && len(mygo.Clipboard.Formats()) != 0 {
+			if original == "" && len(restored.Formats()) != 0 {
 				t.Fatal("paste left clipboard formats on the originally empty clipboard")
 			}
 		})
