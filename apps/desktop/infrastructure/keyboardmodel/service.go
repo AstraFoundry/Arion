@@ -146,3 +146,20 @@ func (s *Service) RankKeyboard(ctx context.Context, req contracts.KeyboardRankRe
 	}
 	return out, err
 }
+
+func (s *Service) ScoreKeyboard(ctx context.Context, before, after string, texts []string) ([]float64, error) {
+	s.mu.Lock()
+	worker, suspended := s.worker, s.suspended
+	s.mu.Unlock()
+	if suspended {
+		return nil, domain.Fail(domain.CodeSessionBusy, "keyboard scoring suspended for speech")
+	}
+	if worker == nil {
+		return nil, domain.Fail(domain.CodeModelMissing, "keyboard scorer unavailable")
+	}
+	scores, err := worker.ScoreKeyboard(ctx, before, after, texts)
+	if err != nil && ctx.Err() == nil && !worker.Alive() {
+		s.set(func(st *rewriting.Status) { st.State, st.Failure = rewriting.Failed, domain.CodeModelUnsupported })
+	}
+	return scores, err
+}

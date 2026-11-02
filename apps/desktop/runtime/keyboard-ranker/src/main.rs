@@ -17,6 +17,10 @@ struct Candidate {
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Request {
+    #[serde(default)]
+    score: bool,
+    #[serde(default)]
+    after: String,
     session: String,
     input: String,
     before: String,
@@ -29,7 +33,8 @@ fn valid(r: &Request) -> bool {
         && r.input.len() <= 256
         && r.before.len() <= 2048
         && !r.candidates.is_empty()
-        && r.candidates.len() <= 27
+        && r.candidates.len() <= if r.score { 28 } else { 27 }
+        && r.after.len() <= 2048
         && r.candidates.iter().all(|c| {
             !c.id.is_empty()
                 && c.id.len() <= 64
@@ -86,6 +91,23 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         if request.session != session {
             ranker = Reranker::new(model.clone());
             session = request.session.clone();
+        }
+        if request.score {
+            let suffix: String = request.after.chars().take(16).collect();
+            let texts: Vec<String> = request
+                .candidates
+                .iter()
+                .map(|c| format!("{}{suffix}", c.text))
+                .collect();
+            let borrowed: Vec<&str> = texts.iter().map(String::as_str).collect();
+            let scores = ranker.log_probabilities(&request.before, &borrowed);
+            if scores.len() != texts.len() || scores.iter().any(|score| !score.is_finite()) {
+                return Err("invalid model scores".into());
+            }
+            serde_json::to_writer(&mut output, &serde_json::json!({"scores":scores}))?;
+            writeln!(output)?;
+            output.flush()?;
+            continue;
         }
         let texts: Vec<&str> = request.candidates.iter().map(|c| c.text.as_str()).collect();
         let chosen = ranker

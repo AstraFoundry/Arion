@@ -47,7 +47,11 @@ func TestGeneratedCompletionIsSeparateFromPermutation(t *testing.T) {
 	}{
 		{"NONE", true, false}, {"重构一下", true, true}, {"崇高一下", true, false}, {"重构", false, false}, {"解释：重构一下", false, false},
 	} {
-		r := Ranker{Chat: chatFunc(func(_ context.Context, p prompt.ChatRequest) (engine.Result, error) {
+		r := Ranker{Scorer: scoreFunc(func(_ context.Context, _, _ string, texts []string) ([]float64, error) {
+			scores := make([]float64, len(texts))
+			scores[len(scores)-1] = 1
+			return scores, nil
+		}), Chat: chatFunc(func(_ context.Context, p prompt.ChatRequest) (engine.Result, error) {
 			if strings.Contains(p.Messages[0].Content, "Rank the supplied") {
 				return engine.Result{Text: `{"order":["proposal","c0"]}`}, nil
 			}
@@ -61,7 +65,11 @@ func TestGeneratedCompletionIsSeparateFromPermutation(t *testing.T) {
 }
 func TestNoContextAndTruncation(t *testing.T) {
 	calls := 0
-	r := Ranker{Chat: chatFunc(func(context.Context, prompt.ChatRequest) (engine.Result, error) {
+	r := Ranker{Scorer: scoreFunc(func(_ context.Context, _, _ string, texts []string) ([]float64, error) {
+		scores := make([]float64, len(texts))
+		scores[len(scores)-1] = 1
+		return scores, nil
+	}), Chat: chatFunc(func(context.Context, prompt.ChatRequest) (engine.Result, error) {
 		calls++
 		return engine.Result{Text: "重构一下", Truncated: true}, nil
 	})}
@@ -106,7 +114,11 @@ func TestSingleSyllableRetainsIDRanking(t *testing.T) {
 	req.Input = "shi"
 	req.Preedit = "shi"
 	req.Candidates = []domain.KeyboardCandidate{{Candidate: domain.Candidate{ID: "c0", Text: "是", Source: "phrase"}, End: 3}, {Candidate: domain.Candidate{ID: "c1", Text: "时", Source: "phrase"}, End: 3}}
-	r := Ranker{Chat: chatFunc(func(_ context.Context, p prompt.ChatRequest) (engine.Result, error) {
+	r := Ranker{Scorer: scoreFunc(func(_ context.Context, _, _ string, texts []string) ([]float64, error) {
+		scores := make([]float64, len(texts))
+		scores[len(scores)-1] = 1
+		return scores, nil
+	}), Chat: chatFunc(func(_ context.Context, p prompt.ChatRequest) (engine.Result, error) {
 		if p.Grammar != "" {
 			t.Fatal("single-syllable generation")
 		}
@@ -118,6 +130,11 @@ func TestSingleSyllableRetainsIDRanking(t *testing.T) {
 	}
 }
 
+type scoreFunc func(context.Context, string, string, []string) ([]float64, error)
+
+func (f scoreFunc) ScoreKeyboard(c context.Context, b, a string, t []string) ([]float64, error) {
+	return f(c, b, a, t)
+}
 func TestBadProposalCannotReplaceExistingCandidate(t *testing.T) {
 	req := request()
 	req.AllowOrdering = true
@@ -125,22 +142,16 @@ func TestBadProposalCannotReplaceExistingCandidate(t *testing.T) {
 	req.Preedit = "chong g y x"
 	req.Candidates[0].Text = "重构一下"
 	req.Candidates[0].End = len(req.Input)
-	calls := 0
-	r := Ranker{Chat: chatFunc(func(_ context.Context, p prompt.ChatRequest) (engine.Result, error) {
-		calls++
-		if calls == 1 {
-			if !strings.Contains(p.Messages[1].Content, "重构一下") {
-				t.Fatal("generator cannot compare existing candidate")
-			}
-			return engine.Result{Text: "重归于心"}, nil
+	r := Ranker{Chat: chatFunc(func(context.Context, prompt.ChatRequest) (engine.Result, error) {
+		return engine.Result{Text: "重归于心"}, nil
+	}), Scorer: scoreFunc(func(_ context.Context, _, _ string, texts []string) ([]float64, error) {
+		if len(texts) != 2 || texts[0] != "重构一下" || texts[1] != "重归于心" {
+			t.Fatal(texts)
 		}
-		if !strings.Contains(p.Messages[1].Content, "重归于心") || !strings.Contains(p.Messages[1].Content, "重构一下") {
-			t.Fatal("selector must compare both")
-		}
-		return engine.Result{Text: `{"order":["c0","proposal"]}`}, nil
+		return []float64{-2, -4}, nil
 	})}
 	out, err := r.RankKeyboard(context.Background(), req)
-	if err != nil || out.Completion != nil || calls != 2 || out.Candidates[0].ID != "c0" {
-		t.Fatal(out, err, calls)
+	if err != nil || out.Completion != nil || out.Candidates[0].ID != "c0" {
+		t.Fatal(out, err)
 	}
 }

@@ -176,15 +176,7 @@ int arion_menu_engine_index(const ArionPinyinMenu *menu,size_t index,size_t row,
 }
 
 int arion_menu_promote_slots(ArionPinyinMenu *menu, const size_t *slots, size_t count, size_t chosen) {
-    if (!menu || !menu->texts || !menu->indices || !menu->metadata || !slots || count < 2 || count > 27 || chosen >= count ||
-        menu->page || menu->expanded || menu->highlight || slots[0] != 0) return 0;
-    for (size_t i = 0; i < count; ++i) {
-        if (slots[i] >= menu->count || (i && slots[i] <= slots[i-1]) ||
-            menu->metadata[slots[i]].emoji ||
-            menu->metadata[slots[i]].start != menu->metadata[0].start ||
-            menu->metadata[slots[i]].end != menu->metadata[0].end ||
-            menu->metadata[slots[i]].end <= menu->metadata[slots[i]].start) return 0;
-    }
+    if (count<2 || count>27 || chosen>=count) return 0;
     size_t order[27];
     order[0]=chosen;
     for (size_t i=1; i<=chosen; ++i) order[i]=i-1;

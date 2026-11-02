@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"arion.local/desktop/infrastructure/keyboardmodel"
 	"arion.local/desktop/infrastructure/llm/client"
 	"arion.local/desktop/infrastructure/llm/engine"
 	"arion.local/desktop/infrastructure/llm/prompt"
@@ -15,7 +16,7 @@ import (
 // This small authored smoke checks the local worker, not general accuracy.
 func TestLocalCompletion(t *testing.T) {
 	runtime, model := os.Getenv("ARION_KEYBOARD_TEST_RUNTIME"), os.Getenv("ARION_KEYBOARD_TEST_MODEL")
-	if runtime == "" || model == "" || os.Getenv("ARION_KEYBOARD_TEST_WORKER") == "" {
+	if runtime == "" || model == "" || os.Getenv("ARION_KEYBOARD_TEST_WORKER") == "" || os.Getenv("ARION_TEST_KEYBOARD_BINARY") == "" || os.Getenv("ARION_TEST_KEYBOARD_MODEL") == "" {
 		t.Skip("explicit local runtime and model required")
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
@@ -25,7 +26,12 @@ func TestLocalCompletion(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer c.Close()
-	r := Ranker{Chat: chatFunc(func(ctx context.Context, req prompt.ChatRequest) (engine.Result, error) {
+	scorer, err := keyboardmodel.Open(ctx, os.Getenv("ARION_TEST_KEYBOARD_BINARY"), os.Getenv("ARION_TEST_KEYBOARD_MODEL"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer scorer.Close()
+	r := Ranker{Scorer: scorer, Chat: chatFunc(func(ctx context.Context, req prompt.ChatRequest) (engine.Result, error) {
 		out, err := c.Complete(ctx, req)
 		t.Logf("synthetic model output=%q error=%v", out.Text, err)
 		return out, err

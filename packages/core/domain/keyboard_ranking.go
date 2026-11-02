@@ -1,6 +1,10 @@
 package domain
 
-import "errors"
+import (
+	"errors"
+	"math"
+	"sort"
+)
 
 // KeyboardCandidate retains producer identity and consumed-input byte range.
 // End zero means unavailable; unavailable ranges never authorize promotion.
@@ -79,4 +83,32 @@ func OrderKeyboardCandidates(candidates []KeyboardCandidate, ids []string) ([]Ra
 		}
 	}
 	return out, ValidateRanking(plain, out)
+}
+
+// KeyboardPromotionMargin is a development-calibrated mean log probability gap.
+const KeyboardPromotionMargin = 0.2
+
+// CompareKeyboardScores preserves the original leader when evidence is close.
+func CompareKeyboardScores(scores []float64, count int) ([]int, error) {
+	if count == 0 || len(scores) != count {
+		return nil, errors.New("incomplete keyboard comparison scores")
+	}
+	order := make([]int, count)
+	for i, score := range scores {
+		if math.IsNaN(score) || math.IsInf(score, 0) {
+			return nil, errors.New("nonfinite keyboard score")
+		}
+		order[i] = i
+	}
+	sort.SliceStable(order, func(i, j int) bool { return scores[order[i]] > scores[order[j]] })
+	if scores[order[0]]-scores[0] <= KeyboardPromotionMargin {
+		for i, index := range order {
+			if index == 0 {
+				copy(order[1:i+1], order[:i])
+				order[0] = 0
+				break
+			}
+		}
+	}
+	return order, nil
 }

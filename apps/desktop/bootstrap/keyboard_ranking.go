@@ -39,7 +39,7 @@ func (a *App) configureKeyboardRanking() {
 	var fast, ranker ports.KeyboardRanker
 	if a.state.Preferences.Keyboard.NeuralRanking {
 		fast = observedKeyboardRanker{ranker: a.keyboardContextRanker(a.keyboardModel, false), modelID: keyboardmodel.ModelID, record: a.recordKeyboardDiagnostic}
-		ranker = observedKeyboardRanker{ranker: a.keyboardContextRanker(&completion.Ranker{Chat: a.rewriter}, true), modelID: rewriting.DefaultModel, record: a.recordKeyboardDiagnostic}
+		ranker = observedKeyboardRanker{ranker: a.keyboardContextRanker(&completion.Ranker{Chat: a.rewriter, Scorer: a.keyboardModel}, true), modelID: rewriting.DefaultModel, record: a.recordKeyboardDiagnostic}
 	}
 	a.record("keyboard_ranking_configuration", receiver.ConfigureKeyboardRankingStages(fast, ranker))
 }
@@ -75,6 +75,9 @@ func (r observedKeyboardRanker) RankKeyboard(ctx context.Context, req contracts.
 		outcome = "generated"
 	case len(req.Candidates) > 0 && len(result.Candidates) > 0 && result.Candidates[0].ID != req.Candidates[0].ID:
 		outcome = "accepted"
+	}
+	if result.Decision == "proposal_rejected" {
+		r.record(diagnostics.Entry{Event: "keyboard_ranking_trace", Reason: "completion_comparison_rejected", Count: len(req.Candidates)})
 	}
 	if errors.Is(err, completion.ErrPhoneticMismatch) {
 		r.record(diagnostics.Entry{Event: "keyboard_ranking_trace", Reason: "completion_phonetic_mismatch", Count: len(req.Candidates)})

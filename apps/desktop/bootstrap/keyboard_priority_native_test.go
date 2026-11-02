@@ -69,7 +69,7 @@ func TestLocalKeyboardResumesAfterDictation(t *testing.T) {
 			t.Fatalf("fast did not resume after %s: %v", terminal.Kind, err)
 		}
 		started := time.Now()
-		out, err := (&completion.Ranker{Chat: settled}).RankKeyboard(ctx, generated)
+		out, err := (&completion.Ranker{Chat: settled, Scorer: fast}).RankKeyboard(ctx, generated)
 		if err != nil || out.Completion == nil || out.Completion.Text != "重构一下" {
 			t.Fatalf("settled did not resume after %s: %+v %v", terminal.Kind, out, err)
 		}
@@ -81,7 +81,7 @@ func TestLocalKeyboardResumesAfterDictation(t *testing.T) {
 		selected := false
 		r := keyboardContext{targets: target, enabled: func() bool { return true }, cursor: func() bool { return false },
 			trace:  func(reason string, _ error) { selected = selected || reason == "context_window_selected" },
-			ranker: &completion.Ranker{Chat: settled}}
+			ranker: &completion.Ranker{Chat: settled, Scorer: fast}}
 		call, stop := context.WithTimeout(ctx, 12*time.Second)
 		defer stop()
 		started := time.Now()
