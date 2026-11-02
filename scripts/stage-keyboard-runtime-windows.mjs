@@ -118,6 +118,11 @@ try {
   replacePinned(path.join(rime, 'src/rime/service.h'), '  Context* context() const;', '  RIME_DLL Context* context() const;');
   replacePinned(path.join(rime, 'src/rime/menu.h'), '  an<Candidate> GetCandidateAt(size_t index);', '  RIME_DLL an<Candidate> GetCandidateAt(size_t index);');
   replacePinned(path.join(rime, 'src/rime/translation.h'), 'class PrefetchTranslation : public Translation {', 'class RIME_DLL PrefetchTranslation : public Translation {');
+  // English selection history unwraps the candidate actually committed by Rime.
+  // Keep those operations inside the engine and export matching SDK declarations.
+  replacePinned(path.join(rime, 'src/rime/candidate.h'), '#include <rime/common.h>', '#include <rime_api.h>\n#include <rime/common.h>');
+  replacePinned(path.join(rime, 'src/rime/candidate.h'), '  static an<Candidate> GetGenuineCandidate(const an<Candidate>& cand);', '  RIME_DLL static an<Candidate> GetGenuineCandidate(const an<Candidate>& cand);');
+  replacePinned(path.join(rime, 'src/rime/segmentation.h'), '  an<Candidate> GetSelectedCandidate() const;', '  RIME_DLL an<Candidate> GetSelectedCandidate() const;');
   // Spelling protection reads the engine's actual prism descriptors. Export
   // only the accessor operations used by that adapter, with matching SDK declarations.
   const prismHeader = path.join(rime, 'src/rime/dict/prism.h');
@@ -177,7 +182,7 @@ try {
     }
   }
   inventory(staging);
-  const buildIdentity = { correctionIdentity: manifest.patches.correctionIdentity, compiler: compilerVersion, compilerTarget: triple, logging: false, dbVisibilityPatch: 3, emojiVisibilityPatch: 1, openccCxx17Patch: 1,
+  const buildIdentity = { correctionIdentity: manifest.patches.correctionIdentity, compiler: compilerVersion, compilerTarget: triple, logging: false, dbVisibilityPatch: 3, emojiVisibilityPatch: 1, englishSelectionVisibilityPatch: 1, openccCxx17Patch: 1,
     sources: { rime: manifest.archives.source, boost: manifest.archives.boost, ...manifest.windows.dependencies } };
   writeFileSync(path.join(staging, 'runtime.json'), `${JSON.stringify({ ...manifest.engine, architectures: manifest.windows.architectures, library: 'lib/ArionRime.dll', build: buildIdentity, files }, null, 2)}\n`);
   writeFileSync(path.join(sdk, 'build.json'), `${JSON.stringify(buildIdentity, null, 2)}\n`);
