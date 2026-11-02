@@ -34,6 +34,10 @@ func TestContextReaderInitializesBeforeAuthorization(t *testing.T) {
 	register := "$register.Invoke($null, @($providers))"
 	source = strings.Replace(source, register, register+mark("providers-registered"), 1)
 	source = strings.Replace(source, "'@\n", "'@\n"+mark("reader-compiled"), 1)
+	source = strings.Replace(source, "[ArionContextReader]::Warm()\n",
+		mark("warm-starting")+"[ArionContextReader]::Warm()\n"+mark("warm-finished"), 1)
+	source = strings.Replace(source, "GC.KeepAlive(AutomationElement.RootElement);",
+		"Console.Error.WriteLine(\"ARION_INIT root-connecting\"); GC.KeepAlive(AutomationElement.RootElement); Console.Error.WriteLine(\"ARION_INIT root-connected\");", 1)
 	cmd := windowTextCommand(ctx, 0, source)
 	var diagnostics bytes.Buffer
 	cmd.Stderr = &diagnostics
@@ -46,6 +50,9 @@ func TestContextReaderInitializesBeforeAuthorization(t *testing.T) {
 	}
 	if !strings.Contains(diagnostics.String(), "ARION_INIT reader-compiled ") {
 		t.Fatal("initialization completed without its compilation diagnostic")
+	}
+	if !strings.Contains(diagnostics.String(), "ARION_INIT warm-finished ") || !strings.Contains(diagnostics.String(), "ARION_INIT root-connected") {
+		t.Fatal("initialization completed without the client connection diagnostic")
 	}
 	if !strings.Contains(diagnostics.String(), "ARION_INIT apartment-MTA") {
 		t.Fatal("real UI Automation reader did not initialize on an MTA thread")

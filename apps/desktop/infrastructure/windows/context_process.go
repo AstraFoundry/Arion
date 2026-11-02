@@ -13,10 +13,14 @@ import (
 )
 
 const (
-	// Hosted Windows has spent about ten seconds compiling the reader, then
-	// still has to open the UI Automation client. No target is inspected
+	// Hosted PowerShell compilation can reach about 11s. The first UI
+	// Automation client connection then needs several more seconds before
+	// READY. A 15s ceiling expired in that connection after a 10.3s compile
+	// marker. On that runner, assembly load and compilation were about four
+	// times a typical hosted run, where the connection takes about 4.5s, so
+	// the same ratio leaves the connection near 20s. No target is inspected
 	// during this phase.
-	contextStartupTimeout = 30 * time.Second
+	contextStartupTimeout = 45 * time.Second
 	screenTimeout         = 1500 * time.Millisecond
 	contextReadyFrame     = "ARION_CONTEXT_READY\n"
 	maxContextOutput      = 32768 * 4 // Maximum UTF-8 bytes for the UTF-16 text limit.
