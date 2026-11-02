@@ -93,8 +93,8 @@ int main(void) {
     size_t permutation[]={2,1,0};
     assert(arion_menu_order_slots(&ranked,slots,3,permutation));
     assert(rank_indices[0]==12 && rank_indices[2]==10 && rank_indices[4]==14);
-    size_t invalid_order[]={0,0,2};
-    assert(!arion_menu_order_slots(&ranked,slots,3,invalid_order));
+    size_t invalid_permutation[]={0,0,2};
+    assert(!arion_menu_order_slots(&ranked,slots,3,invalid_permutation));
     assert(rank_indices[0]==12 && rank_indices[4]==14);
     assert(arion_menu_order_slots(&ranked,slots,3,permutation));
     ranked.highlight=1;
