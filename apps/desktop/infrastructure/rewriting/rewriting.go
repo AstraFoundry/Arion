@@ -312,7 +312,11 @@ var _ ports.Rewriter = (*Service)(nil)
 // Keyboard requests never provision a model or select a cloud provider.
 func (s *Service) Complete(ctx context.Context, req prompt.ChatRequest) (engine.Result, error) {
 	s.mu.Lock()
-	if s.keyboardSuspended || s.speechJobs != 0 || s.client == nil || !s.client.Alive() {
+	if s.keyboardSuspended || s.speechJobs != 0 {
+		s.mu.Unlock()
+		return engine.Result{}, domain.Fail(domain.CodeSessionBusy, "keyboard inference suspended for speech")
+	}
+	if s.client == nil || !s.client.Alive() {
 		s.mu.Unlock()
 		return engine.Result{}, domain.Fail(domain.CodeModelMissing, "local keyboard model unavailable")
 	}

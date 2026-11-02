@@ -95,3 +95,41 @@ func TestKeyboardAbstentionDiagnostics(t *testing.T) {
 		}
 	}
 }
+
+type recordingKeyboardGate struct {
+	suspended bool
+	calls     int
+}
+
+func (g *recordingKeyboardGate) SuspendKeyboard(v bool) { g.suspended = v; g.calls++ }
+
+func TestKeyboardSpeechPriorityReleasesOnTerminalEvents(t *testing.T) {
+	for _, terminal := range []contracts.Event{
+		{Kind: contracts.CommitResultReady, State: domain.Completed},
+		{Kind: contracts.CommitResultReady, State: domain.Failed},
+		{Kind: contracts.ErrorOccurred, State: domain.Failed},
+		{Kind: contracts.SessionStateChanged, State: domain.Cancelled},
+	} {
+		t.Run(string(terminal.Kind)+"/"+string(terminal.State), func(t *testing.T) {
+			fast, settled := &recordingKeyboardGate{}, &recordingKeyboardGate{}
+			for _, state := range []domain.SessionState{domain.Preparing, domain.Capturing, domain.Finalizing, domain.Committing} {
+				observeKeyboardSpeechPriority(contracts.Event{Kind: contracts.SessionStateChanged, State: state}, fast, settled)
+				if !fast.suspended || !settled.suspended {
+					t.Fatal("speech lost inference priority")
+				}
+			}
+			observeKeyboardSpeechPriority(contracts.Event{Kind: contracts.DraftReplaced, State: domain.Completed}, fast, settled)
+			if fast.calls != 4 || settled.calls != 4 {
+				t.Fatal("non-lifecycle event changed admission")
+			}
+			observeKeyboardSpeechPriority(terminal, fast, settled)
+			if fast.suspended || settled.suspended {
+				t.Fatal("terminal event left keyboard inference suspended")
+			}
+			observeKeyboardSpeechPriority(contracts.Event{Kind: contracts.SessionStateChanged, State: domain.Preparing}, fast, settled)
+			if !fast.suspended || !settled.suspended {
+				t.Fatal("next dictation did not reacquire priority")
+			}
+		})
+	}
+}

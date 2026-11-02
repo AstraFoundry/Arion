@@ -134,7 +134,10 @@ func (s *Service) RankKeyboard(ctx context.Context, req contracts.KeyboardRankRe
 	s.mu.Lock()
 	worker, suspended := s.worker, s.suspended
 	s.mu.Unlock()
-	if worker == nil || suspended {
+	if suspended {
+		return contracts.KeyboardRankResult{}, domain.Fail(domain.CodeSessionBusy, "keyboard inference suspended for speech")
+	}
+	if worker == nil {
 		return contracts.KeyboardRankResult{}, domain.Fail(domain.CodeModelMissing, "keyboard model unavailable")
 	}
 	out, err := worker.RankKeyboard(ctx, req)

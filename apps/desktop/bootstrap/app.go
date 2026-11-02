@@ -455,10 +455,7 @@ func (a *App) ready() {
 		}
 	})
 	a.core.Subscribe(func(e contracts.Event) {
-		if e.Kind == contracts.SessionStateChanged {
-			a.rewriter.SuspendKeyboard(e.State != domain.Idle && !domain.IsTerminal(e.State))
-			a.keyboardModel.SuspendKeyboard(e.State != domain.Idle && !domain.IsTerminal(e.State))
-		}
+		observeKeyboardSpeechPriority(e, a.keyboardModel, a.rewriter)
 		a.post(func() { a.apply(e) })
 	})
 	if a.harness != nil {

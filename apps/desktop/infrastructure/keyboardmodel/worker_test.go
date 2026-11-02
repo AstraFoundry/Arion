@@ -148,3 +148,15 @@ func TestServiceRealBundledModel(t *testing.T) {
 		t.Fatal("tampered bundled weights accepted")
 	}
 }
+
+func TestSuspendedKeyboardReportsSpeechPriority(t *testing.T) {
+	s := New(models.Catalog{}, "")
+	s.SuspendKeyboard(true)
+	if _, err := s.RankKeyboard(context.Background(), request()); domain.CodeOf(err) != domain.CodeSessionBusy {
+		t.Fatalf("speech priority mistaken for missing model: %v", err)
+	}
+	s.SuspendKeyboard(false)
+	if _, err := s.RankKeyboard(context.Background(), request()); domain.CodeOf(err) != domain.CodeModelMissing {
+		t.Fatalf("missing worker not reported: %v", err)
+	}
+}

@@ -99,3 +99,18 @@ func (a *App) keyboardContextRanker(ranker ports.KeyboardRanker, screen bool) po
 		a.recordKeyboardDiagnostic(diagnostics.Entry{Event: "keyboard_ranking_trace", Reason: reason, Code: diagnostics.Failure(err)})
 	}, targets: targets, ranker: ranker, enabled: enabled, cursor: func() bool { return a.preferences().Keyboard.ContextCursor }}
 }
+
+// Terminal commit and error events carry the final state without a separate
+// SessionStateChanged event. Both inference lanes must release speech priority.
+type keyboardSuspender interface {
+	SuspendKeyboard(bool)
+}
+
+func observeKeyboardSpeechPriority(e contracts.Event, fast, settled keyboardSuspender) {
+	switch e.Kind {
+	case contracts.SessionStateChanged, contracts.CommitResultReady, contracts.ErrorOccurred:
+		suspended := e.State != domain.Idle && !domain.IsTerminal(e.State)
+		fast.SuspendKeyboard(suspended)
+		settled.SuspendKeyboard(suspended)
+	}
+}
