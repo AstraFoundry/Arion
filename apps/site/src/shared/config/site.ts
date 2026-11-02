@@ -34,6 +34,7 @@ export const routes = {
   home: "/",
   privacy: "/privacy/",
   terms: "/terms/",
+  usageData: "/usage-data/",
   selfHosting: "/self-hosting/",
   credits: "/credits/",
   blog: "/blog/",

@@ -4,7 +4,7 @@
 #include "candidate_window.h"
 
 struct KeyboardSettings {
-    size_t pageSize=9;
+    size_t pageSize=6;
     int textSize=16;
     bool emojiSuggestions=true,typoCorrection=false,neuralRanking=false;
     uint32_t fuzzyPinyin=0;

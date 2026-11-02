@@ -113,7 +113,7 @@ public:
     bool visible() const { return window && IsWindowVisible(window); }
     HRESULT error() const { return renderError; }
     void hide() { if (window) ShowWindow(window,SW_HIDE); items.clear(); rectangles.clear(); clearLayouts(); revision=0; }
-    bool show(HWND owner,const RECT &caret,const std::vector<NativeCandidate> &candidates,size_t selected,bool before,bool after,uint64_t generation,const CandidatePalette &colors,size_t pageSize=9,bool grid=false,int textSize=16,bool numbers=true) {
+    bool show(HWND owner,const RECT &caret,const std::vector<NativeCandidate> &candidates,size_t selected,bool before,bool after,uint64_t generation,const CandidatePalette &colors,size_t pageSize=6,bool grid=false,int textSize=16,bool numbers=true) {
         if (!owner || !IsWindow(owner) || candidates.empty() || !pageSize || pageSize>9 || candidates.size()>(grid?pageSize*6:pageSize) || caret.bottom<=caret.top || caret.right<caret.left) { hide(); return false; }
         WNDCLASSW definition{}; definition.lpfnWndProc=dispatch; definition.hInstance=module; definition.lpszClassName=L"Arion.NativeCandidates"; definition.hCursor=LoadCursorW(nullptr,MAKEINTRESOURCEW(32512));
         if (!RegisterClassW(&definition) && GetLastError()!=ERROR_CLASS_ALREADY_EXISTS) return false;

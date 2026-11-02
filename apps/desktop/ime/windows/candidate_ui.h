@@ -32,7 +32,7 @@ class CandidateUI final : public ITfCandidateListUIElement {
     HWND window=nullptr;
     bool shown=true;
     std::vector<std::wstring> texts;
-    UINT selection=0,pageSize=9,currentPage=0;
+    UINT selection=0,pageSize=6,currentPage=0;
 public:
     ~CandidateUI() { hide(); if (manager) manager->Release(); }
     void attach(ITfThreadMgr *value) {

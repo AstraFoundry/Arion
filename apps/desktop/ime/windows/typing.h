@@ -35,7 +35,7 @@ class Typing {
     CandidateUI *accessible=new CandidateUI;
     bool ascii=false,fullWidth=false,englishPunctuation=false;
     bool healthy=true;
-    size_t pageSize=9;
+    size_t pageSize=6;
     int textSize=16;
     CandidatePalette palette;
     bool settingsChanged=false,spellingChanged=false;

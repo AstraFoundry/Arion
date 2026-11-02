@@ -199,7 +199,7 @@ const (
 // DefaultKeyboardPreferences keep the engine's nine-candidate page and the
 // app's yellow accent.
 func DefaultKeyboardPreferences() KeyboardPreferences {
-	return KeyboardPreferences{PageSize: 9, CandidateSize: CandidateMedium, Appearance: AppearanceSystem, Accent: AccentYellow, EmojiSuggestions: true, ContextCursor: true, ContextScreen: true}
+	return KeyboardPreferences{PageSize: 6, CandidateSize: CandidateMedium, Appearance: AppearanceSystem, Accent: AccentYellow, EmojiSuggestions: true, ContextCursor: true, ContextScreen: true}
 }
 
 // normalize repairs fields that cannot be valid.

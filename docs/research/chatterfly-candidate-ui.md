@@ -47,7 +47,7 @@ Other config values: `defaultPageSize` 6, `defaultFontSize` 16, `numFontDelta` 3
 
 - Arion offers levels 1–3 as small/medium/large (medium by default) and the themes above, with its own drawing code. The selection fill defaults to Sunbeam yellow `#FFCC00` with ink `#14110F` text, the app's accent; Settings › Keyboard › Highlight color offers the blue fill and white text above among other presets and a custom color ([ADR 017](../decisions/017-offline-pinyin-keyboard.md)).
 - **Inferred:** the 23 pt candidate spacing is measured between texts, so the gap between selection boxes is 23 − 2×4 = 15 pt. The unselected index color (text color at 50%/45%) is not in the config and was chosen to match the skin's gray page chevron.
-- Arion defaults to 9 candidates per page rather than Chatterfly's 6, matching the benchmarks; Settings › Keyboard offers 5, 6, 7 or 9.
+- Arion’s current candidate-page default and selectable sizes are defined by [KBD-03](../../specs/007-ime-ranking.md).
 - The chevron turns Arion's menu to the next page; earlier pages stay on `-`/`[`.
 - The input-menu icon must be a 16 pt image. Arion's previous single 64 px, 72 dpi TIFF was read as 64 pt and enlarged the "Arion" row in the input menu. The build now combines 16 px (72 dpi) and 32 px (144 dpi) slices with `tiffutil -cathidpicheck`.
 

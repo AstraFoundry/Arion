@@ -2,5 +2,5 @@
 patch:
   schema_list:
     - schema: arion_pinyin
-  menu/page_size: 9
+  menu/page_size: 6
   switcher/hotkeys: []

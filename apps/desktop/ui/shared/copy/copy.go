@@ -6,6 +6,9 @@ type Key string
 
 const (
 	OnbDownload    Key = "OnbDownload"
+	AccTermsAccept Key = "AccTermsAccept"
+	AccUsageAgree  Key = "AccUsageAgree"
+	AccUsageData   Key = "AccUsageData"
 	AccTermsNotice Key = "AccTermsNotice"
 	AccTerms       Key = "AccTerms"
 	AccPrivacy     Key = "AccPrivacy"

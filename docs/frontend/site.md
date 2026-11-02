@@ -12,7 +12,7 @@ The site at `arion.astrafoundry.si` is the one place in the repository where Rea
 | `app/blog-assets/` | Static route writing files that blog posts name by project path ([blog](blog.md#media-sources)) |
 | `pages/` | Empty on purpose: it stops Next from reading `src/pages` as the Pages Router |
 | `src/app` | Document shell (`LocaleRootLayout`), providers, root metadata, global CSS |
-| `src/pages` | `home`, `blog`, `blog-post`, `privacy`, `terms`, `self-hosting`, `credits`, `not-found`: a page component and its metadata |
+| `src/pages` | `home`, `blog`, `blog-post`, `privacy`, `terms`, `usage-data`, `self-hosting`, `credits`, `not-found`: a page component and its metadata |
 | `src/widgets` | `site-header`, `site-footer`, `hero`, `feature-tour`, `privacy-summary`, `open-source`, `download-cta`, `post-article`, `post-list` |
 | `src/features` | `switch-locale`, `theme-switch`, `download-release` |
 | `src/entities` | `post` (blog front matter rules and the build-time content reader) |
@@ -28,7 +28,7 @@ Route files only set the locale and render a page from `src/pages`. Imports poin
 - **Static only.** No request-time route handler, middleware, cookie or session read, and no request to the platform at build or run time. The only runtime request is `download-release` reading the center's public `/v1/releases/{stable,beta}` summaries in the browser. Its static HTML already links each target to the center's stable download; after loading, a target without a stable release offers the newest preview (beta) with its version and SHA-256. Every "Download" link elsewhere points to the download section. A blog `<embed-frame>` pointing at another site contacts it only after the reader presses its load button. The one route handler, `app/blog-assets`, is `force-static`: it writes repository files that posts reference, and blog authors' GitHub avatars, into the export at build time. Remote blog images are downloaded at build time only to read their size; blog author profiles are read from the GitHub API at build time only ([blog](blog.md#authors)).
 - **Download targets** are macOS Apple silicon and Windows x64; Intel macOS is not offered ([ADR 021](../decisions/021-apple-silicon-only-macos.md)).
 - **Minimum macOS** is 14 in `src/shared/config/site.ts`, matching `apps/desktop/desktop.json` and the packaged native runtime minimum.
-- **Product claims** follow the specs: offline after model download, no cloud recognition or telemetry, encrypted vocabulary, and sync described as in development until SYNC-01 ships ([003](../../specs/003-memory-sync.md), [005](../../specs/005-privacy.md), [ADR 015](../decisions/015-hosted-relay-account-authorization.md)). Change the copy in the same change set as the behavior it describes.
+- **Product claims** follow the specs: offline after model download, no cloud recognition, optional explicitly consented usage aggregates, encrypted vocabulary, and sync described as in development until SYNC-01 ships ([003](../../specs/003-memory-sync.md), [005](../../specs/005-privacy.md), [ADR 015](../decisions/015-hosted-relay-account-authorization.md)). Change the copy in the same change set as the behavior it describes.
 - **Illustrations** follow [ADR 007](../decisions/007-sunbeam-design-system.md): solid mock surfaces floating over the motion-blurred photograph, no glass, glow or gradients. A mock is a picture of the product: its wrapper has `role="img"` and an `aria-label` from the dictionary, and its content is `inert`. Scripted mocks start when scrolled into view (`useInViewOnce`) and drive their steps with `useStepTimeline`, which jumps to the final step under reduced motion. Mocks share `MockWindow` and `DictationPill` from `shared/ui` rather than redrawing window chrome or the pill.
 - **Hydration.** The static HTML carries each animated element's initial state, and hydration does not patch attributes that differ on the client. A component must render the same element with the same initial props whether or not reduced motion is on, and express the difference through its animation targets and transitions (`MotionConfig reducedMotion="user"` skips transform motion).
 
@@ -47,3 +47,7 @@ Posts are Markdown in `content/blog/<slug>/<locale>.md`, rendered at build time 
 ## Product terms
 
 `/terms/` and its localized routes contain Arion’s product terms, separate from the AstraFoundry website terms. The desktop Settings account card links here before opening browser authentication. The footer and sitemap include the page; its links preserve the reader’s locale for the privacy page and point to the repository license for software rights.
+
+## Usage data disclosure
+
+`/usage-data/` and its localized routes explain the exact report fields, account linkage, exclusions, consent and stopping behavior in [PRV-10](../../specs/005-privacy.md). The onboarding optional checkbox links here before authentication; Privacy links here too. The page uses the shared document layout and is included in the sitemap.

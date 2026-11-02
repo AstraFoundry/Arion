@@ -191,7 +191,7 @@
         "body": [
           "Model downloads: public files, each checked against a pinned SHA-256 digest before use.",
           "Update checks: the release manifest from the Arion update center, carrying no content or device identifier. Updates verify a trusted signature before installing, and automatic checks can be turned off.",
-          "Optional sign-in and cloud polishing: the account service is contacted only when you sign in or manage your account; if you connect a cloud polishing provider, only the recognized text and enabled context are sent, never audio. Arion has no cloud speech recognition and no telemetry."
+          "Optional sign-in and cloud polishing: the account service is contacted only when you sign in or manage your account; if you connect a cloud polishing provider, only the recognized text and enabled context are sent, never audio. Arion has no cloud speech recognition. Optional account-linked daily usage reporting is described on the usage data page."
         ]
       },
       {
@@ -319,6 +319,34 @@
         "title": "Review your output",
         "body": [
           "Speech recognition and polishing can make mistakes. Review the text before sending or relying on it. You remain responsible for the content you choose to share."
+        ]
+      }
+    ]
+  },
+  "usageDataPage": {
+    "title": "Usage data and product improvement",
+    "lead": "An optional way to help improve Arion. Sharing starts only after you choose it and the account service confirms your consent.",
+    "sections": [
+      {
+        "title": "What is sent",
+        "body": [
+          "Reports contain seven fields: productSlug (arion), sourceId (a random identifier scoped to your account and this installation), date (the calendar day), visited (whether Arion was used that day), sessions (completed dictations), speechMs (microphone time in milliseconds), and words (word count).",
+          "Reports use your signed-in account for authentication. AstraFoundry can associate these daily totals with your account and installation and observe the request IP address and arrival time. They are not anonymous."
+        ]
+      },
+      {
+        "title": "What is excluded",
+        "body": [
+          "No microphone audio, dictated or typed text, keyboard input, vocabulary, clipboard contents, prompts, cursor or screen context, scene names, application identities, window titles or URLs are included. Reports contain no per-session timestamps.",
+          "This choice does not authorize cloud polishing, encrypted memory sync or diagnostic-log uploads. Those are separate workflows."
+        ]
+      },
+      {
+        "title": "When sharing starts and stops",
+        "body": [
+          "The product improvement checkbox is off by default. Accepting the terms or signing in alone does not grant usage consent. Only activity collected while signed in with confirmed consent is eligible; earlier local history and signed-out activity are not uploaded.",
+          "You can turn sharing off in Settings → Account. Signing out stops reporting, and the server checks current consent for every write. Pending daily reports remain locally for at most 31 days and hold no authentication tokens. Turning sharing off does not delete reports already received by the service.",
+          "Local usage totals remain available in Overview even when sharing is off."
         ]
       }
     ]

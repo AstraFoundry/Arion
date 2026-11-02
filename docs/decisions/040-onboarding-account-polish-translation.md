@@ -6,7 +6,7 @@ Accepted. Supersedes the Settings-only placement of account, polishing and trans
 
 ## Context
 
-[ADR 039](039-focused-onboarding.md) shortened first-run setup so optional pages did not delay the first dictation. That cut also removed account sign-in, the polish choice and cloud configuration, and the translation switch and shortcut. Those three belong in the first-run flow. The combined practice page, the explicit recognition download, and the rule that sign-in does not grant usage consent should stay.
+[ADR 039](039-focused-onboarding.md) shortened first-run setup so optional pages did not delay the first dictation. That cut also removed account sign-in, the polish choice and cloud configuration, and the translation switch and shortcut. Those three belong in the first-run flow. The combined practice page, the explicit recognition download, and the rule that sign-in alone does not grant usage consent should stay.
 
 ## Decision
 
@@ -16,7 +16,7 @@ The order is Welcome (with account sign-in), recognition download confirmation, 
 
 Both microphone and Accessibility stay on one page. Each row uses the settings permission row. After a grant, the row remains and shows the granted status. Continue locally on the welcome page moves on without a sign-in. When accounts are disabled, the welcome page omits sign-in. Choosing cloud polishing opens its setup inside the polish step, and that layer can be skipped before a model is connected. The polish shortcut page labels that shortcut and offers a practice field. Translation is the next page: the enable switch, and when it is on, the target language, shortcut and another practice field. It stays available when polishing is off, because a translation session forces the rewrite stage. That page also completes setup.
 
-Account sign-in on the welcome page shows localized product terms before opening the browser. Google, GitHub and email share one sign-in; a custom issuer has one Sign in button. None of them grants usage consent. After sign-in, the page shows the same usage-sharing switch as Settings › Account.
+Account sign-in on the welcome page shows localized product terms before opening the browser. Google, GitHub and email share one sign-in; a custom issuer has one Sign in button. Consent presentation is superseded by [ADR 044](044-onboarding-consent.md), which puts both choices below sign-in and removes the post-sign-in switch.
 
 Local polishing uses the Settings choice. Continue waits until a confirmed download is provisioning, loading or ready. Choosing cloud opens its setup in that same step. Formatting and context stay in Settings.
 

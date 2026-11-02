@@ -191,7 +191,7 @@ func fixture() (*runtime.State, *recorder, runtime.Store) {
 		Version:     "0.1.0",
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
 		Preferences: runtime.Preferences{HoldKey: runtime.DefaultHoldKey(platform.GOOS), Delivery: runtime.DeliveryAutomatic, Sounds: true, CheckUpdates: true,
-			Keyboard: runtime.KeyboardPreferences{PageSize: 9, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, Accent: runtime.AccentYellow, EmojiSuggestions: true}},
+			Keyboard: runtime.KeyboardPreferences{PageSize: 6, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, Accent: runtime.AccentYellow, EmojiSuggestions: true}},
 		InputMethod: runtime.InputMethodAbsent,
 		Account:     runtime.Account{Phase: runtime.AccountSignedOut, Issuer: "https://astrafoundry.si", Portal: "https://astrafoundry.si/account"},
 		Hold:        runtime.Hold{Active: true},
@@ -1462,15 +1462,15 @@ func TestWindowsKeyboardSettings(t *testing.T) {
 			if !state.Preferences.Keyboard.EmojiSuggestions {
 				t.Fatal("Windows Emoji preference did not switch on")
 			}
-			if err := tt.Click("9"); err != nil {
-				t.Fatal(err)
-			}
-			settle(tt)
 			if err := tt.Click("6"); err != nil {
 				t.Fatal(err)
 			}
 			settle(tt)
-			if state.Preferences.Keyboard.PageSize != 6 {
+			if err := tt.Click("9"); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if state.Preferences.Keyboard.PageSize != 9 {
 				t.Fatalf("Windows page-size preference was not saved: %+v", state.Preferences.Keyboard)
 			}
 			if err := tt.Click(messages.Text(copy.KbdSwitchLanguageKeys)); err != nil {
@@ -1615,15 +1615,15 @@ func TestKeyboardSettings(t *testing.T) {
 			if !state.Preferences.Keyboard.EmojiSuggestions {
 				t.Fatal("Emoji preference did not switch on")
 			}
-			if err := tt.Click("9"); err != nil {
-				t.Fatal(err)
-			}
-			settle(tt)
 			if err := tt.Click("6"); err != nil {
 				t.Fatal(err)
 			}
 			settle(tt)
-			if state.Preferences.Keyboard.PageSize != 6 {
+			if err := tt.Click("9"); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if state.Preferences.Keyboard.PageSize != 9 {
 				t.Fatalf("page size not chosen: %+v", state.Preferences.Keyboard)
 			}
 			if err := tt.Click(messages.Text(copy.KbdSizeMedium)); err != nil {

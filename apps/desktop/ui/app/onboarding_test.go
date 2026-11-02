@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"arion.local/desktop/ui/pages/onboarding"
+	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo/ui"
@@ -23,6 +24,8 @@ func TestOnboardingFlow(t *testing.T) {
 			click := func(key copy.Key) { t.Helper(); clicker(t, tt)(messages.Text(key)) }
 			expect(t, tt, true, messages.Text(copy.OnbWelcomeTitle), messages.Text(copy.OnbAccountTitle), messages.Text(copy.AccContinueGoogle), messages.Text(copy.AccTerms), messages.Text(copy.OnbContinueLocally))
 			snapshot(t, tt, "onboarding-welcome-"+string(locale))
+			click(copy.AccTermsAccept)
+			click(copy.AccUsageAgree)
 			click(copy.OnbContinueLocally)
 			if actions.called("sign-in") || actions.called("sign-in:share") {
 				t.Fatal("continuing locally started sign-in")
@@ -157,4 +160,77 @@ func TestOnboardingCloudStepAndCustomIssuer(t *testing.T) {
 	click(copy.Continue)
 	expect(t, tt, true, messages.Text(copy.OnbDictateTitle), messages.Text(copy.PolishLabel))
 	expect(t, tt, false, messages.Text(copy.TranslateGroup))
+}
+
+// PRV-A11: both issuer layouts require terms and only explicit selection shares.
+func TestOnboardingConsent(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		for _, custom := range []bool{false, true} {
+			state, actions, store := fixture()
+			state.Preferences.UILanguage = locale
+			if custom {
+				state.Account.Portal = ""
+			}
+			page := onboarding.NewPage()
+			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+			settle(tt)
+			messages := store.Copy()
+			click := func(key copy.Key) { t.Helper(); clicker(t, tt)(messages.Text(key)) }
+			method := copy.AccContinueGoogle
+			if custom {
+				method = copy.AccSignIn
+			}
+			click(method)
+			if !actions.called("sign-in") || actions.called("sign-in:share") {
+				t.Fatal("default sign-in shared usage")
+			}
+			terms, termsOK := tt.Find(messages.Text(copy.AccTerms))
+			privacy, privacyOK := tt.Find(messages.Text(copy.AccPrivacy))
+			usage, usageOK := tt.Find(messages.Text(copy.AccUsageData))
+			if !termsOK || !privacyOK || !usageOK || terms.Y != privacy.Y || usage.Y <= terms.Y || privacy.X+privacy.W > OnboardingWidth-onboarding.Inset {
+				t.Fatal("consent keywords must remain inline within their separate single-line rows")
+			}
+			click(copy.AccTerms)
+			click(copy.AccPrivacy)
+			click(copy.AccUsageData)
+			origin := config.SiteURL
+			if locale == runtime.LanguageChinese {
+				origin += "/zh"
+			}
+			urls := tt.OpenedURLs()
+			if len(urls) != 3 || urls[0] != origin+config.TermsPath || urls[1] != origin+config.PrivacyPath || urls[2] != origin+config.UsageDataPath {
+				t.Fatalf("inline consent links = %v", urls)
+			}
+			actions.calls = nil
+			click(method)
+			if !actions.called("sign-in") || actions.called("sign-in:share") {
+				t.Fatal("following a document link changed a consent checkbox")
+			}
+			actions.calls = nil
+			click(copy.AccTermsAccept)
+			click(method)
+			if !custom {
+				click(copy.AccContinueGitHub)
+				click(copy.AccContinueEmail)
+			}
+			if actions.called("sign-in") || actions.called("sign-in:share") {
+				t.Fatal("sign-in ignored unchecked terms")
+			}
+			click(copy.AccUsageAgree)
+			click(copy.AccTermsAccept)
+			click(method)
+			if !actions.called("sign-in:share") {
+				t.Fatal("explicit usage choice was not passed to sign-in")
+			}
+			state.Account.Phase = runtime.AccountSigningIn
+			settle(tt)
+			expect(t, tt, true, messages.Text(copy.AccCancel))
+			expect(t, tt, false, messages.Text(copy.AccUsageAgree))
+			signedIn(state, false)
+			settle(tt)
+			expect(t, tt, false, messages.Text(copy.AccUsageShare), messages.Text(copy.AccUsageAgree))
+			click(copy.Continue)
+			expect(t, tt, true, messages.Text(copy.OnbModelTitle))
+		}
+	}
 }

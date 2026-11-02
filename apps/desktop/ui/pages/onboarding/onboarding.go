@@ -1,4 +1,4 @@
-// Package onboarding prepares offline dictation, then account, polish and translation.
+// Package onboarding guides account setup, offline dictation, polish and translation.
 package onboarding
 
 import (
@@ -13,7 +13,6 @@ import (
 	"arion.local/desktop/ui/features/polish"
 	"arion.local/desktop/ui/features/signin"
 	"arion.local/desktop/ui/features/uilanguage"
-	"arion.local/desktop/ui/features/usagesharing"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
@@ -46,13 +45,14 @@ type Page struct {
 	chosen            runtime.HoldKey
 	switched          time.Time
 	cloud             cloud.Nav
+	signin            signin.Choice
 	// cloudOpen is the cloud setup layer of the polish step.
 	cloudOpen bool
 }
 
 // NewPage starts setup. Cloud setup folds provider lists behind Change
 // once one is in use, so the layer fits the window. Keyboard setup stays in Settings.
-func NewPage() *Page { return &Page{cloud: cloud.Nav{Compact: true}} }
+func NewPage() *Page { return &Page{cloud: cloud.Nav{Compact: true}, signin: signin.NewChoice()} }
 
 // Render draws the current step beside its illustration.
 func (p *Page) Render(c *ui.Context, store runtime.Store) {
@@ -316,17 +316,11 @@ func (p *Page) account(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		if account.StageOf(state.Account) != account.SignedOut {
 			signin.Card(c, store, tokens)
 			if state.Account.SignedIn() {
-				usagesharing.Switch(c, store, tokens)
 				signin.HostedSync(c, store, tokens)
 			}
 			return
 		}
-		if state.Account.Portal == "" {
-			signin.Start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn))
-		} else {
-			signin.Methods(c, store, tokens)
-		}
-		signin.Terms(c, store, tokens)
+		signin.Onboarding(c, store, tokens, &p.signin)
 		signin.Notice(c, store, tokens)
 	})
 }
