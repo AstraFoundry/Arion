@@ -34,10 +34,18 @@ func registerClipboardFormat(name string) uint32 {
 }
 
 // open opens the clipboard, retrying while another program holds it.
+// A read does not need the application window as owner. When that window
+// cannot open the clipboard, a task-owned open still can.
 func (c clipboard) open() bool {
+	owners := []uintptr{0}
+	if c.b != nil && c.b.appHwnd != 0 {
+		owners = []uintptr{c.b.appHwnd, 0}
+	}
 	for i := 0; i < 10; i++ {
-		if r, _, _ := procOpenClipboard.Call(c.b.appHwnd); r != 0 {
-			return true
+		for _, owner := range owners {
+			if r, _, _ := procOpenClipboard.Call(owner); r != 0 {
+				return true
+			}
 		}
 		time.Sleep(10 * time.Millisecond)
 	}

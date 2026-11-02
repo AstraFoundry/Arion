@@ -96,16 +96,28 @@ int main(int argc,char **argv) {
         require(!hasCandidate(api,first,"Hebrides"),"unselected uncommon completion leaked into engine pages");
         arion_pinyin_clear(api,first); type(api,first,"hebrides");
         require(arion_pinyin_highlight(api,first,candidateIndex(api,first,"Hebrides"),0),"highlight uncommon exact English");
-        require(arion_pinyin_commit_raw(api,first),"commit uncommon raw spelling");
+        require(arion_pinyin_process_key(api,first,0xff0d,0),"commit uncommon raw spelling with Return");
         { Snapshot raw(api,first); require(std::string(raw.value.commit)=="hebrides","raw spelling changed"); }
         type(api,first,"hebri");
         require(!hasCandidate(api,first,"Hebrides"),"highlight or raw commit created English selection history");
         arion_pinyin_clear(api,first);
+        type(api,first,"hebrides");
+        require(arion_pinyin_commit_raw(api,first),"language switch confirms uncommon raw English");
+        { Snapshot raw(api,first); require(std::string(raw.value.commit)=="hebrides","switch replaced raw spelling with a candidate"); }
+        type(api,second,"hebri");
+        require(hasCandidate(api,second,"Hebrides") && !hasCandidate(api,second,"Hebridean"),"raw switch unlocks only its confirmed English word");
+        arion_pinyin_clear(api,second);
+        type(api,first,"ZqvNovelWord");
+        require(arion_pinyin_commit_raw(api,first),"raw switch learns English outside bundled lexicon");
+        { Snapshot raw(api,first); require(std::string(raw.value.commit)=="ZqvNovelWord","new word did not commit exactly as typed"); }
+        type(api,second,"zqvnov");
+        require(hasCandidate(api,second,"ZqvNovelWord"),"new English word cannot complete after raw switch");
+        arion_pinyin_clear(api,second);
         selectPhrase(api,first,"hebrides","Hebrides","uncommon-exact-selection-engine-commit");
         type(api,second,"hebri");
         require(hasCandidate(api,second,"Hebrides") && !hasCandidate(api,second,"Hebridean"),"committed English selection unlocks only its own word");
         arion_pinyin_clear(api,second);
-        printCase("english-selected-word-eligibility-and-raw-nonlearning");
+        printCase("english-selection-and-raw-switch-learning-with-return-nonlearning");
         convert(api,first,"nihao","\xe4\xbd\xa0\xe5\xa5\xbd","full-pinyin-nihao");
         convert(api,first,"zhongguo","\xe4\xb8\xad\xe5\x9b\xbd","full-pinyin-zhongguo");
         for (const char *word : {"artificial", "hello", "computer", "software", "can", "an", "you", "hi", "bailing", "jingling"}) {

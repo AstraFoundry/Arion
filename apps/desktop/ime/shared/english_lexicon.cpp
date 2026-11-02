@@ -98,9 +98,11 @@ void EnglishLexicon::Cursor::Add(const Index &index,size_t begin,size_t end) {
     }
 }
 const EnglishLexicon::Entry *EnglishLexicon::Cursor::Peek() const {
-    return current_==UINT32_MAX?nullptr:&lexicon_->words_[current_].displays[variant_];
+    if (current_!=UINT32_MAX) return &lexicon_->words_[current_].displays[variant_];
+    return personal_.empty()?nullptr:personal_.front().Peek();
 }
 bool EnglishLexicon::Cursor::Next() {
+    if (current_==UINT32_MAX && !personal_.empty()) return personal_.front().Next();
     if (exact_!=UINT32_MAX) {
         if (++variant_<lexicon_->words_[exact_].displays.size()) return true;
         exact_=UINT32_MAX;
@@ -116,7 +118,7 @@ bool EnglishLexicon::Cursor::Next() {
         for (uint32_t child:{node.position*2,node.position*2+1})
             if (index.winners[child]!=UINT32_MAX) queue_.push({node.index,child});
     }
-    return false;
+    return Peek()!=nullptr;
 }
 const EnglishLexicon::Word *EnglishLexicon::ExactWord(std::string_view input) const {
     const auto found=std::lower_bound(words_.begin(),words_.end(),input,
@@ -137,18 +139,36 @@ bool EnglishLexicon::IsCommon(std::string_view input) const {
     const auto *word=ExactWord(input);
     return word && word->count>=kCommonMinimumCount;
 }
-std::shared_ptr<const EnglishLexicon::SelectedIndex> EnglishLexicon::IndexSelected(const std::set<std::string> &keys) const {
+std::shared_ptr<const EnglishLexicon::SelectedIndex> EnglishLexicon::IndexSelected(const std::set<std::string> &keys,
+    const std::map<std::string,std::string> &spellings) const {
     auto selected=std::shared_ptr<SelectedIndex>(new SelectedIndex(shared_from_this()));
+    auto personal=std::shared_ptr<EnglishLexicon>(new EnglishLexicon);
     for (const auto &key:keys) {
         if (!letters(key,true)) throw std::invalid_argument("invalid selected English key");
         const auto *word=ExactWord(key);
-        if (!word || word->count>=kCommonMinimumCount) continue;
+        if (!word) {
+            const auto spelling=spellings.find(key);
+            const auto display=spelling==spellings.end()?key:spelling->second;
+            if (!letters(display,false) || display.size()!=key.size()) throw std::invalid_argument("invalid personal English spelling");
+            for (size_t i=0;i<key.size();++i) {
+                const char c=display[i];
+                if (key[i]!=(c>='A' && c<='Z'?c+'a'-'A':c)) throw std::invalid_argument("personal English spelling mismatch");
+            }
+            const auto id=static_cast<uint32_t>(personal->words_.size());
+            personal->words_.push_back({{{key,display,id}},0,display==key});
+            const size_t minimum=std::max(kMixedMinimumPrefix,(key.size()+1)/2);
+            personal->indexes_[minimum].words.push_back(id);
+            continue;
+        }
+        if (word->count>=kCommonMinimumCount) continue;
         const auto id=static_cast<uint32_t>(word-words_.data());
         selected->words_.push_back(id);
         const size_t minimum=std::max(kMixedMinimumPrefix,(key.size()+1)/2);
         selected->indexes_[minimum].words.push_back(id);
     }
     BuildIndexes(selected->indexes_);
+    personal->BuildIndexes(personal->indexes_);
+    if (!personal->words_.empty()) selected->personal_=std::move(personal);
     return selected;
 }
 EnglishLexicon::Matches EnglishLexicon::Query(std::string_view input,Completion completion,
@@ -164,7 +184,18 @@ EnglishLexicon::Matches EnglishLexicon::Query(std::string_view input,Completion 
         result.familiar_exact=personal || (exact->lowercase && exact->count>=kCommonMinimumCount);
         result.preferred_exact=personal || exact->count>=kCommonMinimumCount;
     }
-    if (input.size()<3) return result;
+    const auto addPersonal=[&]() {
+        if (!selected || !selected->personal_) return;
+        auto personal=selected->personal_->Query(input,completion);
+        const auto append=[](Cursor &cursor,Cursor extra) {
+            if (extra.Peek()) cursor.personal_.push_back(std::move(extra));
+        };
+        if (personal.exact.Peek()) result.familiar_exact=result.preferred_exact=true;
+        append(result.exact,std::move(personal.exact));
+        append(result.suggestions,std::move(personal.suggestions));
+        append(result.lookup,std::move(personal.lookup));
+    };
+    if (input.size()<3) { addPersonal(); return result; }
     const std::string upper=std::string(input)+'{';
     const auto add=[&](const std::array<Index,65> &indexes) {
         for (size_t bucket=0;bucket<indexes.size();++bucket) {
@@ -181,6 +212,7 @@ EnglishLexicon::Matches EnglishLexicon::Query(std::string_view input,Completion 
     add(indexes_);
     if (selected) add(selected->indexes_);
     result.suggestions.Next(); result.lookup.Next();
+    addPersonal();
     return result;
 }
 }

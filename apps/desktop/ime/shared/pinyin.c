@@ -73,7 +73,9 @@ int arion_pinyin_commit_raw(RimeApi *api, uintptr_t session) {
     if (!session) return 0;
     int full_width = api->get_option(session, "full_shape");
     if (full_width) api->set_option(session, "full_shape", 0);
+    api->set_option(session, "_arion_learn_raw_english", 1);
     int handled = arion_pinyin_process_key(api, session, 0xff0d, 0); /* Return */
+    api->set_option(session, "_arion_learn_raw_english", 0);
     if (full_width) api->set_option(session, "full_shape", 1);
     return handled;
 }

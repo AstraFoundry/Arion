@@ -175,9 +175,14 @@ class BilingualTranslator final : public rime::Translator {
             const auto candidate=rime::Candidate::GetGenuineCandidate(segment.GetSelectedCandidate());
             if (candidate && candidate->type()=="arion_english") keys.insert(Fold(candidate->text()));
         }
-        if (keys.empty()) return;
         arion::ime::LearningError error;
-        if (!history_->confirm(keys,error)) arion::ime::reportEncryptedLearningError(error);
+        if (!keys.empty() && !history_->confirm(keys,error)) arion::ime::reportEncryptedLearningError(error);
+        if (context->get_option("_arion_learn_raw_english")) {
+            size_t start=0;
+            for (const auto &segment:context->composition())
+                if (segment.status>=rime::Segment::kSelected) start=segment.end;
+            if (!history_->confirmRaw(context->input().substr(start),error)) arion::ime::reportEncryptedLearningError(error);
+        }
     }
     std::unique_ptr<rime::Translator> chinese_;
     std::shared_ptr<const arion::EnglishLexicon> lexicon_;

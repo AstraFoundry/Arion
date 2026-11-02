@@ -11,14 +11,14 @@ import (
 // The transient paste text must carry the clipboard-history exclusion format.
 // This writes the real clipboard and restores its previous Unicode text.
 func TestTransientClipboardTextIsExcludedFromHistory(t *testing.T) {
-	if ok, _, _ := procOpenClipboard.Call(0); ok == 0 {
+	if !openClipboard() {
 		t.Fatal("clipboard unavailable")
 	}
 	previous, hadText := readClipboardText()
 	written := writeClipboardText("arion transient canary") && excludeFromClipboardHistory()
 	procCloseClipboard.Call()
 	t.Cleanup(func() {
-		if ok, _, _ := procOpenClipboard.Call(0); ok != 0 {
+		if openClipboard() {
 			procEmptyClipboard.Call()
 			if hadText {
 				writeClipboardText(previous)

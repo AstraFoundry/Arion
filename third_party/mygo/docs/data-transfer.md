@@ -69,7 +69,9 @@ from any goroutine after the owner changes, a window closes, or the source
 application exits, and can be offered in a later drag. Native operations run
 on the main thread. Reads that observe ownership changing return
 `mygo.ErrClipboardChanged`; Windows holds the clipboard lock during a foreign
-read. Clipboard access from a clipboard provider returns
+read and retries `OpenClipboard` while another owner has it. A read falls
+back to a task-owned open when the application window cannot open the
+clipboard. Clipboard access from a clipboard provider returns
 `mygo.ErrClipboardReentrant`, preventing recursive reads and replacement.
 
 Existing `ReadText`, `WriteText`, `ReadHTML`, `WriteHTML`, `ReadImage`,

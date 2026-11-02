@@ -15,4 +15,11 @@ try {
   if (compiled.error) throw compiled.error;
   if (compiled.status !== 0) throw new Error(`${compiler} failed (${compiled.status})`);
   execFileSync(binary, [path.join(directory, 'fixture.lexicon')], { stdio: 'inherit', windowsHide: true });
+  const history = path.join(directory, process.platform === 'win32' ? 'history.exe' : 'history');
+  const historyCompiled = cachedSpawn(compiler, ['-std=c++17', '-O2', '-Wall', '-Wextra', '-Werror',
+    ...['english_history_test.cpp', 'english_history.cpp', 'english_lexicon.cpp', 'learning.cpp'].map(name => path.join(root, 'apps/desktop/ime/shared', name)),
+    '-o', history], { cwd: root, stdio: 'inherit', windowsHide: true });
+  if (historyCompiled.error) throw historyCompiled.error;
+  if (historyCompiled.status !== 0) throw new Error(`${compiler} failed (${historyCompiled.status})`);
+  execFileSync(history, [path.join(directory, 'history.lexicon')], { stdio: 'inherit', windowsHide: true });
 } finally { rmSync(directory, { recursive: true, force: true }); }
