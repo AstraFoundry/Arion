@@ -43,7 +43,7 @@ The app embeds the validated public profile and ignores launch-time center ENV. 
 
 ## Manual signed macOS installer
 
-Run [Signed macOS build](../../.github/workflows/signed-macos.yml) from GitHub Actions on the intended branch or tag when signing credentials are held by the team. It reuses the existing CI checks and signed packaging with the macOS ARM64 matrix only, using the configured organization/repository secrets. Download the `desktop-darwin-arm64` artifact after success. The independent concurrency group lets this build finish while cross-platform releases are retried. This workflow creates installer artifacts; it does not create tags, stage release storage or publish an update channel. The source commit is recorded by the workflow run.
+Run [Signed macOS build](../../.github/workflows/signed-macos.yml) from GitHub Actions on the intended branch or tag when signing credentials are held by the team. It reuses the existing CI checks and signed packaging with the macOS ARM64 matrix only, using the configured organization/repository secrets. The reusable-workflow caller grants `actions: write` to its build job because the called CI declares cancellation and cache-maintenance jobs with that permission. A read-only caller is rejected before any jobs start. Download the `desktop-darwin-arm64` artifact after success. The independent concurrency group lets this build finish while cross-platform releases are retried. This workflow creates installer artifacts; it does not create tags, stage release storage or publish an update channel. The source commit is recorded by the workflow run.
 
 ## macOS signing configuration
 

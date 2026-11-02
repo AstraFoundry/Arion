@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <memory>
+#include "../shared/english_history_test.h"
+#include "../shared/learning_rime.h"
 
 static void require(bool success, const char *message) {
     if (!success) { fprintf(stderr, "Encrypted learning test failed: %s\n", message); exit(1); }
@@ -136,7 +138,11 @@ int main() {
         require(resetDb->Open() && !resetDb->Fetch("learned", &value), "reset reuses existing key for empty learning");
         require(resetDb->Close(), "close reset fixture");
         require([NSFileManager.defaultManager removeItemAtPath:resetDirectory error:nil], "remove reset fixture");
-        puts("Encrypted learning source tests passed.");
+        NSError *historyError=nil;
+        require(ArionRegisterTestEncryptedLearning([directory stringByAppendingPathComponent:@"english-history"],testKey,&historyError),
+                "register isolated AES-GCM English history provider");
+        testEnglishHistory(arion::ime::registeredLearningProvider());
+        puts("Encrypted learning and English selection history source tests passed.");
     }
     return 0;
 }

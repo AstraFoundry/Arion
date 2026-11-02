@@ -116,6 +116,7 @@ bool registerEncryptedLearning(std::shared_ptr<LearningProvider> provider,Learni
     std::lock_guard<std::mutex> lock(globalMutex); registeredProvider=std::move(provider); globalError={}; return true;
 }
 LearningError encryptedLearningError() { std::lock_guard<std::mutex> lock(globalMutex); return globalError; }
+void reportEncryptedLearningError(const LearningError &error) { report("",error); }
 void clearEncryptedLearningError() { std::lock_guard<std::mutex> lock(globalMutex); globalError={}; }
 std::shared_ptr<LearningProvider> registeredLearningProvider() { std::lock_guard<std::mutex> lock(globalMutex); return registeredProvider; }
 rime::Db *makeEncryptedRimeDatabase(std::shared_ptr<LearningProvider> provider,const std::string &file,const std::string &name) { return new Database(std::move(provider),file,name); }

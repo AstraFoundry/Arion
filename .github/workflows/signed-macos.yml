@@ -12,6 +12,9 @@ concurrency:
 
 jobs:
   build:
+    permissions:
+      contents: read
+      actions: write
     uses: ./.github/workflows/ci.yml
     with:
       release: true
