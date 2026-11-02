@@ -9,3 +9,9 @@ test('cache reports name the exact hit, the miss, and a disabled cache', () => {
   assert.throws(() => cacheReport({ name: 'Native', exact: 'true' }), /cache name/);
   assert.throws(() => cacheReport({ name: 'setup-go', exact: 'maybe' }), /exact flag/);
 });
+
+
+test('a completed restore with an empty cache-hit is a miss; skipped steps stay disabled', () => {
+  assert.equal(cacheReport({ name: 'native', exact: '', outcome: 'success' }), 'ci-cache native: no-exact-hit');
+  assert.equal(cacheReport({ name: 'native', exact: '', outcome: 'skipped' }), 'ci-cache native: disabled');
+});

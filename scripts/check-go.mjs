@@ -5,6 +5,9 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const mode = process.argv[2];
+const extra = process.argv.slice(3);
+const skipKeyboard = extra.length === 1 && extra[0] === '--skip-keyboard' && mode === 'desktop';
+if (extra.length && !skipKeyboard) throw new Error('Only desktop accepts --skip-keyboard.');
 if (!['core', 'desktop', 'format', 'format-check', 'sync', 'updates'].includes(mode)) throw new Error('Use core, desktop, format, format-check, sync, or updates');
 const modules = mode === 'format' || mode === 'format-check' ? ['packages/core', 'models', 'apps/desktop', 'services/sync', 'services/updates'] : mode === 'core' ? ['packages/core', 'models'] : mode === 'sync' ? ['services/sync'] : mode === 'updates' ? ['services/updates'] : ['apps/desktop'];
 function sourceFiles(directory) {
@@ -43,5 +46,5 @@ for (const module of modules) {
 }
 if (mode === 'desktop' && process.platform === 'darwin') {
   run(process.execPath, [path.join(root, 'scripts/test-macos-hold.mjs')], root, process.env);
-  run(process.execPath, [path.join(root, 'scripts/check-keyboard.mjs')], root, process.env);
+  if (!skipKeyboard) run(process.execPath, [path.join(root, 'scripts/check-keyboard.mjs')], root, process.env);
 }

@@ -12,7 +12,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 
 const pull = (patch = {}) => ({
   event: 'pull_request', portable: 'success', scope: 'success', native: 'success',
-  nativeOutput: 'true', windowsUpdater: 'success', windowsRequired: true, ...patch,
+  nativeOutput: 'true', testsOutput: 'true', windowsUpdater: 'success', windowsRequired: true, ...patch,
 });
 
 test('a pull request cannot skip a required native or Windows check', () => {
@@ -22,6 +22,7 @@ test('a pull request cannot skip a required native or Windows check', () => {
   assert.ok(evaluateRequiredChecks(pull({ nativeOutput: '' })).some(line => /true or false/.test(line)));
   assert.ok(evaluateRequiredChecks(pull({ scope: 'failure', native: 'skipped', nativeOutput: '' })).some(line => /scope did not succeed/.test(line)));
   assert.ok(evaluateRequiredChecks(pull({ windowsUpdater: 'skipped' })).some(line => /Windows updater/.test(line)));
+  assert.ok(evaluateRequiredChecks(pull({ testsOutput: '' })).some(line => /tests output/.test(line)));
   assert.ok(evaluateRequiredChecks(pull({ portable: 'failure' })).some(line => /portable/.test(line)));
   assert.deepEqual(evaluateRequiredChecks(pull({ nativeOutput: 'false', native: 'success', windowsUpdater: 'skipped' })), []);
 });
@@ -67,8 +68,8 @@ test('CI keeps blobless history, main-only native saves, and the required-check 
   const release = readFileSync(path.join(root, '.github/workflows/release.yml'), 'utf8');
   assert.equal([...ci.matchAll(/go-version: '([^']+)'/g)].map(match => match[1]).every(version => version === '1.27.3'), true);
   assert.equal([...ci.matchAll(/go-version: '([^']+)'/g)].length, 3);
-  assert.equal([...ci.matchAll(/filter: blob:none/g)].length, 5);
-  assert.equal([...ci.matchAll(/fetch-depth: 0/g)].length, 5);
+  assert.equal([...ci.matchAll(/filter: blob:none/g)].length, 6);
+  assert.equal([...ci.matchAll(/fetch-depth: 0/g)].length, 6);
   assert.doesNotMatch(ci, /fetch-depth: 1/);
   assert.match(ci, /actions\/cache\/restore@v4/);
   assert.match(ci, /actions\/cache\/save@v4/);

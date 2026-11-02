@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { cacheKey, nativeInput, runnerCacheIdentity, scopedCacheNames } from '../native-ci-cache-key.mjs';
+import { cacheKey, nativeInput, runnerCacheIdentity, scopedCacheNames, shardGoCacheNames } from '../native-ci-cache-key.mjs';
 
 test('cache identity changes with source, build settings and toolchain, independently of file order', t => {
   const root = mkdtempSync(path.join(os.tmpdir(), 'arion-ci-cache-'));
@@ -27,10 +27,11 @@ test('native inputs cover runtime pins, build scripts, patches and ASR sources w
   for (const file of ['scripts/asr-runtime.json', 'scripts/llm-runtime.json', 'scripts/keyboard-runtime.json',
     'scripts/stage-llm-runtime.mjs', 'scripts/lib/keyboard-correction-patch.mjs', 'scripts/cmake/windows-llm.cmake',
     'apps/desktop/native/mlx-asr/Package.resolved', 'apps/desktop/native/mlx-asr/Sources/main.swift',
+    'apps/desktop/ime/windows/typing.h', 'apps/desktop/ime/macos/learning.mm', 'scripts/build-parallelism.mjs',
     'apps/desktop/ime/shared/keyboard-data/arion_pinyin.schema.yaml', 'apps/desktop/desktop.json']) {
     assert.equal(nativeInput(file), true, file);
   }
-  for (const file of ['apps/desktop/ui/app/app.go', 'apps/site/app/page.tsx', 'scripts/lib/native-ci-cache-key.test.mjs']) {
+  for (const file of ['apps/desktop/ui/app/app.go', 'apps/site/app/page.tsx', 'scripts/lib/native-ci-cache-key.test.mjs', 'scripts/lib/workflow-check.mjs', 'scripts/ci-cache-prune.mjs', 'scripts/ci-timings.mjs']) {
     assert.equal(nativeInput(file), false, file);
   }
 });
@@ -65,4 +66,12 @@ test('exact cache keys omit checkout path and ImageVersion, and restore stays on
   assert.throws(() => scopedCacheNames('native', { ...identity, root: '/Users/runner/work/Arion/Arion' }, content), /root/);
   assert.throws(() => scopedCacheNames('native', { ...identity, ImageVersion: '20261028.1' }, content), /ImageVersion/);
   assert.throws(() => scopedCacheNames('native', { ...identity, image: ['macos26', '20261028.1'] }, content), /image/);
+});
+
+
+test('Windows shards save independent compiler caches while restoring the shared main seed', () => {
+  const shared = { key: 'toolchain-content', restore: 'toolchain-' };
+  assert.deepEqual(shardGoCacheNames(shared, 'desktop'), { key: 'toolchain-desktop-content', restore: 'toolchain-desktop-\ntoolchain-' });
+  assert.deepEqual(shardGoCacheNames(shared, 'keyboard'), { key: 'toolchain-keyboard-content', restore: 'toolchain-keyboard-\ntoolchain-' });
+  assert.deepEqual(shardGoCacheNames(shared, 'all'), shared);
 });
