@@ -221,8 +221,9 @@ int main(int argc, const char *argv[]) {
                     @"Shift confirms an unknown English spelling and commits it exactly once");
             [typing toggleASCII];
             type(typing,@"zqvnov");
-            require([englishWords(typing) containsObject:@"zqvnovelword"] &&
-                    [typing.snapshot.candidates containsObject:@"ZqvNovelWord"],@"raw switch learns a new word with its original case");
+            record(@"prefix after raw language-switch confirmation",typing,editor);
+            require([typing.snapshot.candidates containsObject:@"ZqvNovelWord"],@"raw-switch completion preserves typed case on the first page");
+            require([englishWords(typing) containsObject:@"zqvnovelword"],@"raw switch learns a new word across candidate pages");
             [typing cancel];
             [typing deactivate]; [engine stop];
             NSError *restartError=nil;
