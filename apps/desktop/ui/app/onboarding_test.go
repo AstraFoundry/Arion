@@ -184,6 +184,28 @@ func TestOnboardingConsent(t *testing.T) {
 			if !actions.called("sign-in") || actions.called("sign-in:share") {
 				t.Fatal("default sign-in shared usage")
 			}
+			terms, termsOK := tt.Find(messages.Text(copy.AccTerms))
+			privacy, privacyOK := tt.Find(messages.Text(copy.AccPrivacy))
+			usage, usageOK := tt.Find(messages.Text(copy.AccUsageData))
+			if !termsOK || !privacyOK || !usageOK || terms.Y != privacy.Y || usage.Y <= terms.Y || privacy.X+privacy.W > OnboardingWidth-onboarding.Inset {
+				t.Fatal("consent keywords must remain inline within their separate single-line rows")
+			}
+			click(copy.AccTerms)
+			click(copy.AccPrivacy)
+			click(copy.AccUsageData)
+			origin := config.SiteURL
+			if locale == runtime.LanguageChinese {
+				origin += "/zh"
+			}
+			urls := tt.OpenedURLs()
+			if len(urls) != 3 || urls[0] != origin+config.TermsPath || urls[1] != origin+config.PrivacyPath || urls[2] != origin+config.UsageDataPath {
+				t.Fatalf("inline consent links = %v", urls)
+			}
+			actions.calls = nil
+			click(method)
+			if !actions.called("sign-in") || actions.called("sign-in:share") {
+				t.Fatal("following a document link changed a consent checkbox")
+			}
 			actions.calls = nil
 			click(copy.AccTermsAccept)
 			click(method)
@@ -196,15 +218,6 @@ func TestOnboardingConsent(t *testing.T) {
 			}
 			click(copy.AccUsageAgree)
 			click(copy.AccTermsAccept)
-			click(copy.AccUsageData)
-			origin := config.SiteURL
-			if locale == runtime.LanguageChinese {
-				origin += "/zh"
-			}
-			urls := tt.OpenedURLs()
-			if len(urls) != 1 || urls[0] != origin+config.UsageDataPath {
-				t.Fatalf("disclosure URL = %v", urls)
-			}
 			click(method)
 			if !actions.called("sign-in:share") {
 				t.Fatal("explicit usage choice was not passed to sign-in")

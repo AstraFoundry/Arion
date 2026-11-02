@@ -8,7 +8,7 @@ Onboarding already includes account sign-in on Welcome. A separate data-sharing 
 
 ## Decision
 
-Show terms acceptance and optional usage sharing immediately below browser sign-in. Terms starts checked; usage sharing starts unchecked. Unchecking terms disables browser sign-in but preserves local continuation. Each choice has its own accessible checkbox, and usage sharing links to the site's localized data disclosure.
+Show terms acceptance and optional usage sharing immediately below browser sign-in. Terms starts checked; usage sharing starts unchecked. Unchecking terms disables browser sign-in but preserves local continuation. Each choice has its own accessible checkbox and a single-line label. The terms/privacy keywords and usage-data keyword are underlined inline links; following a link does not change either checkbox. Usage sharing links to the site's localized data disclosure.
 
 Reuse the existing consent-bound sign-in contract: only an explicitly checked usage choice records consent after successful authentication. Unchecked sign-in reads the existing account answer. No reporting starts before platform confirmation. Cancellation and failure discard the pending choice. Settings retains the account sharing switch for later changes. There is no independent sharing page or post-sign-in onboarding switch.
 
