@@ -131,6 +131,7 @@ func (m *IME) receiveRankingLocked(msg message) {
 		m.invalidateRankingLocked()
 		return
 	}
+	req.AllowOrdering = m.orderingCapable
 	req.Application = m.client
 	req.AllowCompletion = req.AllowCompletion && m.completionCapable
 	for tier, scheduler := range []*application.KeyboardRanking{m.rankingFast, m.ranking} {

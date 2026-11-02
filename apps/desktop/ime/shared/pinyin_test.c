@@ -90,6 +90,13 @@ int main(void) {
     size_t slots[]={0,2,4};
     assert(arion_menu_promote_slots(&ranked,slots,3,2));
     assert(rank_indices[0]==14 && rank_indices[1]==11 && rank_indices[2]==10 && rank_indices[3]==13 && rank_indices[4]==12);
+    size_t permutation[]={2,1,0};
+    assert(arion_menu_order_slots(&ranked,slots,3,permutation));
+    assert(rank_indices[0]==12 && rank_indices[2]==10 && rank_indices[4]==14);
+    size_t invalid_order[]={0,0,2};
+    assert(!arion_menu_order_slots(&ranked,slots,3,invalid_order));
+    assert(rank_indices[0]==12 && rank_indices[4]==14);
+    assert(arion_menu_order_slots(&ranked,slots,3,permutation));
     ranked.highlight=1;
     assert(!arion_menu_promote_slots(&ranked,slots,3,1));
     ranked.highlight=0; rank_metadata[2].end=2;

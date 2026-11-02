@@ -2,6 +2,7 @@ package completion
 
 import (
 	"context"
+	"strings"
 	"testing"
 
 	"arion.local/core/contracts"
@@ -46,7 +47,10 @@ func TestGeneratedCompletionIsSeparateFromPermutation(t *testing.T) {
 	}{
 		{"NONE", true, false}, {"重构一下", true, true}, {"崇高一下", true, false}, {"重构", false, false}, {"解释：重构一下", false, false},
 	} {
-		r := Ranker{Chat: chatFunc(func(context.Context, prompt.ChatRequest) (engine.Result, error) {
+		r := Ranker{Chat: chatFunc(func(_ context.Context, p prompt.ChatRequest) (engine.Result, error) {
+			if strings.Contains(p.Messages[0].Content, "Rank the supplied") {
+				return engine.Result{Text: `{"order":["proposal","c0"]}`}, nil
+			}
 			return engine.Result{Text: c.text}, nil
 		})}
 		out, err := r.RankKeyboard(context.Background(), request())
@@ -111,5 +115,32 @@ func TestSingleSyllableRetainsIDRanking(t *testing.T) {
 	out, err := r.RankKeyboard(context.Background(), req)
 	if err != nil || out.Completion != nil || len(out.Candidates) != 2 || out.Candidates[0].ID != "c1" {
 		t.Fatal(out, err)
+	}
+}
+
+func TestBadProposalCannotReplaceExistingCandidate(t *testing.T) {
+	req := request()
+	req.AllowOrdering = true
+	req.Input = "chonggyx"
+	req.Preedit = "chong g y x"
+	req.Candidates[0].Text = "重构一下"
+	req.Candidates[0].End = len(req.Input)
+	calls := 0
+	r := Ranker{Chat: chatFunc(func(_ context.Context, p prompt.ChatRequest) (engine.Result, error) {
+		calls++
+		if calls == 1 {
+			if !strings.Contains(p.Messages[1].Content, "重构一下") {
+				t.Fatal("generator cannot compare existing candidate")
+			}
+			return engine.Result{Text: "重归于心"}, nil
+		}
+		if !strings.Contains(p.Messages[1].Content, "重归于心") || !strings.Contains(p.Messages[1].Content, "重构一下") {
+			t.Fatal("selector must compare both")
+		}
+		return engine.Result{Text: `{"order":["c0","proposal"]}`}, nil
+	})}
+	out, err := r.RankKeyboard(context.Background(), req)
+	if err != nil || out.Completion != nil || calls != 2 || out.Candidates[0].ID != "c0" {
+		t.Fatal(out, err, calls)
 	}
 }

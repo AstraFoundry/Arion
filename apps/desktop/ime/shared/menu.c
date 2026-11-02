@@ -185,14 +185,27 @@ int arion_menu_promote_slots(ArionPinyinMenu *menu, const size_t *slots, size_t 
             menu->metadata[slots[i]].end != menu->metadata[0].end ||
             menu->metadata[slots[i]].end <= menu->metadata[slots[i]].start) return 0;
     }
-    char *text = menu->texts[slots[chosen]];
-    size_t index = menu->indices[slots[chosen]];
-    ArionCandidateMetadata metadata = menu->metadata[slots[chosen]];
-    for (size_t i = chosen; i > 0; --i) {
-        menu->texts[slots[i]] = menu->texts[slots[i-1]];
-        menu->indices[slots[i]] = menu->indices[slots[i-1]];
-        menu->metadata[slots[i]] = menu->metadata[slots[i-1]];
+    size_t order[27];
+    order[0]=chosen;
+    for (size_t i=1; i<=chosen; ++i) order[i]=i-1;
+    for (size_t i=chosen+1; i<count; ++i) order[i]=i;
+    return arion_menu_order_slots(menu,slots,count,order);
+}
+
+int arion_menu_order_slots(ArionPinyinMenu *menu, const size_t *slots, size_t count, const size_t *order) {
+    if (!menu || !menu->texts || !menu->indices || !menu->metadata || !slots || !order || !count || count>27 ||
+        menu->page || menu->expanded || menu->highlight || slots[0]!=0) return 0;
+    char *texts[27]; size_t indices[27]; ArionCandidateMetadata metadata[27];
+    unsigned int seen=0;
+    for (size_t i=0;i<count;++i) {
+        if (slots[i]>=menu->count || (i && slots[i]<=slots[i-1]) || order[i]>=count || (seen & (1u<<order[i])) ||
+            menu->metadata[slots[i]].emoji || menu->metadata[slots[i]].start!=menu->metadata[0].start ||
+            menu->metadata[slots[i]].end!=menu->metadata[0].end || menu->metadata[slots[i]].end<=menu->metadata[slots[i]].start) return 0;
+        seen |= 1u<<order[i];
+        texts[i]=menu->texts[slots[i]]; indices[i]=menu->indices[slots[i]]; metadata[i]=menu->metadata[slots[i]];
     }
-    menu->texts[0] = text; menu->indices[0] = index; menu->metadata[0] = metadata;
+    for (size_t i=0;i<count;++i) {
+        menu->texts[slots[i]]=texts[order[i]]; menu->indices[slots[i]]=indices[order[i]]; menu->metadata[slots[i]]=metadata[order[i]];
+    }
     return 1;
 }

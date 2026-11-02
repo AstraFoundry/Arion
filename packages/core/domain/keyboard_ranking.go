@@ -46,3 +46,37 @@ func PromoteKeyboardCandidate(candidates []KeyboardCandidate, pick string) ([]Ra
 	order[0] = selected
 	return order, nil
 }
+
+// OrderKeyboardCandidates replaces only comparable slots and retains every engine ID.
+func OrderKeyboardCandidates(candidates []KeyboardCandidate, ids []string) ([]RankedCandidate, error) {
+	if len(candidates) == 0 {
+		return nil, errors.New("empty keyboard candidate set")
+	}
+	eligible := make(map[string]bool)
+	for _, c := range candidates {
+		if KeyboardRankEligible(candidates[0], c) {
+			eligible[c.ID] = true
+		}
+	}
+	if len(ids) != len(eligible) {
+		return nil, errors.New("incomplete keyboard order")
+	}
+	for _, id := range ids {
+		if !eligible[id] {
+			return nil, errors.New("invalid keyboard order")
+		}
+		eligible[id] = false
+	}
+	out := make([]RankedCandidate, len(candidates))
+	plain := make([]Candidate, len(candidates))
+	next := 0
+	for i, c := range candidates {
+		plain[i] = c.Candidate
+		out[i] = RankedCandidate{ID: c.ID}
+		if KeyboardRankEligible(candidates[0], c) {
+			out[i].ID = ids[next]
+			next++
+		}
+	}
+	return out, ValidateRanking(plain, out)
+}

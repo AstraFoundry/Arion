@@ -169,3 +169,34 @@ func TestKeyboardCompletionOwnershipAndCoverage(t *testing.T) {
 		t.Fatal("incomplete pronunciation admitted")
 	}
 }
+
+func TestCompletionOrderingRequiresNegotiation(t *testing.T) {
+	req := keyRequest(1)
+	req.Input = "shishi"
+	req.AllowCompletion = true
+	for i := range req.Candidates {
+		req.Candidates[i].End = len(req.Input)
+	}
+	ranker := keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+		return contracts.KeyboardRankResult{Identity: r.Identity, Revision: r.Revision, Candidates: []domain.RankedCandidate{{ID: "c1"}, {ID: "c0"}}, Completion: &domain.KeyboardCompletion{Input: r.Input, Text: "实施", Reading: "shi shi"}}, nil
+	})
+	scheduler, err := NewKeyboardRanking(ranker, time.Second, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer scheduler.Close()
+	denied := receiveRank(t, scheduler.Submit(req))
+	if scheduler.CanApply(denied) {
+		t.Fatal("unnegotiated compound result")
+	}
+	req.AllowOrdering = true
+	req.Revision++
+	accepted := receiveRank(t, scheduler.Submit(req))
+	if !scheduler.CanApply(accepted) {
+		t.Fatal(accepted.Err)
+	}
+	scheduler.Freeze()
+	if scheduler.CanApply(accepted) {
+		t.Fatal("stale compound result")
+	}
+}

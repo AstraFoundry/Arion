@@ -582,6 +582,22 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
         ![result[@"session_id"] isEqual:activation] || !vocabularyInteger(result[@"generation"],&generation) || generation!=1 ||
         !vocabularyInteger(result[@"revision"],&resultRevision) || resultRevision!=revision) { return; }
     NSDictionary *completion=result[@"completion"];
+    NSArray *order=result[@"candidates"];
+    BOOL hasOrder=[order isKindOfClass:NSArray.class] && order.count>0;
+    if (hasOrder || !completion) {
+        if (![order isKindOfClass:NSArray.class] || order.count!=self.rankingCandidates.count) return;
+        size_t permutation[27], slots[27];
+        if (order.count>27) return;
+        for (NSUInteger i=0;i<order.count;++i) {
+            if (![order[i] isKindOfClass:NSDictionary.class] || ![order[i][@"id"] isKindOfClass:NSString.class]) return;
+            NSUInteger found=NSNotFound;
+            for (NSUInteger j=0;j<self.rankingCandidates.count;++j)
+                if ([self.rankingCandidates[j][@"id"] isEqual:order[i][@"id"]]) found=j;
+            if (found==NSNotFound) return;
+            permutation[i]=found; slots[i]=self.rankingSlots[i].unsignedIntegerValue;
+        }
+        if (![self verify] || ![self buildMenu] || !arion_menu_order_slots(&_menu,slots,order.count,permutation)) return;
+    }
     if (completion) {
         if (![completion isKindOfClass:NSDictionary.class] || ![completion[@"input"] isKindOfClass:NSString.class] ||
             ![completion[@"text"] isKindOfClass:NSString.class] || ![self verify]) return;
@@ -595,18 +611,6 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
         [self freezeRanking];
         return;
     }
-    NSArray *order=result[@"candidates"];
-    if (![order isKindOfClass:NSArray.class] || order.count!=self.rankingCandidates.count) return;
-    for (id item in order) if (![item isKindOfClass:NSDictionary.class] || ![item[@"id"] isKindOfClass:NSString.class]) return;
-    NSUInteger chosen=NSNotFound;
-    for (NSUInteger i=0;i<self.rankingCandidates.count;++i)
-        if ([self.rankingCandidates[i][@"id"] isEqual:order[0][@"id"]]) chosen=i;
-    if (chosen==NSNotFound) return;
-    NSMutableArray *expected=[self.rankingCandidates mutableCopy];
-    NSDictionary *selected=expected[chosen]; [expected removeObjectAtIndex:chosen]; [expected insertObject:selected atIndex:0];
-    for (NSUInteger i=0;i<order.count;++i) if (![order[i][@"id"] isEqual:expected[i][@"id"]]) return;
-    size_t slots[27]; for (NSUInteger i=0;i<self.rankingSlots.count;++i) slots[i]=self.rankingSlots[i].unsignedIntegerValue;
-    if (![self verify] || ![self buildMenu] || !arion_menu_promote_slots(&_menu,slots,self.rankingSlots.count,chosen)) return;
     if ([self publishRankedMenu] && self.rankingApplied) self.rankingApplied(revision);
 }
 @end

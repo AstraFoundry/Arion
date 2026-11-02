@@ -114,7 +114,10 @@ func (s *KeyboardRanking) canApplyLocked(out KeyboardRankOutcome) bool {
 		return false
 	}
 	if c := out.Result.Completion; c != nil {
-		return s.current.AllowCompletion && len(s.current.Candidates) > 0 && s.current.Candidates[0].Start == 0 && s.current.Candidates[0].End == len(s.current.Input) && len(out.Result.Candidates) == 0 && domain.ValidKeyboardCompletion(*c, s.current.Input)
+		return s.current.AllowCompletion && len(s.current.Candidates) > 0 && s.current.Candidates[0].Start == 0 && s.current.Candidates[0].End == len(s.current.Input) && (len(out.Result.Candidates) == 0 || (s.current.AllowOrdering && validKeyboardOrder(s.current, out.Result.Candidates))) && domain.ValidKeyboardCompletion(*c, s.current.Input)
+	}
+	if s.current.AllowOrdering {
+		return validKeyboardOrder(s.current, out.Result.Candidates)
 	}
 	plain := make([]domain.Candidate, len(s.current.Candidates))
 	for i, c := range s.current.Candidates {
@@ -172,4 +175,33 @@ func (s *KeyboardRanking) run() {
 			s.mu.Unlock()
 		}
 	}
+}
+
+func validKeyboardOrder(req contracts.KeyboardRankRequest, order []domain.RankedCandidate) bool {
+	ids := make([]string, 0, len(order))
+	eligible := make(map[string]bool)
+	for _, c := range req.Candidates {
+		if domain.KeyboardRankEligible(req.Candidates[0], c) {
+			eligible[c.ID] = true
+		}
+	}
+	for _, c := range order {
+		if eligible[c.ID] {
+			ids = append(ids, c.ID)
+		}
+	}
+	expected, err := domain.OrderKeyboardCandidates(req.Candidates, ids)
+	if err != nil || len(expected) != len(order) {
+		return false
+	}
+	for i := range expected {
+		if expected[i].ID != order[i].ID {
+			return false
+		}
+	}
+	plain := make([]domain.Candidate, len(req.Candidates))
+	for i, c := range req.Candidates {
+		plain[i] = c.Candidate
+	}
+	return domain.ValidateRanking(plain, order) == nil
 }
