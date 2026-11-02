@@ -10,9 +10,10 @@
 // including when the focused node is a group or static text inside the
 // composer rather than a native text field. External dictation on macOS and
 // Windows does not use this classification to refuse a paste. It posts one
-// system paste into the frontmost other application. The classification still
-// identifies a positive absence of input for clipboard history and the
-// non-shortcut route.
+// system paste into the frontmost other application. Windows still refuses a
+// standard edit or rich edit whose own style is ES_READONLY and leaves that
+// text on the clipboard. The classification still identifies a positive
+// absence of input for clipboard history and the non-shortcut route.
 package focusclass
 
 import "arion.local/core/domain"

@@ -10,6 +10,18 @@ import (
 	"arion.local/core/domain"
 )
 
+func TestReadOnlyStandardEditRefusesOnlyThatStyle(t *testing.T) {
+	if !readOnlyStandardEdit("Edit", esReadOnly) || !readOnlyStandardEdit("RichEdit50W", esReadOnly|esPassword) {
+		t.Fatal("read-only edit or rich edit was treated as writable")
+	}
+	if readOnlyStandardEdit("Edit", 0) || readOnlyStandardEdit("Edit", esPassword) {
+		t.Fatal("writable edit was treated as read-only")
+	}
+	if readOnlyStandardEdit("Button", esReadOnly) || readOnlyStandardEdit("Chrome_RenderWidgetHostHWND", esReadOnly) || readOnlyStandardEdit("", esReadOnly) {
+		t.Fatal("non-edit window was treated as a read-only edit")
+	}
+}
+
 func TestSameProcessOwnedEditorIsNotArion(t *testing.T) {
 	const self uint32 = 42
 	if !sameProcessIsArion(self, self, "MyGoWindow") {

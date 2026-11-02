@@ -2,7 +2,8 @@
 
 // Package windows implements target capture and insertion with Win32:
 // foreground identity and one guarded Ctrl-V paste into the frontmost
-// other application (ADR 003). Secure fields are refused.
+// other application (ADR 003). Secure fields are refused. A read-only
+// standard edit or rich edit is not pasted; the text stays on the clipboard.
 package windows
 
 import (
@@ -53,6 +54,7 @@ var (
 const (
 	gwlStyle       = ^uintptr(15) // GWL_STYLE (-16)
 	esPassword     = 0x0020
+	esReadOnly     = 0x0800
 	inputKeyboard  = 1
 	keyeventfKeyUp = 0x0002
 	vkControl      = 0x11
@@ -151,6 +153,17 @@ func focusOf(foreground uintptr) uintptr { return focusState(foreground).Focus }
 // missing foreground window before this check.
 func sameProcessIsArion(self, pid uint32, class string) bool {
 	return pid != 0 && pid == self && !strings.HasPrefix(class, OwnedEditorClassPrefix)
+}
+
+// readOnlyStandardEdit reports a standard edit or rich edit whose window
+// style is ES_READONLY. class is compared case-insensitively. Other window
+// classes are not read-only edits, even when that style bit is set.
+func readOnlyStandardEdit(class string, style uintptr) bool {
+	class = strings.ToLower(class)
+	if class != "edit" && !strings.HasPrefix(class, "richedit") {
+		return false
+	}
+	return style&esReadOnly != 0
 }
 
 func className(hwnd uintptr) string {
@@ -338,6 +351,14 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 	if secure {
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
+	}
+	// ES_READONLY is the Win32 style, not the editable-focus classification.
+	// Posting Ctrl-V there either inserts into the read-only control or
+	// delivers the key and then restores the previous clipboard, so the
+	// dictation is lost. Leave the text on the clipboard. An unclassified
+	// control still receives the paste.
+	if readOnlyStandardEdit(class, style) {
+		return copyResult(false)
 	}
 	tgt.foreground, tgt.focus = foreground, focus
 	if !paste(request.Text) {

@@ -205,9 +205,10 @@ func TestWindowsFocusChangeInsertsIntoFocusedEditor(t *testing.T) {
 	}
 }
 
-// A focused button or read-only edit is not classified as an editor. External
-// delivery still posts one paste. The owned controls do not accept it, and
-// the previous clipboard is restored.
+// A focused button is not classified as an editor. External delivery still
+// posts one paste. The button does not accept it, and the previous clipboard
+// is restored. A read-only edit is refused before that paste: the control
+// does not change, and the dictated text stays on the clipboard.
 func TestWindowsPastesWithoutEditableFocus(t *testing.T) {
 	for _, delivery := range []windows.Delivery{windows.DeliveryAutomatic, windows.DeliveryClipboard} {
 		for _, initial := range []string{"button", "editor"} {
@@ -243,17 +244,26 @@ func TestWindowsPastesWithoutEditableFocus(t *testing.T) {
 					})
 					request := contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text}
 					result, err := targets.Commit(context.Background(), request)
-					if err != nil || result.Outcome != contracts.Unknown || result.Failure != "" {
-						t.Fatalf("noneditable focus: %+v %v", result, err)
-					}
-					if got := mygo.Clipboard.ReadText(); got == text {
-						t.Fatalf("dictated text remained on the clipboard: %q", got)
+					if readOnly {
+						if err != nil || result.Outcome != contracts.Copied || result.Failure != "" || result.NoInput {
+							t.Fatalf("readonly focus: %+v %v", result, err)
+						}
+						if got := mygo.Clipboard.ReadText(); got != text {
+							t.Fatalf("readonly text was not left on the clipboard: %q", got)
+						}
+					} else {
+						if err != nil || result.Outcome != contracts.Unknown || result.Failure != "" {
+							t.Fatalf("noneditable focus: %+v %v", result, err)
+						}
+						if got := mygo.Clipboard.ReadText(); got == text {
+							t.Fatalf("dictated text remained on the clipboard: %q", got)
+						}
 					}
 					if editor.text() != "" || editor.characters.Load() != 0 || editor.changes.Load() != 0 {
-						t.Fatal("noneditable control accepted the paste")
+						t.Fatalf("noneditable control accepted the paste: text %q characters %d changes %d", editor.text(), editor.characters.Load(), editor.changes.Load())
 					}
 					if duplicate, _ := targets.Commit(context.Background(), request); duplicate.Outcome != contracts.NotApplied {
-						t.Fatal("pasted target reused")
+						t.Fatal("target reused")
 					}
 				})
 			}
