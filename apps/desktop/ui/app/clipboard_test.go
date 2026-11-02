@@ -425,7 +425,7 @@ func TestMenuPanelHeightFollowsVisibleContent(t *testing.T) {
 				if !ok || quit.Y < 0 || quit.Y+quit.H > float32(height) {
 					t.Fatalf("%s: footer clipped at height %d: %+v", variant.name, height, quit)
 				}
-				for _, key := range []copy.Key{copy.ClipboardTitle, copy.SettingsMenu, copy.Quit} {
+				for _, key := range []copy.Key{copy.SettingsMenu, copy.Quit} {
 					bounds, found := tt.Find(store.Copy().Text(key))
 					if !found || bounds.X < 0 || bounds.X+bounds.W > float32(PanelWidth) {
 						t.Fatalf("%s: footer action %s clipped: %+v", variant.name, key, bounds)
@@ -440,11 +440,11 @@ func TestMenuPanelHeightFollowsVisibleContent(t *testing.T) {
 	}
 }
 
-// CLP-A01/CLP-A06: the history preference controls every entry point.
-func TestClipboardMenuEntryFollowsEnablement(t *testing.T) {
+// CLP-08: the menu-bar panel omits clipboard history regardless of enablement.
+func TestMenuPanelOmitsClipboardEntry(t *testing.T) {
 	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
 		t.Run(string(locale), func(t *testing.T) {
-			state, rec, store := fixture()
+			state, _, store := fixture()
 			state.Preferences.UILanguage = locale
 			panel := &menubar.Panel{}
 			tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store))
@@ -452,17 +452,11 @@ func TestClipboardMenuEntryFollowsEnablement(t *testing.T) {
 			for _, enabled := range []bool{false, true, false, true} {
 				state.Preferences.Clipboard.Enabled = enabled
 				settle(tt)
-				if hasText(tt, label) != enabled {
-					t.Fatalf("clipboard entry visibility differs from enabled=%t", enabled)
+				if hasText(tt, label) {
+					t.Fatalf("menu panel shows clipboard history with enabled=%t", enabled)
 				}
 				if !hasText(tt, store.Copy().Text(copy.SettingsMenu)) || !hasText(tt, store.Copy().Text(copy.Quit)) {
-					t.Fatal("disabling clipboard removed other footer actions")
-				}
-				if enabled {
-					rec.calls = nil
-					if err := tt.Click(label); err != nil || !rec.called("clipboard-open") {
-						t.Fatalf("enabled clipboard entry did not open history: %v", err)
-					}
+					t.Fatal("menu panel is missing settings or quit")
 				}
 			}
 		})
