@@ -168,7 +168,9 @@ After successful sign-in or refresh, `Service.ReadUsageConsent`
 reads the answer with `GET {issuer}/api/v1/usage/consent?productSlug=arion` and
 the access token (`UsageLoading` meanwhile). It is `undecided`, `shared` or
 `not_shared` (`Account.UsageSharing`) and replaces the token's claim for
-reporting. Settings › Account shows a **Share data to join the product improvement program** switch while signed
+reporting. Reporting waits for this answer: a valid claim alone never starts
+it, and a failed read leaves it off, so reporting runs only while the switch
+shows sharing. Settings › Account shows a **Share data to join the product improvement program** switch while signed
 in.
 
 The switch records the answer with `Service.RecordUsageConsent`:
@@ -212,6 +214,11 @@ Transient failures retry after 15 seconds with exponential delay capped at five
 minutes. Authorization refusals stop collection and sending until a fresh token
 allows them; token expiry waits for the existing account maintenance flow.
 Offline and scripted E2E profiles do not start reporting.
+
+The private evaluation repository checks this flow against a local
+astrafoundry.si (its `usage:local-e2e` script): sign-in on a new account, the
+switch, and a second install of the same account, asserting throughout that
+reporting never runs on an answer the switch does not show. See its README.
 
 The account portal's Data link opens `/account/data` (standard issuer only),
 where users can also withdraw or re-enable sharing.
