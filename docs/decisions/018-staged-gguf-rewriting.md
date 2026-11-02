@@ -4,6 +4,8 @@
 
 Accepted for product integration by the user. This replaces the ONNX/live-v2 rewrite implementation of ADR 011; ASR selection, once-only insertion and session ownership are unchanged. Hardware/release evidence remains scoped to actual measurements.
 
+[ADR 043](043-context-aware-polishing.md) supersedes formatter context isolation and updates the editing policy. Earlier decisions and measurements below describe their original scope.
+
 ## Decision
 
 Use the pinned Qwen3.5-2B Q4_K_M artifact and llama.cpp b11734 on macOS Apple Silicon. Retain the pipe worker contract, with a private Unix-socket native child and process-group cleanup. The packaged runtime contains no weights; existing verified provisioning installs the catalog artifact for offline inference.

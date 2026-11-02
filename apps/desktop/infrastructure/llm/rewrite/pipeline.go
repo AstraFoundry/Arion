@@ -39,7 +39,8 @@ func Load() (*Pipeline, error) { return load() }
 type Generate func(context.Context, prompt.ChatRequest, bool) (engine.Result, error)
 
 // Run cleans speech, selects bounded spelling edits, and formats the edited
-// source. Context reaches only selection; it never reaches the formatter.
+// source. Both model stages may consult enabled reference context; only the
+// selector receives earlier recognition and approved spelling candidates.
 func (p *Pipeline) Run(ctx context.Context, req engine.Request, generate Generate) (engine.Result, error) {
 	if strings.Contains(req.Text, "<|") || strings.Contains(req.Text, "|>") {
 		return engine.Result{}, engine.ErrControlInput
@@ -111,9 +112,9 @@ func (p *Pipeline) Run(ctx context.Context, req engine.Request, generate Generat
 	}
 	var request prompt.ChatRequest
 	if req.TargetLanguage != "" {
-		request, err = p.recipe.FormatTranslation(edited, req.Scene, req.Punctuation, req.TargetLanguage)
+		request, err = p.recipe.FormatTranslation(edited, req.Scene, req.Punctuation, req.TargetLanguage, c)
 	} else {
-		request, err = p.recipe.Format(edited, req.Scene, req.Punctuation)
+		request, err = p.recipe.Format(edited, req.Scene, req.Punctuation, c)
 	}
 	if err != nil {
 		return result, err

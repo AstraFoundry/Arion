@@ -146,8 +146,20 @@ func gatewayPayload(body map[string]any, format string) (map[string]any, error) 
 			content, _ = part["text"].(string)
 		}
 	}
-	if strings.HasPrefix(content, "<source>") && strings.HasSuffix(content, "</source>") {
-		return map[string]any{"source": strings.TrimSuffix(strings.TrimPrefix(content, "<source>"), "</source>")}, nil
+	if start := strings.Index(content, "<source>"); start >= 0 && strings.HasSuffix(content, "</source>") {
+		payload := map[string]any{"source": strings.TrimSuffix(content[start+len("<source>"):], "</source>")}
+		if strings.HasPrefix(content, "<context>\n") {
+			end := strings.Index(content, "\n</context>")
+			if end < 0 {
+				return nil, fmt.Errorf("unclosed reference context")
+			}
+			var reference map[string]any
+			if err := json.Unmarshal([]byte(content[len("<context>\n"):end]), &reference); err != nil {
+				return nil, err
+			}
+			payload["context"] = reference
+		}
+		return payload, nil
 	}
 	var payload map[string]any
 	err := json.Unmarshal([]byte(content), &payload)
@@ -214,10 +226,10 @@ func TestOpenAIGatewaySharedStages(t *testing.T) {
 				}
 			}
 			raw, _ := json.Marshal(bodies[1])
-			if strings.Contains(string(raw), "CANARY") || strings.Contains(string(raw), "之前") || payloads[1]["source"] != "检查 writeValue。" {
-				t.Fatalf("formatter leaked context or lost selected spelling: %s", raw)
+			if !strings.Contains(string(raw), "CANARY") || strings.Contains(string(raw), "之前") || payloads[1]["source"] != "检查 writeValue。" {
+				t.Fatalf("formatter lost reference/source or received earlier recognition: %s", raw)
 			}
-			t.Logf("HTTP calls=%d; selector context verified; source-only formatter; output=%q", len(bodies), result.Text)
+			t.Logf("HTTP calls=%d; selector and formatter references verified; output=%q", len(bodies), result.Text)
 		})
 	}
 }
@@ -360,7 +372,7 @@ func TestOpenAIGatewayPunctuation(t *testing.T) {
 				if len(bodies) != 1 {
 					t.Fatalf("calls=%d", len(bodies))
 				}
-				expected, err := recipe.Format(req.Text, req.Scene, punctuation)
+				expected, err := recipe.Format(req.Text, req.Scene, punctuation, domain.RewriteContext{})
 				if err != nil {
 					t.Fatal(err)
 				}

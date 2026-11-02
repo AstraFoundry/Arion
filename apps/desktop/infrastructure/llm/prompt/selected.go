@@ -17,8 +17,8 @@ const (
 	maxFormatTokens = 2048
 )
 
-// SelectedVersion identifies both independently evaluated stages.
-const SelectedVersion = "selector-contextual-v5+cleanup-rules-v2"
+// SelectedVersion identifies the selector and contextual editing recipe.
+const SelectedVersion = "selector-contextual-v5+contextual-editing-v1"
 
 //go:embed selection.json
 var selectedSelection []byte
@@ -88,9 +88,8 @@ type formatExample struct {
 	Output string `json:"output"`
 }
 type sceneRecipe struct {
-	Instruction    string          `json:"instruction"`
-	InstructionHan string          `json:"instructionHan"`
-	Examples       []formatExample `json:"examples"`
+	Instruction    string `json:"instruction"`
+	InstructionHan string `json:"instructionHan"`
 }
 type translateTargetRecipe struct {
 	System          string                     `json:"system"`
@@ -110,6 +109,10 @@ type formatRecipe struct {
 	Routes          map[string]string                `json:"routeInstructions"`
 	Punctuation     string                           `json:"punctuationRule"`
 	PunctuationHan  string                           `json:"punctuationRuleHan"`
+	ContextRules    string                           `json:"contextRules"`
+	ContextRulesHan string                           `json:"contextRulesHan"`
+	Output          string                           `json:"outputRule"`
+	OutputHan       string                           `json:"outputRuleHan"`
 	Scenes          map[string]sceneRecipe           `json:"format"`
 	Translate       map[string]translateTargetRecipe `json:"translate"`
 }
@@ -216,6 +219,26 @@ func formatText(source string) string {
 	return "<source>" + source + "</source>"
 }
 
+// formatInput keeps reference data in the user turn, separate from the source.
+// JSON escaping prevents reference text from closing either data wrapper.
+func formatInput(source string, reference domain.RewriteContext) string {
+	reference = reference.Bounded()
+	if reference.Empty() {
+		return formatText(source)
+	}
+	data := struct {
+		Screen  string   `json:"screen,omitempty"`
+		Before  string   `json:"before_cursor,omitempty"`
+		After   string   `json:"after_cursor,omitempty"`
+		History []string `json:"history,omitempty"`
+	}{reference.Screen, reference.Before, reference.After, reference.History}
+	encoded, err := json.Marshal(data)
+	if err != nil {
+		panic(err)
+	}
+	return "<context>\n" + string(encoded) + "\n</context>\n\n" + formatText(source)
+}
+
 // formatBudget scales the completion ceiling with the source length.
 // perRune is 1 for a polish and 2 for a translation, which can expand.
 // Short utterances stay on a 256-token floor. The ceiling is 2048.
@@ -276,38 +299,51 @@ func appendExampleTurns(messages []Message, groups [][]formatExample, scene stri
 	return messages
 }
 
-// systemPrompt is the polish rules list. Scene text is rule 8, layout is
-// rule 9 (omitted for list), and the script route is rule 10. Rule 2 is the
-// wording constraint: no synonym paraphrase; ASR fixes are corrections.
+// systemPrompt puts role, task, scene and reference policy in one instruction
+// message. Compact editing examples are embedded rather than chat history.
 func (t *SelectedTemplates) systemPrompt(kind, scene string, punctuation domain.Punctuation) string {
 	preamble, rules, layout, routeLine, punct := t.format.System, t.format.Rules, t.format.ProsePolicy, t.format.Routes[kind], t.format.Punctuation
+	contextRules, output := t.format.ContextRules, t.format.Output
 	recipe := t.format.Scenes[scene]
 	sceneRule := recipe.Instruction
 	if kind == "han" {
 		preamble, rules, sceneRule, layout, punct = t.format.SystemHan, t.format.RulesHan, recipe.InstructionHan, t.format.ProsePolicyHan, t.format.PunctuationHan
+		contextRules, output = t.format.ContextRulesHan, t.format.OutputHan
 	}
-	return rulesBlock(preamble, rules, sceneRule, layout, routeLine, scene, punctuation, punct)
+	sections := []string{preamble, rules, "# Scene\n\n" + sceneRule}
+	if scene != string(domain.SceneList) {
+		sections = append(sections, layout)
+	}
+	sections = append(sections, routeLine, "# Context\n\n"+contextRules)
+	switch punctuation {
+	case domain.PunctuationFull, domain.PunctuationOmit, domain.PunctuationSpaces:
+		sections = append(sections, "# Punctuation\n\n"+punct)
+	}
+	examples := []string{}
+	for _, e := range scriptExamples(t.format.EditingExamples, kind) {
+		if kind == "han" {
+			examples = append(examples, "原文："+e.Source+"\n输出："+e.Output)
+		} else {
+			examples = append(examples, "Input: "+e.Source+"\nOutput: "+e.Output)
+		}
+	}
+	sections = append(sections, "# Examples\n\n"+strings.Join(examples, "\n\n"), "# Output\n\n"+output)
+	return strings.Join(sections, "\n\n")
 }
 
-// Format receives only the explicitly edited source, never OCR or surrounding
-// context. Scene hints preserve natural prose unless list layout is explicit.
-// punctuation appends the complete-punctuation bullet for full, omit, and
-// spaces; smart and empty leave the approved prompt unchanged.
-func (t *SelectedTemplates) Format(source, scene string, punctuation domain.Punctuation) (ChatRequest, error) {
+// Format edits the source with a scene policy and optional bounded reference
+// data. Reference text never enters the system message or editing examples.
+func (t *SelectedTemplates) Format(source, scene string, punctuation domain.Punctuation, reference domain.RewriteContext) (ChatRequest, error) {
 	if scene == string(domain.SceneSearch) {
 		scene = string(domain.SceneChat)
 	}
-	recipe, ok := t.format.Scenes[scene]
+	_, ok := t.format.Scenes[scene]
 	if !ok {
 		return ChatRequest{}, fmt.Errorf("unsupported formatting scene %q", scene)
 	}
 	kind := route(source)
 	messages := []Message{{Role: "system", Content: t.systemPrompt(kind, scene, punctuation)}}
-	messages = appendExampleTurns(messages, exampleGroups(scene, scriptExamples(recipe.Examples, kind), scriptExamples(t.format.EditingExamples, kind)), scene)
-	if len(messages) == 1 {
-		return ChatRequest{}, fmt.Errorf("missing formatting examples for %s/%s", scene, kind)
-	}
-	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), formatBudget(source, 1)), nil
+	return chat(append(messages, Message{Role: "user", Content: formatInput(source, reference)}), formatBudget(source, 1)), nil
 }
 
 func (t *SelectedTemplates) translationSystemPrompt(scene string, punctuation domain.Punctuation, target domain.TranslationLanguage) string {
@@ -317,13 +353,17 @@ func (t *SelectedTemplates) translationSystemPrompt(scene string, punctuation do
 	if target == domain.TargetChinese {
 		sceneRule, layout, punct = recipe.InstructionHan, t.format.ProsePolicyHan, t.format.PunctuationHan
 	}
-	return rulesBlock(tr.System, tr.Rules, sceneRule, layout, tr.Route, scene, punctuation, punct)
+	contextRules := t.format.ContextRules
+	if target == domain.TargetChinese {
+		contextRules = t.format.ContextRulesHan
+	}
+	return rulesBlock(tr.System, tr.Rules, sceneRule, layout, tr.Route, scene, punctuation, punct) + "\n\n# Context\n\n" + contextRules
 }
 
 // FormatTranslation builds the Stage 2 request that polishes and translates
 // the edited source into target while preserving scene layout, punctuation
 // rules, and code/identifier fidelity.
-func (t *SelectedTemplates) FormatTranslation(source, scene string, punctuation domain.Punctuation, target domain.TranslationLanguage) (ChatRequest, error) {
+func (t *SelectedTemplates) FormatTranslation(source, scene string, punctuation domain.Punctuation, target domain.TranslationLanguage, reference domain.RewriteContext) (ChatRequest, error) {
 	if !target.Known() {
 		return ChatRequest{}, fmt.Errorf("unsupported translation target %q", target)
 	}
@@ -343,5 +383,5 @@ func (t *SelectedTemplates) FormatTranslation(source, scene string, punctuation 
 	}
 	messages := []Message{{Role: "system", Content: t.translationSystemPrompt(scene, punctuation, target)}}
 	messages = appendExampleTurns(messages, exampleGroups(scene, sceneExamples, tr.EditingExamples), scene)
-	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), formatBudget(source, 2)), nil
+	return chat(append(messages, Message{Role: "user", Content: formatInput(source, reference)}), formatBudget(source, 2)), nil
 }

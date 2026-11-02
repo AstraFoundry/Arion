@@ -28,7 +28,7 @@ const (
 
 // contextTags are the prompt's context section names; context text cannot
 // contain them, or prompt control markers.
-var contextTags = []string{"<screen>", "</screen>", "<before_cursor>", "</before_cursor>", "<after_cursor>", "</after_cursor>",
+var contextTags = []string{"<context>", "</context>", "<screen>", "</screen>", "<before_cursor>", "</before_cursor>", "<after_cursor>", "</after_cursor>",
 	"<history>", "</history>", "<dictation>", "</dictation>"}
 
 // Bounded returns c sanitized and cut to the context bounds: the end of the

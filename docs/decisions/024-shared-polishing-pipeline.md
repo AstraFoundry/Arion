@@ -4,6 +4,8 @@
 
 Accepted (product decision). Amends ADR 013's on-device-only context rule and ADR 022's context exclusion and single-call cloud recipe. Updates CTX-02–05, CLD-03–04 and PRV-01. The user chose equivalent context controls for local and cloud polishing.
 
+[ADR 043](043-context-aware-polishing.md) supersedes formatter context isolation and updates the editing policy. Earlier decisions and measurements below describe their original scope.
+
 ## Context
 
 Local polishing uses the selected spelling and formatting stages, while cloud polishing used the older `live` template. Hiding context controls for the cloud produced different behavior and required maintaining separate rewrite recipes.

@@ -160,7 +160,7 @@ func TestNativeStagePreservation(t *testing.T) {
 				if loadErr != nil {
 					t.Fatal(loadErr)
 				}
-				request, formatErr := recipe.Format(source, c.Scene, domain.PunctuationSmart)
+				request, formatErr := recipe.Format(source, c.Scene, domain.PunctuationSmart, domain.RewriteContext{})
 				runErr = formatErr
 				if runErr == nil {
 					completion, generateErr := e.generate(context.Background(), request, false)

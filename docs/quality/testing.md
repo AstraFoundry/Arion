@@ -20,6 +20,10 @@ Command references use Arion's Makefile and package scripts only for project-aut
 
 The pipe peer-proof test runs directly under an ordinary medium-integrity token. From an elevated development shell, it first verifies that production rejects the elevated token, then launches the same test executable with a restricted, non-elevated medium-integrity token. The child performs the real named-pipe connection, kernel PID/SID/session checks and held-process lifetime checks. Token setup or child execution failure fails the test. No account, UAC setting or desktop ACL is changed. Low-integrity refusal remains a separate test. This fixture does not replace the standard-user profile and DPAPI acceptance in the Windows keyboard CI launcher.
 
+## Context-aware editing checks
+
+Run the prompt, shared pipeline, GGUF transport and cloud adapter packages after changes to reference delivery. Cover all cursor/window/history switch combinations through both gateway formats, separate current source from escaped references, omit unavailable sources, retain selector protocol parity and reject echoed context wrappers before punctuation conversion. These synthetic checks establish payload and orchestration behavior; actual model fidelity and latency need supported-host inference review under [ADR 043](../decisions/043-context-aware-polishing.md).
+
 ## Required implementation evidence
 
 Core reducers need cancellation, stale generation/revision, audio discontinuity and uncertain insertion tests. Adapter integration tests use synthetic content and actual OS permission/host ranges. IMK/TSF registration/deactivation and UTF-16/Unicode ownership tests require the target OS, not mocks alone.

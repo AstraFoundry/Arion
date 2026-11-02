@@ -4,6 +4,8 @@
 
 Accepted (product decision). [ADR 024](024-shared-polishing-pipeline.md) supersedes the on-device-only transport restriction: enabled context may reach the explicitly selected cloud polishing provider. Amends the consent rule of [009](../../specs/009-contextual-rewrite.md) step 2 and PRV-02 of [005](../../specs/005-privacy.md) for these three sources. Extends [ADR 011](011-live-local-rewriting.md) and [ADR 012](012-context-scene-selection.md). [ADR 018](018-staged-gguf-rewriting.md) keeps this context on the selector only; the formatter receives the edited source.
 
+[ADR 043](043-context-aware-polishing.md) supersedes formatter context isolation and updates the editing policy. Earlier decisions and measurements below describe their original scope.
+
 ## Context
 
 Typeless sends the focused window's visible text (from its accessibility tree), the text around the cursor and app/page identity to its server with the audio. Doubao conditions its on-device speech-LLM on cursor text, recent dialogue and hot words. Chatterfly sends cursor text and the window title ([competitor research](../research/competitor-rewrite.md#screen-and-cursor-context)). Their purpose is the same: spell names, terms and codes that recognition gets wrong, and continue the text already in the field.

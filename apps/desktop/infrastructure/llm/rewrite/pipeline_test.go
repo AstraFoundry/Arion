@@ -39,7 +39,7 @@ func TestForcedAmbiguityStillValidatesPreparation(t *testing.T) {
 	}
 }
 
-func TestSharedStagesIsolateContextAndPreserveEarlierSource(t *testing.T) {
+func TestSharedStagesReferenceContextAndIsolateEarlierSource(t *testing.T) {
 	pipeline, err := Load()
 	if err != nil {
 		t.Fatal(err)
@@ -70,12 +70,15 @@ func TestSharedStagesIsolateContextAndPreserveEarlierSource(t *testing.T) {
 			}
 			return engine.Result{Text: `{"e0":"replace"}`, InputTokens: 10, OutputTokens: 5}, nil
 		}
-		if chat.ResponseFormat != nil || chat.Messages[len(chat.Messages)-1].Content != "<source>检查 writeValue。</source>" {
+		if chat.ResponseFormat != nil || !strings.HasSuffix(chat.Messages[len(chat.Messages)-1].Content, "<source>检查 writeValue。</source>") {
 			t.Fatalf("formatter %+v", payload)
 		}
 		raw, _ := json.Marshal(chat)
-		if strings.Contains(string(raw), "CANARY") || strings.Contains(string(raw), "CURSOR_") || strings.Contains(string(raw), "之前") {
-			t.Fatal("reference context leaked to formatting")
+		if !strings.Contains(string(raw), "SCREEN_CANARY") || !strings.Contains(string(raw), "CURSOR_") || !strings.Contains(string(raw), "HISTORY_CANARY") || strings.Contains(string(raw), "之前") || strings.Contains(string(raw), "wrongValue") || strings.Contains(string(raw), "writeValley") {
+			t.Fatal("formatter lost references or received earlier recognition/aliases")
+		}
+		if strings.Contains(chat.Messages[0].Content, "CANARY") || strings.Contains(chat.Messages[0].Content, "CURSOR_") {
+			t.Fatal("reference became a system instruction")
 		}
 		return engine.Result{Text: "检查 writeValue。", InputTokens: 20, OutputTokens: 8}, nil
 	})
@@ -168,7 +171,7 @@ func TestSharedPipelineRunsSelectionBeforeTranslation(t *testing.T) {
 			}
 			return engine.Result{Text: `{"e0":"replace"}`, InputTokens: 12, OutputTokens: 4}, nil
 		}
-		if chat.ResponseFormat != nil || chat.Messages[len(chat.Messages)-1].Content != "<source>检查 writeValue。</source>" {
+		if chat.ResponseFormat != nil || !strings.HasSuffix(chat.Messages[len(chat.Messages)-1].Content, "<source>检查 writeValue。</source>") || !strings.Contains(chat.Messages[len(chat.Messages)-1].Content, "SCREEN_CANARY") {
 			t.Fatalf("unexpected Stage 2 translation input: %+v", chat.Messages[len(chat.Messages)-1])
 		}
 		if !strings.Contains(chat.Messages[0].Content, "English") || strings.Contains(chat.Messages[0].Content, "SCREEN_CANARY") {
@@ -178,5 +181,24 @@ func TestSharedPipelineRunsSelectionBeforeTranslation(t *testing.T) {
 	})
 	if err != nil || calls != 2 || result.Text != "Check writeValue." || result.Cleanup.Text != "检查 write value。" {
 		t.Fatalf("unexpected translation pipeline result: %+v calls=%d err=%v", result, calls, err)
+	}
+}
+
+func TestSharedPipelineKeepsReferencesWithoutSpellingCandidates(t *testing.T) {
+	pipeline, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := engine.Request{Scene: "chat", Text: "明天再讨论。", Context: domain.RewriteContext{Before: "讨论上线安排 CONTINUITY_CANARY"}}
+	calls := 0
+	_, err = pipeline.Run(context.Background(), request, func(_ context.Context, chat prompt.ChatRequest, _ bool) (engine.Result, error) {
+		calls++
+		if chat.ResponseFormat != nil || !strings.Contains(chat.Messages[len(chat.Messages)-1].Content, "CONTINUITY_CANARY") || !strings.HasSuffix(chat.Messages[len(chat.Messages)-1].Content, "<source>明天再讨论。</source>") {
+			t.Fatalf("reference-only editing request: %+v", chat)
+		}
+		return engine.Result{Text: request.Text}, nil
+	})
+	if err != nil || calls != 1 {
+		t.Fatalf("reference-only editing calls=%d err=%v", calls, err)
 	}
 }
