@@ -13,9 +13,10 @@ import (
 )
 
 const (
-	// Cold PowerShell/.NET provider loading and compilation can exceed five
-	// seconds on hosted Windows. No target is inspected during this phase.
-	contextStartupTimeout = 15 * time.Second
+	// Hosted Windows has spent about ten seconds compiling the reader, then
+	// still has to open the UI Automation client. No target is inspected
+	// during this phase.
+	contextStartupTimeout = 30 * time.Second
 	screenTimeout         = 1500 * time.Millisecond
 	contextReadyFrame     = "ARION_CONTEXT_READY\n"
 	maxContextOutput      = 32768 * 4 // Maximum UTF-8 bytes for the UTF-16 text limit.
