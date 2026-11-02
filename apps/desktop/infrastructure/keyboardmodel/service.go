@@ -102,7 +102,7 @@ func (s *Service) Enable(ctx context.Context) error {
 		s.set(func(st *rewriting.Status) { st.State, st.Installed = rewriting.Loading, true })
 		load, cancel := context.WithTimeout(ctx, 5*time.Second)
 		var worker *Worker
-		worker, err = Open(load, s.executable, filepath.Join(dir, "sentence-model.safetensors"))
+		worker, err = OpenModels(load, s.executable, filepath.Join(dir, "sentence-model.safetensors"), filepath.Join(dir, "sentence-model-desktop.safetensors"))
 		cancel()
 		if err == nil {
 			s.mu.Lock()

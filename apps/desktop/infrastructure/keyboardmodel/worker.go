@@ -6,7 +6,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"math"
 	"os/exec"
@@ -30,7 +29,18 @@ type Worker struct {
 
 // Open waits for model loading before any typing request is admitted.
 func Open(ctx context.Context, executable, model string) (*Worker, error) {
-	cmd := exec.Command(executable, model)
+	return openModels(ctx, executable, []string{model})
+}
+
+// OpenModels separates per-keystroke ranking from settled comparison weights.
+func OpenModels(ctx context.Context, executable, fast, settled string) (*Worker, error) {
+	if settled == "" {
+		return nil, errors.New("settled scoring model required")
+	}
+	return openModels(ctx, executable, []string{fast, settled})
+}
+func openModels(ctx context.Context, executable string, models []string) (*Worker, error) {
+	cmd := exec.Command(executable, models...)
 	input, err := cmd.StdinPipe()
 	if err != nil {
 		return nil, err
@@ -136,14 +146,18 @@ func (w *Worker) ScoreKeyboard(ctx context.Context, before, after string, texts 
 	if len(before) > 2048 || len(after) > 2048 || len(texts) == 0 || len(texts) > 28 {
 		return nil, errors.New("keyboard score bounds")
 	}
-	candidates := make([]map[string]any, len(texts))
-	for i, text := range texts {
+	for _, text := range texts {
 		if len(text) == 0 || len(text) > 256 {
 			return nil, errors.New("keyboard score text bounds")
 		}
-		candidates[i] = map[string]any{"id": fmt.Sprint(i), "text": text, "source": "comparison", "start": 0, "end": 1}
 	}
-	data, err := w.exchange(ctx, map[string]any{"score": true, "session": "comparison", "input": "a", "before": before, "after": after, "candidates": candidates})
+	request := struct {
+		Score  bool     `json:"score"`
+		Before string   `json:"before"`
+		After  string   `json:"after"`
+		Texts  []string `json:"texts"`
+	}{true, before, after, texts}
+	data, err := w.exchange(ctx, request)
 	if err != nil {
 		return nil, err
 	}

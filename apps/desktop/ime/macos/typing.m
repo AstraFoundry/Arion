@@ -582,18 +582,25 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
         ![result[@"session_id"] isEqual:activation] || !vocabularyInteger(result[@"generation"],&generation) || generation!=1 ||
         !vocabularyInteger(result[@"revision"],&resultRevision) || resultRevision!=revision) { return; }
     NSDictionary *completion=result[@"completion"];
+    if (completion && (![completion isKindOfClass:NSDictionary.class] || ![completion[@"input"] isKindOfClass:NSString.class] ||
+        ![completion[@"text"] isKindOfClass:NSString.class] || ![self verify])) return;
+    if (completion) {
+        const char *current=self.engine.api->get_input(self.session);
+        if (!current || ![completion[@"input"] isEqual:@(current)]) return;
+    }
     NSArray *order=result[@"candidates"];
     BOOL hasOrder=[order isKindOfClass:NSArray.class] && order.count>0;
     if (hasOrder || !completion) {
         if (![order isKindOfClass:NSArray.class] || order.count!=self.rankingCandidates.count) return;
-        size_t permutation[27], slots[27];
+        size_t permutation[27], slots[27]; unsigned int seen=0;
         if (order.count>27) return;
         for (NSUInteger i=0;i<order.count;++i) {
             if (![order[i] isKindOfClass:NSDictionary.class] || ![order[i][@"id"] isKindOfClass:NSString.class]) return;
             NSUInteger found=NSNotFound;
             for (NSUInteger j=0;j<self.rankingCandidates.count;++j)
                 if ([self.rankingCandidates[j][@"id"] isEqual:order[i][@"id"]]) found=j;
-            if (found==NSNotFound) return;
+            if (found==NSNotFound || (seen & (1u<<found))) return;
+            seen |= 1u<<found;
             permutation[i]=found; slots[i]=self.rankingSlots[i].unsignedIntegerValue;
         }
         if (![self verify] || ![self buildMenu] || !arion_menu_order_slots(&_menu,slots,order.count,permutation)) return;

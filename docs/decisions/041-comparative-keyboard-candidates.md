@@ -6,7 +6,9 @@ Accepted for implementation; model quality and installed-editor acceptance requi
 
 ## Decision
 
-A phonetic match authorizes a candidate to compete, not to take first place. The settled adapter proposes at most one whole-input phrase and independently validates pronunciation, then compares all eligible originals and the distinct proposal through the bundled Chinese language model. Generation uses the shared local completion interface and approved bounded caret/window context. Comparison reuses the existing keyboard worker and speech-priority lifecycle, without starting another model or introducing a cloud route.
+A phonetic match authorizes a candidate to compete, not to take first place. The settled adapter proposes at most one whole-input phrase and independently validates pronunciation, then compares all eligible originals and the distinct proposal through the bundled Chinese IME desktop-preset language model. Generation uses the shared local completion interface and approved bounded caret/window context. Comparison reuses the existing keyboard worker and speech-priority lifecycle, with separate resident fast and desktop scoring weights in the same process, without introducing a cloud route.
+
+Both keyboard weight files are hash-verified from the model catalog and staged during packaging; typing never downloads them. The keyboard preset remains on the fast lane. The desktop preset handles settled comparison because the keyboard preset rejected a valid technical correction in the exposed regressions.
 
 The scorer returns actual mean log probabilities for each alternative followed by up to sixteen Unicode characters of the approved following text, conditioned on approved preceding text. The model bounds its preceding context internally. Window text informs generation, not this small scorer. The initial development experiment with an LLM-written ranking and candidate-aware generation regressed; the final generator decodes independently to avoid anchoring to an incorrect original. Numeric scoring is a fluency and nearby-context signal, not calibrated semantic confidence or a replica of a competitor's fusion model.
 

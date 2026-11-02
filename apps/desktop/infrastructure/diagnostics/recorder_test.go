@@ -451,6 +451,7 @@ func TestKeyboardRankingEventsCanBeExported(t *testing.T) {
 	r.Record(Entry{Event: "keyboard_ranking_configuration"})
 	r.Record(Entry{Event: "keyboard_ranking_trace", Reason: "proposal_applied"})
 	r.Record(Entry{Event: "keyboard_ranking_trace", Reason: "context_window_selected"})
+	r.Record(Entry{Event: "keyboard_ranking_trace", Reason: "completion_comparison_rejected"})
 	for _, reason := range []string{domain.DetailContextWindowNodes, domain.DetailContextWindowDepth, domain.DetailContextWindowText,
 		domain.DetailContextWindowRange, domain.DetailContextWindowFrame, domain.DetailContextWindowEmpty, domain.DetailContextWindowTimeout} {
 		r.Record(Entry{Event: "keyboard_ranking_trace", Reason: reason, Code: domain.CodeTargetUnsupported})
@@ -469,7 +470,7 @@ func TestKeyboardRankingEventsCanBeExported(t *testing.T) {
 	for _, b := range files {
 		combined = append(combined, b...)
 	}
-	for _, event := range []string{"keyboard_ranking_configuration", "keyboard_ranking_trace", domain.DetailContextWindowNodes, domain.DetailContextWindowDepth, domain.DetailContextWindowText, domain.DetailContextWindowRange, domain.DetailContextWindowFrame, domain.DetailContextWindowEmpty, domain.DetailContextWindowTimeout, "no_comparable_candidates", "proposal_applied", "context_window_selected", "keyboard_ranking", "chinese-ime-lm-4m-int8"} {
+	for _, event := range []string{"keyboard_ranking_configuration", "keyboard_ranking_trace", domain.DetailContextWindowNodes, domain.DetailContextWindowDepth, domain.DetailContextWindowText, domain.DetailContextWindowRange, domain.DetailContextWindowFrame, domain.DetailContextWindowEmpty, domain.DetailContextWindowTimeout, "no_comparable_candidates", "proposal_applied", "context_window_selected", "completion_comparison_rejected", "keyboard_ranking", "chinese-ime-lm-4m-int8"} {
 		if !bytes.Contains(combined, []byte(event)) {
 			t.Fatal("missing diagnostic", event)
 		}

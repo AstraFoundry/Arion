@@ -49,6 +49,7 @@ Detailed ranking events are recorded only in session-only developer mode: in Abo
 
 | Reason | Meaning |
 | --- | --- |
+| `completion_comparison_rejected` | A phonetic-valid generated proposal did not win comparison against existing candidates. The original-candidate order may still change; no text or score is logged. |
 | `completion_phonetic_mismatch` | Nonempty model output failed complete syllable/dictionary validation; original candidates remain available. |
 | `no_comparable_candidates` | Native filtering left fewer than two Han candidates covering the leader's input range; count is 0 or 1. Multiword input often has one full-range sentence and several shorter prefix words. No ranking model ran; negotiated whole-input completion may still run. |
 | `navigation` / `caret_not_at_end` | The menu was navigated, expanded or paged, or the caret moved inside the composition. |
