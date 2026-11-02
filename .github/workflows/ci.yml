@@ -408,7 +408,7 @@ jobs:
         run: node scripts/ci-required-checks.mjs
 
   # Start native with portable. Cancel the run only after portable has already failed.
-  # Release callers grant contents: read, so this request is denied there and native finishes.
+  # The pull-request event guard keeps main and release jobs running to completion.
   cancel-on-portable-failure:
     timeout-minutes: 5
     needs: portable

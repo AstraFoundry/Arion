@@ -4,37 +4,44 @@
     {
       "login": "stvlynn",
       "profile": "https://github.com/stvlynn",
-      "contributions": 193,
+      "contributions": 229,
       "avatar": "stvlynn.jpg",
       "avatarSHA256": "38a5190eef9618e3108215ad07bff02f4aa028f87eada8fc123c71059cc3c988"
     },
     {
       "login": "zacharyhaha",
       "profile": "https://github.com/zacharyhaha",
-      "contributions": 77,
+      "contributions": 119,
       "avatar": "zacharyhaha.png",
       "avatarSHA256": "877508b76570c2e058db9da4fbb2357b20968f2d7fcb5a9a455fc072dd1759be"
     },
     {
       "login": "claude",
       "profile": "https://github.com/claude",
-      "contributions": 58,
+      "contributions": 66,
       "avatar": "claude.png",
-      "avatarSHA256": "f0afb27ccee414d94affd2af8cb1b1103fe59fea43784c1b685be6c7966c343e"
-    },
-    {
-      "login": "gavi102803",
-      "profile": "https://github.com/gavi102803",
-      "contributions": 11,
-      "avatar": "gavi102803.jpg",
-      "avatarSHA256": "a5349bc6c0b955f0e69f02a6d0081ff325b5950c4947958eb470c2ca1fb68dca"
+      "avatarSHA256": "5857dc629b0ff3a13d5fab5ec5eab3bdc8b838355b8d0360efc39a032781ade7"
     },
     {
       "login": "AllenWriter",
       "profile": "https://github.com/AllenWriter",
-      "contributions": 5,
+      "contributions": 19,
       "avatar": "AllenWriter.png",
       "avatarSHA256": "2b32473de6bbc115fface1f7238c1e85a9787a4188526cde5f7a35326805086c"
+    },
+    {
+      "login": "gavi102803",
+      "profile": "https://github.com/gavi102803",
+      "contributions": 15,
+      "avatar": "gavi102803.jpg",
+      "avatarSHA256": "a5349bc6c0b955f0e69f02a6d0081ff325b5950c4947958eb470c2ca1fb68dca"
+    },
+    {
+      "login": "zachary23kai-max",
+      "profile": "https://github.com/zachary23kai-max",
+      "contributions": 12,
+      "avatar": "zachary23kai-max.png",
+      "avatarSHA256": "e36dddc051172ebd19c2342af281e4b3fc14dfc2d400931019106163c7849981"
     }
   ]
 }

@@ -1,3 +1,33 @@
+## 0.1.0-alpha.22
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Add two-stage local keyboard ranking and contextual whole-input candidates, with bundled scoring resources and inference resuming after dictation.
+- Let the Chinese/English switch use Shift or Caps Lock, learn English words confirmed by switching, and require full spelling for unfamiliar uncommon English words.
+- Use reference context in final polishing and consistently apply the option to omit sentence-final punctuation.
+- Bring account continuation, polishing and translation into onboarding, and wait for the platform's usage-sharing answer before reporting usage.
+- Improve vocabulary editing, Windows typography and the tray panel; disable clipboard-history entry points when its master switch is off.
+- Improve delivery to the frontmost app, retry temporary Windows clipboard contention, and serialize microphone startup and cleanup.
+- Tighten relay, sign-in callback and update-file bounds, and reuse native build outputs in CI.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable for this preview. Model weights download separately. Native Windows notification delivery, clean-machine acceptance, production old-to-new update acceptance and real-service cloud/translation acceptance remain open. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for acceptance limits and verification.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 新增两阶段本地输入法排序和结合上下文的整段候选，随包提供评分资源，并在听写结束后恢复输入法推理。
+- 支持使用 Shift 或 Caps Lock 切换中英文，学习切换时确认的英文词；不熟悉的低频英文词需完整拼写才进入候选。
+- 最终润色使用参考上下文，并统一执行省略句末标点的设置。
+- 在首次引导中加入账户登录、润色和翻译设置；等待平台返回用量共享选择后再上报用量。
+- 改进词库编辑、Windows 字体与托盘面板；关闭剪贴板历史总开关时同步关闭相关入口。
+- 改进向前台应用交付文本的行为，重试 Windows 剪贴板的短暂占用，并串行处理麦克风启动和清理。
+- 加强中继请求、登录回调和更新文件的边界检查，并在 CI 中复用原生构建产物。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证；Windows 预览版仍无发布者签名。模型权重单独下载。Windows 原生通知投递、全新机器、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.0-alpha.21
 
 ### English
