@@ -578,7 +578,7 @@ func (c *Coordinator) releaseComposition(r *run) {
 }
 
 func (c *Coordinator) finalize(r *run) {
-	draft, err := r.recognizer.Finish(r.ctx)
+	draft, err := c.finishRecognizer(r)
 	if err != nil {
 		c.failErr(r, err, domain.CodeModelUnsupported)
 		return
