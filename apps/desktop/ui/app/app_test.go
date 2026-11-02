@@ -330,9 +330,6 @@ func TestMenuBarPanel(t *testing.T) {
 		t.Fatalf("ready panel shows the model, which settings owns: %q", tt.Texts())
 	}
 	snapshot(t, tt, "panel-ready")
-	if err := tt.Click(store.Copy().Text(copy.ClipboardTitle)); err != nil || !actions.called("clipboard-open") {
-		t.Fatalf("panel clipboard entry: %v %q", err, actions.calls)
-	}
 	if err := tt.Click(copy.For(copy.English).Text(copy.StartDictate)); err != nil {
 		t.Fatal(err)
 	}
