@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -45,6 +46,12 @@ func TestLocalKeyboardResumesAfterDictation(t *testing.T) {
 	if _, err = fast.RankKeyboard(ctx, req); err != nil {
 		t.Fatal(err)
 	}
+	generated := req
+	generated.Input = "chonggyxia"
+	generated.Preedit = "chong g y xia"
+	generated.Before = "我想要把这个项目"
+	generated.AllowCompletion = true
+	generated.Candidates = []domain.KeyboardCandidate{{Candidate: domain.Candidate{ID: "c0", Text: "崇高一下", Source: "sentence"}, End: len(generated.Input)}}
 	for _, terminal := range []contracts.Event{
 		{Kind: contracts.CommitResultReady, State: domain.Completed},
 		{Kind: contracts.ErrorOccurred, State: domain.Failed},
@@ -61,12 +68,6 @@ func TestLocalKeyboardResumesAfterDictation(t *testing.T) {
 		if _, err = fast.RankKeyboard(ctx, req); err != nil {
 			t.Fatalf("fast did not resume after %s: %v", terminal.Kind, err)
 		}
-		generated := req
-		generated.Input = "chonggyxia"
-		generated.Preedit = "chong g y xia"
-		generated.Before = "我想要把这个项目"
-		generated.AllowCompletion = true
-		generated.Candidates = []domain.KeyboardCandidate{{Candidate: domain.Candidate{ID: "c0", Text: "崇高一下", Source: "sentence"}, End: len(generated.Input)}}
 		started := time.Now()
 		out, err := (&completion.Ranker{Chat: settled}).RankKeyboard(ctx, generated)
 		if err != nil || out.Completion == nil || out.Completion.Text != "重构一下" {
@@ -74,4 +75,20 @@ func TestLocalKeyboardResumesAfterDictation(t *testing.T) {
 		}
 		t.Logf("actual local fast and generated completion resumed after %s/%s in %s", terminal.Kind, terminal.State, time.Since(started))
 	}
+	t.Run("bounded-window", func(t *testing.T) {
+		generated.Application = "editor"
+		target := &contextTargets{app: "editor", screen: strings.Repeat("Earlier visible window line.\n", 600) + "任务：重构一下这个项目。"}
+		selected := false
+		r := keyboardContext{targets: target, enabled: func() bool { return true }, cursor: func() bool { return false },
+			trace:  func(reason string, _ error) { selected = selected || reason == "context_window_selected" },
+			ranker: &completion.Ranker{Chat: settled}}
+		call, stop := context.WithTimeout(ctx, 12*time.Second)
+		defer stop()
+		started := time.Now()
+		out, err := r.RankKeyboard(call, generated)
+		if err != nil || !selected || out.Completion == nil {
+			t.Fatalf("large safe window did not produce a real completion: %+v %v", out, err)
+		}
+		t.Logf("synthetic window bytes=%d actual generated=%q elapsed=%s", len(target.screen), out.Completion.Text, time.Since(started))
+	})
 }

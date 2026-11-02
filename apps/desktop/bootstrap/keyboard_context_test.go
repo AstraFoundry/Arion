@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"arion.local/core/contracts"
@@ -16,6 +17,7 @@ type contextTargets struct {
 	sensitive                 bool
 	selected                  string
 	readError                 error
+	screen                    string
 }
 
 func (t *contextTargets) Capture(_ context.Context, id contracts.Identity) (contracts.TargetSnapshot, error) {
@@ -27,7 +29,42 @@ func (t *contextTargets) ReadContext(_ context.Context, id contracts.Identity, t
 	if t.readError != nil {
 		return contracts.ContextSnapshot{}, t.readError
 	}
-	return contracts.ContextSnapshot{Identity: id, Target: token, SafeToRead: true, Before: "beforepreedit", Selected: t.selected, After: "after", Screen: "window"}, nil
+	screen := "window"
+	if t.screen != "" {
+		screen = t.screen
+	}
+	return contracts.ContextSnapshot{Identity: id, Target: token, SafeToRead: true, Before: "beforepreedit", Selected: t.selected, After: "after", Screen: screen}, nil
+}
+
+func TestKeyboardLargeWindowReachesRanker(t *testing.T) {
+	for _, cursor := range []bool{true, false} {
+		t.Run(fmt.Sprint(cursor), func(t *testing.T) {
+			target := &contextTargets{app: "editor", screen: strings.Repeat("visible context ", 1500) + "window tail"}
+			called, selected := false, false
+			r := keyboardContext{targets: target, enabled: func() bool { return true }, cursor: func() bool { return cursor }, trace: func(reason string, err error) {
+				if reason == "context_window_selected" && err == nil {
+					selected = true
+				} else {
+					t.Fatalf("unexpected context trace %s: %v", reason, err)
+				}
+			}, ranker: contextRankFunc(func(_ context.Context, req contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+				called = true
+				wantBefore := "confirmed native context"
+				if cursor {
+					wantBefore = "before"
+				}
+				if req.Before != wantBefore || len(req.Screen) != domain.MaxKeyboardScreenContextUnits || !strings.HasSuffix(req.Screen, "window tail") {
+					t.Fatal("nearby context selection changed")
+				}
+				return contracts.KeyboardRankResult{}, nil
+			})}
+			req := contracts.KeyboardRankRequest{Identity: contracts.Identity{SessionID: "session", Generation: 1}, Application: "editor", Before: "confirmed native context", Preedit: "preedit", Revision: 1, Input: "word", Candidates: []domain.KeyboardCandidate{{Candidate: domain.Candidate{ID: "c0", Text: "字", Source: "phrase"}, End: 4}}}
+			_, err := r.RankKeyboard(context.Background(), req)
+			if err != nil || !called || !selected || target.captures != target.discards {
+				t.Fatalf("large safe window did not reach model: %v", err)
+			}
+		})
+	}
 }
 func (t *contextTargets) Discard(contracts.TargetToken) { t.discards++ }
 

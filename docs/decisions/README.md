@@ -51,6 +51,7 @@ Write an ADR when the decision:
 - [037: Keyboard context defaults and developer diagnostics](037-keyboard-context-and-developer-diagnostics.md).
 - [038: Contextual keyboard completion](038-contextual-keyboard-completion.md).
 - [039: Focused onboarding](039-focused-onboarding.md) — required offline dictation setup, explicit first download and optional configuration in Settings.
+- [040: Bounded keyboard context](040-bounded-keyboard-context.md) — nearby caret selection, bounded window context and content-free selection diagnostics.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

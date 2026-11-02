@@ -59,7 +59,8 @@ Detailed ranking events are recorded only in session-only developer mode: in Abo
 | `context_window_nodes` / `context_window_depth` | The shared macOS window traversal exceeded its node or depth bound; no partial text is used. |
 | `context_window_text` / `context_window_range` | Window text exceeded its bound or the provider returned an invalid visible character range. |
 | `context_window_frame` / `context_window_empty` / `context_window_timeout` | Captured window geometry was unavailable, no visible text was collected, or the read deadline expired. |
-| `context_marked_mismatch` / `context_bounds` | Captured caret text did not end in the owned preedit, or window context exceeded its bound. |
+| `context_marked_mismatch` / `context_bounds` | Captured caret text did not match the owned preedit; `context_bounds` identifies the historical keyboard window-byte rejection and remains readable in older logs. |
+| `context_window_selected` | Successful AX window context was selected to the keyboard screen budget under ADR 040; inference continues. No source or selected text is logged. |
 | `proposal_sent` / `delivery_failed` | The bridge sent the proposal or transport failed. Delivery does not prove native application. |
 | `proposal_applied` | The verified native host acknowledged publication to its candidate snapshot for a pending proposal at the current activation/revision. This is not a user selection or proof of final OS rendering. |
 

@@ -80,13 +80,13 @@ func (r keyboardContext) RankKeyboard(ctx context.Context, req contracts.Keyboar
 		if snapshot.Selected == "" {
 			snapshot.Before = strings.TrimSuffix(snapshot.Before, req.Preedit)
 		}
+		req.Before, req.After = snapshot.Before, snapshot.After
 	}
-	bounded := (domain.RewriteContext{Before: snapshot.Before, After: snapshot.After}).Bounded()
+	bounded, selected := (domain.RewriteContext{Before: req.Before, After: req.After, Screen: snapshot.Screen}).KeyboardBounded()
 	req.Before, req.After = bounded.Before, bounded.After
-	// Screen context is bounded separately; do not silently truncate evidence.
-	if len(snapshot.Screen) > 8192 {
-		return fail("context_bounds", domain.Fail(domain.CodeContractUnsupported, "keyboard screen context exceeds bounds"))
+	req.Screen = bounded.Screen
+	if selected && r.trace != nil {
+		r.trace("context_window_selected", nil)
 	}
-	req.Screen = strings.TrimSpace(snapshot.Screen)
 	return r.ranker.RankKeyboard(ctx, req)
 }
