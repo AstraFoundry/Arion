@@ -2,7 +2,6 @@
 title: Arion 0.1.1：最初の正式リリース
 description: Arion 0.1.1 を本日公開しました。Apple シリコン搭載の Mac と Windows x64 に対応します。音声入力、整文、翻訳、オフラインのピンインキーボード、クリップボード履歴はすべてあなたのコンピューター上で動き、AGPL-3.0 のオープンソースです。
 date: 2026-11-01
-authors: stvlynn
 category: announcement
 tags: [リリース, 音声入力, ピンイン入力, オフライン]
 image: /blog/arion-0-1-1/cover.webp

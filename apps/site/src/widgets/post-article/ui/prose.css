@@ -66,7 +66,7 @@ html:is(:lang(zh-CN), :lang(ja)) .post-grid {
 
 .post-summary {
   font-family: var(--post-font);
-  font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
+  font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
   line-height: 1.5;
   color: var(--muted-foreground);
   text-wrap: pretty;
@@ -128,16 +128,18 @@ html:is(:lang(zh-CN), :lang(ja)) .post-grid {
 
 .post-prose > * {
   font-family: var(--post-font);
-  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
-  line-height: 1.65;
+  font-size: clamp(1rem, 0.96rem + 0.15vw, 1.03125rem);
+  line-height: 1.6;
   font-weight: 400;
   margin-top: 1.4em;
   text-wrap: pretty;
   font-variant-numeric: proportional-nums oldstyle-nums;
 }
 
+/* Chinese and Japanese glyphs fill the em square, so 16px reads like 17px Latin. */
 html:is(:lang(zh-CN), :lang(ja)) .post-prose > :not(h2, h3) {
-  line-height: 1.85;
+  font-size: 1rem;
+  line-height: 1.8;
   font-variant-numeric: normal;
 }
 

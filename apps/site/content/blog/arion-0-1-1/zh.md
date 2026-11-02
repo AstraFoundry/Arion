@@ -2,7 +2,6 @@
 title: Arion 0.1.1：第一个正式版本
 description: Arion 0.1.1 今天发布，支持 Apple 芯片 Mac 和 Windows x64。语音听写、润色、翻译、离线拼音键盘和剪贴板历史都在你的电脑上运行，以 AGPL-3.0 协议开源。
 date: 2026-11-01
-authors: stvlynn
 category: announcement
 tags: [发布, 语音输入, 拼音输入法, 离线]
 image: /blog/arion-0-1-1/cover.webp
