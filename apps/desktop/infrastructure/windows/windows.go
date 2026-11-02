@@ -140,6 +140,11 @@ func focusState(foreground uintptr) guiThreadInfo {
 
 func focusOf(foreground uintptr) uintptr { return focusState(foreground).Focus }
 
+// arionWindow reports MyGo top-level windows. Those are Arion's own UI.
+func arionWindow(hwnd uintptr) bool {
+	return strings.HasPrefix(className(hwnd), "MyGo")
+}
+
 func className(hwnd uintptr) string {
 	buffer := make([]uint16, 128)
 	n, _, _ := procGetClassNameW.Call(hwnd, uintptr(unsafe.Pointer(&buffer[0])), uintptr(len(buffer)))
@@ -299,9 +304,9 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 	}
 	var pid uint32
 	procGetWindowThreadProcessId.Call(foreground, uintptr(unsafe.Pointer(&pid)))
-	// Dictation must not paste into Arion. That is not a positive observation
-	// that the user has no editor open.
-	if pid == uint32(os.Getpid()) {
+	// Dictation must not paste into Arion's own windows. The owned editor
+	// fixture shares the test process, so process identity alone is not enough.
+	if pid == uint32(os.Getpid()) && arionWindow(foreground) {
 		return copyResult(false)
 	}
 	current := focusState(foreground)
