@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted for macOS implementation. [ADR 041](041-comparative-keyboard-candidates.md) adds comparative admission and negotiated full ordering. Updates the settled lane and ID-only boundary of [ADR 036](036-two-stage-keyboard-ranking.md). Installed-editor acceptance and broad quality evaluation remain separate gates.
+Accepted for macOS implementation. [ADR 042](042-comparative-keyboard-candidates.md) adds comparative admission and negotiated full ordering. Updates the settled lane and ID-only boundary of [ADR 036](036-two-stage-keyboard-ranking.md). Installed-editor acceptance and broad quality evaluation remain separate gates.
 
 ## Decision
 
@@ -16,7 +16,7 @@ The completion bounds are 64 raw lowercase ASCII Pinyin/apostrophe bytes, 2–32
 
 Native insertion replaces only the current unselected whole-input Rime menu with a translation containing the provisional candidate, the current displayed engine-prefix permutation, and the remaining lazy candidate stream. For hosts without full-order negotiation, the same-revision fast promotion survives from slot two; negotiated hosts apply the settled original-candidate order before insertion; a matching generated text is removed from the original stream. English/Emoji positions retain their relative order after the inserted first choice. The fused engine order is published without reapplying the display ranker. The prefix must be a complete bounded permutation before mutation, so invalid indices cannot remove or duplicate original choices. It does not insert editor text. The candidate has `arion_completion` provenance; normal Rime selection/commit delivers it, and the original candidates remain selectable. It is a SimpleCandidate, not a dictionary Phrase; a proposal cannot enter ordinary Chinese dictionary learning. Existing confirmed context learning still observes actual commits. The native host freezes further automatic replies after applying a completion, preventing old engine-ID mappings from being reused.
 
-Context acquisition reuses Accessibility. AX exposes a marked composition either before a collapsed caret or as the exact selected text. Both representations require an exact preedit match; selected preedit is not removed a second time from preceding text. Unrelated selections, changed targets and unreadable windows still reject the request. [ADR 040](040-bounded-keyboard-context.md) selects bounded caret/window text from a successful safe snapshot instead of rejecting a large window at the keyboard byte boundary. No OCR or cross-field cached context is substituted.
+Context acquisition reuses Accessibility. AX exposes a marked composition either before a collapsed caret or as the exact selected text. Both representations require an exact preedit match; selected preedit is not removed a second time from preceding text. Unrelated selections, changed targets and unreadable windows still reject the request. [ADR 041](041-bounded-keyboard-context.md) selects bounded caret/window text from a successful safe snapshot instead of rejecting a large window at the keyboard byte boundary. No OCR or cross-field cached context is substituted.
 
 The shared macOS window reader uses [CTX-02](../../specs/009-contextual-rewrite.md#rewrite-context) bounds, sized for observed Chromium/Electron depth and native list breadth, and accepts static labels exposed through `AXTitle`. It still rejects partial reads, hidden/secure/offscreen branches and target changes. Keyboard developer traces distinguish node, depth, text, range, geometry, empty and timeout failures.
 

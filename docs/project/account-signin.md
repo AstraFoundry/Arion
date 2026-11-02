@@ -18,11 +18,11 @@ These `runtime.Actions` methods return immediately. Work continues off the main 
 
 | Method | Effect |
 | --- | --- |
-| `SignIn(shareUsage)` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. `shareUsage` is a service consent argument; Settings passes `false` and uses the separate account switch to change consent. |
+| `SignIn(shareUsage)` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. `shareUsage` is a service consent argument. Onboarding and Settings pass `false` and use the account switch to change consent. |
 | `CancelSignIn()` | Invalidates the in-flight sign-in or refresh. A callback that arrives afterwards is not exchanged. A refresh token already stored for that attempt is deleted and revoked. |
 | `RefreshAccount()` | Explicit entitlement recheck; rotates the stored refresh token and replaces the in-memory access token. Phase `refreshing`. |
 | `SignOut()` | Revokes the refresh token, then deletes that credential item. Local keys and local memory stay. |
-| `SetUsageSharing(share)` | Records the signed-in account's answer to sharing usage data, from the Settings › Account switch or a checked sign-in box. `UsageSaving` while it runs; the platform's confirmation sets `UsageSharing` and starts or stops reporting. |
+| `SetUsageSharing(share)` | Records the signed-in account's answer to sharing usage data, from the usage-sharing switch in onboarding or Settings › Account. `UsageSaving` while it runs; the platform's confirmation sets `UsageSharing` and starts or stops reporting. |
 | `CheckStoredAccount()` | Reads whether a refresh token is stored, with `Service.Stored`. This does nothing unless `Phase` is `signed_out` and `Credential` is unknown. A result is dropped when a sign-in, refresh, cancel or sign-out started during the read. |
 
 One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_PROGRESS`. `JoinHostedSyncWaitlist` does the same while one is running; views do not call it.
@@ -48,7 +48,7 @@ The loopback answers `200` with `Cache-Control: no-store`, `Referrer-Policy: no-
 
 ## Views
 
-Account setup is optional and begins in Settings > Account after required onboarding. The signed-out card offers Sign in and localized product Terms of Use and Privacy Policy links before opening browser authentication. Sign-in does not authorize usage sharing.
+Account setup is optional and shares the welcome page. That page is still shown when the account is disabled, without sign-in controls. Signed out, it offers **Continue with Google**, **Continue with GitHub** and **Continue with email**, or one **Sign in** button when the issuer is custom. Each calls `SignIn(false)`. Below them are localized links to the Arion site’s **Terms of Use** and **Privacy Policy**. The muted footer button is **Continue locally**, which moves on with no account and no network. While a sign-in is running, the page shows the browser wait with Cancel and does not move on. After sign-in, the page shows the account card and the same usage-sharing switch as Settings. Sign-in does not authorize usage sharing.
 
 The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. Its hover and selected fills are the sidebar's neutral grays. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card reports automatic restoration and offers **Sign out**, which revokes and deletes that token without requiring a session in memory. There is no Reconnect control. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in with the hosted-sync entitlement, a Hosted sync card follows. Without the entitlement, views do not offer a waitlist. Links to the AstraFoundry account portal follow (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
 
@@ -162,13 +162,15 @@ Signing in identifies the account; sharing usage data is the account's own
 answer, held by the platform, so the web portal, other devices and this app see
 the same choice. Arion never treats signing in alone as permission.
 
-Onboarding has no sign-in or usage-sharing prompt. Settings sign-in passes no consent; the account switch remains the explicit place to change the answer. The service retains its consent-bound sign-in contract for callers that explicitly supply it.
+Onboarding sign-in passes no consent. After sign-in, that step shows the same usage-sharing switch as Settings › Account. The switch remains the explicit place to change the answer. The service retains its consent-bound sign-in contract for callers that explicitly supply it.
 
 After successful sign-in or refresh, `Service.ReadUsageConsent`
 reads the answer with `GET {issuer}/api/v1/usage/consent?productSlug=arion` and
 the access token (`UsageLoading` meanwhile). It is `undecided`, `shared` or
 `not_shared` (`Account.UsageSharing`) and replaces the token's claim for
-reporting. Settings › Account shows a **Share data to join the product improvement program** switch while signed
+reporting. Reporting waits for this answer: a valid claim alone never starts
+it, and a failed read leaves it off, so reporting runs only while the switch
+shows sharing. Settings › Account shows a **Share data to join the product improvement program** switch while signed
 in.
 
 The switch records the answer with `Service.RecordUsageConsent`:
@@ -212,6 +214,11 @@ Transient failures retry after 15 seconds with exponential delay capped at five
 minutes. Authorization refusals stop collection and sending until a fresh token
 allows them; token expiry waits for the existing account maintenance flow.
 Offline and scripted E2E profiles do not start reporting.
+
+The private evaluation repository checks this flow against a local
+astrafoundry.si (its `usage:local-e2e` script): sign-in on a new account, the
+switch, and a second install of the same account, asserting throughout that
+reporting never runs on an answer the switch does not show. See its README.
 
 The account portal's Data link opens `/account/data` (standard issuer only),
 where users can also withdraw or re-enable sharing.

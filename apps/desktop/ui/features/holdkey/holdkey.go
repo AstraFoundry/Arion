@@ -6,6 +6,7 @@ import (
 	platform "runtime"
 
 	"arion.local/desktop/ui/shared/copy"
+	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
@@ -33,23 +34,31 @@ func TranslateSetting(c *ui.Context, store runtime.Store, state *PickerState) {
 }
 
 func picker(c *ui.Context, store runtime.Store, state *PickerState, translation, setting bool) {
-	pickerFor(c, store, state, translation, setting, false)
+	pickerFor(c, store, state, translation, setting, false, "", "")
+}
+
+// PolishShortcut is the dictation shortcut labeled as polish, for onboarding.
+func PolishShortcut(c *ui.Context, store runtime.Store, state *PickerState) {
+	pickerFor(c, store, state, false, true, false, copy.PolishLabel, copy.HoldKeyDetail)
 }
 
 // ClipboardSetting uses the native recorder shared with dictation and translation.
 func ClipboardSetting(c *ui.Context, store runtime.Store, state *PickerState) {
-	pickerFor(c, store, state, false, true, true)
+	pickerFor(c, store, state, false, true, true, "", "")
 }
 
-func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, translation, setting, clipboard bool) {
+func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, translation, setting, clipboard bool, title, detail copy.Key) {
 	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
 	prefs := store.State.Preferences
 	owner, current, blocked := "dictation", prefs.HoldKey, prefs.TranslateKey
-	label, detail, edit, conflict := copy.HoldKeyLabel, copy.HoldKeyDetail, copy.HoldKeyEdit, copy.HoldKeyConflict
+	label, rowDetail, edit, conflict := copy.HoldKeyLabel, copy.HoldKeyDetail, copy.HoldKeyEdit, copy.HoldKeyConflict
+	if title != "" {
+		label, rowDetail = title, detail
+	}
 	set := store.Actions.SetHoldKey
 	if translation {
 		owner, current, blocked = "translation", prefs.TranslateKey, prefs.HoldKey
-		label, detail, edit, conflict = copy.TranslateKeyLabel, copy.TranslateKeyDetail, copy.TranslateKeyEdit, copy.TranslateKeyConflict
+		label, rowDetail, edit, conflict = copy.TranslateKeyLabel, copy.TranslateKeyDetail, copy.TranslateKeyEdit, copy.TranslateKeyConflict
 		set = store.Actions.SetTranslateKey
 		if !TranslationEnabled(store) {
 			// Preserve the assignment displayed during the closing animation.
@@ -59,7 +68,7 @@ func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, translati
 	clipboardKey, _ := runtime.ClipboardShortcutKey(platform.GOOS, prefs.Clipboard.Shortcut)
 	if clipboard {
 		owner, current = "clipboard", clipboardKey
-		label, detail, edit = copy.ClipboardShortcut, copy.ClipboardShortcutHint, copy.ClipboardShortcutEdit
+		label, rowDetail, edit = copy.ClipboardShortcut, copy.ClipboardShortcutHint, copy.ClipboardShortcutEdit
 		set = func(key runtime.HoldKey) { store.Actions.SetClipboardShortcut(string(key)) }
 	}
 	validate := func(key runtime.HoldKey) copy.Key {
@@ -90,7 +99,7 @@ func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, translati
 	column.Children(func() {
 		control := func() { shortcutField(c, store, state, owner, current, edit, set, validate, setting) }
 		if setting {
-			kit.TipRow(c, tokens, messages.Text(label), messages.Text(detail), control)
+			kit.TipRow(c, tokens, messages.Text(label), messages.Text(rowDetail), control)
 		} else {
 			control()
 		}
@@ -192,7 +201,11 @@ func ListenerStatus(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		message, action = copy.HoldKeyNeedsMonitoring, copy.Allow
 		repair = store.Actions.RequestInputMonitoring
 	}
-	kit.Notice(c.Key("shortcut-listener-status"), tokens, tokens.Danger, messages.Text(message), func() {
+	ui.Row(c.Key("shortcut-listener-status")).Gap(10).AlignItems(ui.Center).Children(func() {
+		ui.Row(c).Grow(1).Shrink(1).Gap(6).AlignItems(ui.Center).Children(func() {
+			ui.Icon(c, icons.TriangleAlert).FontSize(13).TextColor(tokens.Danger)
+			ui.Text(c, messages.Text(message)).FontSize(theme.Caption).TextColor(tokens.Text).SingleLine()
+		})
 		if kit.Button(c, tokens, kit.Outline, messages.Text(action), true).Clicked() {
 			repair()
 		}

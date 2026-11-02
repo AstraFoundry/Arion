@@ -218,9 +218,18 @@ static CFTypeRef selected_range(AXUIElementRef element) {
 
 int arion_selection_matches(void *element, void *selection) {
     if (!selection) return 1;
-    CFTypeRef current = selected_range((AXUIElementRef)element);
-    int same = current && CFEqual(current, (CFTypeRef)selection);
-    if (current) CFRelease(current);
+    if (!element) return 0;
+    CFTypeRef range = NULL;
+    AXError error = AXUIElementCopyAttributeValue((AXUIElementRef)element, kAXSelectedTextRangeAttribute, &range);
+    // A failed re-read is not evidence that the caret moved.
+    if (error != kAXErrorSuccess) {
+        if (range) CFRelease(range);
+        return 1;
+    }
+    int same = range && CFGetTypeID(range) == AXValueGetTypeID() &&
+        AXValueGetType((AXValueRef)range) == kAXValueCFRangeType &&
+        CFEqual(range, (CFTypeRef)selection);
+    if (range) CFRelease(range);
     return same;
 }
 

@@ -38,6 +38,14 @@ static size_t candidateIndex(RimeApi *api,uintptr_t session,const std::string &e
     require(found!=SIZE_MAX,"required real candidate absent");
     return found;
 }
+static bool hasCandidate(RimeApi *api,uintptr_t session,const std::string &expected) {
+    char **texts=nullptr; size_t count=0;
+    require(arion_pinyin_candidates(api,session,0,189,&texts,&count),"candidate enumeration failed");
+    bool found=false;
+    for (size_t i=0;i<count;i++) found=found || expected==texts[i];
+    arion_pinyin_candidates_dispose(texts,count);
+    return found;
+}
 static void selectPhrase(RimeApi *api,uintptr_t session,const char *keys,const char *expected,const char *name) {
     arion_pinyin_clear(api,session); type(api,session,keys);
     require(arion_pinyin_select(api,session,candidateIndex(api,session,expected),0),"phrase selection failed");
@@ -84,6 +92,20 @@ int main(int argc,char **argv) {
         auto first=arion_pinyin_create_session(api),second=arion_pinyin_create_session(api);
         require(first && second && first!=second,"independent sessions unavailable");
         arion_pinyin_set_options(api,first,0,0,0); arion_pinyin_set_options(api,second,0,0,0);
+        type(api,first,"hebri");
+        require(!hasCandidate(api,first,"Hebrides"),"unselected uncommon completion leaked into engine pages");
+        arion_pinyin_clear(api,first); type(api,first,"hebrides");
+        require(arion_pinyin_highlight(api,first,candidateIndex(api,first,"Hebrides"),0),"highlight uncommon exact English");
+        require(arion_pinyin_commit_raw(api,first),"commit uncommon raw spelling");
+        { Snapshot raw(api,first); require(std::string(raw.value.commit)=="hebrides","raw spelling changed"); }
+        type(api,first,"hebri");
+        require(!hasCandidate(api,first,"Hebrides"),"highlight or raw commit created English selection history");
+        arion_pinyin_clear(api,first);
+        selectPhrase(api,first,"hebrides","Hebrides","uncommon-exact-selection-engine-commit");
+        type(api,second,"hebri");
+        require(hasCandidate(api,second,"Hebrides") && !hasCandidate(api,second,"Hebridean"),"committed English selection unlocks only its own word");
+        arion_pinyin_clear(api,second);
+        printCase("english-selected-word-eligibility-and-raw-nonlearning");
         convert(api,first,"nihao","\xe4\xbd\xa0\xe5\xa5\xbd","full-pinyin-nihao");
         convert(api,first,"zhongguo","\xe4\xb8\xad\xe5\x9b\xbd","full-pinyin-zhongguo");
         for (const char *word : {"artificial", "hello", "computer", "software", "can", "an", "you", "hi", "bailing", "jingling"}) {
@@ -118,10 +140,13 @@ int main(int argc,char **argv) {
         arion_pinyin_clear(api,first); type(api,first,"artifi");
         char **expanded=nullptr; size_t expandedCount=0;
         require(arion_pinyin_candidates(api,first,0,90,&expanded,&expandedCount),"expanded English menu unavailable");
-        size_t distinctEnglish=0;
-        for (size_t i=0;i<expandedCount;++i) if (std::string(expanded[i]).rfind("artifi",0)==0) ++distinctEnglish;
+        bool artificial=false,artifice=false;
+        for (size_t i=0;i<expandedCount;++i) {
+            artificial=artificial || std::string(expanded[i])=="artificial";
+            artifice=artifice || std::string(expanded[i])=="artifice";
+        }
         arion_pinyin_candidates_dispose(expanded,expandedCount);
-        require(distinctEnglish>3,"lower-ranked English words were truncated");
+        require(artificial && !artifice,"common completion missing or unselected uncommon completion leaked");
         arion_pinyin_clear(api,first);
         for(int fixture=3;fixture<argc;++fixture) for(size_t pageSize:{size_t(5),size_t(9)}) {
             for(const auto &sample:EnglishAdmissionCases(std::filesystem::u8path(argv[fixture]))) {

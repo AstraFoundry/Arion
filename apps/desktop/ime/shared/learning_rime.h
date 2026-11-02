@@ -5,6 +5,7 @@ namespace arion::ime {
 // Called once before Rime initialization; the registry owns its component.
 bool registerEncryptedLearning(std::shared_ptr<LearningProvider>, LearningError &);
 LearningError encryptedLearningError();
+void reportEncryptedLearningError(const LearningError &);
 void clearEncryptedLearningError();
 rime::Db *makeEncryptedRimeDatabase(std::shared_ptr<LearningProvider>, const std::string &file, const std::string &name);
 std::shared_ptr<LearningProvider> registeredLearningProvider();

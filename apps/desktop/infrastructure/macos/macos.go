@@ -282,10 +282,10 @@ func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token 
 	return snap, nil
 }
 
-// Commit inserts once at the caret focused now. A caret move, a switch to
-// another editable field, or an edit in the captured field still inserts
-// there. A secure field is refused. With no editable focus, the text is left
-// on the system clipboard (DSK-06).
+// Commit posts one system paste into the frontmost other application.
+// Accessibility editability does not choose that paste. A secure field is
+// refused and is not copied. When Arion itself is frontmost, the text is
+// left on the system clipboard.
 func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {
 	result := contracts.CommitResult{Identity: request.Identity, Outcome: contracts.NotApplied}
 	t.mu.Lock()
@@ -336,9 +336,9 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 	return pasted, err
 }
 
-// adoptLiveCursor points tgt at the editable field focused now.
-// paste is false when nothing editable is focused. secure is set when the
-// focused field must not receive text.
+// adoptLiveCursor points tgt at the frontmost other application.
+// paste is false when that application is Arion or the focused field is
+// secure. A missing or non-editable Accessibility element still pastes.
 func macObservation(native C.arion_target) focusclass.MacObservation {
 	return focusclass.MacObservation{
 		Role: C.GoString(&native.role[0]), Subrole: C.GoString(&native.subrole[0]),
@@ -355,18 +355,17 @@ func adoptLiveCursor(tgt *target) (paste bool, secure bool, noInput bool) {
 		return false, false, false
 	}
 	obs := macObservation(native)
-	decision := focusclass.DecideMac(obs)
 	ownProcess := int(native.pid) == os.Getpid()
 	liveSecure := (obs.Secure || obs.Subrole == "AXSecureTextField") && native.element != nil && !ownProcess
 	// Dictation must not paste into Arion's own windows. That is not a
 	// positive observation that the user has no editor open.
-	if ownProcess || !decision.Editable || liveSecure {
+	if ownProcess || liveSecure {
 		C.arion_release(native.element)
 		C.arion_release(native.selection)
 		if ownProcess {
 			return false, false, false
 		}
-		return false, liveSecure, decision.NoInput
+		return false, true, false
 	}
 	if tgt.element == nil || C.arion_focus_matches(tgt.element, C.int(tgt.pid)) != 1 {
 		tgt.follow = false

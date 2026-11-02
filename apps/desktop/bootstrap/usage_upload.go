@@ -61,8 +61,12 @@ func (a *App) suspendUsageUpload() {
 	a.state.Account.UsageReporting = false
 }
 
+// configureUsageUpload reports only while the platform's answer, the one the
+// settings switch shows, is to share. A token's consent claim alone never
+// starts reporting: it may predate a withdrawal or come from another device's
+// answer the account has not confirmed here.
 func (a *App) configureUsageUpload(session account.Session) {
-	if a.state.Account.Disabled || a.opts.Offline || a.harness != nil || !session.UsageConsent || session.AccessToken == "" {
+	if a.state.Account.Disabled || a.opts.Offline || a.harness != nil || !session.UsageConsent || session.AccessToken == "" || a.state.Account.UsageSharing != arion.UsageShared {
 		a.suspendUsageUpload()
 		return
 	}

@@ -1,7 +1,9 @@
 package bootstrap
 
 import (
+	"arion.local/core/application"
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/settings"
 	infra "arion.local/desktop/infrastructure/usageupload"
 	"arion.local/desktop/internal/account"
 	policy "arion.local/desktop/internal/usageupload"
@@ -99,8 +101,36 @@ func TestUsageUploadFollowsANewAnswerOnTheSameToken(t *testing.T) {
 	a.usageUpload.deniedToken = "token"
 	session.UsageConsent = true
 	a.usageUpload.deniedToken = ""
+	a.state.Account.UsageSharing = arion.UsageShared
 	a.configureUsageUpload(session)
 	if !a.usageUpload.session.UsageConsent || !a.state.Account.UsageReporting {
 		t.Fatalf("recorded consent did not start reporting: %+v", a.usageUpload.session)
+	}
+}
+
+// A returning account's token may still carry an earlier acceptance. Signing
+// in must not report on that claim: only the platform's answer, the one the
+// settings switch shows, starts reporting.
+func TestUsageUploadWaitsForThePlatformAnswer(t *testing.T) {
+	a := &App{prefStore: settings.Store{Path: filepath.Join(t.TempDir(), "preferences.json")}}
+	a.opts.DataDir = t.TempDir()
+	a.state.Preferences = application.DefaultPreferences("darwin")
+	// An unreachable loopback issuer keeps any flush off the network.
+	session := account.Session{Issuer: "http://127.0.0.1:1", Subject: "user-1", AccessToken: "token", UsageConsent: true}
+	a.applySession(session, arion.AccountSignedIn)
+	if a.state.Account.UsageReporting {
+		t.Fatal("a consent claim reported before the platform answered")
+	}
+	for _, answer := range []arion.UsageSharing{arion.UsageUnknown, arion.UsageUndecided, arion.UsageNotShared} {
+		a.state.Account.UsageSharing = answer
+		a.configureUsageUpload(session)
+		if a.state.Account.UsageReporting {
+			t.Fatalf("answer %q reported", answer)
+		}
+	}
+	a.state.Account.UsageSharing = arion.UsageShared
+	a.configureUsageUpload(session)
+	if !a.state.Account.UsageReporting {
+		t.Fatal("a shared answer did not report")
 	}
 }

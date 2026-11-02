@@ -61,19 +61,24 @@ std::shared_ptr<const EnglishLexicon> EnglishLexicon::Load(const std::filesystem
         }
         seen[rank]=true;
         const uint32_t id=static_cast<uint32_t>(lexicon->words_.size());
-        const size_t minimum=word.count>=kSuggestionMinimumCount?std::max(kMixedMinimumPrefix,(key.size()+1)/2):0;
-        lexicon->indexes_[minimum].words.push_back(id);
+        if (word.count>=kCommonMinimumCount) {
+            const size_t minimum=std::max(kMixedMinimumPrefix,(key.size()+1)/2);
+            lexicon->indexes_[minimum].words.push_back(id);
+        }
         lexicon->words_.push_back(std::move(word));
     }
     if (!file.eof() || lexicon->words_.size()!=count) throw std::runtime_error("incomplete English lexicon");
-    for (auto &index:lexicon->indexes_) {
+    lexicon->BuildIndexes(lexicon->indexes_);
+    return lexicon;
+}
+void EnglishLexicon::BuildIndexes(std::array<Index,65> &indexes) const {
+    for (auto &index:indexes) {
         if (index.words.empty()) continue;
         while (index.base<index.words.size()) index.base*=2;
         index.winners.assign(index.base*2,UINT32_MAX);
         for (size_t i=0;i<index.words.size();++i) index.winners[index.base+i]=index.words[i];
-        for (size_t i=index.base-1;i>0;--i) index.winners[i]=lexicon->Better(index.winners[i*2],index.winners[i*2+1]);
+        for (size_t i=index.base-1;i>0;--i) index.winners[i]=Better(index.winners[i*2],index.winners[i*2+1]);
     }
-    return lexicon;
 }
 uint32_t EnglishLexicon::Better(uint32_t a, uint32_t b) const {
     if (a==UINT32_MAX) return b;
@@ -81,16 +86,15 @@ uint32_t EnglishLexicon::Better(uint32_t a, uint32_t b) const {
     return words_[a].displays[0].rank<words_[b].displays[0].rank?a:b;
 }
 bool EnglishLexicon::Cursor::Later::operator()(Node a, Node b) const {
-    const auto word=[this](Node n) { return lexicon->indexes_[n.bucket].winners[n.position]; };
+    const auto word=[](Node n) { return n.index->winners[n.position]; };
     return lexicon->words_[word(a)].displays[0].rank>lexicon->words_[word(b)].displays[0].rank;
 }
-EnglishLexicon::Cursor::Cursor(std::shared_ptr<const EnglishLexicon> lexicon)
-    : lexicon_(std::move(lexicon)),queue_(Later{lexicon_.get()}) {}
-void EnglishLexicon::Cursor::Add(uint32_t bucket,size_t begin,size_t end) {
-    const auto &index=lexicon_->indexes_[bucket];
+EnglishLexicon::Cursor::Cursor(std::shared_ptr<const EnglishLexicon> lexicon,std::shared_ptr<const SelectedIndex> selected)
+    : lexicon_(std::move(lexicon)),selected_(std::move(selected)),queue_(Later{lexicon_.get()}) {}
+void EnglishLexicon::Cursor::Add(const Index &index,size_t begin,size_t end) {
     for (begin+=index.base,end+=index.base;begin<end;begin/=2,end/=2) {
-        if (begin%2) queue_.push({bucket,static_cast<uint32_t>(begin++)});
-        if (end%2) queue_.push({bucket,static_cast<uint32_t>(--end)});
+        if (begin%2) queue_.push({&index,static_cast<uint32_t>(begin++)});
+        if (end%2) queue_.push({&index,static_cast<uint32_t>(--end)});
     }
 }
 const EnglishLexicon::Entry *EnglishLexicon::Cursor::Peek() const {
@@ -107,10 +111,10 @@ bool EnglishLexicon::Cursor::Next() {
 #ifdef ARION_ENGLISH_TESTING
         ++node_visits_;
 #endif
-        const auto &index=lexicon_->indexes_[node.bucket];
+        const auto &index=*node.index;
         if (node.position>=index.base) { current_=index.winners[node.position]; return true; }
         for (uint32_t child:{node.position*2,node.position*2+1})
-            if (index.winners[child]!=UINT32_MAX) queue_.push({node.bucket,child});
+            if (index.winners[child]!=UINT32_MAX) queue_.push({node.index,child});
     }
     return false;
 }
@@ -128,26 +132,54 @@ std::vector<EnglishLexicon::WordPrefix> EnglishLexicon::WordPrefixes(std::string
         if (const auto *word=ExactWord(input.substr(0,length))) result.push_back({length,word->displays});
     return result;
 }
-EnglishLexicon::Matches EnglishLexicon::Query(std::string_view input,Completion completion) const {
+bool EnglishLexicon::Contains(std::string_view input) const { return ExactWord(input)!=nullptr; }
+bool EnglishLexicon::IsCommon(std::string_view input) const {
+    const auto *word=ExactWord(input);
+    return word && word->count>=kCommonMinimumCount;
+}
+std::shared_ptr<const EnglishLexicon::SelectedIndex> EnglishLexicon::IndexSelected(const std::set<std::string> &keys) const {
+    auto selected=std::shared_ptr<SelectedIndex>(new SelectedIndex(shared_from_this()));
+    for (const auto &key:keys) {
+        if (!letters(key,true)) throw std::invalid_argument("invalid selected English key");
+        const auto *word=ExactWord(key);
+        if (!word || word->count>=kCommonMinimumCount) continue;
+        const auto id=static_cast<uint32_t>(word-words_.data());
+        selected->words_.push_back(id);
+        const size_t minimum=std::max(kMixedMinimumPrefix,(key.size()+1)/2);
+        selected->indexes_[minimum].words.push_back(id);
+    }
+    BuildIndexes(selected->indexes_);
+    return selected;
+}
+EnglishLexicon::Matches EnglishLexicon::Query(std::string_view input,Completion completion,
+                                             std::shared_ptr<const SelectedIndex> selected) const {
+    if (selected && selected->lexicon_.get()!=this) throw std::invalid_argument("selected English index belongs to another lexicon");
     auto owned=shared_from_this();
-    Matches result{Cursor(owned),Cursor(owned),Cursor(owned),false};
+    Matches result{Cursor(owned,selected),Cursor(owned,selected),Cursor(owned,selected),false,false};
     if (!letters(input,true)) return result;
     if (const auto *exact=ExactWord(input)) {
-        result.exact.current_=result.exact.exact_=static_cast<uint32_t>(exact-words_.data());
-        result.familiar_exact=exact->lowercase && exact->count>=kSuggestionMinimumCount;
+        const auto id=static_cast<uint32_t>(exact-words_.data());
+        const bool personal=selected && std::binary_search(selected->words_.begin(),selected->words_.end(),id);
+        result.exact.current_=result.exact.exact_=id;
+        result.familiar_exact=personal || (exact->lowercase && exact->count>=kCommonMinimumCount);
+        result.preferred_exact=personal || exact->count>=kCommonMinimumCount;
     }
     if (input.size()<3) return result;
     const std::string upper=std::string(input)+'{';
-    for (uint32_t bucket=0;bucket<indexes_.size();++bucket) {
-        const auto &index=indexes_[bucket];
-        if (index.words.empty()) continue;
-        const auto first=std::upper_bound(index.words.begin(),index.words.end(),input,
-            [this](std::string_view key,uint32_t id){return key<words_[id].displays[0].key;});
-        const auto last=std::lower_bound(first,index.words.end(),upper,
-            [this](uint32_t id,std::string_view key){return words_[id].displays[0].key<key;});
-        auto &cursor=completion==Completion::Suggest && bucket && bucket<=input.size()?result.suggestions:result.lookup;
-        cursor.Add(bucket,first-index.words.begin(),last-index.words.begin());
-    }
+    const auto add=[&](const std::array<Index,65> &indexes) {
+        for (size_t bucket=0;bucket<indexes.size();++bucket) {
+            const auto &index=indexes[bucket];
+            if (index.words.empty()) continue;
+            const auto first=std::upper_bound(index.words.begin(),index.words.end(),input,
+                [this](std::string_view key,uint32_t id){return key<words_[id].displays[0].key;});
+            const auto last=std::lower_bound(first,index.words.end(),upper,
+                [this](uint32_t id,std::string_view key){return words_[id].displays[0].key<key;});
+            auto &cursor=completion==Completion::Suggest && bucket<=input.size()?result.suggestions:result.lookup;
+            cursor.Add(index,first-index.words.begin(),last-index.words.begin());
+        }
+    };
+    add(indexes_);
+    if (selected) add(selected->indexes_);
     result.suggestions.Next(); result.lookup.Next();
     return result;
 }

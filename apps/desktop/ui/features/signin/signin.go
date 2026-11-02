@@ -18,13 +18,43 @@ import (
 )
 
 // Start opens browser sign-in without changing account usage consent.
-func start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant, label string) {
+func Start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant, label string) {
 	if store.State.Account.Disabled {
 		return
 	}
 	if kit.Button(c.Key("sign-in"), tokens, variant, label, !store.State.Account.Busy()).Clicked() {
 		store.Actions.SignIn(false)
 	}
+}
+
+// Methods are the ways to sign in or create an AstraFoundry account. Each
+// opens the same browser sign-in, where the issuer's page offers them all.
+// None of them grants usage-sharing consent.
+func Methods(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	if store.State.Account.Disabled {
+		return
+	}
+	messages := store.Copy()
+	enabled := !store.State.Account.Busy()
+	ui.Column(c).Gap(8).AlignItems(ui.Stretch).Children(func() {
+		for _, method := range []struct {
+			key   string
+			icon  *ui.SVG
+			label copy.Key
+		}{{"google", icons.Google, copy.AccContinueGoogle}, {"github", icons.GitHub, copy.AccContinueGitHub}, {"email", icons.Mail, copy.AccContinueEmail}} {
+			button := ui.ButtonBase(c.Key("sign-in-"+method.key)).Height(36).Padding(0, 14).Gap(10).Radius(theme.RadiusControl).
+				Justify(ui.Center).AlignItems(ui.Center).Disabled(!enabled)
+			kit.Style(button, tokens, kit.Outline, enabled)
+			button.Children(func() {
+				// An image keeps the Google mark's own colors; an icon would tint it.
+				ui.Image(c, method.icon).Size(15, 15)
+				ui.Text(c, messages.Text(method.label)).FontSize(theme.Body).FontWeight(500).SingleLine()
+			})
+			if button.Clicked() {
+				store.Actions.SignIn(false)
+			}
+		}
+	})
 }
 
 // Check asks once, while an account view shows, whether a refresh token is
@@ -60,7 +90,7 @@ func card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				title = messages.Text(copy.AccTitle)
 			}
 			kit.Row(c, tokens, title, "", func() {
-				start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn))
+				Start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn))
 			})
 		case account.Waiting:
 			kit.Row(c, tokens, messages.Text(copy.AccTitle), messages.Text(copy.AccWaiting), func() {

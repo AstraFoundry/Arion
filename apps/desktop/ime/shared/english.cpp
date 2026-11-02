@@ -1,5 +1,7 @@
 #include "english.h"
 #include "english_lexicon.h"
+#include "english_history.h"
+#include "learning_rime.h"
 #include "menu.h"
 #include <cstdio>
 #include <stdexcept>
@@ -50,7 +52,7 @@ class BilingualTranslation final : public rime::Translation {
                          const std::string &input,const rime::Segment &segment,bool mayLead)
         : chinese_(std::move(chinese)),english_(std::move(english)),normal_(normal),
           early_exact_(!normal || english_.familiar_exact),
-          english_leads_(mayLead && !normal && input.size()>=arion::EnglishLexicon::kMixedMinimumPrefix && english_.exact.Peek()),
+          english_leads_(mayLead && !normal && input.size()>=arion::EnglishLexicon::kMixedMinimumPrefix && english_.preferred_exact),
           prefixes_(std::move(prefixes)),
           input_(input),start_(segment.start),end_(segment.end) { Next(); }
     rime::an<rime::Candidate> Peek() override { return current_; }
@@ -134,16 +136,29 @@ class BilingualTranslation final : public rime::Translation {
 class BilingualTranslator final : public rime::Translator {
  public:
     BilingualTranslator(const rime::Ticket &ticket,std::shared_ptr<const arion::EnglishLexicon> lexicon,
-                        std::shared_ptr<PinyinSpelling> spelling)
-        : Translator(ticket),lexicon_(std::move(lexicon)),spelling_(std::move(spelling)) {
+                        std::shared_ptr<PinyinSpelling> spelling,std::shared_ptr<arion::ime::EnglishHistory> history)
+        : Translator(ticket),lexicon_(std::move(lexicon)),spelling_(std::move(spelling)),history_(std::move(history)) {
         chinese_.reset(rime::Translator::Require("arion_pinyin")->Create(rime::Ticket(ticket.engine,"translator")));
+        auto *context=engine_->context();
+        commit_=context->commit_notifier().connect([this](rime::Context *context) { Remember(context); });
+        update_=context->update_notifier().connect([this](rime::Context *context) {
+            if (context->input().empty()) selected_.reset();
+        });
     }
+    ~BilingualTranslator() override { commit_.disconnect(); update_.disconnect(); }
     rime::an<rime::Translation> Query(const std::string &input,const rime::Segment &segment) override {
+        if (!selected_) {
+            arion::ime::LearningError error;
+            if (!history_->snapshot(selected_,error)) {
+                arion::ime::reportEncryptedLearningError(error);
+                return nullptr;
+            }
+        }
         auto chinese=chinese_->Query(input,segment);
         if (!segment.HasTag("abc")) return chinese;
         const bool normal=spelling_->Normal(input);
         const auto folded=Fold(input);
-        auto english=lexicon_->Query(folded,normal?arion::EnglishLexicon::Completion::Lookup:arion::EnglishLexicon::Completion::Suggest);
+        auto english=lexicon_->Query(folded,normal?arion::EnglishLexicon::Completion::Lookup:arion::EnglishLexicon::Completion::Suggest,selected_);
         std::vector<arion::EnglishLexicon::WordPrefix> prefixes;
         if (english.empty() && !normal) prefixes=lexicon_->WordPrefixes(folded);
         if (english.empty() && prefixes.empty()) return chinese;
@@ -152,18 +167,35 @@ class BilingualTranslator final : public rime::Translator {
             engine_->context()->caret_pos()==engine_->context()->input().size());
     }
  private:
+    void Remember(rime::Context *context) {
+        if (context->get_option("dumb")) return;
+        std::set<std::string> keys;
+        for (const auto &segment:context->composition()) {
+            if (segment.status<rime::Segment::kSelected) continue;
+            const auto candidate=rime::Candidate::GetGenuineCandidate(segment.GetSelectedCandidate());
+            if (candidate && candidate->type()=="arion_english") keys.insert(Fold(candidate->text()));
+        }
+        if (keys.empty()) return;
+        arion::ime::LearningError error;
+        if (!history_->confirm(keys,error)) arion::ime::reportEncryptedLearningError(error);
+    }
     std::unique_ptr<rime::Translator> chinese_;
     std::shared_ptr<const arion::EnglishLexicon> lexicon_;
     std::shared_ptr<PinyinSpelling> spelling_;
+    std::shared_ptr<arion::ime::EnglishHistory> history_;
+    arion::ime::EnglishHistory::Snapshot selected_;
+    rime::connection commit_,update_;
 };
 class BilingualComponent final : public rime::Translator::Component {
  public:
-    BilingualComponent(std::shared_ptr<const arion::EnglishLexicon> lexicon,std::shared_ptr<PinyinSpelling> spelling)
-        : lexicon_(std::move(lexicon)),spelling_(std::move(spelling)) {}
-    rime::Translator *Create(const rime::Ticket &ticket) override { return new BilingualTranslator(ticket,lexicon_,spelling_); }
+    BilingualComponent(std::shared_ptr<const arion::EnglishLexicon> lexicon,std::shared_ptr<PinyinSpelling> spelling,
+                       std::shared_ptr<arion::ime::EnglishHistory> history)
+        : lexicon_(std::move(lexicon)),spelling_(std::move(spelling)),history_(std::move(history)) {}
+    rime::Translator *Create(const rime::Ticket &ticket) override { return new BilingualTranslator(ticket,lexicon_,spelling_,history_); }
  private:
     std::shared_ptr<const arion::EnglishLexicon> lexicon_;
     std::shared_ptr<PinyinSpelling> spelling_;
+    std::shared_ptr<arion::ime::EnglishHistory> history_;
 };
 }
 extern "C" int arion_english_register(const char *data_directory,char *error,size_t capacity) {
@@ -173,7 +205,13 @@ extern "C" int arion_english_register(const char *data_directory,char *error,siz
         const auto data=std::filesystem::u8path(data_directory);
         auto lexicon=arion::EnglishLexicon::Load(data/"arion_english.lexicon");
         auto spelling=std::make_shared<PinyinSpelling>(data);
-        rime::Registry::instance().Register("arion_bilingual",new BilingualComponent(std::move(lexicon),std::move(spelling)));
+        auto history=std::make_shared<arion::ime::EnglishHistory>(arion::ime::registeredLearningProvider(),lexicon);
+        arion::ime::LearningError issue;
+        if (!history->open(issue)) {
+            arion::ime::reportEncryptedLearningError(issue);
+            throw std::runtime_error("encrypted English selection history unavailable");
+        }
+        rime::Registry::instance().Register("arion_bilingual",new BilingualComponent(std::move(lexicon),std::move(spelling),std::move(history)));
         if (error && capacity) error[0]=0;
         return 1;
     } catch (const std::exception &failure) {
