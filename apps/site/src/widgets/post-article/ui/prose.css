@@ -51,16 +51,30 @@ html:is(:lang(zh-CN), :lang(ja)) .post-grid {
 
 /* Header ------------------------------------------------------------------ */
 
+/*
+ * Sized so a typical title sets on one or two lines of the text column. Body
+ * headings balance their lines; see below for Chinese and Japanese.
+ */
+.post-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.6rem + 1.2vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
 .post-summary {
   font-family: var(--post-font);
-  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
-  line-height: 1.45;
+  font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
+  line-height: 1.5;
   color: var(--muted-foreground);
   text-wrap: pretty;
 }
 
+/* The cover shares the text column, so header, image and body align. */
 .post-cover {
-  margin-top: 3.5rem;
+  margin-top: 3rem;
   width: 100%;
   height: auto;
   border-radius: var(--radius-2xl);
@@ -114,15 +128,15 @@ html:is(:lang(zh-CN), :lang(ja)) .post-grid {
 
 .post-prose > * {
   font-family: var(--post-font);
-  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
-  line-height: 1.7;
+  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
+  line-height: 1.65;
   font-weight: 400;
   margin-top: 1.4em;
   text-wrap: pretty;
   font-variant-numeric: proportional-nums oldstyle-nums;
 }
 
-html:is(:lang(zh-CN), :lang(ja)) .post-prose > * {
+html:is(:lang(zh-CN), :lang(ja)) .post-prose > :not(h2, h3) {
   line-height: 1.85;
   font-variant-numeric: normal;
 }
@@ -153,13 +167,24 @@ html:is(:lang(zh-CN), :lang(ja)) .post-prose > * {
 }
 
 .post-prose > h2 {
-  margin-top: 2.6em;
-  font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+  margin-top: 2.4em;
+  font-size: clamp(1.375rem, 1.25rem + 0.5vw, 1.625rem);
 }
 
 .post-prose > h3 {
-  margin-top: 2.2em;
-  font-size: clamp(1.1875rem, 1.1rem + 0.4vw, 1.375rem);
+  margin-top: 2em;
+  font-size: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem);
+}
+
+/*
+ * Balancing splits Chinese and Japanese lines at an arbitrary character
+ * ("第 / 一个"); fill the first line instead, and keep Japanese phrases whole
+ * where the browser can find them. Latin tracking crowds these scripts.
+ */
+html:is(:lang(zh-CN), :lang(ja)) :is(.post-title, .post-prose > h2, .post-prose > h3) {
+  letter-spacing: 0;
+  text-wrap: pretty;
+  word-break: auto-phrase;
 }
 
 .post-prose > :is(h2, h3) + * {
