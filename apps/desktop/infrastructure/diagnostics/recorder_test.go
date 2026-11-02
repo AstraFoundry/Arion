@@ -17,6 +17,7 @@ import (
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
+	"arion.local/core/domain/ports"
 )
 
 func openTest(t *testing.T) *Recorder {
@@ -84,6 +85,9 @@ func TestExportExcludesSensitiveCanaries(t *testing.T) {
 	e.Kind, e.Sequence, e.Outcome = contracts.CommitResultReady, 4, contracts.Unknown
 	r.Session(e)
 	r.Record(Entry{Event: "preferences_save", Code: Failure(errors.New("/Users/private/" + secret))})
+	for _, stage := range []ports.DiagnosticStage{ports.DiagnosticFinish, ports.DiagnosticAudioWait, ports.DiagnosticAudioContext, ports.DiagnosticAudioSelect, ports.DiagnosticAudioDevice, ports.DiagnosticAudioStart, ports.DiagnosticAudioStop} {
+		r.Observe(ports.Diagnostic{Identity: id, Stage: stage, Duration: 125 * time.Millisecond, Failure: domain.CodeModelUnsupported})
+	}
 	r.Record(Entry{Event: secret})
 	r.Record(Entry{Event: "session_error", Session: secret})
 	r.Record(Entry{Event: "session_error", Code: domain.ErrorCode(secret)})
@@ -101,7 +105,7 @@ func TestExportExcludesSensitiveCanaries(t *testing.T) {
 		t.Fatal("sensitive canary exported")
 	}
 	log := string(files["events.0.jsonl"])
-	for _, event := range []string{"session_state", "first_draft", "correction_ready", "commit_result", "IO_FAILED", "events_dropped", "negation_dropped", "uncertainty_dropped", "unknown"} {
+	for _, event := range []string{"session_state", "first_draft", "recognizer_finish", "audio_device_wait", "audio_context_init", "audio_device_select", "audio_device_init", "audio_device_start", "audio_stop", "correction_ready", "commit_result", "IO_FAILED", "events_dropped", "negation_dropped", "uncertainty_dropped", "unknown"} {
 		if !strings.Contains(log, event) {
 			t.Errorf("missing %s: %s", event, log)
 		}

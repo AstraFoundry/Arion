@@ -225,6 +225,7 @@ func New(opts Options) (*App, error) {
 	a.keyboardModel = keyboardmodel.New(catalog, keyboardmodel.Locate(resources))
 	a.history = application.NewHistory(30 * time.Minute)
 	a.mic = audio.NewMicrophone(a.platform)
+	a.mic.SetDiagnostics(a)
 	a.mic.Select(prefs.Microphone)
 	a.mic.SetGain(prefs.MicrophoneGain)
 	a.cloud = cloudpolish.New(keystore.Catalog{Service: desktopProfile(mygo.IsDev())}, browser.Open,
@@ -1000,7 +1001,7 @@ func (a *App) startMonitor() {
 	case domain.Preparing, domain.Capturing:
 		return
 	}
-	stream, err := a.mic.Start(contextBackground(), contracts.Identity{SessionID: "monitor", Generation: 1}, func(frame contracts.Frame) {
+	stream, err := a.mic.Start(contextBackground(), contracts.Identity{SessionID: newID(), Generation: 1}, func(frame contracts.Frame) {
 		level := application.Level(frame.Samples)
 		a.post(func() { a.state.MonitorLevels = appendLevel(a.state.MonitorLevels, level) })
 	})

@@ -240,7 +240,7 @@ func (c *Coordinator) correct(raw string) string {
 // speech and delivers one final rewrite.
 func (c *Coordinator) finalizeLive(r *run) {
 	l := r.live
-	draft, err := r.recognizer.Finish(r.ctx)
+	draft, err := c.finishRecognizer(r)
 	if err != nil {
 		l.shutdown()
 		c.failErr(r, err, domain.CodeModelUnsupported)

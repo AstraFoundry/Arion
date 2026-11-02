@@ -38,9 +38,12 @@ type Permission interface {
 // Microphone captures from the selected device through miniaudio
 // (CoreAudio on macOS, WASAPI on Windows).
 type Microphone struct {
-	permission Permission
-	mu         sync.Mutex
-	deviceID   string
+	permission  Permission
+	mu          sync.Mutex
+	deviceID    string
+	diagnostics ports.Diagnostics
+	nativeOnce  sync.Once
+	nativeGate  chan struct{}
 	// gain holds the float32 bits of the factor samples are scaled by; an
 	// open stream picks a change up at its next callback.
 	gain atomic.Uint32
@@ -93,13 +96,45 @@ type stream struct {
 // Start opens the device. The data callback only converts and enqueues; a
 // device that stops by itself (unplug, sleep) produces a discontinuity frame
 // so the session ends with an explicit reason (DSK-A08).
-func (m *Microphone) Start(_ context.Context, id contracts.Identity, sink ports.FrameSink) (ports.AudioStream, error) {
+func (m *Microphone) Start(ctx context.Context, id contracts.Identity, sink ports.FrameSink) (ports.AudioStream, error) {
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
 	if m.permission != nil && !m.permission.MicrophoneAuthorized() {
 		return nil, domain.Fail(domain.CodePermissionDenied, "microphone")
 	}
-	ctx, err := malgo.InitContext(nil, malgo.ContextConfig{}, nil)
+	return m.start(ctx, id, sink, m.open)
+}
+
+func (m *Microphone) open(ctx context.Context, id contracts.Identity, sink ports.FrameSink) (ports.AudioStream, error) {
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	// Permission may have changed while waiting for a prior native operation.
+	if m.permission != nil && !m.permission.MicrophoneAuthorized() {
+		return nil, domain.Fail(domain.CodePermissionDenied, "microphone")
+	}
+	var native *malgo.AllocatedContext
+	err := m.operation(id, ports.DiagnosticAudioContext, func() error {
+		var err error
+		native, err = malgo.InitContext(nil, malgo.ContextConfig{}, nil)
+		if err != nil {
+			return domain.Fail(domain.CodeDeviceUnavailable, "audio context")
+		}
+		return nil
+	})
 	if err != nil {
-		return nil, domain.Fail(domain.CodeDeviceUnavailable, "audio context")
+		return nil, err
+	}
+	s := &stream{ctx: native}
+	ready := false
+	defer func() {
+		if !ready {
+			_ = m.operation(id, ports.DiagnosticAudioStop, s.Stop)
+		}
+	}()
+	if err := ctx.Err(); err != nil {
+		return nil, err
 	}
 	config := malgo.DefaultDeviceConfig(malgo.Capture)
 	config.Capture.Format = malgo.FormatF32
@@ -112,9 +147,12 @@ func (m *Microphone) Start(_ context.Context, id contracts.Identity, sink ports.
 	selected := m.deviceID
 	m.mu.Unlock()
 	if selected != "" {
-		infos, err := ctx.Devices(malgo.Capture)
 		found := false
-		if err == nil {
+		err := m.operation(id, ports.DiagnosticAudioSelect, func() error {
+			infos, err := native.Devices(malgo.Capture)
+			if err != nil {
+				return domain.Fail(domain.CodeDeviceUnavailable, "device enumeration")
+			}
 			for i := range infos {
 				if infos[i].ID.String() == selected {
 					config.Capture.DeviceID = infos[i].ID.Pointer()
@@ -122,15 +160,19 @@ func (m *Microphone) Start(_ context.Context, id contracts.Identity, sink ports.
 					break
 				}
 			}
-		}
-		if !found {
-			_ = ctx.Uninit()
-			ctx.Free()
-			return nil, domain.Fail(domain.CodeDeviceUnavailable, "selected microphone missing")
+			if !found {
+				return domain.Fail(domain.CodeDeviceUnavailable, "selected microphone missing")
+			}
+			return nil
+		})
+		if err != nil {
+			return nil, err
 		}
 	}
 
-	s := &stream{ctx: ctx}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
 	var sequence, offset uint64
 	callbacks := malgo.DeviceCallbacks{
 		Data: func(_, input []byte, frames uint32) {
@@ -150,19 +192,29 @@ func (m *Microphone) Start(_ context.Context, id contracts.Identity, sink ports.
 			}
 		},
 	}
-	device, err := malgo.InitDevice(ctx.Context, config, callbacks)
+	err = m.operation(id, ports.DiagnosticAudioDevice, func() error {
+		device, err := malgo.InitDevice(native.Context, config, callbacks)
+		if err != nil {
+			return domain.Fail(domain.CodeDeviceUnavailable, "device init")
+		}
+		s.device = device
+		return nil
+	})
 	if err != nil {
-		_ = ctx.Uninit()
-		ctx.Free()
-		return nil, domain.Fail(domain.CodeDeviceUnavailable, "device init")
+		return nil, err
 	}
-	s.device = device
-	if err := device.Start(); err != nil {
-		device.Uninit()
-		_ = ctx.Uninit()
-		ctx.Free()
-		return nil, domain.Fail(domain.CodeDeviceUnavailable, "device start")
+	if err := ctx.Err(); err != nil {
+		return nil, err
 	}
+	if err := m.operation(id, ports.DiagnosticAudioStart, func() error {
+		if err := s.device.Start(); err != nil {
+			return domain.Fail(domain.CodeDeviceUnavailable, "device start")
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	ready = true
 	return s, nil
 }
 
@@ -171,8 +223,10 @@ func (m *Microphone) Start(_ context.Context, id contracts.Identity, sink ports.
 func (s *stream) Stop() error {
 	s.once.Do(func() {
 		s.stopping.Store(true)
-		_ = s.device.Stop()
-		s.device.Uninit()
+		if s.device != nil {
+			_ = s.device.Stop()
+			s.device.Uninit()
+		}
 		_ = s.ctx.Uninit()
 		s.ctx.Free()
 	})

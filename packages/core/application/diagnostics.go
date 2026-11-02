@@ -5,9 +5,17 @@ import (
 	"errors"
 	"time"
 
+	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 )
+
+func (c *Coordinator) finishRecognizer(r *run) (contracts.Draft, error) {
+	started := time.Now()
+	draft, err := r.recognizer.Finish(r.ctx)
+	c.diagnostic(r, ports.DiagnosticFinish, started, err)
+	return draft, err
+}
 
 func (c *Coordinator) diagnostic(r *run, stage ports.DiagnosticStage, start time.Time, err error) {
 	if c.deps.Diagnostics == nil {
