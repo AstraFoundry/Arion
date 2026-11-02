@@ -244,7 +244,7 @@ func TestClipboardInlineImageAndFileRows(t *testing.T) {
 				t.Fatal("image row missing")
 			}
 			tt.Move(imageRow.X+16, imageRow.Y+imageRow.H/2)
-			rest(tt, 500*time.Millisecond)
+			dwell(tt)
 			if !rec.called("clipboard-hover:" + imagePayload.ID()) {
 				t.Fatal("thumbnail did not request preview")
 			}
@@ -316,7 +316,7 @@ func TestClipboardFourRowsAndHoverPreview(t *testing.T) {
 	if rec.called("clipboard-hover:" + state.Clipboard.Items[1].ID) {
 		t.Fatal("preview opened without dwell")
 	}
-	rest(tt, 500*time.Millisecond)
+	dwell(tt)
 	if !rec.called("clipboard-hover:" + state.Clipboard.Items[1].ID) {
 		t.Fatal("truncated text did not open preview")
 	}
@@ -341,6 +341,14 @@ func TestClipboardFourRowsAndHoverPreview(t *testing.T) {
 	snapshot(t, tt, "clipboard-four-rows-scrolled")
 }
 
+// dwell waits past the 450 ms hover delay, then draws the frame that
+// observes it. rest can return from its last sleep without that frame, so
+// a busy runner reports that the pointer never asked for a preview.
+func dwell(tt *ui.Tester) {
+	rest(tt, 500*time.Millisecond)
+	tt.Frame()
+}
+
 func TestClipboardHoverPreviewContent(t *testing.T) {
 	state, rec, store := fixture()
 	payload := runtime.ClipPayload{Kind: runtime.ClipFiles, Files: []string{"/workspace/Research notes/Quarterly design review.pdf"}}
@@ -354,7 +362,7 @@ func TestClipboardHoverPreviewContent(t *testing.T) {
 		t.Fatal("file row missing")
 	}
 	tt.Move(row.X+12, row.Y+row.H/2)
-	rest(tt, 500*time.Millisecond)
+	dwell(tt)
 	if !rec.called("clipboard-hover:" + item.ID) {
 		t.Fatal("file name did not request preview")
 	}

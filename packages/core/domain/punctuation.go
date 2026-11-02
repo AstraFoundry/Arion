@@ -3,7 +3,6 @@ package domain
 import (
 	"strings"
 	"unicode"
-	"unicode/utf8"
 )
 
 // Punctuation is how a polished proposal is punctuated. It applies only
@@ -16,8 +15,8 @@ const (
 	PunctuationSmart Punctuation = "smart"
 	// PunctuationFull asks the model for complete punctuation and keeps it.
 	PunctuationFull Punctuation = "full"
-	// PunctuationOmit asks for complete punctuation, then drops one trailing
-	// sentence-final mark.
+	// PunctuationOmit asks for complete punctuation, then drops trailing
+	// sentence-final marks before any trailing whitespace.
 	PunctuationOmit Punctuation = "omit"
 	// PunctuationSpaces asks for complete punctuation, then replaces
 	// punctuation characters with a single space.
@@ -40,7 +39,8 @@ const sentenceFinalMarks = "。！？….!?"
 
 // ApplyPunctuation edits a model proposal for omit and spaces. Smart, full,
 // and an empty mode return text unchanged. The model is not told a sentence
-// type; omit only removes one trailing mark the model already wrote.
+// type; omit removes the terminal run of sentence-final marks, preserving
+// trailing whitespace and punctuation within the text.
 func ApplyPunctuation(mode Punctuation, text string) string {
 	switch mode {
 	case PunctuationOmit:
@@ -53,11 +53,12 @@ func ApplyPunctuation(mode Punctuation, text string) string {
 }
 
 func omitSentenceFinal(text string) string {
-	r, size := utf8.DecodeLastRuneInString(text)
-	if size == 0 || !strings.ContainsRune(sentenceFinalMarks, r) {
+	ending := strings.TrimRightFunc(text, unicode.IsSpace)
+	trimmed := strings.TrimRight(ending, sentenceFinalMarks)
+	if len(trimmed) == len(ending) {
 		return text
 	}
-	return text[:len(text)-size]
+	return trimmed + text[len(ending):]
 }
 
 func spacesForPunctuation(text string) string {
