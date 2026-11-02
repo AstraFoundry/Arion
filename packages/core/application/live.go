@@ -293,7 +293,9 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	if !policy.Enabled {
 		return source, "", nil, true
 	}
-	cleaned := domain.CleanSpeech(source).Text
+	// Local cleanup is also deliverable when rewriting fails, so it must
+	// honor the same punctuation preference as an accepted proposal.
+	cleaned := punctuate(policy.Punctuation, domain.CleanSpeech(source).Text)
 	if c.deps.Rewriter == nil {
 		return cleaned, RewriteUnavailable, nil, true
 	}

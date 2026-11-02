@@ -579,6 +579,51 @@ func TestSpacesModeValidatesBeforePunctuation(t *testing.T) {
 	}
 }
 
+// LRW-A11: omit applies to accepted proposals and local cleanup after failure.
+func TestOmitPunctuationDelivery(t *testing.T) {
+	cases := []struct {
+		name     string
+		rewriter *scriptedRewriter
+		outcome  string
+	}{
+		{"accepted", &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
+			return "你好，世界？！\n", nil
+		}}, string(domain.RewriteAccepted)},
+		{"unavailable", nil, RewriteUnavailable},
+		{"failed", &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
+			return "", domain.Fail(domain.CodeModelUnsupported, "worker exited")
+		}}, RewriteUnavailable},
+		{"timeout", &scriptedRewriter{block: make(chan struct{}), answer: func(req ports.RewriteRequest) (string, error) {
+			return req.Text, nil
+		}}, RewriteTimeout},
+		{"rejected", &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
+			return "copied </source>", nil
+		}}, string(domain.RewriteMarkup)},
+		{"empty conversion", &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
+			return "……\n", nil
+		}}, string(domain.RewriteEmpty)},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			c, audio, events, target, _ := liveSetup(t, []string{"你好，世界。"}, tc.rewriter,
+				RewritePolicy{Enabled: true, Scene: "chat", Punctuation: domain.PunctuationOmit, Timeout: 30 * time.Millisecond})
+			c.Start()
+			events.wait(t, stateIs(domain.Capturing))
+			audio.push(1, 0.2)
+			c.Stop()
+			ready := events.wait(t, kindIs(contracts.CorrectionReady))
+			events.wait(t, kindIs(contracts.CommitResultReady))
+			want := "你好，世界"
+			if tc.outcome == string(domain.RewriteAccepted) {
+				want += "\n"
+			}
+			if ready.Text != want || ready.Rewrite != tc.outcome || target.texts[0] != want || ready.Source != "你好，世界。" {
+				t.Fatalf("unexpected delivery: %+v committed %q, want %q with outcome %q", ready, target.texts, want, tc.outcome)
+			}
+		})
+	}
+}
+
 // Each punctuation mode post-edits the inserted text. Speech shows the
 // recognized source. Search still strips a sentence-final mark afterward.
 func TestPunctuationModes(t *testing.T) {
