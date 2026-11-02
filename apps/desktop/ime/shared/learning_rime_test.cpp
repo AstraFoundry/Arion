@@ -1,4 +1,5 @@
 #include "learning_rime.h"
+#include "english_history_test.h"
 #include <rime/dict/db.h>
 #include <cstdlib>
 #include <iostream>
@@ -32,6 +33,7 @@ int main(int argc,char **argv) {
     peer.reset();
     context.reset();
     require(resetLearningVault(provider,error),"reset closes encrypted native databases");
+    testEnglishHistory(provider);
     require(!encryptedLearningError().code,"successful common operations content-free error state");
     std::cout<<"Actual pinned Rime encrypted Db/cursor/transaction/context ABI passed.\n";
 #endif

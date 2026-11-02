@@ -24,10 +24,10 @@ const reportPath = path.join(directory, 'report.json');
 const digest = file => createHash('sha256').update(readFileSync(file)).digest('hex');
 const identity = file => { const bytes = readFileSync(file); return { sizeBytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex') }; };
 const files = ['learning.h', 'learning.cpp', 'learning_windows.cpp', 'learning_rime.h', 'learning_rime.cpp', 'learning_test.cpp', 'learning_rime_test.cpp', 'learning_multiprocess_test.cpp', 'pinyin.c', 'pinyin.h',
-  'english.h', 'english.cpp', 'english_lexicon.h', 'english_lexicon.cpp', 'emoji.h', 'emoji.cpp', 'emoji_data.h',
+  'english.h', 'english.cpp', 'english_history.h', 'english_history.cpp', 'english_history_test.h', 'english_lexicon.h', 'english_lexicon.cpp', 'emoji.h', 'emoji.cpp', 'emoji_data.h',
   'ranking.h', 'ranking.cpp', 'ranking_bridge.h', 'ranking_unicode.h', 'ranking_unicode.cpp', 'ranking_unicode_data.h', 'ranking_test.cpp',
   'ranking_unicode_sources.json', 'ranking_unicode_LICENSE.txt', 'ranking_unicode_generate.py'];
-const engineSources = ['emoji.cpp', 'english_lexicon.cpp', 'spelling.cpp', 'personal_vocabulary.cpp', 'english.cpp'];
+const engineSources = ['english_history.cpp', 'emoji.cpp', 'english_lexicon.cpp', 'spelling.cpp', 'personal_vocabulary.cpp', 'english.cpp'];
 files.push(...engineSources, 'emoji.h', 'emoji_data.h', 'spelling.h', 'spelling_options.h',
   'personal_vocabulary.h', 'personal_vocabulary_bridge.h', 'english.h');
 const report = { schema: 1, platform: process.platform, architecture: process.arch,
@@ -116,7 +116,7 @@ try {
     const compilerIdentity = value => value.replace(/^g\+\+\.exe /, 'g++ ');
     if (compilerIdentity(sdkBuild.compiler) !== compilerIdentity(report.compiler) ||
         sdkBuild.compilerTarget !== report.compilerTarget || report.compilerTarget !== 'x86_64-w64-mingw32') throw new Error('The private Rime SDK and learning adapter must use the same GCC ABI.');
-    const abi = compile('rime-learning-abi', ['learning.cpp', 'learning_windows.cpp', 'learning_rime.cpp', 'ranking.cpp', 'ranking_unicode.cpp', 'learning_rime_test.cpp'], ['-DRIME_IMPORTS', '-isystem', path.join(sdk, 'include'), importLibrary, '-lcrypt32', '-ladvapi32', '-lole32']);
+    const abi = compile('rime-learning-abi', ['learning.cpp', 'learning_windows.cpp', 'learning_rime.cpp', 'english_history.cpp', 'english_lexicon.cpp', 'ranking.cpp', 'ranking_unicode.cpp', 'learning_rime_test.cpp'], ['-DRIME_IMPORTS', '-isystem', path.join(sdk, 'include'), importLibrary, '-lcrypt32', '-ladvapi32', '-lole32']);
     copyFileSync(library, path.join(directory, 'ArionRime.dll'));
     verifyWindowsPEDependencies([abi]);
     const abiProfile = path.join(profile, 'rime-abi');

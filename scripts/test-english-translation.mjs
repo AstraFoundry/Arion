@@ -18,8 +18,8 @@ try {
   const compiler=process.env.CXX??(windows?'g++':'clang++');
   const compiled=cachedSpawn(compiler,['-std=c++17','-O2','-Wall','-Wextra','-Werror',
     '-DGLOG_USE_GLOG_EXPORT',...(windows?['-DRIME_IMPORTS','-static']:[]),'-isystem',path.join(sdk,'include'),
-    ...['english_translation_test.cpp','english_lexicon.cpp'].map(file=>path.join(root,'apps/desktop/ime/shared',file)),
-    library,...(windows?[]:[`-Wl,-rpath,${path.dirname(library)}`]),'-o',binary],{cwd:root,stdio:'inherit',windowsHide:true});
+    ...['english_translation_test.cpp','english_lexicon.cpp','english_history.cpp','learning.cpp','learning_rime.cpp','ranking.cpp','ranking_unicode.cpp',...(windows?['learning_windows.cpp']:[])].map(file=>path.join(root,'apps/desktop/ime/shared',file)),
+    library,...(windows?['-lcrypt32','-ladvapi32','-lole32']:[`-Wl,-rpath,${path.dirname(library)}`]),'-o',binary],{cwd:root,stdio:'inherit',windowsHide:true});
   if (compiled.error) throw compiled.error;
   if (compiled.status!==0) throw new Error('English translation compilation failed.');
   if (windows) copyFileSync(path.join(runtime,'lib/ArionRime.dll'),path.join(directory,'ArionRime.dll'));

@@ -11,6 +11,7 @@
 #include "../../shared/personal_vocabulary_bridge.h"
 #include "../../shared/personal_vocabulary_store.h"
 #include "../../shared/learning_rime.h"
+#include "../../shared/english_lexicon.h"
 #include <rime/dict/prism.h>
 #include <map>
 #include <memory>
@@ -64,6 +65,24 @@ static void selectText(ArionTyping *typing, NSString *text) {
     }
     require(index!=NSNotFound && [typing select:index revision:typing.revision],
             [@"select actual candidate " stringByAppendingString:text]);
+}
+
+static NSSet<NSString *> *englishWords(ArionTyping *typing) {
+    NSMutableSet<NSString *> *words=[NSMutableSet set];
+    for (NSUInteger page=0;page<512;++page) {
+        for (NSString *candidate in typing.snapshot.candidates) {
+            BOOL ascii=candidate.length>=2;
+            for (NSUInteger i=0;ascii && i<candidate.length;++i) {
+                unichar c=[candidate characterAtIndex:i];
+                ascii=(c>='a' && c<='z') || (c>='A' && c<='Z');
+            }
+            if (ascii) [words addObject:candidate.lowercaseString];
+        }
+        if (typing.snapshot.lastPage) return words;
+        require([typing nextPage:typing.revision],@"page actual engine English candidates");
+    }
+    require(NO,@"native candidate enumeration must reach its last page");
+    return words;
 }
 
 static std::map<std::string, std::string> learningRecords(NSString *file, NSData *keyBytes) {
@@ -148,6 +167,69 @@ int main(int argc, const char *argv[]) {
             [results addObject:result];
             NSLog(@"%@: %@", [result[@"passed"] boolValue] ? @"PASS" : @"FAIL", name);
         };
+        run(@"Unselected uncommon English requires complete spelling on every page", @"KBD-A13", ^{
+            const auto lexicon=arion::EnglishLexicon::Load(std::filesystem::u8path(data.UTF8String)/"arion_english.lexicon");
+            for (NSNumber *size in @[@5,@9]) {
+                typing.pageSize=size.unsignedIntegerValue;
+                for (NSString *prefix in @[@"heb",@"hebri",@"xin",@"artifi",@"front"]) {
+                    type(typing,prefix);
+                    record([@"unselected prefix " stringByAppendingString:prefix],typing,editor);
+                    for (NSString *word in englishWords(typing)) {
+                        if ([word hasPrefix:prefix] && word.length>prefix.length)
+                            require(lexicon->IsCommon(word.UTF8String),@"unselected uncommon word cannot leak through a later page");
+                    }
+                    [typing cancel];
+                }
+            }
+            require(editor.insertions==0,@"enumerating all candidate pages never commits or learns a word");
+        });
+        run(@"Only committed English selections unlock personal completion and survive restart", @"KBD-A13 KBD-A07", ^{
+            typing.pageSize=9;
+            type(typing,@"hebrides");
+            NSUInteger index=[typing.snapshot.candidates indexOfObject:@"Hebrides"];
+            require(index!=NSNotFound && index>0,@"uncommon exact word remains available without displacing Chinese");
+            require([typing highlight:index revision:typing.revision],@"highlight uncommon English without selection");
+            [typing cancel];
+            type(typing,@"hebri");
+            require(![englishWords(typing) containsObject:@"hebrides"],@"display and highlight are not personal selection");
+            [typing cancel];
+            type(typing,@"hebrides"); press(typing,@"\r",36);
+            type(typing,@"hebri");
+            require(![englishWords(typing) containsObject:@"hebrides"],@"raw Return never learns the displayed English word");
+            [typing cancel];
+            type(typing,@"hebrides"); [typing toggleASCII]; [typing toggleASCII];
+            type(typing,@"hebri");
+            require(![englishWords(typing) containsObject:@"hebrides"],@"raw language switch never learns the displayed English word");
+            [typing cancel];
+            type(typing,@"hebridesnihao"); selectText(typing,@"Hebrides");
+            require(typing.composing,@"fully spelled mixed English prefix awaits suffix conversion");
+            [typing cancel]; type(typing,@"hebri");
+            require(![englishWords(typing) containsObject:@"hebrides"],@"cancelled mixed English selection is not learned");
+            [typing cancel];
+            type(typing,@"hebrides"); selectText(typing,@"Hebrides");
+            require([editor.view.string hasSuffix:@"Hebrides"] && !typing.composing,@"real full English choice commits through engine");
+            type(typing,@"hebri");
+            record(@"prefix after confirmed full English selection",typing,editor);
+            NSSet *personal=englishWords(typing);
+            require([personal containsObject:@"hebrides"] && ![personal containsObject:@"hebridean"],@"selection unlocks one word without its rare neighbours");
+            [typing cancel];
+            [typing deactivate]; [engine stop];
+            NSError *restartError=nil;
+            NSString *vault=[user stringByAppendingPathComponent:@"encrypted"];
+            require(ArionRegisterTestEncryptedLearning(vault,testKey,&restartError) &&
+                    [engine startWithData:data userDirectory:user error:&restartError] &&
+                    [typing activate:editor error:&restartError],@"restart actual engine with persisted encrypted English history");
+            type(typing,@"hebri");
+            require([englishWords(typing) containsObject:@"hebrides"],@"English selection history survives real engine restart");
+            [typing cancel]; [typing deactivate]; [engine stop];
+            require(ArionResetEncryptedLearning(vault,&restartError),@"real finalize releases English history lease before reset");
+            require(ArionRegisterTestEncryptedLearning(vault,testKey,&restartError) &&
+                    [engine startWithData:data userDirectory:user error:&restartError] &&
+                    [typing activate:editor error:&restartError],@"reopen empty learning after explicit reset");
+            type(typing,@"hebri");
+            require(![englishWords(typing) containsObject:@"hebrides"],@"reset clears selected English completion exception");
+            [typing cancel];
+        });
         run(@"local neural promotion preserves commit and rejects stale replies", @"RNK-A02 RNK-A03 RNK-A07", ^{
             require(!typing.neuralRanking, @"neural ranking defaults off");
             __block NSDictionary *request=nil;
@@ -402,7 +484,7 @@ int main(int argc, const char *argv[]) {
                     if ([candidate.lowercaseString hasPrefix:@"artifi"]) [words addObject:candidate.lowercaseString];
                 press(typing, @"=", 24);
             }
-            require(words.count > 3 && [words containsObject:@"artifice"], @"lower-ranked words survive beyond the old three-word cutoff");
+            require([words containsObject:@"artificial"] && ![words containsObject:@"artifice"], @"common completion survives while uncommon completion requires exact spelling");
             [typing cancel];
         });
         for (int fixture=4; fixture<argc; ++fixture) {
@@ -444,8 +526,12 @@ int main(int argc, const char *argv[]) {
                         code.find("Hello") == std::string::npos && value.find("Hello") == std::string::npos,
                         @"English table phrases stay out of the Chinese encrypted dictionary");
             }
-            for (NSString *member in [NSFileManager.defaultManager enumeratorAtPath:user])
-                require([member rangeOfString:@"arion_english"].location == NSNotFound, @"English selection creates no mutable or plaintext dictionary");
+            for (NSString *member in [NSFileManager.defaultManager enumeratorAtPath:user]) {
+                if ([member rangeOfString:@"arion_english"].location==NSNotFound) continue;
+                require([member isEqual:@"encrypted/arion_english_selected.arion-userdb"] ||
+                        [member isEqual:@"encrypted/arion_english_selected.arion-userdb.lock"],
+                        @"English selection creates only its separately encrypted set, never a plaintext dictionary");
+            }
             NSError *restartError = nil;
             require(ArionRegisterTestEncryptedLearning(vault, testKey, &restartError) &&
                     [engine startWithData:data userDirectory:user error:&restartError], @"restart real engine after English learning inspection");
@@ -469,7 +555,7 @@ int main(int argc, const char *argv[]) {
             @try {
                 for (NSNumber *size in @[@5,@9]) {
                     typing.pageSize=size.unsignedIntegerValue;
-                    for (NSString *word in @[@"artificial", @"can", @"artifi", @"hel", @"github", @"frontend", @"xin", @"shi"]) {
+                    for (NSString *word in @[@"artificial", @"can", @"artifi", @"hel", @"github", @"frontend", @"xin", @"shi", @"heb", @"hebri"]) {
                         type(typing, word);
                         record([NSString stringWithFormat:@"%@ page %@",word,size], typing, editor);
                         [panel showCandidates:typing.snapshot.candidates highlighted:typing.snapshot.highlighted lastPage:typing.snapshot.lastPage
@@ -1852,6 +1938,34 @@ int main(int argc, const char *argv[]) {
                 editor.view.string = @""; editor.insertions = 0;
                 require([typing activate:editor error:&faultError], @"activate new generation for next fixture");
             }
+        });
+        run(@"English history write failure retains one commit without learning the exception", @"KBD-A07 KBD-A13", ^{
+            type(typing,@"hebridean");
+            const NSUInteger selected=[typing.snapshot.candidates indexOfObject:@"Hebridean"];
+            const NSUInteger revision=typing.revision;
+            require(selected!=NSNotFound,@"complete uncommon English is visible before the write fault");
+            NSString *vault=[user stringByAppendingPathComponent:@"encrypted"];
+            NSString *saved=[user stringByAppendingPathComponent:@"english-history-saved"];
+            NSError *faultError=nil;
+            require([NSFileManager.defaultManager moveItemAtPath:vault toPath:saved error:&faultError],@"move isolated English history vault");
+            @try {
+                require([[@"blocked test directory" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:vault options:NSDataWritingAtomic error:&faultError],@"inject actual English history write failure");
+                require(![typing select:selected revision:revision],@"selection reports its actual persistence failure");
+                record(@"English commit after persistence failure",typing,editor);
+                require(!typing.available && ArionEncryptedLearningError()!=nil,@"English persistence failure reaches existing host error gate");
+                require([editor.view.string isEqual:@"Hebridean"] && editor.insertions==1,@"failed English learning preserves the actual commit exactly once");
+                require(!press(typing,@"x",7) && editor.insertions==1,@"failed English writer cannot accept new input or repeat its commit");
+            } @finally {
+                [typing deactivate]; [engine stop];
+                [NSFileManager.defaultManager removeItemAtPath:vault error:nil];
+                require([NSFileManager.defaultManager moveItemAtPath:saved toPath:vault error:&faultError],@"restore isolated English history vault");
+            }
+            require(ArionRegisterTestEncryptedLearning(vault,testKey,&faultError) &&
+                    [engine startWithData:data userDirectory:user error:&faultError] &&
+                    [typing activate:editor error:&faultError],@"recover English writer through existing explicit restart");
+            type(typing,@"hebri");
+            require(![englishWords(typing) containsObject:@"hebridean"],@"failed selection never unlocks uncommon completion after restart");
+            [typing cancel];
         });
         run(@"learning write failure retains actual engine commit", @"KBD-A07", ^{
             // Query flushes pending learning, so compose this session first.
