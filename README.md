@@ -34,7 +34,7 @@ Cloud dictation tools require sending raw microphone audio and window context to
 ## Features
 
 - **Hold-to-Talk & Native System IME** — Hold the global dictation shortcut (default right `⌥` on macOS, right `Alt` on Windows; record another key or modifier combination in Settings, see [dictation shortcuts](docs/project/dictation-shortcuts.md)) in any focused editor to speak Mandarin, English, or mixed technical terms (e.g. *"把这个 PR merge 到 main 之前，先跑一下 CI"*), and release to insert once; tap once to keep listening until the next press (`Esc` cancels). Also includes native system IME hosts (macOS `ArionInput.app` and Windows `ArionTSF.dll`) with offline Simplified Chinese full-Pinyin typing and `Shift` language toggling.
-- **On-Device Speech Recognition** — Runs Qwen3-ASR 1.7B locally via Swift MLX (8-bit) on Apple silicon and `speech.cpp` (Q8_0, CPU/Vulkan) on Windows x64 ([ADR 020](docs/decisions/020-native-qwen-asr.md)). After the model bundle is downloaded and SHA-256 verified, dictation runs completely offline. Microphone audio stays in memory only during the active session, password fields are skipped automatically, and stepped software input gain (`−6 dB` to `+12 dB`) supports quiet dictation at shared desks.
+- **On-Device Speech Recognition** — Runs Qwen3-ASR 1.7B locally through `speech.cpp` with Q8_0 GGUF weights and Metal on Apple silicon, or CPU/Vulkan on Windows x64 ([ADR 020](docs/decisions/020-native-qwen-asr.md)). After the model bundle is downloaded and SHA-256 verified, dictation runs completely offline. Microphone audio stays in memory only during the active session, password fields are skipped automatically, and stepped software input gain (`−6 dB` to `+12 dB`) supports quiet dictation at shared desks.
 - **Edit Learning & Draft Isolation** — Streaming partial drafts stay inside Arion's floating pill and are committed to the editor only on release. Deterministic cleanup rules and user-approved vocabulary are applied locally; on macOS, manual edits made to inserted text in native editors are learned automatically with one-click undo ([ADR 014](docs/decisions/014-edit-learning.md)).
 - **Two-Stage Contextual Polishing** — Optional polishing runs after key release ([ADR 023](docs/decisions/023-final-only-polishing.md)) to strip spoken fillers, resolve mid-sentence self-corrections, disambiguate terms against visible window/cursor context ([ADR 013](docs/decisions/013-rewrite-context-on-device.md)), and format text for the active app (**Match the app**, [ADR 012](docs/decisions/012-context-scene-selection.md)). An optional second shortcut dictates and translates into one of 12 target languages. Runs Qwen3.5-2B (`Q4_K_M` GGUF via `llama.cpp`) locally on macOS Apple silicon and Windows x64 ([ADR 018](docs/decisions/018-staged-gguf-rewriting.md), [ADR 025](docs/decisions/025-windows-local-polishing.md)), or connects to an explicit opt-in cloud model (ChatGPT sign-in or OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter API key) while keeping raw audio on-device ([ADR 022](docs/decisions/022-cloud-polishing.md)).
 - **Native Go Desktop Shell** — Built with [MyGo](https://github.com/egoist/mygo) (`v0.4.6`) using Feature-Sliced Design in Go without Electron or a webview ([ADR 001](docs/decisions/001-desktop-native-boundaries.md), [ADR 007](docs/decisions/007-sunbeam-design-system.md)). Runs in the menu bar / system tray with a click-through floating pill that joins fullscreen Spaces without stealing focus, plus live-switched English and Simplified Chinese UI ([i18n](docs/frontend/i18n.md)).
@@ -46,7 +46,7 @@ Cloud dictation tools require sending raw microphone audio and window context to
 
 | Platform | Architecture | Status |
 | --- | --- | --- |
-| **macOS** | Apple silicon (`arm64`) | Working menu bar dictation app, native MLX ASR, local GGUF polishing, and `ArionInput.app` IMK host (Intel macOS is unsupported, [ADR 021](docs/decisions/021-apple-silicon-only-macos.md)) |
+| **macOS** | Apple silicon (`arm64`) | Working menu bar dictation app, Metal-accelerated `speech.cpp` ASR, local GGUF polishing, and `ArionInput.app` IMK host (Intel macOS is unsupported, [ADR 021](docs/decisions/021-apple-silicon-only-macos.md)) |
 | **Windows** | 64-bit (`x64` / `amd64`) | Early preview with native `speech.cpp` ASR, local GGUF polishing, and `ArionTSF.dll` IME host |
 
 See [Release Status](docs/operations/release-status.md), [Agent Handoff](docs/project/agent-handoff.md), and [Validation Report](docs/quality/validation.md) for current milestone progress and open release gates.
@@ -56,12 +56,7 @@ See [Release Status](docs/operations/release-status.md), [Agent Handoff](docs/pr
 ### Prerequisites
 
 - **Go 1.27.1** with `cgo` enabled (`go.work` uses automatic toolchain selection).
-- **macOS (`arm64`)**: Full **Xcode 26.4.1** application (Swift 6.3.1) and the **Metal Toolchain** component:
-  ```sh
-  sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-  sudo xcodebuild -license accept && sudo xcodebuild -runFirstLaunch
-  xcodebuild -downloadComponent MetalToolchain
-  ```
+- **macOS (`arm64`)**: Apple Command Line Tools with the macOS 14 SDK, CMake and an Apple silicon host; `speech.cpp` builds its Metal backend locally.
 - **Windows (`amd64`)**: Native C/C++ toolchain, CMake, MinGW-w64 GCC (`CC=x86_64-w64-mingw32-gcc`), and NSIS.
 - **Node 24** (`.nvmrc`) and **pinned `pnpm@10.33.0`** (`package.json`).
 

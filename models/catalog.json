@@ -30,7 +30,7 @@
         "mixed"
       ],
       "platforms": [
-        "darwin-arm64"
+        "darwin-arm64-mlx"
       ],
       "audio": {
         "sampleRate": 16000,
@@ -120,6 +120,7 @@
         "mixed"
       ],
       "platforms": [
+        "darwin-arm64",
         "darwin-amd64",
         "windows-amd64"
       ],

@@ -53,7 +53,7 @@ export function buildIMELearning({
       '-I', sdkInclude, '-c', path.join(source, '../shared', `${name}.cpp`), '-o', object]);
     return object;
   });
-  run(['swiftc', '-parse-as-library', '-emit-object', '-O', '-target', target,
+  run(['swiftc', '-parse-as-library', '-emit-object', '-module-name', 'ArionLearningCrypto', '-O', '-target', target,
     path.join(source, 'learning_crypto.swift'), '-o', crypto]);
   console.log(`IME learning objects: ${((performance.now() - started) / 1000).toFixed(3)} seconds`);
   return {

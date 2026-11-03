@@ -33,16 +33,18 @@ const binaries = goos === 'darwin'
   ? [path.join(built, `${config.name}.app/Contents/MacOS/${config.name}`), path.join(resources, 'ArionInput.app/Contents/MacOS/ArionInput'), path.join(resources, 'ArionInput.app/Contents/Frameworks/librime.1.dylib')]
   : [path.join(built, `${config.name}.exe`)];
 const asr = path.join(resources, 'asr');
-binaries.push(path.join(asr, platform === 'darwin-arm64' ? 'arion-asr' : goos === 'windows' ? 'speech.exe' : 'speech'));
+binaries.push(path.join(asr, goos === 'windows' ? 'speech.exe' : 'speech'));
 if (platform === 'windows-amd64') binaries.push(path.join(asr, 'speech-vulkan.exe'));
-if (platform === 'darwin-arm64') {
-  requireFile(path.join(asr, 'mlx.metallib'));
-  requireFile(path.join(asr, 'Package.resolved'));
-  for (const name of readdirSync(path.join(asr, 'lib'))) if (name.endsWith('.dylib')) binaries.push(path.join(asr,'lib',name));
-  requireFile(path.join(asr, 'lib/libswiftCompatibilitySpan.dylib'));
-
-}
 requireFile(path.join(asr, 'runtime.json'));
+const asrRuntime = JSON.parse(readFileSync(path.join(asr, 'runtime.json'), 'utf8'));
+const expectedASR = JSON.parse(readFileSync(path.join(root, 'scripts/asr-runtime.json'), 'utf8'));
+if (asrRuntime.platform !== platform || asrRuntime.speech?.revision !== expectedASR.speech.revision ||
+    JSON.stringify(asrRuntime.configuration) !== JSON.stringify(expectedASR.platforms[platform])) {
+  throw new Error(`Packaged native ASR runtime does not match the pinned ${platform} configuration`);
+}
+if (platform === 'darwin-arm64' && (!asrRuntime.configuration.metal || !asrRuntime.configuration.metalEmbedded || asrRuntime.configuration.architecture !== 'arm64')) {
+  throw new Error('Apple silicon ASR must embed the arm64 Metal backend');
+}
 const scan = directory => readdirSync(directory, { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? scan(path.join(directory,entry.name)) : [path.join(directory,entry.name)]);
 for (const file of scan(resources)) if (/sherpa|onnxruntime|x[-_]?asr/i.test(path.basename(file))) throw new Error(`Retired runtime in package: ${file}`);
 if (!scan(path.join(asr, 'licenses')).length) throw new Error('Missing native ASR dependency licenses');

@@ -43,7 +43,7 @@ func (s Store) Load() (application.Preferences, []string, error) {
 	// Known retired backend choices migrate to the explicitly adopted native
 	// default. Unknown IDs remain visible errors rather than silent repairs.
 	switch normalized.ModelOverride {
-	case "zipformer-2023", "xasr-160", "xasr-480", "xasr-160-xasr-final", "xasr-480-xasr-final", "xasr-160-sensevoice-final", "xasr-160-qwen3asr-final", "xasr-160-qwen3asr-17-final":
+	case "zipformer-2023", "xasr-160", "xasr-480", "xasr-160-xasr-final", "xasr-480-xasr-final", "xasr-160-sensevoice-final", "xasr-160-qwen3asr-final", "xasr-160-qwen3asr-17-final", "qwen3-asr-1.7b-mlx-8bit":
 		normalized.ModelOverride = ""
 		repaired = append(repaired, "modelOverride")
 	}
