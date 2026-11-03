@@ -131,6 +131,8 @@ make build desktop
 
 <voice-quote login="tplog">もう本格的に使い始めています。今後のアップデートが楽しみ！</voice-quote>
 
+<voice-quote login="liangchen-harold">認識精度がとても高く、ほかの音声入力より頼りになります。</voice-quote>
+
 [^scene]: [仕様 009：コンテキストに応じた整文](https://github.com/AstraFoundry/Arion/blob/main/specs/009-contextual-rewrite.md#scene-selection)のシーン選択（`SCN-01`、`SCN-02`）。
 
 [^context]: [ADR 013：整文のコンテキストをデバイス上で読む](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md)。

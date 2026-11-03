@@ -131,6 +131,8 @@ make build desktop
 
 <voice-quote login="tplog">已经严肃开始使用了，期待后续迭代！</voice-quote>
 
+<voice-quote login="liangchen-harold">模型识别率很好，比其他语音输入法靠谱。</voice-quote>
+
 [^scene]: [规范 009：上下文润色](https://github.com/AstraFoundry/Arion/blob/main/specs/009-contextual-rewrite.md#scene-selection)中的场景选择（`SCN-01`、`SCN-02`）。
 
 [^context]: [ADR 013：在本机读取润色上下文](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md)。

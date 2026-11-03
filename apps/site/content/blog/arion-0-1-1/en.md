@@ -131,6 +131,8 @@ And thank you to these friends for their support and encouragement during the pr
 
 <voice-quote login="tplog">I have seriously started using it. Looking forward to what comes next!</voice-quote>
 
+<voice-quote login="liangchen-harold">The recognition accuracy is great, more reliable than other voice input apps.</voice-quote>
+
 [^scene]: Scene selection in [Spec 009: Contextual rewrite](https://github.com/AstraFoundry/Arion/blob/main/specs/009-contextual-rewrite.md#scene-selection) (`SCN-01`, `SCN-02`).
 
 [^context]: [ADR 013: Rewrite context on device](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md).
