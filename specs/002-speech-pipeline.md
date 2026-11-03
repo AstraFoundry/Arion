@@ -18,6 +18,7 @@ Capture → bounded frames → explicit resampling → VAD/streaming recognizer 
 
 - SPH-11: Each recording snapshots bounded, approved canonical ASR hotwords before recognizer creation. Preview, segment acoustic refinement and full-audio finalization use that same snapshot; memory changes affect the next recording. Wrong aliases and generated rewrite text never enter ASR context. Selection follows MEM-07. Context is a recognition hint, not a forced substitution or an accuracy guarantee.
 - SPH-12: Native ASR receives a per-request space-separated `prompt`, including an explicit empty string to clear context. Nonempty context requires an advertised prompt capability; unsupported workers fail explicitly. Product term/rune bounds and the native model's token context bound are independently enforced. No cloud inference is introduced.
+- SPH-13: Before decoding a chunk with personal hotwords, recognize the same complete audio with an empty prompt. An empty unprompted transcript ends that chunk without contextual decoding; hotwords must not supply their own speech-presence evidence. A failed or cancelled admission pass remains a failure or cancellation, never a contextual retry. Preview, segment and full-audio finalization share this admission path. An unprompted recognizer can still misclassify noise or miss faint speech; this is not a general noise-rejection guarantee.
 
 ## Acceptance
 
@@ -34,5 +35,6 @@ Capture → bounded frames → explicit resampling → VAD/streaming recognizer 
 | SPH-A09 | Mutate memory during capture → preview and all acoustic finalizers retain the initial snapshot; the next session receives updated terms |
 | SPH-A10 | Prompt-capable MLX/speech.cpp protocol fixtures receive exact canonical context; empty requests clear it; unsupported workers and invalid terms fail explicitly |
 | SPH-A11 | Real local Qwen3 paired audio evaluation retains raw outputs, fixture/model/runtime hashes, unrelated-word and silence controls, accuracy and latency; report regressions and platform limitations |
+| SPH-A12 | Unprompted empty output suppresses hotword decoding in preview/finalization; nonempty output admits the session's exact terms; admission failure/cancellation does not retry with terms |
 
 The runtime and checkpoint evaluation shortlist is in [research](../docs/research/on-device-speech.md). No weights are chosen in this foundation.

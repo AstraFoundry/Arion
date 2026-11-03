@@ -16,6 +16,7 @@ import (
 	"runtime"
 	"slices"
 	"strconv"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -323,15 +324,28 @@ func (e *engine) decode(ctx context.Context, samples []float32, hotwords ...stri
 	if prompt != "" && !p.promptSupported {
 		return "", domain.Fail(domain.CodeModelUnsupported, "native ASR worker does not support hotword context")
 	}
-	text, err, retired := p.decode(ctx, samples, e.cancelGrace, prompt)
-	if retired {
-		e.mu.Lock()
-		if e.current == p {
-			e.current = nil
-			e.needsReload = !e.closed
+	var retired bool
+	defer func() {
+		if retired {
+			e.mu.Lock()
+			if e.current == p {
+				e.current = nil
+				e.needsReload = !e.closed
+			}
+			e.mu.Unlock()
 		}
-		e.mu.Unlock()
+	}()
+	var text string
+	if prompt != "" {
+		// Personal vocabulary must not decide whether the audio contains speech.
+		// Preserve the complete samples and use the same worker without context
+		// first; only an independently nonempty transcript admits hotword biasing.
+		text, err, retired = p.decode(ctx, samples, e.cancelGrace, "")
+		if err != nil || strings.TrimSpace(text) == "" {
+			return text, err
+		}
 	}
+	text, err, retired = p.decode(ctx, samples, e.cancelGrace, prompt)
 	return text, err
 }
 
