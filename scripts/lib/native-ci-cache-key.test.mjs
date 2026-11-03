@@ -25,13 +25,12 @@ test('cache identity changes with source, build settings and toolchain, independ
 
 test('native inputs cover runtime pins, build scripts, patches and ASR sources without UI churn', () => {
   for (const file of ['scripts/asr-runtime.json', 'scripts/llm-runtime.json', 'scripts/keyboard-runtime.json',
-    'scripts/stage-llm-runtime.mjs', 'scripts/lib/keyboard-correction-patch.mjs', 'scripts/cmake/windows-llm.cmake',
-    'apps/desktop/native/mlx-asr/Package.resolved', 'apps/desktop/native/mlx-asr/Sources/main.swift',
+    'scripts/stage-asr-runtime.mjs', 'scripts/stage-llm-runtime.mjs', 'scripts/lib/keyboard-correction-patch.mjs', 'scripts/cmake/windows-llm.cmake',
     'apps/desktop/ime/windows/typing.h', 'apps/desktop/ime/macos/learning.mm', 'scripts/build-parallelism.mjs',
     'apps/desktop/ime/shared/keyboard-data/arion_pinyin.schema.yaml', 'apps/desktop/desktop.json']) {
     assert.equal(nativeInput(file), true, file);
   }
-  for (const file of ['apps/desktop/ui/app/app.go', 'apps/site/app/page.tsx', 'scripts/lib/native-ci-cache-key.test.mjs', 'scripts/lib/workflow-check.mjs', 'scripts/ci-cache-prune.mjs', 'scripts/ci-timings.mjs']) {
+  for (const file of ['apps/desktop/native/mlx-asr/Package.resolved', 'apps/desktop/ui/app/app.go', 'apps/site/app/page.tsx', 'scripts/lib/native-ci-cache-key.test.mjs', 'scripts/lib/workflow-check.mjs', 'scripts/ci-cache-prune.mjs', 'scripts/ci-timings.mjs']) {
     assert.equal(nativeInput(file), false, file);
   }
 });

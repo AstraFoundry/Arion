@@ -1,6 +1,6 @@
 // Stage native ASR code only. Model weights are provisioned separately.
 import { execFileSync } from 'node:child_process';
-import { cpSync, copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildParallelism } from './build-parallelism.mjs';
@@ -9,6 +9,8 @@ import { verifyWindowsASRPackage } from './lib/windows-pe.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const platform = process.argv[2] ?? `${process.platform === 'win32' ? 'windows' : process.platform}-${process.arch === 'x64' ? 'amd64' : process.arch}`;
 const pins = JSON.parse(readFileSync(path.join(root, 'scripts/asr-runtime.json')));
+const configuration = pins.platforms[platform];
+if (!configuration) throw new Error(`Unsupported native ASR platform: ${platform}`);
 const work = path.join(root, '.workspace/native-asr-migration');
 const resources = path.join(root, 'apps/desktop/resources', platform);
 const destination = path.join(resources, 'asr');
@@ -19,30 +21,7 @@ mkdirSync(path.join(destination, 'licenses'), { recursive: true });
 // Remove obsolete generated runtime artifacts from incremental builds.
 rmSync(path.join(resources, 'lib'), { recursive: true, force: true });
 if (existsSync(resources)) for (const name of readdirSync(resources)) if (/sherpa|onnxruntime/i.test(name)) rmSync(path.join(resources, name), { recursive: true, force: true });
-if (platform === 'darwin-arm64') {
-  const source = path.join(root, 'apps/desktop/native/mlx-asr');
-  const derived = path.join(work, 'build');
-  run('xcodebuild', ['-quiet', '-scheme', 'ArionASR', '-configuration', 'Release', '-destination', 'platform=macOS,arch=arm64', '-derivedDataPath', derived, '-onlyUsePackageVersionsFromResolvedFile', 'MACOSX_DEPLOYMENT_TARGET=14.0', 'build'], source);
-  const products = path.join(derived, 'Build/Products/Release');
-  copyFileSync(path.join(products, 'arion-asr'), path.join(destination, 'arion-asr'));
-  const swiftLibraries = path.join(destination, 'lib');
-  mkdirSync(swiftLibraries);
-  run('xcrun', ['swift-stdlib-tool', '--copy', '--scan-executable', path.join(destination, 'arion-asr'), '--destination', swiftLibraries, '--platform', 'macosx']);
-  run('install_name_tool', ['-add_rpath', '@executable_path/lib', path.join(destination, 'arion-asr')]);
-
-  // MLX searches for a colocated mlx.metallib before SwiftPM bundle paths.
-  copyFileSync(path.join(products, 'mlx-swift_Cmlx.bundle/Contents/Resources/default.metallib'), path.join(destination, 'mlx.metallib'));
-  for (const name of readdirSync(products).filter(n => n.endsWith('.bundle'))) cpSync(path.join(products, name), path.join(destination, name), { recursive: true });
-  const checkouts = path.join(derived, 'SourcePackages/checkouts');
-  for (const name of readdirSync(checkouts)) {
-    const source = path.join(checkouts, name);
-    const notices = readdirSync(source).filter(n => /^(LICENSE|LICENCE|COPYING|NOTICE)(\..*)?$/i.test(n));
-    if (!notices.length) throw new Error(`Missing Swift dependency license: ${name}`);
-    mkdirSync(path.join(destination, 'licenses', name));
-    for (const notice of notices) copyFileSync(path.join(source, notice), path.join(destination, 'licenses', name, notice));
-  }
-  copyFileSync(path.join(source, 'Package.resolved'), path.join(destination, 'Package.resolved'));
-} else if (['darwin-amd64', 'windows-amd64'].includes(platform)) {
+if (['darwin-arm64', 'darwin-amd64', 'windows-amd64'].includes(platform)) {
   const source = path.join(work, 'speech.cpp');
   if (!existsSync(source)) run('git', ['clone', '--no-checkout', pins.speech.repository, source]);
   run('git', ['checkout', '--detach', pins.speech.revision], source);
@@ -51,8 +30,9 @@ if (platform === 'darwin-arm64') {
   if (dirty) throw new Error('Pinned speech.cpp source or submodule has local modifications');
 
   const build = path.join(work, `speech-${platform}`);
-  const flags = ['-S', source, '-B', build, '-DCMAKE_BUILD_TYPE=Release', '-DGGML_NATIVE=OFF', '-DGGML_METAL=OFF', '-DGGML_VULKAN=OFF', '-DGGML_AVX2=OFF', '-DGGML_FMA=OFF', '-DGGML_F16C=OFF', '-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded'];
-  if (platform.startsWith('darwin')) flags.push('-DCMAKE_OSX_ARCHITECTURES=x86_64', '-DCMAKE_OSX_DEPLOYMENT_TARGET=14.0');
+  const metal = configuration.metal ? 'ON' : 'OFF';
+  const flags = ['-S', source, '-B', build, '-DCMAKE_BUILD_TYPE=Release', '-DGGML_NATIVE=OFF', `-DGGML_METAL=${metal}`, `-DGGML_METAL_EMBED_LIBRARY=${metal}`, '-DGGML_VULKAN=OFF', '-DGGML_AVX2=OFF', '-DGGML_FMA=OFF', '-DGGML_F16C=OFF', '-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded'];
+  if (platform.startsWith('darwin')) flags.push(`-DCMAKE_OSX_ARCHITECTURES=${platform === 'darwin-arm64' ? 'arm64' : 'x86_64'}`, '-DCMAKE_OSX_DEPLOYMENT_TARGET=14.0');
   // MSVC /MT does not statically link OpenMP's VCOMP140.DLL. The CPU worker
   // uses ggml's own thread pool and must run without a compiler redistributable.
   if (platform === 'windows-amd64') flags.push('-DGGML_OPENMP=OFF');
@@ -87,5 +67,9 @@ if (platform === 'darwin-arm64') {
     console.log(`Verified Windows ASR DLL closure and isolated CPU launch: ${checked.version}.`);
   }
 } else throw new Error(`Unsupported native ASR platform: ${platform}`);
-writeFileSync(path.join(destination, 'runtime.json'), JSON.stringify({ platform, ...pins }, null, 2) + '\n');
+writeFileSync(path.join(destination, 'runtime.json'), JSON.stringify({
+  platform,
+  configuration,
+  speech: pins.speech,
+}, null, 2) + '\n');
 console.log(`Staged native ASR for ${platform}.`);

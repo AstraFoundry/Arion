@@ -176,13 +176,13 @@ jobs:
             apps/desktop/go.sum
             services/sync/go.sum
             third_party/mygo/go.sum
-      - name: Require native MLX toolchain
+      - name: Require native macOS toolchain
         if: matrix.platform == 'darwin-arm64'
         run: |
-          sudo xcode-select -s /Applications/Xcode_26.4.1.app
-          xcodebuild -version
+          xcode-select -p
+          xcrun --sdk macosx clang --version
           swift --version
-          swift -e 'import Foundation; print("Native MLX toolchain")'
+          cmake --version
       - name: Identify native build caches
         if: matrix.suite != 'desktop' || runner.os == 'Windows' || inputs.release
         id: cache-keys

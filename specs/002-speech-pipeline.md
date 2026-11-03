@@ -32,7 +32,7 @@ Capture → bounded frames → explicit resampling → VAD/streaming recognizer 
 | SPH-A07 | Silence/noise-only fixture → no candidate auto-committed |
 | SPH-A08 | Missing correction model → explicit capability status; no network inference |
 | SPH-A09 | Mutate memory during capture → preview and all acoustic finalizers retain the initial snapshot; the next session receives updated terms |
-| SPH-A10 | Prompt-capable MLX/speech.cpp protocol fixtures receive exact canonical context; empty requests clear it; unsupported workers and invalid terms fail explicitly |
+| SPH-A10 | Prompt-capable speech.cpp protocol fixtures receive exact canonical context; empty requests clear it; unsupported workers and invalid terms fail explicitly |
 | SPH-A11 | Real local Qwen3 paired audio evaluation retains raw outputs, fixture/model/runtime hashes, unrelated-word and silence controls, accuracy and latency; report regressions and platform limitations |
 
 The runtime and checkpoint evaluation shortlist is in [research](../docs/research/on-device-speech.md). No weights are chosen in this foundation.

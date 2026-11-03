@@ -68,8 +68,8 @@ func TestEmbeddedNativeAdoption(t *testing.T) {
 	if err != nil || !bundle.Adopted {
 		t.Fatalf("adoption: %+v %+v %v", bundle, selection, err)
 	}
-	if Platform() == "darwin-arm64" && (!selection.LatencyMeasured || selection.Evaluation.Observations != 118) {
-		t.Fatalf("native measurement missing: %+v", selection)
+	if Platform() == "darwin-arm64" && bundle.ID != "qwen3-asr-1.7b-gguf-q8" {
+		t.Fatalf("Apple silicon did not select speech.cpp GGUF: %+v", bundle)
 	}
 	for _, artifact := range catalog.Artifacts {
 		if artifact.Kind != "qwen3-asr-mlx" && artifact.Kind != "qwen3-asr-gguf" {

@@ -16,7 +16,7 @@ func TestRetiredASROverrideMigration(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		retired := id == "xasr-160-xasr-final" || id == "xasr-160-qwen3asr-17-final"
+		retired := id == "xasr-160-xasr-final" || id == "xasr-160-qwen3asr-17-final" || id == "qwen3-asr-1.7b-mlx-8bit"
 		if retired && prefs.ModelOverride != "" {
 			t.Fatalf("retired override retained: %s", id)
 		}
