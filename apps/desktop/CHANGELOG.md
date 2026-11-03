@@ -1,3 +1,57 @@
+## 0.1.1
+
+### English
+
+First stable release for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Hold a key to dictate in Chinese, English, or a mix of both. Recognition stays on this computer after the model download, and the sentence is typed at the cursor when you release.
+- Optional local polishing, and voice translation on its own shortcut. A cloud model is used only after you choose a provider and a model.
+- Offline Pinyin keyboard with local candidate ranking and vocabulary. Corrections you make are learned in supported macOS editors.
+- Opt-in encrypted clipboard history, opened with its shortcut.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable. Model weights download separately. Multi-device sync, Windows edit-learning, clean-machine acceptance, production old-to-new update acceptance, and real-service cloud and translation acceptance remain open. This tag stages the release and opens a GitHub draft; it does not publish the stable update channel. See RELEASE-STATUS.md and SHA256SUMS.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的第一个正式版本。
+
+- 按住快捷键即可听写中文、英文或中英混合句。模型下载后识别在本机进行，松开按键时写入光标处。
+- 可选的本地润色，以及独立的语音翻译快捷键。只有在你选择服务商和模型后才会使用云端模型。
+- 离线拼音键盘，带本地候选排序和词库。在受支持的 macOS 编辑器里，你的修改会被记住。
+- 可选的加密剪贴板历史，通过快捷键打开。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证。Windows 仍无发布者签名。模型权重单独下载。多设备同步、Windows 纠错学习、全新机器验收、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。此标签会暂存发布并创建 GitHub 草稿，不会发布稳定更新渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
+### Thanks
+
+- [stvlynn](https://github.com/stvlynn)
+- [zacharyhaha](https://github.com/zacharyhaha)
+- [AllenWriter](https://github.com/AllenWriter)
+- [gavi102803](https://github.com/gavi102803)
+- [liangchen-harold](https://github.com/liangchen-harold)
+
+### Issues
+
+- [alterxyz](https://github.com/alterxyz)
+- [HereOrCode](https://github.com/HereOrCode)
+- [hagemon](https://github.com/hagemon)
+- [jackeyzzz12138](https://github.com/jackeyzzz12138)
+
+### 提交
+
+- [stvlynn](https://github.com/stvlynn)
+- [zacharyhaha](https://github.com/zacharyhaha)
+- [AllenWriter](https://github.com/AllenWriter)
+- [gavi102803](https://github.com/gavi102803)
+- [liangchen-harold](https://github.com/liangchen-harold)
+
+### Issue
+
+- [alterxyz](https://github.com/alterxyz)
+- [HereOrCode](https://github.com/HereOrCode)
+- [hagemon](https://github.com/hagemon)
+- [jackeyzzz12138](https://github.com/jackeyzzz12138)
+
 ## 0.1.0-alpha.23
 
 ### English
