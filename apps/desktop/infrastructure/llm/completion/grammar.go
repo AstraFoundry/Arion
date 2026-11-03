@@ -9,7 +9,7 @@ import (
 	"unicode"
 
 	"arion.local/core/domain"
-	"arion.local/desktop/infrastructure/llm/spelling"
+	spelling "arion.local/desktop/infrastructure/pronunciation"
 )
 
 var phoneticClasses = sync.OnceValues(func() (map[string]string, error) {

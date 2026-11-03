@@ -77,7 +77,7 @@ for (const archive of spec.archives ?? []) {
   rmSync(unpacked, { recursive: true, force: true });
 }
 for (const name of ['cmudict-pronunciation-v1-LICENSE', 'pypinyin-character-readings-v1-LICENSE.txt', 'cmudict-pronunciation-v1-provenance.json', 'pypinyin-character-readings-v1-provenance.json']) {
-  copyFileSync(path.join(desktop, 'infrastructure/llm/spelling/data', name), path.join(destination, 'licenses', name));
+  copyFileSync(path.join(desktop, 'infrastructure/pronunciation/data', name), path.join(destination, 'licenses', name));
 }
 const [goos, goarch] = platform.split('-');
 const worker = path.join(destination, goos === 'windows' ? 'arion-llm.exe' : 'arion-llm');

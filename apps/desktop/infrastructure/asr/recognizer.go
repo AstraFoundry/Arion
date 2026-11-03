@@ -32,35 +32,36 @@ func LoadStreamingContext(ctx context.Context, spec Spec) (*Streaming, error) {
 func (s *Streaming) Close() { s.engine.close() }
 func (s *Streaming) NewRecognizer(ctx context.Context, request ports.RecognitionRequest) (ports.Recognizer, error) {
 	ctx, cancel := context.WithCancel(ctx)
-	r := &session{engine: s.engine, rate: s.rate, silence: s.silence, id: request.Identity, hotwords: append([]string(nil), request.Hotwords...), ctx: ctx, cancel: cancel, wake: make(chan struct{}, 1), done: make(chan struct{})}
+	r := &session{engine: s.engine, rate: s.rate, silence: s.silence, id: request.Identity, hotwords: append([]string(nil), request.Hotwords...), hotwordAliases: request.HotwordAliases, ctx: ctx, cancel: cancel, wake: make(chan struct{}, 1), done: make(chan struct{})}
 	go r.preview()
 	return r, nil
 }
 
 type session struct {
-	hotwords  []string
-	engine    *engine
-	rate      int
-	silence   int
-	id        contracts.Identity
-	ctx       context.Context
-	cancel    context.CancelFunc
-	wake      chan struct{}
-	done      chan struct{}
-	mu        sync.Mutex
-	samples   []float32
-	segments  []string
-	tail      string
-	decoded   int
-	scheduled int
-	revision  uint64
-	failure   error
-	compute   time.Duration
-	closed    bool
-	finishing bool
-	quiet     int
-	speech    bool
-	endpoints []int
+	hotwordAliases *domain.Vocabulary
+	hotwords       []string
+	engine         *engine
+	rate           int
+	silence        int
+	id             contracts.Identity
+	ctx            context.Context
+	cancel         context.CancelFunc
+	wake           chan struct{}
+	done           chan struct{}
+	mu             sync.Mutex
+	samples        []float32
+	segments       []string
+	tail           string
+	decoded        int
+	scheduled      int
+	revision       uint64
+	failure        error
+	compute        time.Duration
+	closed         bool
+	finishing      bool
+	quiet          int
+	speech         bool
+	endpoints      []int
 }
 
 func (s *session) Accept(ctx context.Context, f contracts.Frame) error {
@@ -131,7 +132,7 @@ func (s *session) preview() {
 		samples := append([]float32(nil), s.samples[:n]...)
 		s.mu.Unlock()
 		start := time.Now()
-		text, err := s.engine.decode(s.ctx, samples, s.hotwords...)
+		text, err := s.engine.decode(s.ctx, samples, s.hotwords, s.hotwordAliases)
 		elapsed := time.Since(start)
 		s.mu.Lock()
 		s.compute += elapsed
@@ -200,7 +201,7 @@ func (s *session) Finish(ctx context.Context) (contracts.Draft, error) {
 		var parts []string
 		for _, samples := range SplitAtQuiet(s.samples, s.rate, 25) {
 			start := time.Now()
-			text, err := s.engine.decode(ctx, samples, s.hotwords...)
+			text, err := s.engine.decode(ctx, samples, s.hotwords, s.hotwordAliases)
 			s.compute += time.Since(start)
 			if err != nil {
 				return contracts.Draft{}, err
@@ -246,7 +247,7 @@ func (o *Offline) Finalize(ctx context.Context, r ports.FinalizeRequest) (string
 	}
 	var parts []string
 	for _, samples := range SplitAtQuiet(r.Samples, o.rate, 25) {
-		text, err := o.engine.decode(ctx, samples, r.Hotwords...)
+		text, err := o.engine.decode(ctx, samples, r.Hotwords, r.HotwordAliases)
 		if err != nil {
 			return "", err
 		}

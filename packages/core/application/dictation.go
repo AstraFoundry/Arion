@@ -52,7 +52,7 @@ type Options struct {
 	Correction bool
 	Policy     func() domain.CorrectionPolicy
 	// Hotwords is read once before recognition and shared by all acoustic passes.
-	Hotwords func() []string
+	Hotwords func() domain.RecognitionVocabulary
 	// Rewrite is read when a session starts. When it is enabled, release runs
 	// one final rewrite of the recognized text. Closed segments are not sent
 	// to the model during speech.
@@ -108,10 +108,11 @@ type run struct {
 	pumpDone  chan struct{}
 	stopAsked bool
 
-	hotwords   []string
-	recognizer ports.Recognizer
-	target     contracts.TargetSnapshot
-	hasTarget  bool
+	hotwords       []string
+	hotwordAliases *domain.Vocabulary
+	recognizer     ports.Recognizer
+	target         contracts.TargetSnapshot
+	hasTarget      bool
 	// place names the target for history; contextReady closes once
 	// rewriteContext is read (startContext).
 	place          string
@@ -343,9 +344,11 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 	c.startContext(r)
 	started := time.Now()
 	if c.opts.Hotwords != nil {
-		r.hotwords = append([]string(nil), c.opts.Hotwords()...)
+		snapshot := c.opts.Hotwords()
+		r.hotwords = append([]string(nil), snapshot.Hotwords...)
+		r.hotwordAliases = snapshot.Aliases
 	}
-	recognizer, err := c.deps.Recognizers.NewRecognizer(r.ctx, ports.RecognitionRequest{Identity: r.identity, Hotwords: append([]string(nil), r.hotwords...)})
+	recognizer, err := c.deps.Recognizers.NewRecognizer(r.ctx, ports.RecognitionRequest{Identity: r.identity, Hotwords: append([]string(nil), r.hotwords...), HotwordAliases: r.hotwordAliases})
 	c.diagnostic(r, ports.DiagnosticRecognizer, started, err)
 	if err != nil {
 		c.failErr(r, err, domain.CodeModelMissing)
@@ -586,7 +589,7 @@ func (c *Coordinator) finalize(r *run) {
 	raw := draft.Text
 	if c.deps.Finalizer != nil && len(r.samples) > 0 {
 		started := time.Now()
-		second, err := c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: r.samples, Draft: raw, Hotwords: append([]string(nil), r.hotwords...)})
+		second, err := c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: r.samples, Draft: raw, Hotwords: append([]string(nil), r.hotwords...), HotwordAliases: r.hotwordAliases})
 		c.diagnostic(r, ports.DiagnosticFinalize, started, err)
 		if err != nil {
 			c.failErr(r, err, domain.CodeModelUnsupported)

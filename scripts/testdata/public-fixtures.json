@@ -12,7 +12,7 @@
       "licensePath": "LICENSE"
     },
     {
-      "path": "apps/desktop/infrastructure/llm/spelling/testdata/producer-parity.json",
+      "path": "apps/desktop/infrastructure/pronunciation/testdata/producer-parity.json",
       "originalPath": "benchmarks/reproduction/rewrite-product-integration-v1/producer-parity.json",
       "sha256": "a15a689386953360a06fb8fac8b4992c27dcd0d37f0a6aa87252990c6b2b50b1",
       "sizeBytes": 130587,

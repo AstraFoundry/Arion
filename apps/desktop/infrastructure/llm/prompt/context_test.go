@@ -8,7 +8,7 @@ import (
 	"unicode/utf8"
 
 	"arion.local/core/domain"
-	"arion.local/desktop/infrastructure/llm/spelling"
+	spelling "arion.local/desktop/infrastructure/pronunciation"
 )
 
 // CTX-05: both formatting paths receive bounded reference data only in the

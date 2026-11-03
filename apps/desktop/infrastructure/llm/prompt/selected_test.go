@@ -10,7 +10,7 @@ import (
 	"unicode"
 
 	"arion.local/core/domain"
-	"arion.local/desktop/infrastructure/llm/spelling"
+	spelling "arion.local/desktop/infrastructure/pronunciation"
 )
 
 func TestSelectedSelectorParityAndEmptyReference(t *testing.T) {

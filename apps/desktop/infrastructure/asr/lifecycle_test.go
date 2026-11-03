@@ -152,7 +152,7 @@ func retireLifecycle(t *testing.T, e *engine, root string) {
 	e.cancelGrace = 20 * time.Millisecond
 	ctx, cancel := context.WithCancel(context.Background())
 	done := make(chan error, 1)
-	go func() { _, err := e.decode(ctx, make([]float32, 16000)); done <- err }()
+	go func() { _, err := e.decode(ctx, make([]float32, 16000), nil, nil); done <- err }()
 	waitLifecycle(t, root, "transcribe", 1)
 	cancel()
 	select {
@@ -236,7 +236,7 @@ func TestUnexpectedWorkerExitDoesNotReload(t *testing.T) {
 	}
 	defer e.close()
 	for range 2 {
-		if _, err = e.decode(context.Background(), make([]float32, 320)); domain.CodeOf(err) != domain.CodeModelUnsupported {
+		if _, err = e.decode(context.Background(), make([]float32, 320), nil, nil); domain.CodeOf(err) != domain.CodeModelUnsupported {
 			t.Fatalf("unexpected worker exit: %v", err)
 		}
 	}
@@ -260,7 +260,7 @@ func TestReloadFailureIsReturnedWithoutRepeatedStarts(t *testing.T) {
 	defer e.close()
 	retireLifecycle(t, e, root)
 	for range 2 {
-		if _, err = e.decode(context.Background(), make([]float32, 320)); domain.CodeOf(err) != domain.CodeModelUnsupported {
+		if _, err = e.decode(context.Background(), make([]float32, 320), nil, nil); domain.CodeOf(err) != domain.CodeModelUnsupported {
 			t.Fatalf("reload protocol failure was hidden: %v", err)
 		}
 	}
@@ -289,7 +289,7 @@ func TestClosePreventsReloadAndInterruptsLoading(t *testing.T) {
 			var decoding chan error
 			if duringLoad {
 				decoding = make(chan error, 1)
-				go func() { _, err := e.decode(context.Background(), make([]float32, 320)); decoding <- err }()
+				go func() { _, err := e.decode(context.Background(), make([]float32, 320), nil, nil); decoding <- err }()
 				waitLifecycle(t, root, "start", 2)
 			}
 			e.close()
@@ -303,7 +303,7 @@ func TestClosePreventsReloadAndInterruptsLoading(t *testing.T) {
 					t.Fatal("Close deadlocked with a loading request")
 				}
 			}
-			if _, err = e.decode(context.Background(), make([]float32, 320)); domain.CodeOf(err) != domain.CodeModelMissing {
+			if _, err = e.decode(context.Background(), make([]float32, 320), nil, nil); domain.CodeOf(err) != domain.CodeModelMissing {
 				t.Fatalf("closed engine accepted a request: %v", err)
 			}
 			starts := 0
@@ -337,7 +337,7 @@ func TestConcurrentRequestsShareOneReplacement(t *testing.T) {
 		workers.Add(1)
 		go func(samples int) {
 			defer workers.Done()
-			text, err := e.decode(context.Background(), make([]float32, samples))
+			text, err := e.decode(context.Background(), make([]float32, samples), nil, nil)
 			if err == nil && text != strconv.Itoa(samples) {
 				err = fmt.Errorf("crossed request output: %s for %d samples", text, samples)
 			}
@@ -379,7 +379,7 @@ func TestCancelledReplacementLoadAllowsLaterRequest(t *testing.T) {
 			}
 			defer cancel()
 			done := make(chan error, 1)
-			go func() { _, err := e.decode(ctx, make([]float32, 321)); done <- err }()
+			go func() { _, err := e.decode(ctx, make([]float32, 321), nil, nil); done <- err }()
 			waitLifecycle(t, root, "start", 2)
 			if !deadline {
 				cancel()
@@ -392,7 +392,7 @@ func TestCancelledReplacementLoadAllowsLaterRequest(t *testing.T) {
 			case <-time.After(5 * time.Second):
 				t.Fatal("cancelled replacement load did not reap its process")
 			}
-			text, err := e.decode(context.Background(), make([]float32, 322))
+			text, err := e.decode(context.Background(), make([]float32, 322), nil, nil)
 			if err != nil || text != "322" {
 				t.Fatalf("later request after cancelled replacement: %q %v", text, err)
 			}
@@ -422,13 +422,13 @@ func TestAcknowledgedCancellationReusesSameProcess(t *testing.T) {
 	defer e.close()
 	ctx, cancel := context.WithCancel(context.Background())
 	done := make(chan error, 1)
-	go func() { _, err := e.decode(ctx, make([]float32, 320)); done <- err }()
+	go func() { _, err := e.decode(ctx, make([]float32, 320), nil, nil); done <- err }()
 	waitLifecycle(t, root, "transcribe", 1)
 	cancel()
 	if err = <-done; !errors.Is(err, context.Canceled) {
 		t.Fatal(err)
 	}
-	text, err := e.decode(context.Background(), make([]float32, 321))
+	text, err := e.decode(context.Background(), make([]float32, 321), nil, nil)
 	if err != nil || text != "321" {
 		t.Fatalf("acknowledged cancellation poisoned worker: %q %v", text, err)
 	}
@@ -451,10 +451,10 @@ func TestCloseStopsActiveAndQueuedRequests(t *testing.T) {
 	}
 	defer e.close()
 	results := make(chan error, 3)
-	go func() { _, err := e.decode(context.Background(), make([]float32, 320)); results <- err }()
+	go func() { _, err := e.decode(context.Background(), make([]float32, 320), nil, nil); results <- err }()
 	waitLifecycle(t, root, "transcribe", 1)
 	for range 2 {
-		go func() { _, err := e.decode(context.Background(), make([]float32, 321)); results <- err }()
+		go func() { _, err := e.decode(context.Background(), make([]float32, 321), nil, nil); results <- err }()
 	}
 	closed := make(chan struct{})
 	go func() { e.close(); close(closed) }()

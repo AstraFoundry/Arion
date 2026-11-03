@@ -224,7 +224,7 @@ func (c *Coordinator) refine(r *run, u unit) (string, error) {
 		return u.text, nil
 	}
 	started := time.Now()
-	text, err := c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: u.samples, Draft: u.text, Hotwords: append([]string(nil), r.hotwords...)})
+	text, err := c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: u.samples, Draft: u.text, Hotwords: append([]string(nil), r.hotwords...), HotwordAliases: r.hotwordAliases})
 	c.diagnostic(r, ports.DiagnosticFinalize, started, err)
 	return text, err
 }
@@ -268,7 +268,7 @@ func (c *Coordinator) finalizeLive(r *run) {
 		streamed := domain.JoinText(append(append([]string(nil), l.refined...), rest.text)...)
 		c.mu.Unlock()
 		started := time.Now()
-		raw, err = c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: r.samples, Draft: streamed, Hotwords: append([]string(nil), r.hotwords...)})
+		raw, err = c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: r.samples, Draft: streamed, Hotwords: append([]string(nil), r.hotwords...), HotwordAliases: r.hotwordAliases})
 		c.diagnostic(r, ports.DiagnosticFinalize, started, err)
 	} else {
 		var last string

@@ -1,4 +1,4 @@
-package spelling
+package pronunciation
 
 import (
 	"encoding/json"

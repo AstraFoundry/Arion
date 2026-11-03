@@ -8,6 +8,13 @@ import (
 	"unicode/utf8"
 )
 
+// RecognitionVocabulary freezes canonical terms and approved alias evidence together.
+// Aliases nominate source spans locally; only canonical terms reach native ASR.
+type RecognitionVocabulary struct {
+	Hotwords []string
+	Aliases  *Vocabulary
+}
+
 const (
 	MaxASRHotwords     = 64
 	MaxASRContextRunes = 2048

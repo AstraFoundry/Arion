@@ -15,7 +15,7 @@ import (
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/llm/engine"
 	"arion.local/desktop/infrastructure/llm/prompt"
-	"arion.local/desktop/infrastructure/llm/spelling"
+	spelling "arion.local/desktop/infrastructure/pronunciation"
 )
 
 // stageCase describes constructed transcript/context input. Evaluator checks

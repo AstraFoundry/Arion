@@ -35,7 +35,8 @@ type Recognizer interface {
 // Hotwords are canonical spellings, never correction aliases or window text.
 type RecognitionRequest struct {
 	contracts.Identity
-	Hotwords []string
+	Hotwords       []string
+	HotwordAliases *domain.Vocabulary
 }
 
 // RecognizerFactory creates per-session recognizers from a resident engine.
@@ -48,10 +49,11 @@ type RecognizerFactory interface {
 // optional acoustic second pass.
 type FinalizeRequest struct {
 	contracts.Identity
-	SampleRate int
-	Samples    []float32
-	Draft      string
-	Hotwords   []string
+	SampleRate     int
+	Samples        []float32
+	Draft          string
+	Hotwords       []string
+	HotwordAliases *domain.Vocabulary
 }
 
 // Finalizer re-decodes retained audio after the user stops. It must not

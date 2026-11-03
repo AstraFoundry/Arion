@@ -14,7 +14,7 @@ import (
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/llm/prompt"
-	"arion.local/desktop/infrastructure/llm/spelling"
+	spelling "arion.local/desktop/infrastructure/pronunciation"
 )
 
 // gatewayFixture mocks only the remote HTTP boundary, leaving the provider SDK,

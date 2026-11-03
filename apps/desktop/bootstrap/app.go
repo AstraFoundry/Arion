@@ -28,9 +28,9 @@ import (
 	"arion.local/desktop/infrastructure/diagnostics"
 	"arion.local/desktop/infrastructure/keyboardmodel"
 	"arion.local/desktop/infrastructure/keystore"
-	"arion.local/desktop/infrastructure/llm/spelling"
 	"arion.local/desktop/infrastructure/modelruntime"
 	"arion.local/desktop/infrastructure/netproxy"
+	spelling "arion.local/desktop/infrastructure/pronunciation"
 	"arion.local/desktop/infrastructure/provision"
 	"arion.local/desktop/infrastructure/rewriting"
 	"arion.local/desktop/infrastructure/secrets"
@@ -322,10 +322,10 @@ func (a *App) policy() domain.CorrectionPolicy {
 }
 
 // recognitionHotwords snapshots approved canonical terms independently of polish.
-func (a *App) recognitionHotwords() []string {
+func (a *App) recognitionHotwords() domain.RecognitionVocabulary {
 	a.snapshot.Lock()
 	defer a.snapshot.Unlock()
-	return append([]string(nil), a.asrHotwords...)
+	return domain.RecognitionVocabulary{Hotwords: append([]string(nil), a.asrHotwords...), Aliases: a.vocabulary}
 }
 
 // rewritePolicy is read when a session starts and preserves the user's

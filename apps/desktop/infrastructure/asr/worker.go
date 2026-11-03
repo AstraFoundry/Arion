@@ -16,12 +16,12 @@ import (
 	"runtime"
 	"slices"
 	"strconv"
-	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
 
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/pronunciation"
 )
 
 type Kind string
@@ -88,6 +88,7 @@ func (m message) supportsPrompt(kind Kind) bool {
 // engine serializes requests across process generations. Only a worker retired
 // after a cancellation drain timeout may be loaded again for a later request.
 type engine struct {
+	lexicon     *domain.SpellingLexicon
 	spec        Spec
 	worker      string
 	serial      chan struct{}
@@ -121,11 +122,15 @@ func load(ctx context.Context, spec Spec) (*engine, error) {
 	if spec.SampleRate != 16000 || (spec.Kind != QwenMLX && spec.Kind != QwenGGUF) {
 		return nil, domain.Fail(domain.CodeModelUnsupported, "unsupported native ASR specification")
 	}
+	lexicon, err := pronunciation.Load()
+	if err != nil {
+		return nil, domain.Fail(domain.CodeModelUnsupported, "ASR pronunciation resources unavailable")
+	}
 	worker := os.Getenv("ARION_ASR_WORKER")
 	if worker == "" {
 		worker = Locate(Resources)
 	}
-	worker, err := exec.LookPath(worker)
+	worker, err = exec.LookPath(worker)
 	if err != nil {
 		return nil, domain.Fail(domain.CodeModelUnsupported, "native ASR worker start failed")
 	}
@@ -143,7 +148,7 @@ func load(ctx context.Context, spec Spec) (*engine, error) {
 	}
 	spec.Files = files
 	lifetime, stop := context.WithCancel(context.Background())
-	e := &engine{spec: spec, worker: worker, lifetime: lifetime, stop: stop, serial: make(chan struct{}, 1), cancelGrace: 5 * time.Second}
+	e := &engine{lexicon: lexicon, spec: spec, worker: worker, lifetime: lifetime, stop: stop, serial: make(chan struct{}, 1), cancelGrace: 5 * time.Second}
 	if err := e.start(ctx); err != nil {
 		e.close()
 		return nil, err
@@ -273,7 +278,7 @@ func (e *workerProcess) send(m any) error {
 	_, err = e.stdin.Write(append(data, '\n'))
 	return err
 }
-func (e *engine) decode(ctx context.Context, samples []float32, hotwords ...string) (string, error) {
+func (e *engine) decode(ctx context.Context, samples []float32, hotwords []string, aliases *domain.Vocabulary) (string, error) {
 	select {
 	case e.serial <- struct{}{}:
 	case <-ctx.Done():
@@ -335,18 +340,34 @@ func (e *engine) decode(ctx context.Context, samples []float32, hotwords ...stri
 			e.mu.Unlock()
 		}
 	}()
-	var text string
-	if prompt != "" {
-		// Personal vocabulary must not decide whether the audio contains speech.
-		// Preserve the complete samples and use the same worker without context
-		// first; only an independently nonempty transcript admits hotword biasing.
-		text, err, retired = p.decode(ctx, samples, e.cancelGrace, "")
-		if err != nil || strings.TrimSpace(text) == "" {
-			return text, err
-		}
+	baseline, err, retired := p.decode(ctx, samples, e.cancelGrace, "")
+	if err != nil || prompt == "" {
+		return baseline, err
 	}
-	text, err, retired = p.decode(ctx, samples, e.cancelGrace, prompt)
-	return text, err
+	plan := e.lexicon.PrepareASR(baseline, hotwords, aliases)
+	if ctx.Err() != nil {
+		return "", ctx.Err()
+	}
+	terms := plan.Terms()
+	if len(terms) == 0 {
+		return baseline, nil
+	}
+	prompt, err = domain.ASRContext(terms)
+	if err != nil {
+		return "", domain.Fail(domain.CodeContractUnsupported, "invalid retrieved ASR hotword context")
+	}
+	proposal, err, retired := p.decode(ctx, samples, e.cancelGrace, prompt)
+	if err != nil {
+		return "", err
+	}
+	text, accepted := plan.Resolve(proposal)
+	if ctx.Err() != nil {
+		return "", ctx.Err()
+	}
+	if !accepted {
+		return baseline, nil
+	}
+	return text, nil
 }
 
 func (e *workerProcess) decode(ctx context.Context, samples []float32, cancelGrace time.Duration, prompt string) (string, error, bool) {

@@ -34,12 +34,15 @@ func TestHotwordsFrozenAcrossAcousticPasses(t *testing.T) {
 	for _, polish := range []bool{false, true} {
 		t.Run(map[bool]string{false: "verbatim", true: "polish"}[polish], func(t *testing.T) {
 			terms := []string{"Arion"}
+			aliases := domain.NewVocabulary([]domain.Replacement{{From: "SourceName", To: "Arion"}})
 			audio := &fakeAudio{}
 			factory := hotwordFactory{requests: make(chan ports.RecognitionRequest, 2)}
 			finalizer := &hotwordFinalizer{}
 			rewriter := &scriptedRewriter{answer: func(r ports.RewriteRequest) (string, error) { return r.Text, nil }}
 			c, err := NewCoordinator(Dependencies{Audio: audio, Recognizers: factory, Finalizer: finalizer, Rewriter: rewriter, NewID: newID}, Options{
-				Hotwords: func() []string { return terms }, Rewrite: func() RewritePolicy { return RewritePolicy{Enabled: polish} },
+				Hotwords: func() domain.RecognitionVocabulary {
+					return domain.RecognitionVocabulary{Hotwords: terms, Aliases: aliases}
+				}, Rewrite: func() RewritePolicy { return RewritePolicy{Enabled: polish} },
 			})
 			if err != nil {
 				t.Fatal(err)
@@ -53,7 +56,11 @@ func TestHotwordsFrozenAcrossAcousticPasses(t *testing.T) {
 				if !reflect.DeepEqual(request.Hotwords, []string{want}) {
 					t.Fatalf("session terms %v", request.Hotwords)
 				}
+				if got := request.HotwordAliases.Terms("SourceName", 1); !reflect.DeepEqual(got, []string{want}) {
+					t.Fatalf("session aliases %v", got)
+				}
 				terms[0] = "Changed"
+				aliases = domain.NewVocabulary([]domain.Replacement{{From: "SourceName", To: "Changed"}})
 				// A port cannot alter the coordinator's later acoustic request snapshot.
 				request.Hotwords[0] = "Mutated by recognizer"
 				audio.push(1, .2)
@@ -66,6 +73,9 @@ func TestHotwordsFrozenAcrossAcousticPasses(t *testing.T) {
 				finalizer.mu.Unlock()
 				if !reflect.DeepEqual(last.Hotwords, []string{want}) {
 					t.Fatalf("final terms %v", last.Hotwords)
+				}
+				if got := last.HotwordAliases.Terms("SourceName", 1); !reflect.DeepEqual(got, []string{want}) {
+					t.Fatalf("final aliases changed during recording: %v", got)
 				}
 				c.Cancel()
 			}

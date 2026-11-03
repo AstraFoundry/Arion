@@ -1,6 +1,6 @@
-// Package spelling loads the pinned pronunciation resources for the local
+// Package pronunciation loads the pinned pronunciation resources for the local
 // spelling-hypothesis producer. It performs no inference or network access.
-package spelling
+package pronunciation
 
 import (
 	"bufio"
