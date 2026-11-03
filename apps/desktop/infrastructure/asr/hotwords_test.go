@@ -165,6 +165,20 @@ func TestHotwordsCannotCreateStreamingSpeech(t *testing.T) {
 	if err = rec.Accept(context.Background(), contracts.Frame{SampleRate: 16000, Channels: 1, Samples: make([]float32, 16000)}); err != nil {
 		t.Fatal(err)
 	}
+	deadline := time.Now().Add(5 * time.Second)
+	for {
+		partial, err := rec.Partial(context.Background())
+		if err != nil || partial.Text != "" {
+			t.Fatalf("unvoiced preview generated vocabulary: %+v %v", partial, err)
+		}
+		if partial.Revision > 0 {
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("unvoiced preview never completed")
+		}
+		time.Sleep(time.Millisecond)
+	}
 	draft, err := rec.Finish(context.Background())
 	if err != nil || draft.Text != "" {
 		t.Fatalf("unvoiced streaming input generated vocabulary: %+v %v", draft, err)
