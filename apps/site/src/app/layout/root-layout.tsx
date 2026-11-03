@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from "next-intl";
 import type { ReactNode } from "react";
 import { type Locale, LOCALE_TAGS, useCopy } from "@/shared/i18n";
 import { setPageLocale } from "@/shared/i18n/server";
+import { GoogleAnalytics } from "@/shared/ui/google-analytics";
 import { SiteFooter } from "@/widgets/site-footer";
 import { SiteHeader } from "@/widgets/site-header";
 import { fontVariables } from "../fonts";
@@ -34,6 +35,7 @@ export function LocaleRootLayout({ locale, children }: { locale: Locale; childre
   return (
     <html lang={LOCALE_TAGS[locale]} className={fontVariables} suppressHydrationWarning>
       <body>
+        <GoogleAnalytics />
         <NextIntlClientProvider>
           <Shell>{children}</Shell>
         </NextIntlClientProvider>

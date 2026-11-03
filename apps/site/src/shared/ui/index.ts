@@ -7,6 +7,7 @@ export { Dateline } from "./dateline";
 export { type DocumentSection, DocumentPage } from "./document";
 export { buttonClasses, type ButtonSize, type ButtonVariant } from "./button-styles";
 export { GitHubMark } from "./github-mark";
+export { GoogleAnalytics } from "./google-analytics";
 export { Container, SectionHeading } from "./layout";
 export { LinkButton } from "./link-button";
 export { MockWindow } from "./mock-window";

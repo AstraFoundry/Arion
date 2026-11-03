@@ -1,5 +1,6 @@
 export { type Credit, photoCredits, softwareCredits } from "./credits";
 export { publicEnv } from "./env";
+export { googleAnalyticsMeasurementId } from "./google-analytics";
 export { parsePublicEnv, type PublicEnv, PublicEnvError } from "./env-schema";
 export {
   anchor,
