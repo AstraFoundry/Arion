@@ -143,16 +143,21 @@
   },
   "download": {
     "title": "Arion をダウンロード",
-    "lead": "Apple シリコン搭載 Mac と Windows x64 向けのビルドは Arion 自身の更新センターから配信しています。インストール済みのアプリは同じチャンネルから更新され、適用前に署名を検証します。",
-    "note": "Windows 版は初期のプレビュー版です。",
     "targets": {
-      "darwinArm64": "macOS · Apple シリコン",
-      "windowsAmd64": "Windows · x64"
+      "darwinArm64": {
+        "name": "macOS",
+        "detail": "Apple シリコン"
+      },
+      "windowsAmd64": {
+        "name": "Windows",
+        "detail": "x64"
+      }
     },
-    "version": "バージョン {version}",
     "preview": "プレビュー版",
     "unavailable": "まだ提供していません",
-    "checksum": "SHA-256 {sum}",
+    "checksum": "SHA-256",
+    "copyChecksum": "SHA-256 チェックサムをコピー",
+    "checksumCopied": "チェックサムをコピーしました",
     "failed": "リリース情報を読み込めませんでした。ダウンロードボタンは引き続き使えます。"
   },
   "blog": {

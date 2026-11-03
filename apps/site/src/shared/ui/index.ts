@@ -11,4 +11,5 @@ export { GoogleAnalytics } from "./google-analytics";
 export { Container, SectionHeading } from "./layout";
 export { LinkButton } from "./link-button";
 export { MockWindow } from "./mock-window";
+export { AppleMark, WindowsMark } from "./platform-marks";
 export { Reveal } from "./reveal";

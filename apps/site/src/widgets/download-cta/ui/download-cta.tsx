@@ -8,10 +8,9 @@ export function DownloadCta() {
   return (
     <section id={sections.download} className="scroll-mt-20 py-24 sm:py-32">
       <Container size="narrow">
-        <Reveal className="flex flex-col items-center gap-8 text-center">
-          <SectionHeading title={download.title} lead={download.lead} align="center" />
+        <Reveal className="flex flex-col items-center gap-10 text-center">
+          <SectionHeading title={download.title} align="center" />
           <DownloadOptions />
-          <p className="text-sm text-muted-foreground">{download.note}</p>
         </Reveal>
       </Container>
     </section>

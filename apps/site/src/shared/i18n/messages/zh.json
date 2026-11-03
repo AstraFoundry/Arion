@@ -143,16 +143,21 @@
   },
   "download": {
     "title": "下载 Arion",
-    "lead": "macOS Apple 芯片与 Windows x64 的版本由 Arion 自己的更新中心提供。已安装的应用从同一渠道更新，安装前会先校验更新的签名。",
-    "note": "Windows 版本是早期预览版。",
     "targets": {
-      "darwinArm64": "macOS · Apple 芯片",
-      "windowsAmd64": "Windows · x64"
+      "darwinArm64": {
+        "name": "macOS",
+        "detail": "Apple 芯片"
+      },
+      "windowsAmd64": {
+        "name": "Windows",
+        "detail": "x64"
+      }
     },
-    "version": "版本 {version}",
     "preview": "预览版",
     "unavailable": "暂未提供",
-    "checksum": "SHA-256 {sum}",
+    "checksum": "SHA-256",
+    "copyChecksum": "复制 SHA-256 校验值",
+    "checksumCopied": "已复制校验值",
     "failed": "无法加载版本信息，下载按钮仍可使用。"
   },
   "blog": {
