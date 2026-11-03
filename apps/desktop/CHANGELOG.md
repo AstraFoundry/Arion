@@ -1,3 +1,27 @@
+## 0.1.0-alpha.23
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Show terms acceptance and optional usage sharing beside sign-in during onboarding. Terms starts accepted; usage sharing stays off until chosen. Each document link stays on the same line as its checkbox.
+- Default new keyboard profiles to six candidates per page. Saved page sizes stay unchanged.
+- Let the clipboard picker paste into the captured window when accessibility focus is missing but that window is known. Pointer and caret geometry only place the picker.
+- Keep read-only file access for clipboard history on this device across restart and dictation, and leave those grants off the system clipboard and drag offers.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable for this preview. Model weights download separately. Native Windows notification delivery, clean-machine acceptance, production old-to-new update acceptance and real-service cloud/translation acceptance remain open. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for acceptance limits and verification.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 在首次引导的登录旁显示条款接受和可选的用量共享。条款默认接受，用量共享在勾选前保持关闭。每个文档链接与对应复选框保持在同一行。
+- 新的输入法配置默认每页显示六个候选。已保存的页大小保持不变。
+- 剪贴板选择器在辅助功能没有焦点、但仍能确认原窗口时，可以粘贴回该窗口。指针和光标位置只用于摆放选择器。
+- 剪贴板历史的只读文件访问权限留在本机，重启和听写后仍然有效，且不会进入系统剪贴板或拖放。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证；Windows 预览版仍无发布者签名。模型权重单独下载。Windows 原生通知投递、全新机器、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.0-alpha.22
 
 ### English
