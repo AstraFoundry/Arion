@@ -44,7 +44,7 @@ func (s *Store) Load() ([]domain.Clip, error) {
 	if err := d.Decode(&snap); err != nil {
 		return nil, err
 	}
-	if snap.Version != 1 {
+	if snap.Version != 1 && snap.Version != 2 {
 		return nil, domain.ErrClipInvalid
 	}
 	seen := map[string]bool{}
@@ -64,7 +64,7 @@ func (s *Store) Load() ([]domain.Clip, error) {
 }
 
 func (s *Store) Save(items []domain.Clip) error {
-	b, err := json.Marshal(snapshot{Version: 1, Items: items})
+	b, err := json.Marshal(snapshot{Version: 2, Items: items})
 	if err != nil {
 		return err
 	}

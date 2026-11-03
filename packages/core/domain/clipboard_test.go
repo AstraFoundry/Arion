@@ -1,12 +1,49 @@
 package domain
 
 import (
+	"bytes"
 	"errors"
 	"reflect"
 	"strings"
 	"testing"
 	"time"
 )
+
+func TestClipboardFileAccessRefreshKeepsIdentityPinsAndLimits(t *testing.T) {
+	limits := DefaultClipLimits()
+	p := ClipPayload{Kind: ClipFiles, Files: []string{"/owned/file.txt"}}
+	id := p.ID()
+	items, err := CaptureClip(nil, p, limits, time.Now())
+	if err != nil {
+		t.Fatal(err)
+	}
+	items[0].Pinned = true
+	p.FileAccess = [][]byte{[]byte("new native grant")}
+	items, err = CaptureClip(items, p, limits, time.Now())
+	if err != nil || len(items) != 1 || items[0].ID != id || !items[0].Pinned || !bytes.Equal(items[0].Payload.FileAccess[0], p.FileAccess[0]) {
+		t.Fatal("refreshed access changed identity/pin or retained the old grant")
+	}
+	pathOnly := p
+	pathOnly.FileAccess = nil
+	items, err = CaptureClip(items, pathOnly, limits, time.Now())
+	if err != nil || len(items[0].Payload.FileAccess) != 1 {
+		t.Fatal("path-only recopy discarded an existing native grant")
+	}
+	limits.ItemBytes = 1024
+	p.FileAccess = [][]byte{bytes.Repeat([]byte{1}, 1024)}
+	if _, err := CaptureClip(items, p, limits, time.Now()); !errors.Is(err, ErrClipOversize) {
+		t.Fatal("native reference credentials bypassed item storage limits")
+	}
+	p.FileAccess = append(p.FileAccess, []byte("unbound grant"))
+	if p.Validate() == nil {
+		t.Fatal("misaligned file access accepted")
+	}
+	text := ClipTextPayload("text")
+	text.FileAccess = [][]byte{[]byte("file grant")}
+	if text.Validate() == nil {
+		t.Fatal("file access attached to non-file content")
+	}
+}
 
 func TestClipboardDedupPinsAndExactText(t *testing.T) {
 	now := time.Unix(10000000, 0)

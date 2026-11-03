@@ -1,6 +1,7 @@
 package application
 
 import (
+	"bytes"
 	"slices"
 	"strings"
 	"sync"
@@ -77,7 +78,9 @@ func (s *Clipboard) Update(change func([]domain.Clip) ([]domain.Clip, error)) ([
 	if err != nil {
 		return nil, err
 	}
-	if !slices.EqualFunc(items, next, func(a, b domain.Clip) bool { return a.ID == b.ID && a.Pinned == b.Pinned && a.Copied.Equal(b.Copied) }) {
+	if !slices.EqualFunc(items, next, func(a, b domain.Clip) bool {
+		return a.ID == b.ID && a.Pinned == b.Pinned && a.Copied.Equal(b.Copied) && slices.EqualFunc(a.Payload.FileAccess, b.Payload.FileAccess, bytes.Equal)
+	}) {
 		if err := s.repo.Save(next); err != nil {
 			return nil, err
 		}

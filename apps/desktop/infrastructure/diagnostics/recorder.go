@@ -158,6 +158,10 @@ func (r *Recorder) rotate() error {
 }
 
 func (r *Recorder) Record(e Entry) {
+	if e.ClipboardTarget != nil {
+		d := *e.ClipboardTarget
+		e.ClipboardTarget = &d
+	}
 	if e.InputMethod != nil {
 		// Own nested values before validation and asynchronous serialization.
 		d := *e.InputMethod

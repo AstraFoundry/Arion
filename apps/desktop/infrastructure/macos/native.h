@@ -66,9 +66,23 @@ int arion_clipboard_publish(const char *utf8);
 long long arion_clipboard_revision(void);
 int arion_clipboard_excluded(void);
 int arion_history_activate(int pid);
-int arion_history_post(int pid, void *element, long long revision);
-void *arion_history_focus(int pid, int *secure, int *no_input);
-int arion_history_check(int pid, void *element);
+int arion_history_post(int pid, void *element, void *window, long long revision);
+void *arion_history_focus(int pid, int *secure, int *no_input, int *error);
+void *arion_history_window(int pid, int *error);
+int arion_history_window_fallback(int focus_error);
+enum {
+    ARION_HISTORY_READY = 0,
+    ARION_HISTORY_PERMISSION_DENIED,
+    ARION_HISTORY_SECURE_INPUT,
+    ARION_HISTORY_OWNER_CHANGED,
+    ARION_HISTORY_MISSING_FOCUS,
+    ARION_HISTORY_WINDOW_UNAVAILABLE,
+    ARION_HISTORY_WINDOW_CHANGED,
+    ARION_HISTORY_FOCUS_UNAVAILABLE,
+    ARION_HISTORY_FOCUS_CHANGED,
+};
+int arion_history_status(int pid, void *element, void *window);
+int arion_history_check(int pid, void *element, void *window);
 // arion_enable_web_accessibility asks Chromium and Electron to publish the
 // web accessibility tree. Native apps ignore the attributes.
 void arion_enable_web_accessibility(int pid);

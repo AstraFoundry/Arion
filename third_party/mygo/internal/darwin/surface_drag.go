@@ -282,7 +282,7 @@ func (s *surface) nativeDataEvent(info id, kind platform.SurfaceEventKind) bool 
 	for _, item := range items {
 		for _, t := range arrayItems(send(item, "types")) {
 			f := macFormat(goString(t))
-			if f == platform.DragSessionFormat {
+			if f == platform.DragSessionFormat || f == transfer.MacOSFileBookmark {
 				continue
 			}
 			if !slices.Contains(d.Offer.Formats, f) {

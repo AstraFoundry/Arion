@@ -36,13 +36,9 @@ func registerClipboardClass() {
 					return
 				}
 				name := goString(typ)
-				f := macClipboardFormat(name)
-				b, err := s.items[item].Read(f)
+				b, err := macClipboardBytes(s.items[item], name)
 				if err != nil {
 					return
-				}
-				if name == "public.url" || name == "public.file-url" {
-					b = []byte(strings.TrimSpace(strings.Split(string(b), "\n")[0]))
 				}
 				send(item, "setData:forType:", uintptr(nsData(b)), uintptr(typ))
 			}),
@@ -96,6 +92,9 @@ func macClipboardFormat(name string) transfer.Format {
 func macClipboardTypes(item transfer.Item) []string {
 	var types []string
 	for _, f := range item.Formats() {
+		if f == transfer.MacOSFileBookmark {
+			continue
+		}
 		types = append(types, macType(f))
 		if f == transfer.URIList {
 			types = append(types, "public.url")
@@ -105,6 +104,84 @@ func macClipboardTypes(item transfer.Item) []string {
 		}
 	}
 	return types
+}
+
+func macClipboardBytes(item transfer.Item, name string) ([]byte, error) {
+	b, err := item.Read(macClipboardFormat(name))
+	if err != nil {
+		return nil, err
+	}
+	if name == "public.url" || name == "public.file-url" {
+		b = []byte(strings.TrimSpace(strings.Split(string(b), "\n")[0]))
+	}
+	return b, nil
+}
+
+// A zero provider builds persistent items. File URLs must always be eager:
+// the pasteboard server needs their bytes during publication to create file
+// access extensions, before it can request delayed representations.
+func macClipboardItems(data transfer.Data, provider id, provided map[id]transfer.Item) ([]id, error) {
+	var items []id
+	for _, item := range data.Items() {
+		pb := autorelease(send(send(class("NSPasteboardItem"), "alloc"), "init"))
+		var delayed []id
+		for _, name := range macClipboardTypes(item) {
+			typ := nsString(name)
+			if provider != 0 && name != "public.file-url" {
+				delayed = append(delayed, typ)
+				continue
+			}
+			b, err := macClipboardBytes(item, name)
+			if err != nil {
+				return nil, err
+			}
+			if !sendBool(pb, "setData:forType:", uintptr(nsData(b)), uintptr(typ)) {
+				return nil, errors.New("mygo: cannot prepare pasteboard representation")
+			}
+		}
+		if len(delayed) != 0 {
+			provided[pb] = item
+			if !sendBool(pb, "setDataProvider:forTypes:", uintptr(provider), uintptr(nsArray(delayed...))) {
+				return nil, errors.New("mygo: cannot prepare pasteboard provider")
+			}
+		}
+		items = append(items, pb)
+	}
+	return items, nil
+}
+
+func macClipboardFileURLs(board id, items []id, formats []transfer.Format) (map[id]id, error) {
+	if !slices.Contains(formats, transfer.FileList) && !slices.Contains(formats, transfer.URIList) && !slices.Contains(formats, transfer.MacOSFileBookmark) {
+		return nil, nil
+	}
+	var fileItems []id
+	for _, item := range items {
+		for _, typ := range arrayItems(send(item, "types")) {
+			if goString(typ) == "public.file-url" {
+				fileItems = append(fileItems, item)
+				break
+			}
+		}
+	}
+	if len(fileItems) == 0 {
+		return nil, nil
+	}
+	// AppKit consumes the pasteboard's file-access extensions when decoding
+	// NSURLs. Parsing dataForType bytes alone loses this access, even when
+	// the resulting path can still be inspected with stat.
+	options := send(class("NSDictionary"), "dictionaryWithObject:forKey:", uintptr(nsBool(true)), uintptr(constString(libAppKit, "NSPasteboardURLReadingFileURLsOnlyKey")))
+	urls := arrayItems(send(board, "readObjectsForClasses:options:", uintptr(nsArray(id(class("NSURL")))), uintptr(options)))
+	if len(urls) != len(fileItems) {
+		return nil, errors.New("mygo: cannot read native clipboard file URLs")
+	}
+	result := make(map[id]id, len(urls))
+	for n, url := range urls {
+		if !sendBool(url, "isFileURL") || send(url, "filePathURL") == 0 {
+			return nil, errors.New("mygo: invalid native clipboard file URL")
+		}
+		result[fileItems[n]] = url
+	}
+	return result, nil
 }
 
 func (clipboard) WriteData(data transfer.Data, released func()) error {
@@ -118,19 +195,21 @@ func (clipboard) WriteData(data transfer.Data, released func()) error {
 			}
 			return
 		}
+		closeAccess, e := macClipboardFileAccess(data)
+		if e != nil {
+			err = e
+			return
+		}
+		defer closeAccess()
 		s := &macClipboardSource{data: data, items: map[id]transfer.Item{}, released: released}
 		s.obj = send(send(class("MyGoClipboardProvider"), "alloc"), "init")
 		macClipboardProviders[s.obj] = s
-		var items []id
-		for _, item := range data.Items() {
-			pb := autorelease(send(send(class("NSPasteboardItem"), "alloc"), "init"))
-			s.items[pb] = item
-			var types []id
-			for _, typ := range macClipboardTypes(item) {
-				types = append(types, nsString(typ))
-			}
-			send(pb, "setDataProvider:forTypes:", uintptr(s.obj), uintptr(nsArray(types...)))
-			items = append(items, pb)
+		items, e := macClipboardItems(data, s.obj, s.items)
+		if e != nil {
+			s.released = nil
+			s.release()
+			err = e
+			return
 		}
 		board := pasteboard()
 		send(board, "clearContents")
@@ -164,7 +243,7 @@ func (clipboard) Formats() []transfer.Format {
 			if name == utTIFF {
 				f = transfer.PNG
 			}
-			if f == "" || strings.ContainsAny(string(f), "\x00\r\n") || f == platform.DragSessionFormat {
+			if f == "" || strings.ContainsAny(string(f), "\x00\r\n") || f == platform.DragSessionFormat || f == transfer.MacOSFileBookmark {
 				continue
 			}
 			if !slices.Contains(out, f) {
@@ -194,8 +273,14 @@ func (c clipboard) ReadData(formats []transfer.Format) (transfer.Data, error) {
 			result, err = s.data.Materialize(formats)
 		} else {
 			var items []transfer.Item
-			for _, item := range arrayItems(send(board, "pasteboardItems")) {
-				reps, e := macClipboardReadItem(item, formats)
+			nativeItems := arrayItems(send(board, "pasteboardItems"))
+			fileURLs, e := macClipboardFileURLs(board, nativeItems, formats)
+			if e != nil {
+				err = e
+				return
+			}
+			for _, item := range nativeItems {
+				reps, e := macClipboardReadItem(item, formats, fileURLs[item])
 				if e != nil {
 					err = e
 					return
@@ -216,7 +301,7 @@ func (c clipboard) ReadData(formats []transfer.Format) (transfer.Data, error) {
 	return result, err
 }
 
-func macClipboardReadItem(item id, formats []transfer.Format) ([]transfer.Representation, error) {
+func macClipboardReadItem(item id, formats []transfer.Format, fileURL id) ([]transfer.Representation, error) {
 	available := map[transfer.Format][]string{}
 	for _, typ := range arrayItems(send(item, "types")) {
 		name := goString(typ)
@@ -235,6 +320,16 @@ func macClipboardReadItem(item id, formats []transfer.Format) ([]transfer.Repres
 	var reps []transfer.Representation
 	for n, f := range formats {
 		if slices.Contains(formats[:n], f) {
+			continue
+		}
+		if f == transfer.MacOSFileBookmark {
+			if fileURL != 0 {
+				b, err := macClipboardBookmark(fileURL)
+				if err != nil {
+					return nil, err
+				}
+				reps = append(reps, transfer.Bytes(f, b))
+			}
 			continue
 		}
 		names := available[f]
@@ -256,6 +351,19 @@ func macClipboardReadItem(item id, formats []transfer.Format) ([]transfer.Repres
 		found := false
 		for _, name := range ordered {
 			typ := nsString(name)
+			if name == "public.file-url" && fileURL != 0 {
+				path := goString(send(send(fileURL, "filePathURL"), "path"))
+				files, err := transfer.FileData(path)
+				if err != nil {
+					return nil, err
+				}
+				b, err = files.Read(f)
+				if err != nil {
+					return nil, err
+				}
+				found = true
+				break
+			}
 			if name == "NSFilenamesPboardType" {
 				var paths []string
 				for _, value := range arrayItems(send(item, "propertyListForType:", uintptr(typ))) {
@@ -320,17 +428,16 @@ func (clipboard) Flush() error {
 			err = platform.ErrClipboardChanged
 			return
 		}
-		var items []id
-		for _, item := range d.Items() {
-			pb := autorelease(send(send(class("NSPasteboardItem"), "alloc"), "init"))
-			for _, name := range macClipboardTypes(item) {
-				b, _ := item.Read(macClipboardFormat(name))
-				if name == "public.url" || name == "public.file-url" {
-					b = []byte(strings.TrimSpace(strings.Split(string(b), "\n")[0]))
-				}
-				send(pb, "setData:forType:", uintptr(nsData(b)), uintptr(nsString(name)))
-			}
-			items = append(items, pb)
+		closeAccess, e := macClipboardFileAccess(d)
+		if e != nil {
+			err = e
+			return
+		}
+		defer closeAccess()
+		items, e := macClipboardItems(d, 0, nil)
+		if e != nil {
+			err = e
+			return
 		}
 		board := pasteboard()
 		send(board, "clearContents")

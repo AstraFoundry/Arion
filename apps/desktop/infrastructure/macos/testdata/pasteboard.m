@@ -108,6 +108,28 @@ int main(void) {
         CHECK(arion_paste_finish(retain_tx(tx)) == 1);
         CHECK(board.pasteboardItems.count == 0);
         CHECK(begin_paste(@"", board) == nil);
+
+        NSURL *file = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString]];
+        CHECK([NSData.data writeToURL:file atomically:YES]);
+        CHECK([board writeObjects:@[file]]);
+        tx = begin_paste(@"text over a file clipboard", board);
+        CHECK(tx);
+        CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_OK);
+        CHECK(arion_paste_finish(retain_tx(tx)) == 1);
+        CHECK(tx.fileAccess.count == 0);
+        CHECK([board.pasteboardItems[0].types containsObject:NSPasteboardTypeFileURL]);
+        NSArray<NSURL *> *restored = [board readObjectsForClasses:@[NSURL.class]
+            options:@{NSPasteboardURLReadingFileURLsOnlyKey:@YES}];
+        CHECK(restored.count == 1);
+        CHECK([restored[0].URLByResolvingSymlinksInPath.path isEqual:file.URLByResolvingSymlinksInPath.path]);
+        tx = begin_paste(@"file snapshot loses ownership", board);
+        CHECK(tx);
+        CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_OK);
+        replace_board(board, @"new user copy replaces the file");
+        CHECK(arion_paste_finish(retain_tx(tx)) == 0);
+        CHECK(tx.fileAccess.count == 0);
+        CHECK([[board stringForType:NSPasteboardTypeString] isEqual:@"new user copy replaces the file"]);
+        CHECK([NSFileManager.defaultManager removeItemAtURL:file error:nil]);
         [board releaseGlobally];
         puts("native pasteboard transaction checks passed");
     }

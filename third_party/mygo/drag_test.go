@@ -144,6 +144,10 @@ func TestDataDragValidationAndPreviewOwnership(t *testing.T) {
 	if err := w.StartDataDrag(reserved, DragOptions{}); err == nil {
 		t.Fatal("reserved format accepted")
 	}
+	credential := transfer.New(transfer.NewItem(transfer.Bytes(transfer.MacOSFileBookmark, []byte("private reference"))))
+	if err := w.StartDataDrag(credential, DragOptions{}); err == nil {
+		t.Fatal("private file access accepted for drag publication")
+	}
 	preview := image.NewRGBA(image.Rect(0, 0, 10, 10))
 	preview.Set(0, 0, color.RGBA{255, 0, 0, 255})
 	if err := w.StartDataDrag(transfer.TextData("data"), DragOptions{Preview: preview}); err != nil {

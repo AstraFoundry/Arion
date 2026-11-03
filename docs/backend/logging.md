@@ -23,6 +23,12 @@ After stop, `recognizer_finish` measures the recognizer's complete `Finish` call
 
 `context_read` starts asynchronously during preparation. Final rewriting may wait for unfinished context before `rewrite_final` starts; its duration is not part of `rewrite_final`. Selection and formatting share the latter duration. Stage durations can overlap, so do not sum asynchronous context reads with the serial pipeline. Older exports have no `recognizer_finish` event; its absence does not establish a fast finish.
 
+### Clipboard target diagnostics
+
+On macOS, `clipboard_target` records one bounded observation when the picker opens. Its closed `clipboardTarget` payload contains only capture-time Accessibility trust/security flags, application-focus/window query statuses, geometry availability and the initial verification result. Query statuses are `available`, `empty`, `absent`, `unsupported`, `cannot_complete`, `api_disabled`, `failed` or `not_queried`; they never contain OS error messages. Verification distinguishes missing focus, application/window/focus changes, unavailable queries, permission and protected-input refusal from `ready`.
+
+Recording uses the metadata already captured for placement and verification; it performs no extra native query. Older development observations may contain the closed `systemFocus` and `systemOwnerMatches` fields; the reader retains those fields for export compatibility, while new captures omit them. No editor text, clipboard payload, role, window title or geometry coordinates are read into diagnostics. The existing strict export validation rejects unrecognized fields and values.
+
 ### macOS input-source diagnostics
 
 `ime_native` records Arion's own fixed parent/mode IDs, requested identity, process ID, installed-directory presence, native lookup/identity-match/enable/select/selectability flags, operation step and signed numeric OSStatus (including zero). Register, enable, select and switch-away operations record before/after snapshots; installation/removal and host stop/launch/expected-build verification also report their result as a stable error code. Non-query snapshots include the installed executable SHA-256, or an explicit build-read failure code. Registration status covers the existing LaunchServices/TIS registration operation; enable status covers the existing parent-then-child operation, not separate per-call statuses.

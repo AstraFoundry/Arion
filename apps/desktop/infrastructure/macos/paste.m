@@ -16,6 +16,7 @@ static _Atomic(long long) historyExcludedRevision = -1;
 @interface ArionPasteTransaction : NSObject
 @property(strong) NSPasteboard *board;
 @property(strong) NSArray<NSPasteboardItem *> *saved;
+@property(strong) NSArray<NSURL *> *fileAccess;
 @property(strong) NSPasteboardItem *item;
 @property NSInteger capturedChange;
 @property NSInteger ownedChange;
@@ -24,10 +25,17 @@ static _Atomic(long long) historyExcludedRevision = -1;
 @property BOOL markerWritten;
 @property CGEventRef down;
 @property CGEventRef up;
+- (void)releaseFileAccess;
 @end
 
 @implementation ArionPasteTransaction
+- (void)releaseFileAccess {
+    NSArray<NSURL *> *active = _fileAccess;
+    _fileAccess = nil;
+    for (NSURL *url in active) [url stopAccessingSecurityScopedResource];
+}
 - (void)dealloc {
+    [self releaseFileAccess];
     if (_down) CFRelease(_down);
     if (_up) CFRelease(_up);
 }
@@ -41,8 +49,23 @@ static ArionPasteTransaction *begin_paste(NSString *text, NSPasteboard *board) {
     tx.board = board;
     tx.capturedChange = board.changeCount;
     tx.ownedChange = -1;
+    NSArray<NSPasteboardItem *> *original = board.pasteboardItems;
+    NSUInteger fileCount = 0;
+    for (NSPasteboardItem *item in original) {
+        if ([item.types containsObject:NSPasteboardTypeFileURL]) fileCount++;
+    }
+    if (fileCount) {
+        NSArray<NSURL *> *urls = [board readObjectsForClasses:@[NSURL.class]
+            options:@{NSPasteboardURLReadingFileURLsOnlyKey:@YES}];
+        if (urls.count != fileCount) return nil;
+        NSMutableArray<NSURL *> *active = [NSMutableArray array];
+        tx.fileAccess = active;
+        for (NSURL *url in urls) {
+            if ([url startAccessingSecurityScopedResource]) [active addObject:url];
+        }
+    }
     NSMutableArray<NSPasteboardItem *> *saved = [NSMutableArray array];
-    for (NSPasteboardItem *item in board.pasteboardItems) {
+    for (NSPasteboardItem *item in original) {
         NSPasteboardItem *copy = [NSPasteboardItem new];
         for (NSPasteboardType type in item.types) {
             NSData *data = [item dataForType:type];
@@ -131,12 +154,16 @@ int arion_clipboard_publish(const char *utf8) {
 int arion_paste_finish(void *transaction) {
     @autoreleasepool {
         ArionPasteTransaction *tx = (__bridge_transfer ArionPasteTransaction *)transaction;
-        if (!tx || !owns_pasteboard(tx)) return 0;
-        [tx.board clearContents];
-        BOOL ok = !tx.saved.count || [tx.board writeObjects:tx.saved];
-        if (tx.board == NSPasteboard.generalPasteboard) atomic_store(&historyExcludedRevision, tx.board.changeCount);
-        if (!ok) return -1;
-        return 1;
+        if (!tx) return 0;
+        int result = 0;
+        if (owns_pasteboard(tx)) {
+            [tx.board clearContents];
+            BOOL ok = !tx.saved.count || [tx.board writeObjects:tx.saved];
+            if (tx.board == NSPasteboard.generalPasteboard) atomic_store(&historyExcludedRevision, tx.board.changeCount);
+            result = ok ? 1 : -1;
+        }
+        [tx releaseFileAccess];
+        return result;
     }
 }
 
@@ -167,12 +194,12 @@ int arion_history_activate(int pid) {
     }
 }
 
-int arion_history_post(int pid, void *element, long long revision) {
+static int post_history(int pid, void *element, void *window, long long revision, NSPasteboard *board) {
     @autoreleasepool {
         if (!AXIsProcessTrusted()) return ARION_PASTE_FAILED;
-        if (!arion_history_check(pid,element)) return ARION_PASTE_TARGET_CHANGED;
+        if (!arion_history_check(pid,element,window)) return ARION_PASTE_TARGET_CHANGED;
         if (arion_secure_input()) return ARION_PASTE_SECURE;
-        if (NSPasteboard.generalPasteboard.changeCount != revision) return ARION_PASTE_CHANGED;
+        if (board.changeCount != revision) return ARION_PASTE_CHANGED;
         CGEventRef down = CGEventCreateKeyboardEvent(NULL,kVK_ANSI_V,true);
         CGEventRef up = CGEventCreateKeyboardEvent(NULL,kVK_ANSI_V,false);
         if (!down || !up) { if (down) CFRelease(down); if (up) CFRelease(up); return ARION_PASTE_FAILED; }
@@ -183,15 +210,20 @@ int arion_history_post(int pid, void *element, long long revision) {
     }
 }
 
-void *arion_history_focus(int pid, int *secure, int *no_input) {
+int arion_history_post(int pid, void *element, void *window, long long revision) {
+    return post_history(pid, element, window, revision, NSPasteboard.generalPasteboard);
+}
+
+void *arion_history_focus(int pid, int *secure, int *no_input, int *error) {
     @autoreleasepool {
         *secure = arion_secure_input();
         if (no_input) *no_input = 0;
+        if (error) *error = kAXErrorAPIDisabled;
         if (!AXIsProcessTrusted()) return NULL;
         arion_enable_web_accessibility(pid);
         AXUIElementRef app = AXUIElementCreateApplication(pid);
         AXUIElementSetMessagingTimeout(app,0.2);
-        AXUIElementRef element = arion_copy_focus(app, *secure, no_input, NULL);
+        AXUIElementRef element = arion_copy_focus(app, *secure, no_input, error);
         CFRelease(app);
         if (element) {
             AXUIElementSetMessagingTimeout((AXUIElementRef)element,0.2);
@@ -203,10 +235,59 @@ void *arion_history_focus(int pid, int *secure, int *no_input) {
     }
 }
 
-int arion_history_check(int pid, void *element) {
-    if (!AXIsProcessTrusted() || arion_secure_input() || !arion_focus_matches(element,pid)) return 0;
-    int secure = 0;
-    void *current = arion_history_focus(pid,&secure,NULL);
+void *arion_history_window(int pid, int *error) {
+    if (error) *error = kAXErrorAPIDisabled;
+    if (!AXIsProcessTrusted()) return NULL;
+    AXUIElementRef app = AXUIElementCreateApplication(pid);
+    if (!app) return NULL;
+    AXUIElementSetMessagingTimeout(app, 0.2f);
+    CFTypeRef window = NULL;
+    AXError result = AXUIElementCopyAttributeValue(app, kAXFocusedWindowAttribute, &window);
+    if (error) *error = result;
+    CFRelease(app);
+    if (result == kAXErrorSuccess && window && CFGetTypeID(window) == AXUIElementGetTypeID()) return (void *)window;
+    if (window) CFRelease(window);
+    return NULL;
+}
+
+// NoValue and Unsupported describe missing AX focus metadata. Neither proves
+// that the original window cannot consume a system paste. Provider failures
+// and denied access do not authorize this route.
+int arion_history_window_fallback(int focus_error) {
+    return focus_error == kAXErrorNoValue || focus_error == kAXErrorAttributeUnsupported;
+}
+
+int arion_history_status(int pid, void *element, void *window) {
+    if (!AXIsProcessTrusted()) return ARION_HISTORY_PERMISSION_DENIED;
+    if (arion_secure_input()) return ARION_HISTORY_SECURE_INPUT;
+    if (arion_frontmost_pid() != pid) return ARION_HISTORY_OWNER_CHANGED;
+    if (!element && !window) return ARION_HISTORY_MISSING_FOCUS;
+    if (window) {
+        void *currentWindow = arion_history_window(pid, NULL);
+        if (!currentWindow) return ARION_HISTORY_WINDOW_UNAVAILABLE;
+        int same = currentWindow && CFEqual(currentWindow, window);
+        if (currentWindow) CFRelease(currentWindow);
+        if (!same) return ARION_HISTORY_WINDOW_CHANGED;
+    }
+    int secure = 0, focusError = 0;
+    void *current = arion_history_focus(pid, &secure, NULL, &focusError);
+    if (secure) {
+        if (current) CFRelease(current);
+        return ARION_HISTORY_SECURE_INPUT;
+    }
+    if (!element) {
+        // No field was available at capture: the original verified window is
+        // the destination. A newly exposed field is still checked for safety.
+        int allowed = current != NULL || arion_history_window_fallback(focusError);
+        if (current) CFRelease(current);
+        return allowed ? ARION_HISTORY_READY : ARION_HISTORY_FOCUS_UNAVAILABLE;
+    }
+    if (!current) return ARION_HISTORY_FOCUS_UNAVAILABLE;
+    int same = CFEqual(current, element);
     if (current) CFRelease(current);
-    return !secure;
+    return same ? ARION_HISTORY_READY : ARION_HISTORY_FOCUS_CHANGED;
+}
+
+int arion_history_check(int pid, void *element, void *window) {
+    return arion_history_status(pid, element, window) == ARION_HISTORY_READY;
 }

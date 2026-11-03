@@ -27,14 +27,8 @@ func (x actions) OpenClipboard() {
 	}
 	cc.target = clipboardos.CaptureTarget()
 	cursor := mygo.Screen.CursorScreenPoint()
-	cc.anchor = mygo.Rectangle{X: cursor.X, Y: cursor.Y}
-	a.state.Clipboard.CopyOnly = true
-	if cc.target != nil {
-		if ax, ay, aw, ah, ok := cc.target.Anchor(); ok {
-			cc.anchor = mygo.Rectangle{X: ax, Y: ay, Width: aw, Height: ah}
-			a.state.Clipboard.CopyOnly = false
-		}
-	}
+	cc.anchor, a.state.Clipboard.CopyOnly = clipboardTargetPresentation(cc.target, mygo.Rectangle{X: cursor.X, Y: cursor.Y})
+	a.recordClipboardTarget(cc.target)
 	cc.windowSeq++
 	if a.panel != nil {
 		a.panel.Close()

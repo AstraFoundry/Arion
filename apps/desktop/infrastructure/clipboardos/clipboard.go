@@ -8,6 +8,7 @@ import (
 	"crypto/rand"
 	"errors"
 	"os"
+	"runtime"
 	"slices"
 	"strings"
 
@@ -22,10 +23,13 @@ const Internal transfer.Format = "application/x-arion-internal"
 var ErrBusy = errors.New("clipboard transaction in progress")
 
 type Target interface {
-	// Anchor is the captured input geometry in top-left screen DIPs.
+	// Anchor is optional input geometry in top-left screen DIPs. It does not
+	// decide whether the captured destination can receive a paste.
 	Anchor() (x, y, width, height int, ok bool)
 	Activate() error
 	Ready() bool
+	// Check validates the captured destination and input safety, independently
+	// of geometry. Call before presenting a paste action and before writing.
 	Check() error
 	Paste(uint64) error
 	Close()
@@ -37,7 +41,11 @@ func Read(limit int64) (domain.ClipPayload, error) {
 	if err != nil {
 		return domain.ClipPayload{}, err
 	}
-	data, err := mygo.Clipboard.Read(format)
+	wanted := []transfer.Format{format}
+	if runtime.GOOS == "darwin" && (format == transfer.FileList || format == transfer.URIList) {
+		wanted = append(wanted, transfer.MacOSFileBookmark)
+	}
+	data, err := mygo.Clipboard.Read(wanted...)
 	if err != nil {
 		return domain.ClipPayload{}, err
 	}
@@ -77,11 +85,10 @@ func capturePayload(data transfer.Data, format transfer.Format, limit int64) (do
 	var p domain.ClipPayload
 	switch format {
 	case transfer.FileList:
-		files, err := data.Files()
+		p, err = captureFiles(data)
 		if err != nil {
 			return p, err
 		}
-		p = domain.ClipPayload{Kind: domain.ClipFiles, Files: files}
 	case transfer.PNG:
 		p = domain.ClipPayload{Kind: domain.ClipImage, PNG: b}
 	case transfer.Text:
@@ -92,7 +99,10 @@ func capturePayload(data transfer.Data, format transfer.Format, limit int64) (do
 			return p, err
 		}
 		if len(files) > 0 {
-			p = domain.ClipPayload{Kind: domain.ClipFiles, Files: files}
+			p, err = captureFiles(data)
+			if err != nil {
+				return p, err
+			}
 		} else {
 			urls, err := data.URLs()
 			if err != nil || len(urls) != 1 {
@@ -100,6 +110,44 @@ func capturePayload(data transfer.Data, format transfer.Format, limit int64) (do
 			}
 			p = textPayload(urls[0])
 		}
+	}
+	if p.Bytes() > limit {
+		return domain.ClipPayload{}, domain.ErrClipOversize
+	}
+	return p, p.Validate()
+}
+
+func captureFiles(data transfer.Data) (domain.ClipPayload, error) {
+	p := domain.ClipPayload{Kind: domain.ClipFiles}
+	format := transfer.URIList
+	if slices.Contains(data.Formats(), transfer.FileList) {
+		format = transfer.FileList
+	}
+	var grants [][]byte
+	var hasGrant bool
+	for _, item := range data.Items() {
+		if !slices.Contains(item.Formats(), format) {
+			continue
+		}
+		paths, err := transfer.New(item).Files()
+		if err != nil {
+			return p, err
+		}
+		grant, err := item.Read(transfer.MacOSFileBookmark)
+		if err != nil && !errors.Is(err, transfer.ErrFormat) {
+			return p, err
+		}
+		if len(grant) != 0 && len(paths) != 1 {
+			return p, transfer.ErrFormat
+		}
+		p.Files = append(p.Files, paths...)
+		for range paths {
+			grants = append(grants, grant)
+		}
+		hasGrant = hasGrant || len(grant) != 0
+	}
+	if hasGrant {
+		p.FileAccess = grants
 	}
 	return p, p.Validate()
 }
@@ -118,20 +166,28 @@ func FilesOnly(p domain.ClipPayload) (domain.ClipPayload, error) {
 	if p.Kind != domain.ClipFiles {
 		return p, nil
 	}
+	if err := p.Validate(); err != nil {
+		return domain.ClipPayload{}, err
+	}
 	files := make([]string, 0, len(p.Files))
-	for _, path := range p.Files {
+	var grants [][]byte
+	for n, path := range p.Files {
 		info, err := os.Stat(path)
 		if err != nil {
 			return domain.ClipPayload{}, err
 		}
 		if info.Mode().IsRegular() {
 			files = append(files, path)
+			if len(p.FileAccess) != 0 {
+				grants = append(grants, p.FileAccess[n])
+			}
 		}
 	}
 	if len(files) == 0 {
 		return domain.ClipPayload{}, transfer.ErrFormat
 	}
 	p.Files = files
+	p.FileAccess = grants
 	return p, p.Validate()
 }
 
@@ -170,7 +226,7 @@ func Write(p domain.ClipPayload) (uint64, error) {
 		return 0, err
 	}
 	var items []transfer.Item
-	for _, item := range data.Items() {
+	for n, item := range data.Items() {
 		reps := []transfer.Representation{transfer.Bytes(Internal, marker)}
 		for _, f := range item.Formats() {
 			b, err := item.Read(f)
@@ -178,6 +234,9 @@ func Write(p domain.ClipPayload) (uint64, error) {
 				return 0, err
 			}
 			reps = append(reps, transfer.Bytes(f, b))
+		}
+		if runtime.GOOS == "darwin" && p.Kind == domain.ClipFiles && len(p.FileAccess) != 0 && len(p.FileAccess[n]) != 0 {
+			reps = append(reps, transfer.Bytes(transfer.MacOSFileBookmark, p.FileAccess[n]))
 		}
 		items = append(items, transfer.NewItem(reps...))
 	}

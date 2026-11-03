@@ -82,6 +82,18 @@ func TestClipboardItemsAndNegotiation(t *testing.T) {
 	}
 }
 
+func TestClipboardFileBookmarkRequiresFileItem(t *testing.T) {
+	t.Cleanup(Clipboard.Clear)
+	Clipboard.WriteText("owned previous clipboard")
+	data := transfer.New(transfer.NewItem(transfer.Bytes(transfer.MacOSFileBookmark, []byte("private file reference"))))
+	if err := Clipboard.Write(data); err == nil {
+		t.Fatal("unbound native file bookmark accepted")
+	}
+	if Clipboard.ReadText() != "owned previous clipboard" {
+		t.Fatal("invalid file metadata replaced the clipboard")
+	}
+}
+
 func TestClipboardFilesAndConveniences(t *testing.T) {
 	t.Cleanup(Clipboard.Clear)
 	if err := Clipboard.Write(transfer.New(transfer.Item{}, transfer.NewItem(transfer.Bytes(transfer.Text, []byte("nonempty"))))); err != nil {

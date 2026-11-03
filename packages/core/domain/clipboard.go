@@ -34,20 +34,23 @@ type ClipPayload struct {
 	Text  string   `json:"text,omitempty"`
 	PNG   []byte   `json:"png,omitempty"`
 	Files []string `json:"files,omitempty"`
+	// FileAccess contains opaque native grants aligned with Files. These
+	// encrypted reference credentials do not change resource identity.
+	FileAccess [][]byte `json:"fileAccess,omitempty"`
 }
 
 func (p ClipPayload) Validate() error {
 	switch p.Kind {
 	case ClipText, ClipLink:
-		if p.Text == "" || !utf8.ValidString(p.Text) || strings.ContainsRune(p.Text, 0) || len(p.PNG) != 0 || len(p.Files) != 0 {
+		if p.Text == "" || !utf8.ValidString(p.Text) || strings.ContainsRune(p.Text, 0) || len(p.PNG) != 0 || len(p.Files) != 0 || len(p.FileAccess) != 0 {
 			return ErrClipInvalid
 		}
 	case ClipImage:
-		if len(p.PNG) < 8 || string(p.PNG[:8]) != "\x89PNG\r\n\x1a\n" || p.Text != "" || len(p.Files) != 0 {
+		if len(p.PNG) < 8 || string(p.PNG[:8]) != "\x89PNG\r\n\x1a\n" || p.Text != "" || len(p.Files) != 0 || len(p.FileAccess) != 0 {
 			return ErrClipInvalid
 		}
 	case ClipFiles:
-		if len(p.Files) == 0 || p.Text != "" || len(p.PNG) != 0 {
+		if len(p.Files) == 0 || p.Text != "" || len(p.PNG) != 0 || (len(p.FileAccess) != 0 && len(p.FileAccess) != len(p.Files)) {
 			return ErrClipInvalid
 		}
 		for _, path := range p.Files {
@@ -70,11 +73,15 @@ func (p ClipPayload) Bytes() int64 {
 	for _, path := range p.Files {
 		n += int64(len(path))
 	}
+	for _, grant := range p.FileAccess {
+		n += int64(len(grant))
+	}
 	return n
 }
 
 // ClipID is content-derived but is persisted only inside the encrypted snapshot.
 func (p ClipPayload) ID() string {
+	p.FileAccess = nil
 	b, _ := json.Marshal(p)
 	h := sha256.Sum256(b)
 	return hex.EncodeToString(h[:])
@@ -154,18 +161,22 @@ func CaptureClip(items []Clip, payload ClipPayload, limits ClipLimits, now time.
 	if err := payload.Validate(); err != nil {
 		return nil, err
 	}
-	if payload.Bytes() > limits.ItemBytes {
-		return nil, ErrClipOversize
-	}
 	id := payload.ID()
 	next := slices.Clone(items)
 	found := false
 	for i := range next {
 		if next[i].ID == id {
+			if len(payload.FileAccess) == 0 {
+				payload.FileAccess = next[i].Payload.FileAccess
+			}
 			next[i].Copied = now
+			next[i].Payload = payload
 			found = true
 			break
 		}
+	}
+	if payload.Bytes() > limits.ItemBytes {
+		return nil, ErrClipOversize
 	}
 	if !found {
 		next = append(next, Clip{ID: id, Payload: payload, Copied: now})

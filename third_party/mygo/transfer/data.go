@@ -25,6 +25,10 @@ const (
 	// it as the system's file-list format as well as text/uri-list.
 	FileList Format = "application/x-mygo-file-list"
 	PNG      Format = "image/png"
+	// MacOSFileBookmark carries a security-scoped bookmark for one FileList
+	// item inside Data. Native clipboard publication consumes this metadata;
+	// it never advertises or publishes the bookmark bytes to other apps.
+	MacOSFileBookmark Format = "application/x-mygo-macos-file-bookmark"
 )
 
 // ErrFormat means the requested item or representation is not available.

@@ -68,7 +68,7 @@ The [public and private repository contract](repository-split.md) keeps product 
 
 ## Clipboard history
 
-[Clipboard history](clipboard.md) is an independent opt-in local workflow ([010](../../specs/010-clipboard.md), [ADR 034](../decisions/034-clipboard-history.md)). Its native picker captures a destination before activation. The collector shares the dictation clipboard transaction gate and excludes internal revision/marker identities. Encrypted history never enters rewrite context, diagnostics or account sync. The per-content MyGo text-copy hook also marks application-owned selection/edit-menu copying, preserving native editing behavior.
+[Clipboard history](clipboard.md) is an independent opt-in local workflow ([010](../../specs/010-clipboard.md), [ADR 034](../decisions/034-clipboard-history.md)). Its native picker captures a destination before activation. The collector shares the dictation clipboard transaction gate and excludes internal revision/marker identities. Encrypted history never enters rewrite context, diagnostics or account sync. File references retain encrypted native access grants independently of resource identity; scoped publication checks the original path and never exposes credentials on the clipboard ([ADR 046](../decisions/046-clipboard-file-access.md)). The per-content MyGo text-copy hook also marks application-owned selection/edit-menu copying, preserving native editing behavior.
 
 ## Runtime shape (shortcut mode)
 
@@ -154,7 +154,7 @@ Generic completion uses its own runtime operation and does not run speech rewrit
 
 The composition root derives approved canonical hotwords from encrypted memory with `domain.ASRHotwords`. Explicit hotwords and eligible learned corrections participate; manual correction pairs alone do not. The coordinator freezes an owned snapshot when creating a recording's recognizer and propagates it to preview, segment refinement and full-audio finalization. Memory updates affect subsequent recordings. The ASR adapter validates the bounded list and sends a space-separated per-request `prompt`, including empty context, to capability-advertising native workers. MLX maps it to Qwen3 `context`; speech.cpp maps its prompt option to the engine context. The later one-pass correction and eight-term rewrite recall remain separate stages. See SPH-11/12, MEM-07 and [ADR 020](../decisions/020-native-qwen-asr.md).
 
-The compact clipboard picker uses the captured native input geometry and revalidates input identity/security before paste. Polling excludes all internal revisions. A completed dictation with a positive native `CommitResult.NoInput` observation and successful copying explicitly enters opt-in history through bootstrap; generic delivery fallbacks cannot authorize it. See [clipboard history](clipboard.md).
+The compact clipboard picker uses optional native input geometry for placement, falling back to the pointer. Independent captured-destination identity/security checks choose copy or paste and run again before delivery; missing geometry alone never disables paste ([ADR 045](../decisions/045-clipboard-placement-and-delivery.md)). Polling excludes all internal revisions. A completed dictation with a positive native `CommitResult.NoInput` observation and successful copying explicitly enters opt-in history through bootstrap; generic delivery fallbacks cannot authorize it. See [clipboard history](clipboard.md).
 
 ### Keyboard ranking troubleshooting
 

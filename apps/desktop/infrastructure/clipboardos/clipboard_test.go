@@ -57,10 +57,13 @@ func TestClipboardExcludesFoldersAndKeepsOrdinaryFiles(t *testing.T) {
 	if err := os.WriteFile(file, []byte("fixture"), 0600); err != nil {
 		t.Fatal(err)
 	}
-	original := domain.ClipPayload{Kind: domain.ClipFiles, Files: []string{dir, file}}
+	original := domain.ClipPayload{Kind: domain.ClipFiles, Files: []string{dir, file}, FileAccess: [][]byte{[]byte("folder grant"), []byte("file grant")}}
 	filtered, err := FilesOnly(original)
 	if err != nil || len(filtered.Files) != 1 || filtered.Files[0] != file || len(original.Files) != 2 {
 		t.Fatal("folder filtering changed ordinary files or original payload")
+	}
+	if len(filtered.FileAccess) != 1 || string(filtered.FileAccess[0]) != "file grant" || len(original.FileAccess) != 2 {
+		t.Fatal("file filtering bound the wrong native access")
 	}
 	if _, err := FilesOnly(domain.ClipPayload{Kind: domain.ClipFiles, Files: []string{dir}}); !errors.Is(err, transfer.ErrFormat) {
 		t.Fatal("folder-only copy was recorded")
@@ -70,5 +73,27 @@ func TestClipboardExcludesFoldersAndKeepsOrdinaryFiles(t *testing.T) {
 	}
 	if err := ValidateFiles(filtered); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestClipboardCapturesBoundFileAccessWithinPayloadLimit(t *testing.T) {
+	files, err := transfer.FileData(filepath.Join(t.TempDir(), "owned.txt"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	item := files.Items()[0]
+	fileBytes, _ := item.Read(transfer.FileList)
+	grant := bytes.Repeat([]byte{1}, 1024)
+	data := transfer.New(transfer.NewItem(transfer.Bytes(transfer.FileList, fileBytes), transfer.Bytes(transfer.MacOSFileBookmark, grant)))
+	p, err := capturePayload(data, transfer.FileList, 2048)
+	if err != nil || len(p.FileAccess) != 1 || !bytes.Equal(p.FileAccess[0], grant) {
+		t.Fatal("file grant was detached from its resource")
+	}
+	if _, err := capturePayload(data, transfer.FileList, 512); !errors.Is(err, domain.ErrClipOversize) {
+		t.Fatal("native grant bytes bypassed capture limits")
+	}
+	ambiguous := transfer.New(transfer.NewItem(transfer.Bytes(transfer.FileList, append(fileBytes, append([]byte("\r\n"), fileBytes...)...)), transfer.Bytes(transfer.MacOSFileBookmark, grant)))
+	if _, err := capturePayload(ambiguous, transfer.FileList, 4096); err == nil {
+		t.Fatal("one native grant was assigned to several files")
 	}
 }

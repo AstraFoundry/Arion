@@ -186,6 +186,75 @@ func TestClipboardDisablingDropsStaleValidationFailure(t *testing.T) {
 
 type clipboardDeliveryTarget struct{ activated, checked, pasted, closed int }
 
+type clipboardPresentationTarget struct {
+	clipboardDeliveryTarget
+	geometry mygo.Rectangle
+	located  bool
+	failure  error
+}
+
+func (t *clipboardPresentationTarget) Anchor() (int, int, int, int, bool) {
+	r := t.geometry
+	return r.X, r.Y, r.Width, r.Height, t.located
+}
+func (t *clipboardPresentationTarget) Check() error {
+	t.checked++
+	return t.failure
+}
+
+// CLP-A07: placement cannot grant or revoke paste eligibility.
+func TestClipboardPlacementDoesNotDeterminePasteMode(t *testing.T) {
+	pointer := mygo.Rectangle{X: 400, Y: 300}
+	field := mygo.Rectangle{X: 100, Y: 200, Width: 20, Height: 24}
+	for _, test := range []struct {
+		name              string
+		located, rejected bool
+	}{
+		{"verified-with-geometry", true, false},
+		{"verified-without-geometry", false, false},
+		{"rejected-with-geometry", true, true},
+		{"rejected-without-geometry", false, true},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			target := &clipboardPresentationTarget{geometry: field, located: test.located}
+			if test.rejected {
+				target.failure = errors.New("captured destination unavailable")
+			}
+			anchor, copyOnly := clipboardTargetPresentation(target, pointer)
+			want := pointer
+			if test.located {
+				want = field
+			}
+			if anchor != want || copyOnly != test.rejected || target.checked != 1 {
+				t.Fatalf("anchor=%+v copyOnly=%t checks=%d", anchor, copyOnly, target.checked)
+			}
+		})
+	}
+	anchor, copyOnly := clipboardTargetPresentation(nil, pointer)
+	if anchor != pointer || !copyOnly {
+		t.Fatal("missing destination did not retain pointer placement and copying")
+	}
+}
+
+func TestClipboardMissingGeometryStillRevalidatesBeforeDelivery(t *testing.T) {
+	a := clipboardFixture(t)
+	target := &clipboardPresentationTarget{}
+	_, copyOnly := clipboardTargetPresentation(target, mygo.Rectangle{X: 100, Y: 200})
+	if copyOnly {
+		t.Fatal("missing geometry blocked a valid destination")
+	}
+	// A destination change after selection must fail before any clipboard
+	// write. This double cannot dispatch a native input event.
+	target.failure = errors.New("destination changed after picker opened")
+	a.clipboard.target = target
+	payload := domain.ClipTextPayload("Do not deliver to the changed destination")
+	a.pasteClipboard(domain.Clip{ID: payload.ID(), Payload: payload})
+	finishClipboardWork(t, a)
+	if target.checked != 2 || target.pasted != 0 || target.closed != 1 || a.state.Clipboard.Error != copy.ClipboardTargetFailed || a.resourceJobs.Load() != 0 {
+		t.Fatalf("missing-geometry delivery bypassed validation: %+v", target)
+	}
+}
+
 func (*clipboardDeliveryTarget) Anchor() (int, int, int, int, bool) { return 0, 0, 0, 0, false }
 func (t *clipboardDeliveryTarget) Activate() error                  { t.activated++; return nil }
 func (*clipboardDeliveryTarget) Ready() bool                        { return true }

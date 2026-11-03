@@ -1308,7 +1308,8 @@ releases remaining providers. Linux requires a clipboard manager for data
 to remain after exit; a failed provider prevents flushing its offer.
 
 macOS owns NSPasteboardItemDataProvider objects until AppKit finishes them,
-with eager NSPasteboardItems after flush. GTK uses application-owned selection
+with file URLs prepared before publication and all representations eager
+after flush. GTK uses application-owned selection
 get/clear callbacks and owner-change generation checks; clipboard-only apps
 bind selection primitives without requiring a surface. Windows shares the
 drag adapter's IDataObject, vtables, native conversions and reference-counted

@@ -128,7 +128,7 @@ func (t *HistoryTarget) Ready() bool {
 	return t != nil && w == t.window
 }
 func (t *HistoryTarget) Check() error {
-	if !t.Ready() || t.secure || t.input == nil || focusOf(t.window) != t.focus {
+	if !t.Ready() || t.secure || t.input == nil || !t.input.editable || t.input.secure || focusOf(t.window) != t.focus {
 		return errors.New("clipboard target changed")
 	}
 	var current *historyCOM

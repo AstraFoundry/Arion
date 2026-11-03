@@ -133,6 +133,25 @@ Virtual files and file-content promises are outside the current model. Go
 values used by `Drag(value)` are process-local; their temporary drag registry
 token is rejected by clipboard writes and omitted from clipboard discovery.
 
+On macOS, `public.file-url` is prepared before clipboard publication even when
+its portable file-list representation is lazy. The pasteboard server needs
+the URL immediately to establish file access. A failing file provider rejects
+the write before replacing the previous clipboard. Other representations
+remain delayed until requested or flushed; no referenced file body is read.
+Incoming standard file URLs are decoded through AppKit's native URL reader,
+which receives the file access attached to the pasteboard. Raw URI bytes are
+not a file-access grant. Request `transfer.MacOSFileBookmark` alongside file
+formats to preserve a read-only security-scoped bookmark per file item. These
+bytes are private reference credentials: encrypt any persisted copy. A clipboard
+write containing them requires macOS and a `FileList` on the same item. Native
+publication never advertises or writes the bookmark bytes, and data drags reject
+this format. Writes/flush resolve bookmarks without UI or mounting, require the
+original path, hold scopes during publication and stop them afterward. Invalid,
+stale or moved references fail; legacy paths require current access. No file
+body is read. Native setter/publication failures are returned. Local pasteboard caches cannot
+establish external receiver consumption; acceptance requires an independent
+receiver.
+
 The [clipboard example](../examples/clipboard) copies and drags a note as text,
 HTML and lazy JSON, shows provider invocation/release counts, pastes file lists
 and flushes clipboard data.

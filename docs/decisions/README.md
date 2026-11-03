@@ -56,6 +56,8 @@ Write an ADR when the decision:
 - [042: Comparative keyboard candidates](042-comparative-keyboard-candidates.md) — shared-context comparison and validated candidate ordering before generated promotion.
 - [043: Context-aware polishing](043-context-aware-polishing.md) — enabled references reach the final editor as user data; ASR repair precedes faithful fluency and numbered organization.
 - [044: Onboarding consent beside sign-in](044-onboarding-consent.md) — checked terms, optional usage sharing and linked disclosure.
+- [045: Independent clipboard placement and delivery](045-clipboard-placement-and-delivery.md) — optional input geometry and guarded captured-destination paste.
+- [046: Clipboard file access](046-clipboard-file-access.md) — encrypted file-bound grants and scoped native publication.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

@@ -1,9 +1,24 @@
 package bootstrap
 
 import (
+	"arion.local/desktop/infrastructure/clipboardos"
 	uiapp "arion.local/desktop/ui/app"
 	"github.com/egoist/mygo"
 )
+
+// Geometry affects placement only. The captured target independently decides
+// whether activation may attempt a paste, and is checked again before writing.
+func clipboardTargetPresentation(target clipboardos.Target, pointer mygo.Rectangle) (anchor mygo.Rectangle, copyOnly bool) {
+	if target == nil {
+		return pointer, true
+	}
+	copyOnly = target.Check() != nil
+	anchor = pointer
+	if x, y, width, height, ok := target.Anchor(); ok {
+		anchor = mygo.Rectangle{X: x, Y: y, Width: width, Height: height}
+	}
+	return anchor, copyOnly
+}
 
 // Prefer below the input, flip above at the bottom edge, then constrain the
 // window to its monitor's usable area. All coordinates are screen DIPs.

@@ -70,3 +70,20 @@ func TestClipboardShortcutNormalization(t *testing.T) {
 		}
 	}
 }
+
+func TestClipboardPersistsRefreshedFileAccessAtSameTimestamp(t *testing.T) {
+	r := &clipRepo{}
+	s := NewClipboard(r)
+	now := time.Now()
+	p := domain.ClipPayload{Kind: domain.ClipFiles, Files: []string{"/owned/file.txt"}}
+	if _, err := s.Capture(p, domain.DefaultClipLimits(), now); err != nil {
+		t.Fatal(err)
+	}
+	p.FileAccess = [][]byte{[]byte("refreshed access")}
+	if _, err := s.Capture(p, domain.DefaultClipLimits(), now); err != nil {
+		t.Fatal(err)
+	}
+	if r.saves != 2 || len(r.items) != 1 || string(r.items[0].Payload.FileAccess[0]) != "refreshed access" {
+		t.Fatal("refreshed native access was not persisted")
+	}
+}

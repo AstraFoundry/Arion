@@ -63,7 +63,7 @@ func (w *Window) startDataDragPrepared(data transfer.Data, local any, options Dr
 		return errDragBusy
 	}
 	formats := data.Formats()
-	if len(formats) == 0 || slices.Contains(formats, platform.DragSessionFormat) {
+	if len(formats) == 0 || slices.Contains(formats, platform.DragSessionFormat) || slices.Contains(formats, transfer.MacOSFileBookmark) {
 		return errors.New("mygo: a data drag needs non-reserved representations")
 	}
 	operations := options.Operations.Allowed()

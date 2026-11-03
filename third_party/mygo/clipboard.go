@@ -2,6 +2,7 @@ package mygo
 
 import (
 	"errors"
+	"runtime"
 	"slices"
 
 	"github.com/egoist/mygo/internal/platform"
@@ -122,6 +123,11 @@ func (ClipboardModule) Write(data transfer.Data, options ...ClipboardOptions) er
 	}
 	if slices.Contains(data.Formats(), platform.DragSessionFormat) {
 		return errors.New("mygo: clipboard cannot contain a process-local drag session")
+	}
+	for _, item := range data.Items() {
+		if slices.Contains(item.Formats(), transfer.MacOSFileBookmark) && (runtime.GOOS != "darwin" || !slices.Contains(item.Formats(), transfer.FileList)) {
+			return errors.New("mygo: file bookmarks require a macOS file item")
+		}
 	}
 	var opts ClipboardOptions
 	if len(options) == 1 {
