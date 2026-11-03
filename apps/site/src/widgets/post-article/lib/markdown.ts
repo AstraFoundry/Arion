@@ -7,11 +7,14 @@ import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
+import { getAuthors } from "@/entities/post";
 import { mediaSize, type MediaRef, resolveMedia } from "@/shared/lib/server";
 import {
   collectHeadings,
+  collectPeopleLogins,
   type PostHeading,
   rehypeFigures,
+  rehypeGitHubPeople,
   rehypeMediaSize,
   rehypeResolveMedia,
   rehypeStaticHtml,
@@ -68,6 +71,7 @@ export async function renderMarkdown(
         return mediaSize(ref);
       },
     })
+    .use(rehypeGitHubPeople, { resolve: getAuthors })
     .use(rehypeSlug)
     .use(rehypeShiki, {
       themes: { light: "github-light", dark: "github-dark" },
@@ -84,4 +88,10 @@ export async function postMediaRefs(markdown: string, file: string): Promise<Med
   const processor = basePipeline(file, refs);
   await processor.run(processor.parse(markdown));
   return [...refs.values()];
+}
+
+/** Every GitHub login the post body's people embeds name, for their published avatars. */
+export async function postPeopleLogins(markdown: string, file: string): Promise<string[]> {
+  const processor = basePipeline(file, new Map());
+  return collectPeopleLogins((await processor.run(processor.parse(markdown))) as Root);
 }

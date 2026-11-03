@@ -1,6 +1,7 @@
 import type { Components } from "hast-util-to-jsx-runtime";
 import { CodeBlock } from "../ui/embeds/code-block";
 import { EmbedFrame } from "../ui/embeds/embed-frame";
+import { GitHubPeople, VoiceQuote } from "../ui/embeds/github-people";
 import { LazyImage } from "../ui/embeds/lazy-image";
 import { PillFigure } from "../ui/embeds/pill-figure";
 import { VideoClip } from "../ui/embeds/video-clip";
@@ -22,5 +23,7 @@ export const postComponents = {
   table: ProseTable,
   "dictation-pill": PillFigure,
   "embed-frame": EmbedFrame,
+  "github-people": GitHubPeople,
   "video-clip": VideoClip,
+  "voice-quote": VoiceQuote,
 } as unknown as Components;

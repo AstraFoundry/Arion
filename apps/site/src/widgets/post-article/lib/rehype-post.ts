@@ -42,7 +42,7 @@ export function rehypeStaticHtml() {
 const isBlank = (node: ElementContent) => node.type === "text" && node.value.trim() === "";
 
 /** Embeds that render a figure; Markdown wraps one written on a single line in a paragraph. */
-const BLOCK_EMBEDS = new Set(["dictation-pill", "embed-frame", "video-clip"]);
+const BLOCK_EMBEDS = new Set(["dictation-pill", "embed-frame", "github-people", "video-clip", "voice-quote"]);
 
 /**
  * A paragraph that holds only an image becomes a figure; the Markdown title
@@ -203,6 +203,76 @@ export function rehypeMediaSize(options: { measure: (url: string) => Promise<Ima
           throw new PostContentError(`<dictation-pill state="${String(state)}"> needs ${field}`);
         }
       }
+    });
+    await Promise.all(pending);
+  };
+}
+
+/** GitHub profile fields an embed shows; the post entity's `PostAuthor` matches it. */
+export interface GitHubPerson {
+  login: string;
+  name: string;
+  profileUrl: string;
+  avatar: string;
+}
+
+/** Same rule as front matter `authors`: a GitHub login. */
+const LOGIN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
+
+/** The logins an embed names: `<github-people logins="a, b">` or `<voice-quote login="a">`. */
+function embedLogins(node: Element): string[] | undefined {
+  if (node.tagName === "github-people") {
+    const { logins, label } = node.properties;
+    if (typeof label !== "string" || label.trim() === "") {
+      throw new PostContentError("<github-people> needs a label naming the group");
+    }
+    const list = typeof logins === "string" ? logins.split(",").map((login) => login.trim()) : [];
+    if (list.length === 0 || list.some((login) => !LOGIN.test(login))) {
+      throw new PostContentError(`<github-people label="${label}"> needs logins: GitHub logins separated by commas`);
+    }
+    if (new Set(list.map((login) => login.toLowerCase())).size !== list.length) {
+      throw new PostContentError(`<github-people label="${label}"> lists a login twice`);
+    }
+    return list;
+  }
+  if (node.tagName === "voice-quote") {
+    const { login } = node.properties;
+    if (typeof login !== "string" || !LOGIN.test(login)) {
+      throw new PostContentError("<voice-quote> needs login, the speaker's GitHub login");
+    }
+    if (toString(node).trim() === "") throw new PostContentError(`<voice-quote login="${login}"> needs the quote as its content`);
+    return [login];
+  }
+  return undefined;
+}
+
+/** Every GitHub login the post's people embeds name, validated. */
+export function collectPeopleLogins(tree: Root): string[] {
+  const logins: string[] = [];
+  visit(tree, "element", (node) => {
+    logins.push(...(embedLogins(node) ?? []));
+  });
+  return logins;
+}
+
+/**
+ * Replaces the logins on `<github-people>` and `<voice-quote>` with the
+ * profiles GitHub returns at build time (as JSON in `people`), so the page
+ * shows names and avatars published with the site.
+ */
+export function rehypeGitHubPeople(options: { resolve: (logins: string[]) => Promise<GitHubPerson[]> }) {
+  return async (tree: Root) => {
+    const pending: Promise<void>[] = [];
+    visit(tree, "element", (node) => {
+      const logins = embedLogins(node);
+      if (!logins) return;
+      pending.push(
+        options.resolve(logins).then((people) => {
+          delete node.properties.logins;
+          delete node.properties.login;
+          node.properties.people = JSON.stringify(people);
+        }),
+      );
     });
     await Promise.all(pending);
   };

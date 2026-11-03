@@ -63,7 +63,7 @@ The index lists posts newest first: the newest as the lead, the rest as rows. A 
 | Post header | Each author's avatar and name, linked to their GitHub profile, in an `<address>` byline |
 | Index lead and rows | Overlapping avatars and the names as one list ("Ada Lovelace and octocat") |
 
-Avatars are the coss `Avatar` and `AvatarGroup` (`shared/ui/avatar.tsx`); the initial shows until the image loads. Each avatar is downloaded at build time (64 px) and published under `/blog-assets/<content hash>/<login>.<ext>`, so readers' browsers never contact GitHub. An unknown login, an unreachable API or a rate-limited request fails the build. Anonymous builds may make 60 GitHub API requests an hour; set `GITHUB_TOKEN` (any token, no scopes needed) to raise the limit. Building behind an HTTP proxy needs `NODE_USE_ENV_PROXY=1`.
+The logins named by `<github-people>` and `<voice-quote>` are resolved the same way. Avatars are the coss `Avatar` and `AvatarGroup` (`shared/ui/avatar.tsx`); the initial shows until the image loads. Each avatar is downloaded at build time (64 px) and published under `/blog-assets/<content hash>/<login>.<ext>`, so readers' browsers never contact GitHub. An unknown login, an unreachable API or a rate-limited request fails the build. Anonymous builds may make 60 GitHub API requests an hour; set `GITHUB_TOKEN` (any token, no scopes needed) to raise the limit. Building behind an HTTP proxy needs `NODE_USE_ENV_PROXY=1`.
 
 ## Content
 
@@ -101,6 +101,8 @@ Write each on its own line (a block embed inside a sentence fails the build).
 | --- | --- | --- |
 | `<embed-frame>` | `src`, `title` (required), `ratio` (`16/9`) or `height` (px), `poster`, `caption` | Interactive HTML in an iframe. The box is sized from `ratio` or `height` and shows the `poster` (a still of the page's first frame) until the page loads. A file under `public/blog/<slug>/` is created when the frame comes within one viewport height, runs sandboxed (`allow-scripts`, opaque origin) and fades in over the poster after its load event. Another site is not contacted until the reader presses the "Load content from {host}" button. |
 | `<video-clip>` | `src`, `poster`, `width`/`height` (read from the poster when omitted), `caption`, `autoplay`, `loop` | `preload="none"`: only the poster loads up front. `autoplay` makes a muted loop that plays while half in view and pauses off screen; under reduced motion it shows controls instead. |
+| `<github-people>` | `label` (required), `logins` (GitHub logins separated by commas) | A labelled group of GitHub accounts, such as a release's contributors: each avatar and name linked to the profile. |
+| `<voice-quote>` | `login` (required); the quote is the element's content | A quotation with the speaker's GitHub avatar and name under it. |
 | `<dictation-pill>` | `state` (`listening` with `draft`, `inserted`, `learned` with `term`), `label` (required), `caption` | The site's live `DictationPill` on a stage, as a labelled, inert illustration. |
 
 Embedded HTML files are post content, not site code: keep them self-contained, language-neutral or one file per locale, and follow the system color scheme. The mapping from element to component is `widgets/post-article/lib/components.ts`; validation is `lib/rehype-post.ts`. A new embed needs both, plus a row here.

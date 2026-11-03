@@ -115,6 +115,22 @@ make build desktop
 
 感谢所有在 alpha 阶段试用、反馈问题、录制复现步骤的用户与贡献者。
 
+<github-people label="贡献者" logins="stvlynn, zacharyhaha, AllenWriter, gavi102803, zachary23kai-max"></github-people>
+
+<github-people label="提交 Issue" logins="alterxyz, hagemon, HereOrCode, jackeyzzz12138"></github-people>
+
+也感谢内测期间这些朋友的支持与鼓励：
+
+<voice-quote login="hagemon">目前在 Mac 上使用 Arion，整体体验非常流畅，语音识别效果也很好。</voice-quote>
+
+<voice-quote login="lcandy2">很有 taste 的产品，用起来太顺手了！</voice-quote>
+
+<voice-quote login="jackwener">这设计太好了吧！</voice-quote>
+
+<voice-quote login="lexrus">好高级的 onboarding flow 👍</voice-quote>
+
+<voice-quote login="tplog">已经严肃开始使用了，期待后续迭代！</voice-quote>
+
 [^scene]: [规范 009：上下文润色](https://github.com/AstraFoundry/Arion/blob/main/specs/009-contextual-rewrite.md#scene-selection)中的场景选择（`SCN-01`、`SCN-02`）。
 
 [^context]: [ADR 013：在本机读取润色上下文](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md)。

@@ -3,10 +3,10 @@ import path from "node:path";
 import { authorAvatars, getPost, postSlugs } from "@/entities/post";
 import { LOCALES } from "@/shared/i18n";
 import { PROJECT_ASSET_BASE, PROJECT_ASSET_TYPES } from "@/shared/lib/server";
-import { postMediaRefs } from "@/widgets/post-article";
+import { postMediaRefs, postPeopleLogins } from "@/widgets/post-article";
 
 // Repository files that blog posts name by a project path, and their authors'
-// GitHub avatars, written into the static export at
+// GitHub avatars and those of the people the posts name, written into the static export at
 // /blog-assets/<content hash>/<name>. Built once, never served live.
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -28,7 +28,8 @@ async function blogAssets(): Promise<Map<string, () => Uint8Array>> {
         const { file } = ref;
         if (file && ref.url.startsWith(PROJECT_ASSET_BASE)) assets.set(ref.url, () => readFileSync(file));
       }
-      for (const [url, bytes] of await authorAvatars(post.authors)) assets.set(url, () => bytes);
+      const people = [...post.authors, ...(await postPeopleLogins(post.body, post.file))];
+      for (const [url, bytes] of await authorAvatars(people)) assets.set(url, () => bytes);
     }
   }
   return assets;

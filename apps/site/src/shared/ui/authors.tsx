@@ -13,7 +13,7 @@ export interface AuthorProfile {
  * The avatar beside a visible name, so it stays out of the accessibility
  * tree; the initial shows until the image has loaded.
  */
-function AuthorAvatar({ author }: { author: AuthorProfile }) {
+export function AuthorAvatar({ author }: { author: AuthorProfile }) {
   return (
     <Avatar aria-hidden="true">
       <AvatarImage src={author.avatar} alt="" />

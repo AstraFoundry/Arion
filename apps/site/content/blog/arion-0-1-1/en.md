@@ -115,6 +115,22 @@ If you run into a bug, open an issue on [GitHub Issues](https://github.com/Astra
 
 Thanks to everyone who tested the alpha builds, reported bugs, and recorded reproductions along the way.
 
+<github-people label="Contributors" logins="stvlynn, zacharyhaha, AllenWriter, gavi102803, zachary23kai-max"></github-people>
+
+<github-people label="Issue reporters" logins="alterxyz, hagemon, HereOrCode, jackeyzzz12138"></github-people>
+
+And thank you to these friends for their support and encouragement during the private beta:
+
+<voice-quote login="hagemon">I use Arion on my Mac now. The whole experience is really smooth, and the speech recognition is great.</voice-quote>
+
+<voice-quote login="lcandy2">A product with real taste. It is a joy to use!</voice-quote>
+
+<voice-quote login="jackwener">This design is just so good!</voice-quote>
+
+<voice-quote login="lexrus">Such a polished onboarding flow 👍</voice-quote>
+
+<voice-quote login="tplog">I have seriously started using it. Looking forward to what comes next!</voice-quote>
+
 [^scene]: Scene selection in [Spec 009: Contextual rewrite](https://github.com/AstraFoundry/Arion/blob/main/specs/009-contextual-rewrite.md#scene-selection) (`SCN-01`, `SCN-02`).
 
 [^context]: [ADR 013: Rewrite context on device](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md).

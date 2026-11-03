@@ -115,6 +115,22 @@ make build desktop
 
 アルファ期間中に試用し、問題を報告し、再現手順の録画や提案を送ってくれたすべての方に感謝します。
 
+<github-people label="コントリビューター" logins="stvlynn, zacharyhaha, AllenWriter, gavi102803, zachary23kai-max"></github-people>
+
+<github-people label="Issue を報告してくれた方" logins="alterxyz, hagemon, HereOrCode, jackeyzzz12138"></github-people>
+
+また、クローズドベータ期間中に応援と励ましをくれた皆さんにも感謝します。
+
+<voice-quote login="hagemon">今は Mac で Arion を使っています。全体の体験がとてもスムーズで、音声認識も優秀です。</voice-quote>
+
+<voice-quote login="lcandy2">センスのあるプロダクト。とにかく使いやすい！</voice-quote>
+
+<voice-quote login="jackwener">このデザイン、最高すぎる！</voice-quote>
+
+<voice-quote login="lexrus">すごく洗練されたオンボーディング 👍</voice-quote>
+
+<voice-quote login="tplog">もう本格的に使い始めています。今後のアップデートが楽しみ！</voice-quote>
+
 [^scene]: [仕様 009：コンテキストに応じた整文](https://github.com/AstraFoundry/Arion/blob/main/specs/009-contextual-rewrite.md#scene-selection)のシーン選択（`SCN-01`、`SCN-02`）。
 
 [^context]: [ADR 013：整文のコンテキストをデバイス上で読む](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md)。

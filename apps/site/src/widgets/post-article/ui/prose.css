@@ -286,13 +286,13 @@ html:is(:lang(zh-CN), :lang(ja)) .post-prose > blockquote {
 
 /* Media ------------------------------------------------------------------- */
 
-.post-prose > figure,
+.post-prose > figure:not(.post-voice),
 .post-media {
   margin-top: 2.75em;
   margin-bottom: 0.5em;
 }
 
-.post-prose > figure + *,
+.post-prose > figure:not(.post-voice) + *,
 .post-media + * {
   margin-top: 2.25em;
 }
@@ -303,7 +303,7 @@ html:is(:lang(zh-CN), :lang(ja)) .post-prose > blockquote {
  * caption (zero width, then stretched) is as wide as the image. Embeds
  * (`.post-media`) have no intrinsic width, so they keep the full wide column.
  */
-.post-prose > figure:not(.post-media) {
+.post-prose > figure:not(.post-media, .post-voice) {
   width: fit-content;
   max-width: 100%;
   justify-self: center;
@@ -315,7 +315,7 @@ html:is(:lang(zh-CN), :lang(ja)) .post-prose > blockquote {
   max-height: min(80vh, 56rem);
 }
 
-.post-prose > figure > figcaption {
+.post-prose > figure:not(.post-voice) > figcaption {
   width: 0;
   min-width: 100%;
 }
@@ -452,6 +452,82 @@ html:is(:lang(zh-CN), :lang(ja)) .post-prose > blockquote {
   padding: 2rem 1.25rem;
   border-radius: var(--radius-xl);
   background-color: var(--muted);
+}
+
+/* People: <github-people> and <voice-quote> ---------------------------------- */
+
+.post-people {
+  font-family: var(--font-sans);
+}
+
+.post-prose > .post-people + .post-people {
+  margin-top: 1.75em;
+}
+
+.post-people-label {
+  margin: 0 0 0.75rem !important;
+  color: var(--muted-foreground);
+  font-size: 0.875rem !important;
+  font-weight: 500;
+}
+
+.post-prose .post-people ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post-prose .post-people li {
+  margin: 0;
+}
+
+.post-people a,
+.post-voice figcaption a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 150ms ease;
+  --avatar-size: 1.75rem;
+}
+
+.post-people a:hover,
+.post-voice figcaption a:hover {
+  color: var(--muted-foreground);
+}
+
+/*
+ * Quotes set apart from the body: the display serif (Fraunces, Songti,
+ * Mincho) a step larger, and italic in Latin text, where the body is
+ * already the serif.
+ */
+.post-voice blockquote {
+  margin: 0;
+  padding-left: 1.25em;
+  border-left: 2px solid var(--border);
+  font-family: var(--font-display);
+  font-size: 1.125em;
+  font-style: italic;
+  line-height: 1.55;
+}
+
+html:is(:lang(zh-CN), :lang(ja)) .post-voice blockquote {
+  font-style: normal;
+}
+
+.post-voice figcaption {
+  margin-top: 0.625rem;
+  padding-left: 1.25rem;
+  font-family: var(--font-sans);
+}
+
+.post-prose > .post-voice + .post-voice {
+  margin-top: 1.5em;
 }
 
 .post-note {
