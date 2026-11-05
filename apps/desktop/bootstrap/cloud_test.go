@@ -2,6 +2,8 @@ package bootstrap
 
 import (
 	"context"
+	"encoding/json"
+	"os"
 	"slices"
 	"testing"
 
@@ -11,6 +13,7 @@ import (
 	"path/filepath"
 
 	"arion.local/desktop/infrastructure/cloudpolish"
+	"arion.local/desktop/infrastructure/diagnostics"
 	"arion.local/desktop/infrastructure/keyboardmodel"
 	"arion.local/desktop/infrastructure/keystore"
 	"arion.local/desktop/infrastructure/rewriting"
@@ -25,6 +28,33 @@ func (noSecrets) Get(string) (string, error) { return "", nil }
 func (noSecrets) Delete(string) error        { return nil }
 
 var _ cloudpolish.SecretStore = keystore.Catalog{}
+
+func TestCloudModelFailureDiagnostics(t *testing.T) {
+	a := &App{}
+	a.recordCloudModelFailure(cloudpolish.CodeModels, 403)
+	dir := t.TempDir()
+	r, err := diagnostics.Open(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a.diagnostics = r
+	a.recordCloudModelFailure(cloudpolish.CodeModels, 403)
+	if err := r.Close(); err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(filepath.Join(dir, "events.0.jsonl"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var entry diagnostics.Entry
+	if err := json.Unmarshal(data, &entry); err != nil {
+		t.Fatal(err)
+	}
+	if entry.Event != "cloud_models_failed" || entry.CloudModels == nil ||
+		*entry.CloudModels != (diagnostics.CloudModelsDiagnostic{Failure: "MODELS", HTTPStatus: 403}) {
+		t.Fatalf("missing bounded cloud model-list diagnostic: %+v", entry)
+	}
+}
 
 // Both engines honor the same context switches; cloud stages run after stop.
 func TestCloudPolicyUsesSharedContext(t *testing.T) {

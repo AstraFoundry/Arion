@@ -251,6 +251,36 @@ func TestCloudFailureStaysOnItsProvider(t *testing.T) {
 	}
 }
 
+func TestCloudKeyModelListFailure(t *testing.T) {
+	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		t.Run(string(language), func(t *testing.T) {
+			state, actions, store := fixture()
+			state.Preferences.UILanguage = language
+			state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected}
+			nav := &cloud.Nav{}
+			tt := ui.NewTester(func(c *ui.Context) {
+				ui.Column(c).Gap(8).Padding(16).Children(func() { cloud.Pages(c, store, theme.Resolve(false), nav) })
+			}, 560, 520)
+			messages := copy.For(copy.Locale(language))
+			settle(tt)
+			if err := tt.Click(config.CloudProviders[runtime.CloudDeepSeek]); err != nil {
+				t.Fatal(err)
+			}
+			nav.Key = "synthetic-key"
+			settle(tt)
+			if err := tt.Click(messages.Text(copy.CloudConnect)); err != nil || !actions.called("cloud-key:deepseek:synthetic-key") {
+				t.Fatalf("key submission: %v", err)
+			}
+			state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected, Failure: runtime.CloudCodeModels, FailureProvider: runtime.CloudDeepSeek}
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.CloudFailModels)) || hasText(tt, messages.Text(copy.CloudFailRejected)) {
+				t.Fatalf("model failure blamed the key: %q", tt.Texts())
+			}
+			snapshot(t, tt, "cloud-key-models-failed-"+string(language))
+		})
+	}
+}
+
 // Opening a saved provider's page never switches to it: only its Use
 // button does, on the list or on its page.
 func TestSavedCloudProviderNeedsUse(t *testing.T) {

@@ -7,7 +7,7 @@ toolchain go1.27.3
 require (
 	arion.local/core v0.0.0
 	arion.local/models v0.0.0
-	github.com/AstraFoundry/republic v0.0.0-20261025172537-6e72bf51fb52
+	github.com/AstraFoundry/republic v0.0.0-20261105155216-01d51f6604f5
 	github.com/ebitengine/purego v0.11.1
 	github.com/egoist/mygo v0.4.6
 	github.com/gen2brain/malgo v0.11.26

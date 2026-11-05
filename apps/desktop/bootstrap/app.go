@@ -230,6 +230,7 @@ func New(opts Options) (*App, error) {
 	a.mic.SetGain(prefs.MicrophoneGain)
 	a.cloud = cloudpolish.New(keystore.Catalog{Service: desktopProfile(mygo.IsDev())}, browser.Open,
 		func() []byte { return callbackPage(copy.Locale(a.preferences().UILanguage)) })
+	a.cloud.OnModelListFailure(a.recordCloudModelFailure)
 	a.cloud.SetModel(prefs.CloudModel)
 	// Both engines read the same consent-gated context sources.
 	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery }, TargetGates{

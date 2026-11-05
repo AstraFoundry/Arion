@@ -7,6 +7,7 @@ package cloudpolish
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"sort"
 	"time"
@@ -97,9 +98,21 @@ func open(c Credential, auth republic.Auth, client *http.Client, base string) (*
 }
 
 // listModels returns the provider's chat model IDs, sorted.
-func listModels(ctx context.Context, p *republic.Provider) ([]string, error) {
+func (s *Service) listModels(ctx context.Context, p *republic.Provider) ([]string, error) {
 	infos, err := p.ListModels(ctx)
 	if err != nil {
+		err = classify(err, CodeModels)
+		status := 0
+		var failure *republic.Error
+		if errors.As(err, &failure) && failure.StatusCode >= 100 && failure.StatusCode <= 599 {
+			status = failure.StatusCode
+		}
+		s.mu.Lock()
+		listeners := append([]func(Code, int){}, s.modelFailures...)
+		s.mu.Unlock()
+		for _, listener := range listeners {
+			listener(CodeOf(err), status)
+		}
 		return nil, err
 	}
 	ids := make([]string, 0, len(infos))
