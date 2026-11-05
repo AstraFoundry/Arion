@@ -1,3 +1,23 @@
+## 0.1.2
+
+### English
+
+Bugfix release for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Fix recognition inserting the session hotword list into a draft during quiet recordings or pauses at the end of speech. Audio windows below the speech threshold are no longer decoded.
+- If recognition copies two or more consecutive hotwords at the start or end of a transcript, decode the same audio once without hotword prompting and use that result. A single matching hotword remains valid; cancellation and worker errors still stop the request.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable. Model weights download separately. Multi-device sync, Windows edit-learning, clean-machine acceptance, production old-to-new update acceptance, and real-service cloud and translation acceptance remain open. This tag stages the release and opens a GitHub draft; it does not publish the stable update channel. See RELEASE-STATUS.md and SHA256SUMS.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的问题修复版本。
+
+- 修复安静录音或句尾停顿时，识别将本次会话的热词列表误写入草稿的问题。低于语音阈值的音频窗口不再送入识别。
+- 如果识别结果在开头或结尾按顺序复述了两个及以上连续热词，则对同一段音频去掉热词提示重新识别一次，并采用重识别结果。正常识别到的单个热词仍然保留；取消操作或识别进程报错仍会终止请求。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证。Windows 仍无发布者签名。模型权重单独下载。多设备同步、Windows 纠错学习、全新机器验收、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。此标签会暂存发布并创建 GitHub 草稿，不会发布稳定更新渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.1
 
 ### English
