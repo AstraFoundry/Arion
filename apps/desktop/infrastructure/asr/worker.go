@@ -273,6 +273,31 @@ func (e *workerProcess) send(m any) error {
 	return err
 }
 func (e *engine) decode(ctx context.Context, samples []float32, hotwords ...string) (string, error) {
+	if err := ctx.Err(); err != nil {
+		return "", err
+	}
+	prompt, err := domain.ASRContext(hotwords)
+	if err != nil {
+		return "", domain.Fail(domain.CodeContractUnsupported, "invalid ASR hotword context")
+	}
+	speech, invalid := classifyPCM(samples)
+	if invalid {
+		return "", domain.Fail(domain.CodeContractUnsupported, "invalid PCM")
+	}
+	// Quiet audio never reaches the worker. Qwen3 otherwise copies the system-turn
+	// hotwords into the transcript before anyone has spoken.
+	if !speech {
+		e.mu.Lock()
+		closed, failure := e.closed, e.failure
+		e.mu.Unlock()
+		if closed || e.lifetime.Err() != nil {
+			return "", domain.Fail(domain.CodeModelMissing, "native ASR engine closed")
+		}
+		if failure != nil {
+			return "", failure
+		}
+		return "", nil
+	}
 	select {
 	case e.serial <- struct{}{}:
 	case <-ctx.Done():
@@ -316,13 +341,23 @@ func (e *engine) decode(ctx context.Context, samples []float32, hotwords ...stri
 		p = e.current
 		e.mu.Unlock()
 	}
-	prompt, err := domain.ASRContext(hotwords)
-	if err != nil {
-		return "", domain.Fail(domain.CodeContractUnsupported, "invalid ASR hotword context")
-	}
 	if prompt != "" && !p.promptSupported {
 		return "", domain.Fail(domain.CodeModelUnsupported, "native ASR worker does not support hotword context")
 	}
+	text, err := e.complete(ctx, p, samples, prompt)
+	if err != nil || prompt == "" || !hotwordEcho(text, hotwords) {
+		return text, err
+	}
+	// The list was read back. Decode the same samples with an empty prompt
+	// and publish only that result, so a breathy window is not discarded and
+	// the hotword copy is not shown.
+	if err := ctx.Err(); err != nil {
+		return "", err
+	}
+	return e.complete(ctx, p, samples, "")
+}
+
+func (e *engine) complete(ctx context.Context, p *workerProcess, samples []float32, prompt string) (string, error) {
 	text, err, retired := p.decode(ctx, samples, e.cancelGrace, prompt)
 	if retired {
 		e.mu.Lock()

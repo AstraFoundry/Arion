@@ -69,7 +69,7 @@ func TestNativeChunkedTailAndIdentity(t *testing.T) {
 	}
 	defer r.Close()
 	for i := 0; i < 75; i++ {
-		if err = r.Accept(ctx, contracts.Frame{Identity: id, SampleRate: 16000, Channels: 1, Samples: make([]float32, 320)}); err != nil {
+		if err = r.Accept(ctx, contracts.Frame{Identity: id, SampleRate: 16000, Channels: 1, Samples: audible(320)}); err != nil {
 			t.Fatal(err)
 		}
 	}
