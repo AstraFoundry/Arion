@@ -158,6 +158,10 @@ func (r *Recorder) rotate() error {
 }
 
 func (r *Recorder) Record(e Entry) {
+	if e.CloudModels != nil {
+		d := *e.CloudModels
+		e.CloudModels = &d
+	}
 	if e.ClipboardTarget != nil {
 		d := *e.ClipboardTarget
 		e.ClipboardTarget = &d

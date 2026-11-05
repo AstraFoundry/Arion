@@ -8,12 +8,19 @@ import (
 	"arion.local/core/contracts"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/cloudpolish"
+	"arion.local/desktop/infrastructure/diagnostics"
 	arion "arion.local/desktop/ui/shared/runtime"
 )
 
 // cloudRewriteTimeout bounds the cloud's final rewrite: a round trip to a
 // provider takes longer than the local worker.
 const cloudRewriteTimeout = 15 * time.Second
+
+func (a *App) recordCloudModelFailure(code cloudpolish.Code, status int) {
+	a.recordEntry(diagnostics.Entry{Event: "cloud_models_failed", CloudModels: &diagnostics.CloudModelsDiagnostic{
+		Failure: string(code), HTTPStatus: status,
+	}})
+}
 
 // polishRouter is the coordinator's rewriter: the local worker or the
 // connected cloud model, as the user chose (ADR 022). The choice is read

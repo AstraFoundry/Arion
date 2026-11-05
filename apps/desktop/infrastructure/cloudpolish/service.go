@@ -117,8 +117,9 @@ type Service struct {
 	generation uint64
 	// attempt is the provider begin started. end attributes a failure to it
 	// even after the previous connection is restored.
-	attempt   string
-	listeners []func(Status)
+	attempt       string
+	listeners     []func(Status)
+	modelFailures []func(Code, int)
 }
 
 // New prepares the service; it reads and sends nothing.
@@ -132,6 +133,15 @@ func (s *Service) OnStatus(listener func(Status)) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.listeners = append(s.listeners, listener)
+}
+
+// OnModelListFailure observes only the stable failure code and HTTP status
+// (zero when unavailable), never credentials or provider response text.
+// Listeners must return immediately.
+func (s *Service) OnModelListFailure(listener func(Code, int)) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.modelFailures = append(s.modelFailures, listener)
 }
 
 func (s *Service) Status() Status {
@@ -315,10 +325,10 @@ func (s *Service) ConnectKey(provider, key string) error {
 	if err != nil {
 		return s.end(generation, fail(CodeRejected, err))
 	}
-	models, err := listModels(ctx, p)
+	models, err := s.listModels(ctx, p)
 	if err != nil {
 		_ = p.Close()
-		return s.end(generation, classify(err, CodeRejected))
+		return s.end(generation, err)
 	}
 	return s.connect(ctx, generation, c, &connection{provider: p, models: models})
 }
@@ -586,7 +596,7 @@ func (s *Service) ListModels() {
 	p, err := s.ready(context.Background())
 	var models []string
 	if err == nil {
-		models, err = listModels(context.Background(), p)
+		models, err = s.listModels(context.Background(), p)
 	}
 	err = s.settle(err, CodeModels)
 	s.mu.Lock()
@@ -702,7 +712,7 @@ func classify(err error, otherwise Code) error {
 	var r *republic.Error
 	if errors.As(err, &r) {
 		switch {
-		case r.Kind == republic.ErrAuthentication || r.StatusCode == http.StatusUnauthorized || r.StatusCode == http.StatusForbidden:
+		case r.Kind == republic.ErrAuthentication || r.StatusCode == http.StatusUnauthorized:
 			return fail(CodeRejected, err)
 		case r.Kind == republic.ErrConnection || r.Kind == republic.ErrTimeout:
 			return fail(CodeNetwork, err)

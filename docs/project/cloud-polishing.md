@@ -33,6 +33,8 @@ The chosen model is a preference (`UpdatePreferences` with `CloudModel`), applie
 
 `State.Cloud`: `Phase` (`disconnected`, `signing_in`, `verifying`, `connected`), `Provider`, `Email` (ChatGPT only), `Models`, `Listing`, `Saved` (provider ids that still have a credential), `Failure`, `FailureProvider`. Failure codes (`runtime.CloudCodes`) equal the `cloudpolish.Code` constants; a test parses those constants and checks both lists. `CANCELLED` shows nothing. `FailureProvider` names who the failure belongs to: the provider a key or sign-in tried, or the connected provider when its model list or a later request failed. That sentence stays on the page that submitted it until the user leaves the page or edits the key; the list and every other provider do not repeat it. A failed model list of the connection in use is shown with that connection and offers **Retry**. A keychain failure with no provider stays visible so a failed save is not silent.
 
+Key verification and model refresh use body-free GET requests. Authentication failures and HTTP 401 report `REJECTED`; a bare HTTP 403, rate limit, server failure or invalid model-list response reports `MODELS`. Connection failures report `NETWORK`. A failed check never replaces a saved credential, and a failed refresh keeps the existing model list. Model-list diagnostics retain only the stable failure code and available HTTP status; see [logging](../backend/logging.md).
+
 ## Credential and startup
 
 - One OS credential item per provider: service `Arion`, account `cloud-polish/<provider>` (`keystore.CloudPolishProviderAccount`). JSON with the provider and either the API key or the ChatGPT refresh token, account ID and email, plus the model last chosen for that provider.
