@@ -4,6 +4,8 @@
 
 Local-first voice dictation and Pinyin input for macOS and Windows, built with [MyGo](https://github.com/egoist/mygo) native Go UI.
 
+[![Listed on Awesome MyGo](https://awesomemygo.dev/badge.svg)](https://awesomemygo.dev/apps/arion)
+
 [English](README.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
 
 <p align="center">
