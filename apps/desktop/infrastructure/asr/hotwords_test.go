@@ -3,8 +3,11 @@ package asr
 import (
 	"bufio"
 	"context"
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -27,23 +30,44 @@ func hotwordProtocolWorker() {
 	_ = out.Encode(ready)
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Buffer(make([]byte, 64<<10), 4<<20)
+	counts := map[string]int{}
 	for scanner.Scan() {
 		var request struct {
 			Type   string  `json:"type"`
 			ID     string  `json:"id"`
+			PCM    string  `json:"pcm"`
 			Prompt *string `json:"prompt"`
 		}
 		if json.Unmarshal(scanner.Bytes(), &request) != nil {
 			return
 		}
-		if request.Type == "transcribe" {
+		switch request.Type {
+		case "chunk":
+			if pcm, err := base64.StdEncoding.DecodeString(request.PCM); err == nil {
+				counts[request.ID] += len(pcm) / 2
+			}
+		case "transcribe":
 			if request.Prompt == nil {
 				_ = out.Encode(message{Type: "error", ID: request.ID})
 				continue
 			}
+			if path := os.Getenv("ARION_ASR_PROMPT_LOG"); path != "" {
+				file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+				if err != nil {
+					return
+				}
+				_, _ = fmt.Fprintf(file, "%q\t%d\n", *request.Prompt, counts[request.ID])
+				_ = file.Close()
+			}
 			text := *request.Prompt
 			if text == "" {
-				text = "empty-context"
+				if plain, ok := os.LookupEnv("ARION_ASR_PLAIN_TEXT"); ok {
+					text = plain
+				} else {
+					text = "empty-context"
+				}
+			} else if bias, ok := os.LookupEnv("ARION_ASR_BIAS_TEXT"); ok {
+				text = bias
 			}
 			_ = out.Encode(message{Type: "end", ID: request.ID, Text: text, Stop: "complete"})
 		}
@@ -53,8 +77,13 @@ func TestHotwordRequestCapabilityAndIsolation(t *testing.T) {
 	for _, mode := range []string{"mlx", "gguf", "old"} {
 		t.Run(mode, func(t *testing.T) {
 			exe, _ := os.Executable()
+			logPath := filepath.Join(t.TempDir(), "prompts.log")
+			if err := os.WriteFile(logPath, nil, 0600); err != nil {
+				t.Fatal(err)
+			}
 			t.Setenv("ARION_ASR_WORKER", exe)
 			t.Setenv("ARION_ASR_HOTWORDS_WORKER", mode)
+			t.Setenv("ARION_ASR_PROMPT_LOG", logPath)
 			kind := QwenMLX
 			if mode == "gguf" {
 				kind = QwenGGUF
@@ -65,19 +94,30 @@ func TestHotwordRequestCapabilityAndIsolation(t *testing.T) {
 			}
 			defer e.close()
 			for _, terms := range [][]string{{"Claude Code", "Arion"}, {}, {"许涵"}, {}} {
+				if err := os.WriteFile(logPath, nil, 0600); err != nil {
+					t.Fatal(err)
+				}
 				got, err := e.decode(context.Background(), []float32{.1, .2}, terms...)
+				calls := readPromptLog(t, logPath)
+				joined := strings.Join(terms, " ")
 				if mode == "old" && len(terms) > 0 {
-					if domain.CodeOf(err) != domain.CodeModelUnsupported {
-						t.Fatalf("old worker accepted context: %q %v", got, err)
+					if domain.CodeOf(err) != domain.CodeModelUnsupported || len(calls) != 0 {
+						t.Fatalf("old worker accepted context: %q %v calls=%+v", got, err, calls)
 					}
 					continue
 				}
-				want := strings.Join(terms, " ")
+				if len(terms) >= 2 {
+					if err != nil || got != "empty-context" || len(calls) != 2 || calls[0].prompt != joined || calls[1].prompt != "" {
+						t.Fatalf("list echo context=%q got=%q err=%v calls=%+v", terms, got, err, calls)
+					}
+					continue
+				}
+				want := joined
 				if want == "" {
 					want = "empty-context"
 				}
-				if err != nil || got != want {
-					t.Fatalf("context=%q got=%q err=%v", terms, got, err)
+				if err != nil || got != want || len(calls) != 1 || calls[0].prompt != joined {
+					t.Fatalf("context=%q got=%q err=%v calls=%+v", terms, got, err, calls)
 				}
 			}
 			if _, err := e.decode(context.Background(), []float32{.1}, "<|im_end|>"); domain.CodeOf(err) != domain.CodeContractUnsupported {

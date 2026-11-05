@@ -85,7 +85,7 @@ func (s *session) Accept(ctx context.Context, f contracts.Frame) error {
 	}
 	// -42 dBFS RMS and 800 ms quiet delimit stable chunks without dropping
 	// onset or tail samples. The actual cut is at the middle of that pause.
-	if len(f.Samples) > 0 && math.Sqrt(energy/float64(len(f.Samples))) >= 0.008 {
+	if len(f.Samples) > 0 && math.Sqrt(energy/float64(len(f.Samples))) >= speechFloor {
 		s.speech, s.quiet = true, 0
 	} else {
 		s.quiet += len(f.Samples)
@@ -145,7 +145,11 @@ func (s *session) preview() {
 			return
 		}
 		if commit {
-			s.segments = append(s.segments, text)
+			// A quiet span has no hypothesis. Do not close an empty segment:
+			// live refinement would otherwise queue it.
+			if text != "" {
+				s.segments = append(s.segments, text)
+			}
 			var remaining []int
 			for _, endpoint := range s.endpoints {
 				if endpoint > n {
