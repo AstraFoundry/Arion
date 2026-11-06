@@ -693,7 +693,8 @@ type Actions interface {
 	// polishing. It returns immediately.
 	SignInChatGPT()
 	// ConnectCloudKey checks an API key for provider and connects it.
-	ConnectCloudKey(provider, key string)
+	// baseURL is required for a compatible provider and ignored otherwise.
+	ConnectCloudKey(provider, key, baseURL string)
 	// CancelCloud stops a sign-in or key check in flight.
 	CancelCloud()
 	// DisconnectCloud forgets the active provider and deletes only its credential.

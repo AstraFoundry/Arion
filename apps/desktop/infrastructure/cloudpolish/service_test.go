@@ -128,7 +128,7 @@ func TestConnectKeyListsModelsAndPolishes(t *testing.T) {
 	defer srv.Close()
 	secrets := &memorySecrets{}
 	s := newTestService(secrets, srv.URL)
-	if err := s.ConnectKey(OpenAI, "  sk-good "); err != nil {
+	if err := s.ConnectKey(OpenAI, "  sk-good ", ""); err != nil {
 		t.Fatal(err)
 	}
 	st := s.Status()
@@ -179,13 +179,13 @@ func TestRejectedKeyIsNotStored(t *testing.T) {
 	defer srv.Close()
 	secrets := &memorySecrets{}
 	s := newTestService(secrets, srv.URL)
-	if err := s.ConnectKey(Anthropic, ""); CodeOf(err) != CodeRejected {
+	if err := s.ConnectKey(Anthropic, "", ""); CodeOf(err) != CodeRejected {
 		t.Fatalf("empty key: %v", err)
 	}
 	if st := s.Status(); st.Failure != CodeRejected || st.FailureProvider != Anthropic {
 		t.Fatalf("empty key status %+v", st)
 	}
-	if err := s.ConnectKey(OpenAI, "sk-bad"); CodeOf(err) != CodeRejected {
+	if err := s.ConnectKey(OpenAI, "sk-bad", ""); CodeOf(err) != CodeRejected {
 		t.Fatalf("bad key: %v", err)
 	}
 	if st := s.Status(); st.Phase != Disconnected || st.Failure != CodeRejected || st.FailureProvider != OpenAI || secrets.puts != 0 {
@@ -198,10 +198,10 @@ func TestFailedKeyNamesTheProviderItTried(t *testing.T) {
 	srv := keyServer(t, "sk-good", &bodies)
 	defer srv.Close()
 	s := newTestService(&memorySecrets{}, srv.URL)
-	if err := s.ConnectKey(OpenAI, "sk-good"); err != nil {
+	if err := s.ConnectKey(OpenAI, "sk-good", ""); err != nil {
 		t.Fatal(err)
 	}
-	if err := s.ConnectKey(Anthropic, "sk-bad"); CodeOf(err) != CodeRejected {
+	if err := s.ConnectKey(Anthropic, "sk-bad", ""); CodeOf(err) != CodeRejected {
 		t.Fatalf("anthropic: %v", err)
 	}
 	st := s.Status()
@@ -216,10 +216,10 @@ func TestFailedKeyKeepsExistingConnection(t *testing.T) {
 	defer srv.Close()
 	secrets := &memorySecrets{}
 	s := newTestService(secrets, srv.URL)
-	if err := s.ConnectKey(OpenAI, "sk-good"); err != nil {
+	if err := s.ConnectKey(OpenAI, "sk-good", ""); err != nil {
 		t.Fatal(err)
 	}
-	_ = s.ConnectKey(OpenAI, "sk-bad")
+	_ = s.ConnectKey(OpenAI, "sk-bad", "")
 	if st := s.Status(); st.Phase != Connected || st.Provider != OpenAI || st.Failure != CodeRejected || st.FailureProvider != OpenAI || len(st.Models) != 2 {
 		t.Fatalf("status %+v", st)
 	}
@@ -302,7 +302,7 @@ func TestSwitchingProvidersKeepsEachAPIKey(t *testing.T) {
 	if c := s.Status(); c.Provider != DeepSeek || c.Model != "deepseek-chat" {
 		t.Fatalf("migrated status %+v", c)
 	}
-	if err := s.ConnectKey(OpenRouter, "sk-or"); err != nil {
+	if err := s.ConnectKey(OpenRouter, "sk-or", ""); err != nil {
 		t.Fatal(err)
 	}
 	deep, err := secrets.Get(credentialAccountFor(DeepSeek))
@@ -350,7 +350,7 @@ func TestSwitchingProvidersKeepsEachAPIKey(t *testing.T) {
 	if st := s.Status(); st.Phase != Connected || st.Provider != OpenRouter || st.Model != "router-model" || seen[len(seen)-1] != "sk-or" {
 		t.Fatalf("openrouter restore %+v keys %v", st, seen)
 	}
-	if err := s.ConnectKey(Anthropic, "sk-bad"); CodeOf(err) != CodeRejected {
+	if err := s.ConnectKey(Anthropic, "sk-bad", ""); CodeOf(err) != CodeRejected {
 		t.Fatalf("bad key: %v", err)
 	}
 	if st := s.Status(); st.Phase != Connected || st.Provider != OpenRouter {
@@ -550,7 +550,9 @@ func TestRecipeDisablesThinking(t *testing.T) {
 	}{
 		{OpenAI, "gpt", "responses", "/responses", expectReasoningNone},
 		{OpenAI, "gpt", "chat", "/chat/completions", expectChatReasoningNone},
+		{OpenAICompatible, "gpt", "", "/chat/completions", expectChatReasoningNone},
 		{Anthropic, "claude", "", "/messages", expectThinkingDisabled},
+		{AnthropicCompatible, "claude", "", "/messages", expectThinkingDisabled},
 		{Google, "gemini-2.5-flash", "", "/models/gemini-2.5-flash:generateContent", expectThinkingBudgetZero},
 		{DeepSeek, "deepseek-flash", "chat", "/chat/completions", expectThinkingDisabled},
 		{DeepSeek, "deepseek-flash", "responses", "/responses", expectReasoningNone},
@@ -693,6 +695,9 @@ func TestDefaultModel(t *testing.T) {
 		{Google, []string{"gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite-preview"}, "gemini-3.5-flash-lite"},
 		{OpenRouter, []string{"anthropic/claude-haiku-4.5", "openai/gpt-6-luna", "meta/llama"}, "openai/gpt-6-luna"},
 		{OpenAI, []string{"model-a", "model-b"}, ""},
+		{OpenAICompatible, []string{"gpt-6-luna", "custom"}, "gpt-6-luna"},
+		{AnthropicCompatible, []string{"claude-haiku-4-5", "local"}, "claude-haiku-4-5"},
+		{AnthropicCompatible, []string{"local-model"}, ""},
 	} {
 		if got := DefaultModel(c.provider, c.models); got != c.want {
 			t.Errorf("%s %v: %q, want %q", c.provider, c.models, got, c.want)
@@ -714,7 +719,7 @@ func TestConnectAdoptsDefaultModel(t *testing.T) {
 	defer srv.Close()
 	secrets := &memorySecrets{}
 	s := newTestService(secrets, srv.URL)
-	if err := s.ConnectKey(OpenAI, "sk"); err != nil {
+	if err := s.ConnectKey(OpenAI, "sk", ""); err != nil {
 		t.Fatal(err)
 	}
 	if st := s.Status(); st.Model != "gpt-6-luna" || !s.Ready() {
@@ -727,5 +732,169 @@ func TestConnectAdoptsDefaultModel(t *testing.T) {
 	s.ListModels()
 	if st := s.Status(); st.Model != "gpt-6-sol" {
 		t.Fatalf("chosen model replaced: %+v", st)
+	}
+}
+
+func TestNormalizeBaseURL(t *testing.T) {
+	got, err := normalizeBaseURL(" https://proxy.example/v1/ ")
+	if err != nil || got != "https://proxy.example/v1" {
+		t.Fatalf("trim %q %v", got, err)
+	}
+	got, err = normalizeBaseURL("http://[::1]:8080/v1//")
+	if err != nil || got != "http://[::1]:8080/v1" {
+		t.Fatalf("ipv6 %q %v", got, err)
+	}
+	for _, bad := range []string{"", "   ", "ftp://example.com/v1", "https://", "example.com/v1",
+		"https://user:pass@example.com/v1", "https://example.com/v1?x=1", "https://example.com/v1#frag", "/v1"} {
+		if _, err := normalizeBaseURL(bad); err == nil {
+			t.Fatalf("accepted %q", bad)
+		}
+	}
+}
+
+// A fixed provider keeps Republic's endpoint. A base URL passed beside its
+// key is not stored and is not the host that lists models.
+func TestOfficialProviderIgnoresBaseURL(t *testing.T) {
+	var bodies []map[string]any
+	srv := keyServer(t, "sk-good", &bodies)
+	defer srv.Close()
+	secrets := &memorySecrets{}
+	s := newTestService(secrets, srv.URL)
+	if err := s.ConnectKey(OpenAI, "sk-good", "https://evil.example/v1/"); err != nil {
+		t.Fatal(err)
+	}
+	if c := secrets.credential(t); c.Provider != OpenAI || c.APIKey != "sk-good" || c.BaseURL != "" {
+		t.Fatalf("stored %+v", c)
+	}
+	// Anthropic authenticates with x-api-key, so this fake refuses it. The
+	// refusal still has to come from the fake, not from the passed address.
+	if err := s.ConnectKey(Anthropic, "sk-good", "https://other.example/v1"); CodeOf(err) != CodeRejected {
+		t.Fatalf("anthropic: %v", err)
+	}
+	if st := s.Status(); st.Provider != OpenAI || st.Failure != CodeRejected || st.FailureProvider != Anthropic {
+		t.Fatalf("status %+v", st)
+	}
+	if _, err := secrets.Get(credentialAccountFor(Anthropic)); err != account.ErrNotFound {
+		t.Fatalf("anthropic stored: %v", err)
+	}
+}
+
+// Compatible providers list models and polish at the credential base. Provider
+// environment variables must not move that host.
+func TestCompatibleEndpointUsesCredentialBase(t *testing.T) {
+	t.Setenv("REPUBLIC_OPENAI_API_BASE", "http://127.0.0.1:1")
+	t.Setenv("REPUBLIC_OPENAI_API_KEY", "from-env")
+	t.Setenv("REPUBLIC_ANTHROPIC_API_BASE", "http://127.0.0.1:1")
+	t.Setenv("REPUBLIC_ANTHROPIC_API_KEY", "from-env")
+	type hit struct {
+		method, path, query, auth, key, version string
+	}
+	var mu sync.Mutex
+	var hits []hit
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		if r.Method == http.MethodGet && len(body) != 0 {
+			t.Errorf("model list sent a body")
+		}
+		mu.Lock()
+		hits = append(hits, hit{r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("Authorization"), r.Header.Get("x-api-key"), r.Header.Get("anthropic-version")})
+		mu.Unlock()
+		if r.Method == http.MethodGet {
+			_, _ = io.WriteString(w, `{"data":[{"id":"served-model"}]}`)
+			return
+		}
+		_ = json.NewEncoder(w).Encode(thinkingOffResponse(r.URL.Path))
+	}))
+	defer srv.Close()
+	for _, tc := range []struct {
+		provider, wantAuth string
+		polish             string
+	}{
+		{OpenAICompatible, "Bearer sk-custom", "/v1/chat/completions"},
+		{AnthropicCompatible, "", "/v1/messages"},
+	} {
+		t.Run(tc.provider, func(t *testing.T) {
+			mu.Lock()
+			hits = nil
+			mu.Unlock()
+			secrets := &memorySecrets{}
+			s := newTestService(secrets, "")
+			if err := s.ConnectKey(tc.provider, "  sk-custom ", srv.URL+"/v1/"); err != nil {
+				t.Fatal(err)
+			}
+			c := secrets.credential(t)
+			if c.Provider != tc.provider || c.APIKey != "sk-custom" || c.BaseURL != srv.URL+"/v1" {
+				t.Fatalf("stored %+v", c)
+			}
+			raw, err := secrets.Get(credentialAccountFor(tc.provider))
+			if err != nil || !strings.Contains(raw, `"baseUrl":"`+srv.URL+"/v1"+`"`) {
+				t.Fatalf("json %s %v", raw, err)
+			}
+			mu.Lock()
+			listed := append([]hit(nil), hits...)
+			mu.Unlock()
+			if len(listed) != 1 || listed[0].method != http.MethodGet || listed[0].path != "/v1/models" {
+				t.Fatalf("list %+v", listed)
+			}
+			if tc.provider == OpenAICompatible && listed[0].auth != tc.wantAuth {
+				t.Fatalf("openai auth %q", listed[0].auth)
+			}
+			if tc.provider == AnthropicCompatible && (listed[0].key != "sk-custom" || !strings.Contains(listed[0].query, "limit=1000")) {
+				t.Fatalf("anthropic list %+v", listed[0])
+			}
+			s.SetModel("served-model")
+			res, err := s.Rewrite(context.Background(), ports.RewriteRequest{Text: "今天天气很好。", Scene: "chat", Punctuation: "omit"})
+			if err != nil || res.Text != "今天天气很好。" {
+				t.Fatalf("rewrite %+v %v", res, err)
+			}
+			mu.Lock()
+			polished := append([]hit(nil), hits...)
+			mu.Unlock()
+			if len(polished) < 2 || polished[len(polished)-1].path != tc.polish {
+				t.Fatalf("polish %+v", polished)
+			}
+			if tc.provider == AnthropicCompatible && polished[len(polished)-1].version == "" {
+				t.Fatal("anthropic polish missing version header")
+			}
+			again := newTestService(secrets, "")
+			again.Load()
+			if st := again.Status(); st.Phase != Connected || st.Provider != tc.provider || st.Model != "served-model" {
+				t.Fatalf("reloaded %+v", st)
+			}
+			mu.Lock()
+			hits = nil
+			mu.Unlock()
+			again.ListModels()
+			mu.Lock()
+			relisted := append([]hit(nil), hits...)
+			mu.Unlock()
+			if len(relisted) != 1 || relisted[0].path != "/v1/models" {
+				t.Fatalf("reload list %+v", relisted)
+			}
+		})
+	}
+}
+
+func TestBadCompatibleAddressIsNotStored(t *testing.T) {
+	var bodies []map[string]any
+	srv := keyServer(t, "sk-good", &bodies)
+	defer srv.Close()
+	secrets := &memorySecrets{}
+	s := newTestService(secrets, srv.URL)
+	if err := s.ConnectKey(OpenAI, "sk-good", ""); err != nil {
+		t.Fatal(err)
+	}
+	puts := secrets.puts
+	for _, bad := range []string{"", "notaurl", "ftp://example.com/v1", "https://example.com/v1?x=1"} {
+		if err := s.ConnectKey(OpenAICompatible, "sk-custom", bad); CodeOf(err) != CodeAddress {
+			t.Fatalf("%q: %v", bad, err)
+		}
+	}
+	st := s.Status()
+	if st.Phase != Connected || st.Provider != OpenAI || st.Failure != CodeAddress || st.FailureProvider != OpenAICompatible || secrets.puts != puts {
+		t.Fatalf("status %+v puts %d", st, secrets.puts)
+	}
+	if _, err := secrets.Get(credentialAccountFor(OpenAICompatible)); err != account.ErrNotFound {
+		t.Fatalf("address stored: %v", err)
 	}
 }

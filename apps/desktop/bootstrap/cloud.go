@@ -85,6 +85,6 @@ func (x actions) ListCloudModels() {
 	x.a.state.Cloud.Listing = true
 	go x.a.cloud.ListModels()
 }
-func (x actions) ConnectCloudKey(provider, key string) {
-	go func() { _ = x.a.cloud.ConnectKey(provider, key) }()
+func (x actions) ConnectCloudKey(provider, key, baseURL string) {
+	go func() { _ = x.a.cloud.ConnectKey(provider, key, baseURL) }()
 }

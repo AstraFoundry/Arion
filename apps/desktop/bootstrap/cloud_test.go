@@ -18,6 +18,7 @@ import (
 	"arion.local/desktop/infrastructure/keystore"
 	"arion.local/desktop/infrastructure/rewriting"
 	"arion.local/desktop/infrastructure/settings"
+	"arion.local/desktop/ui/shared/config"
 	arion "arion.local/desktop/ui/shared/runtime"
 )
 
@@ -90,10 +91,19 @@ func TestPolishRouterFollowsEngine(t *testing.T) {
 	}
 }
 
-// The UI lists the providers the cloud service connects.
+// The UI lists the providers the cloud service connects, including which
+// ones ask for a base URL.
 func TestCloudProvidersMatchUI(t *testing.T) {
 	if !slices.Equal(arion.CloudKeyProviders, cloudpolish.KeyProviders) || arion.CloudChatGPT != cloudpolish.ChatGPT {
 		t.Fatalf("UI %v, service %v", arion.CloudKeyProviders, cloudpolish.KeyProviders)
+	}
+	for _, id := range append([]string{cloudpolish.ChatGPT}, cloudpolish.KeyProviders...) {
+		if config.CloudProviders[id] == "" {
+			t.Fatalf("missing display name %s", id)
+		}
+		if cloudpolish.NeedsBase(id) != arion.CloudNeedsBase(id) {
+			t.Fatalf("base URL requirement %s", id)
+		}
 	}
 }
 

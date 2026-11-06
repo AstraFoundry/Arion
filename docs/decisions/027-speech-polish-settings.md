@@ -16,12 +16,12 @@ Cloud setup had three levels: Model › Cloud model › provider › model. Open
 
 - The section is **Speech & Polish** (**识别与润色**). Its ID stays `model`, so links that focus it keep working. The page follows the text's path: **Recognition**; **Polish** (the switch, Runs on, then the local status or the Cloud model row); **Formatting** (Punctuation, Match the app); **Context**. Formatting and Context show only while polishing runs.
 - Cloud setup has two levels:
-  - The list shows the provider **In use** first, with its account or key, its **Model** and Disconnect. Then come **Subscriptions** (ChatGPT) and **API keys** (OpenAI, Anthropic, Google Gemini, DeepSeek, OpenRouter).
+  - The list shows the provider **In use** first, with its account or key, its **Model** and Disconnect. Then come **Subscriptions** (ChatGPT) and **API keys** (OpenAI, Anthropic, Google Gemini, DeepSeek, OpenRouter, OpenAI compatible, Anthropic compatible). A compatible row asks for a base URL and an API key.
   - A provider's page holds its sign-in or key form, or, for a saved provider, **Use**.
   - Opening a page never changes the provider in use. A saved provider is switched to only by its **Use** button, on its row or its page. Connecting a new provider is itself the action: it becomes the provider in use, and the page returns to the list.
 - A provider connected without a chosen model starts on its fast tier, matched against its own model list (`cloudpolish.DefaultModel`):
-  - GPT Luna, else mini, for ChatGPT and OpenAI.
-  - Claude Haiku.
+  - GPT Luna, else mini, for ChatGPT, OpenAI, and OpenAI compatible.
+  - Claude Haiku for Anthropic and Anthropic compatible.
   - DeepSeek Flash, else `deepseek-chat`.
   - Gemini Flash-Lite, else Flash.
   - The same tiers under their vendor prefixes on OpenRouter.

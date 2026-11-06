@@ -13,9 +13,11 @@ const (
 	CodeNoSubscription Code = "NO_SUBSCRIPTION"
 	// CodeRejected: the provider refused the key or the sign-in expired.
 	CodeRejected Code = "REJECTED"
-	CodeNetwork  Code = "NETWORK"
-	CodeStore    Code = "SECURE_STORE"
-	CodeModels   Code = "MODELS"
+	// CodeAddress: a compatible provider's base URL is missing or not http(s).
+	CodeAddress Code = "ADDRESS"
+	CodeNetwork Code = "NETWORK"
+	CodeStore   Code = "SECURE_STORE"
+	CodeModels  Code = "MODELS"
 )
 
 // Error carries a Code and its cause, which may hold provider text and is

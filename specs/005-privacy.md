@@ -12,7 +12,7 @@
 | Usage counts | Per-day numbers in `usage.json`: sessions, speaking time, words and words per rewrite scene; no text, app, host or time of day | Local Overview is always available; only explicitly consented, signed-in daily aggregates may be reported as PRV-10 |
 | Group/device keys and auth tokens | OS credential store | Never logs/config/export without explicit protected flow |
 | Models | Per-user verified model cache | Public artifact downloads only; no speech payload |
-| Cloud polishing credential | One OS credential item: an API key, or the ChatGPT refresh token, account ID and email | Never logs/config/export/sync; deleted on disconnect |
+| Cloud polishing credential | One OS credential item per provider: an API key, or the ChatGPT refresh token, account ID and email, plus the model last chosen. An OpenAI-compatible or Anthropic-compatible item also stores its base URL | Never logs/config/export/sync; deleted on disconnect |
 | App updates | Signed archive replaces the installed app | Channel manifest and archive downloads from the Arion center (`api.arion.astrafoundry.si`) only; no content payload; checks can be turned off |
 | Product notifications | OS-authorized signed-in inbox; title/body in transient memory; private account-hashed cold-action ledger | Account service holds targeted notice/receipt metadata; OS receives bounded notice text; no speech, tokens or notice bodies in diagnostics/ledger; no quit-time push |
 | Performance diagnostics | Local content-free metrics | No remote telemetry enabled by this foundation |

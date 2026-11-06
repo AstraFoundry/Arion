@@ -100,7 +100,13 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 				if p.flow.Direction == 0 {
 					enter = &ui.Motion{Y: 10}
 				}
-				ui.Column(c.Key(step)).Fill().Padding(8, Inset).Gap(24).Justify(ui.Center).AlignItems(ui.Start).
+				// The provider list is taller than the step. Start it at the
+				// top and let it scroll; other steps stay centered.
+				justify := ui.Center
+				if step == onboarding.Polish && p.cloudOpen {
+					justify = ui.Start
+				}
+				ui.Column(c.Key(step)).Fill().Padding(8, Inset).Gap(24).Justify(justify).AlignItems(ui.Start).
 					Transition(ui.ElementTransition{Animation: &theme.Page, Enter: enter, Exit: &ui.Motion{Scale: 0.98}}).
 					Children(func() { p.step(c, store, tokens, step) })
 			})
@@ -261,9 +267,13 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 		})
 	case onboarding.Polish:
 		if p.cloudOpen {
-			ui.Text(c.Key("cloud-title"), cloud.Title(store, &p.cloud)).FontSize(theme.Title + 4).FontWeight(650).ContentTransition(ui.ContentTransition{})
-			ui.Column(c.Key("cloud-" + p.cloud.Provider)).Width(Content).Gap(2 * theme.GapRelated).Transition(ui.ElementTransition{Animation: &theme.Page, Enter: &ui.Motion{Y: 8}}).
-				Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
+			ui.Column(c).Grow(1).Width(Content).Gap(2 * theme.GapRelated).Children(func() {
+				ui.Text(c.Key("cloud-title"), cloud.Title(store, &p.cloud)).FontSize(theme.Title + 4).FontWeight(650).ContentTransition(ui.ContentTransition{})
+				ui.Scroll(c.Key("cloud-scroll")).Grow(1).Children(func() {
+					ui.Column(c.Key("cloud-" + p.cloud.Provider)).Width(Content).Gap(2 * theme.GapRelated).Transition(ui.ElementTransition{Animation: &theme.Page, Enter: &ui.Motion{Y: 8}}).
+						Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
+				})
+			})
 			return
 		}
 		heading(c, tokens, messages.Text(copy.OnbPolishTitle), messages.Text(copy.OnbPolishBody))

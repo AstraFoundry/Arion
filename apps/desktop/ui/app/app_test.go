@@ -76,8 +76,11 @@ func (r *recorder) SetUsageSharing(share bool) {
 	r.call(map[bool]string{true: "usage:share", false: "usage:private"}[share])
 }
 func (r *recorder) ListCloudModels() { r.call("cloud-models") }
-func (r *recorder) ConnectCloudKey(provider, key string) {
+func (r *recorder) ConnectCloudKey(provider, key, baseURL string) {
 	r.call("cloud-key:" + provider + ":" + key)
+	if baseURL != "" {
+		r.call("cloud-base:" + baseURL)
+	}
 }
 func (r *recorder) Quit() { r.call("quit") }
 func (r *recorder) RemoveReplacement(id string) {
