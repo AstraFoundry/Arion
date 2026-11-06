@@ -1,12 +1,14 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { authorAvatars, getPost, postSlugs } from "@/entities/post";
+import { testimonialAvatars } from "@/entities/testimonial";
 import { LOCALES } from "@/shared/i18n";
 import { PROJECT_ASSET_BASE, PROJECT_ASSET_TYPES } from "@/shared/lib/server";
 import { postMediaRefs, postPeopleLogins } from "@/widgets/post-article";
 
 // Repository files that blog posts name by a project path, and their authors'
-// GitHub avatars and those of the people the posts name, written into the static export at
+// GitHub avatars and those of the people the posts name, and the X avatars of
+// the home page testimonials, written into the static export at
 // /blog-assets/<content hash>/<name>. Built once, never served live.
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -16,7 +18,7 @@ interface AssetParams {
   name: string;
 }
 
-/** Every project file and author avatar any post names, by its published URL. */
+/** Every project file and avatar the site shows, by its published URL. */
 async function blogAssets(): Promise<Map<string, () => Uint8Array>> {
   const assets = new Map<string, () => Uint8Array>();
   for (const slug of postSlugs()) {
@@ -32,6 +34,7 @@ async function blogAssets(): Promise<Map<string, () => Uint8Array>> {
       for (const [url, bytes] of await authorAvatars(people)) assets.set(url, () => bytes);
     }
   }
+  for (const [url, bytes] of await testimonialAvatars()) assets.set(url, () => bytes);
   return assets;
 }
 

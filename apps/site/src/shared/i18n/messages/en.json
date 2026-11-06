@@ -16,9 +16,7 @@
     "language": "Language",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "githubLabel": "Arion on GitHub",
-    "account": "AstraFoundry account",
-    "hostedSyncWaitlist": "Hosted sync waitlist"
+    "githubLabel": "Arion on GitHub"
   },
   "nav": {
     "label": "Main",
@@ -26,8 +24,8 @@
     "privacy": "Privacy",
     "selfHosting": "Self-hosting",
     "openSource": "Open source",
-    "account": "Account",
-    "terms": "Terms of Use"
+    "terms": "Terms of Use",
+    "community": "Community"
   },
   "hero": {
     "title": "Voice input that never leaves your computer",
@@ -114,32 +112,18 @@
       "english": "A"
     }
   },
-  "privacy": {
-    "title": "Signing in never unlocks your words",
-    "lead": "Arion works without an account. When encrypted sync arrives, an AstraFoundry account only decides whether you may use the hosted relay. Reading your data takes keys that only your devices hold.",
-    "points": [
-      {
-        "title": "On the device",
-        "body": "Audio lives in memory for the current dictation and is never written to disk or sent. Your vocabulary is encrypted with AES-256-GCM under a key kept in Keychain or DPAPI."
-      },
-      {
-        "title": "On the relay",
-        "body": "Sync encrypts each record before it leaves the device. The relay, hosted or your own, stores ciphertext and the routing metadata it needs to deliver it."
-      },
-      {
-        "title": "If you lose every device",
-        "body": "Without one of your devices or your recovery key, synced data cannot be decrypted. Recovering your account does not recover it."
-      }
-    ],
-    "more": "How Arion handles your data"
-  },
   "openSource": {
-    "title": "Read it, build it, run your own relay",
-    "lead": "Arion is licensed under {license}. The desktop app and the sync relay live in one repository, and hosted and self-hosted sync share the same relay core.",
+    "title": "Build it with us",
+    "lead": "Arion is open source under {license}. Fork the repository, fix what bothers you or build the feature you want, and open a pull request. Bug reports and ideas in Issues count too.",
     "buildTitle": "Build from source",
     "buildNote": "Desktop builds need macOS, Go 1.27 and pnpm 10.",
-    "selfHosting": "Self-hosting guide",
-    "waitlist": "Join the hosted sync waitlist"
+    "issues": "Browse issues"
+  },
+  "testimonials": {
+    "title": "What people say",
+    "pause": "Pause scrolling",
+    "play": "Resume scrolling",
+    "profile": "{name} on X"
   },
   "download": {
     "title": "Download Arion",
@@ -159,6 +143,13 @@
     "copyChecksum": "Copy SHA-256 checksum",
     "checksumCopied": "Checksum copied",
     "failed": "Release details could not be loaded. The download buttons still work."
+  },
+  "community": {
+    "title": "Join the community",
+    "lead": "Ask questions, report what works and what doesn't, and hear about new releases first.",
+    "discord": "Discord",
+    "feishu": "Feishu group",
+    "x": "X (@AstraFoundry)"
   },
   "blog": {
     "title": "Blog",
@@ -266,8 +257,7 @@
     ],
     "source": "Follow the relay in the repository",
     "hostedTitle": "Rather not run a server?",
-    "hostedBody": "AstraFoundry will run the same relay as a hosted service.",
-    "hostedLink": "Join the hosted sync waitlist"
+    "hostedBody": "AstraFoundry will run the same relay as a hosted service."
   },
   "creditsPage": {
     "title": "Credits",
@@ -281,6 +271,7 @@
     "product": "Product",
     "project": "Project",
     "astraFoundry": "AstraFoundry",
+    "organizationSite": "AstraFoundry website",
     "source": "Source code",
     "issues": "Report a bug",
     "license": "License",

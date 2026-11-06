@@ -67,15 +67,6 @@ export function SiteHeader() {
           <LocaleSwitch className="hidden lg:block" />
           <ThemeSwitch />
           <LinkButton
-            href={siteConfig.accountUrl}
-            variant="ghost"
-            size="sm"
-            title={copy.common.account}
-            className="hidden sm:inline-flex"
-          >
-            {copy.nav.account}
-          </LinkButton>
-          <LinkButton
             href={downloadHref}
             size="sm"
             className="ml-1 hidden sm:inline-flex"
@@ -121,10 +112,7 @@ export function SiteHeader() {
               <li className="mt-2 px-1">
                 <LocaleList />
               </li>
-              <li className="mt-2 flex gap-2 px-1">
-                <LinkButton href={siteConfig.accountUrl} variant="secondary" className="flex-1">
-                  {copy.common.account}
-                </LinkButton>
+              <li className="mt-2 flex px-1">
                 <LinkButton href={downloadHref} className="flex-1">
                   {copy.common.download}
                 </LinkButton>

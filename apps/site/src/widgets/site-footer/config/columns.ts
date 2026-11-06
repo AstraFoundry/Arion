@@ -1,4 +1,4 @@
-import { routes, sections, anchor, siteConfig, downloadHref } from "@/shared/config";
+import { anchor, communityChannels, downloadHref, routes, sections, siteConfig } from "@/shared/config";
 import type { Messages } from "@/shared/i18n";
 
 export interface FooterColumn {
@@ -31,9 +31,15 @@ export function footerColumns(copy: Messages): FooterColumn[] {
     {
       title: copy.footer.astraFoundry,
       links: [
-        { label: copy.common.account, href: siteConfig.accountUrl },
-        { label: copy.common.hostedSyncWaitlist, href: siteConfig.hostedSyncWaitlistUrl },
+        { label: copy.footer.organizationSite, href: siteConfig.organizationSiteUrl },
       ],
+    },
+    {
+      title: copy.nav.community,
+      links: communityChannels.map((channel) => ({
+        label: copy.community[channel],
+        href: siteConfig.community[channel],
+      })),
     },
   ];
 }

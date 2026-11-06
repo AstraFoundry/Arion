@@ -13,8 +13,16 @@
   }
 }
 
+/* Moves a track that holds its items twice by one copy's width, then repeats. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @theme inline {
   --animate-caret: caret 1.1s steps(2, start) infinite;
+  --animate-marquee: marquee var(--marquee-duration, 60s) linear infinite;
 }
 
 @layer base {

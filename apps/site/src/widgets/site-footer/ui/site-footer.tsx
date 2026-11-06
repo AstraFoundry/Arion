@@ -17,7 +17,7 @@ export function SiteFooter() {
           <p className="max-w-xs text-sm text-muted-foreground">{copy.footer.tagline}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
           {footerColumns(copy).map((column) => (
             <div key={column.title}>
               <h2 className="text-sm font-medium text-foreground">{column.title}</h2>

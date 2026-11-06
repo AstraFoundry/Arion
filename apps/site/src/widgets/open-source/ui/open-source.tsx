@@ -1,4 +1,4 @@
-import { buildCommands, routes, sections, siteConfig } from "@/shared/config";
+import { buildCommands, sections, siteConfig } from "@/shared/config";
 import { format, useCopy } from "@/shared/i18n";
 import { Container, GitHubMark, LinkButton, Reveal } from "@/shared/ui";
 
@@ -23,16 +23,10 @@ export function OpenSource() {
               <GitHubMark className="size-4" />
               {copy.common.viewSource}
             </LinkButton>
-            <LinkButton href={routes.selfHosting} variant="inverse">
-              {openSource.selfHosting}
+            <LinkButton href={siteConfig.issuesUrl} variant="inverse">
+              {openSource.issues}
             </LinkButton>
           </div>
-          <a
-            href={siteConfig.hostedSyncWaitlistUrl}
-            className="w-fit rounded-sm text-sm text-substrate-ink underline decoration-substrate-line underline-offset-4 transition-colors hover:decoration-substrate-ink"
-          >
-            {openSource.waitlist}
-          </a>
         </div>
 
         <Reveal className="overflow-hidden rounded-2xl border border-substrate-edge bg-substrate-surface">

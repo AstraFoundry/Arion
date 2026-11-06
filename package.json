@@ -31,6 +31,7 @@
     "keyboard:stage": "node scripts/stage-keyboard-runtime.mjs",
     "contributors:update": "node scripts/update-contributors.mjs",
     "blog-authors:update": "node scripts/update-blog-authors.mjs",
+    "testimonials:update": "node scripts/update-testimonials.mjs",
     "keyboard:check": "node scripts/check-keyboard.mjs",
     "keyboard:publisher:check": "node scripts/test-ime-publisher.mjs",
     "keyboard:vocabulary:check": "node scripts/test-ime-publisher.mjs --vocabulary",

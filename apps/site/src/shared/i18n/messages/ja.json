@@ -16,9 +16,7 @@
     "language": "言語",
     "openMenu": "メニューを開く",
     "closeMenu": "メニューを閉じる",
-    "githubLabel": "GitHub の Arion",
-    "account": "AstraFoundry アカウント",
-    "hostedSyncWaitlist": "ホスト型同期のウェイトリスト"
+    "githubLabel": "GitHub の Arion"
   },
   "nav": {
     "label": "メイン",
@@ -26,8 +24,8 @@
     "privacy": "プライバシー",
     "selfHosting": "セルフホスト",
     "openSource": "オープンソース",
-    "account": "アカウント",
-    "terms": "利用規約"
+    "terms": "利用規約",
+    "community": "コミュニティ"
   },
   "hero": {
     "title": "コンピューターから​出ていかない​音声入力",
@@ -114,32 +112,18 @@
       "english": "A"
     }
   },
-  "privacy": {
-    "title": "サインインしても、内容は読めません",
-    "lead": "Arion はアカウントなしで使えます。暗号化同期の提供後も、AstraFoundry アカウントが決めるのはホスト型リレーを使えるかどうかだけです。データを読むための鍵は、あなたのデバイスにしかありません。",
-    "points": [
-      {
-        "title": "デバイス上",
-        "body": "音声は入力中のあいだだけメモリに置かれ、ディスクに書き込まれることも送信されることもありません。語彙は AES-256-GCM で暗号化され、鍵はキーチェーンまたは DPAPI に保管されます。"
-      },
-      {
-        "title": "リレー上",
-        "body": "同期では、各レコードがデバイスを出る前に暗号化されます。リレーはホスト型でも自前でも、暗号文と配送に必要なルーティング用メタデータだけを保存します。"
-      },
-      {
-        "title": "すべてのデバイスを失ったら",
-        "body": "あなたのデバイスも復旧キーもなければ、同期したデータは復号できません。アカウントを復旧しても、データは戻りません。"
-      }
-    ],
-    "more": "Arion のデータの扱い方"
-  },
   "openSource": {
-    "title": "読めて、ビルドできて、リレーも自分で動かせる",
-    "lead": "Arion は {license} でライセンスされています。デスクトップアプリと同期リレーは同じリポジトリにあり、ホスト型とセルフホストの同期は同じリレーのコアを使います。",
+    "title": "一緒に作りましょう",
+    "lead": "Arion は {license} のオープンソースです。リポジトリを fork して、気になる不具合を直したり欲しい機能を作ったりしたら、Pull Request を送ってください。Issues でのバグ報告やアイデアも歓迎です。",
     "buildTitle": "ソースからビルド",
     "buildNote": "デスクトップ版のビルドには macOS、Go 1.27、pnpm 10 が必要です。",
-    "selfHosting": "セルフホストガイド",
-    "waitlist": "ホスト型同期のウェイトリストに登録"
+    "issues": "Issues を見る"
+  },
+  "testimonials": {
+    "title": "ユーザーの声",
+    "pause": "スクロールを一時停止",
+    "play": "スクロールを再開",
+    "profile": "X の {name}"
   },
   "download": {
     "title": "Arion をダウンロード",
@@ -159,6 +143,13 @@
     "copyChecksum": "SHA-256 チェックサムをコピー",
     "checksumCopied": "チェックサムをコピーしました",
     "failed": "リリース情報を読み込めませんでした。ダウンロードボタンは引き続き使えます。"
+  },
+  "community": {
+    "title": "コミュニティに参加",
+    "lead": "質問や使い心地のフィードバックを送れて、新しいリリースもいち早く届きます。",
+    "discord": "Discord",
+    "feishu": "Feishu グループ",
+    "x": "X (@AstraFoundry)"
   },
   "blog": {
     "title": "ブログ",
@@ -266,8 +257,7 @@
     ],
     "source": "リポジトリでリレーの進捗を見る",
     "hostedTitle": "サーバーを運用したくない場合は",
-    "hostedBody": "AstraFoundry が同じリレーをホスト型サービスとして運用します。",
-    "hostedLink": "ホスト型同期のウェイトリストに登録"
+    "hostedBody": "AstraFoundry が同じリレーをホスト型サービスとして運用します。"
   },
   "creditsPage": {
     "title": "クレジット",
@@ -281,6 +271,7 @@
     "product": "プロダクト",
     "project": "プロジェクト",
     "astraFoundry": "AstraFoundry",
+    "organizationSite": "AstraFoundry 公式サイト",
     "source": "ソースコード",
     "issues": "不具合を報告",
     "license": "ライセンス",

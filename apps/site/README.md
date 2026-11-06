@@ -10,6 +10,7 @@ Run from the repository root with the pinned pnpm (`make install` first):
 | --- | --- |
 | `pnpm site:check` / `make site-check` | Dictionary completeness, typecheck, lint, unit tests, static export |
 | `pnpm site:build` / `make build site` | Dictionary check and static export into `apps/site/out` |
+| `pnpm testimonials:update` / `make testimonials-update` | Refreshes the cached X names and avatars in `content/testimonials` (commit the result) |
 | `pnpm site:assets` / `make site-assets` | Regenerates `public/backdrops`, `public/brand` and `public/og.jpg` from repository sources |
 | `pnpm site:deploy` / `make site-deploy` | `wrangler deploy`; Make builds first, pnpm deploys the existing export (needs Cloudflare credentials in the shell; none are stored here) |
 
@@ -26,7 +27,7 @@ Three build-time variables, inlined into the bundle (`src/shared/config/env.ts`)
 | Variable | Production value | Used for |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | `https://arion.astrafoundry.si` | Canonical URLs, hreflang, sitemap, robots, Open Graph |
-| `NEXT_PUBLIC_PLATFORM_URL` | `https://astrafoundry.si` | The AstraFoundry account link (`/account`) and the hosted sync waitlist link (`/products/arion/waitlist/hosted-sync`) |
+| `NEXT_PUBLIC_PLATFORM_URL` | `https://astrafoundry.si` | The footer's AstraFoundry website link |
 | `NEXT_PUBLIC_CENTER_URL` | `https://api.arion.astrafoundry.si` | Download buttons (`/v1/downloads/<channel>/<target>`) and the browser read of the channel summaries (`/v1/releases/{stable,beta}`) |
 
 `.env.production` holds the production values; `.env.example` documents them. Override them in the environment for a preview build. The site only links to the platform; it never calls it and never reads a session. The download section is the one runtime request: the browser reads the center's public channel summaries to show versions and checksums ([services/updates](../../services/updates/README.md)).
@@ -39,7 +40,7 @@ Three build-time variables, inlined into the bundle (`src/shared/config/env.ts`)
 - `public/backdrops/tour-<chapter>-800.webp`, one 4:5 crop per feature-tour chapter. Two chapters crop `gladiolus.jpg`; the other three use their own photograph in `assets/backdrops/`.
 - `public/blog/<slug>/cover.webp`, a 4:3 cover for each post, from the same directory.
 - Every photograph is credited on `/credits/`. These files are separate from the desktop app's backdrop.
-- `public/brand/*.png`, and the mark composited onto `public/og.jpg`, from `apps/desktop/resources/icon.png`.
+- `public/brand/*.png`, and the mark composited onto `public/og.jpg`, from `apps/desktop/resources/icon.png`; `public/brand/feishu.png` is copied from `apps/desktop/ui/shared/assets/feishu.png` (source and terms in that directory's README).
 
 ## Temporary vendored design code
 

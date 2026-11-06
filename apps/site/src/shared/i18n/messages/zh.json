@@ -16,9 +16,7 @@
     "language": "语言",
     "openMenu": "打开菜单",
     "closeMenu": "关闭菜单",
-    "githubLabel": "GitHub 上的 Arion",
-    "account": "AstraFoundry 账号",
-    "hostedSyncWaitlist": "托管同步候补名单"
+    "githubLabel": "GitHub 上的 Arion"
   },
   "nav": {
     "label": "主导航",
@@ -26,8 +24,8 @@
     "privacy": "隐私",
     "selfHosting": "自托管",
     "openSource": "开源",
-    "account": "账号",
-    "terms": "使用条款"
+    "terms": "使用条款",
+    "community": "社区"
   },
   "hero": {
     "title": "语音输入，​从不离开​你的电脑",
@@ -114,32 +112,18 @@
       "english": "英"
     }
   },
-  "privacy": {
-    "title": "登录，不等于能读你的内容",
-    "lead": "Arion 不需要账号也能用。加密同步上线后，AstraFoundry 账号只决定你能否使用托管中继；读取数据需要的密钥只在你的设备上。",
-    "points": [
-      {
-        "title": "在设备上",
-        "body": "音频只在本次听写期间留在内存中，不写入磁盘，也不发送。词汇表用 AES-256-GCM 加密，密钥保存在钥匙串或 DPAPI 中。"
-      },
-      {
-        "title": "在中继上",
-        "body": "同步会在每条记录离开设备前加密。中继无论是托管的还是你自己的，都只保存密文和投递所需的路由元数据。"
-      },
-      {
-        "title": "如果所有设备都丢了",
-        "body": "没有任何一台你的设备，也没有恢复密钥，同步的数据就无法解密。找回账号也找不回数据。"
-      }
-    ],
-    "more": "Arion 如何处理你的数据"
-  },
   "openSource": {
-    "title": "读代码，自己构建，自己跑中继",
-    "lead": "Arion 采用 {license} 许可。桌面应用和同步中继在同一个仓库里，托管同步和自托管同步共用同一个中继核心。",
+    "title": "一起来贡献",
+    "lead": "Arion 以 {license} 开源。Fork 仓库，修掉你在意的问题、做出你想要的功能，再提一个 Pull Request。在 Issues 里报告 bug、提想法，同样是贡献。",
     "buildTitle": "从源代码构建",
     "buildNote": "构建桌面应用需要 macOS、Go 1.27 和 pnpm 10。",
-    "selfHosting": "自托管指南",
-    "waitlist": "加入托管同步候补名单"
+    "issues": "查看 Issues"
+  },
+  "testimonials": {
+    "title": "用户怎么说",
+    "pause": "暂停滚动",
+    "play": "继续滚动",
+    "profile": "{name} 的 X 主页"
   },
   "download": {
     "title": "下载 Arion",
@@ -159,6 +143,13 @@
     "copyChecksum": "复制 SHA-256 校验值",
     "checksumCopied": "已复制校验值",
     "failed": "无法加载版本信息，下载按钮仍可使用。"
+  },
+  "community": {
+    "title": "加入社区",
+    "lead": "提问、反馈好用和不好用的地方，第一时间收到新版本消息。",
+    "discord": "Discord",
+    "feishu": "飞书群",
+    "x": "X (@AstraFoundry)"
   },
   "blog": {
     "title": "博客",
@@ -266,8 +257,7 @@
     ],
     "source": "在仓库中关注中继进展",
     "hostedTitle": "不想自己维护服务器？",
-    "hostedBody": "AstraFoundry 会以托管服务的形式运行同一个中继。",
-    "hostedLink": "加入托管同步候补名单"
+    "hostedBody": "AstraFoundry 会以托管服务的形式运行同一个中继。"
   },
   "creditsPage": {
     "title": "致谢",
@@ -281,6 +271,7 @@
     "product": "产品",
     "project": "项目",
     "astraFoundry": "AstraFoundry",
+    "organizationSite": "AstraFoundry 官网",
     "source": "源代码",
     "issues": "反馈问题",
     "license": "许可证",
