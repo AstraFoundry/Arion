@@ -312,7 +312,42 @@ func (c *Coordinator) composing(r *run) bool {
 	return r.session.Mode() == domain.SystemIMEMode && c.deps.Composition != nil && r.hasTarget
 }
 
+// prepare opens the microphone first and moves to Capturing as soon as audio
+// flows, because that is the moment the user may speak. Frames queue while
+// the target lookup and recognizer setup finish; the pump then feeds them to
+// the recognizer in order, so nothing said during setup is lost. A setup
+// failure or cancellation discards the queued audio unprocessed.
 func (c *Coordinator) prepare(r *run, needTarget bool) {
+	started := time.Now()
+	stream, err := c.deps.Audio.Start(r.ctx, r.identity, func(frame contracts.Frame) {
+		if r.overflow.Load() {
+			return
+		}
+		select {
+		case r.frames <- frame:
+		default:
+			// SPH-02: never conceal dropped audio.
+			if !r.overflow.Swap(true) {
+				c.spawn(func() { c.fail(r, domain.CodeAudioDiscontinuity) })
+			}
+		}
+	})
+	c.diagnostic(r, ports.DiagnosticCapture, started, err)
+	if err != nil {
+		c.failErr(r, err, domain.CodeDeviceUnavailable)
+		return
+	}
+	c.mu.Lock()
+	r.stream = stream
+	if c.current != r || r.session.Terminal() {
+		c.mu.Unlock()
+		r.stopAudio()
+		return
+	}
+	_ = r.session.Advance(domain.Capturing)
+	c.mu.Unlock()
+	c.emitState(r, domain.Capturing)
+
 	if needTarget {
 		provider, _ := c.targets(r)
 		if provider == nil {
@@ -341,7 +376,7 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 		l.policy.Scene = string(domain.DecideScene(hints, l.policy.SceneOverrides).Scene)
 	}
 	c.startContext(r)
-	started := time.Now()
+	started = time.Now()
 	if c.opts.Hotwords != nil {
 		r.hotwords = append([]string(nil), c.opts.Hotwords()...)
 	}
@@ -351,38 +386,14 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 		c.failErr(r, err, domain.CodeModelMissing)
 		return
 	}
-	r.recognizer = recognizer
-	started = time.Now()
-	stream, err := c.deps.Audio.Start(r.ctx, r.identity, func(frame contracts.Frame) {
-		if r.overflow.Load() {
-			return
-		}
-		select {
-		case r.frames <- frame:
-		default:
-			// SPH-02: never conceal dropped audio.
-			if !r.overflow.Swap(true) {
-				c.spawn(func() { c.fail(r, domain.CodeAudioDiscontinuity) })
-			}
-		}
-	})
-	c.diagnostic(r, ports.DiagnosticCapture, started, err)
-	if err != nil {
-		_ = recognizer.Close()
-		c.failErr(r, err, domain.CodeDeviceUnavailable)
-		return
-	}
 	c.mu.Lock()
-	r.stream = stream
 	if c.current != r || r.session.Terminal() {
 		c.mu.Unlock()
-		r.stopAudio()
 		_ = recognizer.Close()
 		return
 	}
-	_ = r.session.Advance(domain.Capturing)
+	r.recognizer = recognizer
 	c.mu.Unlock()
-	c.emitState(r, domain.Capturing)
 	if r.live != nil {
 		c.spawn(func() { c.liveWorker(r) })
 	}
