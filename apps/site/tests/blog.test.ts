@@ -4,16 +4,21 @@ import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
-import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   parseFrontmatter,
   type PostMeta,
   sortNewestFirst,
   translationMismatch,
 } from "@/entities/post/model/post";
-import { authorAvatars, getAuthors } from "@/entities/post/api/authors";
+import { authorAvatars, getAuthors, setAuthorCacheDirectory } from "@/entities/post/api/authors";
+import { getPost, postSlugs } from "@/entities/post/api/posts";
+import { LOCALES } from "@/shared/i18n";
+import { postPeopleLogins } from "@/widgets/post-article/lib/markdown";
 import { mediaSize, PROJECT_ASSET_BASE, resolveMedia } from "@/shared/lib/server";
 import {
   rehypeFigures,
@@ -241,62 +246,107 @@ describe("media resolution", () => {
 
 describe("post authors", () => {
   const avatar = readFileSync(path.resolve("public/og.jpg"));
-  const user = (login: string, name: string | null) => ({
-    login,
-    name,
-    html_url: `https://github.com/${login}`,
-    avatar_url: `https://avatars.githubusercontent.com/u/1?v=4`,
-  });
+  const cacheRoot = path.resolve("content/authors");
+  let directory: string | undefined;
 
-  function github(users: Record<string, ReturnType<typeof user>>) {
-    return vi.fn(async (input: string | URL, init?: RequestInit) => {
-      const url = new URL(input);
-      if (url.host === "avatars.githubusercontent.com") {
-        return new Response(avatar, { headers: { "Content-Type": "image/jpeg" } });
-      }
-      const found = users[url.pathname.replace("/users/", "").toLowerCase()];
-      const headers = new Headers(init?.headers);
-      if (!headers.get("Accept")?.includes("github")) return new Response("", { status: 400 });
-      return found ? Response.json(found) : new Response("", { status: 404 });
+  function writeCache(
+    authors: {
+      login: string;
+      name?: string;
+      profileUrl?: string;
+      bytes: Buffer;
+      fileName?: string;
+      avatarSHA256?: string;
+    }[],
+  ) {
+    if (directory) rmSync(directory, { recursive: true, force: true });
+    const dir = mkdtempSync(path.join(tmpdir(), "arion-authors-"));
+    directory = dir;
+    const entries = authors.map((author) => {
+      const fileName = author.fileName ?? `${author.login}.jpg`;
+      writeFileSync(path.join(dir, fileName), author.bytes);
+      return {
+        login: author.login,
+        name: author.name ?? author.login,
+        profileUrl: author.profileUrl ?? `https://github.com/${author.login}`,
+        avatar: fileName,
+        avatarSHA256: author.avatarSHA256 ?? createHash("sha256").update(author.bytes).digest("hex"),
+      };
     });
+    writeFileSync(path.join(dir, "authors.json"), `${JSON.stringify({ authors: entries }, null, 2)}\n`);
+    setAuthorCacheDirectory(dir);
   }
 
-  it("reads each profile once and publishes its avatar by content hash", async () => {
-    const fetchMock = github({ ada: user("Ada", "Ada Lovelace"), lena: user("lena", null) });
-    vi.stubGlobal("fetch", fetchMock);
-    try {
-      const authors = await getAuthors(["ada", "lena"]);
-      expect(authors).toEqual([
-        {
-          login: "Ada",
-          name: "Ada Lovelace",
-          profileUrl: "https://github.com/Ada",
-          avatar: expect.stringMatching(new RegExp(`^${PROJECT_ASSET_BASE}[0-9a-f]{12}/ada\\.jpg$`)),
-        },
-        expect.objectContaining({ login: "lena", name: "lena" }),
-      ]);
-      expect(fetchMock.mock.calls.map(([url]) => String(url))).toContain(
-        "https://avatars.githubusercontent.com/u/1?v=4&s=64",
-      );
-
-      await getAuthors(["ADA"]);
-      expect(fetchMock).toHaveBeenCalledTimes(4);
-      const [[url, bytes]] = await authorAvatars(["ada"]);
-      expect(url).toBe(authors[0].avatar);
-      expect(bytes).toEqual(new Uint8Array(avatar));
-    } finally {
-      vi.unstubAllGlobals();
-    }
+  afterEach(() => {
+    setAuthorCacheDirectory(cacheRoot);
+    if (directory) rmSync(directory, { recursive: true, force: true });
+    directory = undefined;
+    vi.unstubAllGlobals();
   });
 
-  it("fails the build for an unknown login or a rate limit", async () => {
-    vi.stubGlobal("fetch", github({}));
+  it("reads each cached profile once and publishes its avatar by content hash", async () => {
+    writeCache([
+      { login: "Ada", name: "Ada Lovelace", bytes: avatar },
+      { login: "lena", bytes: avatar },
+    ]);
+    const fetchMock = vi.fn(async () => {
+      throw new TypeError("fetch failed");
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const authors = await getAuthors(["ada", "lena"]);
+    expect(authors).toEqual([
+      {
+        login: "Ada",
+        name: "Ada Lovelace",
+        profileUrl: "https://github.com/Ada",
+        avatar: expect.stringMatching(new RegExp(`^${PROJECT_ASSET_BASE}[0-9a-f]{12}/ada\\.jpg$`)),
+      },
+      expect.objectContaining({ login: "lena", name: "lena" }),
+    ]);
+    await getAuthors(["ADA"]);
+    const [[url, bytes]] = await authorAvatars(["ada"]);
+    expect(url).toBe(authors[0].avatar);
+    expect(bytes).toEqual(new Uint8Array(avatar));
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("fails the build for a missing login, a missing cache, or an avatar hash mismatch", async () => {
+    writeCache([{ login: "ada", bytes: avatar }]);
+    await expect(getAuthors(["nobody"])).rejects.toThrow(/Blog author "nobody".*blog-authors:update/);
+
+    const empty = mkdtempSync(path.join(tmpdir(), "arion-authors-empty-"));
     try {
-      await expect(getAuthors(["nobody"])).rejects.toThrow(/Blog author "nobody": .*HTTP 404/);
-      vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 403 })));
-      await expect(getAuthors(["limited"])).rejects.toThrow(/GITHUB_TOKEN/);
+      setAuthorCacheDirectory(empty);
+      await expect(getAuthors(["ada"])).rejects.toThrow(/authors\.json is missing/);
     } finally {
-      vi.unstubAllGlobals();
+      rmSync(empty, { recursive: true, force: true });
     }
+
+    writeCache([{ login: "ada", bytes: avatar, avatarSHA256: "0".repeat(64) }]);
+    await expect(getAuthors(["ada"])).rejects.toThrow(/does not match authors\.json/);
+  });
+
+  it("resolves every login the posts name from the committed cache", async () => {
+    setAuthorCacheDirectory(cacheRoot);
+    const fetchMock = vi.fn(async () => {
+      throw new TypeError("fetch failed");
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const logins = new Set<string>();
+    for (const slug of postSlugs()) {
+      for (const locale of LOCALES) {
+        const post = getPost(slug, locale);
+        for (const login of post.authors) logins.add(login);
+        for (const login of await postPeopleLogins(post.body, post.file)) logins.add(login);
+      }
+    }
+    expect(logins.size).toBeGreaterThan(0);
+    const authors = await getAuthors([...logins]);
+    expect(authors.map((author) => author.login.toLowerCase()).sort()).toEqual(
+      [...logins].map((login) => login.toLowerCase()).sort(),
+    );
+    expect(await authorAvatars([...logins])).toHaveLength(logins.size);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

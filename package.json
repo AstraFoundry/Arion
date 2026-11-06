@@ -30,6 +30,7 @@
     "rewrite:e2e": "node tools/driver/cli.mjs e2e --suite tests/e2e/contextual-rewrite-scenarios.json",
     "keyboard:stage": "node scripts/stage-keyboard-runtime.mjs",
     "contributors:update": "node scripts/update-contributors.mjs",
+    "blog-authors:update": "node scripts/update-blog-authors.mjs",
     "keyboard:check": "node scripts/check-keyboard.mjs",
     "keyboard:publisher:check": "node scripts/test-ime-publisher.mjs",
     "keyboard:vocabulary:check": "node scripts/test-ime-publisher.mjs --vocabulary",

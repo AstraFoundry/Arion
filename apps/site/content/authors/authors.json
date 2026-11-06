@@ -1,0 +1,104 @@
+{
+  "source": "https://api.github.com/users/{login}",
+  "avatarPx": 64,
+  "authors": [
+    {
+      "login": "AllenWriter",
+      "name": "AllenWriter",
+      "profileUrl": "https://github.com/AllenWriter",
+      "avatar": "AllenWriter.png",
+      "avatarSHA256": "c7d5a60e89a5e85ed504ad6a2574335ccb4151b9b0a0b46ef17abfa2c25efe9f"
+    },
+    {
+      "login": "alterxyz",
+      "name": "Alter-xyz",
+      "profileUrl": "https://github.com/alterxyz",
+      "avatar": "alterxyz.jpg",
+      "avatarSHA256": "417512a8c78caf5e7c14858360117430def6d74a558d73f523ae6ad550714afc"
+    },
+    {
+      "login": "gavi102803",
+      "name": "gavi102803",
+      "profileUrl": "https://github.com/gavi102803",
+      "avatar": "gavi102803.jpg",
+      "avatarSHA256": "0dd06697713e055ab9ce6fd602e153af01dc555b2a32eacf6ca97de45fe6c3b3"
+    },
+    {
+      "login": "hagemon",
+      "name": "hagemon",
+      "profileUrl": "https://github.com/hagemon",
+      "avatar": "hagemon.jpg",
+      "avatarSHA256": "c6d7609f36d23413f79bbd0824a7afff1a56c9a00e477aa12fb86687dfca30eb"
+    },
+    {
+      "login": "HereOrCode",
+      "name": "Tom",
+      "profileUrl": "https://github.com/HereOrCode",
+      "avatar": "HereOrCode.png",
+      "avatarSHA256": "2f654b87b34eb1e41d7ea6323ab3759d5296c4c7883f16944dfe29ca5985ba30"
+    },
+    {
+      "login": "jackeyzzz12138",
+      "name": "jack1e",
+      "profileUrl": "https://github.com/jackeyzzz12138",
+      "avatar": "jackeyzzz12138.jpg",
+      "avatarSHA256": "f66dec23ce8aebc1950aecf97fd648979d4b87bc580174972f83f292fce5ed2f"
+    },
+    {
+      "login": "jackwener",
+      "name": "jakevin",
+      "profileUrl": "https://github.com/jackwener",
+      "avatar": "jackwener.jpg",
+      "avatarSHA256": "79ae75b78b43f10ffd4876267ee5d8b1f22c034e9c103d2ce3c525dbbf80b89f"
+    },
+    {
+      "login": "lcandy2",
+      "name": "citron",
+      "profileUrl": "https://github.com/lcandy2",
+      "avatar": "lcandy2.jpg",
+      "avatarSHA256": "12e9776007c53f782cc8b867c7900aa8e6ebdcab6f60eecba32b033b6ba5f6f5"
+    },
+    {
+      "login": "lexrus",
+      "name": "Lex Tang",
+      "profileUrl": "https://github.com/lexrus",
+      "avatar": "lexrus.jpg",
+      "avatarSHA256": "858d6a2d6bf05d17322f09de5f7f53f890452ea86c60cb89aa97645bf483fb3e"
+    },
+    {
+      "login": "liangchen-harold",
+      "name": "liangchen-harold",
+      "profileUrl": "https://github.com/liangchen-harold",
+      "avatar": "liangchen-harold.jpg",
+      "avatarSHA256": "185b3c4df1dbafd491fb8c662259132e864d64bb67b40150cae70ad17da722d7"
+    },
+    {
+      "login": "stvlynn",
+      "name": "Steven Lynn",
+      "profileUrl": "https://github.com/stvlynn",
+      "avatar": "stvlynn.jpg",
+      "avatarSHA256": "b7b4cff3f813802e544c34f8317cb4d9a40b98f7ad60b85ff5362c355f72a955"
+    },
+    {
+      "login": "tplog",
+      "name": "Tplog",
+      "profileUrl": "https://github.com/tplog",
+      "avatar": "tplog.jpg",
+      "avatarSHA256": "ab8dc44eb78c38a38022ce93c9ecc04dbd97fa21a15bc2c6eb276086dffd68d1"
+    },
+    {
+      "login": "zachary23kai-max",
+      "name": "zachary23kai-max",
+      "profileUrl": "https://github.com/zachary23kai-max",
+      "avatar": "zachary23kai-max.png",
+      "avatarSHA256": "e36dddc051172ebd19c2342af281e4b3fc14dfc2d400931019106163c7849981"
+    },
+    {
+      "login": "zacharyhaha",
+      "name": "zachary",
+      "profileUrl": "https://github.com/zacharyhaha",
+      "avatar": "zacharyhaha.png",
+      "avatarSHA256": "06c35f5dcb2ea32d7ff1610f37c067e6b397fb5a9ac48b70cd81290c95810eba"
+    }
+  ]
+}

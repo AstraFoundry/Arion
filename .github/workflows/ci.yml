@@ -114,9 +114,6 @@ jobs:
       - name: Marketing site (dictionaries, types, lint, tests, static export)
         if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'
         run: pnpm site:check
-        env:
-          # Blog author profiles are read from the GitHub API at build time.
-          GITHUB_TOKEN: ${{ github.token }}
 
   # Docs-only pull requests skip Mac and Windows. Main and release skip this job and still run native.
   scope:
