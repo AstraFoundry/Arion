@@ -1,4 +1,4 @@
-// Pull-request path gate for the native shell. Main and release always run it.
+// Pull-request path gates. Main and release keep the complete checks.
 import { execFileSync, spawnSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 import path from 'node:path';
@@ -10,6 +10,28 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // including desktop, IME, Go modules, scripts, and workflow files, runs native.
 const documentationPrefixes = ['apps/site/', 'docs/'];
 const documentationFiles = new Set(['README.md', 'README.zh-CN.md', 'README.ja.md']);
+
+// The site has no shared source-package imports. Its code, content and assets
+// live under apps/site; root package/toolchain and CI changes can affect builds.
+const siteBuildFiles = new Set([
+  'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', '.npmrc', '.pnpmfile.cjs',
+  '.nvmrc', '.node-version', 'scripts/require-pnpm.mjs', 'scripts/build.mjs',
+  'scripts/update-blog-authors.mjs',
+  'scripts/ci-native-scope.mjs', 'scripts/ci-required-checks.mjs',
+  'scripts/lib/ci-native-scope.test.mjs', 'scripts/lib/ci-required-checks.test.mjs',
+]);
+
+export function siteChecksRequired(files) {
+  if (!Array.isArray(files) || files.length === 0) return true;
+  return files.some(file => {
+    if (typeof file !== 'string') return true;
+    const normalized = file.replaceAll('\\', '/');
+    if (!normalized || normalized.startsWith('/') || normalized.split('/').includes('..')) return true;
+    return normalized === 'apps/site' || normalized.startsWith('apps/site/') ||
+      normalized.startsWith('.github/workflows/') || normalized.startsWith('.github/actions/') ||
+      normalized.startsWith('patches/') || siteBuildFiles.has(normalized);
+  });
+}
 
 export function isDocumentationOnlyPath(file) {
   if (typeof file !== 'string') return false;
@@ -55,7 +77,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   if (!base) throw new Error('ci-native-scope.mjs requires BASE_SHA.');
   const files = changedFiles(base);
   const native = nativeShellRequired(files);
-  const line = `native=${native}\ntests=${portableTestsRequired(files)}\n`;
+  const line = `native=${native}\ntests=${portableTestsRequired(files)}\nsite=${siteChecksRequired(files)}\n`;
   if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, line);
   console.log(line.trim());
 }
