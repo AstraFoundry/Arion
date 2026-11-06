@@ -63,6 +63,11 @@ type Preferences struct {
 	// CloudModel is the model ID chosen for cloud polishing, among those the
 	// connected provider lists. Credentials are never preferences.
 	CloudModel string `json:"cloudModel,omitempty"`
+	// CloudReasoning lets cloud polishing retry with the least reasoning a
+	// model accepts when the model refuses to turn reasoning off. It is off
+	// by default: polishing keeps reasoning disabled to stay fast, so a model
+	// that requires reasoning fails instead of slowing every dictation.
+	CloudReasoning bool `json:"cloudReasoning,omitempty"`
 	// MatchApp lets polishing follow the focused app, field and web site
 	// (email, work chat, coding prompt, search) instead of always writing
 	// plain chat text. Profiles written before it existed load the default.
