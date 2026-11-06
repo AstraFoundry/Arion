@@ -1,3 +1,25 @@
+## 0.1.3
+
+### English
+
+Update for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Add OpenAI-compatible and Anthropic-compatible cloud providers. Enter a Base URL and an API key, then choose a model from that provider's list. The official OpenAI and Anthropic entries stay unchanged. A proxy that does not publish a model list still cannot connect.
+- Fix DeepSeek connections that fail while loading the model list.
+- On macOS, reuse a stopped capture device between dictation sessions instead of creating a new device each time.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable. Model weights download separately. Multi-device sync, Windows edit-learning, clean-machine acceptance, production old-to-new update acceptance, and real-service cloud and translation acceptance remain open. This tag stages the release and opens a GitHub draft; it does not publish the stable update channel. See RELEASE-STATUS.md and SHA256SUMS.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的更新版本。
+
+- 新增兼容 OpenAI 与兼容 Anthropic 的云端服务商。填写 Base URL 和 API 密钥后，从该服务商的模型列表中选择模型。官方 OpenAI 与 Anthropic 条目保持不变。不提供模型列表的代理仍无法连接。
+- 修复 DeepSeek 在加载模型列表时无法连接的问题。
+- 在 macOS 上，听写会话之间复用已停止的采集设备，不再每次重新创建。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证。Windows 仍无发布者签名。模型权重单独下载。多设备同步、Windows 纠错学习、全新机器验收、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。此标签会暂存发布并创建 GitHub 草稿，不会发布稳定更新渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.2
 
 ### English
