@@ -28,7 +28,7 @@ export interface PostMeta {
   date: string;
   /** Day of the last substantive revision, `YYYY-MM-DD`; never before `date`. */
   updated?: string;
-  /** GitHub logins, in byline order; profiles are read at build time. */
+  /** GitHub logins, in byline order; profiles come from the committed author cache. */
   authors: string[];
   tags: string[];
   category: PostCategory;
@@ -38,7 +38,7 @@ export interface PostMeta {
   draft: boolean;
 }
 
-/** A post author's public GitHub profile, as the build read it. */
+/** A post author's public GitHub profile from the committed author cache. */
 export interface PostAuthor {
   login: string;
   /** The profile's display name, or the login when the profile has none, as GitHub shows it. */

@@ -53,6 +53,8 @@ jobs:
   portable:
     needs: scope
     if: ${{ !cancelled() && (needs.scope.result == 'success' || needs.scope.result == 'skipped') }}
+    outputs:
+      site-result: ${{ steps.site-check.outcome }}
     timeout-minutes: 45
     runs-on: ${{ fromJSON(vars.LOCAL_CI_ENABLED == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && '["self-hosted","Linux","ARM64","af-arion-linux"]' || '["ubuntu-latest"]') }}
     steps:
@@ -112,11 +114,9 @@ jobs:
       - if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'
         run: pnpm notifications:check
       - name: Marketing site (dictionaries, types, lint, tests, static export)
-        if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'
+        id: site-check
+        if: github.event_name != 'pull_request' || needs.scope.outputs.site != 'false'
         run: pnpm site:check
-        env:
-          # Blog author profiles are read from the GitHub API at build time.
-          GITHUB_TOKEN: ${{ github.token }}
 
   # Docs-only pull requests skip Mac and Windows. Main and release skip this job and still run native.
   scope:
@@ -126,6 +126,7 @@ jobs:
     outputs:
       native: ${{ steps.decision.outputs.native }}
       tests: ${{ steps.decision.outputs.tests }}
+      site: ${{ steps.decision.outputs.site }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -402,6 +403,8 @@ jobs:
           NATIVE: ${{ needs.native-shell.result }}
           NATIVE_OUTPUT: ${{ needs.scope.outputs.native }}
           TESTS_OUTPUT: ${{ needs.scope.outputs.tests }}
+          SITE_OUTPUT: ${{ needs.scope.outputs.site }}
+          SITE_RESULT: ${{ needs.portable.outputs.site-result }}
           WINDOWS_UPDATER: ${{ needs.windows-updater.result }}
           WINDOWS_REQUIRED: ${{ contains(inputs.native-matrix || 'windows-amd64', 'windows-amd64') }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}

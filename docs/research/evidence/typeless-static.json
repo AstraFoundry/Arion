@@ -624,5 +624,429 @@
       "match_count": 2,
       "evidence_type": "inert-source literal, not executed callgraph"
     }
-  ]
+  ],
+  "audio_lifecycle_followup": {
+    "scope": "Source-bound static lifecycle follow-up; no competitor execution or latency measurement",
+    "artifact": {
+      "source_url": "https://typeless-static.com/desktop-release/Typeless-2.8.1-arm64.dmg",
+      "version": "2.8.1",
+      "build": "2.8.1.130",
+      "dmg_sha256": "c0b0331f08659d46959117ed7270c0dcd91a6275b1bb6227d9b3d1b9538b147b",
+      "app_asar_sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b",
+      "matches_previous_installed_asar": true
+    },
+    "rea": {
+      "cli_version": "6.4.0",
+      "evidence_id": "ev_f369db9ec9464c91957871f4105951aea032c636ef9f3dfe688b01fbe690661d",
+      "operation": "analyze_javascript_application",
+      "root_artifact_sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b",
+      "statistics": {
+        "relevant_files": 10497,
+        "nested_asar_containers": 0,
+        "text_bytes_read": 145353457,
+        "invalid_utf8_files": 0,
+        "parsed_javascript_files": 6007,
+        "visited_ast_nodes": 8889930,
+        "findings": 35367,
+        "modules": 6,
+        "parse_failures": 3
+      },
+      "graph_coverage": "partial",
+      "semantic_graph_coverage": "partial",
+      "complete_record_local_path": ".workspace/research/typeless-audio/rea-application.json"
+    },
+    "members": [
+      {
+        "member": "dist/renderer/floating-bar.html",
+        "sha256": "5e7757c3db1a77c7f1a25b4f3d135a94ca58bfd309fb36604faea66998204c51",
+        "anchors": [
+          {
+            "literal": "qA149QP2.mjs",
+            "byte_offsets": [
+              782
+            ]
+          }
+        ]
+      },
+      {
+        "member": "dist/renderer/static/js/UfR9-a2Z.js",
+        "sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+        "anchors": [
+          {
+            "literal": "class dd",
+            "byte_offsets": [
+              302806
+            ]
+          },
+          {
+            "literal": "const dt=new dd()",
+            "byte_offsets": [
+              304114
+            ]
+          },
+          {
+            "literal": "['ensureAudioCaptureWorkletModuleLoaded']()",
+            "byte_offsets": [
+              303256,
+              303633
+            ]
+          },
+          {
+            "literal": "['getAudioCaptureWorkletNode']()",
+            "byte_offsets": [
+              303583,
+              381965,
+              386548
+            ]
+          },
+          {
+            "literal": "['releaseAudioCaptureWorkletNode']()",
+            "byte_offsets": [
+              303890,
+              392596
+            ]
+          },
+          {
+            "literal": "class Sf",
+            "byte_offsets": [
+              378766
+            ]
+          },
+          {
+            "literal": "async['startRecording']",
+            "byte_offsets": [
+              384507
+            ]
+          },
+          {
+            "literal": "this['mediaStream']=await navigator['mediaDevices']['getUserMedia']",
+            "byte_offsets": [
+              385239
+            ]
+          },
+          {
+            "literal": "async['stopRecording']",
+            "byte_offsets": [
+              388545
+            ]
+          },
+          {
+            "literal": "async['stopRecordingSession']",
+            "byte_offsets": [
+              389953
+            ]
+          },
+          {
+            "literal": "['pauseRecording']()",
+            "byte_offsets": [
+              390318,
+              391705
+            ]
+          },
+          {
+            "literal": "['resumeRecording']()",
+            "byte_offsets": [
+              390491
+            ]
+          },
+          {
+            "literal": "async['switchDevice']",
+            "byte_offsets": [
+              391073
+            ]
+          },
+          {
+            "literal": "['reset']()",
+            "byte_offsets": [
+              71097,
+              79317,
+              95548,
+              95620,
+              95862,
+              96989,
+              97107,
+              98398,
+              347613,
+              389547,
+              391728,
+              392582
+            ]
+          },
+          {
+            "literal": "['cleanup']()",
+            "byte_offsets": [
+              279847,
+              392564
+            ]
+          },
+          {
+            "literal": "this['mediaStream']['getTracks']()['forEach'](_0x352936=>_0x352936['stop']())",
+            "byte_offsets": [
+              391850
+            ]
+          },
+          {
+            "literal": "['watchDeviceChanges']()",
+            "byte_offsets": [
+              381879,
+              382331
+            ]
+          },
+          {
+            "literal": "_d=async",
+            "byte_offsets": [
+              307279
+            ]
+          },
+          {
+            "literal": "dynamicMicrophoneDegradationEnabled",
+            "byte_offsets": [
+              308565,
+              308811
+            ]
+          },
+          {
+            "literal": "'channelCount':0x1",
+            "byte_offsets": [
+              380864
+            ]
+          },
+          {
+            "literal": "new AudioContext",
+            "byte_offsets": [
+              302959,
+              355897
+            ]
+          },
+          {
+            "literal": "'setSinkId'",
+            "byte_offsets": [
+              303114,
+              303150
+            ]
+          },
+          {
+            "literal": "'numberOfOutputs':0x0",
+            "byte_offsets": [
+              303832
+            ]
+          },
+          {
+            "literal": "this['audioSource']['connect'](_0x197d33)",
+            "byte_offsets": [
+              388263
+            ]
+          },
+          {
+            "literal": "this['audioSource']['disconnect']()",
+            "byte_offsets": [
+              389023,
+              390094,
+              391762
+            ]
+          },
+          {
+            "literal": "this['audioContext']['sampleRate']||Ut",
+            "byte_offsets": [
+              386485
+            ]
+          },
+          {
+            "literal": "'dynamicMicrophoneDegradationEnabled'",
+            "byte_offsets": [
+              308564,
+              308810
+            ]
+          },
+          {
+            "literal": "'device:is-lid-open'",
+            "byte_offsets": [
+              307660
+            ]
+          },
+          {
+            "literal": "['setInterval'](()=>{_0x145bc5();},fd)",
+            "byte_offsets": [
+              308649
+            ]
+          }
+        ]
+      },
+      {
+        "member": "dist/renderer/static/js/qA149QP2.mjs",
+        "sha256": "40723210d92894508ad2d8672f51023e5e5f43f259d43c85bc21b293c4c6e84a",
+        "anchors": [
+          {
+            "literal": "Ao=Ae(",
+            "byte_offsets": [
+              110264
+            ]
+          },
+          {
+            "literal": "new _0x4192e3",
+            "byte_offsets": [
+              110345
+            ]
+          },
+          {
+            "literal": "'RECORD.START'",
+            "byte_offsets": [
+              110858,
+              160349
+            ]
+          },
+          {
+            "literal": "'RECORD.STOP'",
+            "byte_offsets": [
+              110989,
+              160597
+            ]
+          },
+          {
+            "literal": "'RECORD.SWITCH_DEVICE'",
+            "byte_offsets": [
+              112230,
+              205196
+            ]
+          },
+          {
+            "literal": "'startRecording':te",
+            "byte_offsets": [
+              160281
+            ]
+          },
+          {
+            "literal": "'stopRecording':te",
+            "byte_offsets": [
+              160442
+            ]
+          },
+          {
+            "literal": "'PRIMARY_KEY.DOWN':{'target':'initializingForTapOrHold'",
+            "byte_offsets": [
+              172887,
+              182655,
+              183068
+            ]
+          },
+          {
+            "literal": "'initializingForTapOrHold':",
+            "byte_offsets": [
+              173338
+            ]
+          },
+          {
+            "literal": "'stopping':{'id'",
+            "byte_offsets": [
+              179654
+            ]
+          },
+          {
+            "literal": "'CLICK.CANCEL_BUTTON'",
+            "byte_offsets": [
+              178647,
+              179476,
+              199435
+            ]
+          },
+          {
+            "literal": "'SESSION.INTERRUPT_AND_RESET'",
+            "byte_offsets": [
+              147070,
+              160553,
+              171421
+            ]
+          },
+          {
+            "literal": "'permission:request'",
+            "byte_offsets": [
+              157725,
+              212234,
+              212334
+            ]
+          },
+          {
+            "literal": "'id':'audioRecorder'",
+            "byte_offsets": [
+              170507
+            ]
+          }
+        ]
+      },
+      {
+        "member": "dist/renderer/static/js/C7lI2ZxR.js",
+        "sha256": "16b410cfb49a6230243117417c87a4fe754e0b6b08db5dc83918ca54fd75d558",
+        "anchors": [
+          {
+            "literal": "SAMPLES_PER_MESSAGE",
+            "byte_offsets": [
+              109,
+              306,
+              1504,
+              1931,
+              2272,
+              2801
+            ]
+          },
+          {
+            "literal": "message?.type === 'recording:start'",
+            "byte_offsets": [
+              525
+            ]
+          },
+          {
+            "literal": "message?.type === 'recording:stop'",
+            "byte_offsets": [
+              628
+            ]
+          },
+          {
+            "literal": "process(",
+            "byte_offsets": [
+              2880
+            ]
+          }
+        ]
+      }
+    ],
+    "findings": [
+      {
+        "id": "TL-AUDIO-01",
+        "type": "direct-static",
+        "claim": "The floating-bar page loads qA149QP2.mjs; its recording machine invokes the recorder actor across idle and recording states. Primary-key initialization sends RECORD.START to Sf.startRecording. Native physical-key dispatch remains outside this recovered chain."
+      },
+      {
+        "id": "TL-AUDIO-02",
+        "type": "direct-static",
+        "claim": "Sf.startRecording requests a new getUserMedia stream and stores it on the recorder. Default input constraints request one channel, 16-bit samples and disabled echo cancellation, noise suppression and automatic gain control; no input sampleRate constraint is supplied."
+      },
+      {
+        "id": "TL-AUDIO-03",
+        "type": "direct-static",
+        "claim": "Finish, Escape/cancel, interruption and fatal-error paths enter stopping and send RECORD.STOP. stopRecording stops the worklet, disconnects the source and calls reset; reset calls stop on every stream track, clears the stream reference and clears PCM/timing state. This path does not retain the same active MediaStream across ordinary sessions."
+      },
+      {
+        "id": "TL-AUDIO-04",
+        "type": "direct-static",
+        "claim": "A module singleton creates an AudioContext requesting 16000 Hz and requests a none output sink when supported. It lazily caches the worklet module Promise and AudioWorkletNode. The capture worklet has one input and zero outputs. Normal stop/reset preserves these objects without calling AudioContext.close or suspend; recorder cleanup closes the worklet port and clears its node."
+      },
+      {
+        "id": "TL-AUDIO-05",
+        "type": "bounded-static",
+        "claim": "The inspected recorder constructor does not request microphone capture. The recovered worklet loader is lazy and is requested after getUserMedia in startRecording. The bounded recorder class contains no track.enabled toggle or AudioContext.close. Pause/resume methods exist, but no main recording-actor branch dispatches them; actual operating-system audio resource retention is unknown."
+      },
+      {
+        "id": "TL-AUDIO-06",
+        "type": "direct-static",
+        "claim": "Device settings forward RECORD.SWITCH_DEVICE; active switching stops the old stream and reacquires a stream with changed constraints while preserving session buffers. Devicechange enumeration adjusts record-start sound delay. Optional built-in preference polling checks lid, mute and volume before storing a preferred device ID. Per-session initialization checks microphone/accessibility permission through IPC."
+      }
+    ],
+    "limitations": [
+      "REA parsed inert packaged text; graph and semantic coverage are partial and expanded relationships are result-budget constrained. Direct byte anchors independently support the lifecycle findings; they are not execution traces.",
+      "Only the ASAR and Info.plist were extracted from the official DMG. Native companion bytes were not supplied to this follow-up; its native boundary coverage does not replace previous integrity-contradiction records.",
+      "Electron uses embedded Chromium and does not require an external browser. JavaScript object reuse does not establish reuse of a CoreAudio AudioUnit or an active physical microphone stream.",
+      "Actual first-sample latency, physical input rate, post-sleep AudioContext state, permission revocation during capture and native key-dispatch ordering remain unverified.",
+      "No native REA session was opened. Native engines and Wakaru recovery were unavailable on this Linux host; the Electron static application provider completed independently."
+    ]
+  }
 }

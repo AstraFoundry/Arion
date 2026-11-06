@@ -31,6 +31,7 @@ const (
 	DiagnosticAudioContext DiagnosticStage = "audio_context_init"
 	DiagnosticAudioSelect  DiagnosticStage = "audio_device_select"
 	DiagnosticAudioDevice  DiagnosticStage = "audio_device_init"
+	DiagnosticAudioReuse   DiagnosticStage = "audio_device_reuse"
 	DiagnosticAudioStart   DiagnosticStage = "audio_device_start"
 	DiagnosticAudioStop    DiagnosticStage = "audio_stop"
 	DiagnosticFinish       DiagnosticStage = "recognizer_finish"

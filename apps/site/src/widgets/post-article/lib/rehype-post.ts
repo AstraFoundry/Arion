@@ -257,7 +257,7 @@ export function collectPeopleLogins(tree: Root): string[] {
 
 /**
  * Replaces the logins on `<github-people>` and `<voice-quote>` with the
- * profiles GitHub returns at build time (as JSON in `people`), so the page
+ * profiles from the committed author cache (as JSON in `people`), so the page
  * shows names and avatars published with the site.
  */
 export function rehypeGitHubPeople(options: { resolve: (logins: string[]) => Promise<GitHubPerson[]> }) {

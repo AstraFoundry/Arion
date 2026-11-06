@@ -5,6 +5,15 @@ import (
 	"arion.local/desktop/ui/shared/runtime"
 )
 
+// resetCapture also retires stopped hardware so wake or renewed permission
+// starts from the current OS device configuration.
+func (a *App) resetCapture() {
+	a.resetHoldGesture()
+	a.core.Cancel()
+	a.stopMonitor()
+	a.runResource(a.mic.Reset)
+}
+
 // dictationMode samples the OS input source and native input capability at start.
 // The selected route remains owned by that session until it ends.
 func (a *App) dictationMode() domain.InputMode {

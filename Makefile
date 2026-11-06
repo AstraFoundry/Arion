@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 SUITE ?= tests/e2e/desktop-scenarios.json
 export SUITE DRIVER OUT
-.PHONY: build check contributors-update core-check desktop-check desktop-dev desktop-production desktop-status desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help hooks i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check
+.PHONY: blog-authors-update build check contributors-update core-check desktop-check desktop-dev desktop-production desktop-status desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help hooks i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check
 
 # Make treats the component as a second goal; validate before any recipes run.
 ifneq ($(filter build,$(MAKECMDGOALS)),)
@@ -139,6 +139,9 @@ keyboard-stage: ## Stage pinned offline Pinyin runtime, schemas, data and notice
 contributors-update: ## Refresh the contributors and avatars shown in Settings › About from GitHub
 	@pnpm contributors:update
 
+blog-authors-update: ## Refresh cached blog author profiles and avatars from GitHub
+	@pnpm blog-authors:update
+
 keyboard-check: ## Run actual macOS typing and encrypted learning checks in isolated fixtures
 	@pnpm keyboard:check
 
@@ -164,4 +167,4 @@ notifications-prepare: ## Build an isolated native notification consent probe
 	pnpm notifications:prepare
 
 
-.PHONY: build check contributors-update core-check desktop-check desktop-dev desktop-production desktop-status desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help hooks i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check
+.PHONY: blog-authors-update build check contributors-update core-check desktop-check desktop-dev desktop-production desktop-status desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help hooks i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check

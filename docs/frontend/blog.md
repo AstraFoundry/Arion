@@ -56,14 +56,16 @@ The index lists posts newest first: the newest as the lead, the rest as rows. A 
 
 ### Authors
 
-`authors` names GitHub accounts, in byline order: `authors: octocat` for one, `authors: octocat, ada-l` to add more (a YAML list, `[octocat, ada-l]`, is read the same way). Logins are case-insensitive. Nothing else is written by hand: the build reads each profile from the GitHub API (`GET /users/{login}`) and shows the profile's name, or the login when the profile has none, as GitHub does.
+`authors` names GitHub accounts, in byline order: `authors: octocat` for one, `authors: octocat, ada-l` to add more (a YAML list, `[octocat, ada-l]`, is read the same way). Logins are case-insensitive. The post does not store the display name or avatar. Those live in `apps/site/content/authors`: `authors.json` plus each avatar file. The build reads that cache. It shows the cached name, or the login when the profile had none, as GitHub does.
 
 | Where | Shows |
 | --- | --- |
 | Post header | Each author's avatar and name, linked to their GitHub profile, in an `<address>` byline |
 | Index lead and rows | Overlapping avatars and the names as one list ("Ada Lovelace and octocat") |
 
-The logins named by `<github-people>` and `<voice-quote>` are resolved the same way. Avatars are the coss `Avatar` and `AvatarGroup` (`shared/ui/avatar.tsx`); the initial shows until the image loads. Each avatar is downloaded at build time (64 px) and published under `/blog-assets/<content hash>/<login>.<ext>`, so readers' browsers never contact GitHub. An unknown login, an unreachable API or a rate-limited request fails the build. Anonymous builds may make 60 GitHub API requests an hour; set `GITHUB_TOKEN` (any token, no scopes needed) to raise the limit. Building behind an HTTP proxy needs `NODE_USE_ENV_PROXY=1`.
+The logins named by `<github-people>` and `<voice-quote>` are resolved the same way, including logins that appear only in a draft. Avatars are the coss `Avatar` and `AvatarGroup` (`shared/ui/avatar.tsx`); the initial shows until the image loads. Each cached avatar is requested at 64 px and is published under `/blog-assets/<content hash>/<login>.<ext>`, so readers' browsers never contact GitHub.
+
+`pnpm blog-authors:update` (or `make blog-authors-update`) refreshes the cache from `GET /users/{login}` and downloads each avatar. Run it when a post names a new login, then commit `apps/site/content/authors`. A login missing from the cache, an avatar whose bytes do not match the SHA-256 in `authors.json`, or an unsupported avatar type fails the build. The update command fails when GitHub is unreachable, the login does not exist, or the request is rate-limited. Anonymous updates may make 60 GitHub API requests an hour; set `GITHUB_TOKEN` (any token, no scopes needed) to raise the limit. Running the update behind an HTTP proxy needs `NODE_USE_ENV_PROXY=1`.
 
 ## Content
 
@@ -111,7 +113,7 @@ Embedded HTML files are post content, not site code: keep them self-contained, l
 
 | Path | Holds |
 | --- | --- |
-| `src/entities/post` | Front matter validation, translation checks, sorting (`model`); reading `content/blog` and author profiles from GitHub at build time (`api`, server-only) |
+| `src/entities/post` | Front matter validation, translation checks, sorting (`model`); reading `content/blog` and author profiles from `content/authors` at build time (`api`, server-only) |
 | `src/widgets/post-article` | The Markdown pipeline (unified: remark-gfm → rehype-raw → validation → figures → media resolution → media sizes → slugs → Shiki), the element-to-component map, embeds, and `prose.css` |
 | `src/widgets/post-list` | The index lead and post rows |
 | `src/pages/blog`, `src/pages/blog-post` | Page composition, head metadata (Open Graph `article`, Twitter card) and `BlogPosting` JSON-LD |
