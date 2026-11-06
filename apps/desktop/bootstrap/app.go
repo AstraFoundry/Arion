@@ -483,7 +483,12 @@ func (a *App) ready() {
 		a.rewriter.Disable()
 		a.keyboardModel.Disable()
 	})
-	mygo.App.OnQuit(func() { a.core.Cancel(); a.manager.Close() })
+	mygo.App.OnQuit(func() {
+		a.core.Cancel()
+		a.stopMonitor()
+		a.mic.Close()
+		a.manager.Close()
+	})
 	a.refreshPermissions()
 	a.state.InputMethod = arion.InputMethodUnsupported
 	if a.ime != nil {
@@ -533,8 +538,8 @@ func (a *App) ready() {
 	a.runResource(func() { a.activateModel(override, download) })
 	go a.pollPermissions()
 	go a.refreshDevicesAsync()
-	mygo.Power.OnSuspend(func() { a.record("power_suspend", nil); a.resetHoldGesture(); a.core.Cancel() })
-	mygo.Power.OnLockScreen(func() { a.record("screen_locked", nil); a.resetHoldGesture(); a.core.Cancel() })
+	mygo.Power.OnSuspend(func() { a.record("power_suspend", nil); a.resetCapture() })
+	mygo.Power.OnLockScreen(func() { a.record("screen_locked", nil); a.resetCapture() })
 	if !a.state.Preferences.OnboardingCompleted && !a.opts.SkipOnboarding {
 		a.openOnboarding()
 	} else if !a.scripted() {
@@ -713,6 +718,9 @@ func (a *App) refreshPermissions() bool {
 		InputMonitoring: a.platform.InputMonitoring(), ScreenRecording: a.platform.ScreenRecording()}
 	previous := a.state.Permissions
 	changed := next != previous
+	if previous.Microphone == arion.ConsentGranted && next.Microphone != arion.ConsentGranted {
+		a.resetCapture()
+	}
 	if changed && next.Microphone == arion.ConsentGranted && previous.Microphone != arion.ConsentGranted {
 		go a.refreshDevicesAsync()
 	}

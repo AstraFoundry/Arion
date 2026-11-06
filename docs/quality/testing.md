@@ -16,6 +16,12 @@ Go formatting commands use paths relative to each module so longer Windows workt
 
 Command references use Arion's Makefile and package scripts only for project-authored documentation. Frozen benchmark evidence retains its historical command context. Imported upstream Markdown listed as local source files in `scripts/keyboard-runtime.json` retains its upstream commands only while its bytes match the pinned SHA-256; changed notices fail the check. Link, JSON and project-command checks remain enabled.
 
+## Microphone device reuse
+
+From `apps/desktop`, run `go test -race -count=1 ./infrastructure/audio ./infrastructure/diagnostics` and `go test github.com/gen2brain/malgo -run TestResetCaptureIsolation -count=1`. The lifecycle tests exercise the production ownership and reuse orchestration with injected hardware: cold versus warm initialization counts, fresh frame identities/offsets, no idle delivery, cancellation during open/resume, endpoint changes, active/idle invalidation, native failures without retry and close with late lease cleanup. The dependency's C harness verifies actual miniaudio input-buffer and resampler isolation across sample rates without opening hardware.
+
+These checks do not establish macOS microphone readiness or indicator behavior. On a Mac, compare cold and repeated warm starts with the built-in mic and an external device. Verify the system microphone indicator turns off after stop, permission denial prevents capture, changing the system default or configured microphone uses the new endpoint, unplug/sleep/lock ends capture, a subsequent session has no prior PCM or filter tail, and quit releases all devices. Compare `audio_device_init`, `audio_device_reuse`, `audio_device_start` and total `audio_start`; cancelled attempts must be reported separately from successful readiness. A warm improvement cannot be reported as eliminating cold CoreAudio stalls. See [logging](../backend/logging.md).
+
 ## Windows candidate-page regression
 
 The native candidate-window fixture exercises the default page bound in [KBD-03](../../specs/007-ime-ranking.md) and an explicitly sized nine-candidate row. The TSF owned-editor fixture exposes `ITfCandidateListUIElement.GetPageIndex` results; selection and expanded-row tests use those actual page starts instead of assuming a fixed page size. It verifies a new profile and an explicit saved nine-candidate preference separately. These checks run under `pnpm keyboard:windows:check` on Windows.

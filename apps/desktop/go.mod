@@ -25,6 +25,7 @@ replace (
 	arion.local/core => ../../packages/core
 	arion.local/models => ../../models
 	github.com/egoist/mygo => ../../third_party/mygo
+	github.com/gen2brain/malgo => ../../third_party/malgo
 )
 
 tool github.com/egoist/mygo/cmd/mygo

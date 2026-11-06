@@ -31,6 +31,18 @@ The six module identities in the ledger come from REA; TL-* literal observations
 
 ## Reconstructed flow
 
+Here "browser audio" means Electron's embedded Chromium implementation, not a separately running browser. Typeless is a standalone desktop application.
+
+The audio lifecycle follow-up used the official arm64 2.8.1 DMG; its ASAR SHA-256 exactly matches the installed-Mac artifact above. REA CLI 6.4.0 produced Evidence `ev_f369db9ec9464c91957871f4105951aea032c636ef9f3dfe688b01fbe690661d`. Graph coverage remains partial, with three JavaScript parse failures. The [`audio_lifecycle_followup` ledger](evidence/typeless-static.json) separates REA coverage from independently inspected inert-source byte anchors:
+
+- The floating-bar recording actor survives ordinary recording sessions. Its start action calls the recorder's `startRecording`, which obtains a new `getUserMedia` stream and connects a new source node to the cached worklet. The inspected default constraints request mono, 16-bit samples, with echo cancellation, noise suppression and automatic gain disabled; they do not request a capture sample rate.
+- Normal finish, cancellation and interruption reach the stop path. It flushes the worklet, disconnects the source and resets the recorder, including `track.stop()` on all media tracks and clearing the stream reference. This path does not retain the same active microphone stream between sessions.
+- A module singleton constructs an AudioContext requesting 16 kHz and, when supported, requests a non-output sink. Its worklet module promise and node are cached lazily. The worklet has one input and zero outputs. Ordinary stop/reset does not close or suspend the AudioContext or release the worklet; actor cleanup releases the worklet. This is processing-resource reuse, not evidence of continuously running microphone capture or observed CoreAudio device caching.
+
+The follow-up did not execute Typeless, record audio or measure startup. Exact OS/backend resource lifetime, wake recovery and physical input sample rate remain unverified. The observed stop-side wait and flush timeout are not startup latency measurements.
+
+Chromium's public [`AUAudioInputStream` implementation](https://chromium.googlesource.com/chromium/src/+/6c219a3c720961c65fa80a59afbb8b873821f147/media/audio/apple/audio_low_latency_input.cc) separates `Open`, `Start`, `Stop` and `Close`: `Stop` calls `AudioOutputUnitStop`, resets the AudioUnit's render state with `AudioUnitReset`, clears its FIFO and detaches the sink; `Close` disposes the unit. This is evidence for that upstream component's lifecycle, not proof of the exact Chromium version shipped by Typeless or of Typeless's reuse policy. Arion's stopped-device reuse follows this general resource/session separation using its own native adapter; it does not execute or copy Typeless's bundled application code.
+
 ```mermaid
 flowchart LR
   K[Shortcut / native keyboard bridge] --> C[Focused target and context snapshot]
