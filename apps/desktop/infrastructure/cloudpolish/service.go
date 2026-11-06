@@ -112,7 +112,10 @@ type Service struct {
 	auth             *republic.TokenAuth
 	model            string
 	completionFormat string
-	cancel           context.CancelFunc
+	// reasoningFloor remembers, per provider and model, the lowest reasoning
+	// effort the model accepted when it refused "none".
+	reasoningFloor map[string]string
+	cancel         context.CancelFunc
 	// generation invalidates work started before a connect or disconnect.
 	generation uint64
 	// attempt is the provider begin started. end attributes a failure to it

@@ -3,6 +3,7 @@ package cloudpolish
 import (
 	"context"
 	"errors"
+	"strings"
 	"unicode/utf8"
 
 	"arion.local/core/domain"
@@ -68,14 +69,10 @@ func (s *Service) completeChat(ctx context.Context, chat *republic.ChatModel, re
 	if chat.Provider.Name != "codex" {
 		options["max_tokens"] = req.MaxTokens
 	}
-	// Republic translates none into each provider's off switch.
-	if !req.AllowThinking {
-		options["reasoning_effort"] = "none"
-	}
 	// Selection is validated by the shared bounded-choice protocol. Cloud
 	// models receive its JSON instruction in the prompt; native grammar fields
 	// are specific to llama.cpp and are never copied into provider requests.
-	response, err := chat.Chat(ctx, messages, options)
+	response, err := s.chatWithoutThinking(ctx, chat, messages, options, req.AllowThinking)
 	if err = s.settle(err, CodeNetwork); err != nil {
 		return engine.Result{}, err
 	}
@@ -83,6 +80,61 @@ func (s *Service) completeChat(ctx context.Context, chat *republic.ChatModel, re
 		return engine.Result{}, errors.New("completion is not UTF-8")
 	}
 	return engine.Result{Text: response.Text(), Truncated: response.FinishReason != "stop" || response.Refusal != ""}, nil
+}
+
+// reasoningEfforts are tried in order when thinking is off: Republic
+// translates none into each provider's off switch, and a model that cannot
+// disable reasoning refuses it, so the request falls back to the least
+// reasoning the model accepts.
+var reasoningEfforts = []string{"none", "minimal", "low"}
+
+// chatWithoutThinking sends the request with thinking off. A model that
+// refuses "none" because its reasoning is mandatory is retried with the next
+// effort, and the effort it accepted is reused for later requests.
+func (s *Service) chatWithoutThinking(ctx context.Context, chat *republic.ChatModel, messages []republic.Message, options republic.Options, allowThinking bool) (republic.Response, error) {
+	if allowThinking {
+		return chat.Chat(ctx, messages, options)
+	}
+	key := chat.Provider.Name + "/" + chat.Name
+	s.mu.Lock()
+	floor := s.reasoningFloor[key]
+	s.mu.Unlock()
+	start := 0
+	for i, effort := range reasoningEfforts {
+		if effort == floor {
+			start = i
+		}
+	}
+	var (
+		response republic.Response
+		err      error
+	)
+	for i := start; i < len(reasoningEfforts); i++ {
+		options["reasoning_effort"] = reasoningEfforts[i]
+		response, err = chat.Chat(ctx, messages, options)
+		if err == nil && i > 0 {
+			s.mu.Lock()
+			if s.reasoningFloor == nil {
+				s.reasoningFloor = map[string]string{}
+			}
+			s.reasoningFloor[key] = reasoningEfforts[i]
+			s.mu.Unlock()
+		}
+		if err == nil || !reasoningMandatory(err) {
+			break
+		}
+	}
+	return response, err
+}
+
+// reasoningMandatory reports the provider's refusal to turn reasoning off,
+// which OpenRouter returns as HTTP 400 before routing the request.
+func reasoningMandatory(err error) bool {
+	var failure *republic.Error
+	if !errors.As(err, &failure) || failure.StatusCode != 400 {
+		return false
+	}
+	return strings.Contains(strings.ToLower(failure.Message+failure.Body), "cannot be disabled")
 }
 
 // NewAPICompletion is an explicit evaluation entry point for API-key or local
