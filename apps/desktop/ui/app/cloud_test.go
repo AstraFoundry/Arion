@@ -251,6 +251,79 @@ func TestCloudFailureStaysOnItsProvider(t *testing.T) {
 	}
 }
 
+// A compatible provider asks for a base URL and a key. A fixed provider does
+// not. An unusable address is the field's error and stays on that page.
+func TestCloudCompatibleEndpoint(t *testing.T) {
+	state, actions, store := fixture()
+	nav := &cloud.Nav{}
+	tt := ui.NewTester(func(c *ui.Context) {
+		ui.Column(c).Gap(8).Padding(16).Children(func() { cloud.Pages(c, store, theme.Resolve(false), nav) })
+	}, 560, 780)
+	en := copy.For(copy.English)
+	zh := copy.For(copy.SimplifiedChinese)
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected}
+	settle(tt)
+	for _, id := range []string{runtime.CloudOpenAICompatible, runtime.CloudAnthropicCompatible} {
+		if !hasText(tt, config.CloudProviders[id]) {
+			t.Fatalf("missing %s: %q", id, tt.Texts())
+		}
+	}
+	if err := tt.Click(config.CloudProviders[runtime.CloudOpenAI]); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if hasText(tt, en.Text(copy.CloudBaseURLLabel)) || hasText(tt, en.Text(copy.CloudBaseURLPlaceholder)) {
+		t.Fatalf("fixed provider asks for a base URL: %q", tt.Texts())
+	}
+	if !nav.Back() {
+		t.Fatal("nothing to leave")
+	}
+	settle(tt)
+	if err := tt.Click(config.CloudProviders[runtime.CloudOpenAICompatible]); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if !hasText(tt, en.Text(copy.CloudBaseURLLabel)) || !hasText(tt, en.Text(copy.CloudKeyLabel)) || !hasText(tt, en.Text(copy.CloudConnect)) {
+		t.Fatalf("endpoint form: %q", tt.Texts())
+	}
+	snapshot(t, tt, "cloud-compatible")
+	nav.BaseURL = "ftp://files.example/v1"
+	connect, ok := tt.Find(en.Text(copy.CloudConnect))
+	if !ok {
+		t.Fatalf("no connect: %q", tt.Texts())
+	}
+	tt.ClickAt(connect.X-80, connect.Y+connect.H/2)
+	tt.Type("sk-secret")
+	settle(tt)
+	for _, text := range tt.Texts() {
+		if strings.Contains(text, "sk-secret") {
+			t.Fatalf("key shown in %q", text)
+		}
+	}
+	snapshot(t, tt, "cloud-compatible-filled")
+	if err := tt.Click(en.Text(copy.CloudConnect)); err != nil || !actions.called("cloud-key:openai-compatible:sk-secret") || !actions.called("cloud-base:ftp://files.example/v1") || nav.Key != "" {
+		t.Fatalf("connect: %v %v key %q", err, actions.calls, nav.Key)
+	}
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected, Failure: runtime.CloudCodeAddress, FailureProvider: runtime.CloudOpenAICompatible}
+	settle(tt)
+	if !hasText(tt, en.Text(copy.CloudFailAddress)) {
+		t.Fatalf("address: %q", tt.Texts())
+	}
+	snapshot(t, tt, "cloud-compatible-address")
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	settle(tt)
+	if !hasText(tt, zh.Text(copy.CloudFailAddress)) || !hasText(tt, zh.Text(copy.CloudBaseURLLabel)) {
+		t.Fatalf("zh address: %q", tt.Texts())
+	}
+	snapshot(t, tt, "cloud-compatible-address-zh-CN")
+	state.Preferences.UILanguage = runtime.LanguageEnglish
+	nav.BaseURL = "https://proxy.example/v1"
+	settle(tt)
+	if hasText(tt, en.Text(copy.CloudFailAddress)) {
+		t.Fatalf("edited address still shows the error: %q", tt.Texts())
+	}
+}
+
 func TestCloudKeyModelListFailure(t *testing.T) {
 	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
 		t.Run(string(language), func(t *testing.T) {

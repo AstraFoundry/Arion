@@ -14,12 +14,14 @@ import (
 // contain; earlier tiers win. IDs change between releases, so a tier
 // matches the provider's listed models rather than naming one.
 var tiers = map[string][][]string{
-	ChatGPT:    {{"luna"}, {"mini"}},
-	OpenAI:     {{"luna"}, {"mini"}},
-	Anthropic:  {{"haiku"}},
-	Google:     {{"flash-lite"}, {"flash"}},
-	DeepSeek:   {{"flash"}, {"deepseek-chat"}},
-	OpenRouter: {{"openai/", "luna"}, {"anthropic/", "haiku"}, {"deepseek/", "flash"}, {"google/", "flash-lite"}},
+	ChatGPT:             {{"luna"}, {"mini"}},
+	OpenAI:              {{"luna"}, {"mini"}},
+	OpenAICompatible:    {{"luna"}, {"mini"}},
+	Anthropic:           {{"haiku"}},
+	AnthropicCompatible: {{"haiku"}},
+	Google:              {{"flash-lite"}, {"flash"}},
+	DeepSeek:            {{"flash"}, {"deepseek-chat"}},
+	OpenRouter:          {{"openai/", "luna"}, {"anthropic/", "haiku"}, {"deepseek/", "flash"}, {"google/", "flash-lite"}},
 }
 
 // unsuited marks variants that are not general text models, or not stable.

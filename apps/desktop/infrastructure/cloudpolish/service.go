@@ -32,13 +32,23 @@ type Credential struct {
 	AccountID    string `json:"accountId,omitempty"`
 	Email        string `json:"email,omitempty"`
 	Model        string `json:"model,omitempty"`
+	// BaseURL is the endpoint for an OpenAI-compatible or Anthropic-compatible
+	// provider, without a trailing slash. Fixed providers leave it empty.
+	BaseURL string `json:"baseUrl,omitempty"`
 }
 
 func (c Credential) valid() bool {
 	if c.Provider == ChatGPT {
 		return c.RefreshToken != "" && c.AccountID != ""
 	}
-	return Known(c.Provider) && c.APIKey != ""
+	if !Known(c.Provider) || c.APIKey == "" {
+		return false
+	}
+	if !NeedsBase(c.Provider) {
+		return true
+	}
+	_, err := normalizeBaseURL(c.BaseURL)
+	return err == nil
 }
 
 // SecretStore is the OS credential catalog, one item per account name.
@@ -313,11 +323,19 @@ func (s *Service) SignInChatGPT() error {
 }
 
 // ConnectKey checks key by listing provider's models and, once it works,
-// replaces the connection with it.
-func (s *Service) ConnectKey(provider, key string) error {
+// replaces the connection with it. baseURL is required for a compatible
+// provider and ignored for a fixed one, which keeps Republic's endpoint.
+func (s *Service) ConnectKey(provider, key, baseURL string) error {
 	ctx, generation := s.begin(Verifying, provider)
 	key = strings.TrimSpace(key)
 	c := Credential{Provider: provider, APIKey: key}
+	if NeedsBase(provider) {
+		normalized, err := normalizeBaseURL(baseURL)
+		if err != nil {
+			return s.end(generation, fail(CodeAddress, err))
+		}
+		c.BaseURL = normalized
+	}
 	if provider == ChatGPT || !c.valid() {
 		return s.end(generation, fail(CodeRejected, errors.New("unknown provider or empty key")))
 	}

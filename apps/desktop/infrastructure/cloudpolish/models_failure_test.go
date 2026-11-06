@@ -47,12 +47,12 @@ func TestModelListFailuresDoNotRejectValidCredentials(t *testing.T) {
 				_ = s.Status() // Observers must run outside the service lock.
 				failures = append(failures, fmt.Sprintf("%s:%d", code, status))
 			})
-			if err := s.ConnectKey(DeepSeek, "synthetic-original-key"); err != nil {
+			if err := s.ConnectKey(DeepSeek, "synthetic-original-key", ""); err != nil {
 				t.Fatal(err)
 			}
 			puts := secrets.puts
 			failing.Store(true)
-			if err := s.ConnectKey(DeepSeek, "synthetic-new-key"); CodeOf(err) != tc.code {
+			if err := s.ConnectKey(DeepSeek, "synthetic-new-key", ""); CodeOf(err) != tc.code {
 				t.Fatalf("key check code %s, want %s", CodeOf(err), tc.code)
 			}
 			st := s.Status()

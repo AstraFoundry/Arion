@@ -91,11 +91,21 @@ func NewAPICompletion(provider, key, model, base, format string) (*Service, erro
 	if provider == ChatGPT || !Known(provider) || key == "" || model == "" {
 		return nil, errors.New("explicit API provider, key and model required")
 	}
+	if NeedsBase(provider) {
+		normalized, err := normalizeBaseURL(base)
+		if err != nil {
+			return nil, errors.New("explicit API provider, key, model and base URL required")
+		}
+		base = normalized
+	}
 	if format != "" && format != "chat" && format != "responses" {
 		return nil, errors.New("unsupported completion wire format")
 	}
 	s := New(nil, nil, nil)
 	s.credential = Credential{Provider: provider, APIKey: key}
+	if NeedsBase(provider) {
+		s.credential.BaseURL = base
+	}
 	s.model = model
 	s.base = base
 	s.completionFormat = format

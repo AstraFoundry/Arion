@@ -156,6 +156,20 @@ func TestOnboardingCloudStepAndCustomIssuer(t *testing.T) {
 	expect(t, tt, true, messages.Text(copy.OnbPolishTitle))
 	click(copy.Continue)
 	expect(t, tt, true, messages.Text(copy.CloudTitle))
+	name := config.CloudProviders[runtime.CloudOpenAICompatible]
+	for i := 0; i < 12; i++ {
+		if r, ok := tt.Find(name); ok && r.Y >= 0 && r.Y+r.H <= float32(OnboardingHeight)-100 {
+			break
+		}
+		tt.Scroll(float32(OnboardingWidth)*0.7, float32(OnboardingHeight)/2, 0, 80)
+		settle(tt)
+	}
+	if err := tt.Click(name); err != nil {
+		t.Fatalf("compatible provider: %v %q", err, tt.Texts())
+	}
+	settle(tt)
+	expect(t, tt, true, messages.Text(copy.CloudBaseURLLabel), messages.Text(copy.CloudKeyLabel))
+	click(copy.Back)
 	click(copy.Skip)
 	click(copy.Continue)
 	expect(t, tt, true, messages.Text(copy.OnbDictateTitle), messages.Text(copy.PolishLabel))

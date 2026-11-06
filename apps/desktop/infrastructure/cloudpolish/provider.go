@@ -9,7 +9,9 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"net/url"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/AstraFoundry/republic"
@@ -24,10 +26,19 @@ const (
 	Google     = "google"
 	DeepSeek   = "deepseek"
 	OpenRouter = "openrouter"
+	// OpenAICompatible and AnthropicCompatible take the caller's base URL.
+	// Requests use Republic's openai and anthropic providers with that APIBase.
+	OpenAICompatible    = "openai-compatible"
+	AnthropicCompatible = "anthropic-compatible"
 )
 
 // KeyProviders accept an API key, in the order the picker lists them.
-var KeyProviders = []string{OpenAI, Anthropic, Google, DeepSeek, OpenRouter}
+var KeyProviders = []string{OpenAI, Anthropic, Google, DeepSeek, OpenRouter, OpenAICompatible, AnthropicCompatible}
+
+// NeedsBase reports a provider whose endpoint comes from the credential.
+func NeedsBase(id string) bool {
+	return id == OpenAICompatible || id == AnthropicCompatible
+}
 
 // knownProviders is every provider that can hold a credential.
 func knownProviders() []string {
@@ -83,18 +94,53 @@ func codexSpec() republic.ProviderSpec {
 // retries bounds Republic's retries: a dictation waits on the request.
 var retries = 1
 
+// republicName maps an Arion provider id onto Republic's registry. The
+// compatible ids use the fixed provider's wire protocol at the caller's base.
+func republicName(id string) string {
+	switch id {
+	case OpenAICompatible:
+		return OpenAI
+	case AnthropicCompatible:
+		return Anthropic
+	default:
+		return id
+	}
+}
+
+// normalizeBaseURL accepts an http or https address and drops trailing
+// slashes. A query, fragment, or userinfo is rejected: the address is joined
+// with a request path.
+func normalizeBaseURL(raw string) (string, error) {
+	raw = strings.TrimRight(strings.TrimSpace(raw), "/")
+	u, err := url.Parse(raw)
+	if err != nil || u.Host == "" || (u.Scheme != "http" && u.Scheme != "https") || u.User != nil || u.RawQuery != "" || u.Fragment != "" {
+		return "", errors.New("base URL must be an http or https address")
+	}
+	return raw, nil
+}
+
 // open builds the Republic provider for a credential. auth is the ChatGPT
 // signer; API keys go in the config. base replaces the endpoint in tests.
+// A compatible credential supplies its own base when base is empty, so the
+// product path does not read REPUBLIC_*_API_BASE. OpenAI-compatible calls
+// use chat completions; the fixed OpenAI provider keeps Republic's default.
 func open(c Credential, auth republic.Auth, client *http.Client, base string) (*republic.Provider, error) {
-	config := republic.ProviderConfig{HTTPClient: client, APIBase: base, MaxRetries: &retries, Timeout: 30 * time.Second}
+	apiBase := base
+	if apiBase == "" && NeedsBase(c.Provider) {
+		apiBase = c.BaseURL
+	}
+	config := republic.ProviderConfig{HTTPClient: client, APIBase: apiBase, MaxRetries: &retries, Timeout: 30 * time.Second}
 	if c.Provider == ChatGPT {
 		config.Auth = auth
 		config.Headers = http.Header{}
 		config.Headers.Set("originator", originator)
 		return republic.NewProvider(codexSpec(), config)
 	}
+	if c.Provider == OpenAICompatible {
+		config.APIFormat = "chat"
+	}
 	config.APIKey = c.APIKey
-	return republic.GetProvider(c.Provider, config)
+	return republic.GetProvider(republicName(c.Provider), config)
 }
 
 // listModels returns the provider's chat model IDs, sorted.

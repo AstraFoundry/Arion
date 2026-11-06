@@ -31,10 +31,12 @@ const (
 
 // CloudProviders names the cloud polishing providers by their runtime IDs.
 var CloudProviders = map[string]string{
-	"chatgpt":    "ChatGPT",
-	"openai":     "OpenAI",
-	"anthropic":  "Anthropic",
-	"google":     "Google Gemini",
-	"deepseek":   "DeepSeek",
-	"openrouter": "OpenRouter",
+	"chatgpt":              "ChatGPT",
+	"openai":               "OpenAI",
+	"anthropic":            "Anthropic",
+	"google":               "Google Gemini",
+	"deepseek":             "DeepSeek",
+	"openrouter":           "OpenRouter",
+	"openai-compatible":    "OpenAI compatible",
+	"anthropic-compatible": "Anthropic compatible",
 }
