@@ -195,6 +195,13 @@ const (
 	DetailMicrophone             = "microphone"
 	DetailAccessibility          = "accessibility"
 	DetailTranslationModel       = domain.DetailTranslationModel
+	PolishReasoningRequired      = domain.PolishReasoningRequired
+	PolishRateLimited            = domain.PolishRateLimited
+	PolishQuotaExhausted         = domain.PolishQuotaExhausted
+	PolishCredentialRejected     = domain.PolishCredentialRejected
+	PolishModelUnavailable       = domain.PolishModelUnavailable
+	PolishModelNotFound          = domain.PolishModelNotFound
+	PolishTimeout                = domain.PolishTimeout
 	DetailInputMethod            = "input method connection unavailable"
 	DetailIMEClient              = "input method client unavailable"
 	DetailIMEUpdating            = "input method update in progress"
@@ -221,6 +228,9 @@ type Dictation struct {
 	Rewriting bool
 	// Translating marks a session started with the translation hold key.
 	Translating bool
+	// PolishNote is the content-free category of a cloud rewrite that fell
+	// back to local cleanup, shown once after the dictation completes.
+	PolishNote string
 	// Pasted marks a commit delivered through the clipboard.
 	Pasted  bool
 	Outcome CommitOutcome

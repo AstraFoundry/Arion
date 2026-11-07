@@ -97,7 +97,18 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, s *State) {
 	if learned {
 		c.After(dictation.LearnedVisible - now.Sub(state.Learned.At) + 10*time.Millisecond)
 	}
+	note, noted := dictation.PolishNoteOf(d.PolishNote, state.Cloud.Provider, state.Preferences.CloudReasoning)
+	noted = noted && dictation.PolishNoteShown(d, now)
+	if remaining := dictation.PolishNoteRemaining(d, now); remaining > 0 {
+		c.After(remaining + 10*time.Millisecond)
+	}
 	ui.Column(c).Font(typography.Family).Fill().Justify(ui.End).AlignItems(ui.Center).Padding(0, 0, 22, 0).Children(func() {
+		if noted && phase == dictation.Hidden {
+			kit.Pill(c.Key("polish-note"), tokens).MaxWidth(600).Transition(pillMotion).Children(func() {
+				polishNote(c, messages, tokens, note)
+			})
+			return
+		}
 		if learned {
 			kit.Pill(c.Key("learned"), tokens).MaxWidth(600).Transition(pillMotion).Children(func() {
 				learnedNotice(c, store, tokens)
@@ -307,6 +318,16 @@ func failure(c *ui.Context, state *runtime.State, tokens theme.Tokens) {
 		if notice.Hint != "" {
 			ui.Text(c, messages.Text(notice.Hint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 		}
+	})
+}
+
+// polishNote tells that the dictation was inserted with local cleanup because
+// the cloud model could not polish it, with the next step.
+func polishNote(c *ui.Context, messages copy.Catalog, tokens theme.Tokens, notice dictation.Notice) {
+	ui.Icon(c, icons.Info).FontSize(16).TextColor(tokens.PillMuted)
+	ui.Column(c).Gap(1).MaxWidth(420).Children(func() {
+		ui.Text(c, messages.Text(notice.Title)).FontSize(theme.Body).FontWeight(500).SingleLine()
+		ui.Text(c, messages.Text(notice.Hint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 	})
 }
 
