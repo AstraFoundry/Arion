@@ -1,3 +1,21 @@
+## 0.1.4
+
+### English
+
+Update for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Open Report a problem from the desktop panel, Settings › About, or the input-method menu. Copy the prompt into your coding agent for help diagnosing the problem and preparing a GitHub issue, or open the issue form directly.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable. Model weights download separately. Multi-device sync, Windows edit-learning, clean-machine acceptance, production old-to-new update acceptance, and real-service cloud and translation acceptance remain open. This tag stages the release and opens a GitHub draft; it does not publish the stable update channel. See RELEASE-STATUS.md and SHA256SUMS.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的更新版本。
+
+- 从桌面面板、设置 › 关于或输入法菜单打开「反馈问题」。将提示词复制到常用的编程代理，协助排查问题并准备 GitHub Issue，也可以直接打开问题提交表单。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证。Windows 仍无发布者签名。模型权重单独下载。多设备同步、Windows 纠错学习、全新机器验收、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。此标签会暂存发布并创建 GitHub 草稿，不会发布稳定更新渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.3
 
 ### English
