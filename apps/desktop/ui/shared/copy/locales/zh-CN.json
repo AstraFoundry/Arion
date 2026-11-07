@@ -53,7 +53,6 @@
   "Quit": "退出 Arion",
   "StartDictate": "开始听写",
   "StopDictate": "结束",
-  "StatusReady": "就绪",
   "StatusListening": "正在聆听",
   "StatusTranscribing": "正在转写",
   "StatusPreparing": "正在准备模型",

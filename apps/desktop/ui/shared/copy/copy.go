@@ -112,7 +112,6 @@ const (
 	Quit                      Key = "Quit"
 	StartDictate              Key = "StartDictate"
 	StopDictate               Key = "StopDictate"
-	StatusReady               Key = "StatusReady"
 	StatusListening           Key = "StatusListening"
 	StatusTranscribing        Key = "StatusTranscribing"
 	StatusPreparing           Key = "StatusPreparing"
