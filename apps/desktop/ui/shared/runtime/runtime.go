@@ -652,6 +652,9 @@ type Actions interface {
 	// the built-in rules again.
 	ChooseScene(scene domain.Scene)
 	OpenSettings()
+	// OpenFeedback shows the window that hands a problem report to a
+	// coding agent.
+	OpenFeedback()
 	// OpenUpdate shows the update in Settings › About.
 	OpenUpdate()
 	// CheckForUpdates asks the release feed now.

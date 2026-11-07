@@ -382,8 +382,16 @@ func aboutLinks(c *ui.Context, store runtime.Store, tokens theme.Tokens) bool {
 				}
 			})
 		})
-		links([3]string{messages.Text(copy.AboutFeedback), messages.Text(copy.AboutFeedbackLink), config.IssuesURL},
-			[3]string{messages.Text(copy.AboutLicense), config.License, config.LicenseURL})
+		kit.Divider(c, tokens)
+		kit.Row(c, tokens, messages.Text(copy.AboutFeedback), "", func() {
+			ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
+				ui.Link(c, messages.Text(copy.AboutFeedbackLink), config.IssuesURL)
+				if kit.Button(c.Key("ask-agent"), tokens, kit.Outline, messages.Text(copy.AboutAskAgent), true).Clicked() {
+					store.Actions.OpenFeedback()
+				}
+			})
+		})
+		links([3]string{messages.Text(copy.AboutLicense), config.License, config.LicenseURL})
 		kit.Divider(c, tokens)
 		open = contributors.Row(c, store, tokens)
 	})

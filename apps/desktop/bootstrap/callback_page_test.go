@@ -35,3 +35,12 @@ func TestAppURL(t *testing.T) {
 		t.Error("hasAppURL")
 	}
 }
+
+func TestFeedbackURL(t *testing.T) {
+	for url, want := range map[string]bool{"arion://feedback": true, "ARION://Feedback/": true, "arion://feedback?from=ime": true,
+		"arion://open": false, "arion://feedbacks": false, "https://feedback": false, "feedback": false} {
+		if got := isFeedbackURL(url); got != want {
+			t.Errorf("isFeedbackURL(%q) = %v", url, got)
+		}
+	}
+}

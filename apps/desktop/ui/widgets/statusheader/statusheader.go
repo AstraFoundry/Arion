@@ -1,10 +1,12 @@
-// Package statusheader shows Arion's brand and a one-word readiness state.
+// Package statusheader shows Arion's brand, a one-word readiness state and
+// the way to report a problem with it.
 package statusheader
 
 import (
 	"arion.local/desktop/ui/entities/dictation"
 	"arion.local/desktop/ui/entities/model"
 	"arion.local/desktop/ui/shared/copy"
+	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
@@ -44,5 +46,11 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			dot.Background(dot.AnimateColor("color", color, theme.Quick))
 			ui.Text(c, label).FontSize(theme.Caption).FontWeight(500).TextColor(tokens.Muted).SingleLine().ContentTransition(ui.ContentTransition{})
 		})
+		// A problem shows up as this state, so the way to report one sits
+		// beside it.
+		help := kit.IconButton(c.Key("feedback"), tokens, icons.CircleHelp, messages.Text(copy.FeedbackHelp)).Size(22, 22).Margin(0, -4, 0, -2)
+		if help.Clicked() {
+			store.Actions.OpenFeedback()
+		}
 	})
 }

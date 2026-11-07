@@ -679,5 +679,19 @@
   "OnbDownload": "下载",
   "AccTermsAccept": "我同意使用条款并已阅读隐私政策",
   "AccUsageAgree": "同意发送使用数据以改进产品",
-  "AccUsageData": "使用数据"
+  "AccUsageData": "使用数据",
+  "KeyboardFeedback": "问题反馈…",
+  "AboutAskAgent": "问问 Agent",
+  "FeedbackHelp": "问题反馈",
+  "FeedbackTitle": "让 Agent 帮你反馈问题",
+  "FeedbackBody": "把这段提示词粘贴到 Codex、Claude Code 等编程 Agent。它会用大白话问清问题，把日志脱敏整理好，替你提交 GitHub Issue，还能陪你一起修复。",
+  "FormatFeedbackPrompt": "用 curl 获取 {url}，按其中的步骤帮我反馈 Arion 遇到的问题。我在 {platform} 上使用 Arion {version}。",
+  "FeedbackPromptLabel": "提示词",
+  "FeedbackDevelopmentBuild": "开发版",
+  "FeedbackIssueYourself": "自己提交 Issue",
+  "FeedbackDemoLabel": "编程 Agent 根据复制的提示词提交 GitHub Issue",
+  "FormatFeedbackDemoAsk": "向 {agent} 提问",
+  "FeedbackDemoReply": "我先问你几个问题，再帮你提交 Issue。",
+  "FeedbackDemoIssue": "长时间停顿后听写中断",
+  "FeedbackDemoOpened": "Issue 已创建"
 }

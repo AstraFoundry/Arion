@@ -4,7 +4,7 @@
 // Icons (MIT, see svg/LICENSE-lobehub), and Discord's mark from SVG Logos
 // (CC0, see svg/LICENSE-svg-logos). Monochrome marks are tinted with
 // ui.Icon; Gemini, DeepSeek and Discord keep their colors and are drawn
-// with ui.Image.
+// with ui.Image, as is Pointer, Arion's own drawing of the arrow pointer.
 package icons
 
 import (
@@ -43,10 +43,12 @@ var (
 	ChevronsUpDown    = load("chevrons-up-down")
 	CircleAlert       = load("circle-alert")
 	CircleCheck       = load("circle-check")
+	CircleHelp        = load("circle-help")
 	CircleUser        = load("circle-user")
 	Clipboard         = load("clipboard")
 	Clock             = load("clock")
 	Code              = load("code")
+	Copy              = load("copy")
 	Cpu               = load("cpu")
 	Download          = load("download")
 	Gauge             = load("gauge")
@@ -83,3 +85,6 @@ var (
 	Discord  = load("logos-discord")
 	DeepSeek = load("lobe-deepseek")
 )
+
+// Pointer is the arrow pointer that mock screens move and click with.
+var Pointer = load("pointer")

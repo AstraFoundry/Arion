@@ -51,6 +51,10 @@ Cards alternate between two rows that drift in opposite directions; each track h
 
 Posts are Markdown in `content/blog/<slug>/<locale>.md`, rendered at build time with GFM, trusted static HTML, Shiki highlighting, lazy media and the `<embed-frame>`, `<video-clip>` and `<dictation-pill>` embeds. Writing rules, embeds and the pipeline are in [blog](blog.md).
 
+## Agent feedback skill
+
+`public/feedback.md` is a Markdown procedure for coding agents, served at `/feedback.md`; the desktop app's **Report a problem** window asks the agent to fetch it ([agent-assisted feedback](../project/agent-feedback.md)). It is meant to be fetched directly: no page links to it, the sitemap leaves it out, and `public/_headers` serves it as `text/markdown; charset=utf-8` with `X-Robots-Tag: noindex` (robots.txt still allows it, because some agent fetchers obey robots.txt). It is English, tells the agent to answer in the person's language, and repeats the repository and community links from `siteConfig`; `tests/feedback-skill.test.ts` keeps those links, the headers and the no-link rule in check.
+
 ## Deployment
 
 `apps/site/wrangler.jsonc` serves `apps/site/out` as Workers static assets with no Worker script, auto trailing slashes and `404.html` for unknown paths, on the custom domain `arion.astrafoundry.si`. See [deployment](../operations/deployment.md#marketing-site).

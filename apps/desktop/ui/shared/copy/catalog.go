@@ -341,3 +341,18 @@ func (c Catalog) ClipboardTime(copied, now time.Time) string {
 	}
 	return c.MonthDay(copied)
 }
+
+// FeedbackPrompt asks a coding agent to follow the feedback skill at url
+// for this build; an unversioned build is named a development build.
+func (c Catalog) FeedbackPrompt(url, version, platform string) string {
+	if version == "" {
+		version = c.Text(FeedbackDevelopmentBuild)
+	}
+	return c.format(FormatFeedbackPrompt, "url", url, "version", version, "platform", platform)
+}
+
+// FeedbackDemoAsk is the empty prompt of the agent in the feedback
+// illustration.
+func (c Catalog) FeedbackDemoAsk(agent string) string {
+	return c.format(FormatFeedbackDemoAsk, "agent", agent)
+}
