@@ -2,10 +2,12 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import type { Locale } from "@/shared/i18n";
 import { assetUrl, PROJECT_ASSET_TYPES } from "@/shared/lib/server";
 import {
   paragraphsOf,
   parseTestimonials,
+  textFor,
   type Testimonial,
   TestimonialError,
   type TestimonialSource,
@@ -27,7 +29,8 @@ interface CachedProfile {
 }
 
 interface Resolved {
-  testimonial: Testimonial;
+  source: TestimonialSource;
+  testimonial: Omit<Testimonial, "lang" | "paragraphs">;
   avatar: Uint8Array;
 }
 
@@ -65,12 +68,11 @@ function resolve(source: TestimonialSource, cache: Map<string, CachedProfile>): 
   }
   const avatar = new Uint8Array(bytes);
   return {
+    source,
     testimonial: {
       handle: profile.handle,
       name: profile.name,
       avatar: assetUrl(avatar, profile.avatar),
-      lang: source.lang,
-      paragraphs: paragraphsOf(source.text),
       href: source.postUrl ?? xProfileUrl(profile.handle),
     },
     avatar,
@@ -91,11 +93,14 @@ function resolveAll(): Resolved[] {
 
 /**
  * The quotes in `content/testimonials/testimonials.json` with each author's
- * cached X name and avatar. A handle missing from the cache, or an avatar
+ * cached X name and avatar, in the page's locale. A handle missing from the cache, or an avatar
  * that does not match its recorded SHA-256, fails the build.
  */
-export const getTestimonials = async (): Promise<Testimonial[]> =>
-  resolveAll().map(({ testimonial }) => testimonial);
+export const getTestimonials = async (locale: Locale): Promise<Testimonial[]> =>
+  resolveAll().map(({ source, testimonial }) => {
+    const { lang, text } = textFor(source, locale);
+    return { ...testimonial, lang, paragraphs: paragraphsOf(text) };
+  });
 
 /** The avatar bytes behind each published avatar URL, for the static export. */
 export const testimonialAvatars = async (): Promise<[string, Uint8Array][]> =>
