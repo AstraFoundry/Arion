@@ -8,6 +8,8 @@ const (
 	Repository = "AstraFoundry/Arion"
 	XHandle    = "@AstraFoundry"
 	License    = "AGPL-3.0"
+	// Agent is the coding agent the feedback illustration shows.
+	Agent = "Codex"
 )
 
 // Destinations the About section opens in the browser.
@@ -23,7 +25,10 @@ const (
 	DiscordURL = "https://discord.com/invite/72kh465mMm"
 	FeishuURL  = "https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae"
 	IssuesURL  = RepositoryURL + "/issues/new"
-	LicenseURL = RepositoryURL + "/blob/main/LICENSE"
+	// FeedbackSkillURL is the agent feedback skill on the site; the feedback
+	// window's prompt asks a coding agent to fetch and follow it.
+	FeedbackSkillURL = SiteURL + "/feedback.md"
+	LicenseURL       = RepositoryURL + "/blob/main/LICENSE"
 	// ReleaseURL is the page of a release, before its version; releases are
 	// tagged v1.2.0 and so on.
 	ReleaseURL = RepositoryURL + "/releases/tag/v"

@@ -44,7 +44,7 @@ struct ITfMenu : IUnknown {
 #endif
 // GUID_LBI_INPUTMODE from the Windows SDK; MinGW omits its declaration.
 inline constexpr GUID ArionInputModeItem={0x2c77a81e,0x41cc,0x4178,{0xa3,0xa7,0x5f,0x8a,0x98,0x75,0x68,0xe6}};
-enum class KeyboardMenuAction { Voice=1,Language,Width,Punctuation,CopyPending,Reset,OpenApp };
+enum class KeyboardMenuAction { Voice=1,Language,Width,Punctuation,CopyPending,Reset,OpenApp,Feedback };
 struct KeyboardMenuState {
     bool available=false,ascii=false,fullWidth=false,englishPunctuation=false,voice=false;
     std::wstring failure,dictationKey,languageSwitch;
@@ -76,6 +76,7 @@ class LanguageBar final : public ITfLangBarItemButton,public ITfSource {
         if (current.pending) item(KeyboardMenuAction::CopyPending,nativeCopy(NativeCopy::CopyPending));
         item(KeyboardMenuAction::Reset,nativeCopy(NativeCopy::Reset));
         item(KeyboardMenuAction::OpenApp,nativeCopy(NativeCopy::OpenApp));
+        item(KeyboardMenuAction::Feedback,nativeCopy(NativeCopy::Feedback));
         return items;
     }
     static bool enabled(KeyboardMenuAction action,const KeyboardMenuState &current) {
@@ -83,7 +84,7 @@ class LanguageBar final : public ITfLangBarItemButton,public ITfSource {
         case KeyboardMenuAction::Voice: return current.voice;
         case KeyboardMenuAction::Language: case KeyboardMenuAction::Width: case KeyboardMenuAction::Punctuation: return current.available;
         case KeyboardMenuAction::CopyPending: return current.pending;
-        case KeyboardMenuAction::Reset: case KeyboardMenuAction::OpenApp: return true;
+        case KeyboardMenuAction::Reset: case KeyboardMenuAction::OpenApp: case KeyboardMenuAction::Feedback: return true;
         }
         return false;
     }
@@ -197,7 +198,7 @@ public:
         return S_OK;
     }
     HRESULT STDMETHODCALLTYPE OnMenuSelect(UINT id) override {
-        if (id<static_cast<UINT>(KeyboardMenuAction::Voice) || id>static_cast<UINT>(KeyboardMenuAction::OpenApp)) return E_INVALIDARG;
+        if (id<static_cast<UINT>(KeyboardMenuAction::Voice) || id>static_cast<UINT>(KeyboardMenuAction::Feedback)) return E_INVALIDARG;
         if (!command || !state) return E_FAIL;
         auto action=static_cast<KeyboardMenuAction>(id);
         if (!enabled(action,state())) return S_FALSE;

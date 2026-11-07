@@ -66,7 +66,7 @@ try {
   copyFileSync(path.join(keyboard, 'runtime.json'), path.join(bundle, 'Resources/keyboard/runtime.json'));
   for (const [locale, language] of [['en', 'en'], ['zh-CN', 'zh-Hans']]) {
     const catalog = JSON.parse(readFileSync(path.join(desktop, 'ui/shared/copy/locales', `${locale}.json`), 'utf8'));
-    const strings = ['KeyboardModeChinese', 'KeyboardModeEnglish', 'KeyboardSwitchChinese', 'KeyboardSwitchEnglish', 'KeyboardUnavailable', 'KeyboardResetLearning', 'KeyboardCopyPending', 'KeyboardOpenApp',
+    const strings = ['KeyboardModeChinese', 'KeyboardModeEnglish', 'KeyboardSwitchChinese', 'KeyboardSwitchEnglish', 'KeyboardUnavailable', 'KeyboardResetLearning', 'KeyboardCopyPending', 'KeyboardOpenApp', 'KeyboardFeedback',
       'KbdSwitchCapsLock',
       'KeyboardUseFullWidth', 'KeyboardUseHalfWidth', 'KeyboardUseEnglishPunctuation', 'KeyboardUseChinesePunctuation', 'KeyboardModeFullWidth', 'KeyboardModeHalfWidth', 'KeyboardModeEnglishPunctuation', 'KeyboardModeChinesePunctuation',
       'KeyboardVoiceInput', 'KeyboardVoiceInputKey', ...Object.keys(catalog).filter(key => key.startsWith('HoldKey'))].map(key => {

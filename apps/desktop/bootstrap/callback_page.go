@@ -14,6 +14,10 @@ const appURLScheme = "arion"
 
 const appURL = appURLScheme + "://open"
 
+// feedbackHost is the host of the URL the input methods open for their
+// "Report a problem" item: arion://feedback opens the feedback window.
+const feedbackHost = "feedback"
+
 // callbackPageTemplate is what the browser shows after the sign-in callback.
 // The outcome is shown in Arion, so the page only leads back to it. The
 // loopback answers with a CSP that allows no scripts.
@@ -76,6 +80,18 @@ func callbackPage(locale copy.Locale) []byte {
 func isAppURL(s string) bool {
 	scheme, _, ok := strings.Cut(s, ":")
 	return ok && strings.EqualFold(scheme, appURLScheme)
+}
+
+// isFeedbackURL reports whether s, a URL of appURLScheme, asks for the
+// feedback window.
+func isFeedbackURL(s string) bool {
+	if !isAppURL(s) {
+		return false
+	}
+	_, rest, _ := strings.Cut(s, ":")
+	host, _, _ := strings.Cut(strings.TrimPrefix(rest, "//"), "/")
+	host, _, _ = strings.Cut(host, "?")
+	return strings.EqualFold(host, feedbackHost)
 }
 
 // hasAppURL reports whether args, a second instance's arguments, carry a URL

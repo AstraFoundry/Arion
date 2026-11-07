@@ -282,6 +282,27 @@ func (a *App) openOnboarding() {
 	a.onboarding.Focus()
 }
 
+// openFeedback shows the window that hands a problem report to a coding
+// agent, in front of the panel it may have been opened from.
+func (a *App) openFeedback() {
+	if a.panel != nil {
+		a.panel.Close()
+	}
+	if a.feedback != nil {
+		mygo.App.Focus()
+		a.feedback.Focus()
+		return
+	}
+	view := uiapp.Feedback(a.ui)
+	a.feedback = mygo.NewWindow(mygo.WindowOptions{
+		Title: a.ui.Copy().Text(copy.FeedbackHelp), Width: uiapp.FeedbackWidth, Height: uiapp.FeedbackHeight, TitleBarStyle: mygo.TitleBarHidden,
+		DisableResize: true, DisableMaximize: true, DisableFullScreen: true, Content: view.Content,
+	})
+	a.track(a.feedback, view, func() { a.feedback = nil })
+	mygo.App.Focus()
+	a.feedback.Focus()
+}
+
 // updateLanguage refreshes native chrome without recreating windows or sessions.
 func (a *App) updateLanguage() {
 	messages := a.ui.Copy()
@@ -295,6 +316,9 @@ func (a *App) updateLanguage() {
 	}
 	if a.clipboardWin != nil {
 		a.clipboardWin.SetTitle(messages.Text(copy.ClipboardTitle))
+	}
+	if a.feedback != nil {
+		a.feedback.SetTitle(messages.Text(copy.FeedbackHelp))
 	}
 	if a.tray != nil {
 		a.tray.SetToolTip(messages.Text(copy.TrayToolTip))

@@ -97,4 +97,4 @@ make site-check     # 宣传站点 (apps/site)：i18n、类型、lint、测试�
 
 ## 许可证
 
-Arion 由 [AstraFoundry](https://github.com/AstraFoundry) 开发，并基于 [AGPL-3.0](LICENSE) 许可证开源（[ADR 009](docs/decisions/009-agpl-license.md)）。欢迎在 [X (@AstraFoundry)](https://x.com/AstraFoundry) 关注我们，加入 [Discord](https://discord.com/invite/72kh465mMm) 或[飞书群](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae)交流，并在 [GitHub Issues](https://github.com/AstraFoundry/Arion/issues) 中反馈问题。
+Arion 由 [AstraFoundry](https://github.com/AstraFoundry) 开发，并基于 [AGPL-3.0](LICENSE) 许可证开源（[ADR 009](docs/decisions/009-agpl-license.md)）。欢迎在 [X (@AstraFoundry)](https://x.com/AstraFoundry) 关注我们，加入 [Discord](https://discord.com/invite/72kh465mMm) 或[飞书群](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae)交流，并在 [GitHub Issues](https://github.com/AstraFoundry/Arion/issues) 中反馈问题，也可以在 **设置 › 关于 › 问问 Agent** 中让你的编程 Agent 代为反馈（[Agent 协助反馈](docs/project/agent-feedback.md)）。

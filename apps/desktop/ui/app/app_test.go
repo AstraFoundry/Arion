@@ -54,6 +54,7 @@ func (r *recorder) StartLevelMonitor()         { r.call("monitor-start") }
 func (r *recorder) StopLevelMonitor()          { r.call("monitor-stop") }
 func (r *recorder) CopyText(text string) bool  { r.call("copy:" + text); return true }
 func (r *recorder) OpenSettings()              { r.call("settings") }
+func (r *recorder) OpenFeedback()              { r.call("feedback") }
 func (r *recorder) CompleteOnboarding()        { r.call("complete") }
 func (r *recorder) CancelSignIn()              { r.call("cancel-sign-in") }
 func (r *recorder) RefreshAccount()            { r.call("refresh-account") }

@@ -679,5 +679,19 @@
   "OnbDownload": "Download",
   "AccTermsAccept": "I agree to the Terms of Use and acknowledge the Privacy Policy",
   "AccUsageAgree": "Send usage data to help improve Arion",
-  "AccUsageData": "usage data"
+  "AccUsageData": "usage data",
+  "KeyboardFeedback": "Report a problem…",
+  "AboutAskAgent": "Ask an agent",
+  "FeedbackHelp": "Report a problem",
+  "FeedbackTitle": "Report a problem with an agent",
+  "FeedbackBody": "Paste this prompt into Codex, Claude Code or another coding agent. It asks what went wrong in plain words, cleans up the logs and files a GitHub issue for you. It can help fix the problem too.",
+  "FormatFeedbackPrompt": "Fetch {url} with curl and follow it to help me report a problem with Arion. I use Arion {version} on {platform}.",
+  "FeedbackPromptLabel": "Prompt",
+  "FeedbackDevelopmentBuild": "development build",
+  "FeedbackIssueYourself": "Open an issue yourself",
+  "FeedbackDemoLabel": "A coding agent turns the copied prompt into a GitHub issue",
+  "FormatFeedbackDemoAsk": "Ask {agent} anything",
+  "FeedbackDemoReply": "I'll ask a few questions, then file the issue.",
+  "FeedbackDemoIssue": "Dictation stops after a long pause",
+  "FeedbackDemoOpened": "Issue opened"
 }

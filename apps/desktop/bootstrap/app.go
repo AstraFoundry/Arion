@@ -116,6 +116,7 @@ type App struct {
 	sceneSeq                        int
 	settingsWin                     *mygo.Window
 	onboarding                      *mygo.Window
+	feedback                        *mygo.Window
 	guide                           *guideSession
 	trayHint                        *mygo.Window
 	views                           map[*mygo.Window]uiapp.View
@@ -385,10 +386,14 @@ func (a *App) Start() {
 	// an app that is already running. The overlay is not the window the
 	// user asked for, so visibility does not suppress Settings.
 	mygo.App.OnActivate(func(bool) { a.revealUserWindow() })
-	// The sign-in callback page links here (Windows forwards it as a second
-	// instance's argument, which reaches OnOpenURL too).
+	// The sign-in callback page links here, and the input methods' "Report
+	// a problem" item opens arion://feedback (Windows forwards either as a
+	// second instance's argument, which reaches OnOpenURL too).
 	mygo.App.OnOpenURL(func(url string) {
-		if isAppURL(url) {
+		switch {
+		case isFeedbackURL(url):
+			a.openFeedback()
+		case isAppURL(url):
 			a.revealWindow()
 		}
 	})
@@ -405,7 +410,7 @@ func (a *App) OpenOnboarding() { mygo.RunOnMain(a.openOnboarding) }
 func (a *App) Windows() map[string]*mygo.Window {
 	windows := map[string]*mygo.Window{}
 	mygo.RunOnMain(func() {
-		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "clipboard": a.clipboardWin, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding, "update-reminder": func() *mygo.Window {
+		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "clipboard": a.clipboardWin, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding, "feedback": a.feedback, "update-reminder": func() *mygo.Window {
 			if a.updatePolicy != nil {
 				return a.updatePolicy.reminder
 			}

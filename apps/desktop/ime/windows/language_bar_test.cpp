@@ -71,9 +71,9 @@ int main() {
     sourceIdentity->Release(); identity->Release(); source->Release();
     Menu menu;
     require(bar->InitMenu(nullptr)==E_POINTER && bar->InitMenu(&menu)==S_OK,"native TSF menu populated");
-    const UINT expected[]={1,0,2,3,4,0,5,6,7};
-    require(menu.entries.size()==9,"full menu count");
-    for (size_t i=0;i<9;++i) {
+    const UINT expected[]={1,0,2,3,4,0,5,6,7,8};
+    require(menu.entries.size()==10,"full menu count");
+    for (size_t i=0;i<10;++i) {
         require(menu.entries[i].id==expected[i],"native menu order");
         require(menu.entries[i].flags==(expected[i]?0u:TF_LBMENUF_SEPARATOR),"enabled items and separators");
     }
@@ -88,18 +88,18 @@ int main() {
     state.languageSwitch.clear();
     require(entry(modes,KeyboardMenuAction::Width).text==nativeCopy(NativeCopy::HalfWidth),"full-width mode action");
     require(entry(modes,KeyboardMenuAction::Punctuation).text==nativeCopy(NativeCopy::ChinesePunctuation),"punctuation mode action");
-    for (UINT id=1;id<=7;++id) require(bar->OnMenuSelect(id)==S_OK,"enabled native action dispatched");
-    require(actions.size()==7,"all seven actions forwarded once");
-    require(bar->OnMenuSelect(0)==E_INVALIDARG && bar->OnMenuSelect(8)==E_INVALIDARG,"unknown command rejected");
+    for (UINT id=1;id<=8;++id) require(bar->OnMenuSelect(id)==S_OK,"enabled native action dispatched");
+    require(actions.size()==8,"all eight actions forwarded once");
+    require(bar->OnMenuSelect(0)==E_INVALIDARG && bar->OnMenuSelect(9)==E_INVALIDARG,"unknown command rejected");
     state.available=false; state.voice=false; state.pending=false; state.failure=nativeCopy(NativeCopy::OptionsFailed);
     Menu unavailable; require(bar->InitMenu(&unavailable)==S_OK,"unavailable menu populated");
-    require(unavailable.entries.size()==10,"failure shown and pending command omitted");
+    require(unavailable.entries.size()==11,"failure shown and pending command omitted");
     require(unavailable.entries[2].id==0 && unavailable.entries[2].flags==TF_LBMENUF_GRAYED && unavailable.entries[2].text==state.failure,"failure is disabled descriptive row");
     for (UINT id=1;id<=5;++id) require(bar->OnMenuSelect(id)==S_FALSE,"stale or disabled command never dispatched");
     for (auto action:{KeyboardMenuAction::Voice,KeyboardMenuAction::Language,KeyboardMenuAction::Width,KeyboardMenuAction::Punctuation})
         require(entry(unavailable,action).flags==TF_LBMENUF_GRAYED,"disabled action conveyed to TSF");
-    require(actions.size()==7,"stale menu dispatch did not run callbacks");
-    require(bar->OnMenuSelect(6)==S_OK && bar->OnMenuSelect(7)==S_OK,"recovery and app entry remain accessible");
+    require(actions.size()==8,"stale menu dispatch did not run callbacks");
+    require(bar->OnMenuSelect(6)==S_OK && bar->OnMenuSelect(7)==S_OK && bar->OnMenuSelect(8)==S_OK,"recovery, app and feedback entries remain accessible");
     require(bar->OnClick(TF_LBI_CLK_LEFT,{},nullptr)==S_FALSE,"unavailable left click does not toggle");
     state.available=true;
     require(bar->OnClick(TF_LBI_CLK_LEFT,{},nullptr)==S_OK && actions.back()==KeyboardMenuAction::Language,"left click toggles through same guarded dispatcher");

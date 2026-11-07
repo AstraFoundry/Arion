@@ -44,6 +44,7 @@ func (x actions) StopLevelMonitor()         { x.a.stopMonitor() }
 func (x actions) RefreshDevices()           { go x.a.refreshDevicesAsync() }
 func (x actions) CopyText(text string) bool { return x.a.copyTranscript(text) }
 func (x actions) OpenSettings()             { x.a.openSettings() }
+func (x actions) OpenFeedback()             { x.a.openFeedback() }
 func (x actions) CheckForUpdates()          { x.a.updates.check(time.Now(), true) }
 func (x actions) InstallUpdate()            { x.a.updates.install() }
 func (x actions) RestartToUpdate()          { x.a.restartUpdate() }

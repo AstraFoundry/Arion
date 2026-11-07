@@ -97,4 +97,4 @@ make site-check     # マーケティングサイト (apps/site)：i18n、型、
 
 ## ライセンス
 
-Arion は [AstraFoundry](https://github.com/AstraFoundry) によって開発され、[AGPL-3.0](LICENSE)（[ADR 009](docs/decisions/009-agpl-license.md)）の下でライセンスされています。[X (@AstraFoundry)](https://x.com/AstraFoundry) のフォロー、[Discord](https://discord.com/invite/72kh465mMm) や [Feishu グループ](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae)への参加をお待ちしています。バグ報告は [GitHub Issues](https://github.com/AstraFoundry/Arion/issues) までお願いします。
+Arion は [AstraFoundry](https://github.com/AstraFoundry) によって開発され、[AGPL-3.0](LICENSE)（[ADR 009](docs/decisions/009-agpl-license.md)）の下でライセンスされています。[X (@AstraFoundry)](https://x.com/AstraFoundry) のフォロー、[Discord](https://discord.com/invite/72kh465mMm) や [Feishu グループ](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae)への参加をお待ちしています。バグ報告は [GitHub Issues](https://github.com/AstraFoundry/Arion/issues) までお願いします。**Settings › About › Ask an agent** から、お使いのコーディングエージェントに報告を任せることもできます（[エージェントによるフィードバック](docs/project/agent-feedback.md)）。
