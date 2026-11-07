@@ -7,6 +7,11 @@ import (
 
 func (r *recorder) OpenClipboardSettings() { r.call("clipboard-settings") }
 
+func (r *recorder) SetClipboardFilesEnabled(on bool) { r.call("clipboard-files-toggle") }
+func (r *recorder) ConfirmClipboardFiles()           { r.call("clipboard-files-confirm") }
+func (r *recorder) DismissClipboardAccess()          { r.call("clipboard-files-cancel") }
+func (r *recorder) OpenClipboardFileSettings()       { r.call("clipboard-file-settings") }
+
 func (r *recorder) OpenClipboard()  { r.call("clipboard-open") }
 func (r *recorder) CloseClipboard() { r.call("clipboard-close") }
 func (r *recorder) RetryClipboard() { r.call("clipboard-retry") }

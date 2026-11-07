@@ -693,5 +693,19 @@
   "FormatFeedbackDemoAsk": "向 {agent} 提问",
   "FeedbackDemoReply": "我先问你几个问题，再帮你提交 Issue。",
   "FeedbackDemoIssue": "长时间停顿后听写中断",
-  "FeedbackDemoOpened": "Issue 已创建"
+  "FeedbackDemoOpened": "Issue 已创建",
+  "ClipboardAccessSettings": "打开系统设置",
+  "ClipboardAccessRequired": "无法访问复制的文件。请检查文件夹权限后重新复制，也可以关闭文件记录。",
+  "ClipboardAccessReCopy": "更改文件访问权限后，请重新复制文件以加入历史。",
+  "SystemDocumentsUsage": "Arion 访问你从“文稿”复制的文件，以保留文件引用并供之后粘贴。文件内容不会上传。",
+  "SystemDesktopUsage": "Arion 访问你从“桌面”复制的文件，以保留文件引用并供之后粘贴。文件内容不会上传。",
+  "SystemDownloadsUsage": "Arion 访问你从“下载”复制的文件，以保留文件引用并供之后粘贴。文件内容不会上传。",
+  "ClipboardFilesEnabled": "记录复制的文件",
+  "ClipboardFilesTitle": "将文件加入剪贴板历史？",
+  "ClipboardFilesExplanation": "保留复制的文件引用，以便之后从历史中选择并粘贴。文件内容不会上传。",
+  "ClipboardFilesConfirm": "开启文件记录",
+  "ClipboardFilesHint": "将复制的文件加入历史，系统可能申请访问文件所在的文件夹。",
+  "ClipboardFilesPermissionsMac": "macOS 可能申请访问文件所在的文件夹。可在“系统设置 → 隐私与安全性 → 文件与文件夹”中查看 Arion 的访问权限。",
+  "ClipboardFilesPermissionsWindows": "Arion 使用你的 Windows 账户的文件权限。可在文件资源管理器中右键文件夹 → 属性 → 安全，查看访问权限。",
+  "ClipboardPreferencesSaveFailed": "无法保存剪贴板设置，请重试。"
 }

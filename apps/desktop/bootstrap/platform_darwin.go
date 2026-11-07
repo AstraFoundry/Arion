@@ -26,6 +26,10 @@ func configureClipboardWindow(window *mygo.Window) {
 	macos.ConfigureOverlay(window.NativeHandle())
 }
 
+func configureClipboardAccessWindow(window *mygo.Window) {
+	macos.ConfigureClipboardDialog(window.NativeHandle())
+}
+
 func configureOverlay(window *mygo.Window) {
 	macos.ConfigureOverlay(window.NativeHandle())
 }
@@ -71,6 +75,8 @@ func (p darwinPlatform) OpenGuidePane(pane runtime.GuidePane) {
 		p.permissions.Open(macos.PaneInputMonitoring)
 	case runtime.GuideMicrophone:
 		p.permissions.Open(macos.PaneMicrophone)
+	case runtime.GuideFilesAndFolders:
+		p.permissions.Open(macos.PaneFilesAndFolders)
 	}
 }
 

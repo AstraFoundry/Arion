@@ -5,6 +5,22 @@ package copy
 type Key string
 
 const (
+	ClipboardPreferencesSaveFailed   Key = "ClipboardPreferencesSaveFailed"
+	ClipboardFilesPermissionsMac     Key = "ClipboardFilesPermissionsMac"
+	ClipboardFilesPermissionsWindows Key = "ClipboardFilesPermissionsWindows"
+	ClipboardFilesEnabled            Key = "ClipboardFilesEnabled"
+	ClipboardFilesTitle              Key = "ClipboardFilesTitle"
+	ClipboardFilesExplanation        Key = "ClipboardFilesExplanation"
+	ClipboardFilesConfirm            Key = "ClipboardFilesConfirm"
+	ClipboardFilesHint               Key = "ClipboardFilesHint"
+
+	ClipboardAccessSettings Key = "ClipboardAccessSettings"
+	ClipboardAccessRequired Key = "ClipboardAccessRequired"
+	ClipboardAccessReCopy   Key = "ClipboardAccessReCopy"
+	SystemDocumentsUsage    Key = "SystemDocumentsUsage"
+	SystemDesktopUsage      Key = "SystemDesktopUsage"
+	SystemDownloadsUsage    Key = "SystemDownloadsUsage"
+
 	OnbDownload    Key = "OnbDownload"
 	AccTermsAccept Key = "AccTermsAccept"
 	AccUsageAgree  Key = "AccUsageAgree"

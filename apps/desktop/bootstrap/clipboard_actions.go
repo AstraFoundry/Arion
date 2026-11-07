@@ -35,7 +35,9 @@ func (x actions) OpenClipboard() {
 	}
 	if cc.service != nil && !a.state.Clipboard.Busy {
 		limits := a.state.Preferences.Clipboard.Limits
-		a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(cc.service, limits) }, copy.ClipboardLoadFailed)
+		a.clipboardWork(func() ([]domain.Clip, error) {
+			return refreshClipboard(cc.service, limits, a.preferences().Clipboard.FilesEnabled)
+		}, copy.ClipboardLoadFailed)
 	}
 	view := uiapp.Clipboard(a.ui)
 	bounds := clipboardBounds(cc.anchor, mygo.Screen.DisplayMatching(cc.anchor).WorkArea, uiapp.ClipboardWidth, uiapp.ClipboardHeight(a.state.Clipboard.Items))
@@ -104,10 +106,15 @@ func (x actions) SetClipboardLimits(limits arion.ClipLimits) {
 	p := a.state.Preferences
 	p.Clipboard.Limits = limits
 	if !a.savePreferences(p) {
-		a.state.Clipboard.Error = copy.ClipboardSaveFailed
+		a.state.Clipboard.Error = copy.ClipboardPreferencesSaveFailed
 		return
 	}
-	a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(a.clipboard.service, limits) }, copy.ClipboardSaveFailed)
+	if a.state.Clipboard.Error == copy.ClipboardPreferencesSaveFailed {
+		a.state.Clipboard.Error = ""
+	}
+	a.clipboardWork(func() ([]domain.Clip, error) {
+		return refreshClipboard(a.clipboard.service, limits, a.preferences().Clipboard.FilesEnabled)
+	}, copy.ClipboardSaveFailed)
 }
 func (x actions) PinClipboard(id string, pin bool) {
 	a := x.a

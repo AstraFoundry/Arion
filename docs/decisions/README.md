@@ -58,6 +58,7 @@ Write an ADR when the decision:
 - [044: Onboarding consent beside sign-in](044-onboarding-consent.md) — checked terms, optional usage sharing and linked disclosure.
 - [045: Independent clipboard placement and delivery](045-clipboard-placement-and-delivery.md) — optional input geometry and guarded captured-destination paste.
 - [046: Clipboard file access](046-clipboard-file-access.md) — encrypted file-bound grants and scoped native publication.
+- [047: Clipboard file access guidance](047-clipboard-file-access-guidance.md) — explicit capture explanations, system purpose strings and suppressible recovery guidance.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

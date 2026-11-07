@@ -62,7 +62,7 @@ func clipTitle(item runtime.Clip, messages copy.Catalog) string {
 func (p *Panel) Render(c *ui.Context, store runtime.Store) {
 	tokens := theme.Apply(c)
 	messages, state := store.Copy(), store.State.Clipboard
-	items := runtime.FindClips(state.Items, p.Query, "")
+	items := runtime.FindClips(store.State.Preferences.Clipboard.VisibleItems(state.Items), p.Query, "")
 	p.selected = max(0, min(p.selected, len(items)-1))
 	if !slices.EqualFunc(p.items, items, func(a, b runtime.Clip) bool { return a.ID == b.ID }) {
 		retained := false

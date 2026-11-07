@@ -328,6 +328,7 @@ const (
 	GuideKeyboard        GuidePane = "keyboard"
 	GuideMicrophone      GuidePane = "microphone"
 	GuideScreenRecording GuidePane = "screen-recording"
+	GuideFilesAndFolders GuidePane = "files-and-folders"
 )
 
 // Guide floats under System Settings for privacy consent or input-source setup.
@@ -592,6 +593,10 @@ type Actions interface {
 	OpenClipboardSettings()
 	CloseClipboard()
 	RetryClipboard()
+	SetClipboardFilesEnabled(bool)
+	ConfirmClipboardFiles()
+	DismissClipboardAccess()
+	OpenClipboardFileSettings()
 	SetClipboardShortcut(string)
 	SetClipboardLimits(ClipLimits)
 	PinClipboard(string, bool)

@@ -121,7 +121,7 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	next, _ = next.Normalize(runtime.GOOS)
 	if !a.savePreferences(next) {
 		if next.Clipboard != before.Clipboard {
-			a.state.Clipboard.Error = copy.ClipboardSaveFailed
+			a.state.Clipboard.Error = copy.ClipboardPreferencesSaveFailed
 		}
 		if next.CheckUpdates != before.CheckUpdates || next.AutoInstallUpdates != before.AutoInstallUpdates || next.AllowPrereleaseUpdates != before.AllowPrereleaseUpdates {
 			a.state.Update.StateError = true

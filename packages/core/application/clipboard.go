@@ -12,13 +12,24 @@ import (
 )
 
 type ClipboardPreferences struct {
-	Enabled  bool              `json:"enabled"`
-	Shortcut string            `json:"shortcut"`
-	Limits   domain.ClipLimits `json:"limits"`
+	Enabled      bool              `json:"enabled"`
+	FilesEnabled bool              `json:"filesEnabled"`
+	Shortcut     string            `json:"shortcut"`
+	Limits       domain.ClipLimits `json:"limits"`
 }
 
 func DefaultClipboardPreferences() ClipboardPreferences {
 	return ClipboardPreferences{Shortcut: "CmdOrCtrl+Shift+V", Limits: domain.DefaultClipLimits()}
+}
+
+// Allows checks the separately opted-in file-history category.
+func (p ClipboardPreferences) Allows(kind domain.ClipKind) bool {
+	return kind != domain.ClipFiles || p.FilesEnabled
+}
+
+// VisibleItems preserves hidden records in storage without exposing them to UI.
+func (p ClipboardPreferences) VisibleItems(items []domain.Clip) []domain.Clip {
+	return slices.DeleteFunc(slices.Clone(items), func(item domain.Clip) bool { return !p.Allows(item.Payload.Kind) })
 }
 
 // ClipboardShortcutKey normalizes accelerator spelling for conflicts with the

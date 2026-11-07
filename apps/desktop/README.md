@@ -1,6 +1,6 @@
 # Desktop app
 
-MyGo native Go module: the menu bar app, its windows (overlay pill, menu bar panel, settings, onboarding, tray hint, update reminder, feedback, macOS consent guide), OS adapters and the composition root.
+MyGo native Go module: the menu bar app, its windows (overlay pill, menu bar panel, settings, onboarding, tray hint, update reminder, feedback, clipboard history, macOS consent guide and file-history enable confirmation), OS adapters and the composition root.
 
 | Path | Role |
 | --- | --- |

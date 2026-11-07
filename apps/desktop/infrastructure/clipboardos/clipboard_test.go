@@ -74,6 +74,13 @@ func TestClipboardExcludesFoldersAndKeepsOrdinaryFiles(t *testing.T) {
 	if err := ValidateFiles(filtered); err != nil {
 		t.Fatal(err)
 	}
+	link := filepath.Join(dir, "file-link")
+	if err := os.Symlink(file, link); err != nil {
+		t.Skipf("symlink fixture unavailable: %v", err)
+	}
+	if _, err := FilesOnly(domain.ClipPayload{Kind: domain.ClipFiles, Files: []string{link}}); !errors.Is(err, transfer.ErrFormat) {
+		t.Fatal("file symlink was collected")
+	}
 }
 
 func TestClipboardCapturesBoundFileAccessWithinPayloadLimit(t *testing.T) {

@@ -46,7 +46,7 @@ func clipboardMetadata(items []domain.Clip, cached map[string]arion.ClipboardMet
 		m := arion.ClipboardMeta{}
 		for _, path := range item.Payload.Files {
 			f := arion.ClipboardFile{Name: filepath.Base(path), Path: path}
-			if info, err := os.Stat(path); err == nil {
+			if info, err := os.Lstat(path); err == nil {
 				f.Available = info.Mode().IsRegular()
 				f.Directory = info.IsDir()
 			}

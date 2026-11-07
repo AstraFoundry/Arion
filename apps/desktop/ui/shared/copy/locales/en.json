@@ -693,5 +693,19 @@
   "FormatFeedbackDemoAsk": "Ask {agent} anything",
   "FeedbackDemoReply": "I'll ask a few questions, then file the issue.",
   "FeedbackDemoIssue": "Dictation stops after a long pause",
-  "FeedbackDemoOpened": "Issue opened"
+  "FeedbackDemoOpened": "Issue opened",
+  "ClipboardAccessSettings": "Open System Settings",
+  "ClipboardAccessRequired": "A copied file could not be accessed. Check folder permissions, then copy it again. You can also turn off file recording.",
+  "ClipboardAccessReCopy": "After changing file access, copy the file again to add it to history.",
+  "SystemDocumentsUsage": "Arion accesses files you copy from Documents to keep their references available for later pasting. File contents are not uploaded.",
+  "SystemDesktopUsage": "Arion accesses files you copy from Desktop to keep their references available for later pasting. File contents are not uploaded.",
+  "SystemDownloadsUsage": "Arion accesses files you copy from Downloads to keep their references available for later pasting. File contents are not uploaded.",
+  "ClipboardFilesEnabled": "Record copied files",
+  "ClipboardFilesTitle": "Add files to clipboard history?",
+  "ClipboardFilesExplanation": "Keep references to copied files so you can select and paste them later. File contents are not uploaded.",
+  "ClipboardFilesConfirm": "Enable file history",
+  "ClipboardFilesHint": "Include copied files in history. Your system may request access to their folders.",
+  "ClipboardFilesPermissionsMac": "macOS may request access to the folders containing these files. Review Arion’s access in System Settings → Privacy & Security → Files and Folders.",
+  "ClipboardFilesPermissionsWindows": "Arion uses your Windows account’s file permissions. To review access, right-click the folder in File Explorer → Properties → Security.",
+  "ClipboardPreferencesSaveFailed": "Clipboard settings could not be saved. Try again."
 }
