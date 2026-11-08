@@ -189,8 +189,11 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, s *Stat
 	s.widen(d.SessionID, hint.LayoutBounds().W)
 	hint.Children(func() {
 		key := state.Preferences.HoldKey
-		if d.Translating && state.Preferences.TranslateKey != "" && state.Preferences.TranslateKey != runtime.HoldOff {
+		switch {
+		case d.Translating && state.Preferences.TranslateKey != "" && state.Preferences.TranslateKey != runtime.HoldOff:
 			key = state.Preferences.TranslateKey
+		case state.Hold.PressedKey == state.Preferences.SecondHoldKey && state.Preferences.SecondHoldKey != "" && state.Preferences.SecondHoldKey != runtime.HoldOff:
+			key = state.Preferences.SecondHoldKey
 		}
 		kit.Kbd(c, tokens, holdkey.Legend(key), true)
 		if state.Hold.Holding {

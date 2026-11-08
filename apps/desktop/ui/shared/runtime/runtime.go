@@ -629,6 +629,8 @@ type Actions interface {
 	UpdatePreferences(func(*Preferences))
 	// SetHoldKey chooses the dictation key.
 	SetHoldKey(key HoldKey)
+	// SetSecondHoldKey chooses the optional second dictation shortcut, or HoldOff to disable it.
+	SetSecondHoldKey(key HoldKey)
 	// SetTranslateKey chooses the translation key, or HoldOff to disable it.
 	SetTranslateKey(key HoldKey)
 	RequestInputMonitoring()

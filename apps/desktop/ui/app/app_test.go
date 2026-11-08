@@ -113,6 +113,10 @@ func (r *recorder) SetHoldKey(key runtime.HoldKey) {
 	r.call("hold:" + string(key))
 	r.state.Preferences.ChooseHoldKey(key)
 }
+func (r *recorder) SetSecondHoldKey(key runtime.HoldKey) {
+	r.call("second-hold:" + string(key))
+	r.state.Preferences.ChooseSecondHoldKey(platform.GOOS, key)
+}
 func (r *recorder) SetTranslateKey(key runtime.HoldKey) {
 	r.call("translate-hold:" + string(key))
 	r.state.Preferences.ChooseTranslateKey(platform.GOOS, key)

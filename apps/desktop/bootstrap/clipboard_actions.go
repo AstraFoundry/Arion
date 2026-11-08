@@ -80,7 +80,7 @@ func (x actions) SetClipboardShortcut(shortcut string) {
 	a := x.a
 	key, ok := application.ClipboardShortcutKey(runtime.GOOS, shortcut)
 	p := a.state.Preferences
-	if !ok || application.HoldKeysConflict(key, p.HoldKey) || application.HoldKeysConflict(key, p.TranslateKey) {
+	if !ok || application.HoldKeysConflict(key, p.HoldKey) || application.HoldKeysConflict(key, p.SecondHoldKey) || application.HoldKeysConflict(key, p.TranslateKey) {
 		a.state.Clipboard.Error = copy.ClipboardShortcutFailed
 		return
 	}

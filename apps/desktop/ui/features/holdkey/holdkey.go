@@ -76,7 +76,7 @@ func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, translati
 			if _, ok := runtime.ClipboardShortcutKey(platform.GOOS, string(key)); !ok {
 				return copy.ClipboardShortcutNeedsChord
 			}
-			if runtime.HoldKeysConflict(key, prefs.HoldKey) {
+			if runtime.HoldKeysConflict(key, prefs.HoldKey) || runtime.HoldKeysConflict(key, prefs.SecondHoldKey) {
 				return copy.TranslateKeyConflict
 			}
 			if runtime.HoldKeysConflict(key, prefs.TranslateKey) {
@@ -85,6 +85,9 @@ func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, translati
 		} else {
 			if runtime.HoldKeysConflict(key, blocked) {
 				return conflict
+			}
+			if runtime.HoldKeysConflict(key, prefs.SecondHoldKey) {
+				return copy.TranslateKeyConflict
 			}
 			if runtime.HoldKeysConflict(key, clipboardKey) {
 				return copy.ClipboardKeyConflict

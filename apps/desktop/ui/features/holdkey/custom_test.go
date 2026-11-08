@@ -163,6 +163,28 @@ func TestTranslationRecorderRejectsDictationConflictAndCanRetry(t *testing.T) {
 	}
 }
 
+func TestPrimaryRecorderRejectsSecondDictationShortcut(t *testing.T) {
+	state := &runtime.State{Preferences: runtime.Preferences{HoldKey: "f8", SecondHoldKey: "ctrl+space", TranslateKey: "f9"}}
+	actions := &shortcutActions{state: state}
+	store := runtime.Store{State: state, Actions: actions}
+	editor := &PickerState{}
+	tt := ui.NewTester(func(c *ui.Context) {
+		theme.Apply(c)
+		Picker(c, store, editor)
+	}, 500, 200)
+	if err := tt.Click(store.Copy().Text(copy.HoldKeyEdit)); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	before := state.Preferences
+	state.Hold.RecordedKey = "ctrl+space"
+	state.Hold.RecordedSeq++
+	tt.Frame()
+	if !editor.listening || editor.error != copy.TranslateKeyConflict || state.Preferences.HoldKey != before.HoldKey || state.Preferences.SecondHoldKey != before.SecondHoldKey || state.Preferences.TranslateKey != before.TranslateKey {
+		t.Fatal("primary recorder accepted the second dictation shortcut")
+	}
+}
+
 func TestSettingsRecordersRejectConflictsAndCanRetry(t *testing.T) {
 	for _, translate := range []bool{false, true} {
 		for _, other := range []runtime.HoldKey{"ctrl+space", runtime.HoldRightCtrl} {
