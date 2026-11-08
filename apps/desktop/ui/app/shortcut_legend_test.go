@@ -45,5 +45,6 @@ func TestNativeOptionAltLegendsAcrossPanelAndDictation(t *testing.T) {
 		if !hasText(tt, modifier+"+J") || hasText(tt, modifier+"+I") {
 			t.Fatalf("%s second dictation shortcut pill uses an incorrect legend: %q", locale, tt.Texts())
 		}
+		snapshot(t, tt, "shortcut-second-pill-"+string(locale))
 	}
 }
