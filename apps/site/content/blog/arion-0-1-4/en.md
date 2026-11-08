@@ -23,13 +23,13 @@ Vocabulary entries double as hotwords: Arion passes them to the speech model wit
 - **Quiet audio is not sent to the model.** Arion checks each audio window in 20 ms steps against the same −42 dBFS floor it uses to end a segment. A window with nothing at or above that level returns empty text without a recognition request, so there is nothing for the model to fill in.
 - **A copied list is decoded again.** If a transcript starts or ends with two or more of your hotwords in their list order, Arion decodes the same audio once more without hotwords and uses that result. A single hotword you actually said stays, and so do terms that appear in another order or inside a sentence. Cancelling still stops the request.[^hotwords]
 
-<dictation-pill state="listening" draft="Ship the Arion MLX build" label="Arion's dictation pill showing the draft: Ship the Arion MLX build" caption="Hotwords still spell the terms you actually say. What changed is that silence and trailing pauses no longer come back as a list of them. An illustration, not a recording."></dictation-pill>
+<embed-frame src="/blog/arion-0-1-4/stage.en.html#hotwords" poster="./posters/hotwords.en.webp" title="Demo: holding Right Option with a pause before speaking" ratio="16/10" caption="A pause before speaking. The pill stays empty while the window is quiet, then fills with what is said; the vocabulary still spells Arion and MLX. A mock recording: no sound is captured."></embed-frame>
 
 ## Cloud polishing with compatible endpoints (0.1.3)
 
 The provider list now has **OpenAI compatible** and **Anthropic compatible** entries. Enter a Base URL and an API key, and Arion loads that endpoint's model list for you to choose from. This covers self-hosted gateways, regional mirrors, and other services that speak either API. Thanks to [@harry-xm](https://github.com/harry-xm) for [asking for it](https://github.com/AstraFoundry/Arion/issues/99).
 
-![The OpenAI compatible setup in Arion: a Base URL field filled with https://gateway.example.com/v1, a masked API key field and a Connect button](./compatible.en.webp "OpenAI compatible: a Base URL, an API key, then Connect. The key stays masked.")
+<embed-frame src="/blog/arion-0-1-4/stage.en.html#compatible" poster="./posters/compatible.en.webp" title="Demo: connecting an OpenAI compatible endpoint" ratio="16/10" caption="Choosing OpenAI compatible, entering a Base URL and pasting a key. After Connect, the endpoint's own model list fills the Model menu. A mock recording: no provider is contacted."></embed-frame>
 
 The Base URL is saved with the key in the OS credential store, one item per provider, so switching providers keeps each endpoint and key. The official OpenAI and Anthropic entries are unchanged. The privacy boundary is the same as for every cloud provider: Arion sends only the recognized text, the scene, and matched vocabulary entries, while audio, cursor and window context, and history stay on your device.[^cloud]
 
@@ -41,7 +41,7 @@ A valid DeepSeek key could fail with "The provider refused this key or sign-in."
 
 Model-list requests now go out as a plain GET. Only an explicit authentication failure or HTTP 401 counts as a rejected key; a bare 403, a rate limit, a server error, or an unreadable response now shows "Couldn't load models." A failed check never replaces a key you already saved, and a failed refresh keeps the models you had. The local log records only the failure code and HTTP status, never the key, URL, or response.
 
-![The DeepSeek setup in Arion after a failed check: the key field is empty, Connect is dimmed and a warning reads: Couldn't load models.](./deepseek.en.webp "A model-list failure now says so, instead of blaming the key.")
+<embed-frame src="/blog/arion-0-1-4/stage.en.html#deepseek" poster="./posters/deepseek.en.webp" title="Demo: connecting a DeepSeek key" ratio="16/10" caption="Pasting a DeepSeek key and pressing Connect. The model list is requested with a plain GET, the key is accepted, and the model can be chosen. A mock recording."></embed-frame>
 
 ## Lighter microphone start on macOS (0.1.3)
 
@@ -53,9 +53,7 @@ Capture does not run between recordings. Before reuse, Arion clears buffered inp
 
 Many of you already work with a coding agent such as Codex or Claude Code. 0.1.4 lets it help when something in Arion goes wrong. Open **Report a problem** from the **?** button in the menu bar panel, **Ask an agent** in Settings › About, or **Report a problem…** in the macOS or Windows input menu.
 
-![Arion's menu bar panel: the Arion name, a green Ready status with a question-mark button beside it, Start dictation, Settings and Quit Arion](./panel.en.webp "The ? button beside Ready in the menu bar panel.")
-
-![Settings › About in Arion: the Report a bug row with a GitHub Issues link and an Ask an agent button, between Community and License](./about.en.webp "Settings › About: GitHub Issues as before, and Ask an agent beside it.")
+<embed-frame src="/blog/arion-0-1-4/stage.en.html#feedback" poster="./posters/feedback.en.webp" title="Demo: reporting a problem with a coding agent" ratio="16/10" caption="The ? button in the menu bar panel opens Report a problem. Copy the prompt, paste it into the agent, and it asks its questions and opens the issue. A mock recording: no issue is filed."></embed-frame>
 
 The window gives you a one-line prompt to copy. It names Arion's feedback skill on our website, your version, and your platform, and contains no paths, account details, or logs. Paste it into your agent, and the agent:
 

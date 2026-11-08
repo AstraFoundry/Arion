@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Mock recordings for the "Arion 0.1.2 to 0.1.4" post (Simplified Chinese copy).
+      The hash picks the scene: #hotwords, #compatible, #deepseek or #feedback.
+      Illustrations only: nothing is recorded, no model runs and no provider is
+      contacted. Arion's labels come from the desktop copy catalogs. Loaded in a
+      sandboxed frame; follows the system color scheme. Engine: stage.js.
+    -->
+    <link rel="stylesheet" href="stage.css" />
+    <script>
+      window.ARION_COPY = {
+        "menu": [
+          "文件",
+          "编辑",
+          "显示",
+          "窗口"
+        ],
+        "clock": "周日 10:00",
+        "inserted": "已插入",
+        "keys": {
+          "enter": "↩",
+          "paste": [
+            "⌘",
+            "V"
+          ]
+        },
+        "hotwords": {
+          "app": "团队聊天",
+          "channels": [
+            "# release",
+            "# design",
+            "# feedback"
+          ],
+          "thread": [
+            {
+              "who": "Lena",
+              "text": "Apple 芯片的安装包准备好了吗？"
+            }
+          ],
+          "me": "我",
+          "composer": "发送到 # release",
+          "key": "右 Option",
+          "hold": "按住说话",
+          "vocabLabel": "词汇",
+          "vocab": [
+            "Arion",
+            "MLX",
+            "Qwen"
+          ],
+          "quiet": "安静：不送入识别",
+          "partials": [
+            "今晚",
+            "今晚把 Arion",
+            "今晚把 Arion 的 MLX 版本",
+            "今晚把 Arion 的 MLX 版本发出去"
+          ],
+          "final": "今晚把 Arion 的 MLX 版本发出去。"
+        },
+        "settings": {
+          "app": "Arion",
+          "title": "Arion 设置",
+          "nav": [
+            "概览",
+            "通用",
+            "听写",
+            "键盘",
+            "麦克风",
+            "识别与润色",
+            "词汇",
+            "剪贴板",
+            "关于"
+          ],
+          "navOn": 5,
+          "cloudTitle": "云端模型",
+          "inUse": "使用中",
+          "apiKeys": "API 密钥",
+          "keyLabel": "API 密钥",
+          "disconnect": "断开",
+          "modelLabel": "模型",
+          "baseLabel": "接口地址",
+          "basePlaceholder": "https://example.com/v1",
+          "keyPlaceholder": "粘贴 API 密钥",
+          "connect": "连接",
+          "providers": [
+            {
+              "id": "openai",
+              "name": "OpenAI",
+              "mark": "O",
+              "color": "hsl(165 18% 24%)"
+            },
+            {
+              "id": "anthropic",
+              "name": "Anthropic",
+              "mark": "A",
+              "color": "hsl(18 42% 46%)"
+            },
+            {
+              "id": "google",
+              "name": "Google Gemini",
+              "mark": "G",
+              "color": "hsl(214 70% 52%)"
+            },
+            {
+              "id": "deepseek",
+              "name": "DeepSeek",
+              "mark": "D",
+              "color": "hsl(228 78% 60%)"
+            },
+            {
+              "id": "openrouter",
+              "name": "OpenRouter",
+              "mark": "R",
+              "color": "hsl(250 16% 32%)"
+            },
+            {
+              "id": "openai-compatible",
+              "name": "OpenAI compatible",
+              "mark": "O",
+              "color": "hsl(165 18% 24%)",
+              "compatible": true
+            },
+            {
+              "id": "anthropic-compatible",
+              "name": "Anthropic compatible",
+              "mark": "A",
+              "color": "hsl(18 42% 46%)",
+              "compatible": true
+            }
+          ]
+        },
+        "compatible": {
+          "provider": "openai-compatible",
+          "baseURL": "https://gateway.example.com/v1",
+          "models": [
+            "llama-3.3-70b",
+            "qwen3-32b",
+            "gpt-oss-120b"
+          ],
+          "pick": 1
+        },
+        "deepseek": {
+          "provider": "deepseek",
+          "models": [
+            "deepseek-chat",
+            "deepseek-reasoner"
+          ],
+          "pick": 1,
+          "noteLabel": "模型列表",
+          "note": "GET /models，不带请求体",
+          "status": "200 OK"
+        },
+        "feedback": {
+          "app": "Codex",
+          "agent": "Codex",
+          "ask": "向 Codex 提问",
+          "ready": "就绪",
+          "start": "开始听写",
+          "settings": "设置…",
+          "quit": "退出 Arion",
+          "windowTitle": "问题反馈",
+          "title": "让 Agent 帮你反馈问题",
+          "body": "把这段提示词粘贴到 Codex、Claude Code 等编程 Agent。它会用大白话问清问题，把日志脱敏整理好，替你提交 GitHub Issue，还能陪你一起修复。",
+          "prompt": "用 curl 获取 https://arion.astrafoundry.si/feedback.md，按其中的步骤帮我反馈 Arion 遇到的问题。我在 macOS arm64 上使用 Arion 0.1.4。",
+          "copy": "复制",
+          "copied": "已复制",
+          "yourself": "自己提交 Issue",
+          "reply": "我先问你几个问题，再帮你提交 Issue。",
+          "opened": "Issue 已创建",
+          "issue": "长时间停顿后听写中断"
+        }
+      };
+    </script>
+    <script src="stage.js" defer></script>
+  </head>
+  <body></body>
+</html>
