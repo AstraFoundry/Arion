@@ -57,7 +57,7 @@ Many of you already work with a coding agent such as Codex or Claude Code. 0.1.4
 
 ![Settings › About in Arion: the Report a bug row with a GitHub Issues link and an Ask an agent button, between Community and License](./about.en.webp "Settings › About: GitHub Issues as before, and Ask an agent beside it.")
 
-The window gives you a one-line prompt to copy. It names Arion's feedback skill at `arion.astrafoundry.si/feedback.md`, your version, and your platform, and contains no paths, account details, or logs. Paste it into your agent, and the agent:
+The window gives you a one-line prompt to copy. It names Arion's feedback skill on our website, your version, and your platform, and contains no paths, account details, or logs. Paste it into your agent, and the agent:
 
 - asks what went wrong in your language, one or two questions at a time;
 - answers plain questions from the repository without filing anything;
@@ -83,4 +83,4 @@ The full notes for each version are in the [desktop changelog](https://github.co
 
 [^capture]: [Spec 001: Desktop input](https://github.com/AstraFoundry/Arion/blob/main/specs/001-desktop-input.md) (`DSK-04`).
 
-[^feedback]: [Agent-assisted feedback](https://github.com/AstraFoundry/Arion/blob/main/docs/project/agent-feedback.md).
+[^feedback]: [Pull request #108: agent-assisted problem reports](https://github.com/AstraFoundry/Arion/pull/108); the procedure the agent follows is in the repository's agent feedback documentation under `docs/project`.

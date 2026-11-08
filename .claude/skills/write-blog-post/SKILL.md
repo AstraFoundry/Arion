@@ -47,7 +47,7 @@ Rules for the collection:
 - Numbers carry units and come from the owning document (`−42 dBFS`, `20 ms`, `about 2.5 GB`). Do not invent counts, percentages or comparisons.
 - No hype words, no "not just X, it's Y", no rhetorical questions, no emoji, no exclamation marks, no section kickers. No em-dash chains; use a full stop or a colon.
 - Mechanism detail goes in a footnote when it would slow the main text. Footnotes link specs and ADRs with full `https://github.com/AstraFoundry/Arion/blob/main/...` URLs and cite acceptance IDs in code (`SPH-A12`).
-- Links to site pages use site URLs (`/blog/arion-0-1-1/`, `/privacy/`, `/#download`); `pnpm check` rejects a link to a route that does not exist. Do not link to `/feedback.md`: it is an agent skill, and a site test fails when any page links to it. Write the address as code instead.
+- Links to site pages use site URLs (`/blog/arion-0-1-1/`, `/privacy/`, `/#download`); `pnpm check` rejects a link to a route that does not exist. Never write the string `feedback.md` anywhere in a post, not even as code or inside another URL such as `docs/project/agent-feedback.md`: the site serves it as an agent skill, and `apps/site/tests/feedback-skill.test.ts` fails on any site content containing it. Describe it as the feedback skill on the website, and link the pull request instead of that document.
 
 ## 4. Three locales
 
@@ -77,7 +77,7 @@ Write `en.md` first, then `zh.md` and `ja.md` from the facts, not as literal tra
 ## 7. Check before hand-off
 
 1. `pnpm check` from the repository root (links, Markdown, structure).
-2. `NODE_USE_ENV_PROXY=1 pnpm --filter site build` (front matter, translations, media, embeds, authors).
+2. `NODE_USE_ENV_PROXY=1 pnpm --filter site build` (front matter, translations, media, embeds, authors) and `pnpm --filter site test` (content rules such as the feedback skill test).
 3. Serve `apps/site/out`, take full-page screenshots of the post in every locale and of `/blog/`, and read them: cover, contents list, figures, credits, footnotes.
 4. Reread each claim against the fact sheet. Report checks you could not run and why.
 

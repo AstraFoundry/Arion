@@ -59,7 +59,7 @@ Base URL 与密钥一起保存在系统凭据存储中，每个服务商各占�
 
 ![Arion 的问题反馈窗口：左侧模拟的 Codex 对话已提交 GitHub Issue，右侧是一段写明 Arion 0.1.4 和 macOS arm64 的提示词与复制按钮](./feedback.zh.webp "0.1.4 中文界面下的问题反馈窗口。提示词只包含技能地址、版本号和平台。")
 
-窗口里有一行可以复制的提示词。它写明 Arion 反馈技能的地址 `arion.astrafoundry.si/feedback.md`、你的版本和平台，不包含任何路径、账号信息或日志。把它粘贴给 Agent 后，Agent 会：
+窗口里有一行可以复制的提示词。它写明 Arion 官网上反馈技能的地址、你的版本和平台，不包含任何路径、账号信息或日志。把它粘贴给 Agent 后，Agent 会：
 
 - 用你的语言提问，每次只问一两个问题；
 - 遇到单纯的使用问题，直接根据仓库内容回答，不提交 Issue；
@@ -85,4 +85,4 @@ Arion 本身不发送任何内容，Agent 只使用你同意提供的信息。�
 
 [^capture]: [规范 001：桌面输入](https://github.com/AstraFoundry/Arion/blob/main/specs/001-desktop-input.md)（`DSK-04`）。
 
-[^feedback]: [由 Agent 协助的问题反馈](https://github.com/AstraFoundry/Arion/blob/main/docs/project/agent-feedback.md)。
+[^feedback]: [Pull Request #108：由 Agent 协助的问题反馈](https://github.com/AstraFoundry/Arion/pull/108)。Agent 遵循的流程见仓库 `docs/project` 下的 Agent 反馈文档。

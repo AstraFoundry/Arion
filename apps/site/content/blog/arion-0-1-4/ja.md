@@ -57,7 +57,7 @@ Codex や Claude Code のようなコーディングエージェントを日常�
 
 ![Arion の Settings › About。Community と License のあいだの Report a bug の行に、GitHub Issues のリンクと Ask an agent ボタンがある](./about.en.webp "Settings › About：従来の GitHub Issues の横に Ask an agent が加わりました。")
 
-ウィンドウにはコピーできる1行のプロンプトがあります。Arion のフィードバック用スキル `arion.astrafoundry.si/feedback.md` の場所、バージョン、プラットフォームだけを記し、パス、アカウント情報、ログは含みません。これをエージェントに貼り付けると、エージェントは次のように進めます。
+ウィンドウにはコピーできる1行のプロンプトがあります。Arion のウェブサイトにあるフィードバック用スキルの場所、バージョン、プラットフォームだけを記し、パス、アカウント情報、ログは含みません。これをエージェントに貼り付けると、エージェントは次のように進めます。
 
 - あなたの言語で、1回に1つか2つずつ質問する
 - 使い方の質問にはリポジトリをもとに答え、Issue は作らない
@@ -83,4 +83,4 @@ Arion 自体は何も送信せず、エージェントはあなたが承認し�
 
 [^capture]: [仕様 001：デスクトップ入力](https://github.com/AstraFoundry/Arion/blob/main/specs/001-desktop-input.md)（`DSK-04`）。
 
-[^feedback]: [エージェントによるフィードバック](https://github.com/AstraFoundry/Arion/blob/main/docs/project/agent-feedback.md)。
+[^feedback]: [プルリクエスト #108：エージェントによる問題報告](https://github.com/AstraFoundry/Arion/pull/108)。エージェントがたどる手順はリポジトリの `docs/project` にあるエージェントフィードバックの文書にあります。
