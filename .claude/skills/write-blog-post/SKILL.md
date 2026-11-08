@@ -1,6 +1,6 @@
 ---
 name: write-blog-post
-description: Use when writing or revising a post for the Arion site blog (apps/site/content/blog), including release announcements and changelog posts that cover a range of versions, product explainers and engineering essays. Covers gathering facts from tags, the desktop changelog, specs, ADRs, issues and copy catalogs; the voice; English, Simplified Chinese and Japanese versions; real screenshots; credits; and the checks a post must pass.
+description: Use when writing or revising a post for the Arion site blog (apps/site/content/blog), including release announcements and changelog posts that cover a range of versions, product explainers and engineering essays. Covers gathering facts from tags, the desktop changelog, specs, ADRs, issues and copy catalogs; the voice; English, Simplified Chinese and Japanese versions; animated mock recordings (stage embeds) and real UI renders; credits; and the checks a post must pass.
 ---
 
 # Write an Arion blog post
@@ -47,7 +47,7 @@ Rules for the collection:
 - Numbers carry units and come from the owning document (`−42 dBFS`, `20 ms`, `about 2.5 GB`). Do not invent counts, percentages or comparisons.
 - No hype words, no "not just X, it's Y", no rhetorical questions, no emoji, no exclamation marks, no section kickers. No em-dash chains; use a full stop or a colon.
 - Mechanism detail goes in a footnote when it would slow the main text. Footnotes link specs and ADRs with full `https://github.com/AstraFoundry/Arion/blob/main/...` URLs and cite acceptance IDs in code (`SPH-A12`).
-- Links to site pages use site URLs (`/blog/arion-0-1-1/`, `/privacy/`, `/#download`); `pnpm check` rejects a link to a route that does not exist. Never write the string `feedback.md` anywhere in a post, not even as code or inside another URL such as `docs/project/agent-feedback.md`: the site serves it as an agent skill, and `apps/site/tests/feedback-skill.test.ts` fails on any site content containing it. Describe it as the feedback skill on the website, and link the pull request instead of that document.
+- Links to site pages use site URLs (`/blog/arion-0-1-1/`, `/privacy/`, `/#download`); `pnpm check` rejects a link to a route that does not exist. Never write the string `feedback.md` in a post's Markdown, not even as code or inside another URL such as `docs/project/agent-feedback.md`: the site serves it as an agent skill, and `apps/site/tests/feedback-skill.test.ts` fails on any file under `app`, `src` or `content` containing it. Describe it as the feedback skill on the website, and link the pull request instead of that document. A mock recording under `public/` may show the app's prompt text verbatim, since it is inert text, not a link.
 
 ## 4. Three locales
 
@@ -60,13 +60,24 @@ Write `en.md` first, then `zh.md` and `ja.md` from the facts, not as literal tra
 
 ## 5. Media
 
-- Give every user-visible change its own picture when the change has a UI: the new control, the filled form, the new error message, each entry point. A release post with only a cover reads as a wall of text; `arion-0-1-4` has one figure or embed per section except the change with no UI. A change without UI gets no invented diagram.
-- Prefer real UI. The UI tests in `apps/desktop/ui/app/*_test.go` already drive most screens into interesting states (`TestCloudCompatibleEndpoint`, `TestMenuBarPanel`, the About tests); copy their setup into the throwaway test instead of inventing state. The desktop UI tests render windows headlessly on any OS: `ARION_UI_SNAPSHOTS=<dir> go test ./ui/app -run <Name>` in `apps/desktop`. For a post image, write a throwaway test that sets the version being announced, `tt.SetScale(2)`, and the locale, then delete it. If the render shows host-specific text (the platform in a prompt), set it to the platform a reader runs, never leave `linux amd64` in a picture, and revert any temporary source change before committing.
-- Crop to the part that shows the change (the card, the row), not the whole window. Keep the alpha channel when converting: panels and popovers render with transparent rounded corners, which turn black if flattened to RGB.
-- Quote UI strings in the text and alt text exactly as the catalog has them, and compare against the render: the English and Chinese strings for the same key often differ in wording.
-- `<dictation-pill>` drafts are a short phrase (about five words); a long draft is truncated from the start in the pill.
-- Convert to WebP (quality around 88) and keep it next to the Markdown (`./cover.webp`, `./feature.zh.webp`). The cover must be the same file in all locales; a locale-specific image goes in the body as a captioned figure.
-- Interactive mock recordings are `<embed-frame>` pages under `apps/site/public/blog/<slug>/` with a poster per locale; their captions say "A mock recording" and that no sound is captured. Never present a mock as a capture of real use.
+Show each change moving. A user-visible change is a sequence (press, speak, click, type, connect, paste), and a still image of one state cannot show it. The release posts illustrate every section that has a UI with a mock recording; static images are for the cover and for a state that has no sequence. A change without UI gets no invented diagram.
+
+### Mock recordings (the default)
+
+- One `<embed-frame>` per change, all scenes of a post in one engine: `apps/site/public/blog/<slug>/stage.js`, `stage.css` and `stage.<locale>.html`, the hash picking the scene (`stage.en.html#compatible`). Start from the latest post's stage (`arion-0-1-4`, which follows `arion-0-1-1`): it already has the wallpaper and rounded recording, the eased zoom camera, the smoothed cursor with click ripples, the keystroke overlay, the dictation pill, chat, settings, menu bar panel, feedback window and agent chat. Keep the files self-contained per post and delete pieces the post does not use; eslint (`pnpm --filter site exec eslint public/blog/<slug>`) flags unused functions.
+- Script each scene as the user would do it, in order: move to the control, click, type or press keys (shown in the overlay), the app responds, the camera zooms in on the action and back out. End on the result, and pass `hold()` there so reduced motion shows the finished frame. Use the annotation card for the one fact the picture cannot show (the request that is now sent, the window that is now skipped).
+- Draw Arion's surfaces after the real ones: render them first with the UI tests (see below) and copy layout, order and labels. Labels come from `apps/desktop/ui/shared/copy/locales/*.json`; generate `stage.<locale>.html` from the catalogs with a small script instead of retyping strings. The desktop UI has English and Simplified Chinese only, so `stage.ja.html` localizes the other apps' content (chat, agent) and keeps Arion's labels in English.
+- Each locale has a poster: a 1280 × 800 screenshot of the scene's first frame (about 350 ms after load), saved as WebP under `apps/site/content/blog/<slug>/posters/<scene>.<locale>.webp`.
+- Captions say what happens and end with "A mock recording" (「模拟录屏」, 「模擬録画です」), adding that no sound is captured or no provider is contacted when the scene could suggest otherwise. Never present a mock as a capture of real use.
+- Before publishing, capture frames across each scene's timeline in every locale, in light and dark, and with reduced motion (Playwright with `reducedMotion: 'reduce'` and `colorScheme: 'dark'`), and look at them: camera framing, overlaps, text overflow, the final frame. Then scroll the built post to each embed and confirm it loads and plays in its sandboxed frame.
+- `<dictation-pill>` is an inert, single-state illustration; prefer a scene when the point is a change over time. Its drafts are a short phrase (about five words); a long draft is truncated from the start.
+
+### Real UI renders (the cover and reference)
+
+- The desktop UI tests render windows headlessly on any OS: `ARION_UI_SNAPSHOTS=<dir> go test ./ui/app -run <Name>` in `apps/desktop`. The tests in `apps/desktop/ui/app/*_test.go` already drive most screens into interesting states (`TestCloudCompatibleEndpoint`, `TestMenuBarPanel`, the About tests); copy their setup into a throwaway test that sets the version being announced, `tt.SetScale(2)` and the locale, then delete it. If the render shows host-specific text (the platform in a prompt), set it to the platform a reader runs, never leave `linux amd64` in a picture, and revert any temporary source change before committing.
+- Crop to the part that shows the change. Keep the alpha channel when converting: panels and popovers render with transparent rounded corners, which turn black if flattened to RGB.
+- Convert to WebP (quality around 88) and keep it next to the Markdown (`./cover.webp`). The cover must be the same file in all locales; a locale-specific image goes in the body as a captioned figure.
+- Quote UI strings in the text, alt text and captions exactly as the catalog has them, and compare against the render: the English and Chinese strings for the same key often differ in wording (`CloudBaseURLLabel` is "Base URL" and 「接口地址」).
 - Alt text describes what the image shows, including the text a reader needs; the caption says why it is there.
 
 ## 6. Credits
