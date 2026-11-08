@@ -168,6 +168,9 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	if next.CloudModel != before.CloudModel {
 		a.cloud.SetModel(next.CloudModel)
 	}
+	if next.CloudReasoning != before.CloudReasoning {
+		a.cloud.SetReasoningFallback(next.CloudReasoning)
+	}
 	if before.ContextHistory && !next.ContextHistory {
 		a.history.Clear()
 	}

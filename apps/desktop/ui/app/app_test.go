@@ -1,6 +1,7 @@
 package app
 
 import (
+	"arion.local/desktop/ui/entities/dictation"
 	"bytes"
 	"fmt"
 	"image/png"
@@ -1265,6 +1266,28 @@ func TestLearnedNoticeUndo(t *testing.T) {
 		settle(pill)
 		if hasText(pill, messages.Text(copy.PillLearned)) {
 			t.Fatalf("%s: notice shown during a session", locale)
+		}
+	}
+}
+
+func TestPolishNoteAfterFallback(t *testing.T) {
+	for _, locale := range []copy.Locale{copy.English, copy.SimplifiedChinese} {
+		state, _, store := fixture()
+		state.Preferences.UILanguage = runtime.UILanguage(locale)
+		messages := copy.For(locale)
+		changed := time.Now().Add(-dictation.DoneVisible - 200*time.Millisecond)
+		state.Dictation = runtime.Dictation{SessionID: "p", State: runtime.StateCompleted, Changed: changed, PolishNote: runtime.PolishReasoningRequired}
+		overlayPage := overlay.NewPage()
+		pill := ui.NewTester(func(c *ui.Context) { overlayPage.Render(c, store) }, OverlayWidth, OverlayHeight)
+		settle(pill)
+		if !hasText(pill, messages.Text(copy.PolishNoteReasoningTitle)) || !hasText(pill, messages.Text(copy.PolishNoteReasoningHint)) {
+			t.Fatalf("%s: note missing: %q", locale, pill.Texts())
+		}
+		snapshot(t, pill, "overlay-polish-note-"+string(locale))
+		state.Dictation.Changed = time.Now().Add(-dictation.DoneVisible - dictation.PolishNoteVisible - time.Second)
+		settle(pill)
+		if hasText(pill, messages.Text(copy.PolishNoteReasoningTitle)) {
+			t.Fatalf("%s: note stayed on screen", locale)
 		}
 	}
 }

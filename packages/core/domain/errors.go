@@ -28,6 +28,30 @@ const (
 	DetailContextWindowTimeout = "context_window_timeout"
 )
 
+// Polish failure details are content-free categories of a rewrite that fell
+// back to local cleanup. The UI explains each with its next step.
+const (
+	PolishReasoningRequired  = "reasoning required"
+	PolishRateLimited        = "rate limited"
+	PolishQuotaExhausted     = "quota exhausted"
+	PolishCredentialRejected = "credential rejected"
+	PolishModelUnavailable   = "model unavailable"
+	PolishModelNotFound      = "model not found"
+	PolishTimeout            = "timeout"
+)
+
+// Detailer is implemented by errors that carry a content-free failure detail.
+type Detailer interface{ FailureDetail() string }
+
+// DetailOf returns the failure detail err carries, or "".
+func DetailOf(err error) string {
+	var d Detailer
+	if errors.As(err, &d) {
+		return d.FailureDetail()
+	}
+	return ""
+}
+
 // DetailTranslationModel identifies a voice-translation session whose model
 // is missing or failed to run.
 const DetailTranslationModel = "translation model"
