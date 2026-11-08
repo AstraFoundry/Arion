@@ -5,6 +5,7 @@ package darwin
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -18,6 +19,48 @@ import (
 type ownedFileAccess struct {
 	Path     string
 	Bookmark []byte
+}
+
+func TestClipboardPermissionErrorClassification(t *testing.T) {
+	load()
+	withPool(func() {
+		posix := send(class("NSError"), "errorWithDomain:code:userInfo:", uintptr(nsString("NSPOSIXErrorDomain")), 1, 0)
+		info := send(class("NSDictionary"), "dictionaryWithObject:forKey:", uintptr(posix), uintptr(nsString("NSUnderlyingError")))
+		wrapped := send(class("NSError"), "errorWithDomain:code:userInfo:", uintptr(nsString("NSCocoaErrorDomain")), 256, uintptr(info))
+		if !macClipboardPermissionError(wrapped) {
+			t.Fatal("underlying permission evidence discarded")
+		}
+		missing := send(class("NSError"), "errorWithDomain:code:userInfo:", uintptr(nsString("NSPOSIXErrorDomain")), 2, 0)
+		if macClipboardPermissionError(missing) {
+			t.Fatal("missing file classified as permission denial")
+		}
+		path := filepath.Join(t.TempDir(), "missing")
+		_, err := macClipboardBookmark(fileURL(path))
+		if err == nil || errors.Is(err, os.ErrPermission) {
+			t.Fatal("missing file lost its failure classification", err)
+		}
+	})
+}
+
+func TestClipboardHistorySkipsUnsupportedBookmarks(t *testing.T) {
+	load()
+	withPool(func() {
+		dir := t.TempDir()
+		file := filepath.Join(dir, "file")
+		if err := os.WriteFile(file, nil, 0600); err != nil {
+			t.Fatal(err)
+		}
+		link := filepath.Join(dir, "link")
+		if err := os.Symlink(file, link); err != nil {
+			t.Fatal(err)
+		}
+		for _, path := range []string{dir, link} {
+			bookmark, err := macClipboardOrdinaryFileBookmark(fileURL(path))
+			if err != nil || len(bookmark) != 0 {
+				t.Fatal("unsupported resource requested a history credential", err)
+			}
+		}
+	})
 }
 
 func ownedFileAccessData(path string, bookmark []byte) transfer.Data {

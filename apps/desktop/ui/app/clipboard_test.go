@@ -212,6 +212,7 @@ func TestClipboardInlineImageAndFileRows(t *testing.T) {
 	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
 		t.Run(string(locale), func(t *testing.T) {
 			state, rec, store := fixture()
+			state.Preferences.Clipboard.FilesEnabled = true
 			state.Preferences.UILanguage = locale
 			imagePayload := runtime.ClipPayload{Kind: runtime.ClipImage, PNG: []byte("\x89PNG\r\n\x1a\n")}
 			filePayload := runtime.ClipPayload{Kind: runtime.ClipFiles, Files: []string{"/workspace/Plan.pdf"}}
@@ -351,6 +352,7 @@ func dwell(tt *ui.Tester) {
 
 func TestClipboardHoverPreviewContent(t *testing.T) {
 	state, rec, store := fixture()
+	state.Preferences.Clipboard.FilesEnabled = true
 	payload := runtime.ClipPayload{Kind: runtime.ClipFiles, Files: []string{"/workspace/Research notes/Quarterly design review.pdf"}}
 	item := runtime.Clip{ID: payload.ID(), Payload: payload}
 	state.Clipboard.Items = []runtime.Clip{item}
@@ -526,5 +528,29 @@ func TestClipboardActivationFollowsTarget(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestClipboardFilesOffHidesPinnedRowsButKeepsTextAndImages(t *testing.T) {
+	state, _, store := fixture()
+	state.Preferences.Clipboard.FilesEnabled = false
+	file := runtime.ClipPayload{Kind: runtime.ClipFiles, Files: []string{"/owned/hidden-file.pdf"}}
+	text := runtime.ClipboardText("kept text")
+	bitmap := runtime.ClipPayload{Kind: runtime.ClipImage, PNG: []byte("\x89PNG\r\n\x1a\n")}
+	state.Clipboard.Items = []runtime.Clip{{ID: file.ID(), Payload: file, Pinned: true}, {ID: text.ID(), Payload: text}, {ID: bitmap.ID(), Payload: bitmap}}
+	state.Clipboard.Meta = map[string]runtime.ClipboardMeta{bitmap.ID(): {Thumbnail: ui.NewBitmap(image.NewRGBA(image.Rect(0, 0, 2, 2)))}}
+	panel := &clipboardfeature.Panel{}
+	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, clipboardfeature.Width, clipboardfeature.MaxHeight)
+	settle(tt)
+	if hasText(tt, "hidden-file") || !hasText(tt, "kept text") {
+		t.Fatal("off mode exposed files or removed text")
+	}
+	if _, ok := tt.Find(store.Copy().Text(copy.ClipboardImages)); !ok {
+		t.Fatal("off mode removed direct bitmap")
+	}
+	state.Preferences.Clipboard.FilesEnabled = true
+	settle(tt)
+	if !hasText(tt, "hidden-file") {
+		t.Fatal("retained file not restored")
 	}
 }

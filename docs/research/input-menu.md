@@ -31,6 +31,7 @@ Implemented with existing capabilities:
 - Action wording with the configured shortcut (KBD-04): **Switch to English ({key})** / **Switch to Chinese ({key})**. Shift stays ⇧. Caps Lock uses that key name. The old label was **English — Shift**, which did not say whether it named the current mode or the action.
 - Separators group the mode switch, keyboard data and the app.
 - **Open Arion** activates the app that shipped the input method. The build writes its bundle ID to `ArionAppIdentifier` in the input method's `Info.plist`. The item is omitted when LaunchServices cannot resolve that app.
+- **Report a problem…** follows it under the same condition and opens `arion://feedback`, the app's [agent-assisted feedback](../project/agent-feedback.md) window. The Windows language bar adds the same item after **Open Arion**.
 
 Not implemented, because each needs a product decision and a spec:
 

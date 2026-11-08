@@ -1,0 +1,66 @@
+{
+  "source": "https://api.fxtwitter.com/{handle}",
+  "avatarSize": "_200x200",
+  "profiles": [
+    {
+      "handle": "Labrin",
+      "name": "Labrin",
+      "avatar": "x-labrin.jpg",
+      "avatarSHA256": "7d0335f5ed177e48feb80ea56f8afa4c81ca71d5ff63d10bc7dd2cf64b1044de"
+    },
+    {
+      "handle": "brucexu_eth",
+      "name": "brucexu.eth",
+      "avatar": "x-brucexu_eth.jpg",
+      "avatarSHA256": "75ff714d4f8c4fe33dda11ea483f1ac3f5f48e5e6e28fd8543eef98a2f007271"
+    },
+    {
+      "handle": "corndogjpn2",
+      "name": "goDavi（狗大V国际版）",
+      "avatar": "x-corndogjpn2.jpg",
+      "avatarSHA256": "f23a67c05a427b58bc4495a994eba06b5d4c430711ff3c7e7ff45c5197188c3b"
+    },
+    {
+      "handle": "hishn948957",
+      "name": "白",
+      "avatar": "x-hishn948957.jpg",
+      "avatarSHA256": "705fe8f8ea2134ea9b0377213bb6fb234e11ce3cbbd5bf163d4230e92e4000f7"
+    },
+    {
+      "handle": "wangye1644294",
+      "name": "RafaelYu",
+      "avatar": "x-wangye1644294.jpg",
+      "avatarSHA256": "be361a739d8532bf589a21c37724b83c38f2c8741cb7b4357f3b4af43c52d100"
+    },
+    {
+      "handle": "Kubai087",
+      "name": "枯白啃设计",
+      "avatar": "x-kubai087.jpg",
+      "avatarSHA256": "5d78362a092702bcc326a632c445e92b35c3b3afe13f55cf7b948f575d007ef5"
+    },
+    {
+      "handle": "Danielzmeow",
+      "name": "danielzhang",
+      "avatar": "x-danielzmeow.jpg",
+      "avatarSHA256": "f79c8b5c1cfb37c16efcd15315f17b1385d8b7f2062ab24dced256127fc754ff"
+    },
+    {
+      "handle": "XchenEvan",
+      "name": "沉梦昂志",
+      "avatar": "x-xchenevan.jpg",
+      "avatarSHA256": "08ad468595c39092122e0af45dcb85c4e8255171a012029aa2c215677b2fdd8d"
+    },
+    {
+      "handle": "vanillaCitron",
+      "name": "citron🍢🍋",
+      "avatar": "x-vanillacitron.jpg",
+      "avatarSHA256": "a053569c3a4dbf9508f15459ded0cdc241839d590e5adfc8ac79858d28b10581"
+    },
+    {
+      "handle": "Gyaml_tpn",
+      "name": "GYAML",
+      "avatar": "x-gyaml_tpn.jpg",
+      "avatarSHA256": "89fb820897e02012c38cce1eacb99b80b6c74a9979daa3802576c9e1c2fc82aa"
+    }
+  ]
+}

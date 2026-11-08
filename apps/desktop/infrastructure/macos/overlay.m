@@ -24,3 +24,9 @@ void arion_configure_overlay(uintptr_t handle) {
     }
     window.collectionBehavior = behavior;
 }
+
+void arion_configure_clipboard_dialog(uintptr_t handle) {
+    arion_configure_overlay(handle);
+    NSWindow *window = (__bridge NSWindow *)(void *)handle;
+    window.animationBehavior = NSWindowAnimationBehaviorNone;
+}

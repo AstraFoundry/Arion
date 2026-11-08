@@ -44,6 +44,7 @@ func (x actions) StopLevelMonitor()         { x.a.stopMonitor() }
 func (x actions) RefreshDevices()           { go x.a.refreshDevicesAsync() }
 func (x actions) CopyText(text string) bool { return x.a.copyTranscript(text) }
 func (x actions) OpenSettings()             { x.a.openSettings() }
+func (x actions) OpenFeedback()             { x.a.openFeedback() }
 func (x actions) CheckForUpdates()          { x.a.updates.check(time.Now(), true) }
 func (x actions) InstallUpdate()            { x.a.updates.install() }
 func (x actions) RestartToUpdate()          { x.a.restartUpdate() }
@@ -120,7 +121,7 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	next, _ = next.Normalize(runtime.GOOS)
 	if !a.savePreferences(next) {
 		if next.Clipboard != before.Clipboard {
-			a.state.Clipboard.Error = copy.ClipboardSaveFailed
+			a.state.Clipboard.Error = copy.ClipboardPreferencesSaveFailed
 		}
 		if next.CheckUpdates != before.CheckUpdates || next.AutoInstallUpdates != before.AutoInstallUpdates || next.AllowPrereleaseUpdates != before.AllowPrereleaseUpdates {
 			a.state.Update.StateError = true
@@ -166,6 +167,9 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	}
 	if next.CloudModel != before.CloudModel {
 		a.cloud.SetModel(next.CloudModel)
+	}
+	if next.CloudReasoning != before.CloudReasoning {
+		a.cloud.SetReasoningFallback(next.CloudReasoning)
 	}
 	if before.ContextHistory && !next.ContextHistory {
 		a.history.Clear()

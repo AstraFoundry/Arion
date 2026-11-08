@@ -4,6 +4,8 @@ The blog lives at `/blog/` (and `/zh/blog/`, `/ja/blog/`) on the marketing site.
 
 ## Writing a post
 
+The writing method (sources, structure, voice, translations, screenshots and credits) is the [`write-blog-post`](../../.claude/skills/write-blog-post/SKILL.md) agent skill; this section defines the files and rules the build enforces.
+
 ```
 apps/site/content/blog/<slug>/en.md     # one file per site locale; all three are required
 apps/site/content/blog/<slug>/zh.md

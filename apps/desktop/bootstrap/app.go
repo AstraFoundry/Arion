@@ -94,6 +94,9 @@ type App struct {
 	// or key check changes the visible provider before it succeeds, and that
 	// must not look like a completed switch.
 	cloudProvider string
+	// polishNoted holds the provider, model and category already explained
+	// this run, so a repeating failure is told once.
+	polishNoted map[string]bool
 	// history keeps recent dictations per place for rewrite context, in
 	// memory only.
 	history   *application.History
@@ -116,6 +119,7 @@ type App struct {
 	sceneSeq                        int
 	settingsWin                     *mygo.Window
 	onboarding                      *mygo.Window
+	feedback                        *mygo.Window
 	guide                           *guideSession
 	trayHint                        *mygo.Window
 	views                           map[*mygo.Window]uiapp.View
@@ -232,6 +236,7 @@ func New(opts Options) (*App, error) {
 		func() []byte { return callbackPage(copy.Locale(a.preferences().UILanguage)) })
 	a.cloud.OnModelListFailure(a.recordCloudModelFailure)
 	a.cloud.SetModel(prefs.CloudModel)
+	a.cloud.SetReasoningFallback(prefs.CloudReasoning)
 	// Both engines read the same consent-gated context sources.
 	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery }, TargetGates{
 		Site:   func() bool { p := a.preferences(); return (p.Polish || a.isTranslating()) && p.MatchApp },
@@ -385,10 +390,14 @@ func (a *App) Start() {
 	// an app that is already running. The overlay is not the window the
 	// user asked for, so visibility does not suppress Settings.
 	mygo.App.OnActivate(func(bool) { a.revealUserWindow() })
-	// The sign-in callback page links here (Windows forwards it as a second
-	// instance's argument, which reaches OnOpenURL too).
+	// The sign-in callback page links here, and the input methods' "Report
+	// a problem" item opens arion://feedback (Windows forwards either as a
+	// second instance's argument, which reaches OnOpenURL too).
 	mygo.App.OnOpenURL(func(url string) {
-		if isAppURL(url) {
+		switch {
+		case isFeedbackURL(url):
+			a.openFeedback()
+		case isAppURL(url):
 			a.revealWindow()
 		}
 	})
@@ -405,7 +414,7 @@ func (a *App) OpenOnboarding() { mygo.RunOnMain(a.openOnboarding) }
 func (a *App) Windows() map[string]*mygo.Window {
 	windows := map[string]*mygo.Window{}
 	mygo.RunOnMain(func() {
-		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "clipboard": a.clipboardWin, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding, "update-reminder": func() *mygo.Window {
+		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "clipboard": a.clipboardWin, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding, "feedback": a.feedback, "update-reminder": func() *mygo.Window {
 			if a.updatePolicy != nil {
 				return a.updatePolicy.reminder
 			}
@@ -669,10 +678,14 @@ func (a *App) apply(e contracts.Event) {
 	case contracts.CorrectionReady:
 		d.Final = e.Text
 		d.Original = dictationOriginal(e)
+		d.PolishNote = a.polishNote(e)
 		setState(domain.Reviewing)
 	case contracts.CommitResultReady:
 		a.recordClipboardDictation(e)
 		d.Outcome, d.Failure = e.Outcome, e.Error
+		if e.Error == "" && e.Outcome != contracts.NotApplied {
+			a.polishNoteTold(d.PolishNote)
+		}
 		d.Pasted = a.core.Snapshot().Mode == domain.ShortcutMode && (runtime.GOOS == "darwin" || a.state.Preferences.Delivery == application.DeliveryClipboard) && e.Outcome != contracts.NotApplied && e.Outcome != contracts.Copied
 		setState(e.State)
 	case contracts.ErrorOccurred:

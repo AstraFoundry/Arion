@@ -619,13 +619,14 @@ func (c *Coordinator) deliver(r *run, raw string, policy RewritePolicy) {
 			c.spawn(func() { c.opts.Recalled(corrected.Recalled) })
 		}
 	}
-	text, outcome := source, ""
+	text, outcome, detail := source, "", ""
 	if strings.TrimSpace(source) != "" {
 		var ok bool
 		var rewriteErr error
 		if text, outcome, rewriteErr, ok = c.rewriteFinal(r, source, policy); !ok {
 			return
 		}
+		detail = rewriteDetail(outcome, rewriteErr)
 		if policy.TargetLanguage != "" && outcome != string(domain.RewriteAccepted) {
 			c.failTranslation(r, raw, source, outcome, rewriteErr)
 			return
@@ -660,7 +661,7 @@ func (c *Coordinator) deliver(r *run, raw string, policy RewritePolicy) {
 	if outcome != "" {
 		scene = policy.Scene
 	}
-	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CorrectionReady, Revision: revision}, State: domain.Reviewing, Raw: raw, Source: source, Rewrite: outcome, Scene: scene, Text: text})
+	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CorrectionReady, Revision: revision}, State: domain.Reviewing, Raw: raw, Source: source, Rewrite: outcome, Detail: detail, Scene: scene, Text: text})
 	if c.opts.AutoCommit {
 		c.commit(r, revision, text)
 	}
@@ -736,6 +737,18 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 		c.releaseComposition(r)
 	}
 	c.emit(r, event)
+}
+
+// rewriteDetail is the content-free category of a rewrite that fell back to
+// local cleanup, for the user's next step. Validation verdicts have none.
+func rewriteDetail(outcome string, err error) string {
+	switch outcome {
+	case RewriteTimeout:
+		return domain.PolishTimeout
+	case RewriteUnavailable:
+		return domain.DetailOf(err)
+	}
+	return ""
 }
 
 func (r *run) translating() bool {

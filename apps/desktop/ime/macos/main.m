@@ -506,6 +506,7 @@ static NSString *languageSwitchTitle(BOOL ascii, NSInteger binding) {
     if ([app isKindOfClass:NSString.class] && [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:app]) {
         [menu addItem:NSMenuItem.separatorItem];
         [menu addItem:[self menuItem:@"KeyboardOpenApp" action:@selector(openApp:)]];
+        [menu addItem:[self menuItem:@"KeyboardFeedback" action:@selector(feedback:)]];
     }
     return menu;
 }
@@ -523,6 +524,12 @@ static NSString *languageSwitchTitle(BOOL ascii, NSInteger binding) {
     NSWorkspaceOpenConfiguration *configuration = [NSWorkspaceOpenConfiguration configuration];
     configuration.activates = YES;
     [NSWorkspace.sharedWorkspace openApplicationAtURL:url configuration:configuration completionHandler:nil];
+}
+
+// The app registers the arion: scheme and opens its feedback window for it.
+- (void)feedback:(id)sender {
+    NSURL *url = [NSURL URLWithString:@"arion://feedback"];
+    if (![NSWorkspace.sharedWorkspace openURL:url]) NSBeep();
 }
 
 - (void)resetLearning:(id)sender {

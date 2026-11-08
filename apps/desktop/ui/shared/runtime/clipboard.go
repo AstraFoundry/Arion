@@ -39,13 +39,14 @@ type ClipboardMeta struct {
 }
 
 type Clipboard struct {
-	Items          []Clip
-	Meta           map[string]ClipboardMeta
-	Busy           bool
-	CopyOnly       bool
-	Using          bool
-	Error          copy.Key
-	ShortcutFailed bool
+	Items            []Clip
+	Meta             map[string]ClipboardMeta
+	Busy             bool
+	CopyOnly         bool
+	Using            bool
+	Error            copy.Key
+	ShortcutFailed   bool
+	FileConfirmation bool
 }
 
 // ClipboardShortcutKey resolves legacy accelerator spelling and recorded chords.

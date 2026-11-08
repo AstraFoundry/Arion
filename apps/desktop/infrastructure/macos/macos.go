@@ -74,8 +74,9 @@ func (Permissions) RequestAccessibility() { C.arion_ax_trusted(1) }
 type Pane string
 
 const (
-	PaneMicrophone    Pane = "x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone"
-	PaneAccessibility Pane = "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+	PaneMicrophone      Pane = "x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone"
+	PaneAccessibility   Pane = "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+	PaneFilesAndFolders Pane = "x-apple.systempreferences:com.apple.preference.security?Privacy_FilesAndFolders"
 )
 
 func (Permissions) Open(pane Pane) {

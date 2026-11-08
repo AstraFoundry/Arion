@@ -3,6 +3,8 @@ package app
 
 import (
 	"arion.local/desktop/ui/pages/clipboard"
+	"arion.local/desktop/ui/pages/clipboardaccess"
+	"arion.local/desktop/ui/pages/feedback"
 	"arion.local/desktop/ui/pages/guide"
 	"arion.local/desktop/ui/pages/menubar"
 	"arion.local/desktop/ui/pages/onboarding"
@@ -21,6 +23,18 @@ func Clipboard(store runtime.Store) View {
 }
 
 const ClipboardWidth = clipboard.Width
+
+const ClipboardAccessWidth = clipboardaccess.Width
+const ClipboardAccessHeight = clipboardaccess.Height
+
+func ClipboardAccess(store runtime.Store, resize func(int)) View {
+	return View{Content: view(func(c *ui.Context) {
+		height := clipboardaccess.Render(c, store)
+		if resize != nil && height > 0 {
+			resize(height)
+		}
+	}), Close: func() {}}
+}
 
 func ClipboardHeight(items []runtime.Clip) int { return clipboard.Height(items) }
 
@@ -41,6 +55,8 @@ const (
 	TrayHintHeight       = trayhint.Height
 	UpdateReminderWidth  = updatereminder.Width
 	UpdateReminderHeight = updatereminder.Height
+	FeedbackWidth        = feedback.Width
+	FeedbackHeight       = feedback.Height
 )
 
 // View is a window's content and the hook releasing what it holds.
@@ -75,6 +91,12 @@ func Settings(store runtime.Store) View {
 func Onboarding(store runtime.Store) View {
 	page := onboarding.NewPage()
 	return View{Content: view(func(c *ui.Context) { page.Render(c, store) }), Close: func() { page.Close(store) }}
+}
+
+// Feedback is the window that hands a problem report to a coding agent.
+func Feedback(store runtime.Store) View {
+	page := &feedback.Page{}
+	return View{Content: view(func(c *ui.Context) { page.Render(c, store) }).WithClipboardWriter(func(text string) { store.Actions.CopyText(text) }), Close: func() {}}
 }
 
 // GuideHeightFor sizes each System Settings guide for its content.

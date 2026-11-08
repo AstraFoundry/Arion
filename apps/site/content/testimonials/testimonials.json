@@ -1,0 +1,93 @@
+[
+  {
+    "handle": "Labrin",
+    "lang": "zh-CN",
+    "text": "我今天晚上下载了，深度使用了几个小时，已经完全切换使用它了。\n\n速度比云端的语音输入快很多，没有网络延迟。云端最难受的点就是说了很多五六分钟，点完确认后就失败给你看。\n\n我电脑上是本地部署，手机上自己做了个输入法连我的 VPS，很丝滑。",
+    "translations": {
+      "en": "I downloaded it tonight, used it heavily for a few hours, and have already switched over completely.\n\nIt's much faster than cloud voice input, with no network lag. The worst thing about cloud input is talking for five or six minutes, hitting confirm, and watching it fail.\n\nOn my computer it runs locally, and on my phone I built my own keyboard that connects to my VPS. Very smooth.",
+      "ja": "今夜ダウンロードして数時間がっつり使い、もう完全に乗り換えました。\n\nクラウドの音声入力よりずっと速く、ネットワークの遅延がありません。クラウドで一番つらいのは、五、六分話して確定を押したら失敗することです。\n\nパソコンではローカルで動かし、スマホでは自作のキーボードを自分の VPS につないでいます。とても快適です。"
+    }
+  },
+  {
+    "handle": "brucexu_eth",
+    "lang": "zh-CN",
+    "text": "这是我的梦中情输啊！我其实之前也想开发一款类似的输入法。看了一下，这个基本上全部覆盖了。然后试用了一下，也是非常不错。我甚至把豆包输入法的各种问题和我遇到的痛点都一块儿修改掉了，直接杀死了这个赛道。",
+    "translations": {
+      "en": "This is my dream input method! I'd actually been wanting to build something like it myself. Looking it over, it covers basically everything. I tried it and it's really good. It even fixes all the problems and pain points I had with Doubao IME. It just killed the whole category.",
+      "ja": "まさに夢の入力システムです！実は似たものを自分で作ろうと思っていました。見てみたら、ほぼ全部カバーされていました。試してみても本当に良かったです。豆包 IME で感じていた問題や不満まで全部解消されていて、このジャンルを終わらせてしまいました。"
+    }
+  },
+  {
+    "handle": "corndogjpn2",
+    "lang": "zh-CN",
+    "text": "产品把“调整麦克风增益”这么技术的话，用普通人也能听得懂的“离电脑的距离”，这个设计很懂人性，说明是针对普通用户的，很棒。给我老婆的电脑装了，我也暂时替代一下Spokenly用一下。",
+    "translations": {
+      "en": "Instead of something as technical as \"adjust mic gain\", it says \"distance from the computer\", which anyone can understand. That's a design that really gets people, and it shows it's made for ordinary users. Great. I installed it on my wife's computer, and I'm using it in place of Spokenly for now too.",
+      "ja": "「マイクのゲイン調整」という技術的な言葉を、誰でもわかる「パソコンからの距離」にしているのが、人をよくわかった設計で、普通のユーザー向けに作られているのが伝わります。素晴らしい。妻のパソコンに入れて、自分もしばらく Spokenly の代わりに使ってみます。"
+    }
+  },
+  {
+    "handle": "hishn948957",
+    "lang": "zh-CN",
+    "text": "我的天呀，这真是有两把刷子\n\n语音识别的动画要比 typeless、微信输入法、豆包输入法 更丝滑",
+    "translations": {
+      "en": "Oh my god, this one really knows its stuff.\n\nThe speech recognition animation is smoother than Typeless, WeChat Keyboard and Doubao IME.",
+      "ja": "なんてこった、これは本当にやるね。\n\n音声認識のアニメーションが Typeless、WeChat キーボード、豆包 IME よりなめらか。"
+    }
+  },
+  {
+    "handle": "wangye1644294",
+    "lang": "zh-CN",
+    "text": "已经是我现在在用的输入法了",
+    "translations": {
+      "en": "It's already the input method I use now.",
+      "ja": "もう今の自分の入力システムになっています。"
+    }
+  },
+  {
+    "handle": "Kubai087",
+    "lang": "zh-CN",
+    "text": "非常有风格的语言输入法，能看到很多交互与界面上的设计细节。官网也很有 taste",
+    "translations": {
+      "en": "A voice input method with real style. You can see lots of design details in the interactions and the interface. The website has great taste too.",
+      "ja": "とてもスタイルのある音声入力。操作や画面のデザインに細かいこだわりがたくさん見えます。公式サイトもセンスがいい。"
+    }
+  },
+  {
+    "handle": "Danielzmeow",
+    "lang": "zh-CN",
+    "text": "严肃使用",
+    "translations": {
+      "en": "Using it for real.",
+      "ja": "本気で使ってます。"
+    }
+  },
+  {
+    "handle": "XchenEvan",
+    "lang": "zh-CN",
+    "text": "各大公司去token maxing神话后 最值得取消的一个订阅 typeless",
+    "translations": {
+      "en": "Now that the big companies have dropped the token-maxing myth, the subscription most worth canceling: Typeless.",
+      "ja": "大手がトークン最大化の神話を捨てた今、一番解約する価値のあるサブスク、Typeless。"
+    }
+  },
+  {
+    "handle": "vanillaCitron",
+    "lang": "zh-CN",
+    "text": "arion太好用了",
+    "translations": {
+      "en": "Arion is so good to use.",
+      "ja": "Arion、使いやすすぎる。"
+    }
+  },
+  {
+    "handle": "Gyaml_tpn",
+    "lang": "zh-Hant",
+    "text": "啊~感謝感謝大大，我剛剛一直用不順口的普通話說，但是你的轉換的都很準確！ 更驚喜的是，我一時沒想起來說普通話，就說了粵語，但是它聽懂我粵語啦！推薦大家使用！！！",
+    "translations": {
+      "zh": "啊~感谢感谢大大，我刚刚一直用不顺口的普通话说，但是你的转换的都很准确！更惊喜的是，我一时没想起来说普通话，就说了粤语，但是它听懂我粤语啦！推荐大家使用！！！",
+      "en": "Ah, thank you so much! I'd been speaking in my clumsy Mandarin the whole time, but your transcription was spot on! Even better, at one point I forgot to speak Mandarin and switched to Cantonese, and it understood my Cantonese! I recommend it to everyone!!!",
+      "ja": "ああ、本当にありがとうございます！ずっとたどたどしい普通話で話していたのに、変換はとても正確でした！さらに驚いたのは、うっかり普通話を忘れて広東語で話したのに、ちゃんと聞き取ってくれたことです！みんなにおすすめします！！！"
+    }
+  }
+]

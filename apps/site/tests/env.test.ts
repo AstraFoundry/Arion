@@ -30,10 +30,7 @@ describe("parsePublicEnv", () => {
 });
 
 describe("siteConfig", () => {
-  it("builds the platform links from the configured origin", () => {
-    expect(siteConfig.accountUrl).toBe("https://astrafoundry.si/account");
-    expect(siteConfig.hostedSyncWaitlistUrl).toBe(
-      "https://astrafoundry.si/products/arion/waitlist/hosted-sync",
-    );
+  it("links to the configured AstraFoundry origin", () => {
+    expect(siteConfig.organizationSiteUrl).toBe("https://astrafoundry.si");
   });
 });

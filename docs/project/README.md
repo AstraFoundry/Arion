@@ -38,7 +38,7 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 | Sync service | Self-hosted/hosted Go relay; ciphertext records | Relay implemented; desktop sync/outbox, pairing and key delivery pending |
 | Marketing site | Next.js static export, React 19, Tailwind v4, next-intl en/zh/ja; Cloudflare Workers static assets ([ADR 016](../decisions/016-marketing-site.md)) | Implemented in `apps/site`; vendored Sunbeam/beUI until `@astrafoundry/design` is published |
 | Cryptography | Go standard library AES-GCM; Keychain/DPAPI keys | Local values only; key exchange for sync pending |
-| Cloud polishing | Republic providers: ChatGPT sign-in or an API key per provider (OpenAI, Anthropic, Google Gemini, DeepSeek, OpenRouter); one provider is active and the others keep their keys; shared staged polishing with enabled context | Optional, explicit engine choice ([ADR 022](../decisions/022-cloud-polishing.md), [cloud polishing](cloud-polishing.md)); real-service verification open |
+| Cloud polishing | Republic providers: ChatGPT sign-in, an API key per fixed provider (OpenAI, Anthropic, Google Gemini, DeepSeek, OpenRouter), or a base URL and API key for an OpenAI-compatible or Anthropic-compatible endpoint; one provider is active and the others keep their keys; shared staged polishing with enabled context | Optional, explicit engine choice ([ADR 022](../decisions/022-cloud-polishing.md), [cloud polishing](cloud-polishing.md)); real-service verification open |
 | Account sign-in | Public OIDC client `arion-desktop`, loopback PKCE, refresh token in Keychain or Credential Manager | Service, onboarding step and Settings › Account implemented ([account sign-in](account-signin.md)); device enrollment open |
 
 See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), [public and private ownership](repository-split.md), [account sign-in](account-signin.md), [cloud polishing](cloud-polishing.md), and [agent handoff](agent-handoff.md).
@@ -50,3 +50,5 @@ See [specs](../../specs/README.md), [research](../research/README.md), [reposito
 [Product notifications](product-notifications.md) describes signed-in, OS-authorized account notices, bounded authenticated catchup and current-server action authorization.
 
 [Dictation shortcuts](dictation-shortcuts.md) describes custom combinations, platform keys, conflicts and their implementation history.
+
+[Agent-assisted feedback](agent-feedback.md) describes the Report a problem window, its entry points and the feedback skill a coding agent follows.

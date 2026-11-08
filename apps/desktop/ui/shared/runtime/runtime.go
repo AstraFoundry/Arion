@@ -195,6 +195,13 @@ const (
 	DetailMicrophone             = "microphone"
 	DetailAccessibility          = "accessibility"
 	DetailTranslationModel       = domain.DetailTranslationModel
+	PolishReasoningRequired      = domain.PolishReasoningRequired
+	PolishRateLimited            = domain.PolishRateLimited
+	PolishQuotaExhausted         = domain.PolishQuotaExhausted
+	PolishCredentialRejected     = domain.PolishCredentialRejected
+	PolishModelUnavailable       = domain.PolishModelUnavailable
+	PolishModelNotFound          = domain.PolishModelNotFound
+	PolishTimeout                = domain.PolishTimeout
 	DetailInputMethod            = "input method connection unavailable"
 	DetailIMEClient              = "input method client unavailable"
 	DetailIMEUpdating            = "input method update in progress"
@@ -221,6 +228,9 @@ type Dictation struct {
 	Rewriting bool
 	// Translating marks a session started with the translation hold key.
 	Translating bool
+	// PolishNote is the content-free category of a cloud rewrite that fell
+	// back to local cleanup, shown once after the dictation completes.
+	PolishNote string
 	// Pasted marks a commit delivered through the clipboard.
 	Pasted  bool
 	Outcome CommitOutcome
@@ -328,6 +338,7 @@ const (
 	GuideKeyboard        GuidePane = "keyboard"
 	GuideMicrophone      GuidePane = "microphone"
 	GuideScreenRecording GuidePane = "screen-recording"
+	GuideFilesAndFolders GuidePane = "files-and-folders"
 )
 
 // Guide floats under System Settings for privacy consent or input-source setup.
@@ -592,6 +603,10 @@ type Actions interface {
 	OpenClipboardSettings()
 	CloseClipboard()
 	RetryClipboard()
+	SetClipboardFilesEnabled(bool)
+	ConfirmClipboardFiles()
+	DismissClipboardAccess()
+	OpenClipboardFileSettings()
 	SetClipboardShortcut(string)
 	SetClipboardLimits(ClipLimits)
 	PinClipboard(string, bool)
@@ -652,6 +667,9 @@ type Actions interface {
 	// the built-in rules again.
 	ChooseScene(scene domain.Scene)
 	OpenSettings()
+	// OpenFeedback shows the window that hands a problem report to a
+	// coding agent.
+	OpenFeedback()
 	// OpenUpdate shows the update in Settings › About.
 	OpenUpdate()
 	// CheckForUpdates asks the release feed now.
@@ -693,7 +711,8 @@ type Actions interface {
 	// polishing. It returns immediately.
 	SignInChatGPT()
 	// ConnectCloudKey checks an API key for provider and connects it.
-	ConnectCloudKey(provider, key string)
+	// baseURL is required for a compatible provider and ignored otherwise.
+	ConnectCloudKey(provider, key, baseURL string)
 	// CancelCloud stops a sign-in or key check in flight.
 	CancelCloud()
 	// DisconnectCloud forgets the active provider and deletes only its credential.

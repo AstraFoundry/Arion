@@ -1,6 +1,6 @@
 import { siteConfig } from "@/shared/config";
 import { useCopy } from "@/shared/i18n";
-import { DocumentPage, LinkButton } from "@/shared/ui";
+import { DocumentPage } from "@/shared/ui";
 
 export function SelfHostingPage() {
   const { selfHostingPage: page } = useCopy();
@@ -26,9 +26,6 @@ export function SelfHostingPage() {
       <div className="mt-16 flex flex-col items-start gap-4 rounded-2xl bg-muted p-8">
         <h2 className="font-display text-2xl leading-tight">{page.hostedTitle}</h2>
         <p className="text-pretty leading-relaxed text-muted-foreground">{page.hostedBody}</p>
-        <LinkButton href={siteConfig.hostedSyncWaitlistUrl} variant="secondary">
-          {page.hostedLink}
-        </LinkButton>
       </div>
     </DocumentPage>
   );

@@ -32,13 +32,23 @@ type Credential struct {
 	AccountID    string `json:"accountId,omitempty"`
 	Email        string `json:"email,omitempty"`
 	Model        string `json:"model,omitempty"`
+	// BaseURL is the endpoint for an OpenAI-compatible or Anthropic-compatible
+	// provider, without a trailing slash. Fixed providers leave it empty.
+	BaseURL string `json:"baseUrl,omitempty"`
 }
 
 func (c Credential) valid() bool {
 	if c.Provider == ChatGPT {
 		return c.RefreshToken != "" && c.AccountID != ""
 	}
-	return Known(c.Provider) && c.APIKey != ""
+	if !Known(c.Provider) || c.APIKey == "" {
+		return false
+	}
+	if !NeedsBase(c.Provider) {
+		return true
+	}
+	_, err := normalizeBaseURL(c.BaseURL)
+	return err == nil
 }
 
 // SecretStore is the OS credential catalog, one item per account name.
@@ -112,7 +122,13 @@ type Service struct {
 	auth             *republic.TokenAuth
 	model            string
 	completionFormat string
-	cancel           context.CancelFunc
+	// reasoningFloor remembers, per provider and model, the lowest reasoning
+	// effort the model accepted when it refused "none".
+	reasoningFloor map[string]string
+	// reasoningFallback permits retrying a model that refuses "none" with
+	// the least reasoning it accepts. Off by default.
+	reasoningFallback bool
+	cancel            context.CancelFunc
 	// generation invalidates work started before a connect or disconnect.
 	generation uint64
 	// attempt is the provider begin started. end attributes a failure to it
@@ -226,6 +242,15 @@ func (s *Service) Load() {
 	})
 }
 
+// SetReasoningFallback chooses whether a model that refuses to turn reasoning
+// off is retried with the least reasoning it accepts. The default is off, so
+// such a model fails and the user sees the cloud failure.
+func (s *Service) SetReasoningFallback(on bool) {
+	s.mu.Lock()
+	s.reasoningFallback = on
+	s.mu.Unlock()
+}
+
 // SetModel selects the model rewrites use and remembers it on the active
 // provider so a later switch can restore it.
 func (s *Service) SetModel(id string) {
@@ -313,11 +338,19 @@ func (s *Service) SignInChatGPT() error {
 }
 
 // ConnectKey checks key by listing provider's models and, once it works,
-// replaces the connection with it.
-func (s *Service) ConnectKey(provider, key string) error {
+// replaces the connection with it. baseURL is required for a compatible
+// provider and ignored for a fixed one, which keeps Republic's endpoint.
+func (s *Service) ConnectKey(provider, key, baseURL string) error {
 	ctx, generation := s.begin(Verifying, provider)
 	key = strings.TrimSpace(key)
 	c := Credential{Provider: provider, APIKey: key}
+	if NeedsBase(provider) {
+		normalized, err := normalizeBaseURL(baseURL)
+		if err != nil {
+			return s.end(generation, fail(CodeAddress, err))
+		}
+		c.BaseURL = normalized
+	}
 	if provider == ChatGPT || !c.valid() {
 		return s.end(generation, fail(CodeRejected, errors.New("unknown provider or empty key")))
 	}
@@ -706,7 +739,8 @@ func (s *Service) settle(err error, otherwise Code) error {
 
 // classify maps a Republic failure to a Code.
 func classify(err error, otherwise Code) error {
-	if CodeOf(err) != "" {
+	var categorized *completionError
+	if CodeOf(err) != "" || errors.As(err, &categorized) {
 		return err
 	}
 	var r *republic.Error

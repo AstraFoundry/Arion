@@ -273,6 +273,9 @@ func TestNativePermissionMetadata(t *testing.T) {
 		MacOS struct {
 			InfoPlist struct {
 				Microphone string   `json:"NSMicrophoneUsageDescription"`
+				Documents  string   `json:"NSDocumentsFolderUsageDescription"`
+				Desktop    string   `json:"NSDesktopFolderUsageDescription"`
+				Downloads  string   `json:"NSDownloadsFolderUsageDescription"`
 				Region     string   `json:"CFBundleDevelopmentRegion"`
 				Languages  []string `json:"CFBundleLocalizations"`
 			} `json:"infoPlist"`
@@ -283,6 +286,11 @@ func TestNativePermissionMetadata(t *testing.T) {
 	}
 	if config.MacOS.InfoPlist.Microphone != For(English).Text(SystemMicrophoneUsage) {
 		t.Fatal("bundle default permission copy differs from catalog")
+	}
+	for key, value := range map[Key]string{SystemDocumentsUsage: config.MacOS.InfoPlist.Documents, SystemDesktopUsage: config.MacOS.InfoPlist.Desktop, SystemDownloadsUsage: config.MacOS.InfoPlist.Downloads} {
+		if value != For(English).Text(key) {
+			t.Fatalf("bundle permission %s differs from catalog", key)
+		}
 	}
 	if config.MacOS.InfoPlist.Region != "en" || !slices.Equal(config.MacOS.InfoPlist.Languages, []string{"en", "zh-Hans"}) {
 		t.Fatal("bundle locale declarations differ from staged localizations")

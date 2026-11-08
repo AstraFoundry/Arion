@@ -1,0 +1,7 @@
+# Cloudflare Workers static assets read this file; it is not served.
+# /feedback.md is the agent feedback skill the desktop app's prompt points to.
+# It is fetched directly (curl) and never linked, listed in the sitemap or indexed.
+/feedback.md
+  Content-Type: text/markdown; charset=utf-8
+  X-Robots-Tag: noindex
+  Cache-Control: public, max-age=300

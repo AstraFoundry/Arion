@@ -3,6 +3,7 @@ export { AuthorAvatar, AuthorByline, type AuthorProfile, AuthorSummary } from ".
 export { Backdrop } from "./backdrop";
 export { BrandMark, BrandWord } from "./brand";
 export { DictationPill, type PillState } from "./dictation-pill";
+export { DiscordMark, FeishuMark, XMark } from "./community-marks";
 export { Dateline } from "./dateline";
 export { type DocumentSection, DocumentPage } from "./document";
 export { buttonClasses, type ButtonSize, type ButtonVariant } from "./button-styles";

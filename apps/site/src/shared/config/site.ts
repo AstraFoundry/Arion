@@ -10,8 +10,8 @@ export const siteConfig = {
   name: "Arion",
   organization: "AstraFoundry",
   url: publicEnv.siteUrl,
-  accountUrl: `${publicEnv.platformUrl}/account`,
-  hostedSyncWaitlistUrl: `${publicEnv.platformUrl}/products/arion/waitlist/hosted-sync`,
+  /** AstraFoundry's own landing page. */
+  organizationSiteUrl: publicEnv.platformUrl,
   repositoryUrl: REPOSITORY,
   repositoryCloneUrl: `${REPOSITORY}.git`,
   centerUrl: publicEnv.centerUrl,
@@ -19,6 +19,13 @@ export const siteConfig = {
   issuesUrl: `${REPOSITORY}/issues`,
   syncServiceUrl: `${REPOSITORY}/tree/main/services/sync`,
   organizationUrl: "https://github.com/AstraFoundry",
+  /** Where people talk about Arion; the same links as the repository README. */
+  community: {
+    discord: "https://discord.com/invite/72kh465mMm",
+    feishu:
+      "https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae",
+    x: "https://x.com/AstraFoundry",
+  },
   license: "AGPL-3.0",
   shortcut: ["⌥", "Space"],
   /** Tapped alone, it switches the input method between Chinese and English. */
@@ -46,9 +53,10 @@ export const blogPostRoute = (slug: string) => `${routes.blog}${slug}/`;
 /** In-page anchors on the home page. */
 export const sections = {
   values: "values",
-  privacy: "privacy",
   openSource: "open-source",
+  testimonials: "testimonials",
   download: "download",
+  community: "community",
 } as const;
 
 /** Commands that build the desktop app from a fresh clone (see the Makefile). */
@@ -60,6 +68,10 @@ export const buildCommands = [
 ] as const;
 
 export const anchor = (id: string) => `/#${id}`;
+
+/** Community channels in display order; labels are `community.<id>` in the dictionaries. */
+export const communityChannels = ["discord", "feishu", "x"] as const;
+export type CommunityChannel = (typeof communityChannels)[number];
 
 /** Every "Download" link goes to the download section, which picks the build. */
 export const downloadHref = anchor(sections.download);

@@ -1,7 +1,7 @@
 {
   "name": "Arion",
   "identifier": "si.astrafoundry.arion",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "copyright": "AstraFoundry",
   "urlSchemes": [
     "arion"
@@ -29,7 +29,10 @@
       "CFBundleLocalizations": [
         "en",
         "zh-Hans"
-      ]
+      ],
+      "NSDocumentsFolderUsageDescription": "Arion accesses files you copy from Documents to keep their references available for later pasting. File contents are not uploaded.",
+      "NSDesktopFolderUsageDescription": "Arion accesses files you copy from Desktop to keep their references available for later pasting. File contents are not uploaded.",
+      "NSDownloadsFolderUsageDescription": "Arion accesses files you copy from Downloads to keep their references available for later pasting. File contents are not uploaded."
     }
   }
 }

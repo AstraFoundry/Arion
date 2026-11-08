@@ -9,6 +9,7 @@ package cloud
 
 import (
 	"slices"
+	"strings"
 
 	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
@@ -25,6 +26,8 @@ type Nav struct {
 	Provider string
 	// Key is the API key being entered on a provider's page.
 	Key string
+	// BaseURL is the endpoint being entered for a compatible provider.
+	BaseURL string
 	// Compact shows either the provider in use or, after Change, the
 	// providers, so onboarding's step fits its window.
 	Compact bool
@@ -33,6 +36,12 @@ type Nav struct {
 	// failure stays here until the user leaves or edits the key; either
 	// clears connecting, so the sentence does not follow to another page.
 	connecting string
+	// submittedBase is the address sent with the attempt still on this page.
+	// Editing it drops the failure, the same way a new key draft does.
+	submittedBase string
+	// announced is the address failure already read out, so a later frame
+	// does not repeat it.
+	announced string
 	// changing is the provider in use when Change was chosen; another one
 	// in use ends the change.
 	changing string
@@ -43,7 +52,7 @@ type Nav struct {
 func (n *Nav) Back() bool {
 	switch {
 	case n.Provider != "":
-		n.Provider, n.Key, n.connecting = "", "", ""
+		n.Provider, n.Key, n.BaseURL, n.connecting, n.submittedBase, n.announced = "", "", "", "", "", ""
 	case n.changing != "":
 		n.changing = ""
 	default:
@@ -70,7 +79,8 @@ func Mark(c *ui.Context, tokens theme.Tokens, provider string, size float32) {
 		ui.Image(c, icons.DeepSeek).Size(size, size)
 	default:
 		mark := map[string]*ui.SVG{runtime.CloudChatGPT: icons.OpenAI, runtime.CloudOpenAI: icons.OpenAI,
-			runtime.CloudAnthropic: icons.Anthropic, runtime.CloudOpenRouter: icons.OpenRouter}[provider]
+			runtime.CloudOpenAICompatible: icons.OpenAI, runtime.CloudAnthropic: icons.Anthropic,
+			runtime.CloudAnthropicCompatible: icons.Anthropic, runtime.CloudOpenRouter: icons.OpenRouter}[provider]
 		ui.Icon(c, mark).FontSize(size).TextColor(tokens.Text)
 	}
 }
@@ -120,9 +130,9 @@ func Pages(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 	} else {
 		page(c, store, tokens, nav)
 	}
-	// A new draft is not the key that was refused.
-	if nav.Key != "" {
-		nav.connecting = ""
+	// A new key draft, or an edited address, is not the attempt that failed.
+	if nav.Key != "" || (nav.submittedBase != "" && nav.BaseURL != nav.submittedBase) {
+		nav.connecting, nav.submittedBase, nav.announced = "", "", ""
 	}
 	notice(c, store, tokens, nav)
 }
@@ -235,27 +245,83 @@ func chatgpt(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) 
 	})
 }
 
-// key is the API key field and Connect.
+// key is the API key field and Connect. A compatible provider also asks
+// for the base URL those calls use.
 func key(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
+	if runtime.CloudNeedsBase(nav.Provider) {
+		endpointKey(c, store, tokens, nav)
+		return
+	}
 	messages := store.Copy()
-	cl := store.State.Cloud
 	kit.Card(c, tokens).Children(func() {
 		ui.Row(c).Padding(14, 16).Gap(8).AlignItems(ui.Center).Children(func() {
 			Mark(c, tokens, nav.Provider, 20)
 			ui.TextInput(c.Key("cloud-key"), &nav.Key).Password().Placeholder(messages.Text(copy.CloudKeyPlaceholder)).
 				Label(messages.Text(copy.CloudKeyLabel)).Grow(1).Shrink(1)
-			if cl.Phase == runtime.CloudVerifying {
-				ui.Spinner(c).Size(14, 14)
-				cancel(c, store, tokens)
-				return
-			}
-			if kit.Button(c.Key("cloud-connect"), tokens, kit.Primary, messages.Text(copy.CloudConnect), nav.Key != "" && !cl.Busy()).Clicked() {
-				nav.connecting = nav.Provider
-				store.Actions.ConnectCloudKey(nav.Provider, nav.Key)
-				nav.Key = ""
-			}
+			connectControl(c, store, tokens, nav, nav.Key != "")
 		})
 	})
+}
+
+// endpointKey collects a base URL and an API key for a compatible provider.
+func endpointKey(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
+	messages := store.Copy()
+	cl := store.State.Cloud
+	kit.Card(c, tokens).Children(func() {
+		ui.Column(c).Padding(14, 16).Gap(10).Children(func() {
+			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
+				Mark(c, tokens, nav.Provider, 20)
+				ui.Column(c).Grow(1).Shrink(1).Gap(4).Children(func() {
+					ui.Text(c, messages.Text(copy.CloudBaseURLLabel)).FontSize(theme.Caption).TextColor(tokens.Muted)
+					field := ui.TextInput(c.Key("cloud-base"), &nav.BaseURL).Placeholder(messages.Text(copy.CloudBaseURLPlaceholder)).
+						Label(messages.Text(copy.CloudBaseURLLabel)).Grow(1).Shrink(1)
+					if addressFailure(cl, nav) {
+						kit.FieldError(c, tokens, field, messages.Text(copy.CloudFailAddress), false)
+						if nav.announced != runtime.CloudCodeAddress {
+							nav.announced = runtime.CloudCodeAddress
+							c.Announce(messages.Text(copy.CloudFailAddress))
+						}
+					}
+				})
+			})
+			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
+				ui.Box(c).Size(20, 20)
+				ui.TextInput(c.Key("cloud-key"), &nav.Key).Password().Placeholder(messages.Text(copy.CloudKeyPlaceholder)).
+					Label(messages.Text(copy.CloudKeyLabel)).Grow(1).Shrink(1)
+				connectControl(c, store, tokens, nav, nav.Key != "" && strings.TrimSpace(nav.BaseURL) != "")
+			})
+		})
+	})
+}
+
+// addressFailure reports a base URL the service refused on this page.
+func addressFailure(cl runtime.Cloud, nav *Nav) bool {
+	if cl.Failure != runtime.CloudCodeAddress || nav.connecting != nav.Provider {
+		return false
+	}
+	return cl.FailureProvider == "" || cl.FailureProvider == nav.Provider
+}
+
+// connectControl submits the draft. A compatible provider also sends its
+// base URL. The key leaves the draft immediately.
+func connectControl(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav, ready bool) {
+	messages := store.Copy()
+	cl := store.State.Cloud
+	if cl.Phase == runtime.CloudVerifying {
+		ui.Spinner(c).Size(14, 14)
+		cancel(c, store, tokens)
+		return
+	}
+	if kit.Button(c.Key("cloud-connect"), tokens, kit.Primary, messages.Text(copy.CloudConnect), ready && !cl.Busy()).Clicked() {
+		nav.connecting = nav.Provider
+		base := ""
+		if runtime.CloudNeedsBase(nav.Provider) {
+			base = nav.BaseURL
+			nav.submittedBase = nav.BaseURL
+		}
+		store.Actions.ConnectCloudKey(nav.Provider, nav.Key, base)
+		nav.Key = ""
+	}
 }
 
 func cancel(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
@@ -297,6 +363,13 @@ func inUse(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			}
 			if ui.Combobox(c.Key("cloud-model"), &chosen, cl.Models).Label(messages.Text(copy.CloudModelLabel)).Width(200).Changed() {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.CloudModel = chosen })
+			}
+		})
+		kit.Divider(c, tokens)
+		reasoning := store.State.Preferences.CloudReasoning
+		kit.TipRow(c, tokens, messages.Text(copy.CloudReasoningLabel), messages.Text(copy.CloudReasoningDetail), func() {
+			if ui.Switch(c.Key("cloud-reasoning"), &reasoning).Label(messages.Text(copy.CloudReasoningLabel)).Changed() {
+				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.CloudReasoning = reasoning })
 			}
 		})
 	})

@@ -3,6 +3,7 @@ package cloudpolish
 import (
 	"context"
 	"errors"
+	"strings"
 	"unicode/utf8"
 
 	"arion.local/core/domain"
@@ -68,15 +69,11 @@ func (s *Service) completeChat(ctx context.Context, chat *republic.ChatModel, re
 	if chat.Provider.Name != "codex" {
 		options["max_tokens"] = req.MaxTokens
 	}
-	// Republic translates none into each provider's off switch.
-	if !req.AllowThinking {
-		options["reasoning_effort"] = "none"
-	}
 	// Selection is validated by the shared bounded-choice protocol. Cloud
 	// models receive its JSON instruction in the prompt; native grammar fields
 	// are specific to llama.cpp and are never copied into provider requests.
-	response, err := chat.Chat(ctx, messages, options)
-	if err = s.settle(err, CodeNetwork); err != nil {
+	response, err := s.chatWithoutThinking(ctx, chat, messages, options, req.AllowThinking)
+	if err = s.settle(classifyCompletion(err), CodeNetwork); err != nil {
 		return engine.Result{}, err
 	}
 	if !utf8.ValidString(response.Text()) {
@@ -85,17 +82,87 @@ func (s *Service) completeChat(ctx context.Context, chat *republic.ChatModel, re
 	return engine.Result{Text: response.Text(), Truncated: response.FinishReason != "stop" || response.Refusal != ""}, nil
 }
 
+// reasoningEfforts are tried in order when thinking is off: Republic
+// translates none into each provider's off switch, and a model that cannot
+// disable reasoning refuses it, so the request falls back to the least
+// reasoning the model accepts.
+var reasoningEfforts = []string{"none", "minimal", "low"}
+
+// chatWithoutThinking sends the request with thinking off. A model that
+// refuses "none" because its reasoning is mandatory is retried with the next
+// effort only when the user allowed it (SetReasoningFallback); otherwise the
+// refusal is returned. The effort a model accepted is reused for later
+// requests.
+func (s *Service) chatWithoutThinking(ctx context.Context, chat *republic.ChatModel, messages []republic.Message, options republic.Options, allowThinking bool) (republic.Response, error) {
+	if allowThinking {
+		return chat.Chat(ctx, messages, options)
+	}
+	key := chat.Provider.Name + "/" + chat.Name
+	s.mu.Lock()
+	floor := s.reasoningFloor[key]
+	fallback := s.reasoningFallback
+	s.mu.Unlock()
+	// A remembered effort applies only while the user allows reasoning;
+	// turning the switch off returns every request to "none".
+	start := 0
+	for i, effort := range reasoningEfforts {
+		if fallback && effort == floor {
+			start = i
+		}
+	}
+	var (
+		response republic.Response
+		err      error
+	)
+	for i := start; i < len(reasoningEfforts); i++ {
+		options["reasoning_effort"] = reasoningEfforts[i]
+		response, err = chat.Chat(ctx, messages, options)
+		if err == nil && i > 0 {
+			s.mu.Lock()
+			if s.reasoningFloor == nil {
+				s.reasoningFloor = map[string]string{}
+			}
+			s.reasoningFloor[key] = reasoningEfforts[i]
+			s.mu.Unlock()
+		}
+		if err == nil || !fallback || !reasoningMandatory(err) {
+			break
+		}
+	}
+	return response, err
+}
+
+// reasoningMandatory reports the provider's refusal to turn reasoning off,
+// which OpenRouter returns as HTTP 400 before routing the request.
+func reasoningMandatory(err error) bool {
+	var failure *republic.Error
+	if !errors.As(err, &failure) || failure.StatusCode != 400 {
+		return false
+	}
+	return strings.Contains(strings.ToLower(failure.Message+failure.Body), "cannot be disabled")
+}
+
 // NewAPICompletion is an explicit evaluation entry point for API-key or local
 // compatible endpoints. It never reads stored credentials or signs in.
 func NewAPICompletion(provider, key, model, base, format string) (*Service, error) {
 	if provider == ChatGPT || !Known(provider) || key == "" || model == "" {
 		return nil, errors.New("explicit API provider, key and model required")
 	}
+	if NeedsBase(provider) {
+		normalized, err := normalizeBaseURL(base)
+		if err != nil {
+			return nil, errors.New("explicit API provider, key, model and base URL required")
+		}
+		base = normalized
+	}
 	if format != "" && format != "chat" && format != "responses" {
 		return nil, errors.New("unsupported completion wire format")
 	}
 	s := New(nil, nil, nil)
 	s.credential = Credential{Provider: provider, APIKey: key}
+	if NeedsBase(provider) {
+		s.credential.BaseURL = base
+	}
 	s.model = model
 	s.base = base
 	s.completionFormat = format

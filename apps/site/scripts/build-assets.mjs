@@ -2,9 +2,10 @@
 //   apps/site/assets/backdrops/pink-motion.jpg  → hero crops and public/og.jpg
 //   apps/site/assets/backdrops/*.jpg            → feature-tour crops and blog covers
 //   apps/desktop/resources/icon.png             → public/brand/*.png, the mark on og.jpg
+//   apps/desktop/ui/shared/assets/feishu.png    → public/brand/feishu.png (community link)
 // The desktop app keeps its own backdrop. Run with
 // `pnpm --filter @arion/site assets:build` and commit the output.
-import { mkdir } from "node:fs/promises";
+import { copyFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
@@ -15,6 +16,7 @@ const sources = path.join(site, "assets/backdrops");
 const heroPhoto = path.join(sources, "pink-motion.jpg");
 const source = (name) => path.join(sources, name);
 const icon = path.join(desktop, "resources/icon.png");
+const feishuLogo = path.join(desktop, "ui/shared/assets/feishu.png");
 const out = (...parts) => path.join(site, "public", ...parts);
 
 await mkdir(out("backdrops"), { recursive: true });
@@ -86,6 +88,9 @@ await mark
   .resize(180)
   .png()
   .toFile(out("brand", "apple-touch-icon.png"));
+
+// The desktop's Feishu logo (source in apps/desktop/ui/shared/assets/README.md), as is.
+await copyFile(feishuLogo, out("brand", "feishu.png"));
 
 const ogMark = await sharp(icon).resize(280).png().toBuffer();
 await sharp(heroPhoto)

@@ -8,6 +8,8 @@ export {
   buildCommands,
   centerDownloadUrl,
   centerReleaseUrl,
+  type CommunityChannel,
+  communityChannels,
   type DownloadTarget,
   downloadHref,
   downloadTargets,

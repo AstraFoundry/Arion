@@ -324,11 +324,13 @@ func macClipboardReadItem(item id, formats []transfer.Format, fileURL id) ([]tra
 		}
 		if f == transfer.MacOSFileBookmark {
 			if fileURL != 0 {
-				b, err := macClipboardBookmark(fileURL)
+				b, err := macClipboardOrdinaryFileBookmark(fileURL)
 				if err != nil {
 					return nil, err
 				}
-				reps = append(reps, transfer.Bytes(f, b))
+				if len(b) != 0 {
+					reps = append(reps, transfer.Bytes(f, b))
+				}
 			}
 			continue
 		}

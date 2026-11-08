@@ -21,6 +21,8 @@ import (
 )
 
 type clipboardController struct {
+	accessWindow      *mygo.Window
+	filesGeneration   atomic.Uint64
 	previewWindow     *mygo.Window
 	previewID         string
 	previewAnchor     mygo.Rectangle
@@ -51,6 +53,7 @@ func (a *App) startClipboard() {
 	a.registerClipboardShortcut()
 	a.loadClipboard()
 	mygo.App.OnQuit(func() {
+		a.dismissClipboardAccess()
 		close(a.clipboard.stop)
 		if a.clipboard.target != nil {
 			a.clipboard.target.Close()
@@ -82,13 +85,37 @@ func (a *App) configureClipboard(previous application.ClipboardPreferences) {
 	p := a.state.Preferences.Clipboard
 	active := p.Enabled
 	if !active {
+		a.dismissClipboardAccess()
 		a.clipboard.pendingDictations = nil
 		a.clipboard.windowSeq++
 		a.clipboard.pasteSeq++
 		actions{a}.CloseClipboard()
 		a.dismissClipboardPreview()
 	}
+	if p.FilesEnabled != previous.FilesEnabled {
+		a.dismissClipboardAccess()
+		a.clipboard.filesGeneration.Add(1)
+		a.clipboard.windowSeq++
+		a.clipboard.pasteSeq++
+		actions{a}.CloseClipboard()
+		a.dismissClipboardPreview()
+		a.state.Clipboard.Items = p.VisibleItems(a.state.Clipboard.Items)
+		if !p.FilesEnabled {
+			for id, meta := range a.state.Clipboard.Meta {
+				if len(meta.Files) != 0 {
+					delete(a.state.Clipboard.Meta, id)
+				}
+			}
+		}
+		if p.Enabled && !a.state.Clipboard.Busy && a.clipboard.service != nil {
+			limits := p.Limits
+			a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(a.clipboard.service, limits, p.FilesEnabled) }, copy.ClipboardLoadFailed)
+		}
+	}
 	revision, _ := clipboardos.Revision()
+	if p.FilesEnabled != previous.FilesEnabled {
+		a.clipboard.capture.Accept(revision)
+	}
 	a.clipboard.capture.Configure(active, revision)
 	a.clipboard.collecting.Store(active)
 	a.clipboard.observed.Store(revision)
@@ -158,7 +185,7 @@ func (a *App) loadClipboard() {
 			return nil, e
 		}
 		service := application.NewClipboard(repo)
-		items, e := refreshClipboard(service, a.preferences().Clipboard.Limits)
+		items, e := refreshClipboard(service, a.preferences().Clipboard.Limits, a.preferences().Clipboard.FilesEnabled)
 		if e == nil {
 			a.post(func() { a.clipboard.service = service })
 		}
@@ -174,6 +201,7 @@ func (a *App) clipboardWork(work func() ([]domain.Clip, error), failure copy.Key
 	}
 	a.state.Clipboard.Busy = true
 	cached := maps.Clone(a.state.Clipboard.Meta)
+	filesGeneration := a.clipboard.filesGeneration.Load()
 	a.resourceJobs.Add(1)
 	go func() {
 		defer a.resourceJobs.Add(-1)
@@ -181,23 +209,36 @@ func (a *App) clipboardWork(work func() ([]domain.Clip, error), failure copy.Key
 		var previewErr error
 		var meta map[string]arion.ClipboardMeta
 		if err == nil {
-			meta, previewErr = clipboardMetadata(items, cached)
+			meta, previewErr = clipboardMetadata(a.preferences().Clipboard.VisibleItems(items), cached)
 		}
 		a.post(func() {
 			defer a.drainClipboardDictations()
 			a.state.Clipboard.Busy = false
-			if errors.Is(err, transfer.ErrFormat) {
-				return
-			}
-			if err != nil {
+			if err != nil && !errors.Is(err, transfer.ErrFormat) {
 				a.state.Clipboard.Error = clipboardError(err, failure)
 				return
 			}
-			a.state.Clipboard.Items = eligibleClipboardItems(items, meta)
-			a.state.Clipboard.Meta = meta
+			// A mode change invalidates metadata prepared under the previous policy.
+			// Re-read the serialized snapshot instead of publishing incomplete file rows.
+			if filesGeneration != a.clipboard.filesGeneration.Load() && a.state.Preferences.Clipboard.Enabled && a.clipboard.service != nil {
+				prefs := a.state.Preferences.Clipboard
+				a.clipboardWork(func() ([]domain.Clip, error) {
+					return refreshClipboard(a.clipboard.service, prefs.Limits, prefs.FilesEnabled)
+				}, copy.ClipboardLoadFailed)
+				return
+			}
+			if errors.Is(err, transfer.ErrFormat) {
+				return
+			}
+			a.state.Clipboard.Items = eligibleClipboardItems(a.state.Preferences.Clipboard.VisibleItems(items), meta)
+			visibleMeta := make(map[string]arion.ClipboardMeta, len(a.state.Clipboard.Items))
+			for _, item := range a.state.Clipboard.Items {
+				visibleMeta[item.ID] = meta[item.ID]
+			}
+			a.state.Clipboard.Meta = visibleMeta
 			a.positionClipboard()
 			switch a.state.Clipboard.Error {
-			case copy.ClipboardLoadFailed, copy.ClipboardSaveFailed, copy.ClipboardCapacity, copy.ClipboardOversize, copy.ClipboardReadFailed:
+			case copy.ClipboardLoadFailed, copy.ClipboardSaveFailed, copy.ClipboardCapacity, copy.ClipboardOversize, copy.ClipboardReadFailed, copy.ClipboardAccessRequired, copy.ClipboardAccessReCopy:
 				a.state.Clipboard.Error = ""
 			}
 			if previewErr != nil {
@@ -208,6 +249,9 @@ func (a *App) clipboardWork(work func() ([]domain.Clip, error), failure copy.Key
 }
 
 func clipboardError(err error, other copy.Key) copy.Key {
+	if clipboardos.FileAccessDenied(err) {
+		return copy.ClipboardAccessRequired
+	}
 	switch {
 	case errors.Is(err, domain.ErrClipOversize):
 		return copy.ClipboardOversize
@@ -240,7 +284,7 @@ func (a *App) pollClipboard() {
 		cc.observed.Store(rev)
 		return
 	}
-	payload, err := clipboardos.Read(a.state.Preferences.Clipboard.Limits.ItemBytes)
+	payload, err := clipboardos.Read(a.state.Preferences.Clipboard.Limits.ItemBytes, a.state.Preferences.Clipboard.FilesEnabled)
 	current, _ := clipboardos.Revision()
 	if current != rev || errors.Is(err, mygo.ErrClipboardChanged) {
 		return
@@ -255,7 +299,11 @@ func (a *App) pollClipboard() {
 		return
 	}
 	limits := a.state.Preferences.Clipboard.Limits
+	filesGeneration := cc.filesGeneration.Load()
 	a.clipboardWork(func() ([]domain.Clip, error) {
+		if payload.Kind == domain.ClipFiles && (cc.filesGeneration.Load() != filesGeneration || !a.preferences().Clipboard.FilesEnabled) {
+			return nil, transfer.ErrFormat
+		}
 		var err error
 		payload, err = clipboardos.FilesOnly(payload)
 		if err != nil {
@@ -275,10 +323,10 @@ func (a *App) pollClipboard() {
 
 // Unsupported legacy references cannot retain invisible permanent pins. They
 // become ordinary records and follow the configured count/storage limits.
-func refreshClipboard(service *application.Clipboard, limits domain.ClipLimits) ([]domain.Clip, error) {
+func refreshClipboard(service *application.Clipboard, limits domain.ClipLimits, includeFiles bool) ([]domain.Clip, error) {
 	return service.Update(func(items []domain.Clip) ([]domain.Clip, error) {
 		for i, item := range items {
-			if item.Pinned && errors.Is(clipboardos.ValidateFiles(item.Payload), transfer.ErrFormat) {
+			if includeFiles && item.Pinned && errors.Is(clipboardos.ValidateFiles(item.Payload), transfer.ErrFormat) {
 				items[i].Pinned = false
 			}
 		}

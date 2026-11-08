@@ -204,6 +204,8 @@ class Service final : public ITfTextInputProcessorEx, public ITfThreadMgrEventSi
             if (!keyboard.resetLearning()) typing->modeFailure=nativeCopy(NativeCopy::ResetFailed); else typing->modeFailure.clear();
         } else if (action==KeyboardMenuAction::OpenApp) {
             if (reinterpret_cast<INT_PTR>(ShellExecuteW(nullptr,L"open",L"arion://open",nullptr,nullptr,SW_SHOWNORMAL))<=32) typing->modeFailure=nativeCopy(NativeCopy::OpenAppFailed);
+        } else if (action==KeyboardMenuAction::Feedback) {
+            if (reinterpret_cast<INT_PTR>(ShellExecuteW(nullptr,L"open",L"arion://feedback",nullptr,nullptr,SW_SHOWNORMAL))<=32) typing->modeFailure=nativeCopy(NativeCopy::OpenAppFailed);
         }
         else if (action==KeyboardMenuAction::CopyPending && !typing->recoveryText.empty() && OpenClipboard(window)) {
             const auto &text=typing->recoveryText; size_t size=(text.size()+1)*sizeof(wchar_t); HGLOBAL memory=GlobalAlloc(GMEM_MOVEABLE,size);

@@ -19,10 +19,19 @@ const (
 	CloudGoogle     = "google"
 	CloudDeepSeek   = "deepseek"
 	CloudOpenRouter = "openrouter"
+	// CloudOpenAICompatible and CloudAnthropicCompatible take a base URL
+	// plus an API key. Their wire protocols match the fixed providers.
+	CloudOpenAICompatible    = "openai-compatible"
+	CloudAnthropicCompatible = "anthropic-compatible"
 )
 
 // CloudKeyProviders are the API key providers in picker order.
-var CloudKeyProviders = []string{CloudOpenAI, CloudAnthropic, CloudGoogle, CloudDeepSeek, CloudOpenRouter}
+var CloudKeyProviders = []string{CloudOpenAI, CloudAnthropic, CloudGoogle, CloudDeepSeek, CloudOpenRouter, CloudOpenAICompatible, CloudAnthropicCompatible}
+
+// CloudNeedsBase reports a provider that asks for a base URL.
+func CloudNeedsBase(id string) bool {
+	return id == CloudOpenAICompatible || id == CloudAnthropicCompatible
+}
 
 // Cloud is the connected provider, its models and the last failure.
 type Cloud struct {
@@ -57,6 +66,7 @@ const (
 	CloudCodePortInUse      = "PORT_IN_USE"
 	CloudCodeNoSubscription = "NO_SUBSCRIPTION"
 	CloudCodeRejected       = "REJECTED"
+	CloudCodeAddress        = "ADDRESS"
 	CloudCodeNetwork        = "NETWORK"
 	CloudCodeStore          = "SECURE_STORE"
 	CloudCodeModels         = "MODELS"
@@ -64,7 +74,7 @@ const (
 
 // CloudCodes lists every Failure the service reports.
 var CloudCodes = []string{CloudCodeSignIn, CloudCodeCancelled, CloudCodeTimeout, CloudCodePortInUse, CloudCodeNoSubscription,
-	CloudCodeRejected, CloudCodeNetwork, CloudCodeStore, CloudCodeModels}
+	CloudCodeRejected, CloudCodeAddress, CloudCodeNetwork, CloudCodeStore, CloudCodeModels}
 
 // PolishAvailable reports whether polishing can run with the chosen
 // engine: the cloud everywhere, on device only where the runtime ships.

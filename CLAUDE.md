@@ -33,7 +33,7 @@ Use [the documentation index](docs/README.md) for the full map and [document aut
 | New to the project | [Product scope](docs/project/README.md), [architecture](docs/project/architecture.md) |
 | Product behavior or module boundaries | Relevant [specifications](specs/README.md), [handoff](docs/project/agent-handoff.md), [repository ownership](docs/project/repository.md) |
 | Desktop UI | [Frontend conventions](docs/frontend/README.md), [UI craft skills](docs/quality/agent-skills.md) |
-| Marketing site or blog | [Site](docs/frontend/site.md), [blog](docs/frontend/blog.md); apply relevant [UI craft skills](docs/quality/agent-skills.md) for UI work |
+| Marketing site or blog | [Site](docs/frontend/site.md), [blog](docs/frontend/blog.md); use the `write-blog-post` [skill](docs/quality/agent-skills.md#write-blog-post) for posts and apply relevant [UI craft skills](docs/quality/agent-skills.md) for UI work |
 | Backend or core logic | [Backend conventions](docs/backend/README.md) |
 | Build, configuration or deployment | [Operations](docs/operations/README.md) |
 | Experiments, evaluation or drivers | [008 Evaluation](specs/008-evaluation.md), [repository split](docs/project/repository-split.md), [product driver](tools/driver/README.md) |

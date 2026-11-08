@@ -2,6 +2,7 @@ import { DownloadOptions } from "@/features/download-release";
 import { sections } from "@/shared/config";
 import { useCopy } from "@/shared/i18n";
 import { Container, Reveal, SectionHeading } from "@/shared/ui";
+import { CommunityLinks } from "./community-links";
 
 export function DownloadCta() {
   const { download } = useCopy();
@@ -11,6 +12,7 @@ export function DownloadCta() {
         <Reveal className="flex flex-col items-center gap-10 text-center">
           <SectionHeading title={download.title} align="center" />
           <DownloadOptions />
+          <CommunityLinks />
         </Reveal>
       </Container>
     </section>
