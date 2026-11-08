@@ -45,7 +45,8 @@ func (s *PickerState) Close(store runtime.Store) {
 
 // shortcutField is the recorder. A key it refuses is the field's error,
 // attached below it; end aligns that callout with a field ending its row.
-func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), validate func(runtime.HoldKey) copy.Key, end bool) {
+// It returns the field's frame, which keeps the field at its own width.
+func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), validate func(runtime.HoldKey) copy.Key, end bool) ui.Element {
 	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
 	t := c.Theme()
 	closeRecorder := func() { state.Close(store); c.Invalidate() }
@@ -55,7 +56,7 @@ func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner
 		state.listening = false
 		state.error = ""
 	}
-	ui.Column(c.Key(owner)).Gap(6).AlignItems(ui.End).Children(func() {
+	return ui.Column(c.Key(owner)).Gap(6).AlignItems(ui.End).Children(func() {
 		fill, ink := t.Surface, t.Text
 		if state.listening {
 			fill, ink = tokens.RecordingSoft, tokens.RecordingInk

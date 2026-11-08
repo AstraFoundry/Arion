@@ -61,6 +61,7 @@ func TranslatePicker(c *ui.Context, store runtime.Store, state *PickerState) {
 
 // Setting keeps dictation feedback below its complete settings row. Its "+"
 // adds another dictation key, recorded by extra, which "−" removes again.
+// extra is required: onboarding's dictation key uses PolishShortcut.
 func Setting(c *ui.Context, store runtime.Store, state, extra *PickerState) {
 	pickerFor(c, store, state, extra, dictation, true, "", "")
 }
@@ -94,7 +95,7 @@ func shown(store runtime.Store, r role) runtime.HoldKey {
 func assigned(key runtime.HoldKey) bool { return key != "" && key != runtime.HoldOff }
 
 // field is role's recorder, refusing a key another role already holds.
-func field(c *ui.Context, store runtime.Store, state *PickerState, r role, end bool) {
+func field(c *ui.Context, store runtime.Store, state *PickerState, r role, end bool) ui.Element {
 	var edit copy.Key
 	var set func(runtime.HoldKey)
 	switch r {
@@ -122,43 +123,42 @@ func field(c *ui.Context, store runtime.Store, state *PickerState, r role, end b
 		}
 		return ""
 	}
-	shortcutField(c, store, state, owners[r], shown(store, r), edit, set, validate, end)
+	return shortcutField(c, store, state, owners[r], shown(store, r), edit, set, validate, end)
 }
 
-// dictationKeys lists the dictation key and, once added, the extra one,
-// each row ending in its action: "+" adds the extra key while there is
-// none, "−" removes it. Adding opens its recorder at once; canceling that
-// first recording leaves no row behind.
-func dictationKeys(c *ui.Context, store runtime.Store, state, extra *PickerState) {
+// dictationKeys is the dictation settings row: the title, the dictation
+// key and, once added, the extra one below it. Each key ends in its action:
+// "+" adds the extra key while there is none, "−" removes it. Adding opens
+// its recorder at once; canceling that first recording leaves no row. A
+// grid keeps the title level with the first key and both keys one width.
+func dictationKeys(c *ui.Context, store runtime.Store, title, tip string, state, extra *PickerState) {
 	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
 	added := assigned(store.State.Preferences.SecondHoldKey) || extra.listening
-	action := func(key string, icon *ui.SVG, label copy.Key, run func()) {
-		if kit.IconButton(c.Key(key), tokens, icon, messages.Text(label)).Clicked() {
-			run()
-			c.Invalidate()
-		}
-	}
-	ui.Column(c).Gap(8).AlignItems(ui.End).Children(func() {
-		ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
-			field(c, store, state, dictation, true)
-			if added {
-				// Keeps the dictation field aligned with the extra one.
+	key := func(row int, state *PickerState, r role, icon *ui.SVG, label copy.Key, run func()) {
+		ui.Row(c).ColumnStart(2).RowStart(row).Gap(4).AlignItems(ui.Center).Children(func() {
+			field(c, store, state, r, true).Grow(1).AlignItems(ui.Stretch)
+			if icon == nil {
+				// Holds the action's place so both keys share one width.
 				ui.Box(c).Size(28, 28)
-			} else {
-				action("add-dictation-key", icons.Plus, copy.SecondHoldKeyAdd, func() {
-					extra.open(store, owners[secondDictation])
-				})
+			} else if kit.IconButton(c.Key(r), tokens, icon, messages.Text(label)).Clicked() {
+				run()
+				c.Invalidate()
 			}
 		})
+	}
+	kit.RowFrame(ui.Grid(c)).ColumnTracks(ui.Fr(1), ui.FitContent()).GapX(16).GapY(8).AlignItems(ui.Center).Children(func() {
+		kit.TipTitle(c, tokens, title, tip).ColumnStart(1).RowStart(1)
 		if added {
-			ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
-				field(c, store, extra, secondDictation, true)
-				action("remove-dictation-key", icons.Minus, copy.SecondHoldKeyRemove, func() {
-					extra.Close(store)
-					if assigned(store.State.Preferences.SecondHoldKey) {
-						store.Actions.SetSecondHoldKey(runtime.HoldOff)
-					}
-				})
+			key(1, state, dictation, nil, "", nil)
+			key(2, extra, secondDictation, icons.Minus, copy.SecondHoldKeyRemove, func() {
+				extra.Close(store)
+				if assigned(store.State.Preferences.SecondHoldKey) {
+					store.Actions.SetSecondHoldKey(runtime.HoldOff)
+				}
+			})
+		} else {
+			key(1, state, dictation, icons.Plus, copy.SecondHoldKeyAdd, func() {
+				extra.open(store, owners[secondDictation])
 			})
 		}
 	})
@@ -181,16 +181,13 @@ func pickerFor(c *ui.Context, store runtime.Store, state, extra *PickerState, r 
 		column.Gap(6).AlignItems(ui.Start)
 	}
 	column.Children(func() {
-		control := func() {
-			if extra != nil {
-				dictationKeys(c, store, state, extra)
-			} else {
-				field(c, store, state, r, setting)
-			}
-		}
-		if setting {
+		control := func() { field(c, store, state, r, setting) }
+		switch {
+		case extra != nil:
+			dictationKeys(c, store, messages.Text(label), messages.Text(rowDetail), state, extra)
+		case setting:
 			kit.TipRow(c, tokens, messages.Text(label), messages.Text(rowDetail), control)
-		} else {
+		default:
 			control()
 		}
 		// A refused key is the field's own error (shortcutField); below the
