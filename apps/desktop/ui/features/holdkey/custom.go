@@ -20,6 +20,21 @@ type PickerState struct {
 	error            copy.Key
 }
 
+// open starts capture for this field, as its pencil does.
+func (s *PickerState) open(store runtime.Store, owner string) {
+	s.name(owner)
+	s.listening, s.focus, s.error = true, true, ""
+	s.sequence = store.State.Hold.RecordedSeq
+	store.Actions.RecordShortcut(s.owner)
+}
+
+// name gives the field its native recording owner on first use.
+func (s *PickerState) name(owner string) {
+	if s.owner == "" {
+		s.owner = fmt.Sprintf("%s-%p", owner, s)
+	}
+}
+
 // Close discards capture and restores activation, including on navigation.
 func (s *PickerState) Close(store runtime.Store) {
 	if s.listening && store.State.Hold.Recording == s.owner {
@@ -30,14 +45,11 @@ func (s *PickerState) Close(store runtime.Store) {
 
 // shortcutField is the recorder. A key it refuses is the field's error,
 // attached below it; end aligns that callout with a field ending its row.
-// A non-nil clear offers removal while the field is idle.
-func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), clear func(), validate func(runtime.HoldKey) copy.Key, end bool) {
+func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), validate func(runtime.HoldKey) copy.Key, end bool) {
 	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
 	t := c.Theme()
 	closeRecorder := func() { state.Close(store); c.Invalidate() }
-	if state.owner == "" {
-		state.owner = fmt.Sprintf("%s-%p", owner, state)
-	}
+	state.name(owner)
 	owner = state.owner
 	if state.listening && store.State.Hold.Recording != owner {
 		state.listening = false
@@ -76,17 +88,6 @@ func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner
 				icon, actionLabel = icons.X, messages.Text(copy.HoldKeyCancel)
 			}
 			ui.Text(c, text).SingleLine().Grow(1).TextColor(ink)
-			if clear != nil && !state.listening {
-				remove := kit.IconButton(c.Key("clear"), tokens, icons.X, messages.Text(copy.SecondHoldKeyRemove)).Size(t.Space(4), t.Space(4)).Radius(theme.RadiusSM).TextColor(ink).Background(ui.Transparent)
-				if remove.Hovered() {
-					remove.Background(ink.Alpha(0.08))
-				}
-				if remove.Clicked() {
-					state.error = ""
-					clear()
-					c.Invalidate()
-				}
-			}
 			button := kit.IconButton(c.Key("edit"), tokens, icon, actionLabel).Size(t.Space(4), t.Space(4)).Radius(theme.RadiusSM).TextColor(ink).Background(ui.Transparent)
 			controlFocused = button.Focused()
 			if button.Hovered() {
@@ -96,9 +97,7 @@ func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner
 				if state.listening {
 					closeRecorder()
 				} else {
-					state.listening, state.focus, state.error = true, true, ""
-					state.sequence = store.State.Hold.RecordedSeq
-					store.Actions.RecordShortcut(owner)
+					state.open(store, owner)
 					c.Invalidate()
 				}
 			}

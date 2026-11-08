@@ -245,9 +245,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 	case Dictation:
 		holdkey.ListenerStatus(c, store, tokens)
 		kit.Card(c.Key("dictation-shortcut"), tokens).Children(func() {
-			holdkey.Setting(c, store, &p.holdPicker)
-			kit.Divider(c, tokens)
-			holdkey.SecondSetting(c, store, &p.secondPicker)
+			holdkey.Setting(c, store, &p.holdPicker, &p.secondPicker)
 		})
 
 		kit.Card(c.Key("translation-settings"), tokens).Children(func() {

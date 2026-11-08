@@ -4,6 +4,7 @@ package holdkey
 
 import (
 	platform "runtime"
+	"slices"
 
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
@@ -50,71 +51,64 @@ func assignment(prefs runtime.Preferences, r role) runtime.HoldKey {
 
 // Picker displays the dictation shortcut and records a replacement.
 func Picker(c *ui.Context, store runtime.Store, state *PickerState) {
-	pickerFor(c, store, state, dictation, false, "", "")
+	pickerFor(c, store, state, nil, dictation, false, "", "")
 }
 
 // TranslatePicker records the translation shortcut, rejecting dictation conflicts.
 func TranslatePicker(c *ui.Context, store runtime.Store, state *PickerState) {
-	pickerFor(c, store, state, translation, false, "", "")
+	pickerFor(c, store, state, nil, translation, false, "", "")
 }
 
-// Setting keeps dictation feedback below its complete settings row.
-func Setting(c *ui.Context, store runtime.Store, state *PickerState) {
-	pickerFor(c, store, state, dictation, true, "", "")
-}
-
-// SecondSetting records an optional second dictation key, active together
-// with the first, and can remove it.
-func SecondSetting(c *ui.Context, store runtime.Store, state *PickerState) {
-	pickerFor(c, store, state, secondDictation, true, "", "")
+// Setting keeps dictation feedback below its complete settings row. Its "+"
+// adds another dictation key, recorded by extra, which "−" removes again.
+func Setting(c *ui.Context, store runtime.Store, state, extra *PickerState) {
+	pickerFor(c, store, state, extra, dictation, true, "", "")
 }
 
 // TranslateSetting keeps translation feedback inside its collapsible settings.
 func TranslateSetting(c *ui.Context, store runtime.Store, state *PickerState) {
-	pickerFor(c, store, state, translation, true, "", "")
+	pickerFor(c, store, state, nil, translation, true, "", "")
 }
 
 // PolishShortcut is the dictation shortcut labeled as polish, for onboarding.
 func PolishShortcut(c *ui.Context, store runtime.Store, state *PickerState) {
-	pickerFor(c, store, state, dictation, true, copy.PolishLabel, copy.HoldKeyDetail)
+	pickerFor(c, store, state, nil, dictation, true, copy.PolishLabel, copy.HoldKeyDetail)
 }
 
 // ClipboardSetting uses the native recorder shared with dictation and translation.
 func ClipboardSetting(c *ui.Context, store runtime.Store, state *PickerState) {
-	pickerFor(c, store, state, clipboard, true, "", "")
+	pickerFor(c, store, state, nil, clipboard, true, "", "")
 }
 
-func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, r role, setting bool, title, detail copy.Key) {
-	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
+// shown is the key a role's field displays: a disabled translation keeps
+// the assignment visible during the closing animation.
+func shown(store runtime.Store, r role) runtime.HoldKey {
 	prefs := store.State.Preferences
-	owner, current := owners[r], assignment(prefs, r)
-	var label, rowDetail, edit copy.Key
+	if r == translation && !TranslationEnabled(store) {
+		return prefs.PreviousTranslateKey
+	}
+	return assignment(prefs, r)
+}
+
+// assigned reports a key that is set and not off.
+func assigned(key runtime.HoldKey) bool { return key != "" && key != runtime.HoldOff }
+
+// field is role's recorder, refusing a key another role already holds.
+func field(c *ui.Context, store runtime.Store, state *PickerState, r role, end bool) {
+	var edit copy.Key
 	var set func(runtime.HoldKey)
-	var clear func()
 	switch r {
 	case dictation:
-		label, rowDetail, edit = copy.HoldKeyLabel, copy.HoldKeyDetail, copy.HoldKeyEdit
-		set = store.Actions.SetHoldKey
+		edit, set = copy.HoldKeyEdit, store.Actions.SetHoldKey
 	case secondDictation:
-		label, rowDetail, edit = copy.SecondHoldKeyLabel, copy.SecondHoldKeyDetail, copy.SecondHoldKeyEdit
-		set = store.Actions.SetSecondHoldKey
-		if current != "" && current != runtime.HoldOff {
-			clear = func() { store.Actions.SetSecondHoldKey(runtime.HoldOff) }
-		}
+		edit, set = copy.SecondHoldKeyEdit, store.Actions.SetSecondHoldKey
 	case translation:
-		label, rowDetail, edit = copy.TranslateKeyLabel, copy.TranslateKeyDetail, copy.TranslateKeyEdit
-		set = store.Actions.SetTranslateKey
-		if !TranslationEnabled(store) {
-			// Preserve the assignment displayed during the closing animation.
-			current = prefs.PreviousTranslateKey
-		}
+		edit, set = copy.TranslateKeyEdit, store.Actions.SetTranslateKey
 	case clipboard:
-		label, rowDetail, edit = copy.ClipboardShortcut, copy.ClipboardShortcutHint, copy.ClipboardShortcutEdit
+		edit = copy.ClipboardShortcutEdit
 		set = func(key runtime.HoldKey) { store.Actions.SetClipboardShortcut(string(key)) }
 	}
-	if title != "" {
-		label, rowDetail = title, detail
-	}
+	prefs := store.State.Preferences
 	validate := func(key runtime.HoldKey) copy.Key {
 		if r == clipboard {
 			if _, ok := runtime.ClipboardShortcutKey(platform.GOOS, string(key)); !ok {
@@ -128,12 +122,72 @@ func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, r role, s
 		}
 		return ""
 	}
+	shortcutField(c, store, state, owners[r], shown(store, r), edit, set, validate, end)
+}
+
+// dictationKeys lists the dictation key and, once added, the extra one,
+// each row ending in its action: "+" adds the extra key while there is
+// none, "−" removes it. Adding opens its recorder at once; canceling that
+// first recording leaves no row behind.
+func dictationKeys(c *ui.Context, store runtime.Store, state, extra *PickerState) {
+	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
+	added := assigned(store.State.Preferences.SecondHoldKey) || extra.listening
+	action := func(key string, icon *ui.SVG, label copy.Key, run func()) {
+		if kit.IconButton(c.Key(key), tokens, icon, messages.Text(label)).Clicked() {
+			run()
+			c.Invalidate()
+		}
+	}
+	ui.Column(c).Gap(8).AlignItems(ui.End).Children(func() {
+		ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
+			field(c, store, state, dictation, true)
+			if added {
+				// Keeps the dictation field aligned with the extra one.
+				ui.Box(c).Size(28, 28)
+			} else {
+				action("add-dictation-key", icons.Plus, copy.SecondHoldKeyAdd, func() {
+					extra.open(store, owners[secondDictation])
+				})
+			}
+		})
+		if added {
+			ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
+				field(c, store, extra, secondDictation, true)
+				action("remove-dictation-key", icons.Minus, copy.SecondHoldKeyRemove, func() {
+					extra.Close(store)
+					if assigned(store.State.Preferences.SecondHoldKey) {
+						store.Actions.SetSecondHoldKey(runtime.HoldOff)
+					}
+				})
+			})
+		}
+	})
+}
+
+func pickerFor(c *ui.Context, store runtime.Store, state, extra *PickerState, r role, setting bool, title, detail copy.Key) {
+	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
+	label, rowDetail := map[role]copy.Key{dictation: copy.HoldKeyLabel, translation: copy.TranslateKeyLabel, clipboard: copy.ClipboardShortcut}[r],
+		map[role]copy.Key{dictation: copy.HoldKeyDetail, translation: copy.TranslateKeyDetail, clipboard: copy.ClipboardShortcutHint}[r]
+	if title != "" {
+		label, rowDetail = title, detail
+	}
+	// The row's fields share the guidance below it.
+	states, keys := []*PickerState{state}, []runtime.HoldKey{shown(store, r)}
+	if extra != nil {
+		states, keys = append(states, extra), append(keys, store.State.Preferences.SecondHoldKey)
+	}
 	column := ui.Column(c).Shrink(1)
 	if !setting {
 		column.Gap(6).AlignItems(ui.Start)
 	}
 	column.Children(func() {
-		control := func() { shortcutField(c, store, state, owner, current, edit, set, clear, validate, setting) }
+		control := func() {
+			if extra != nil {
+				dictationKeys(c, store, state, extra)
+			} else {
+				field(c, store, state, r, setting)
+			}
+		}
 		if setting {
 			kit.TipRow(c, tokens, messages.Text(label), messages.Text(rowDetail), control)
 		} else {
@@ -141,15 +195,20 @@ func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, r role, s
 		}
 		// A refused key is the field's own error (shortcutField); below the
 		// row go guidance in Muted and a failure that is not the field's.
+		refused, listening := false, false
+		for _, s := range states {
+			refused = refused || s.error != ""
+			listening = listening || s.listening
+		}
 		var message copy.Key
 		failed := false
 		switch {
-		case state.error != "":
-		case state.listening:
+		case refused:
+		case listening:
 			message = copy.HoldKeySystemHint
 		case r == clipboard && store.State.Clipboard.ShortcutFailed:
 			message, failed = copy.ClipboardShortcutFailed, true
-		case current == runtime.HoldFn:
+		case slices.Contains(keys, runtime.HoldFn):
 			message = copy.HoldKeyFnHint
 		}
 		if message != "" {
@@ -172,8 +231,7 @@ func pickerFor(c *ui.Context, store runtime.Store, state *PickerState, r role, s
 
 // TranslationEnabled reports whether a translation shortcut is assigned.
 func TranslationEnabled(store runtime.Store) bool {
-	key := store.State.Preferences.TranslateKey
-	return key != "" && key != runtime.HoldOff
+	return assigned(store.State.Preferences.TranslateKey)
 }
 
 // TranslationToggle keeps the assignment and target language when disabled.
