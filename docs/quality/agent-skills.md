@@ -16,6 +16,14 @@ These skills are checked into [`.claude/skills/`](../../.claude/skills/) directl
 
 Canonical path: [`.claude/skills/find-simplifications/`](../../.claude/skills/find-simplifications/) (`SKILL.md`, plus [`references/historical-patterns.md`](../../.claude/skills/find-simplifications/references/historical-patterns.md)).
 
+### `write-blog-post`
+
+| Skill | Use when |
+|-------|----------|
+| `write-blog-post` | Writing or revising a site blog post, including release and changelog posts across a version range: collecting facts from tags, the changelog, specs and copy catalogs, voice, the three locales, real UI screenshots, credits and checks. |
+
+Canonical path: [`.claude/skills/write-blog-post/`](../../.claude/skills/write-blog-post/) (`SKILL.md`). The format and build rules it builds on stay in [the blog conventions](../frontend/blog.md).
+
 ## Installed skills
 
 Sources are pinned in [`skills-lock.json`](../../skills-lock.json).
