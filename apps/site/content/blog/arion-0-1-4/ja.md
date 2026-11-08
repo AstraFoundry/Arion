@@ -23,13 +23,13 @@ draft: false
 - **静かな音声はモデルに送りません。** Arion は各音声ウィンドウを 20 ms ごとに、区間の終わりを判定するのと同じ −42 dBFS のしきい値で調べます。しきい値に届く部分が1つもないウィンドウは認識リクエストを作らずに空のテキストを返すので、モデルが何かを埋める余地がありません。
 - **リストを写した結果は認識し直します。** 認識結果の先頭か末尾に、ホットワードが2つ以上リストの順番どおりに続いて現れた場合、Arion は同じ音声をホットワードなしでもう一度認識し、その結果を使います。実際に話した1語のホットワードは残り、順番が違う語や文の途中に出てくる語もそのままです。キャンセルすればリクエストはすぐに止まります。[^hotwords]
 
-<dictation-pill state="listening" draft="Ship the Arion MLX build" label="Arion の音声入力ピルに下書き「Ship the Arion MLX build」が表示されている" caption="実際に話した用語は、これまでどおりホットワードが正しく表記します。変わったのは、無音や文末の間がホットワードの羅列にならなくなったことです。録画ではなくイメージ図です。"></dictation-pill>
+<embed-frame src="/blog/arion-0-1-4/stage.ja.html#hotwords" poster="./posters/hotwords.ja.webp" title="デモ：右 Option を押して少し間をあけてから話す" ratio="16/10" caption="話し始める前に間をあけます。音声が静かなあいだピルは空のままで、話した内容だけが表示されます。単語帳は引き続き Arion と MLX を正しく表記します。模擬録画で、音声は録音していません。"></embed-frame>
 
 ## 互換エンドポイントでのクラウド整文（0.1.3）
 
 プロバイダーの一覧に **OpenAI compatible** と **Anthropic compatible** が加わりました。Base URL と API キーを入力すると、Arion がそのエンドポイントのモデル一覧を読み込み、そこから選べます。自前のゲートウェイや地域ミラーなど、どちらかの API に対応したサービスをつなげます。要望を[出してくれた](https://github.com/AstraFoundry/Arion/issues/99) [@harry-xm](https://github.com/harry-xm) さんに感謝します。
 
-![Arion の OpenAI compatible の設定。Base URL 欄に https://gateway.example.com/v1、その下に伏せ字の API キー欄と Connect ボタンがある](./compatible.en.webp "OpenAI compatible：Base URL と API キーを入れて Connect。キーは伏せ字のままです。")
+<embed-frame src="/blog/arion-0-1-4/stage.ja.html#compatible" poster="./posters/compatible.ja.webp" title="デモ：OpenAI compatible のエンドポイントに接続する" ratio="16/10" caption="OpenAI compatible を選び、Base URL を入力してキーを貼り付けます。Connect のあと、Model メニューにはそのエンドポイント自身のモデル一覧が並びます。模擬録画で、どのプロバイダーにも接続していません。"></embed-frame>
 
 Base URL はキーと一緒に OS の資格情報ストアに保存され、プロバイダーごとに1項目なので、切り替えてもそれぞれのアドレスとキーは残ります。公式の OpenAI と Anthropic の項目は変わりません。プライバシーの境界はほかのクラウドプロバイダーと同じで、Arion が送るのは認識したテキスト、シーン、一致した単語帳の項目だけです。音声、カーソルやウィンドウのコンテキスト、履歴はデバイスに残ります。[^cloud]
 
@@ -41,7 +41,7 @@ Base URL はキーと一緒に OS の資格情報ストアに保存され、プ�
 
 モデル一覧はボディのない GET で取得するようになりました。キーの拒否とみなすのは、明示的な認証失敗か HTTP 401 だけです。それ以外の 403、レート制限、サーバーエラー、読み取れない応答は「Couldn't load models.」と表示します。確認に失敗しても保存済みのキーは置き換わらず、更新に失敗しても手元のモデル一覧は残ります。ローカルのログに残るのは失敗コードと HTTP ステータスだけで、キー、URL、応答の中身は記録しません。
 
-![確認に失敗したあとの DeepSeek の設定。キー欄は空で Connect は薄くなり、「Couldn't load models.」という警告が出ている](./deepseek.en.webp "モデル一覧の失敗は、キーのせいにせずそのまま伝えます。")
+<embed-frame src="/blog/arion-0-1-4/stage.ja.html#deepseek" poster="./posters/deepseek.ja.webp" title="デモ：DeepSeek のキーで接続する" ratio="16/10" caption="DeepSeek のキーを貼り付けて Connect を押します。モデル一覧はボディのない GET で取得され、キーが受け入れられてモデルを選べます。模擬録画です。"></embed-frame>
 
 ## macOS でマイクの開始が軽く（0.1.3）
 
@@ -53,9 +53,7 @@ Base URL はキーと一緒に OS の資格情報ストアに保存され、プ�
 
 Codex や Claude Code のようなコーディングエージェントを日常的に使っている方は多いと思います。0.1.4 では、Arion で何かあったときにそのエージェントの手を借りられます。メニューバーのパネルにある **?** ボタン、Settings › About の **Ask an agent**、macOS や Windows の入力メニューにある **Report a problem…** から **Report a problem** ウィンドウを開けます。
 
-![Arion のメニューバーパネル。名前の横に緑の Ready 表示と ? ボタンがあり、その下に Start dictation、Settings、Quit Arion が並ぶ](./panel.en.webp "メニューバーパネルの Ready の横にある ? ボタン。")
-
-![Arion の Settings › About。Community と License のあいだの Report a bug の行に、GitHub Issues のリンクと Ask an agent ボタンがある](./about.en.webp "Settings › About：従来の GitHub Issues の横に Ask an agent が加わりました。")
+<embed-frame src="/blog/arion-0-1-4/stage.ja.html#feedback" poster="./posters/feedback.ja.webp" title="デモ：コーディングエージェントに問題の報告を任せる" ratio="16/10" caption="メニューバーパネルの ? ボタンから Report a problem を開き、プロンプトをコピーしてエージェントに貼り付けると、質問のあと Issue が作成されます。模擬録画で、Issue は作成していません。"></embed-frame>
 
 ウィンドウにはコピーできる1行のプロンプトがあります。Arion のウェブサイトにあるフィードバック用スキルの場所、バージョン、プラットフォームだけを記し、パス、アカウント情報、ログは含みません。これをエージェントに貼り付けると、エージェントは次のように進めます。
 
