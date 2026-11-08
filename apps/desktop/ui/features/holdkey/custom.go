@@ -30,7 +30,8 @@ func (s *PickerState) Close(store runtime.Store) {
 
 // shortcutField is the recorder. A key it refuses is the field's error,
 // attached below it; end aligns that callout with a field ending its row.
-func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), validate func(runtime.HoldKey) copy.Key, end bool) {
+// A non-nil clear offers removal while the field is idle.
+func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), clear func(), validate func(runtime.HoldKey) copy.Key, end bool) {
 	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
 	t := c.Theme()
 	closeRecorder := func() { state.Close(store); c.Invalidate() }
@@ -75,6 +76,17 @@ func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner
 				icon, actionLabel = icons.X, messages.Text(copy.HoldKeyCancel)
 			}
 			ui.Text(c, text).SingleLine().Grow(1).TextColor(ink)
+			if clear != nil && !state.listening {
+				remove := kit.IconButton(c.Key("clear"), tokens, icons.X, messages.Text(copy.SecondHoldKeyRemove)).Size(t.Space(4), t.Space(4)).Radius(theme.RadiusSM).TextColor(ink).Background(ui.Transparent)
+				if remove.Hovered() {
+					remove.Background(ink.Alpha(0.08))
+				}
+				if remove.Clicked() {
+					state.error = ""
+					clear()
+					c.Invalidate()
+				}
+			}
 			button := kit.IconButton(c.Key("edit"), tokens, icon, actionLabel).Size(t.Space(4), t.Space(4)).Radius(theme.RadiusSM).TextColor(ink).Background(ui.Transparent)
 			controlFocused = button.Focused()
 			if button.Hovered() {

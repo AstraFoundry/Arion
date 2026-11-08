@@ -20,6 +20,12 @@ type shortcutActions struct {
 }
 
 func (a *shortcutActions) SetHoldKey(key runtime.HoldKey) { a.state.Preferences.ChooseHoldKey(key) }
+
+// SetSecondHoldKey validates on macOS so the recorder runs where no hold
+// adapter exists.
+func (a *shortcutActions) SetSecondHoldKey(key runtime.HoldKey) {
+	a.state.Preferences.ChooseSecondHoldKey("darwin", key)
+}
 func (a *shortcutActions) SetTranslateKey(key runtime.HoldKey) {
 	a.state.Preferences.ChooseTranslateKey(platform.GOOS, key)
 }
@@ -308,5 +314,57 @@ func TestRecordersTransferOwnershipWithoutRestoringTheOldListener(t *testing.T) 
 	tt.Frame()
 	if state.Preferences.HoldKey != "ctrl+space" || state.Hold.Recording != "" {
 		t.Fatal("valid retry not committed")
+	}
+}
+
+func TestSecondDictationRecorderAssignsRejectsConflictsAndClears(t *testing.T) {
+	state := &runtime.State{Preferences: runtime.Preferences{UILanguage: runtime.LanguageEnglish, HoldKey: "f8", SecondHoldKey: runtime.HoldOff, TranslateKey: "f9"}}
+	actions := &shortcutActions{state: state}
+	store := runtime.Store{State: state, Actions: actions}
+	first, second := &PickerState{}, &PickerState{}
+	tt := ui.NewTester(func(c *ui.Context) {
+		theme.Apply(c)
+		ui.Column(c).Children(func() { Setting(c, store, first); SecondSetting(c, store, second) })
+	}, 560, 320)
+	messages := store.Copy()
+	click := func(label string) {
+		t.Helper()
+		if err := tt.Click(label); err != nil {
+			t.Fatal(err)
+		}
+		tt.Frame()
+	}
+	record := func(key runtime.HoldKey) {
+		state.Hold.RecordedKey = key
+		state.Hold.RecordedSeq++
+		tt.Frame()
+	}
+	if !tt.HasText(messages.Text(copy.HoldKeyOff)) || tt.HasText(messages.Text(copy.SecondHoldKeyRemove)) {
+		t.Fatalf("unassigned second key should read Off without removal: %q", tt.Texts())
+	}
+	click(messages.Text(copy.SecondHoldKeyEdit))
+	if !second.listening || state.Hold.Recording != second.owner || second.owner == first.owner {
+		t.Fatal("second recorder did not take its own capture")
+	}
+	for key, refusal := range map[runtime.HoldKey]copy.Key{"f8": copy.TranslateKeyConflict, "f9": copy.HoldKeyConflict} {
+		record(key)
+		if !second.listening || second.error != refusal || state.Preferences.SecondHoldKey != runtime.HoldOff {
+			t.Fatalf("second key accepted %s: %+v", key, state.Preferences)
+		}
+	}
+	record("ctrl+shift+space")
+	if second.listening || state.Preferences.SecondHoldKey != "ctrl+shift+space" || state.Preferences.HoldKey != "f8" || state.Preferences.TranslateKey != "f9" {
+		t.Fatalf("second key not saved alongside the others: %+v", state.Preferences)
+	}
+	click(messages.Text(copy.HoldKeyEdit))
+	record("ctrl+shift+space")
+	if !first.listening || first.error != copy.TranslateKeyConflict || state.Preferences.HoldKey != "f8" {
+		t.Fatal("dictation recorder took the second key")
+	}
+	first.Close(store)
+	tt.Frame()
+	click(messages.Text(copy.SecondHoldKeyRemove))
+	if state.Preferences.SecondHoldKey != runtime.HoldOff || state.Preferences.HoldKey != "f8" || tt.HasText(messages.Text(copy.SecondHoldKeyRemove)) {
+		t.Fatalf("removal failed: %+v", state.Preferences)
 	}
 }
