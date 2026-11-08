@@ -39,7 +39,7 @@
       "Onboarding now asks for one permission at a time.",
       "The menu bar panel shows the last dictation."
     ],
-    "sentence": "把这个 PR merge 到 main 之前，先跑一下 CI。",
+    "sentence": "Before we merge this PR into main, let's run CI.",
     "finishHint": "to finish",
     "inserted": "Inserted",
     "learned": "Learned",
