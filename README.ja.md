@@ -58,6 +58,7 @@
 - `cgo` が有効化された **Go 1.27.1**（`go.work` は自動ツールチェーン選択を使用）。
 - **macOS（`arm64`）**：macOS 14 SDK を含む Apple Command Line Tools、CMake、Apple silicon ホスト。`speech.cpp` の Metal バックエンドはローカルでビルドされます。
 - **Windows（`amd64`）**：ネイティブ C/C++ ツールチェーン、CMake、MinGW-w64 GCC（`CC=x86_64-w64-mingw32-gcc`）、および NSIS。
+- **Linux**：`make desktop-check` 専用の GCC。これはテスト手順であり、パッケージ配布ではありません。入力メソッドの登録やホールドキーの追加は行いません。
 - **Node 24**（`.nvmrc`）と**バージョン固定された `pnpm@10.33.0`**（`package.json`）。
 
 ### ビルドと実行
@@ -65,7 +66,7 @@
 ```sh
 make install        # 固定バージョンの pnpm ワークスペースをインストール (--frozen-lockfile)
 make check          # ドキュメント、JSON、Go レイヤー境界、ワークフロー検査、および core/sync/updates/i18n/公開 Driver テスト
-make desktop-check  # デスクトップテスト、キーボードチェック、go vet (cgo)
+make desktop-check  # デスクトップテストと go vet (cgo)。キーボードチェックは macOS のみ
 make desktop-dev    # ネイティブランタイムをステージングし、開発モードで Arion Dev を起動
 make build desktop  # apps/desktop/build/ 配下に Arion.app + DMG (macOS) または NSIS インストーラー (Windows) をパッケージング
 make e2e            # 実際のデスクトップセッションでのネイティブウィンドウライフサイクル E2E

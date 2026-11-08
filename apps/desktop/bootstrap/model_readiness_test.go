@@ -134,6 +134,12 @@ func TestFirstRunWaitsForRecognitionDownloadConfirmation(t *testing.T) {
 		t.Fatal(err)
 	}
 	bundle, _, err := modelruntime.SelectDefault(catalog)
+	if platform := modelruntime.Platform(); platform != "darwin-arm64" && platform != "windows-amd64" {
+		if domain.CodeOf(err) != domain.CodeEvaluationUnavailable {
+			t.Fatal(err)
+		}
+		return
+	}
 	if err != nil {
 		t.Fatal(err)
 	}

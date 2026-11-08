@@ -109,6 +109,9 @@ jobs:
           key: actionlint-${{ hashFiles('scripts/lib/workflow-check.mjs') }}-${{ runner.os }}-${{ runner.arch }}
       - if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'
         run: pnpm test
+      - name: Linux desktop tests
+        if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'
+        run: pnpm desktop:check
       - if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'
         run: pnpm updater:check
       - if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'

@@ -1001,6 +1001,9 @@ func TestHoldKeySettingsAndPill(t *testing.T) {
 		t.Fatalf("hold row missing: %q", tt.Texts())
 	}
 	keys := runtime.HoldKeysFor(platform.GOOS)
+	if len(keys) == 0 {
+		return
+	}
 	choice := keys[0]
 	if err := tt.Click(en.Text(copy.HoldKeyEdit)); err != nil {
 		t.Fatal(err)
@@ -1061,6 +1064,12 @@ func TestTranslationSettingsAndPill(t *testing.T) {
 		t.Fatal(err)
 	}
 	settle(tt)
+	if runtime.DefaultTranslateKey(platform.GOOS) == "" {
+		if key := state.Preferences.TranslateKey; key != "" && key != runtime.HoldOff || hasText(tt, en.Text(copy.TranslateKeyLabel)) {
+			t.Fatal("host without a hold key assigned a translation shortcut")
+		}
+		return
+	}
 	for _, key := range []copy.Key{copy.TranslateGroup, copy.TranslateKeyLabel, copy.TranslateLanguageLabel, copy.TranslateEnglish} {
 		if !hasText(tt, en.Text(key)) {
 			t.Fatalf("missing translation control %s", key)
@@ -1681,6 +1690,20 @@ func TestKeyboardSettings(t *testing.T) {
 				t.Fatal(err)
 			}
 			settle(tt)
+			// A taller host font can leave the last accent below the popup's scroll cap,
+			// where its label is laid out with an empty rect and a click misses.
+			for i := 0; i < 8; i++ {
+				r, ok := tt.Find(messages.Text(copy.KbdAccentCustom))
+				if ok && r.W > 0 && r.H > 0 && r.Y >= 0 && r.Y+r.H <= SettingsHeight {
+					break
+				}
+				anchor, ok := tt.Find(messages.Text(copy.KbdAccentYellow))
+				if !ok {
+					t.Fatal("accent menu missing")
+				}
+				tt.Scroll(anchor.X+anchor.W/2, anchor.Y+anchor.H+24, 0, 80)
+				settle(tt)
+			}
 			if err := tt.Click(messages.Text(copy.KbdAccentCustom)); err != nil {
 				t.Fatal(err)
 			}

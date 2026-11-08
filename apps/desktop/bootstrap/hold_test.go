@@ -121,6 +121,12 @@ func TestTranslateKeyRegistersAlongsideHoldKeyAndRejectsConflicts(t *testing.T) 
 	a.startHoldKey()
 	wantHold := application.DefaultHoldKey(runtime.GOOS)
 	wantTranslate := application.DefaultTranslateKey(runtime.GOOS)
+	if wantHold == "" {
+		if p.starts != 0 || len(p.keys) != 0 {
+			t.Fatalf("registered a hold key: %v", p.keys)
+		}
+		return
+	}
 	if len(p.keys) != 2 || p.keys[0] != wantHold || p.keys[1] != wantTranslate {
 		t.Fatalf("expected both HoldKey and TranslateKey registered, got %v", p.keys)
 	}
@@ -137,6 +143,16 @@ func TestTranslateKeyRegistersAlongsideHoldKeyAndRejectsConflicts(t *testing.T) 
 }
 
 func TestChangingShortcutCancelsPreparationBeforeListenerReplacement(t *testing.T) {
+	if application.DefaultHoldKey(runtime.GOOS) == "" {
+		a := readinessApp(t)
+		a.core.Start()
+		(actions{a}).SetHoldKey("ctrl+space")
+		(actions{a}).SetTranslateKey("ctrl+f8")
+		if !a.core.Snapshot().Active || a.prefs.HoldKey != "" || a.prefs.TranslateKey != "" {
+			t.Fatal("unsupported host accepted a shortcut")
+		}
+		return
+	}
 	for _, translate := range []bool{false, true} {
 		a := readinessApp(t)
 		p := &multiHoldPlatform{}
@@ -167,6 +183,13 @@ func TestShortcutRecordingReplacesActivationAndRetiresCallbacks(t *testing.T) {
 	a.platform = p
 	a.state.Preferences = application.DefaultPreferences(runtime.GOOS)
 	a.core.Start()
+	if application.DefaultHoldKey(runtime.GOOS) == "" {
+		(actions{a}).RecordShortcut("field")
+		if len(p.keys) != 0 || a.state.Preferences.HoldKey != "" {
+			t.Fatal("recording installed a shortcut")
+		}
+		return
+	}
 	(actions{a}).RecordShortcut("field")
 	if a.core.Snapshot().Active || len(p.keys) != 1 || p.keys[0] != holdkey.RecordKeys {
 		t.Fatal("activation not replaced with recording")
@@ -193,6 +216,13 @@ func TestShortcutListenerRetryPreservesAssignments(t *testing.T) {
 	a.prefs = application.DefaultPreferences(runtime.GOOS)
 	a.state.Preferences = a.prefs
 	a.startHoldKey()
+	if application.DefaultHoldKey(runtime.GOOS) == "" {
+		(actions{a}).RetryShortcutListener()
+		if a.state.Hold.Active || p.starts != 0 || a.state.Preferences.HoldKey != "" {
+			t.Fatal("retry installed a shortcut")
+		}
+		return
+	}
 	if a.state.Hold.Active {
 		t.Fatal("failed listener reported success")
 	}
