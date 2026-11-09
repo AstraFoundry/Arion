@@ -205,6 +205,11 @@ func (c Catalog) Version(version string) string {
 	return c.format(FormatVersion, "version", version)
 }
 
+// Recommended marks an option as the recommended choice.
+func (c Catalog) Recommended(label string) string {
+	return c.format(FormatRecommended, "value", label)
+}
+
 // Decibels signs a gain, except 0 dB.
 func (c Catalog) Decibels(db int) string {
 	value := strconv.Itoa(db)

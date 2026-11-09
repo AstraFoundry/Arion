@@ -1,6 +1,7 @@
 package application
 
 import (
+	"math"
 	"slices"
 	"strconv"
 )
@@ -80,27 +81,39 @@ type Highlight struct {
 	Text string `json:"text"`
 }
 
-// Highlight resolves the accent and text color for an appearance. The text
-// color is the same in both appearances.
+// Highlight resolves the accent and text color for an appearance.
 func (k KeyboardPreferences) Highlight(dark bool) Highlight {
-	fill := k.AccentColor
-	if k.Accent != AccentCustom {
-		fills := accentFills[k.Accent]
-		fill = fills[0]
-		if dark {
-			fill = fills[1]
-		}
-	}
-	return Highlight{Fill: fill, Text: textColors[k.ActiveTextColor()]}
+	return Highlight{Fill: k.fill(dark), Text: textColors[k.ActiveTextColor(dark)]}
 }
 
-// ActiveTextColor reports the highlight text color in effect. Empty and
-// unknown values are black.
-func (k KeyboardPreferences) ActiveTextColor() CandidateTextColor {
-	if k.TextColor == TextWhite {
+func (k KeyboardPreferences) fill(dark bool) string {
+	if k.Accent == AccentCustom {
+		return k.AccentColor
+	}
+	fills := accentFills[k.Accent]
+	if dark {
+		return fills[1]
+	}
+	return fills[0]
+}
+
+// RecommendedTextColor is the text the highlight fill carries best: white
+// where it holds 3:1 against the fill, as Chatterfly's blue carries it,
+// else black.
+func (k KeyboardPreferences) RecommendedTextColor(dark bool) CandidateTextColor {
+	if contrast(k.fill(dark), textColors[TextWhite]) >= 3 {
 		return TextWhite
 	}
 	return TextBlack
+}
+
+// ActiveTextColor reports the highlight text color in effect: the user's
+// choice, or the recommendation when there is none.
+func (k KeyboardPreferences) ActiveTextColor(dark bool) CandidateTextColor {
+	if slices.Contains(CandidateTextColors, k.TextColor) {
+		return k.TextColor
+	}
+	return k.RecommendedTextColor(dark)
 }
 
 // ValidAccentColor reports whether s is an opaque #rrggbb color.
@@ -123,6 +136,24 @@ func rgb(s string) ([3]float64, bool) {
 		c[i] = float64(v) / 255
 	}
 	return c, true
+}
+
+// contrast is the WCAG contrast ratio of two valid #rrggbb colors.
+func contrast(a, b string) float64 {
+	la, lb := luminance(a), luminance(b)
+	return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+}
+
+func luminance(s string) float64 {
+	c, _ := rgb(s)
+	for i, v := range c {
+		if v <= 0.04045 {
+			c[i] = v / 12.92
+		} else {
+			c[i] = math.Pow((v+0.055)/1.055, 2.4)
+		}
+	}
+	return 0.2126*c[0] + 0.7152*c[1] + 0.0722*c[2]
 }
 
 // CandidatePageSizes are the selectable candidates per page.
@@ -160,7 +191,8 @@ type KeyboardPreferences struct {
 	// AccentColor is the custom accent as #rrggbb. It stays when a preset
 	// is chosen, so choosing Custom again returns to it.
 	AccentColor string `json:"accentColor,omitempty"`
-	// TextColor is the text on the highlighted candidate. Empty means black.
+	// TextColor is the text on the highlighted candidate. Empty follows
+	// RecommendedTextColor; choosing a highlight color clears it.
 	TextColor CandidateTextColor `json:"textColor,omitempty"`
 	// EmojiSuggestions adds a small reviewed set of Unicode Emoji alternatives
 	// to Chinese Pinyin candidates. The OS renders the characters.
@@ -193,7 +225,7 @@ const (
 )
 
 // DefaultKeyboardPreferences keep the engine's nine-candidate page and the
-// app's yellow accent. The empty text color is black.
+// app's yellow accent, with the recommended text color.
 func DefaultKeyboardPreferences() KeyboardPreferences {
 	return KeyboardPreferences{PageSize: 6, CandidateSize: CandidateMedium, Appearance: AppearanceSystem, Accent: AccentYellow, EmojiSuggestions: true, ContextCursor: true, ContextScreen: true}
 }

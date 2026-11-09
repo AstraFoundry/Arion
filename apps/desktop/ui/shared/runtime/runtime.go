@@ -138,9 +138,10 @@ var GainStops = application.GainStops
 
 // Keyboard choices.
 var (
-	CandidatePageSizes = application.CandidatePageSizes
-	CandidateAccents   = application.CandidateAccents
-	LanguageSwitches   = application.LanguageSwitches
+	CandidatePageSizes  = application.CandidatePageSizes
+	CandidateAccents    = application.CandidateAccents
+	CandidateTextColors = application.CandidateTextColors
+	LanguageSwitches    = application.LanguageSwitches
 )
 
 const (

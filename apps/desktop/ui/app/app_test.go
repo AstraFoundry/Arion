@@ -1667,22 +1667,24 @@ func TestKeyboardSettings(t *testing.T) {
 			if state.Preferences.Keyboard.CandidateSize != runtime.CandidateLarge {
 				t.Fatalf("size not chosen: %+v", state.Preferences.Keyboard)
 			}
-			// Highlight text starts black and can switch to white.
-			if k := state.Preferences.Keyboard; k.ActiveTextColor() != runtime.TextBlack {
-				t.Fatalf("text color should start black: %+v", k)
+			// Highlight text follows the fill's recommendation, black on yellow,
+			// until the user chooses.
+			black, white := messages.Text(copy.KbdTextColorBlack), messages.Text(copy.KbdTextColorWhite)
+			if k := state.Preferences.Keyboard; k.TextColor != "" || !hasText(tt, messages.Recommended(black)) {
+				t.Fatalf("text color should recommend black: %+v %q", k, tt.Texts())
 			}
-			if err := tt.Click(messages.Text(copy.KbdTextColorBlack)); err != nil {
+			if err := tt.Click(messages.Recommended(black)); err != nil {
 				t.Fatal(err)
 			}
 			settle(tt)
-			if err := tt.Click(messages.Text(copy.KbdTextColorWhite)); err != nil {
+			snapshot(t, tt, "settings-keyboard-text-color-menu-"+string(language))
+			if err := tt.Click(white); err != nil {
 				t.Fatal(err)
 			}
 			settle(tt)
 			if k := state.Preferences.Keyboard; k.TextColor != runtime.TextWhite || k.Highlight(false).Text != "#ffffff" {
 				t.Fatalf("white text not chosen: %+v", k)
 			}
-			snapshot(t, tt, "settings-keyboard-text-color-"+string(language))
 			if err := tt.Click(messages.Text(copy.KbdAccentYellow)); err != nil {
 				t.Fatal(err)
 			}
@@ -1694,6 +1696,10 @@ func TestKeyboardSettings(t *testing.T) {
 			settle(tt)
 			if state.Preferences.Keyboard.Accent != runtime.AccentBlue {
 				t.Fatalf("accent not chosen: %+v", state.Preferences.Keyboard)
+			}
+			// A new fill clears the choice and takes its recommendation.
+			if k := state.Preferences.Keyboard; k.TextColor != "" || !hasText(tt, messages.Recommended(white)) {
+				t.Fatalf("blue should recommend white: %+v %q", k, tt.Texts())
 			}
 			// Custom starts from the current fill and adds a color well.
 			if err := tt.Click(messages.Text(copy.KbdAccentBlue)); err != nil {

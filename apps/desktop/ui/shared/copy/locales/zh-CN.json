@@ -314,6 +314,7 @@
   "FormatMillis": "{value} 毫秒",
   "FormatVersion": "版本 {version}",
   "FormatDecibels": "{value} dB",
+  "FormatRecommended": "{value}（推荐）",
   "FormatCentimeters": "{value} 厘米",
   "FormatGainStop": "{gain}，建议距离约 {distance}",
   "FormatStep": "第 {index} 步，共 {total} 步",
