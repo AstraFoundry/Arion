@@ -205,9 +205,9 @@ func (c Catalog) Version(version string) string {
 	return c.format(FormatVersion, "version", version)
 }
 
-// Recommended marks an option as the recommended choice.
-func (c Catalog) Recommended(label string) string {
-	return c.format(FormatRecommended, "value", label)
+// AutomaticTextColor names the automatic mode and its current color.
+func (c Catalog) AutomaticTextColor(label string) string {
+	return c.format(FormatAutomaticTextColor, "value", label)
 }
 
 // Decibels signs a gain, except 0 dB.

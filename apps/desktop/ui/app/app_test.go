@@ -1500,6 +1500,9 @@ func TestWindowsKeyboardSettings(t *testing.T) {
 			if state.Preferences.Keyboard.PageSize != 9 {
 				t.Fatalf("Windows page-size preference was not saved: %+v", state.Preferences.Keyboard)
 			}
+			// Leave space below the language picker for its popup.
+			tt.Scroll(SettingsWidth*0.7, SettingsHeight/2, 0, 240)
+			settle(tt)
 			if err := tt.Click(messages.Text(copy.KbdSwitchLanguageKeys)); err != nil {
 				t.Fatal(err)
 			}
@@ -1609,6 +1612,34 @@ func TestLanguageSwitchKey(t *testing.T) {
 	}
 }
 
+func TestKeyboardTextColorReturnsToAutomatic(t *testing.T) {
+	state, _, store := fixture()
+	state.InputMethod = runtime.InputMethodSelected
+	state.Preferences.Keyboard.Accent = runtime.AccentGraphite
+	state.Preferences.Keyboard.Appearance = runtime.AppearanceLight
+	state.Preferences.Keyboard.TextColor = runtime.TextWhite
+	messages := store.Copy()
+	page := settings.NewPage()
+	page.Section = settings.Keyboard
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	settle(tt)
+
+	// The manual color matches the light recommendation. Automatic still
+	// needs to clear it so dark mode can choose a different color.
+	white := messages.Text(copy.KbdTextColorWhite)
+	if err := tt.Click(white); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if err := tt.Click(messages.AutomaticTextColor(white)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if k := state.Preferences.Keyboard; k.TextColor != "" || k.ActiveTextColor(true) != runtime.TextBlack {
+		t.Fatalf("automatic text color was not restored: %+v", k)
+	}
+}
+
 func TestKeyboardSettings(t *testing.T) {
 	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
 		t.Run(string(language), func(t *testing.T) {
@@ -1670,10 +1701,10 @@ func TestKeyboardSettings(t *testing.T) {
 			// Highlight text follows the fill's recommendation, black on yellow,
 			// until the user chooses.
 			black, white := messages.Text(copy.KbdTextColorBlack), messages.Text(copy.KbdTextColorWhite)
-			if k := state.Preferences.Keyboard; k.TextColor != "" || !hasText(tt, messages.Recommended(black)) {
+			if k := state.Preferences.Keyboard; k.TextColor != "" || !hasText(tt, messages.AutomaticTextColor(black)) {
 				t.Fatalf("text color should recommend black: %+v %q", k, tt.Texts())
 			}
-			if err := tt.Click(messages.Recommended(black)); err != nil {
+			if err := tt.Click(messages.AutomaticTextColor(black)); err != nil {
 				t.Fatal(err)
 			}
 			settle(tt)
@@ -1698,7 +1729,7 @@ func TestKeyboardSettings(t *testing.T) {
 				t.Fatalf("accent not chosen: %+v", state.Preferences.Keyboard)
 			}
 			// A new fill clears the choice and takes its recommendation.
-			if k := state.Preferences.Keyboard; k.TextColor != "" || !hasText(tt, messages.Recommended(white)) {
+			if k := state.Preferences.Keyboard; k.TextColor != "" || !hasText(tt, messages.AutomaticTextColor(white)) {
 				t.Fatalf("blue should recommend white: %+v %q", k, tt.Texts())
 			}
 			// Custom starts from the current fill and adds a color well.

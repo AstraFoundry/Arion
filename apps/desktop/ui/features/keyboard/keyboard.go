@@ -301,27 +301,17 @@ func Keys(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 // textColorLabels name the highlight text colors.
 var textColorLabels = map[runtime.CandidateTextColor]copy.Key{runtime.TextBlack: copy.KbdTextColorBlack, runtime.TextWhite: copy.KbdTextColorWhite}
 
-// textColor chooses the highlighted candidate's text, marking the color the
-// fill carries best. Choosing it follows the recommendation again.
+// textColor lets users follow the recommendation or pin a color.
 func textColor(c *ui.Context, messages copy.Catalog, tokens theme.Tokens, prefs runtime.KeyboardPreferences, update func(func(*runtime.KeyboardPreferences))) {
-	dark := barDark(tokens, prefs)
-	recommended := prefs.RecommendedTextColor(dark)
-	options := make([]option[runtime.CandidateTextColor], len(runtime.CandidateTextColors))
-	for i, color := range runtime.CandidateTextColors {
-		label := messages.Text(textColorLabels[color])
-		if color == recommended {
-			label = messages.Recommended(label)
-		}
-		options[i] = option[runtime.CandidateTextColor]{color, label}
+	recommended := prefs.RecommendedTextColor(barDark(tokens, prefs))
+	options := []option[runtime.CandidateTextColor]{
+		{"", messages.AutomaticTextColor(messages.Text(textColorLabels[recommended]))},
 	}
-	// Wide enough for the recommendation note.
-	choice(c, "text-color", messages.Text(copy.KbdTextColor), 200, prefs.ActiveTextColor(dark), options, func(color runtime.CandidateTextColor) {
-		update(func(k *runtime.KeyboardPreferences) {
-			k.TextColor = color
-			if color == recommended {
-				k.TextColor = ""
-			}
-		})
+	for _, color := range runtime.CandidateTextColors {
+		options = append(options, option[runtime.CandidateTextColor]{color, messages.Text(textColorLabels[color])})
+	}
+	choice(c, "text-color", messages.Text(copy.KbdTextColor), 200, prefs.TextColor, options, func(color runtime.CandidateTextColor) {
+		update(func(k *runtime.KeyboardPreferences) { k.TextColor = color })
 	})
 }
 

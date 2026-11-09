@@ -595,7 +595,7 @@ const (
 	FormatMillis              Key = "FormatMillis"
 	FormatVersion             Key = "FormatVersion"
 	FormatDecibels            Key = "FormatDecibels"
-	FormatRecommended         Key = "FormatRecommended"
+	FormatAutomaticTextColor  Key = "FormatAutomaticTextColor"
 	FormatCentimeters         Key = "FormatCentimeters"
 	FormatGainStop            Key = "FormatGainStop"
 	FormatStep                Key = "FormatStep"

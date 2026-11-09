@@ -314,7 +314,7 @@
   "FormatMillis": "{value} ms",
   "FormatVersion": "Version {version}",
   "FormatDecibels": "{value} dB",
-  "FormatRecommended": "{value} (Recommended)",
+  "FormatAutomaticTextColor": "Automatic ({value})",
   "FormatCentimeters": "{value} cm",
   "FormatGainStop": "{gain}, for about {distance} away",
   "FormatStep": "Step {index} of {total}",
