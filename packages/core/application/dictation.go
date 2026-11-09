@@ -312,13 +312,30 @@ func (c *Coordinator) composing(r *run) bool {
 	return r.session.Mode() == domain.SystemIMEMode && c.deps.Composition != nil && r.hasTarget
 }
 
-// prepare opens the microphone first and moves to Capturing as soon as audio
-// flows, because that is the moment the user may speak. Frames queue while
-// the target lookup and recognizer setup finish; the pump then feeds them to
-// the recognizer in order, so nothing said during setup is lost. A setup
-// failure or cancellation discards the queued audio unprocessed.
+// prepare readies the recognizer, which is quick and fails with MODEL_MISSING
+// before the microphone is touched, then opens the microphone and moves to
+// Capturing as soon as audio flows, because that is the moment the user may
+// speak. Frames queue while the target lookup finishes; the pump then feeds
+// them to the recognizer in order, so nothing said during setup is lost. A
+// setup failure or cancellation discards the queued audio unprocessed.
 func (c *Coordinator) prepare(r *run, needTarget bool) {
 	started := time.Now()
+	if c.opts.Hotwords != nil {
+		r.hotwords = append([]string(nil), c.opts.Hotwords()...)
+	}
+	recognizer, err := c.deps.Recognizers.NewRecognizer(r.ctx, ports.RecognitionRequest{Identity: r.identity, Hotwords: append([]string(nil), r.hotwords...)})
+	c.diagnostic(r, ports.DiagnosticRecognizer, started, err)
+	if err != nil {
+		c.failErr(r, err, domain.CodeModelMissing)
+		return
+	}
+	attached := false
+	defer func() {
+		if !attached {
+			_ = recognizer.Close()
+		}
+	}()
+	started = time.Now()
 	stream, err := c.deps.Audio.Start(r.ctx, r.identity, func(frame contracts.Frame) {
 		if r.overflow.Load() {
 			return
@@ -376,23 +393,12 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 		l.policy.Scene = string(domain.DecideScene(hints, l.policy.SceneOverrides).Scene)
 	}
 	c.startContext(r)
-	started = time.Now()
-	if c.opts.Hotwords != nil {
-		r.hotwords = append([]string(nil), c.opts.Hotwords()...)
-	}
-	recognizer, err := c.deps.Recognizers.NewRecognizer(r.ctx, ports.RecognitionRequest{Identity: r.identity, Hotwords: append([]string(nil), r.hotwords...)})
-	c.diagnostic(r, ports.DiagnosticRecognizer, started, err)
-	if err != nil {
-		c.failErr(r, err, domain.CodeModelMissing)
-		return
-	}
 	c.mu.Lock()
 	if c.current != r || r.session.Terminal() {
 		c.mu.Unlock()
-		_ = recognizer.Close()
 		return
 	}
-	r.recognizer = recognizer
+	r.recognizer, attached = recognizer, true
 	c.mu.Unlock()
 	if r.live != nil {
 		c.spawn(func() { c.liveWorker(r) })

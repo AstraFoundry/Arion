@@ -325,7 +325,8 @@ func TestTargetGuardsBlockCapture(t *testing.T) {
 	}
 }
 
-// DSK-09: a missing model is an explicit error, not a silent fallback.
+// DSK-09: a missing model is an explicit error, not a silent fallback, and
+// it is found before the microphone opens.
 func TestMissingModelIsExplicit(t *testing.T) {
 	c, audio, events := setup(t, nil, nil, Options{})
 	c.Start()
@@ -333,7 +334,9 @@ func TestMissingModelIsExplicit(t *testing.T) {
 	if failed.Error != domain.CodeModelMissing {
 		t.Fatalf("got %s", failed.Error)
 	}
-	audio.released(t)
+	if n := audio.starts.Load(); n != 0 {
+		t.Fatalf("microphone opened %d times without a model", n)
+	}
 }
 
 // CTR-A06: an unknown insertion outcome is final and is not retried.
