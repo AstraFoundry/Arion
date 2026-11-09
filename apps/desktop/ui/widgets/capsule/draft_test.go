@@ -76,11 +76,19 @@ func checkEnd(t *testing.T, build func(int) string) {
 				draft(c, tokens, state, "s1", dictation.Frame{Text: text}, ui.RGB(0, 0, 0))
 			})
 		}, 400, 80)
-		for deadline := time.Now().Add(1500 * time.Millisecond); time.Now().Before(deadline); {
+		// The glide is time-based and a slow runner draws few frames, so run
+		// until the end has held still rather than for a fixed window.
+		last, still := -1, 0
+		for deadline := time.Now().Add(20 * time.Second); still < 20 && time.Now().Before(deadline); {
 			tt.Frame()
 			time.Sleep(16 * time.Millisecond)
+			if e := inkEnd(tt.Image()); e == last {
+				still++
+			} else {
+				last, still = e, 0
+			}
 		}
-		ends = append(ends, inkEnd(tt.Image()))
+		ends = append(ends, last)
 		if dir := os.Getenv("DRAFT_DUMP"); dir != "" {
 			var b bytes.Buffer
 			_ = png.Encode(&b, tt.Image())
