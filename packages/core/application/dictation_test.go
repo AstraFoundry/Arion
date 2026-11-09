@@ -17,6 +17,7 @@ import (
 type fakeAudio struct {
 	starts atomic.Int32
 	sink   ports.FrameSink
+	stream *fakeStream
 	mu     sync.Mutex
 	err    error
 }
@@ -30,10 +31,28 @@ func (a *fakeAudio) Start(_ context.Context, id contracts.Identity, sink ports.F
 	if a.err != nil {
 		return nil, a.err
 	}
+	stream := &fakeStream{}
 	a.mu.Lock()
 	a.sink = sink
+	a.stream = stream
 	a.mu.Unlock()
-	return &fakeStream{}, nil
+	return stream, nil
+}
+
+// released waits for the session to stop the microphone it opened.
+func (a *fakeAudio) released(t *testing.T) {
+	t.Helper()
+	deadline := time.Now().Add(3 * time.Second)
+	for time.Now().Before(deadline) {
+		a.mu.Lock()
+		stream := a.stream
+		a.mu.Unlock()
+		if stream != nil && stream.stopped.Load() {
+			return
+		}
+		time.Sleep(2 * time.Millisecond)
+	}
+	t.Fatal("microphone was left open")
 }
 
 func (a *fakeAudio) push(n int, amplitude float32) {
@@ -282,7 +301,8 @@ func TestQueueOverflowFailsExplicitly(t *testing.T) {
 	}
 }
 
-// DSK-A07 / DSK-A01: sensitive or untrusted targets never open the microphone.
+// DSK-A07 / DSK-A01: sensitive or untrusted targets end the session; the
+// microphone opened for setup is released and nothing reaches the recognizer.
 func TestTargetGuardsBlockCapture(t *testing.T) {
 	for _, tc := range []struct {
 		target *fakeTarget
@@ -291,22 +311,31 @@ func TestTargetGuardsBlockCapture(t *testing.T) {
 		{&fakeTarget{snapshot: contracts.TargetSnapshot{Sensitive: true}}, domain.CodeSecureFieldBlocked},
 		{&fakeTarget{err: domain.Fail(domain.CodePermissionDenied, "accessibility")}, domain.CodePermissionDenied},
 	} {
-		c, audio, events := setup(t, &fakeRecognizer{}, tc.target, Options{AutoCommit: true})
+		rec := &fakeRecognizer{}
+		c, audio, events := setup(t, rec, tc.target, Options{AutoCommit: true})
 		c.Start()
 		failed := events.wait(t, kindIs(contracts.ErrorOccurred))
-		if failed.Error != tc.code || audio.starts.Load() != 0 {
-			t.Fatalf("want %s without capture, got %s starts=%d", tc.code, failed.Error, audio.starts.Load())
+		if failed.Error != tc.code {
+			t.Fatalf("want %s, got %s", tc.code, failed.Error)
+		}
+		audio.released(t)
+		if rec.n != 0 {
+			t.Fatalf("%s: %d queued frames reached the recognizer", tc.code, rec.n)
 		}
 	}
 }
 
-// DSK-09: a missing model is an explicit error, not a silent fallback.
+// DSK-09: a missing model is an explicit error, not a silent fallback, and
+// it is found before the microphone opens.
 func TestMissingModelIsExplicit(t *testing.T) {
 	c, audio, events := setup(t, nil, nil, Options{})
 	c.Start()
 	failed := events.wait(t, kindIs(contracts.ErrorOccurred))
-	if failed.Error != domain.CodeModelMissing || audio.starts.Load() != 0 {
+	if failed.Error != domain.CodeModelMissing {
 		t.Fatalf("got %s", failed.Error)
+	}
+	if n := audio.starts.Load(); n != 0 {
+		t.Fatalf("microphone opened %d times without a model", n)
 	}
 }
 
@@ -423,8 +452,11 @@ func TestSystemIMEWithoutAdapterFails(t *testing.T) {
 	c, audio, events := setup(t, &fakeRecognizer{words: []string{"x"}}, target, Options{Mode: domain.SystemIMEMode, AutoCommit: true})
 	c.Start()
 	failed := events.wait(t, kindIs(contracts.ErrorOccurred))
-	if failed.Error != domain.CodeTargetUnsupported || audio.starts.Load() != 0 {
-		t.Fatalf("got %s starts=%d", failed.Error, audio.starts.Load())
+	if failed.Error != domain.CodeTargetUnsupported {
+		t.Fatalf("got %s", failed.Error)
+	}
+	if n := audio.starts.Load(); n != 0 {
+		t.Fatalf("microphone started %d times after IME rejection", n)
 	}
 }
 
@@ -615,8 +647,11 @@ func TestAutomaticIMERouteFailureDoesNotTryExternalDelivery(t *testing.T) {
 			c.Subscribe(events.listen)
 			c.Start()
 			failed := events.wait(t, kindIs(contracts.ErrorOccurred))
-			if failed.Error != domain.CodeTargetUnsupported || audio.starts.Load() != 0 || external.commits.Load() != 0 {
-				t.Fatalf("IME failure retried external delivery: %+v starts=%d commits=%d", failed, audio.starts.Load(), external.commits.Load())
+			if failed.Error != domain.CodeTargetUnsupported || external.commits.Load() != 0 {
+				t.Fatalf("IME failure retried external delivery: %+v commits=%d", failed, external.commits.Load())
+			}
+			if n := audio.starts.Load(); n != 0 {
+				t.Fatalf("microphone started %d times after IME rejection", n)
 			}
 		})
 	}
