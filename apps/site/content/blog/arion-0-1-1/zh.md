@@ -111,7 +111,7 @@ make build desktop
 - 英语和简体中文以外的 10 个翻译目标语言还没有独立的评测集，目前与英语共用校验规则。云端润色的质量和延迟也还没有基准测试。
 - 不支持 Intel Mac（[ADR 021](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/021-apple-silicon-only-macos.md)）。
 
-如果遇到问题，欢迎在 [GitHub Issues](https://github.com/AstraFoundry/Arion/issues) 反馈，或加入 [Discord](https://discord.com/invite/72kh465mMm) 和[飞书群](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae)。我们如何通过实验决定哪些改动上线，见[《我们为什么像做实验一样做语音输入法》](/blog/building-like-an-experiment/)。
+如果遇到问题，欢迎在 [GitHub Issues](https://github.com/AstraFoundry/Arion/issues) 反馈，或加入 [Discord](https://discord.com/invite/72kh465mMm) 和[飞书群](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444)。我们如何通过实验决定哪些改动上线，见[《我们为什么像做实验一样做语音输入法》](/blog/building-like-an-experiment/)。
 
 感谢所有在 alpha 阶段试用、反馈问题、录制复现步骤的用户与贡献者。
 

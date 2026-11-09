@@ -71,7 +71,7 @@ Arion 自体は何も送信せず、エージェントはあなたが承認し�
 - モデル一覧を公開しない互換エンドポイントには接続できません。クラウド整文は実サービスでの受け入れ確認も、品質と遅延のベンチマークもまだです。
 - [0.1.1 で挙げた未完了の項目](/blog/arion-0-1-1/#まだできていないこと)は引き続き残っています。複数デバイスの同期はまだなく、修正の学習は macOS のネイティブエディターだけで、Intel Mac には対応していません。
 
-各バージョンの詳しい内容は[デスクトップ版の変更履歴](https://github.com/AstraFoundry/Arion/blob/main/apps/desktop/CHANGELOG.md)にあります。問題が起きたら新しい **Report a problem** ウィンドウを試すか、[GitHub Issues](https://github.com/AstraFoundry/Arion/issues) に報告するか、[Discord](https://discord.com/invite/72kh465mMm) や [Feishu](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae) で声をかけてください。
+各バージョンの詳しい内容は[デスクトップ版の変更履歴](https://github.com/AstraFoundry/Arion/blob/main/apps/desktop/CHANGELOG.md)にあります。問題が起きたら新しい **Report a problem** ウィンドウを試すか、[GitHub Issues](https://github.com/AstraFoundry/Arion/issues) に報告するか、[Discord](https://discord.com/invite/72kh465mMm) や [Feishu](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444) で声をかけてください。
 
 <github-people label="コントリビューター" logins="stvlynn, zacharyhaha"></github-people>
 

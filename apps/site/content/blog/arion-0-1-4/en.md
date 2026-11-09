@@ -71,7 +71,7 @@ Arion itself sends nothing; the agent works only with what you approve. If you p
 - Compatible endpoints that publish no model list cannot connect, and cloud polishing has still not been accepted against real services or benchmarked for quality and latency.
 - Everything listed in [0.1.1's open items](/blog/arion-0-1-1/#what-isnt-there-yet) still applies: no multi-device sync, edit learning only in native macOS editors, and no Intel Mac support.
 
-The full notes for each version are in the [desktop changelog](https://github.com/AstraFoundry/Arion/blob/main/apps/desktop/CHANGELOG.md). If something breaks, try the new **Report a problem** window, open a [GitHub issue](https://github.com/AstraFoundry/Arion/issues), or find us on [Discord](https://discord.com/invite/72kh465mMm) or [Feishu](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae).
+The full notes for each version are in the [desktop changelog](https://github.com/AstraFoundry/Arion/blob/main/apps/desktop/CHANGELOG.md). If something breaks, try the new **Report a problem** window, open a [GitHub issue](https://github.com/AstraFoundry/Arion/issues), or find us on [Discord](https://discord.com/invite/72kh465mMm) or [Feishu](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444).
 
 <github-people label="Contributors" logins="stvlynn, zacharyhaha"></github-people>
 
