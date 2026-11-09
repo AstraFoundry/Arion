@@ -158,7 +158,7 @@ func errorKey(store runtime.Store, key copy.Key) copy.Key {
 	return key
 }
 
-// Candidates chooses the page size, text size, theme and highlight color of
+// Candidates chooses the page size, text size, theme, highlight text and fill colors of
 // the candidate bar, and whether native Emoji appear among Pinyin candidates.
 func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
@@ -180,7 +180,7 @@ func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		})
 		kit.Divider(c, tokens)
 		kit.Row(c, tokens, messages.Text(copy.KbdCandidateSize), "", func() {
-			choice(c, "candidate-size", messages.Text(copy.KbdCandidateSize), prefs.CandidateSize, []option[runtime.CandidateSize]{
+			choice(c, "candidate-size", messages.Text(copy.KbdCandidateSize), 140, prefs.CandidateSize, []option[runtime.CandidateSize]{
 				{runtime.CandidateSmall, messages.Text(copy.KbdSizeSmall)}, {runtime.CandidateMedium, messages.Text(copy.KbdSizeMedium)},
 				{runtime.CandidateLarge, messages.Text(copy.KbdSizeLarge)}}, func(size runtime.CandidateSize) {
 				update(func(k *runtime.KeyboardPreferences) { k.CandidateSize = size })
@@ -188,12 +188,14 @@ func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		})
 		kit.Divider(c, tokens)
 		kit.Row(c, tokens, messages.Text(copy.KbdAppearance), "", func() {
-			choice(c, "appearance", messages.Text(copy.KbdAppearance), prefs.Appearance, []option[runtime.CandidateAppearance]{
+			choice(c, "appearance", messages.Text(copy.KbdAppearance), 140, prefs.Appearance, []option[runtime.CandidateAppearance]{
 				{runtime.AppearanceSystem, messages.Text(copy.KbdAppearanceSystem)}, {runtime.AppearanceLight, messages.Text(copy.KbdAppearanceLight)},
 				{runtime.AppearanceDark, messages.Text(copy.KbdAppearanceDark)}}, func(appearance runtime.CandidateAppearance) {
 				update(func(k *runtime.KeyboardPreferences) { k.Appearance = appearance })
 			})
 		})
+		kit.Divider(c, tokens)
+		kit.Row(c, tokens, messages.Text(copy.KbdTextColor), "", func() { textColor(c, messages, tokens, prefs, update) })
 		kit.Divider(c, tokens)
 		kit.Row(c, tokens, messages.Text(copy.KbdAccent), "", func() { accent(c, messages, tokens, prefs, update) })
 		kit.Divider(c, tokens)
@@ -296,6 +298,28 @@ func Keys(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
+// textColorLabels name the highlight text colors.
+var textColorLabels = map[runtime.CandidateTextColor]copy.Key{runtime.TextBlack: copy.KbdTextColorBlack, runtime.TextWhite: copy.KbdTextColorWhite}
+
+// textColor lets users follow the recommendation or pin a color.
+func textColor(c *ui.Context, messages copy.Catalog, tokens theme.Tokens, prefs runtime.KeyboardPreferences, update func(func(*runtime.KeyboardPreferences))) {
+	recommended := prefs.RecommendedTextColor(barDark(tokens, prefs))
+	options := []option[runtime.CandidateTextColor]{
+		{"", messages.AutomaticTextColor(messages.Text(textColorLabels[recommended]))},
+	}
+	for _, color := range runtime.CandidateTextColors {
+		options = append(options, option[runtime.CandidateTextColor]{color, messages.Text(textColorLabels[color])})
+	}
+	choice(c, "text-color", messages.Text(copy.KbdTextColor), 200, prefs.TextColor, options, func(color runtime.CandidateTextColor) {
+		update(func(k *runtime.KeyboardPreferences) { k.TextColor = color })
+	})
+}
+
+// barDark reports whether the candidate bar wears the dark appearance.
+func barDark(tokens theme.Tokens, prefs runtime.KeyboardPreferences) bool {
+	return prefs.Appearance == runtime.AppearanceDark || prefs.Appearance == runtime.AppearanceSystem && tokens.Dark
+}
+
 // accentLabels name the candidate highlight colors.
 var accentLabels = map[runtime.CandidateAccent]copy.Key{
 	runtime.AccentYellow: copy.KbdAccentYellow, runtime.AccentOrange: copy.KbdAccentOrange, runtime.AccentRed: copy.KbdAccentRed,
@@ -304,10 +328,12 @@ var accentLabels = map[runtime.CandidateAccent]copy.Key{
 }
 
 // accent chooses the candidate highlight color, previewing each fill before
-// its name. Custom starts from the current fill and adds a color well.
+// its name. Custom starts from the current fill and adds a color well. A
+// change clears the text color choice, so the new fill takes its
+// recommendation.
 func accent(c *ui.Context, messages copy.Catalog, tokens theme.Tokens, prefs runtime.KeyboardPreferences, update func(func(*runtime.KeyboardPreferences))) {
 	// Swatches show the fill of the appearance the candidate bar wears.
-	dark := prefs.Appearance == runtime.AppearanceDark || prefs.Appearance == runtime.AppearanceSystem && tokens.Dark
+	dark := barDark(tokens, prefs)
 	fill := func(accent runtime.CandidateAccent) string {
 		choice := prefs
 		choice.Accent = accent
@@ -328,6 +354,7 @@ func accent(c *ui.Context, messages copy.Catalog, tokens theme.Tokens, prefs run
 			if ui.ColorWell(c.Key("accent-color"), &color).Label(messages.Text(copy.KbdAccentCustomColor)).Changed() {
 				update(func(k *runtime.KeyboardPreferences) {
 					k.AccentColor = fmt.Sprintf("#%02x%02x%02x", color.R, color.G, color.B)
+					k.TextColor = ""
 				})
 			}
 		}
@@ -336,6 +363,8 @@ func accent(c *ui.Context, messages copy.Catalog, tokens theme.Tokens, prefs run
 			current := prefs.Highlight(dark).Fill
 			update(func(k *runtime.KeyboardPreferences) {
 				k.Accent = selected
+				// A new fill takes its recommended text color.
+				k.TextColor = ""
 				if selected == runtime.AccentCustom && k.AccentColor == "" {
 					k.AccentColor = current
 				}
@@ -350,7 +379,7 @@ type option[T comparable] struct {
 }
 
 // choice is a select over labeled values.
-func choice[T comparable](c *ui.Context, key, label string, current T, options []option[T], changed func(T)) {
+func choice[T comparable](c *ui.Context, key, label string, width float32, current T, options []option[T], changed func(T)) {
 	labels := make([]string, len(options))
 	selected := ""
 	for i, o := range options {
@@ -359,7 +388,7 @@ func choice[T comparable](c *ui.Context, key, label string, current T, options [
 			selected = o.label
 		}
 	}
-	if ui.Select(c.Key(key), &selected, labels).Label(label).Width(140).Changed() {
+	if ui.Select(c.Key(key), &selected, labels).Label(label).Width(width).Changed() {
 		for _, o := range options {
 			if o.label == selected {
 				changed(o.value)
