@@ -72,6 +72,7 @@ type Page struct {
 	developer       diagnostics.DeveloperEntry
 	clipboardPicker holdkey.PickerState
 	holdPicker      holdkey.PickerState
+	secondPicker    holdkey.PickerState
 	translatePicker holdkey.PickerState
 	Section         string
 	monitoring      bool
@@ -107,6 +108,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	if p.Section != p.shown {
 		if p.shown == Dictation {
 			p.holdPicker.Close(store)
+			p.secondPicker.Close(store)
 			p.translatePicker.Close(store)
 		}
 		if p.shown == Clipboard {
@@ -183,6 +185,7 @@ func (p *Page) syncMonitor(store runtime.Store) {
 // Close releases resources the page holds.
 func (p *Page) Close(store runtime.Store) {
 	p.holdPicker.Close(store)
+	p.secondPicker.Close(store)
 	p.translatePicker.Close(store)
 	p.clipboardPicker.Close(store)
 	if p.Section == Keyboard {
@@ -242,7 +245,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 	case Dictation:
 		holdkey.ListenerStatus(c, store, tokens)
 		kit.Card(c.Key("dictation-shortcut"), tokens).Children(func() {
-			holdkey.Setting(c, store, &p.holdPicker)
+			holdkey.Setting(c, store, &p.holdPicker, &p.secondPicker)
 		})
 
 		kit.Card(c.Key("translation-settings"), tokens).Children(func() {

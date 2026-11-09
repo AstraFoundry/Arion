@@ -63,6 +63,7 @@ var (
 	MessageCircle     = load("message-circle")
 	Mic               = load("mic")
 	MicOff            = load("mic-off")
+	Minus             = load("minus")
 	Pencil            = load("pencil")
 	Plus              = load("plus")
 	Power             = load("power")

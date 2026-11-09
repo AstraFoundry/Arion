@@ -143,7 +143,7 @@ func (a *App) registerClipboardShortcut() {
 	p := a.state.Preferences
 	key, ok := application.ClipboardShortcutKey(runtime.GOOS, p.Clipboard.Shortcut)
 	a.state.Clipboard.ShortcutFailed = true
-	if !ok || application.HoldKeysConflict(key, p.HoldKey) || application.HoldKeysConflict(key, p.TranslateKey) {
+	if !ok || application.HoldKeysConflict(key, p.HoldKey) || application.HoldKeysConflict(key, p.SecondHoldKey) || application.HoldKeysConflict(key, p.TranslateKey) {
 		return
 	}
 	accelerator := clipboardAccelerator(key)

@@ -38,5 +38,13 @@ func TestNativeOptionAltLegendsAcrossPanelAndDictation(t *testing.T) {
 		if !hasText(tt, modifier+"+K") || hasText(tt, "ALT+K") {
 			t.Fatalf("%s translation pill uses an incorrect modifier legend: %q", locale, tt.Texts())
 		}
+		state.Dictation.Translating = false
+		state.Preferences.SecondHoldKey = "alt+j"
+		state.Hold.PressedKey = "alt+j"
+		tt.Frame()
+		if !hasText(tt, modifier+"+J") || hasText(tt, modifier+"+I") {
+			t.Fatalf("%s second dictation shortcut pill uses an incorrect legend: %q", locale, tt.Texts())
+		}
+		snapshot(t, tt, "shortcut-second-pill-"+string(locale))
 	}
 }

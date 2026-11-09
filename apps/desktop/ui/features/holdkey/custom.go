@@ -20,6 +20,21 @@ type PickerState struct {
 	error            copy.Key
 }
 
+// open starts capture for this field, as its pencil does.
+func (s *PickerState) open(store runtime.Store, owner string) {
+	s.name(owner)
+	s.listening, s.focus, s.error = true, true, ""
+	s.sequence = store.State.Hold.RecordedSeq
+	store.Actions.RecordShortcut(s.owner)
+}
+
+// name gives the field its native recording owner on first use.
+func (s *PickerState) name(owner string) {
+	if s.owner == "" {
+		s.owner = fmt.Sprintf("%s-%p", owner, s)
+	}
+}
+
 // Close discards capture and restores activation, including on navigation.
 func (s *PickerState) Close(store runtime.Store) {
 	if s.listening && store.State.Hold.Recording == s.owner {
@@ -30,19 +45,18 @@ func (s *PickerState) Close(store runtime.Store) {
 
 // shortcutField is the recorder. A key it refuses is the field's error,
 // attached below it; end aligns that callout with a field ending its row.
-func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), validate func(runtime.HoldKey) copy.Key, end bool) {
+// It returns the field's frame, which keeps the field at its own width.
+func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner string, current runtime.HoldKey, label copy.Key, set func(runtime.HoldKey), validate func(runtime.HoldKey) copy.Key, end bool) ui.Element {
 	messages, tokens := store.Copy(), theme.Resolve(c.Theme().Dark)
 	t := c.Theme()
 	closeRecorder := func() { state.Close(store); c.Invalidate() }
-	if state.owner == "" {
-		state.owner = fmt.Sprintf("%s-%p", owner, state)
-	}
+	state.name(owner)
 	owner = state.owner
 	if state.listening && store.State.Hold.Recording != owner {
 		state.listening = false
 		state.error = ""
 	}
-	ui.Column(c.Key(owner)).Gap(6).AlignItems(ui.End).Children(func() {
+	return ui.Column(c.Key(owner)).Gap(6).AlignItems(ui.End).Children(func() {
 		fill, ink := t.Surface, t.Text
 		if state.listening {
 			fill, ink = tokens.RecordingSoft, tokens.RecordingInk
@@ -84,9 +98,7 @@ func shortcutField(c *ui.Context, store runtime.Store, state *PickerState, owner
 				if state.listening {
 					closeRecorder()
 				} else {
-					state.listening, state.focus, state.error = true, true, ""
-					state.sequence = store.State.Hold.RecordedSeq
-					store.Actions.RecordShortcut(owner)
+					state.open(store, owner)
 					c.Invalidate()
 				}
 			}

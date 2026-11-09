@@ -91,8 +91,9 @@ type Platform interface {
 	// SettingsWindow reports the window the guide follows. Consent reads
 	// and this run on the guide's worker goroutine.
 	SettingsWindow() SettingsWindow
-	// StartHoldKeys observes the dictation key and an optional translation
-	// key. sink runs on a native thread and must not block. StopHoldKey
+	// StartHoldKeys observes the primary dictation shortcut, the optional
+	// second dictation shortcut and an optional translation shortcut.
+	// sink runs on a native thread and must not block. StopHoldKey
 	// is idempotent.
 	StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error
 	StopHoldKey()
