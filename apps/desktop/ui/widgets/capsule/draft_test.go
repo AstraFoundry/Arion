@@ -17,14 +17,16 @@ import (
 )
 
 // mixed is dictation that alternates Chinese and English, where shaping adds
-// spacing that single-character widths do not have.
+// spacing that single-character widths do not have. It is whole units, so
+// every length ends on the same glyph: the ink end depends on the last
+// character's side bearing, and cutting mid-unit moved it by several pixels.
 func mixed(runes int) string {
 	const unit = "今天我们讨论 machine learning 的 deployment 方案，"
 	var b strings.Builder
 	for len([]rune(b.String())) < runes {
 		b.WriteString(unit)
 	}
-	return string([]rune(b.String())[:runes])
+	return b.String()
 }
 
 // repeated builds runes characters from unit.
