@@ -23,7 +23,7 @@ const (
 	XURL          = "https://x.com/AstraFoundry"
 	// DiscordURL and FeishuURL invite to the community chats.
 	DiscordURL = "https://discord.com/invite/72kh465mMm"
-	FeishuURL  = "https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae"
+	FeishuURL  = "https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444"
 	IssuesURL  = RepositoryURL + "/issues/new"
 	// FeedbackSkillURL is the agent feedback skill on the site; the feedback
 	// window's prompt asks a coding agent to fetch and follow it.

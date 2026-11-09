@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://x.com/AstraFoundry"><img src="https://img.shields.io/badge/X-%40AstraFoundry-000000?logo=x&logoColor=white" alt="X @AstraFoundry" style="display: inline-block; margin: 2px;" /></a>
   <a href="https://discord.com/invite/72kh465mMm"><img src="https://img.shields.io/badge/Discord-Join_Chat-5865F2?logo=discord&logoColor=white" alt="Discord" style="display: inline-block; margin: 2px;" /></a>
-  <a href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae"><img src="https://img.shields.io/badge/飞书-加入群聊-3370FF" alt="飞书群" style="display: inline-block; margin: 2px;" /></a>
+  <a href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444"><img src="https://img.shields.io/badge/飞书-加入群聊-3370FF" alt="飞书群" style="display: inline-block; margin: 2px;" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg" alt="License: AGPL-3.0" style="display: inline-block; margin: 2px;" /></a>
 </p>
 
@@ -97,4 +97,4 @@ make site-check     # 宣传站点 (apps/site)：i18n、类型、lint、测试�
 
 ## 许可证
 
-Arion 由 [AstraFoundry](https://github.com/AstraFoundry) 开发，并基于 [AGPL-3.0](LICENSE) 许可证开源（[ADR 009](docs/decisions/009-agpl-license.md)）。欢迎在 [X (@AstraFoundry)](https://x.com/AstraFoundry) 关注我们，加入 [Discord](https://discord.com/invite/72kh465mMm) 或[飞书群](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae)交流，并在 [GitHub Issues](https://github.com/AstraFoundry/Arion/issues) 中反馈问题，也可以在 **设置 › 关于 › 问问 Agent** 中让你的编程 Agent 代为反馈（[Agent 协助反馈](docs/project/agent-feedback.md)）。
+Arion 由 [AstraFoundry](https://github.com/AstraFoundry) 开发，并基于 [AGPL-3.0](LICENSE) 许可证开源（[ADR 009](docs/decisions/009-agpl-license.md)）。欢迎在 [X (@AstraFoundry)](https://x.com/AstraFoundry) 关注我们，加入 [Discord](https://discord.com/invite/72kh465mMm) 或[飞书群](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444)交流，并在 [GitHub Issues](https://github.com/AstraFoundry/Arion/issues) 中反馈问题，也可以在 **设置 › 关于 › 问问 Agent** 中让你的编程 Agent 代为反馈（[Agent 协助反馈](docs/project/agent-feedback.md)）。

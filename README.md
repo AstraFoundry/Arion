@@ -11,7 +11,7 @@ Local-first voice dictation and Pinyin input for macOS and Windows, built with [
 <p align="center">
   <a href="https://x.com/AstraFoundry"><img src="https://img.shields.io/badge/X-%40AstraFoundry-000000?logo=x&logoColor=white" alt="X @AstraFoundry" style="display: inline-block; margin: 2px;" /></a>
   <a href="https://discord.com/invite/72kh465mMm"><img src="https://img.shields.io/badge/Discord-Join_Chat-5865F2?logo=discord&logoColor=white" alt="Discord" style="display: inline-block; margin: 2px;" /></a>
-  <a href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae"><img src="https://img.shields.io/badge/Feishu-Group_Chat-3370FF" alt="Feishu Group" style="display: inline-block; margin: 2px;" /></a>
+  <a href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444"><img src="https://img.shields.io/badge/Feishu-Group_Chat-3370FF" alt="Feishu Group" style="display: inline-block; margin: 2px;" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg" alt="License: AGPL-3.0" style="display: inline-block; margin: 2px;" /></a>
 </p>
 
@@ -99,4 +99,4 @@ Repository ownership and internal evidence are documented in [the two-repository
 
 ## License
 
-Arion is developed by [AstraFoundry](https://github.com/AstraFoundry) and licensed under [AGPL-3.0](LICENSE) ([ADR 009](docs/decisions/009-agpl-license.md)). Follow [@AstraFoundry on X](https://x.com/AstraFoundry), join the community on [Discord](https://discord.com/invite/72kh465mMm) or [Feishu](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae), and report bugs in [GitHub Issues](https://github.com/AstraFoundry/Arion/issues), or let your coding agent report them from **Settings › About › Ask an agent** ([agent-assisted feedback](docs/project/agent-feedback.md)).
+Arion is developed by [AstraFoundry](https://github.com/AstraFoundry) and licensed under [AGPL-3.0](LICENSE) ([ADR 009](docs/decisions/009-agpl-license.md)). Follow [@AstraFoundry on X](https://x.com/AstraFoundry), join the community on [Discord](https://discord.com/invite/72kh465mMm) or [Feishu](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444), and report bugs in [GitHub Issues](https://github.com/AstraFoundry/Arion/issues), or let your coding agent report them from **Settings › About › Ask an agent** ([agent-assisted feedback](docs/project/agent-feedback.md)).
