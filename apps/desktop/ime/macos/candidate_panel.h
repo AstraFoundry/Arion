@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, ArionCandidateAppearance) {
 @property(nonatomic) ArionCandidateAppearance appearance;
 // The highlighted candidate's fill and text in the light and dark
 // appearances, as the app resolves them (application.Highlight); nil keeps
-// Sunbeam's yellow with black text.
+// Sunbeam's yellow with ink text.
 @property(strong, nonatomic) NSColor *lightFill;
 @property(strong, nonatomic) NSColor *lightText;
 @property(strong, nonatomic) NSColor *darkFill;

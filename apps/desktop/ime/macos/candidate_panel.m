@@ -270,10 +270,9 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     text.chevron = chevron;
     BOOL dark = self.dark;
     text.dark = dark;
-    // Without settings, Sunbeam's yellow (#FFCC00) with black text, the
-    // app's default text color.
+    // Without settings, Sunbeam's yellow (#FFCC00) with ink (#14110F).
     NSColor *fill = (dark ? self.darkFill : self.lightFill) ?: srgb(1, 0.8, 0, 1);
-    text.selectedText = (dark ? self.darkText : self.lightText) ?: srgb(0, 0, 0, 1);
+    text.selectedText = (dark ? self.darkText : self.lightText) ?: srgb(20 / 255.0, 17 / 255.0, 15 / 255.0, 1);
     text.needsDisplay = YES;
 
     // Unflipped (layer) space.

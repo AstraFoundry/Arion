@@ -72,8 +72,9 @@ const (
 // CandidateTextColors are the selectable highlight text colors, black first.
 var CandidateTextColors = []CandidateTextColor{TextBlack, TextWhite}
 
-// textColors are the highlight text colors as #rrggbb.
-var textColors = map[CandidateTextColor]string{TextBlack: "#000000", TextWhite: "#ffffff"}
+// textColors are the highlight text colors as #rrggbb. Black is Sunbeam's
+// ink, as the app's own text.
+var textColors = map[CandidateTextColor]string{TextBlack: "#14110f", TextWhite: "#ffffff"}
 
 // Highlight is the highlighted candidate's fill and text as #rrggbb.
 type Highlight struct {
