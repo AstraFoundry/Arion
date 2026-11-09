@@ -158,7 +158,7 @@ func errorKey(store runtime.Store, key copy.Key) copy.Key {
 	return key
 }
 
-// Candidates chooses the page size, text size, theme and highlight color of
+// Candidates chooses the page size, text size, theme, highlight text and fill colors of
 // the candidate bar, and whether native Emoji appear among Pinyin candidates.
 func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
@@ -193,6 +193,14 @@ func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				{runtime.AppearanceDark, messages.Text(copy.KbdAppearanceDark)}}, func(appearance runtime.CandidateAppearance) {
 				update(func(k *runtime.KeyboardPreferences) { k.Appearance = appearance })
 			})
+		})
+		kit.Divider(c, tokens)
+		kit.Row(c, tokens, messages.Text(copy.KbdTextColor), "", func() {
+			choice(c, "text-color", messages.Text(copy.KbdTextColor), prefs.ActiveTextColor(), []option[runtime.CandidateTextColor]{
+				{runtime.TextBlack, messages.Text(copy.KbdTextColorBlack)}, {runtime.TextWhite, messages.Text(copy.KbdTextColorWhite)}},
+				func(color runtime.CandidateTextColor) {
+					update(func(k *runtime.KeyboardPreferences) { k.TextColor = color })
+				})
 		})
 		kit.Divider(c, tokens)
 		kit.Row(c, tokens, messages.Text(copy.KbdAccent), "", func() { accent(c, messages, tokens, prefs, update) })

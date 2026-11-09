@@ -1465,7 +1465,7 @@ func TestWindowsKeyboardSettings(t *testing.T) {
 					t.Fatalf("Windows setup missing %s: %q", key, tt.Texts())
 				}
 			}
-			for _, key := range []copy.Key{copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdAccent, copy.KbdEmojiSuggestions, copy.KbdSwitchLanguage} {
+			for _, key := range []copy.Key{copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdTextColor, copy.KbdAccent, copy.KbdEmojiSuggestions, copy.KbdSwitchLanguage} {
 				if !hasText(tt, messages.Text(key)) {
 					t.Fatalf("Windows keyboard setting missing %s", key)
 				}
@@ -1513,6 +1513,9 @@ func TestWindowsKeyboardSettings(t *testing.T) {
 			}
 			reveal(t, tt, messages.Text(copy.KbdSwitchCapsLockDetail))
 			snapshot(t, tt, "settings-windows-language-switch-caps-"+string(language))
+			// Install sits above the Keys group; scroll back to it.
+			tt.Scroll(SettingsWidth*0.7, SettingsHeight/2, 0, -2400)
+			settle(tt)
 			if err := tt.Click(messages.Text(copy.IMEInstall)); err != nil {
 				t.Fatal(err)
 			}
@@ -1617,7 +1620,7 @@ func TestKeyboardSettings(t *testing.T) {
 			page.Section = settings.Keyboard
 			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 			settle(tt)
-			for _, key := range []copy.Key{copy.IMESelected, copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdAccent,
+			for _, key := range []copy.Key{copy.IMESelected, copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdTextColor, copy.KbdAccent,
 				copy.KbdEmojiSuggestions, copy.KbdSwitchLanguage} {
 				if !hasText(tt, messages.Text(key)) {
 					t.Fatalf("keyboard section missing %s: %q", key, tt.Texts())
@@ -1664,6 +1667,22 @@ func TestKeyboardSettings(t *testing.T) {
 			if state.Preferences.Keyboard.CandidateSize != runtime.CandidateLarge {
 				t.Fatalf("size not chosen: %+v", state.Preferences.Keyboard)
 			}
+			// Highlight text starts black and can switch to white.
+			if k := state.Preferences.Keyboard; k.ActiveTextColor() != runtime.TextBlack {
+				t.Fatalf("text color should start black: %+v", k)
+			}
+			if err := tt.Click(messages.Text(copy.KbdTextColorBlack)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if err := tt.Click(messages.Text(copy.KbdTextColorWhite)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if k := state.Preferences.Keyboard; k.TextColor != runtime.TextWhite || k.Highlight(false).Text != "#ffffff" {
+				t.Fatalf("white text not chosen: %+v", k)
+			}
+			snapshot(t, tt, "settings-keyboard-text-color-"+string(language))
 			if err := tt.Click(messages.Text(copy.KbdAccentYellow)); err != nil {
 				t.Fatal(err)
 			}

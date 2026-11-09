@@ -32,6 +32,7 @@ type (
 	CandidateSize       = application.CandidateSize
 	CandidateAppearance = application.CandidateAppearance
 	CandidateAccent     = application.CandidateAccent
+	CandidateTextColor  = application.CandidateTextColor
 	Highlight           = application.Highlight
 	Usage               = domain.Usage
 	UsageLog            = domain.UsageLog
@@ -163,6 +164,8 @@ const (
 	AccentGreen      = application.AccentGreen
 	AccentGraphite   = application.AccentGraphite
 	AccentCustom     = application.AccentCustom
+	TextBlack        = application.TextBlack
+	TextWhite        = application.TextWhite
 )
 
 const GainStep = application.GainStep
