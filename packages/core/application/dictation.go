@@ -312,12 +312,9 @@ func (c *Coordinator) composing(r *run) bool {
 	return r.session.Mode() == domain.SystemIMEMode && c.deps.Composition != nil && r.hasTarget
 }
 
-// prepare readies the recognizer, which is quick and fails with MODEL_MISSING
-// before the microphone is touched, then opens the microphone and moves to
-// Capturing as soon as audio flows, because that is the moment the user may
-// speak. Frames queue while the target lookup finishes; the pump then feeds
-// them to the recognizer in order, so nothing said during setup is lost. A
-// setup failure or cancellation discards the queued audio unprocessed.
+// prepare checks model availability before opening the microphone. System IME
+// sessions also acquire composition first. Shortcut sessions can queue audio
+// during target lookup, but the pump starts only after setup succeeds.
 func (c *Coordinator) prepare(r *run, needTarget bool) {
 	started := time.Now()
 	if c.opts.Hotwords != nil {
@@ -335,6 +332,13 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 			_ = recognizer.Close()
 		}
 	}()
+	imeTarget := needTarget && r.session.Mode() == domain.SystemIMEMode
+	if imeTarget && !c.captureTarget(r) {
+		return
+	}
+	if r.ctx.Err() != nil {
+		return
+	}
 	started = time.Now()
 	stream, err := c.deps.Audio.Start(r.ctx, r.identity, func(frame contracts.Frame) {
 		if r.overflow.Load() {
@@ -365,24 +369,8 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 	c.mu.Unlock()
 	c.emitState(r, domain.Capturing)
 
-	if needTarget {
-		provider, _ := c.targets(r)
-		if provider == nil {
-			c.failDetail(r, domain.CodeTargetUnsupported, "input mode unavailable")
-			return
-		}
-		started := time.Now()
-		target, err := provider.Capture(r.ctx, r.identity)
-		c.diagnostic(r, ports.DiagnosticTarget, started, err)
-		if err != nil {
-			c.failErr(r, err, domain.CodePermissionDenied)
-			return
-		}
-		if target.Sensitive {
-			c.fail(r, domain.CodeSecureFieldBlocked)
-			return
-		}
-		r.target, r.hasTarget = target, true
+	if needTarget && !imeTarget && !c.captureTarget(r) {
+		return
 	}
 	if l := r.live; l != nil && l.policy.Enabled && l.policy.FollowApp {
 		// Set before the live worker starts; only it and delivery read it.
@@ -404,6 +392,36 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 		c.spawn(func() { c.liveWorker(r) })
 	}
 	c.spawn(func() { c.pump(r) })
+}
+
+func (c *Coordinator) captureTarget(r *run) bool {
+	provider, _ := c.targets(r)
+	if provider == nil {
+		c.failDetail(r, domain.CodeTargetUnsupported, "input mode unavailable")
+		return false
+	}
+	started := time.Now()
+	target, err := provider.Capture(r.ctx, r.identity)
+	c.diagnostic(r, ports.DiagnosticTarget, started, err)
+	if err != nil {
+		c.failErr(r, err, domain.CodePermissionDenied)
+		return false
+	}
+	if target.Sensitive {
+		c.fail(r, domain.CodeSecureFieldBlocked)
+		return false
+	}
+	c.mu.Lock()
+	if c.current != r || r.session.Terminal() {
+		c.mu.Unlock()
+		if r.session.Mode() == domain.SystemIMEMode && c.deps.Composition != nil {
+			_ = c.deps.Composition.Cancel(context.Background(), r.identity, target.Target)
+		}
+		return false
+	}
+	r.target, r.hasTarget = target, true
+	c.mu.Unlock()
+	return true
 }
 
 func (r *run) stopAudio() {
@@ -589,8 +607,11 @@ func (c *Coordinator) failDetail(r *run, code domain.ErrorCode, detail string) {
 // releaseComposition clears the owned IME range of an ended session
 // (IME-A03); it never touches text outside that range.
 func (c *Coordinator) releaseComposition(r *run) {
-	if c.composing(r) {
-		_ = c.deps.Composition.Cancel(context.Background(), r.identity, r.target.Target)
+	c.mu.Lock()
+	owned, target := c.composing(r), r.target.Target
+	c.mu.Unlock()
+	if owned {
+		_ = c.deps.Composition.Cancel(context.Background(), r.identity, target)
 	}
 }
 

@@ -455,7 +455,9 @@ func TestSystemIMEWithoutAdapterFails(t *testing.T) {
 	if failed.Error != domain.CodeTargetUnsupported {
 		t.Fatalf("got %s", failed.Error)
 	}
-	audio.released(t)
+	if n := audio.starts.Load(); n != 0 {
+		t.Fatalf("microphone started %d times after IME rejection", n)
+	}
 }
 
 // Cancellation reaches the adapter and a late post/cleanup result cannot
@@ -648,7 +650,9 @@ func TestAutomaticIMERouteFailureDoesNotTryExternalDelivery(t *testing.T) {
 			if failed.Error != domain.CodeTargetUnsupported || external.commits.Load() != 0 {
 				t.Fatalf("IME failure retried external delivery: %+v commits=%d", failed, external.commits.Load())
 			}
-			audio.released(t)
+			if n := audio.starts.Load(); n != 0 {
+				t.Fatalf("microphone started %d times after IME rejection", n)
+			}
 		})
 	}
 }

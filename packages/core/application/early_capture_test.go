@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"testing"
+	"time"
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
@@ -59,6 +60,38 @@ func TestSpeechDuringPreparationIsRecognized(t *testing.T) {
 	done := events.wait(t, kindIs(contracts.CommitResultReady))
 	if rec.n != 3 || done.Outcome != contracts.Applied {
 		t.Fatalf("frames=%d outcome=%v", rec.n, done.Outcome)
+	}
+}
+
+func TestSystemIMEWaitsForCompositionBeforeStartingAudio(t *testing.T) {
+	ime := &gatedTarget{
+		fakeTarget: &fakeTarget{snapshot: contracts.TargetSnapshot{Target: "ime"}},
+		entered:    make(chan struct{}), release: make(chan struct{}),
+	}
+	audio := &fakeAudio{}
+	c, err := NewCoordinator(Dependencies{
+		Audio: audio, Recognizers: fakeFactory{&fakeRecognizer{}}, NewID: newID,
+		Targets: ime, Input: ime, IMETargets: ime, IMEInput: ime,
+	}, Options{AutoCommit: true, Mode: domain.SystemIMEMode})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(c.Cancel)
+	events := &recorder{}
+	c.Subscribe(events.listen)
+	c.Start()
+	select {
+	case <-ime.entered:
+	case <-time.After(3 * time.Second):
+		t.Fatal("IME composition acquisition did not start")
+	}
+	if n := audio.starts.Load(); n != 0 {
+		t.Fatalf("microphone started %d times before composition confirmation", n)
+	}
+	close(ime.release)
+	events.wait(t, stateIs(domain.Capturing))
+	if n := audio.starts.Load(); n != 1 {
+		t.Fatalf("microphone started %d times after composition confirmation, want 1", n)
 	}
 }
 
