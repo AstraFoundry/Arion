@@ -59,16 +59,12 @@ var (
 )
 
 const (
-	gwlStyle       = ^uintptr(15) // GWL_STYLE (-16)
-	esPassword     = 0x0020
-	esReadOnly     = 0x0800
-	inputKeyboard  = 1
-	keyeventfKeyUp = 0x0002
-	vkControl      = 0x11
-	vkV            = 0x56
-	cfUnicodeText  = 13
-	gmemMoveable   = 0x0002
-	gmemZeroInit   = 0x0040
+	gwlStyle      = ^uintptr(15) // GWL_STYLE (-16)
+	esPassword    = 0x0020
+	esReadOnly    = 0x0800
+	cfUnicodeText = 13
+	gmemMoveable  = 0x0002
+	gmemZeroInit  = 0x0040
 )
 
 // clipboardHistoryExclusion is the registered clipboard format whose presence
@@ -368,11 +364,14 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 		return copyResult(false)
 	}
 	tgt.foreground, tgt.focus = foreground, focus
-	if !paste(request.Text) {
+	switch paste(request.Text) {
+	case pastePosted:
+		result.Outcome = contracts.Unknown
+	case pasteCopied:
+		result.Outcome = contracts.Copied
+	default:
 		result.Failure = domain.CodeTargetUnsupported
-		return result, nil
 	}
-	result.Outcome = contracts.Unknown
 	return result, nil
 }
 
@@ -494,17 +493,28 @@ func acquireClipboard(deadline time.Time, pause time.Duration, try func() bool, 
 	}
 }
 
+type pasteDelivery int
+
+const (
+	pasteNotApplied pasteDelivery = iota
+	// pasteCopied leaves the dictated text on the clipboard. The chord was
+	// not accepted, so there is nothing to restore over it.
+	pasteCopied
+	pastePosted
+)
+
 // paste writes the text, sends Ctrl+V and restores the previous text only
 // if no other program changed the clipboard meanwhile (DSK-A05). Opening the
 // clipboard retries while another owner holds it. That wait is not a second
 // paste. Only the Unicode text format is preserved on Windows. The transient
 // text is excluded from clipboard history and cloud clipboard; when that
 // mark cannot be set, the previous text is put back and the paste fails.
-func paste(text string) bool {
+// A rejected Ctrl+V leaves the dictated text in place and reports copied.
+func paste(text string) pasteDelivery {
 	clipboardGate <- struct{}{}
 	defer func() { <-clipboardGate }()
 	if !openClipboard() {
-		return false
+		return pasteNotApplied
 	}
 	previous, hadText := readClipboardText()
 	written := writeClipboardText(text)
@@ -517,16 +527,15 @@ func paste(text string) bool {
 	}
 	procCloseClipboard.Call()
 	if !written {
-		return false
+		return pasteNotApplied
+	}
+	if !postCtrlV() {
+		return pasteCopied
 	}
 	owned, _, _ := procGetClipboardSequence.Call()
-	send([]keyboardInput{
-		{Type: inputKeyboard, VK: vkControl}, {Type: inputKeyboard, VK: vkV},
-		{Type: inputKeyboard, VK: vkV, Flags: keyeventfKeyUp}, {Type: inputKeyboard, VK: vkControl, Flags: keyeventfKeyUp},
-	})
-	time.Sleep(400 * time.Millisecond)
+	time.Sleep(pasteHold)
 	restoreOwnedClipboard(owned, previous, hadText)
-	return true
+	return pastePosted
 }
 
 // restoreOwnedClipboard puts the previous text back when this paste still

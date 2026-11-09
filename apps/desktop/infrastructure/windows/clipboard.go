@@ -160,7 +160,7 @@ func (t *HistoryTarget) Paste(revision uint64) error {
 	if uint64(rev) != revision {
 		return errors.New("clipboard ownership changed")
 	}
-	if !send([]keyboardInput{{Type: inputKeyboard, VK: vkControl}, {Type: inputKeyboard, VK: vkV}, {Type: inputKeyboard, VK: vkV, Flags: keyeventfKeyUp}, {Type: inputKeyboard, VK: vkControl, Flags: keyeventfKeyUp}}) {
+	if !postCtrlV() {
 		return errors.New("clipboard paste uncertain")
 	}
 	return nil
