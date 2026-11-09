@@ -61,6 +61,10 @@ var hold struct {
 var hookProc = syscall.NewCallback(func(code int, message, lparam uintptr) uintptr {
 	if code >= 0 {
 		info := (*kbdllHookStruct)(memory(lparam))
+		if !holdObservesKey(info.ExtraInfo) {
+			next, _, _ := procCallNextHookEx.Call(0, uintptr(code), message, lparam)
+			return next
+		}
 		hold.Lock()
 		interpreter, sink := hold.interpreter, hold.sink
 		var key application.HoldKey

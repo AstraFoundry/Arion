@@ -223,6 +223,14 @@ func NoticeOf(d runtime.Dictation, permissions runtime.Permissions) Notice {
 	return Notice{copy.FailGenericTitle, ""}
 }
 
+// ShortcutCommitPasted is the pill's paste mark for one shortcut commit.
+// Both Windows delivery preferences post one system paste, the same as
+// macOS. A posted paste is unknown and labeled pasted (ADR 003). Copied
+// and not-applied commits are not that label.
+func ShortcutCommitPasted(mode runtime.SessionMode, outcome runtime.CommitOutcome) bool {
+	return mode == runtime.ModeShortcut && outcome != runtime.OutcomeNotApplied && outcome != runtime.OutcomeCopied
+}
+
 // OutcomeLabel names a completed commit honestly: only a verified
 // insertion is "Inserted".
 func OutcomeLabel(d runtime.Dictation, pasted bool) copy.Key {
