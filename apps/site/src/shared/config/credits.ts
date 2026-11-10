@@ -14,44 +14,26 @@ export interface Credit {
 /** Photographs behind the product illustrations (public/backdrops). */
 export const photoCredits: readonly Credit[] = [
   {
+    id: "misty-hillside",
+    title: "A field of pink flowers on a misty hillside",
+    author: "bahareh moradian",
+    sourceUrl: "https://unsplash.com/photos/a-field-of-pink-flowers-on-a-misty-hillside-WimA_ve2yA4",
+    license: "Unsplash License",
+    licenseUrl: "https://unsplash.com/license",
+  },
+  {
+    id: "coastal-blur",
+    title: "Rolling coastal landscape with blurred grass",
+    author: "T (@tanyabarrow)",
+    sourceUrl: "https://unsplash.com/photos/rolling-coastal-landscape-with-blurred-grass-Zy7PAQgRswQ",
+    license: "Unsplash License",
+    licenseUrl: "https://unsplash.com/license",
+  },
+  {
     id: "pink-motion",
     title: "Pink flowers with motion blur effect",
     author: "Raphael Nicolas",
     sourceUrl: "https://unsplash.com/photos/pink-flowers-with-motion-blur-effect-DjZ5xwr1cq4",
-    license: "Unsplash License",
-    licenseUrl: "https://unsplash.com/license",
-  },
-  {
-    id: "pink-gladiolus",
-    title: "Pink gladiolus flowers with green foliage in motion",
-    author: "Eugene Golovesov",
-    sourceUrl:
-      "https://unsplash.com/photos/pink-gladiolus-flowers-with-green-foliage-in-motion-Jk_9EwoLXnY",
-    license: "Unsplash License",
-    licenseUrl: "https://unsplash.com/license",
-  },
-  {
-    id: "coneflower-swirl",
-    title: "Pink coneflowers with a swirling motion effect",
-    author: "Brooke Balentine",
-    sourceUrl:
-      "https://unsplash.com/photos/pink-coneflowers-with-a-swirling-motion-effect--Ck7iqGR1pc",
-    license: "Unsplash License",
-    licenseUrl: "https://unsplash.com/license",
-  },
-  {
-    id: "rose-bush",
-    title: "Blurred pink flowers in a vibrant, green bush",
-    author: "Eugene Golovesov",
-    sourceUrl: "https://unsplash.com/photos/blurred-pink-flowers-in-a-vibrant-green-bush-cTChGLob-2k",
-    license: "Unsplash License",
-    licenseUrl: "https://unsplash.com/license",
-  },
-  {
-    id: "dark-roses",
-    title: "Blurred pink flowers against dark background",
-    author: "Brigitte Elsner",
-    sourceUrl: "https://unsplash.com/photos/blurred-pink-flowers-against-dark-background-_NnGJYw02Z8",
     license: "Unsplash License",
     licenseUrl: "https://unsplash.com/license",
   },

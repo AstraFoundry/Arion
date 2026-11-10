@@ -20,7 +20,7 @@ export function OfflineMock({ playing }: { playing: boolean }) {
 
   return (
     <div className="flex w-full max-w-sm flex-col items-end gap-2">
-      <div className="flex h-8 w-full items-center justify-end gap-3 rounded-lg bg-card px-3 text-card-foreground shadow-2">
+      <div className="flex h-8 w-full items-center justify-end gap-3 rounded-lg bg-card px-3 text-card-foreground">
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
             key={offline ? "off" : "on"}
@@ -37,7 +37,7 @@ export function OfflineMock({ playing }: { playing: boolean }) {
         <BrandMark className="size-4 rounded-[4px]" />
       </div>
 
-      <div className="flex w-full flex-col gap-4 rounded-xl border border-border bg-card p-4 text-card-foreground shadow-4">
+      <div className="flex w-full flex-col gap-4 rounded-xl border border-border bg-card p-4 text-card-foreground">
         <div className="flex items-center gap-2.5">
           <BrandMark className="size-6 rounded-md" />
           <BrandWord className="text-lg" />

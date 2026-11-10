@@ -54,6 +54,10 @@
   --substrate-hi: var(--ink-50);
   --substrate-ink: var(--ink-200);
   --substrate-muted: var(--ink-400);
+  /* Captions set on a photograph, over the ink scrim (Sunbeam `backdrop-caption`). */
+  --substrate-tint-muted: rgb(244 241 235 / 0.72);
+  /* The only gradient: this ink at up to 55%, fading out, behind text on a photograph. */
+  --scrim: var(--ink-900);
 
   /* Warm two-layer shadows keyed off ink-900, never neutral black. */
   --shadow-1: 0 1px 0 rgb(20 18 14 / 0.04), 0 1px 2px rgb(20 18 14 / 0.06);
@@ -120,6 +124,8 @@
   --color-substrate-hi: var(--substrate-hi);
   --color-substrate-ink: var(--substrate-ink);
   --color-substrate-muted: var(--substrate-muted);
+  --color-substrate-tint-muted: var(--substrate-tint-muted);
+  --color-scrim: var(--scrim);
   --color-brand: var(--yellow-500);
 
   --font-display:
