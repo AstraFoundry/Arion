@@ -16,7 +16,7 @@ export function MockWindow({ children, className, title }: MockWindowProps) {
   return (
     <div
       className={cn(
-        "w-full overflow-hidden rounded-2xl border border-border bg-card text-left text-card-foreground shadow-4",
+        "w-full overflow-hidden rounded-2xl border border-border bg-card text-left text-card-foreground",
         className,
       )}
     >

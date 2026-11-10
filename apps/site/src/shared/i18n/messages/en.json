@@ -10,7 +10,6 @@
     "download": "Download",
     "downloadLong": "Download for free",
     "viewSource": "View source",
-    "replay": "Replay",
     "themeToDark": "Switch to dark theme",
     "themeToLight": "Switch to light theme",
     "language": "Language",
@@ -28,28 +27,40 @@
     "community": "Community"
   },
   "hero": {
-    "title": "Voice input that never leaves your computer",
-    "lead": "Press {shortcut} in any app and speak Chinese, English or both. Arion recognizes your speech on the device and types the text where your cursor is.",
+    "title": "Speak, and it's​ already written",
+    "lead": "Press the voice key and just speak. Your voice stays on your computer, and the words follow right behind it.",
     "note": "Free and open source ({license}) · macOS {macos} or later · Windows preview",
-    "demoLabel": "Illustration: Arion listening in a dark pill below a document window, then typing the dictated sentence into the document."
+    "demoLabel": "Illustration: in a document of quotes, Arion types a dictated line from Hamlet, learns a corrected word, polishes a spoken line from a sonnet, then types Shakespeare's name in Pinyin with its input method and switches to English with Shift."
   },
   "demo": {
-    "editorTitle": "Release notes",
-    "editorLines": [
-      "Onboarding now asks for one permission at a time.",
-      "The menu bar panel shows the last dictation."
+    "editorTitle": "Quotes",
+    "sentence": "To be, or not to be, that is the question.",
+    "learnSentence": "All the world's a {term}, and all the men and women merely players.",
+    "learnWrong": "page",
+    "learnRight": "stage",
+    "spoken": "um, shall I compare thee to a, uh, summer's day",
+    "polished": "Shall I compare thee to a summer's day?",
+    "pinyinStart": "sha",
+    "pinyin": "shashibiya",
+    "candidates": [
+      "莎士比亚",
+      "沙士比亚",
+      "莎",
+      "沙",
+      "傻"
     ],
-    "sentence": "Before we merge this PR into main, let's run CI.",
+    "committed": "莎士比亚",
     "finishHint": "to finish",
+    "polishing": "Polishing",
     "inserted": "Inserted",
     "learned": "Learned",
     "undo": "Undo"
   },
   "tour": {
     "title": "Built for the way you talk at work",
+    "lead": "Recognition, corrections and typing all happen on your computer, in whichever app you already have open.",
     "offline": {
       "title": "Works offline",
-      "body": "Speech recognition runs on your device. After the one-time model download, dictation needs no network, and no audio or text is sent anywhere.",
       "mockLabel": "Illustration: the menu bar shows the network off, and Arion's panel still receives a dictation recognized on the Mac.",
       "networkOn": "Wi-Fi",
       "networkOff": "Offline",
@@ -61,7 +72,6 @@
     },
     "mixed": {
       "title": "Two languages in one sentence",
-      "body": "Switch between Chinese and English mid-sentence, the way people talk about code and meetings. You never pick a language first. While you speak, the text stays a draft in the pill; only the finished sentence is typed.",
       "mockLabel": "Illustration: a chat composer. Arion's pill shows the mixed Chinese and English draft revising as it streams, then the finished sentence is typed into the message box.",
       "channel": "# release",
       "author": "Lena",
@@ -77,7 +87,6 @@
     },
     "learning": {
       "title": "Learns from your fixes",
-      "body": "Correct a word Arion typed and it applies the fix next time, with an undo. Learned words stay on the device, encrypted.",
       "mockLabel": "Illustration: a document where Arion typed “Orion”. The word is corrected to “Arion”, and the pill reports it as learned, with an undo.",
       "document": "Meeting notes",
       "sentence": "Sync with the {term} team on the roadmap tomorrow.",
@@ -86,7 +95,6 @@
     },
     "polish": {
       "title": "Optional polishing",
-      "body": "A local language model (or a cloud model you connect) can tidy wording and apply spoken self-corrections before the text lands. Off by default.",
       "mockLabel": "Illustration: the words as spoken, with fillers and a correction mid-sentence, above the tidy sentence Arion typed.",
       "heard": "Heard",
       "typed": "Typed",
@@ -95,7 +103,6 @@
     },
     "keyboard": {
       "title": "A Pinyin keyboard in the same input method",
-      "body": "Arion's input method also types full Pinyin offline, with candidates that learn from the words you pick. Tap Shift to switch between Chinese and English; the badge by the cursor flips over to show which one is on.",
       "mockLabel": "Illustration: typing “nihao” opens the candidate bar, the first candidate types 你好, then tapping Shift flips the badge by the cursor from 中 to A.",
       "document": "Notes",
       "pinyinStart": "ni",

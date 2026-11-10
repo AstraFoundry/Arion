@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Undo2 } from "lucide-react";
+import { Check, Sparkles, Undo2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { siteConfig } from "@/shared/config";
 import { useCopy } from "@/shared/i18n";
@@ -39,13 +39,14 @@ function Keycap({ children }: { children: string }) {
 
 export type PillState =
   | { kind: "listening"; draft: string }
+  | { kind: "polishing" }
   | { kind: "inserted" }
   | { kind: "learned"; term: string };
 
 /**
  * The floating dictation pill, drawn like the desktop overlay's: listening
- * with the streaming draft, the insertion report, or a word just learned from
- * a correction with its undo.
+ * with the streaming draft, polishing the finished text, the insertion
+ * report, or a word just learned from a correction with its undo.
  */
 export function DictationPill({ state }: { state: PillState }) {
   const { demo } = useCopy();
@@ -55,7 +56,7 @@ export function DictationPill({ state }: { state: PillState }) {
     <motion.div
       layout
       transition={SETTLE}
-      className="flex h-11 items-center gap-2.5 rounded-full border border-substrate-edge bg-substrate px-4 text-sm text-substrate-ink shadow-4"
+      className="flex h-11 items-center gap-2.5 rounded-full border border-substrate-edge bg-substrate px-4 text-sm text-substrate-ink"
       style={{ width: live ? 380 : "auto", maxWidth: "100%" }}
     >
       <AnimatePresence mode="popLayout" initial={false}>
@@ -83,6 +84,21 @@ export function DictationPill({ state }: { state: PillState }) {
                 {demo.finishHint}
               </span>
             )}
+          </motion.span>
+        ) : state.kind === "polishing" ? (
+          <motion.span
+            key="polishing"
+            className="flex items-center gap-2"
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <Sparkles className="size-4 text-substrate-hi" aria-hidden="true" />
+            <motion.span
+              animate={{ opacity: [1, 0.45, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              {demo.polishing}
+            </motion.span>
           </motion.span>
         ) : state.kind === "inserted" ? (
           <motion.span

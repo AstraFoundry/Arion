@@ -433,7 +433,7 @@ func TestMenuPanelHeightFollowsVisibleContent(t *testing.T) {
 						t.Fatalf("%s: footer action %s clipped: %+v", variant.name, key, bounds)
 					}
 				}
-				if variant.name == "ready" && height != 160 {
+				if variant.name == "ready" && height != menubar.Height {
 					t.Fatal("ready panel reserves empty transcript space")
 				}
 				snapshot(t, tt, "panel-compact-"+variant.name+"-"+string(locale))

@@ -332,8 +332,14 @@ func TestMenuBarPanel(t *testing.T) {
 	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store))
 	tt.SetSize(PanelWidth, PanelHeightFor(store))
 	settle(tt)
-	if !hasText(tt, copy.For(copy.English).Text(copy.StatusReady)) {
-		t.Fatalf("idle panel: %q", tt.Texts())
+	// Ready needs no word; the header keeps only the brand and the ? button.
+	for _, key := range []copy.Key{copy.StatusListening, copy.StatusPermission, copy.StatusTranscribing, copy.StatusPreparing, copy.StatusModelFailed} {
+		if hasText(tt, copy.For(copy.English).Text(key)) {
+			t.Fatalf("idle panel shows a state: %q", tt.Texts())
+		}
+	}
+	if _, ok := tt.Find(copy.For(copy.English).Text(copy.FeedbackHelp)); !ok {
+		t.Fatalf("idle panel lacks the feedback button: %q", tt.Texts())
 	}
 	if hasText(tt, copy.For(copy.English).Text(copy.ModelNameGeneric)) {
 		t.Fatalf("ready panel shows the model, which settings owns: %q", tt.Texts())
