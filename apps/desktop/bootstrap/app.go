@@ -146,8 +146,16 @@ type App struct {
 
 	// holdGeneration rejects queued events from a retired native listener.
 	holdGeneration uint64
-	holdKey        application.HoldKey
-	holdPending    *deferredHold
+	// selectionClicks is a non-blocking signal from the mouse-up tap.
+	// The offer text is memory-only and is never logged.
+	selectionMu      sync.Mutex
+	selectionOffer   application.SelectionOffer
+	selectionOK      bool
+	selectionClicks  chan struct{}
+	selectionStarted sync.Once
+	openSelectionURL func(string) error
+	holdKey          application.HoldKey
+	holdPending      *deferredHold
 
 	// Snapshot read by worker goroutines (correction policy, delivery).
 	snapshot    sync.Mutex
@@ -538,7 +546,11 @@ func (a *App) ready() {
 	a.startUsageUpload()
 	a.startAccountMaintenance()
 	a.startHoldKey()
+	if a.state.Preferences.Selection.Enabled {
+		a.syncSelectionWatch(false, true)
+	}
 	mygo.App.OnQuit(a.platform.StopHoldKey)
+	mygo.App.OnQuit(a.stopSelectionWatch)
 	a.createTray()
 	a.startClipboard()
 	a.createOverlay()

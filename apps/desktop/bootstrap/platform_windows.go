@@ -51,6 +51,13 @@ func (windowsPlatform) StartHoldKeys(keys []application.HoldKey, sink func(appli
 	return windows.StartHoldKeys(keys, sink)
 }
 func (windowsPlatform) StopHoldKey() { windows.StopHold() }
+func (windowsPlatform) ReadSelection() (string, bool, error) {
+	return windows.ReadSelectedText()
+}
+func (windowsPlatform) StartSelectionWatch(sink func()) error {
+	return windows.StartSelectionWatch(sink)
+}
+func (windowsPlatform) StopSelectionWatch() { windows.StopSelectionWatch() }
 
 // NewTargets: the Windows adapter reads no web site or cursor text; it
 // recognizes the window's text when gates.Screen allows.

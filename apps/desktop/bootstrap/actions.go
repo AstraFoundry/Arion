@@ -182,6 +182,9 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	if a.updates != nil {
 		a.updates.preferences(next.CheckUpdates, next.AutoInstallUpdates)
 	}
+	if next.Selection.Enabled != before.Selection.Enabled {
+		a.syncSelectionWatch(before.Selection.Enabled, next.Selection.Enabled)
+	}
 	if next.CheckUpdates && !before.CheckUpdates && a.updates.due(time.Now()) {
 		a.updates.check(time.Now(), false)
 	}

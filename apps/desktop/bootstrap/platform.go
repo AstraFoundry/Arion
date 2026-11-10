@@ -97,6 +97,12 @@ type Platform interface {
 	// is idempotent.
 	StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error
 	StopHoldKey()
+	// ReadSelection returns the focused field's selected text. A secure
+	// field returns no text. StartSelectionWatch observes mouse-up only
+	// while the selection switch is on; its sink must not block or read.
+	ReadSelection() (text string, secure bool, err error)
+	StartSelectionWatch(sink func()) error
+	StopSelectionWatch()
 	NewTargets(delivery func() application.Delivery, gates TargetGates) Targets
 	// NewInputMethod returns nil where no input method host exists yet.
 	// onDictate runs off the UI thread when the input menu's Voice Input
