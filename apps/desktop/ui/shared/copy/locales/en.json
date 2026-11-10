@@ -678,7 +678,6 @@
   "ClipboardShortcutFailed": "Shortcut unavailable or conflicting. Choose another combination.",
   "ClipboardOversize": "This item exceeds the capture limit and was not saved.",
   "ClipboardCapacity": "Pinned items fill the available storage. Unpin some items to continue.",
-  "ClipboardPreviewFailed": "The preview could not be loaded.",
   "ClipboardPreview": "Preview",
   "ClipboardUnavailable": "This resource is no longer available.",
   "ClipboardKeysHint": "↑ ↓ Select    ↵ Paste    Esc Close",

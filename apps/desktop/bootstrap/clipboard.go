@@ -206,10 +206,9 @@ func (a *App) clipboardWork(work func() ([]domain.Clip, error), failure copy.Key
 	go func() {
 		defer a.resourceJobs.Add(-1)
 		items, err := work()
-		var previewErr error
 		var meta map[string]arion.ClipboardMeta
 		if err == nil {
-			meta, previewErr = clipboardMetadata(a.preferences().Clipboard.VisibleItems(items), cached)
+			meta = clipboardMetadata(a.preferences().Clipboard.VisibleItems(items), cached)
 		}
 		a.post(func() {
 			defer a.drainClipboardDictations()
@@ -240,9 +239,6 @@ func (a *App) clipboardWork(work func() ([]domain.Clip, error), failure copy.Key
 			switch a.state.Clipboard.Error {
 			case copy.ClipboardLoadFailed, copy.ClipboardSaveFailed, copy.ClipboardCapacity, copy.ClipboardOversize, copy.ClipboardReadFailed, copy.ClipboardAccessRequired, copy.ClipboardAccessReCopy:
 				a.state.Clipboard.Error = ""
-			}
-			if previewErr != nil {
-				a.state.Clipboard.Error = copy.ClipboardPreviewFailed
 			}
 		})
 	}()

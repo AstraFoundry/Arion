@@ -678,7 +678,6 @@
   "ClipboardShortcutFailed": "快捷键不可用或存在冲突，请更换组合。",
   "ClipboardOversize": "此条内容超过记录上限，未保存。",
   "ClipboardCapacity": "固定记录已占满可用空间，请取消固定部分记录。",
-  "ClipboardPreviewFailed": "无法加载预览。",
   "ClipboardPreview": "预览",
   "ClipboardUnavailable": "此资源已不可用。",
   "ClipboardKeysHint": "↑ ↓ 选择    ↵ 粘贴    Esc 关闭",

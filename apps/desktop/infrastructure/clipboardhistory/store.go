@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"image"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -86,9 +87,24 @@ func ValidateResource(p domain.ClipPayload) error {
 		if err != nil {
 			return domain.ErrClipInvalid
 		}
-		if c.Width <= 0 || c.Height <= 0 || int64(c.Width)*int64(c.Height) > 40_000_000 {
-			return domain.ErrClipOversize
-		}
+		return validateImageDimensions(c)
+	}
+	return nil
+}
+
+// ValidatePreviewImage applies the same allocation bound to decoded file images
+// as directly captured PNG resources. No source bytes are added to history.
+func ValidatePreviewImage(data []byte) error {
+	c, _, err := image.DecodeConfig(bytes.NewReader(data))
+	if err != nil {
+		return domain.ErrClipInvalid
+	}
+	return validateImageDimensions(c)
+}
+
+func validateImageDimensions(c image.Config) error {
+	if c.Width <= 0 || c.Height <= 0 || int64(c.Width)*int64(c.Height) > 40_000_000 {
+		return domain.ErrClipOversize
 	}
 	return nil
 }

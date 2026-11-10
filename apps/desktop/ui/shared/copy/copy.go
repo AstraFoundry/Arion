@@ -94,7 +94,6 @@ const (
 	ClipboardShortcutFailed     Key = "ClipboardShortcutFailed"
 	ClipboardOversize           Key = "ClipboardOversize"
 	ClipboardCapacity           Key = "ClipboardCapacity"
-	ClipboardPreviewFailed      Key = "ClipboardPreviewFailed"
 	ClipboardPreview            Key = "ClipboardPreview"
 	ClipboardUnavailable        Key = "ClipboardUnavailable"
 	ClipboardKeysHint           Key = "ClipboardKeysHint"
