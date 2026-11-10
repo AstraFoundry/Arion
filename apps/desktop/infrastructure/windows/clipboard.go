@@ -16,6 +16,9 @@ var (
 	procGlobalSize                 = kernel32.NewProc("GlobalSize")
 )
 
+// internalClipboardFormat marks every board Arion writes.
+const internalClipboardFormat = "application/x-arion-internal"
+
 func historyFormat(name string) uintptr {
 	s, _ := syscall.UTF16PtrFromString(name)
 	id, _, _ := procRegisterClipboardFormat.Call(uintptr(unsafe.Pointer(s)))
@@ -24,7 +27,7 @@ func historyFormat(name string) uintptr {
 
 // Called while the native clipboard lock is held, after every internal write.
 func markInternalClipboard() {
-	id := historyFormat("application/x-arion-internal")
+	id := historyFormat(internalClipboardFormat)
 	h, _, _ := procGlobalAlloc.Call(gmemMoveable, 1)
 	if h != 0 {
 		p, _, _ := procGlobalLock.Call(h)
@@ -52,7 +55,7 @@ func ClipboardRevision() (uint64, bool) {
 	if uint64(rev) == internalClipboardRevision.Load() && rev != 0 {
 		return uint64(rev), true
 	}
-	for _, name := range []string{"application/x-arion-internal", "ExcludeClipboardContentFromMonitorProcessing"} {
+	for _, name := range []string{internalClipboardFormat, clipboardHistoryExclusion} {
 		if ok, _, _ := procIsClipboardFormatAvailable.Call(historyFormat(name)); ok != 0 {
 			return uint64(rev), true
 		}
