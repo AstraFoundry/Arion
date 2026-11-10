@@ -92,6 +92,9 @@ func (darwinPlatform) StopHoldKey() { macos.StopHold() }
 func (darwinPlatform) ReadSelection() (string, bool, error) {
 	return macos.ReadSelectedText()
 }
+func (darwinPlatform) SelectionAnchor() (int, int, int, int, bool) {
+	return macos.SelectedTextAnchor()
+}
 func (darwinPlatform) StartSelectionWatch(sink func()) error {
 	return macos.StartSelectionWatch(sink)
 }

@@ -153,6 +153,9 @@ type App struct {
 	selectionOK      bool
 	selectionClicks  chan struct{}
 	selectionStarted sync.Once
+	selectionWin     *mygo.Window
+	selectionAnchor  mygo.Rectangle
+	selectionHeight  int
 	openSelectionURL func(string) error
 	holdKey          application.HoldKey
 	holdPending      *deferredHold
@@ -423,7 +426,7 @@ func (a *App) OpenOnboarding() { mygo.RunOnMain(a.openOnboarding) }
 func (a *App) Windows() map[string]*mygo.Window {
 	windows := map[string]*mygo.Window{}
 	mygo.RunOnMain(func() {
-		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "clipboard": a.clipboardWin, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding, "feedback": a.feedback, "update-reminder": func() *mygo.Window {
+		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "clipboard": a.clipboardWin, "selection": a.selectionWin, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding, "feedback": a.feedback, "update-reminder": func() *mygo.Window {
 			if a.updatePolicy != nil {
 				return a.updatePolicy.reminder
 			}

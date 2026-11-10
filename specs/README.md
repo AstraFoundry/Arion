@@ -14,7 +14,7 @@ These documents are normative for implementation. Research recommendations requi
 | [008 Evaluation](008-evaluation.md) | pnpm/Make automation, real OS E2E, streaming benchmarks and ablations |
 | [009 Contextual rewriting](009-contextual-rewrite.md) | Optional local scene-aware rewrite candidates, preservation and evaluation gates |
 | [010 Clipboard history](010-clipboard.md) | Opt-in local resource history, file references, internal-write exclusion and native paste |
-| [011 Selection actions](011-selection-actions.md) | Selection preferences, allowlisted client URLs, mouse-up read, copy, and hotword save |
+| [011 Selection actions](011-selection-actions.md) | Selection preferences, allowlisted client URLs, mouse-up popover, copy, and hotword save |
 
 ## Product choices
 

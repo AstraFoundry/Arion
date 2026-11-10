@@ -16,7 +16,7 @@ Open the filled URL with the operating system's URL opener. Do not interpolate t
 
 ## Verification
 
-Portable tests cover encoding, the length cap, refused schemes, and a missing client. Native tests cover the reader, copy, hotword reopen, URL equality, secure refusal, and the master switch. They do not launch Claude, ChatGPT, Doubao, or Feishu, and they do not assert the popover action list.
+Portable tests cover encoding, the length cap, refused schemes, and a missing client. Native tests cover the reader, the popover action list, copy, hotword reopen, URL equality, an empty selection, secure refusal, and the master switch. They do not launch Claude, ChatGPT, Doubao, or Feishu.
 
 ## Consequences
 

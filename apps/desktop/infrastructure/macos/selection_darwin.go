@@ -85,3 +85,22 @@ func ReadSelectedText() (string, bool, error) {
 	}
 	return selected, false, nil
 }
+
+// SelectedTextAnchor is the focused selection's screen rectangle in points.
+// It reads geometry only. A secure field and a missing rectangle return ok false.
+func SelectedTextAnchor() (x, y, width, height int, ok bool) {
+	var native C.arion_target
+	if C.arion_capture_target(&native, 0) != C.ARION_TARGET_OK {
+		return 0, 0, 0, 0, false
+	}
+	defer C.arion_release(native.element)
+	defer C.arion_release(native.selection)
+	if native.secure_input == 1 || C.GoString(&native.subrole[0]) == "AXSecureTextField" || native.element == nil {
+		return 0, 0, 0, 0, false
+	}
+	var left, top, w, h C.double
+	if C.arion_history_anchor(native.element, &left, &top, &w, &h) != 1 {
+		return 0, 0, 0, 0, false
+	}
+	return int(left), int(top), int(w), int(h), true
+}
