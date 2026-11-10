@@ -1,4 +1,5 @@
-// Package onboarding guides account setup, offline dictation, polish and translation.
+// Package onboarding guides account setup, offline dictation, polish,
+// translation and selection actions.
 package onboarding
 
 import (
@@ -11,6 +12,7 @@ import (
 	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/features/permissions"
 	"arion.local/desktop/ui/features/polish"
+	"arion.local/desktop/ui/features/selection"
 	"arion.local/desktop/ui/features/signin"
 	"arion.local/desktop/ui/features/uilanguage"
 	"arion.local/desktop/ui/shared/copy"
@@ -123,6 +125,10 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 					})
 				}
 				ui.Spacer(c)
+				if onboarding.Last(p.flow, state) {
+					p.finish(c, store, tokens, messages)
+					return
+				}
 				switch step {
 				case onboarding.Welcome:
 					label, variant := messages.Text(copy.Continue), kit.Primary
@@ -154,14 +160,6 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 						}
 						p.move(c, 1, store)
 					})
-				case onboarding.Dictate:
-					if onboarding.Skipped(onboarding.Translate, state) {
-						p.finish(c, store, tokens, messages)
-						return
-					}
-					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, store) })
-				case onboarding.Translate:
-					p.finish(c, store, tokens, messages)
 				default:
 					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, store) })
 				}
@@ -313,9 +311,22 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 				p.permissions(c, store, tokens)
 			}
 			p.practiceField(c, store, tokens, messages, &p.translatePractice)
-			ui.Text(c, messages.Text(copy.OnbDoneBody)).FontSize(theme.Caption).TextColor(tokens.Muted).MaxWidth(380)
+			if onboarding.Last(p.flow, state) {
+				done(c, tokens, messages)
+			}
+		})
+	case onboarding.Selection:
+		heading(c, tokens, messages.Text(copy.OnbSelectionTitle), messages.Text(copy.OnbSelectionBody))
+		ui.Column(c).Width(Content).Gap(12).Children(func() {
+			kit.Card(c.Key("selection-settings"), tokens).Children(func() { selection.Settings(c, store, tokens) })
+			done(c, tokens, messages)
 		})
 	}
+}
+
+// done says where Arion stays once setup completes.
+func done(c *ui.Context, tokens theme.Tokens, messages copy.Catalog) {
+	ui.Text(c, messages.Text(copy.OnbDoneBody)).FontSize(theme.Caption).TextColor(tokens.Muted).MaxWidth(380)
 }
 
 func (p *Page) account(c *ui.Context, store runtime.Store, tokens theme.Tokens) {

@@ -9,6 +9,7 @@ import (
 	"arion.local/desktop/ui/pages/menubar"
 	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/pages/overlay"
+	"arion.local/desktop/ui/pages/selection"
 	"arion.local/desktop/ui/pages/settings"
 	"arion.local/desktop/ui/pages/trayhint"
 	"arion.local/desktop/ui/pages/updatereminder"
@@ -97,6 +98,23 @@ func Onboarding(store runtime.Store) View {
 func Feedback(store runtime.Store) View {
 	page := &feedback.Page{}
 	return View{Content: view(func(c *ui.Context) { page.Render(c, store) }).WithClipboardWriter(func(text string) { store.Actions.CopyText(text) }), Close: func() {}}
+}
+
+const SelectionWidth = selection.Width
+
+// SelectionHeightFor sizes the selection popover for the current offer.
+func SelectionHeightFor(store runtime.Store) int { return selection.Height(store) }
+
+// Selection is the popover over another app's selected text. resize
+// receives the height the menu needs, which grows with a failure line.
+func Selection(store runtime.Store, resize func(int)) View {
+	page := &selection.Page{}
+	return View{Content: view(func(c *ui.Context) {
+		height := page.Render(c, store)
+		if resize != nil {
+			resize(height)
+		}
+	}), Close: func() {}}
 }
 
 // GuideHeightFor sizes each System Settings guide for its content.

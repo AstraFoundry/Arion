@@ -16,6 +16,7 @@ import (
 	"arion.local/desktop/ui/features/permissions"
 	"arion.local/desktop/ui/features/polish"
 	"arion.local/desktop/ui/features/provision"
+	"arion.local/desktop/ui/features/selection"
 	"arion.local/desktop/ui/features/signin"
 	"arion.local/desktop/ui/features/uilanguage"
 	"arion.local/desktop/ui/features/update"
@@ -242,6 +243,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 				}
 			})
 		})
+		kit.Card(c.Key("selection-settings"), tokens).Children(func() { selection.Settings(c, store, tokens) })
 	case Dictation:
 		holdkey.ListenerStatus(c, store, tokens)
 		kit.Card(c.Key("dictation-shortcut"), tokens).Children(func() {
