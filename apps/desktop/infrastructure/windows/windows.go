@@ -22,6 +22,7 @@ import (
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
+	"arion.local/desktop/infrastructure/pastephase"
 )
 
 var clipboardGate = make(chan struct{}, 1)
@@ -364,10 +365,13 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 		return copyResult(false)
 	}
 	tgt.foreground, tgt.focus = foreground, focus
-	switch paste(request.Text) {
-	case pastePosted:
+	switch phase := paste(request.Text); phase {
+	case pastephase.Restored, pastephase.Left:
 		result.Outcome = contracts.Unknown
-	case pasteCopied:
+	case pastephase.RestoreFailed:
+		result.Outcome = contracts.Unknown
+		pastephase.NoteRestoreFailure(&result, phase)
+	case pastephase.Copied:
 		result.Outcome = contracts.Copied
 	default:
 		result.Failure = domain.CodeTargetUnsupported
@@ -493,16 +497,6 @@ func acquireClipboard(deadline time.Time, pause time.Duration, try func() bool, 
 	}
 }
 
-type pasteDelivery int
-
-const (
-	pasteNotApplied pasteDelivery = iota
-	// pasteCopied leaves the dictated text on the clipboard. The chord was
-	// not accepted, so there is nothing to restore over it.
-	pasteCopied
-	pastePosted
-)
-
 // paste writes the text, sends Ctrl+V and restores the previous text only
 // if no other program changed the clipboard meanwhile (DSK-A05). Opening the
 // clipboard retries while another owner holds it. That wait is not a second
@@ -510,11 +504,12 @@ const (
 // text is excluded from clipboard history and cloud clipboard; when that
 // mark cannot be set, the previous text is put back and the paste fails.
 // A rejected Ctrl+V leaves the dictated text in place and reports copied.
-func paste(text string) pasteDelivery {
+// The return is the transaction phase. A failed restore is not a posted paste.
+func paste(text string) pastephase.Phase {
 	clipboardGate <- struct{}{}
 	defer func() { <-clipboardGate }()
 	if !openClipboard() {
-		return pasteNotApplied
+		return ""
 	}
 	previous, hadText := readClipboardText()
 	written := writeClipboardText(text)
@@ -527,40 +522,45 @@ func paste(text string) pasteDelivery {
 	}
 	procCloseClipboard.Call()
 	if !written {
-		return pasteNotApplied
+		return pastephase.Prepared
 	}
 	if !postCtrlV() {
-		return pasteCopied
+		return pastephase.Copied
 	}
 	owned, _, _ := procGetClipboardSequence.Call()
 	time.Sleep(pasteHold)
-	restoreOwnedClipboard(owned, previous, hadText)
-	return pastePosted
+	return restoreOwnedClipboard(owned, previous, hadText)
 }
 
 // restoreOwnedClipboard puts the previous text back when this paste still
 // owns the clipboard. A changed sequence belongs to someone else (DSK-A05)
-// and is left alone. Ctrl+V has already been posted once.
-func restoreOwnedClipboard(owned uintptr, previous string, hadText bool) {
+// and is left alone. Ctrl+V has already been posted once. The hold before
+// this call is unchanged. Failing to open the clipboard while this paste
+// still owns it, or failing to write the previous text, is restore-failed.
+// That is not a successful paste.
+func restoreOwnedClipboard(owned uintptr, previous string, hadText bool) pastephase.Phase {
 	deadline := time.Now().Add(clipboardOpenBudget)
 	for {
 		current, _, _ := procGetClipboardSequence.Call()
 		if current != owned {
-			return
+			return pastephase.Left
 		}
 		if ok, _, _ := procOpenClipboard.Call(0); ok != 0 {
 			current, _, _ = procGetClipboardSequence.Call()
-			if current == owned {
+			owns := current == owned
+			wrote := false
+			if owns {
 				procEmptyClipboard.Call()
-				if hadText {
-					writeClipboardText(previous)
-				}
+				wrote = !hadText || writeClipboardText(previous)
 			}
 			procCloseClipboard.Call()
-			return
+			if !owns {
+				return pastephase.Left
+			}
+			return pastephase.Restore(true, hadText, wrote)
 		}
 		if !time.Now().Before(deadline) {
-			return
+			return pastephase.RestoreFailed
 		}
 		time.Sleep(clipboardOpenPause)
 	}

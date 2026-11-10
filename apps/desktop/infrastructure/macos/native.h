@@ -60,6 +60,11 @@ enum {
 void *arion_paste_begin(const char *utf8);
 int arion_paste_stage(void *transaction);
 int arion_paste_post(void *transaction, void *element, void *selection, int pid);
+// Finish phases. Left is another owner's clipboard. A failed write of the
+// saved items is not a successful restore.
+#define ARION_PASTE_FINISH_LEFT 0
+#define ARION_PASTE_FINISH_RESTORED 1
+#define ARION_PASTE_FINISH_RESTORE_FAILED (-1)
 int arion_paste_finish(void *transaction);
 int arion_selection_matches(void *element, void *selection);
 int arion_clipboard_publish(const char *utf8);

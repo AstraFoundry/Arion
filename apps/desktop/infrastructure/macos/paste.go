@@ -17,6 +17,7 @@ import (
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/pastephase"
 )
 
 // Serialize the shared system pasteboard across all target-provider instances.
@@ -31,7 +32,7 @@ type pasteTarget interface {
 type pasteAttempt interface {
 	stage() domain.ErrorCode
 	post() domain.ErrorCode
-	finish() bool
+	finish() pastephase.Phase
 }
 
 // publishClipboard leaves text on the general pasteboard. It does not paste
@@ -99,9 +100,7 @@ func commitPaste(ctx context.Context, id contracts.Identity, text string, hold t
 		return result, nil
 	}
 	defer func() {
-		if !tx.finish() {
-			result.Failure = domain.CodeClipboardRestoreFailed
-		}
+		pastephase.NoteRestoreFailure(&result, tx.finish())
 	}()
 	if result.Failure = validate(); result.Failure != "" {
 		return result, nil
@@ -145,12 +144,13 @@ func (t nativePasteTarget) prepare(text string) pasteAttempt {
 	if tx == nil {
 		return nil
 	}
-	return &nativePasteAttempt{transaction: tx, target: t.target}
+	return &nativePasteAttempt{transaction: tx, target: t.target, phase: pastephase.Prepared}
 }
 
 type nativePasteAttempt struct {
 	transaction unsafe.Pointer
 	target      *target
+	phase       pastephase.Phase
 }
 
 func pasteFailure(status C.int) domain.ErrorCode {
@@ -167,11 +167,27 @@ func pasteFailure(status C.int) domain.ErrorCode {
 }
 
 func (t *nativePasteAttempt) stage() domain.ErrorCode {
-	return pasteFailure(C.arion_paste_stage(t.transaction))
+	code := pasteFailure(C.arion_paste_stage(t.transaction))
+	if code == "" {
+		t.phase = pastephase.Staged
+	}
+	return code
 }
 func (t *nativePasteAttempt) post() domain.ErrorCode {
-	return pasteFailure(C.arion_paste_post(t.transaction, t.target.element, t.target.selection, C.int(t.target.pid)))
+	code := pasteFailure(C.arion_paste_post(t.transaction, t.target.element, t.target.selection, C.int(t.target.pid)))
+	if code == "" {
+		t.phase = pastephase.Posted
+	}
+	return code
 }
-func (t *nativePasteAttempt) finish() bool {
-	return C.arion_paste_finish(t.transaction) >= 0
+func (t *nativePasteAttempt) finish() pastephase.Phase {
+	switch C.arion_paste_finish(t.transaction) {
+	case C.ARION_PASTE_FINISH_RESTORED:
+		t.phase = pastephase.Restored
+	case C.ARION_PASTE_FINISH_RESTORE_FAILED:
+		t.phase = pastephase.RestoreFailed
+	default:
+		t.phase = pastephase.Left
+	}
+	return t.phase
 }

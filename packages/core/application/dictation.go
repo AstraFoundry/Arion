@@ -107,6 +107,11 @@ type run struct {
 	stream    ports.AudioStream
 	pumpDone  chan struct{}
 	stopAsked bool
+	// audio is the early-capture phase. Queued means the session is already
+	// capturing, the recognizer is nil, and the pump has not started. Stop
+	// leaves that phase queued so the pump still finalizes. Cancel abandons
+	// it. Do not infer the window from stopAsked and Terminal() alone.
+	audio audioPhase
 
 	hotwords   []string
 	recognizer ports.Recognizer
@@ -312,6 +317,24 @@ func (c *Coordinator) composing(r *run) bool {
 	return r.session.Mode() == domain.SystemIMEMode && c.deps.Composition != nil && r.hasTarget
 }
 
+// audioPhase is the shortcut session's early audio queue.
+type audioPhase int
+
+const (
+	audioSetup audioPhase = iota
+	audioQueued
+	audioPumping
+	audioAbandoned
+)
+
+// abandonEarlyAudio ends setup or the queued window. Pumping is left to the
+// pump. The caller holds Coordinator.mu.
+func (r *run) abandonEarlyAudio() {
+	if r.audio == audioSetup || r.audio == audioQueued {
+		r.audio = audioAbandoned
+	}
+}
+
 // prepare checks model availability before opening the microphone. System IME
 // sessions also acquire composition first. Shortcut sessions can queue audio
 // during target lookup, but the pump starts only after setup succeeds.
@@ -337,6 +360,9 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 		return
 	}
 	if r.ctx.Err() != nil {
+		c.mu.Lock()
+		r.abandonEarlyAudio()
+		c.mu.Unlock()
 		return
 	}
 	started = time.Now()
@@ -361,15 +387,20 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 	c.mu.Lock()
 	r.stream = stream
 	if c.current != r || r.session.Terminal() {
+		r.abandonEarlyAudio()
 		c.mu.Unlock()
 		r.stopAudio()
 		return
 	}
 	_ = r.session.Advance(domain.Capturing)
+	r.audio = audioQueued
 	c.mu.Unlock()
 	c.emitState(r, domain.Capturing)
 
 	if needTarget && !imeTarget && !c.captureTarget(r) {
+		c.mu.Lock()
+		r.abandonEarlyAudio()
+		c.mu.Unlock()
 		return
 	}
 	if l := r.live; l != nil && l.policy.Enabled && l.policy.FollowApp {
@@ -382,11 +413,15 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 	}
 	c.startContext(r)
 	c.mu.Lock()
-	if c.current != r || r.session.Terminal() {
+	// Stop leaves the phase queued. Cancel and capture failure abandon it.
+	// The pump starts only from queued, not from stopAsked or Terminal().
+	if c.current != r || r.audio != audioQueued {
+		r.abandonEarlyAudio()
 		c.mu.Unlock()
 		return
 	}
 	r.recognizer, attached = recognizer, true
+	r.audio = audioPumping
 	c.mu.Unlock()
 	if r.live != nil {
 		c.spawn(func() { c.liveWorker(r) })
@@ -532,10 +567,11 @@ func (c *Coordinator) acceptDisplay(r *run, text, rewrite string) {
 func (c *Coordinator) Stop() {
 	c.mu.Lock()
 	r := c.current
-	if r == nil || r.session.State() != domain.Capturing {
+	if r == nil || r.session.State() != domain.Capturing || r.audio == audioAbandoned {
 		c.mu.Unlock()
 		return
 	}
+	// Queued audio stays queued. Cancel is what abandons that phase.
 	_ = r.session.Advance(domain.Finalizing)
 	r.stopAsked = true
 	c.mu.Unlock()
@@ -557,6 +593,9 @@ func (c *Coordinator) cancelMode(mode domain.InputMode) {
 	if r == nil || r.session.Terminal() || (mode != "" && r.session.Mode() != mode) {
 		c.mu.Unlock()
 		return
+	}
+	if r.audio == audioQueued {
+		r.audio = audioAbandoned
 	}
 	c.workers.Add(1)
 	defer c.workers.Add(-1)
@@ -590,6 +629,7 @@ func (c *Coordinator) failDetail(r *run, code domain.ErrorCode, detail string) {
 		c.mu.Unlock()
 		return
 	}
+	r.abandonEarlyAudio()
 	r.cancel()
 	started := r.stream != nil
 	text := r.final

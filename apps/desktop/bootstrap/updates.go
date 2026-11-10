@@ -164,7 +164,7 @@ func (u *updates) preferences(check, install bool) {
 
 // due reports whether an automatic check should run at now.
 func (u *updates) due(now time.Time) bool {
-	if u.source == nil || u.stopped || u.blocked || u.recovering || u.state.Failed == arion.UpdateStepRestart {
+	if u.source == nil || u.stopped || u.blocked || u.recovering || u.state.Phase == arion.UpdateRestartFailed {
 		return false
 	}
 	switch u.state.Phase {
@@ -178,7 +178,7 @@ func (u *updates) due(now time.Time) bool {
 // keeps what the user saw, since being offline is not news; a check the
 // user asked for reports the failure.
 func (u *updates) check(now time.Time, manual bool) {
-	if u.source == nil || u.stopped || u.blocked || u.recovering || u.state.Failed == arion.UpdateStepRestart {
+	if u.source == nil || u.stopped || u.blocked || u.recovering || u.state.Phase == arion.UpdateRestartFailed {
 		return
 	}
 	u.manualCheck = manual
@@ -230,7 +230,7 @@ func (u *updates) checked(found *release, err error, previous arion.Update, manu
 			*u.state = previous
 			return
 		}
-		*u.state = arion.Update{Phase: arion.UpdateFailed, Failed: arion.UpdateStepCheck, Checked: previous.Checked,
+		*u.state = arion.Update{Phase: arion.UpdateCheckFailed, Checked: previous.Checked,
 			Version: previous.Version, Notes: previous.Notes}
 		return
 	}
@@ -247,14 +247,14 @@ func (u *updates) checked(found *release, err error, previous arion.Update, manu
 // install prepares verified bytes; applying is reserved for the guarded restart.
 func (u *updates) install() { u.prepare(false) }
 func (u *updates) prepare(automatic bool) {
-	if u.stopped || u.blocked || u.found == nil || u.found.Prepare == nil || u.prepared != nil || (u.state.Phase != arion.UpdateAvailable && u.state.Phase != arion.UpdateFailed) {
+	if u.stopped || u.blocked || u.found == nil || u.found.Prepare == nil || u.prepared != nil || (u.state.Phase != arion.UpdateAvailable && !u.state.Phase.IsFailure()) {
 		return
 	}
 	found := u.found
 	u.generation++
 	gen := u.generation
 	u.automatic = automatic
-	u.state.Phase, u.state.Failed, u.state.Downloaded, u.state.Total = arion.UpdateDownloading, "", 0, 0
+	u.state.Phase, u.state.Downloaded, u.state.Total = arion.UpdateDownloading, 0, 0
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
 	u.cancel = cancel
 	go func() {
@@ -285,7 +285,7 @@ func (u *updates) prepare(automatic bool) {
 					u.log("update_install", prepared.Discard())
 				}
 				u.log("update_install", err)
-				u.state.Phase, u.state.Failed = arion.UpdateFailed, arion.UpdateStepPrepare
+				u.state.Phase = arion.UpdatePrepareFailed
 				return
 			}
 			u.prepared = prepared
@@ -297,12 +297,12 @@ func (u *updates) prepare(automatic bool) {
 
 // apply starts only while the caller owns the input/resource maintenance lease.
 func (u *updates) apply(done func(error)) {
-	if u.prepared == nil || (u.state.Phase != arion.UpdateStaged && u.state.Phase != arion.UpdateFailed) {
+	if u.prepared == nil || (u.state.Phase != arion.UpdateStaged && !u.state.Phase.IsFailure()) {
 		done(errors.New("no staged update"))
 		return
 	}
 	prepared := u.prepared
-	u.state.Phase, u.state.Failed = arion.UpdateApplying, ""
+	u.state.Phase = arion.UpdateApplying
 	go func() {
 		err := prepared.Apply()
 		u.post(func() {
@@ -320,7 +320,7 @@ func (u *updates) apply(done func(error)) {
 						u.recoveryFailure(err)
 					} else {
 						u.prepared = nil
-						u.state.Phase, u.state.Failed = arion.UpdateFailed, arion.UpdateStepPrepare
+						u.state.Phase = arion.UpdatePrepareFailed
 					}
 				}
 				done(err)
@@ -352,7 +352,7 @@ func (u *updates) close() {
 
 func (u *updates) recoveryFailure(err error) {
 	u.blocked = true
-	u.state.Phase, u.state.Failed = arion.UpdateFailed, arion.UpdateStepRecovery
+	u.state.Phase = arion.UpdateRecoveryFailed
 	u.state.RestartQueued = false
 	u.log("update_install", err)
 }

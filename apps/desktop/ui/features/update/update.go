@@ -20,11 +20,11 @@ func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		if u.StateError {
 			kit.Notice(c, tokens, tokens.Warning, messages.Text(copy.UpdateStateFailed), nil).Padding(0, 16, 10, 16)
 		}
-		if u.Phase == runtime.UpdateUnsupported || (u.Phase == runtime.UpdateFailed && u.Failed == runtime.UpdateStepRecovery) {
+		if u.Phase == runtime.UpdateUnsupported || u.Phase == runtime.UpdateRecoveryFailed {
 			return
 		}
 		kit.Divider(c, tokens)
-		preferencesLocked := u.Phase == runtime.UpdateApplying || u.Phase == runtime.UpdateReady || (u.Phase == runtime.UpdateFailed && u.Failed == runtime.UpdateStepRestart)
+		preferencesLocked := u.Phase == runtime.UpdateApplying || u.Phase == runtime.UpdateReady || u.Phase == runtime.UpdateRestartFailed
 		auto := store.State.Preferences.CheckUpdates
 		kit.TipRow(c, tokens, messages.Text(copy.UpdateAuto), messages.Text(copy.UpdateAutoDetail), func() {
 			if ui.Switch(c.Key("auto-update"), &auto).Label(messages.Text(copy.UpdateAuto)).Disabled(preferencesLocked).Changed() {
@@ -112,37 +112,29 @@ func status(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		kit.Row(c, tokens, messages.Text(copy.UpdateReady), messages.UpdateAvailable(u.Version), func() {
 			button(kit.Primary, messages.Text(copy.UpdateRestart), true, actions.RestartToUpdate)
 		})
-	case runtime.UpdateFailed:
-		if u.Failed == runtime.UpdateStepRecovery {
-			kit.Row(c, tokens, messages.Text(copy.UpdateRecoveryRequired), messages.Text(copy.UpdateRecoveryDetail), func() {
-				button(kit.Outline, messages.Text(copy.Quit), true, actions.Quit)
-			})
-			return
-		}
-		label, action := copy.UpdateCheckFailed, actions.CheckForUpdates
-		switch u.Failed {
-		case runtime.UpdateStepInstall:
-			label, action = copy.UpdateInstallFailed, actions.InstallUpdate
-		case runtime.UpdateStepPrepare:
-			label, action = copy.UpdatePrepareFailed, actions.InstallUpdate
-		case runtime.UpdateStepApply:
-			label, action = copy.UpdateApplyFailed, actions.RestartToUpdate
-		case runtime.UpdateStepRestart:
-			label, action = copy.UpdateRestartFailed, actions.RestartToUpdate
-		}
+	case runtime.UpdateCheckFailed:
 		detail := ""
 		if u.Version != "" {
 			detail = messages.UpdateAvailable(u.Version)
 		}
-		if u.Failed == runtime.UpdateStepRestart {
-			detail = messages.Text(copy.UpdateRestartFailedDetail)
-		}
-		kit.Row(c, tokens, messages.Text(label), detail, func() {
-			if u.Failed == runtime.UpdateStepCheck || u.Failed == "" {
-				check()
-			} else {
-				button(kit.Outline, messages.Text(copy.Retry), true, action)
+		kit.Row(c, tokens, messages.Text(copy.UpdateCheckFailed), detail, check)
+	case runtime.UpdatePrepareFailed:
+		{
+			detail := ""
+			if u.Version != "" {
+				detail = messages.UpdateAvailable(u.Version)
 			}
+			kit.Row(c, tokens, messages.Text(copy.UpdatePrepareFailed), detail, func() {
+				button(kit.Outline, messages.Text(copy.Retry), true, actions.InstallUpdate)
+			})
+		}
+	case runtime.UpdateRestartFailed:
+		kit.Row(c, tokens, messages.Text(copy.UpdateRestartFailed), messages.Text(copy.UpdateRestartFailedDetail), func() {
+			button(kit.Outline, messages.Text(copy.Retry), true, actions.RestartToUpdate)
+		})
+	case runtime.UpdateRecoveryFailed:
+		kit.Row(c, tokens, messages.Text(copy.UpdateRecoveryRequired), messages.Text(copy.UpdateRecoveryDetail), func() {
+			button(kit.Outline, messages.Text(copy.Quit), true, actions.Quit)
 		})
 	default:
 		kit.Row(c, tokens, messages.Text(copy.AboutUpdates), "", check)

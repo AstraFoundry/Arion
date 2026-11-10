@@ -27,10 +27,9 @@ func TestUpdateDeliveryStates(t *testing.T) {
 			{runtime.Update{Phase: runtime.UpdateStaged, Version: "0.2.0", RestartQueued: true}, copy.UpdateRestartQueued, copy.UpdateCancelRestart, "cancel-update-restart"},
 			{runtime.Update{Phase: runtime.UpdateApplying, Version: "0.2.0"}, copy.UpdateApplying, "", ""},
 			{runtime.Update{Phase: runtime.UpdateReady, Version: "0.2.0"}, copy.UpdateReady, copy.UpdateRestart, "restart-update"},
-			{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepPrepare, Version: "0.2.0"}, copy.UpdatePrepareFailed, copy.Retry, "install-update"},
-			{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepApply, Version: "0.2.0"}, copy.UpdateApplyFailed, copy.Retry, "restart-update"},
-			{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepRestart, Version: "0.2.0"}, copy.UpdateRestartFailed, copy.Retry, "restart-update"},
-			{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepRecovery, Version: "0.2.0"}, copy.UpdateRecoveryRequired, copy.Quit, "quit"},
+			{runtime.Update{Phase: runtime.UpdatePrepareFailed, Version: "0.2.0"}, copy.UpdatePrepareFailed, copy.Retry, "install-update"},
+			{runtime.Update{Phase: runtime.UpdateRestartFailed, Version: "0.2.0"}, copy.UpdateRestartFailed, copy.Retry, "restart-update"},
+			{runtime.Update{Phase: runtime.UpdateRecoveryFailed, Version: "0.2.0"}, copy.UpdateRecoveryRequired, copy.Quit, "quit"},
 		} {
 			state.Update = step.update
 			actions.calls = nil
@@ -46,7 +45,7 @@ func TestUpdateDeliveryStates(t *testing.T) {
 			if step.update.Phase == runtime.UpdateApplying && hasText(tt, messages.Text(copy.UpdateCancelRestart)) {
 				t.Fatal("atomic install offered cancellation")
 			}
-			if step.update.Failed == runtime.UpdateStepRecovery {
+			if step.update.Phase == runtime.UpdateRecoveryFailed {
 				if _, retry := tt.Find(messages.Text(copy.Retry)); retry {
 					t.Fatal("unsafe recovery offered another swap")
 				}
@@ -54,7 +53,7 @@ func TestUpdateDeliveryStates(t *testing.T) {
 					t.Fatal("recovery omitted repair instructions")
 				}
 			}
-			name := "update-delivery-" + string(language) + "-" + string(step.update.Phase) + "-" + string(step.update.Failed)
+			name := "update-delivery-" + string(language) + "-" + string(step.update.Phase)
 			if step.update.RestartQueued {
 				name += "-queued"
 			}
@@ -142,7 +141,7 @@ func TestPostInputUpdateReminder(t *testing.T) {
 				}
 				snapshot(t, tt, name)
 			}
-			for _, phase := range []runtime.UpdatePhase{runtime.UpdateCurrent, runtime.UpdateDownloading, runtime.UpdateApplying, runtime.UpdateFailed} {
+			for _, phase := range []runtime.UpdatePhase{runtime.UpdateCurrent, runtime.UpdateDownloading, runtime.UpdateApplying, runtime.UpdateCheckFailed, runtime.UpdatePrepareFailed, runtime.UpdateRestartFailed, runtime.UpdateRecoveryFailed} {
 				state.Update = runtime.Update{Phase: phase, Version: "0.2.0", ReminderVisible: true}
 				settle(tt)
 				if hasText(tt, messages.Text(copy.UpdateView)) {
