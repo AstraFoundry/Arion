@@ -41,6 +41,37 @@ static _Atomic(long long) historyExcludedRevision = -1;
 }
 @end
 
+// AppKit refuses to read a type name outside the UTI character set (for
+// example Qt's "com.trolltech.anymime.*_Format" flavors written through the
+// Carbon pasteboard) and logs an error instead of returning its data.
+static BOOL valid_type_identifier(NSString *type) {
+    static NSCharacterSet *invalid;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        NSMutableCharacterSet *allowed = [NSMutableCharacterSet characterSetWithRange:NSMakeRange(0x80, 0x10FFFF - 0x80 + 1)];
+        [allowed addCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-."];
+        invalid = allowed.invertedSet;
+    });
+    return type.length && [type rangeOfCharacterFromSet:invalid].location == NSNotFound;
+}
+
+// A snapshot keeps every readable type and drops types AppKit cannot read
+// back; it is unavailable only when the board has content and none of it is
+// readable.
+static NSArray<NSPasteboardItem *> *snapshot_items(NSArray<NSPasteboardItem *> *original) {
+    NSMutableArray<NSPasteboardItem *> *saved = [NSMutableArray array];
+    for (NSPasteboardItem *item in original) {
+        NSPasteboardItem *copy = [NSPasteboardItem new];
+        for (NSPasteboardType type in item.types) {
+            if (!valid_type_identifier(type)) continue;
+            NSData *data = [item dataForType:type];
+            if (data) [copy setData:data forType:type];
+        }
+        if (copy.types.count) [saved addObject:copy];
+    }
+    return original.count && !saved.count ? nil : saved;
+}
+
 // begin_paste snapshots and allocates everything before mutating the board.
 // The board parameter lets isolated tests use an actual named pasteboard.
 static ArionPasteTransaction *begin_paste(NSString *text, NSPasteboard *board) {
@@ -64,16 +95,8 @@ static ArionPasteTransaction *begin_paste(NSString *text, NSPasteboard *board) {
             if ([url startAccessingSecurityScopedResource]) [active addObject:url];
         }
     }
-    NSMutableArray<NSPasteboardItem *> *saved = [NSMutableArray array];
-    for (NSPasteboardItem *item in original) {
-        NSPasteboardItem *copy = [NSPasteboardItem new];
-        for (NSPasteboardType type in item.types) {
-            NSData *data = [item dataForType:type];
-            if (!data || ![copy setData:data forType:type]) return nil;
-        }
-        [saved addObject:copy];
-    }
-    if (board.changeCount != tx.capturedChange) return nil;
+    NSArray<NSPasteboardItem *> *saved = snapshot_items(original);
+    if (!saved || board.changeCount != tx.capturedChange) return nil;
     tx.saved = saved;
     tx.item = [NSPasteboardItem new];
     if (![tx.item setString:text forType:NSPasteboardTypeString] ||
@@ -158,7 +181,12 @@ int arion_paste_finish(void *transaction) {
         int result = 0;
         if (owns_pasteboard(tx)) {
             [tx.board clearContents];
-            BOOL ok = !tx.saved.count || [tx.board writeObjects:tx.saved];
+            // Items are written one at a time so a rejected item does not
+            // discard the rest; any rejection still reports a failed restore.
+            BOOL ok = YES;
+            for (NSPasteboardItem *item in tx.saved) {
+                if (![tx.board writeObjects:@[item]]) ok = NO;
+            }
             if (tx.board == NSPasteboard.generalPasteboard) atomic_store(&historyExcludedRevision, tx.board.changeCount);
             result = ok ? 1 : -1;
         }
