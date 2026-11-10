@@ -382,7 +382,7 @@ func TestSettingsSections(t *testing.T) {
 	page := settings.NewPage()
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	for _, section := range []struct{ id, label, want string }{
-		{settings.Overview, copy.For(copy.English).Text(copy.NavOverview), copy.For(copy.English).Text(copy.UsageActivity)},
+		{settings.Overview, copy.For(copy.English).Text(copy.NavOverview), copy.For(copy.English).Text(copy.UsageFirstTitle)},
 		{settings.General, copy.For(copy.English).Text(copy.NavGeneral), copy.For(copy.English).Text(copy.LaunchAtLogin)},
 		{settings.Dictation, copy.For(copy.English).Text(copy.NavDictation), copy.For(copy.English).Text(copy.HoldKeyLabel)},
 		{settings.Microphone, copy.For(copy.English).Text(copy.NavMicrophone), copy.For(copy.English).Text(copy.MicTest)},
@@ -651,14 +651,36 @@ func usageFixture(state *runtime.State) {
 
 func TestUsageOverview(t *testing.T) {
 	state, _, store := fixture()
+	// The first-run card names the dictation key; Linux has none of its own.
+	state.Preferences.HoldKey = runtime.HoldFn
 	en := copy.For(copy.English)
 	page := settings.NewPage()
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	settle(tt)
-	if page.Section != settings.Overview || !hasText(tt, en.Text(copy.UsageActivity)) || !hasText(tt, en.Text(copy.UsageScenesEmpty)) {
+	// Before the first dictation the totals give way to the first-run
+	// card, labeled figure and hold key included; the vocabulary stays.
+	for _, want := range []copy.Key{copy.UsageFirstTitle, copy.UsageFirstPrompt, copy.UsageFirstHold, copy.UsageFirstFigureLabel, copy.VocabEmptyTitle} {
+		if !hasText(tt, en.Text(want)) {
+			t.Fatalf("empty overview has no %s: %q", want, tt.Texts())
+		}
+	}
+	if page.Section != settings.Overview || hasText(tt, en.Text(copy.UsageActivity)) || !hasText(tt, holdname.Legend(runtime.HoldFn)) {
 		t.Fatalf("empty overview: %s %q", page.Section, tt.Texts())
 	}
+	rest(tt, 2400*time.Millisecond)
 	snapshot(t, tt, "settings-overview-empty")
+	tt.SetDark(true)
+	rest(tt, 900*time.Millisecond)
+	snapshot(t, tt, "dark-overview-empty")
+	tt.SetDark(false)
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	rest(tt, 900*time.Millisecond)
+	if !hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.UsageFirstPrompt)) {
+		t.Fatalf("Chinese first-run card: %q", tt.Texts())
+	}
+	snapshot(t, tt, "settings-overview-empty-zh-CN")
+	state.Preferences.UILanguage = ""
+	settle(tt)
 
 	// Entering the overview lights the heatmap up from the oldest week.
 	usageFixture(state)

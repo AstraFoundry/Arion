@@ -503,3 +503,13 @@ func Empty(c *ui.Context, tokens theme.Tokens, text string) ui.Element {
 		ui.Text(c, text).FontSize(theme.Body).TextColor(tokens.Muted).TextAlign(ui.Center)
 	})
 }
+
+// EmptyNote is an empty card body that says what is missing and then what
+// to do: the state in Text, the next step in Muted, as one left-aligned
+// thought at Body size.
+func EmptyNote(c *ui.Context, tokens theme.Tokens, state, next string) ui.Element {
+	return ui.Column(c).Grow(1).Padding(20, 16).Gap(2).Justify(ui.Center).Children(func() {
+		ui.Text(c, state).FontSize(theme.Body).FontWeight(500).TextColor(tokens.Text)
+		ui.Text(c, next).FontSize(theme.Body).TextColor(tokens.Muted)
+	})
+}
