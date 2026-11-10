@@ -112,3 +112,78 @@ func TestTranslationShortcutDisableRetainsAssignment(t *testing.T) {
 		}
 	}
 }
+
+func TestSecondHoldKeyListensBesideThePrimaryShortcut(t *testing.T) {
+	for _, platform := range []string{"darwin", "windows", "linux"} {
+		prefs := DefaultPreferences(platform)
+		if prefs.SecondHoldKey != DefaultSecondHoldKey(platform) {
+			t.Fatalf("%s default second shortcut: %q", platform, prefs.SecondHoldKey)
+		}
+		normalized, repairs := prefs.Normalize(platform)
+		if normalized.SecondHoldKey != prefs.SecondHoldKey || len(repairs) != 0 {
+			t.Fatalf("%s absent second shortcut repaired: %q %v", platform, normalized.SecondHoldKey, repairs)
+		}
+		if DefaultHoldKey(platform) == "" {
+			continue
+		}
+		beforeDefault := prefs
+		prefs.ChooseSecondHoldKey(platform, "caps_lock")
+		if prefs.SecondHoldKey != beforeDefault.SecondHoldKey {
+			t.Fatal("unknown second shortcut replaced the stored value")
+		}
+		prefs.ChooseSecondHoldKey(platform, "f8")
+		data, err := json.Marshal(prefs)
+		if err != nil {
+			t.Fatal(err)
+		}
+		restored := DefaultPreferences(platform)
+		if err := json.Unmarshal(data, &restored); err != nil {
+			t.Fatal(err)
+		}
+		restored, repairs = restored.Normalize(platform)
+		if restored.SecondHoldKey != "f8" || restored.HoldKey != prefs.HoldKey || len(repairs) != 0 {
+			t.Fatalf("%s did not keep both dictation shortcuts: %+v %v", platform, restored, repairs)
+		}
+		assigned := restored.HoldAssignments()
+		if len(assigned) != 3 || assigned[0] != restored.HoldKey || assigned[1] != "f8" || assigned[2] != restored.TranslateKey {
+			t.Fatalf("%s assignments: %v", platform, assigned)
+		}
+		if restored.Translates("f8") || restored.Translates(restored.HoldKey) || !restored.Translates(restored.TranslateKey) {
+			t.Fatal("second dictation shortcut was treated as translation")
+		}
+		before := restored
+		restored.ChooseSecondHoldKey(platform, restored.HoldKey)
+		restored.ChooseHoldKey("f8")
+		restored.ChooseTranslateKey(platform, "f8")
+		if restored.HoldKey != before.HoldKey || restored.SecondHoldKey != before.SecondHoldKey || restored.TranslateKey != before.TranslateKey {
+			t.Fatal("conflicting selection changed a shortcut")
+		}
+		stored := restored
+		stored.SecondHoldKey = stored.HoldKey
+		stored, repairs = stored.Normalize(platform)
+		if stored.SecondHoldKey != HoldOff || stored.HoldKey != before.HoldKey || len(repairs) != 0 {
+			t.Fatalf("stored collision moved the primary shortcut: %+v %v", stored, repairs)
+		}
+		invalid := DefaultPreferences(platform)
+		invalid.SecondHoldKey = "caps_lock"
+		invalid, repairs = invalid.Normalize(platform)
+		if invalid.SecondHoldKey != HoldOff || len(repairs) != 1 || repairs[0] != "secondHoldKey" {
+			t.Fatalf("invalid second shortcut: %q %v", invalid.SecondHoldKey, repairs)
+		}
+		disabled := DefaultPreferences(platform)
+		disabled.ChooseSecondHoldKey(platform, HoldOff)
+		if got := disabled.HoldAssignments(); len(got) != 2 || got[1] != disabled.TranslateKey {
+			t.Fatalf("disabled second shortcut stayed registered: %v", got)
+		}
+	}
+}
+
+func TestEnablingTranslationSkipsSecondDictationShortcut(t *testing.T) {
+	prefs := DefaultPreferences("darwin")
+	prefs.ChooseTranslateKey("darwin", HoldOff)
+	prefs.ChooseSecondHoldKey("darwin", HoldRightCommand)
+	prefs.EnableTranslationShortcut("darwin", true)
+	if prefs.SecondHoldKey != HoldRightCommand || prefs.TranslateKey == HoldOff || HoldKeysConflict(prefs.TranslateKey, prefs.HoldKey) || HoldKeysConflict(prefs.TranslateKey, prefs.SecondHoldKey) {
+		t.Fatalf("translation enablement collided with dictation: %+v", prefs)
+	}
+}

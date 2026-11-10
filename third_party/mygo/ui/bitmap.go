@@ -3,13 +3,15 @@ package ui
 import (
 	"bytes"
 	"encoding/binary"
+	"errors"
 	"image"
 	_ "image/gif"  // DecodeBitmap
 	_ "image/jpeg" // DecodeBitmap
 	_ "image/png"  // DecodeBitmap
 	"math"
 
-	_ "golang.org/x/image/bmp"  // DecodeBitmap
+	_ "golang.org/x/image/bmp" // DecodeBitmap
+	"golang.org/x/image/draw"
 	_ "golang.org/x/image/webp" // DecodeBitmap
 
 	"github.com/egoist/mygo/internal/scene"
@@ -39,9 +41,34 @@ func NewBitmap(img image.Image) *Bitmap {
 // image. A JPEG photo shows upright, as its camera's EXIF orientation
 // says.
 func DecodeBitmap(data []byte) (*Bitmap, error) {
+	return decodeBitmap(data, 0)
+}
+
+// DecodeBitmapThumbnail decodes the first frame and fits it inside edge pixels,
+// preserving aspect ratio and JPEG orientation. It never upscales. Callers
+// reading untrusted resources must bound encoded bytes and dimensions first.
+func DecodeBitmapThumbnail(data []byte, edge int) (*Bitmap, error) {
+	if edge <= 0 {
+		return nil, errors.New("ui: thumbnail edge must be positive")
+	}
+	return decodeBitmap(data, edge)
+}
+
+func decodeBitmap(data []byte, edge int) (*Bitmap, error) {
 	img, format, err := image.Decode(bytes.NewReader(data))
 	if err != nil {
 		return nil, err
+	}
+	if bounds := img.Bounds(); edge > 0 && max(bounds.Dx(), bounds.Dy()) > edge {
+		w, h := bounds.Dx(), bounds.Dy()
+		if w >= h {
+			h, w = max(1, h*edge/w), edge
+		} else {
+			w, h = max(1, w*edge/h), edge
+		}
+		resized := image.NewRGBA(image.Rect(0, 0, w, h))
+		draw.ApproxBiLinear.Scale(resized, resized.Bounds(), img, bounds, draw.Src, nil)
+		img = resized
 	}
 	b := NewBitmap(img)
 	if format == "jpeg" {

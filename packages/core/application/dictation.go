@@ -312,35 +312,10 @@ func (c *Coordinator) composing(r *run) bool {
 	return r.session.Mode() == domain.SystemIMEMode && c.deps.Composition != nil && r.hasTarget
 }
 
+// prepare checks model availability before opening the microphone. System IME
+// sessions also acquire composition first. Shortcut sessions can queue audio
+// during target lookup, but the pump starts only after setup succeeds.
 func (c *Coordinator) prepare(r *run, needTarget bool) {
-	if needTarget {
-		provider, _ := c.targets(r)
-		if provider == nil {
-			c.failDetail(r, domain.CodeTargetUnsupported, "input mode unavailable")
-			return
-		}
-		started := time.Now()
-		target, err := provider.Capture(r.ctx, r.identity)
-		c.diagnostic(r, ports.DiagnosticTarget, started, err)
-		if err != nil {
-			c.failErr(r, err, domain.CodePermissionDenied)
-			return
-		}
-		if target.Sensitive {
-			c.fail(r, domain.CodeSecureFieldBlocked)
-			return
-		}
-		r.target, r.hasTarget = target, true
-	}
-	if l := r.live; l != nil && l.policy.Enabled && l.policy.FollowApp {
-		// Set before the live worker starts; only it and delivery read it.
-		var hints domain.SceneHints
-		if r.hasTarget {
-			hints = r.target.SceneHints()
-		}
-		l.policy.Scene = string(domain.DecideScene(hints, l.policy.SceneOverrides).Scene)
-	}
-	c.startContext(r)
 	started := time.Now()
 	if c.opts.Hotwords != nil {
 		r.hotwords = append([]string(nil), c.opts.Hotwords()...)
@@ -351,7 +326,19 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 		c.failErr(r, err, domain.CodeModelMissing)
 		return
 	}
-	r.recognizer = recognizer
+	attached := false
+	defer func() {
+		if !attached {
+			_ = recognizer.Close()
+		}
+	}()
+	imeTarget := needTarget && r.session.Mode() == domain.SystemIMEMode
+	if imeTarget && !c.captureTarget(r) {
+		return
+	}
+	if r.ctx.Err() != nil {
+		return
+	}
 	started = time.Now()
 	stream, err := c.deps.Audio.Start(r.ctx, r.identity, func(frame contracts.Frame) {
 		if r.overflow.Load() {
@@ -368,7 +355,6 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 	})
 	c.diagnostic(r, ports.DiagnosticCapture, started, err)
 	if err != nil {
-		_ = recognizer.Close()
 		c.failErr(r, err, domain.CodeDeviceUnavailable)
 		return
 	}
@@ -377,16 +363,65 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 	if c.current != r || r.session.Terminal() {
 		c.mu.Unlock()
 		r.stopAudio()
-		_ = recognizer.Close()
 		return
 	}
 	_ = r.session.Advance(domain.Capturing)
 	c.mu.Unlock()
 	c.emitState(r, domain.Capturing)
+
+	if needTarget && !imeTarget && !c.captureTarget(r) {
+		return
+	}
+	if l := r.live; l != nil && l.policy.Enabled && l.policy.FollowApp {
+		// Set before the live worker starts; only it and delivery read it.
+		var hints domain.SceneHints
+		if r.hasTarget {
+			hints = r.target.SceneHints()
+		}
+		l.policy.Scene = string(domain.DecideScene(hints, l.policy.SceneOverrides).Scene)
+	}
+	c.startContext(r)
+	c.mu.Lock()
+	if c.current != r || r.session.Terminal() {
+		c.mu.Unlock()
+		return
+	}
+	r.recognizer, attached = recognizer, true
+	c.mu.Unlock()
 	if r.live != nil {
 		c.spawn(func() { c.liveWorker(r) })
 	}
 	c.spawn(func() { c.pump(r) })
+}
+
+func (c *Coordinator) captureTarget(r *run) bool {
+	provider, _ := c.targets(r)
+	if provider == nil {
+		c.failDetail(r, domain.CodeTargetUnsupported, "input mode unavailable")
+		return false
+	}
+	started := time.Now()
+	target, err := provider.Capture(r.ctx, r.identity)
+	c.diagnostic(r, ports.DiagnosticTarget, started, err)
+	if err != nil {
+		c.failErr(r, err, domain.CodePermissionDenied)
+		return false
+	}
+	if target.Sensitive {
+		c.fail(r, domain.CodeSecureFieldBlocked)
+		return false
+	}
+	c.mu.Lock()
+	if c.current != r || r.session.Terminal() {
+		c.mu.Unlock()
+		if r.session.Mode() == domain.SystemIMEMode && c.deps.Composition != nil {
+			_ = c.deps.Composition.Cancel(context.Background(), r.identity, target.Target)
+		}
+		return false
+	}
+	r.target, r.hasTarget = target, true
+	c.mu.Unlock()
+	return true
 }
 
 func (r *run) stopAudio() {
@@ -572,8 +607,11 @@ func (c *Coordinator) failDetail(r *run, code domain.ErrorCode, detail string) {
 // releaseComposition clears the owned IME range of an ended session
 // (IME-A03); it never touches text outside that range.
 func (c *Coordinator) releaseComposition(r *run) {
-	if c.composing(r) {
-		_ = c.deps.Composition.Cancel(context.Background(), r.identity, r.target.Target)
+	c.mu.Lock()
+	owned, target := c.composing(r), r.target.Target
+	c.mu.Unlock()
+	if owned {
+		_ = c.deps.Composition.Cancel(context.Background(), r.identity, target)
 	}
 }
 
@@ -608,13 +646,14 @@ func (c *Coordinator) deliver(r *run, raw string, policy RewritePolicy) {
 			c.spawn(func() { c.opts.Recalled(corrected.Recalled) })
 		}
 	}
-	text, outcome := source, ""
+	text, outcome, detail := source, "", ""
 	if strings.TrimSpace(source) != "" {
 		var ok bool
 		var rewriteErr error
 		if text, outcome, rewriteErr, ok = c.rewriteFinal(r, source, policy); !ok {
 			return
 		}
+		detail = rewriteDetail(outcome, rewriteErr)
 		if policy.TargetLanguage != "" && outcome != string(domain.RewriteAccepted) {
 			c.failTranslation(r, raw, source, outcome, rewriteErr)
 			return
@@ -649,7 +688,7 @@ func (c *Coordinator) deliver(r *run, raw string, policy RewritePolicy) {
 	if outcome != "" {
 		scene = policy.Scene
 	}
-	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CorrectionReady, Revision: revision}, State: domain.Reviewing, Raw: raw, Source: source, Rewrite: outcome, Scene: scene, Text: text})
+	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CorrectionReady, Revision: revision}, State: domain.Reviewing, Raw: raw, Source: source, Rewrite: outcome, Detail: detail, Scene: scene, Text: text})
 	if c.opts.AutoCommit {
 		c.commit(r, revision, text)
 	}
@@ -725,6 +764,18 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 		c.releaseComposition(r)
 	}
 	c.emit(r, event)
+}
+
+// rewriteDetail is the content-free category of a rewrite that fell back to
+// local cleanup, for the user's next step. Validation verdicts have none.
+func rewriteDetail(outcome string, err error) string {
+	switch outcome {
+	case RewriteTimeout:
+		return domain.PolishTimeout
+	case RewriteUnavailable:
+		return domain.DetailOf(err)
+	}
+	return ""
 }
 
 func (r *run) translating() bool {

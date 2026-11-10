@@ -42,6 +42,7 @@ import (
 	"arion.local/desktop/internal/center"
 	productnotifications "arion.local/desktop/internal/productnotifications"
 	uiapp "arion.local/desktop/ui/app"
+	"arion.local/desktop/ui/entities/dictation"
 	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/typography"
@@ -94,6 +95,9 @@ type App struct {
 	// or key check changes the visible provider before it succeeds, and that
 	// must not look like a completed switch.
 	cloudProvider string
+	// polishNoted holds the provider, model and category already explained
+	// this run, so a repeating failure is told once.
+	polishNoted map[string]bool
 	// history keeps recent dictations per place for rewrite context, in
 	// memory only.
 	history   *application.History
@@ -233,6 +237,7 @@ func New(opts Options) (*App, error) {
 		func() []byte { return callbackPage(copy.Locale(a.preferences().UILanguage)) })
 	a.cloud.OnModelListFailure(a.recordCloudModelFailure)
 	a.cloud.SetModel(prefs.CloudModel)
+	a.cloud.SetReasoningFallback(prefs.CloudReasoning)
 	// Both engines read the same consent-gated context sources.
 	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery }, TargetGates{
 		Site:   func() bool { p := a.preferences(); return (p.Polish || a.isTranslating()) && p.MatchApp },
@@ -674,11 +679,15 @@ func (a *App) apply(e contracts.Event) {
 	case contracts.CorrectionReady:
 		d.Final = e.Text
 		d.Original = dictationOriginal(e)
+		d.PolishNote = a.polishNote(e)
 		setState(domain.Reviewing)
 	case contracts.CommitResultReady:
 		a.recordClipboardDictation(e)
 		d.Outcome, d.Failure = e.Outcome, e.Error
-		d.Pasted = a.core.Snapshot().Mode == domain.ShortcutMode && (runtime.GOOS == "darwin" || a.state.Preferences.Delivery == application.DeliveryClipboard) && e.Outcome != contracts.NotApplied && e.Outcome != contracts.Copied
+		if e.Error == "" && e.Outcome != contracts.NotApplied {
+			a.polishNoteTold(d.PolishNote)
+		}
+		d.Pasted = dictation.ShortcutCommitPasted(a.core.Snapshot().Mode, e.Outcome)
 		setState(e.State)
 	case contracts.ErrorOccurred:
 		if e.Error == domain.CodeSessionBusy {

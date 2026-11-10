@@ -5,9 +5,10 @@ import (
 	"time"
 )
 
-// HoldKey is the key that dictates while held, or starts and finishes a
-// dictation when tapped (DSK-02). It is the only global activation, so a
-// platform with an adapter always has one chosen.
+// HoldKey is a global shortcut that dictates while held, or starts and
+// finishes a dictation when tapped (DSK-02). HoldKey is required where a
+// platform has an adapter. SecondHoldKey is an optional second dictation
+// shortcut. TranslateKey is the optional translation shortcut.
 type HoldKey string
 
 const (
@@ -70,6 +71,15 @@ func DefaultHoldKey(platform string) HoldKey {
 	return ""
 }
 
+// DefaultSecondHoldKey disables the optional second dictation shortcut.
+// A platform without a hold adapter stores an empty key.
+func DefaultSecondHoldKey(platform string) HoldKey {
+	if DefaultHoldKey(platform) == "" {
+		return ""
+	}
+	return HoldOff
+}
+
 // DefaultTranslateKey is the first-run translation key: Right Command on
 // macOS and Right Ctrl on Windows. A platform without an adapter has none.
 func DefaultTranslateKey(platform string) HoldKey {
@@ -97,17 +107,65 @@ func knownTranslateKey(platform string, key HoldKey) bool {
 	return key == HoldOff || knownHoldKey(platform, key)
 }
 
-// ChooseHoldKey records a dictation key only when translation does not conflict.
+func knownSecondHoldKey(platform string, key HoldKey) bool {
+	if DefaultHoldKey(platform) == "" {
+		return key == ""
+	}
+	return key == HoldOff || knownHoldKey(platform, key)
+}
+
+// HoldAssignments lists the shortcuts the listener should observe, in
+// registration order: primary dictation, optional second dictation, then
+// translation. Disabled and duplicate assignments are omitted.
+func (p Preferences) HoldAssignments() []HoldKey {
+	var keys []HoldKey
+	for _, key := range []HoldKey{p.HoldKey, p.SecondHoldKey, p.TranslateKey} {
+		if key == "" || key == HoldOff {
+			continue
+		}
+		duplicate := false
+		for _, existing := range keys {
+			if existing == key {
+				duplicate = true
+				break
+			}
+		}
+		if !duplicate {
+			keys = append(keys, key)
+		}
+	}
+	return keys
+}
+
+// Translates reports whether key starts voice translation. Both dictation
+// shortcuts start ordinary dictation.
+func (p Preferences) Translates(key HoldKey) bool {
+	return key != "" && key != HoldOff && key == p.TranslateKey && key != p.HoldKey && key != p.SecondHoldKey
+}
+
+// ChooseHoldKey records a dictation key only when the other shortcuts do not conflict.
 func (p *Preferences) ChooseHoldKey(key HoldKey) {
-	if HoldKeysConflict(p.TranslateKey, key) {
+	if HoldKeysConflict(p.TranslateKey, key) || HoldKeysConflict(p.SecondHoldKey, key) {
 		return
 	}
 	p.HoldKey = key
 }
 
+// ChooseSecondHoldKey records the optional second dictation shortcut, or
+// HoldOff to disable it, only when the other shortcuts do not conflict.
+func (p *Preferences) ChooseSecondHoldKey(platform string, key HoldKey) {
+	if key != HoldOff && !knownHoldKey(platform, key) {
+		return
+	}
+	if HoldKeysConflict(key, p.HoldKey) || HoldKeysConflict(key, p.TranslateKey) {
+		return
+	}
+	p.SecondHoldKey = key
+}
+
 // ChooseTranslateKey records a translation key only when dictation does not conflict.
 func (p *Preferences) ChooseTranslateKey(platform string, key HoldKey) {
-	if HoldKeysConflict(key, p.HoldKey) {
+	if HoldKeysConflict(key, p.HoldKey) || HoldKeysConflict(key, p.SecondHoldKey) {
 		return
 	}
 	if key == HoldOff && p.TranslateKey != "" && p.TranslateKey != HoldOff {
@@ -128,7 +186,7 @@ func (p *Preferences) EnableTranslationShortcut(platform string, enabled bool) {
 	}
 	candidates := append([]HoldKey{p.PreviousTranslateKey, DefaultTranslateKey(platform)}, HoldKeysFor(platform)...)
 	for _, key := range candidates {
-		if knownHoldKey(platform, key) && !HoldKeysConflict(key, p.HoldKey) {
+		if knownHoldKey(platform, key) && !HoldKeysConflict(key, p.HoldKey) && !HoldKeysConflict(key, p.SecondHoldKey) {
 			p.TranslateKey = key
 			return
 		}

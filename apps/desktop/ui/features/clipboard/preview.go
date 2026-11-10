@@ -21,7 +21,7 @@ func previewText(item runtime.Clip) string {
 
 // previewHeight sizes short content without leaving a large empty card.
 func previewHeight(c *ui.Context, item runtime.Clip, bitmap *ui.Bitmap) int {
-	if item.Payload.Kind == runtime.ClipImage && bitmap != nil {
+	if bitmap != nil {
 		w, h := bitmap.Size()
 		return min(PreviewHeight, max(64, (PreviewWidth-26)*h/w+26))
 	}
@@ -34,7 +34,7 @@ func Preview(c *ui.Context, item runtime.Clip, bitmap *ui.Bitmap) {
 	tokens := theme.Apply(c)
 	c.Root().Background(ui.Transparent)
 	ui.Column(c).Fill().Padding(12).Background(tokens.Card).Border(1, tokens.CardBorder).Radius(theme.RadiusLG).Children(func() {
-		if item.Payload.Kind == runtime.ClipImage && bitmap != nil {
+		if bitmap != nil {
 			ui.Image(c, bitmap).Grow(1).MinHeight(0).AlignSelf(ui.Stretch).Fit(ui.Contain).Radius(theme.RadiusSM)
 			return
 		}

@@ -11,7 +11,7 @@ import (
 
 func (a *App) clipboardItem(id string) (domain.Clip, bool) {
 	for _, item := range a.state.Clipboard.Items {
-		if item.ID == id {
+		if item.ID == id && a.state.Preferences.Clipboard.Allows(item.Payload.Kind) {
 			return item, true
 		}
 	}
@@ -51,7 +51,7 @@ func (x actions) CopyClipboard(id string) {
 		}
 		defer unlock()
 		if _, err := clipboardos.Write(item.Payload); err != nil {
-			a.state.Clipboard.Error = copy.ClipboardWriteFailed
+			a.state.Clipboard.Error = clipboardError(err, copy.ClipboardWriteFailed)
 			return
 		}
 		a.state.Clipboard.Error = ""
@@ -147,7 +147,7 @@ func (a *App) deliverClipboard(item domain.Clip, target clipboardos.Target, seq 
 		defer unlock()
 		revision, err := clipboardos.Write(item.Payload)
 		if err != nil {
-			a.state.Clipboard.Error = copy.ClipboardWriteFailed
+			a.state.Clipboard.Error = clipboardError(err, copy.ClipboardWriteFailed)
 			return
 		}
 		if err := target.Paste(revision); err != nil {
@@ -162,7 +162,7 @@ func (a *App) deliverClipboard(item domain.Clip, target clipboardos.Target, seq 
 // File availability may involve a mounted filesystem. Validate off the UI
 // thread and cancel actions whose history item disappeared in the meantime.
 func (a *App) withClipboardResource(item domain.Clip, done func()) {
-	if a.state.Clipboard.Using || a.updateApplying() {
+	if a.state.Clipboard.Using || a.updateApplying() || !a.state.Preferences.Clipboard.Allows(item.Payload.Kind) {
 		return
 	}
 	a.state.Clipboard.Using = true
@@ -172,10 +172,7 @@ func (a *App) withClipboardResource(item domain.Clip, done func()) {
 		err := clipboardos.ValidateFiles(item.Payload)
 		var meta arion.ClipboardMeta
 		if item.Payload.Kind == domain.ClipFiles {
-			entries, e := clipboardMetadata([]domain.Clip{item}, nil)
-			if e != nil {
-				err = e
-			}
+			entries := clipboardMetadata([]domain.Clip{item}, nil)
 			meta = entries[item.ID]
 		}
 		a.post(func() {
@@ -194,7 +191,7 @@ func (a *App) withClipboardResource(item domain.Clip, done func()) {
 				a.state.Clipboard.Meta[item.ID] = meta
 			}
 			if err != nil {
-				a.state.Clipboard.Error = copy.ClipboardUnavailable
+				a.state.Clipboard.Error = clipboardError(err, copy.ClipboardUnavailable)
 				return
 			}
 			done()

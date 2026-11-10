@@ -122,7 +122,13 @@ type Service struct {
 	auth             *republic.TokenAuth
 	model            string
 	completionFormat string
-	cancel           context.CancelFunc
+	// reasoningFloor remembers, per provider and model, the lowest reasoning
+	// effort the model accepted when it refused "none".
+	reasoningFloor map[string]string
+	// reasoningFallback permits retrying a model that refuses "none" with
+	// the least reasoning it accepts. Off by default.
+	reasoningFallback bool
+	cancel            context.CancelFunc
 	// generation invalidates work started before a connect or disconnect.
 	generation uint64
 	// attempt is the provider begin started. end attributes a failure to it
@@ -234,6 +240,15 @@ func (s *Service) Load() {
 	s.set(func(st *Status) {
 		*st = Status{Phase: Connected, Provider: active.Provider, Email: active.Email, Model: model, Failure: failure}
 	})
+}
+
+// SetReasoningFallback chooses whether a model that refuses to turn reasoning
+// off is retried with the least reasoning it accepts. The default is off, so
+// such a model fails and the user sees the cloud failure.
+func (s *Service) SetReasoningFallback(on bool) {
+	s.mu.Lock()
+	s.reasoningFallback = on
+	s.mu.Unlock()
 }
 
 // SetModel selects the model rewrites use and remembers it on the active
@@ -724,7 +739,8 @@ func (s *Service) settle(err error, otherwise Code) error {
 
 // classify maps a Republic failure to a Code.
 func classify(err error, otherwise Code) error {
-	if CodeOf(err) != "" {
+	var categorized *completionError
+	if CodeOf(err) != "" || errors.As(err, &categorized) {
 		return err
 	}
 	var r *republic.Error

@@ -403,7 +403,7 @@ func TestCancelledCancelDisconnectsToClearNativeOwnership(t *testing.T) {
 func TestWriteKeyboardSettings(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "Arion", "keyboard.json")
 	want := application.KeyboardPreferences{PageSize: 6, CandidateSize: application.CandidateLarge, Appearance: application.AppearanceDark, Accent: application.AccentBlue,
-		TypoCorrection: true, FuzzyPinyin: application.FuzzyZZH | application.FuzzyIANIANG, LanguageSwitch: application.LanguageSwitchCapsLock}
+		TextColor: application.TextWhite, TypoCorrection: true, FuzzyPinyin: application.FuzzyZZH | application.FuzzyIANIANG, LanguageSwitch: application.LanguageSwitchCapsLock}
 	if err := WriteKeyboardSettings(path, want, application.HoldRightCommand); err != nil {
 		t.Fatal(err)
 	}
@@ -421,7 +421,7 @@ func TestWriteKeyboardSettings(t *testing.T) {
 		raw["dictationKey"] != "right_command" {
 		t.Fatalf("unexpected settings file %s (%v)", data, err)
 	}
-	// The highlight arrives resolved for each appearance.
+	// The highlight arrives resolved for each appearance, with the chosen text color.
 	highlight, _ := raw["highlight"].(map[string]any)
 	light, _ := highlight["light"].(map[string]any)
 	dark, _ := highlight["dark"].(map[string]any)

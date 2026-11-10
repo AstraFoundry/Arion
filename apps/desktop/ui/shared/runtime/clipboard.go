@@ -36,16 +36,20 @@ type ClipboardFile struct {
 type ClipboardMeta struct {
 	Files     []ClipboardFile
 	Thumbnail *ui.Bitmap
+	// ThumbnailRevision tracks the source file state and access credential.
+	// Direct image resources are immutable and use their existing content ID.
+	ThumbnailRevision [32]byte
 }
 
 type Clipboard struct {
-	Items          []Clip
-	Meta           map[string]ClipboardMeta
-	Busy           bool
-	CopyOnly       bool
-	Using          bool
-	Error          copy.Key
-	ShortcutFailed bool
+	Items            []Clip
+	Meta             map[string]ClipboardMeta
+	Busy             bool
+	CopyOnly         bool
+	Using            bool
+	Error            copy.Key
+	ShortcutFailed   bool
+	FileConfirmation bool
 }
 
 // ClipboardShortcutKey resolves legacy accelerator spelling and recorded chords.

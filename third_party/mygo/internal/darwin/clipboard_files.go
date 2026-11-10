@@ -4,6 +4,7 @@ package darwin
 
 import (
 	"errors"
+	"os"
 	"slices"
 	"unsafe"
 
@@ -15,15 +16,66 @@ const (
 	bookmarkResolveScope  = 1<<8 | 1<<9 | 1<<10 | 1<<15
 )
 
+func (clipboard) WithFileAccess(data transfer.Data, read func() error) (err error) {
+	load()
+	withPool(func() {
+		var closeAccess func()
+		closeAccess, err = macClipboardFileAccess(data)
+		if err != nil {
+			return
+		}
+		defer closeAccess()
+		err = read()
+	})
+	return err
+}
+
+// History credentials apply only to ordinary files. Preserve other native
+// file representations without requesting access to unsupported resources.
+func macClipboardOrdinaryFileBookmark(url id) ([]byte, error) {
+	return macClipboardCreateBookmark(url, true)
+}
+
 func macClipboardBookmark(url id) ([]byte, error) {
+	return macClipboardCreateBookmark(url, false)
+}
+
+func macClipboardCreateBookmark(url id, ordinaryOnly bool) ([]byte, error) {
 	if sendBool(url, "startAccessingSecurityScopedResource") {
 		defer send(url, "stopAccessingSecurityScopedResource")
 	}
-	data := send(url, "bookmarkDataWithOptions:includingResourceValuesForKeys:relativeToURL:error:", bookmarkReadOnlyScope, 0, 0, 0)
+	if ordinaryOnly {
+		// A path string does not carry its URL's scope. Keep the incoming
+		// grant active for metadata inspection as well as bookmark creation.
+		path := goString(send(send(url, "filePathURL"), "path"))
+		info, err := os.Lstat(path)
+		if err != nil {
+			return nil, err
+		}
+		if !info.Mode().IsRegular() {
+			return nil, nil
+		}
+	}
+	var nativeError id
+	data := send(url, "bookmarkDataWithOptions:includingResourceValuesForKeys:relativeToURL:error:", bookmarkReadOnlyScope, 0, 0, uintptr(unsafe.Pointer(&nativeError)))
 	if data == 0 {
+		if macClipboardPermissionError(nativeError) {
+			return nil, &os.PathError{Op: "clipboard bookmark", Path: goString(send(send(url, "filePathURL"), "path")), Err: os.ErrPermission}
+		}
 		return nil, errors.New("mygo: cannot preserve clipboard file access")
 	}
 	return goBytes(data), nil
+}
+
+func macClipboardPermissionError(err id) bool {
+	for depth := 0; err != 0 && depth < 4; depth++ {
+		domain, code := goString(send(err, "domain")), sendInt(err, "code")
+		if (domain == "NSPOSIXErrorDomain" && (code == 1 || code == 13)) || (domain == "NSCocoaErrorDomain" && code == 257) {
+			return true
+		}
+		err = send(send(err, "userInfo"), "objectForKey:", uintptr(nsString("NSUnderlyingError")))
+	}
+	return false
 }
 
 // Keep each file's scope active until the pasteboard server has published its

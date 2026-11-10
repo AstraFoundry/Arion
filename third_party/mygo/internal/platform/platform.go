@@ -661,6 +661,9 @@ type Dialogs interface {
 
 // Clipboard accesses the system clipboard.
 type Clipboard interface {
+	// WithFileAccess is independent of clipboard state and safe on a worker.
+	// It holds native file scopes only for the synchronous callback.
+	WithFileAccess(data transfer.Data, read func() error) error
 	// Data reads copy accepted representations, so returned data outlives
 	// native ownership. Nil formats reads all; a missing explicit match is
 	// transfer.ErrFormat. WriteData takes an application-owned snapshot;

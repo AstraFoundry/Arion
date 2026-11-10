@@ -13,3 +13,9 @@ import "C"
 func ConfigureOverlay(handle uintptr) {
 	C.arion_configure_overlay(C.uintptr_t(handle))
 }
+
+// ConfigureClipboardDialog keeps explicit confirmation free of AppKit's
+// automatic window entrance/exit effects. Call before presenting the window.
+func ConfigureClipboardDialog(handle uintptr) {
+	C.arion_configure_clipboard_dialog(C.uintptr_t(handle))
+}

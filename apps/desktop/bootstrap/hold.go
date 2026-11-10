@@ -9,23 +9,20 @@ import (
 	arion "arion.local/desktop/ui/shared/runtime"
 )
 
-// startHoldKey (re)starts the listener for the preferred hold key and optional
-// translation hold key. A key that cannot listen stays chosen and reports why,
-// so granting consent later starts it without the user choosing again.
+// startHoldKey (re)starts the listener for the primary dictation shortcut,
+// the optional second dictation shortcut, and the optional translation
+// shortcut. A key that cannot listen stays chosen and reports why, so
+// granting consent later starts it without the user choosing again.
 func (a *App) startHoldKey() {
 	a.holdGeneration++
 	generation := a.holdGeneration
 	a.platform.StopHoldKey()
 	a.resetHoldGesture()
 	a.state.Hold.Active, a.state.Hold.Failure, a.state.Hold.Holding = false, "", false
-	key := a.state.Preferences.HoldKey
-	if key == "" {
+	keys := a.state.Preferences.HoldAssignments()
+	if len(keys) == 0 {
 		// This platform has no hold key adapter.
 		return
-	}
-	keys := []application.HoldKey{key}
-	if t := a.state.Preferences.TranslateKey; t != "" && t != application.HoldOff && t != key {
-		keys = append(keys, t)
 	}
 	if a.state.Hold.Recording != "" {
 		keys = []application.HoldKey{holdkey.RecordKeys}
@@ -117,7 +114,7 @@ func (a *App) onHoldKeyEvent(key application.HoldKey, e holdkey.Event, at time.T
 	case holdkey.Other:
 		action = a.hold.Other()
 	}
-	translate := key != "" && key != application.HoldOff && key == a.state.Preferences.TranslateKey && key != a.state.Preferences.HoldKey
+	translate := a.state.Preferences.Translates(key)
 	switch action {
 	case application.HoldStart:
 		a.record("hold_start", nil)

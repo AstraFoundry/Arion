@@ -137,6 +137,6 @@ Give the person the pull request link and explain that a maintainer will review 
 Thank the person, recap what was filed (and fixed), and ask whether they would like to join the Arion community to follow the issue and talk to the team:
 
 - Discord: <https://discord.com/invite/72kh465mMm>
-- Feishu (Lark) group: <https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae>
+- Feishu (Lark) group: <https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444>
 
 Offer the Feishu group first to people writing in Chinese and Discord first to everyone else.

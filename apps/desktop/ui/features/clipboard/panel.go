@@ -62,7 +62,7 @@ func clipTitle(item runtime.Clip, messages copy.Catalog) string {
 func (p *Panel) Render(c *ui.Context, store runtime.Store) {
 	tokens := theme.Apply(c)
 	messages, state := store.Copy(), store.State.Clipboard
-	items := runtime.FindClips(state.Items, p.Query, "")
+	items := runtime.FindClips(store.State.Preferences.Clipboard.VisibleItems(state.Items), p.Query, "")
 	p.selected = max(0, min(p.selected, len(items)-1))
 	if !slices.EqualFunc(p.items, items, func(a, b runtime.Clip) bool { return a.ID == b.ID }) {
 		retained := false
@@ -179,7 +179,7 @@ func (p *Panel) history(c *ui.Context, store runtime.Store, tokens theme.Tokens,
 						p.previewID, p.previewAnchor = item.ID, image.Bounds()
 					}
 				} else if item.Payload.Kind == runtime.ClipFiles {
-					fileContent(c, item, tokens, messages)
+					fileContent(c, item, state.Meta[item.ID].Thumbnail, tokens, messages)
 				} else {
 					text := ui.Text(c, name).SingleLine().FontSize(theme.Body).TextColor(tokens.Text).Grow(1).Shrink(1)
 					if pointerOver && text.Bounds().Contains(pointerX, pointerY) {

@@ -111,7 +111,7 @@ make build desktop
 - 英語と簡体字中国語以外の 10 の翻訳先言語にはまだ個別のベンチマークがなく、英語の検証ルールを共有しています。クラウド整文の品質と遅延もまだベンチマークしていません。
 - Intel Mac には対応していません（[ADR 021](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/021-apple-silicon-only-macos.md)）。
 
-不具合を見つけた場合は [GitHub Issues](https://github.com/AstraFoundry/Arion/issues) で知らせてください。[Discord](https://discord.com/invite/72kh465mMm) や [Feishu](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae) のグループでもフィードバックを受け付けています。何を出荷するかをどう決めているかは[「私たちが音声入力メソッドを実験のように作る理由」](/blog/building-like-an-experiment/)にまとめました。
+不具合を見つけた場合は [GitHub Issues](https://github.com/AstraFoundry/Arion/issues) で知らせてください。[Discord](https://discord.com/invite/72kh465mMm) や [Feishu](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444) のグループでもフィードバックを受け付けています。何を出荷するかをどう決めているかは[「私たちが音声入力メソッドを実験のように作る理由」](/blog/building-like-an-experiment/)にまとめました。
 
 アルファ期間中に試用し、問題を報告し、再現手順の録画や提案を送ってくれたすべての方に感謝します。
 

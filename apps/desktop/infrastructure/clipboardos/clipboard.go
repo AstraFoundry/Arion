@@ -35,21 +35,68 @@ type Target interface {
 	Close()
 }
 
-func Read(limit int64) (domain.ClipPayload, error) {
-	formats := mygo.Clipboard.Formats()
+func Read(limit int64, includeFiles bool) (domain.ClipPayload, error) {
+	return readClipboard(mygo.Clipboard.Formats(), includeFiles, mygo.Clipboard.Read, limit)
+}
+
+func readClipboard(formats []transfer.Format, includeFiles bool, read func(...transfer.Format) (transfer.Data, error), limit int64) (domain.ClipPayload, error) {
 	format, err := captureFormat(formats)
 	if err != nil {
 		return domain.ClipPayload{}, err
 	}
+	// Reject the whole file copy before requesting any representations or grants.
+	// A file that also advertises text or an image must not leak through as either.
+	if !includeFiles && slices.Contains(formats, transfer.FileList) {
+		return domain.ClipPayload{}, transfer.ErrFormat
+	}
+	var uriData transfer.Data
+	inspectedURI := !includeFiles && slices.Contains(formats, transfer.URIList)
+	if inspectedURI {
+		var err error
+		uriData, err = read(transfer.URIList)
+		if err != nil {
+			return domain.ClipPayload{}, err
+		}
+		uriBytes, err := uriData.Read(transfer.URIList)
+		if err != nil {
+			return domain.ClipPayload{}, err
+		}
+		if int64(len(uriBytes)) > limit {
+			return domain.ClipPayload{}, domain.ErrClipOversize
+		}
+		uris, err := uriData.URLs()
+		if err != nil {
+			return domain.ClipPayload{}, err
+		}
+		for _, raw := range uris {
+			scheme, _, found := strings.Cut(raw, ":")
+			if found && strings.EqualFold(scheme, "file") {
+				return domain.ClipPayload{}, transfer.ErrFormat
+			}
+		}
+	}
 	wanted := []transfer.Format{format}
-	if runtime.GOOS == "darwin" && (format == transfer.FileList || format == transfer.URIList) {
+	if includeFiles && runtime.GOOS == "darwin" && (format == transfer.FileList || format == transfer.URIList) {
 		wanted = append(wanted, transfer.MacOSFileBookmark)
 	}
-	data, err := mygo.Clipboard.Read(wanted...)
+	data := uriData
+	if !inspectedURI || format != transfer.URIList {
+		data, err = read(wanted...)
+	}
 	if err != nil {
+		if includeFiles && (format == transfer.FileList || format == transfer.URIList) {
+			err = sourceFileError(err)
+		}
 		return domain.ClipPayload{}, err
 	}
-	return capturePayload(data, format, limit)
+	payload, err := capturePayload(data, format, limit)
+	if !includeFiles && payload.Kind == domain.ClipFiles {
+		return domain.ClipPayload{}, transfer.ErrFormat
+	}
+	if includeFiles && (format == transfer.FileList || format == transfer.URIList) {
+		err = sourceFileError(err)
+	}
+	return payload, err
 }
 
 func captureFormat(formats []transfer.Format) (transfer.Format, error) {
@@ -172,9 +219,9 @@ func FilesOnly(p domain.ClipPayload) (domain.ClipPayload, error) {
 	files := make([]string, 0, len(p.Files))
 	var grants [][]byte
 	for n, path := range p.Files {
-		info, err := os.Stat(path)
+		info, err := os.Lstat(path)
 		if err != nil {
-			return domain.ClipPayload{}, err
+			return domain.ClipPayload{}, sourceFileError(err)
 		}
 		if info.Mode().IsRegular() {
 			files = append(files, path)
@@ -241,9 +288,15 @@ func Write(p domain.ClipPayload) (uint64, error) {
 		items = append(items, transfer.NewItem(reps...))
 	}
 	if err := mygo.Clipboard.Write(transfer.New(items...)); err != nil {
+		if p.Kind == domain.ClipFiles {
+			err = sourceFileError(err)
+		}
 		return 0, err
 	}
 	if err := mygo.Clipboard.Flush(); err != nil {
+		if p.Kind == domain.ClipFiles {
+			err = sourceFileError(err)
+		}
 		return 0, err
 	}
 	// A fresh revision alone cannot prove ownership: another app may have

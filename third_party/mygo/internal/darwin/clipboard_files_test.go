@@ -5,6 +5,7 @@ package darwin
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -18,6 +19,48 @@ import (
 type ownedFileAccess struct {
 	Path     string
 	Bookmark []byte
+}
+
+func TestClipboardPermissionErrorClassification(t *testing.T) {
+	load()
+	withPool(func() {
+		posix := send(class("NSError"), "errorWithDomain:code:userInfo:", uintptr(nsString("NSPOSIXErrorDomain")), 1, 0)
+		info := send(class("NSDictionary"), "dictionaryWithObject:forKey:", uintptr(posix), uintptr(nsString("NSUnderlyingError")))
+		wrapped := send(class("NSError"), "errorWithDomain:code:userInfo:", uintptr(nsString("NSCocoaErrorDomain")), 256, uintptr(info))
+		if !macClipboardPermissionError(wrapped) {
+			t.Fatal("underlying permission evidence discarded")
+		}
+		missing := send(class("NSError"), "errorWithDomain:code:userInfo:", uintptr(nsString("NSPOSIXErrorDomain")), 2, 0)
+		if macClipboardPermissionError(missing) {
+			t.Fatal("missing file classified as permission denial")
+		}
+		path := filepath.Join(t.TempDir(), "missing")
+		_, err := macClipboardBookmark(fileURL(path))
+		if err == nil || errors.Is(err, os.ErrPermission) {
+			t.Fatal("missing file lost its failure classification", err)
+		}
+	})
+}
+
+func TestClipboardHistorySkipsUnsupportedBookmarks(t *testing.T) {
+	load()
+	withPool(func() {
+		dir := t.TempDir()
+		file := filepath.Join(dir, "file")
+		if err := os.WriteFile(file, nil, 0600); err != nil {
+			t.Fatal(err)
+		}
+		link := filepath.Join(dir, "link")
+		if err := os.Symlink(file, link); err != nil {
+			t.Fatal(err)
+		}
+		for _, path := range []string{dir, link} {
+			bookmark, err := macClipboardOrdinaryFileBookmark(fileURL(path))
+			if err != nil || len(bookmark) != 0 {
+				t.Fatal("unsupported resource requested a history credential", err)
+			}
+		}
+	})
 }
 
 func ownedFileAccessData(path string, bookmark []byte) transfer.Data {
@@ -147,4 +190,56 @@ func TestClipboardFileAccessRejectsWrongMovedAndInvalidReferences(t *testing.T) 
 			t.Fatal("bookmark followed a moved file")
 		}
 	})
+}
+
+func TestClipboardWithFileAccessCallbackAndFailure(t *testing.T) {
+	load()
+	path := filepath.Join(t.TempDir(), "owned-preview.png")
+	content := []byte("owned preview source")
+	if err := os.WriteFile(path, content, 0600); err != nil {
+		t.Fatal(err)
+	}
+	var bookmark []byte
+	withPool(func() {
+		var err error
+		bookmark, err = macClipboardOrdinaryFileBookmark(fileURL(path))
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+	data := ownedFileAccessData(path, bookmark)
+	expected := errors.New("owned read failure")
+	err := (clipboard{}).WithFileAccess(data, func() error {
+		got, err := os.ReadFile(path)
+		if err != nil || !bytes.Equal(got, content) {
+			t.Fatal("scope did not allow reading", err)
+		}
+		return expected
+	})
+	if !errors.Is(err, expected) {
+		t.Fatal("callback failure discarded", err)
+	}
+	calls := 0
+	for _, bad := range []transfer.Data{
+		ownedFileAccessData(path, []byte("invalid grant")),
+		ownedFileAccessData(path+".other", bookmark),
+	} {
+		if err := (clipboard{}).WithFileAccess(bad, func() error { calls++; return nil }); err == nil {
+			t.Fatal("invalid reference authorized callback")
+		}
+	}
+	if calls != 0 {
+		t.Fatal("invalid scope ran callback")
+	}
+	func() {
+		defer func() {
+			if recover() != expected {
+				t.Error("callback panic was swallowed")
+			}
+		}()
+		_ = (clipboard{}).WithFileAccess(data, func() error { panic(expected) })
+	}()
+	if err := (clipboard{}).WithFileAccess(data, func() error { return nil }); err != nil {
+		t.Fatal("scope unusable after failed callback", err)
+	}
 }

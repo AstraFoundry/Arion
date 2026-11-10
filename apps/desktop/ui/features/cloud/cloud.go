@@ -365,6 +365,13 @@ func inUse(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.CloudModel = chosen })
 			}
 		})
+		kit.Divider(c, tokens)
+		reasoning := store.State.Preferences.CloudReasoning
+		kit.TipRow(c, tokens, messages.Text(copy.CloudReasoningLabel), messages.Text(copy.CloudReasoningDetail), func() {
+			if ui.Switch(c.Key("cloud-reasoning"), &reasoning).Label(messages.Text(copy.CloudReasoningLabel)).Changed() {
+				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.CloudReasoning = reasoning })
+			}
+		})
 	})
 }
 

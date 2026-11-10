@@ -3,21 +3,22 @@ package application
 import "testing"
 
 func TestCandidateHighlight(t *testing.T) {
-	ink, white := highlightInk, highlightWhite
+	black, white := textColors[TextBlack], textColors[TextWhite]
+	// Without a choice, the text follows the contrast recommendation.
 	for _, tc := range []struct {
 		accent CandidateAccent
 		dark   bool
 		want   Highlight
 	}{
-		{AccentYellow, false, Highlight{"#ffcc00", ink}},
-		{AccentYellow, true, Highlight{"#ffcc00", ink}},
-		{AccentOrange, false, Highlight{"#ff9500", ink}},
+		{AccentYellow, false, Highlight{"#ffcc00", black}},
+		{AccentYellow, true, Highlight{"#ffcc00", black}},
+		{AccentOrange, false, Highlight{"#ff9500", black}},
 		{AccentRed, false, Highlight{"#ff3b30", white}},
 		{AccentPink, false, Highlight{"#ff2d55", white}},
 		{AccentPurple, true, Highlight{"#bf5af2", white}},
 		{AccentBlue, false, Highlight{"#0088ff", white}},
 		{AccentBlue, true, Highlight{"#0099f2", white}},
-		{AccentGreen, false, Highlight{"#34c759", ink}},
+		{AccentGreen, false, Highlight{"#34c759", black}},
 		{AccentGraphite, false, Highlight{"#8e8e93", white}},
 	} {
 		if got := (KeyboardPreferences{Accent: tc.accent}).Highlight(tc.dark); got != tc.want {
@@ -35,8 +36,42 @@ func TestCandidateHighlight(t *testing.T) {
 		t.Errorf("dark custom color: %+v", got)
 	}
 	custom.AccentColor = "#e0f7fa"
-	if got := custom.Highlight(false); got.Text != ink {
+	if got := custom.Highlight(false); got.Text != black || custom.RecommendedTextColor(false) != TextBlack {
 		t.Errorf("light custom color: %+v", got)
+	}
+	// A choice overrides the recommendation on every fill and appearance.
+	for _, k := range []KeyboardPreferences{
+		{Accent: AccentYellow, TextColor: TextWhite}, {Accent: AccentBlue, TextColor: TextBlack},
+		{Accent: AccentCustom, AccentColor: "#ffb800", TextColor: TextWhite},
+	} {
+		for _, dark := range []bool{false, true} {
+			if got := k.Highlight(dark); got.Text != textColors[k.TextColor] {
+				t.Errorf("%s dark=%v %s text: %+v", k.Accent, dark, k.TextColor, got)
+			}
+		}
+	}
+}
+
+func TestCandidateTextColorNormalization(t *testing.T) {
+	k := DefaultKeyboardPreferences()
+	if k.TextColor != "" || k.ActiveTextColor(false) != TextBlack {
+		t.Fatalf("default text color %+v", k)
+	}
+	k.TextColor = TextWhite
+	if got, repaired := k.normalize(); repaired || got.TextColor != TextWhite {
+		t.Errorf("white: %+v repaired=%v", got, repaired)
+	}
+	// Profiles written before the choice keep an empty value; unknown values
+	// are cleared. Both follow the recommendation.
+	for _, tc := range []struct {
+		color    CandidateTextColor
+		repaired bool
+	}{{"", false}, {"red", true}} {
+		k.TextColor = tc.color
+		got, repaired := k.normalize()
+		if repaired != tc.repaired || got.TextColor != "" || got.ActiveTextColor(false) != got.RecommendedTextColor(false) {
+			t.Errorf("%q: %+v repaired=%v", tc.color, got, repaired)
+		}
 	}
 }
 

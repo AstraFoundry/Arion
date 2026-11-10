@@ -42,6 +42,57 @@ func LearnedShown(l runtime.Learned, d runtime.Dictation, now time.Time) bool {
 	return l.ID != "" && !Active(d) && now.Sub(l.At) < LearnedVisible
 }
 
+// PolishNoteVisible is how long the note stays after the outcome leaves.
+const PolishNoteVisible = 3200 * time.Millisecond
+
+// PolishNoteShown reports whether the note for a cloud rewrite that fell back
+// to local cleanup is on screen. It follows the Done outcome, because the
+// dictation itself succeeded.
+func PolishNoteShown(d runtime.Dictation, now time.Time) bool {
+	if d.PolishNote == "" || d.State != runtime.StateCompleted || d.Failure != "" {
+		return false
+	}
+	since := now.Sub(d.Changed)
+	return since >= DoneVisible && since < DoneVisible+PolishNoteVisible
+}
+
+// PolishNoteOf explains a cloud rewrite that fell back to local cleanup. The
+// provider picks key or sign-in wording, and the reasoning switch decides
+// whether allowing reasoning is still a next step.
+func PolishNoteOf(detail, provider string, reasoningAllowed bool) (Notice, bool) {
+	switch detail {
+	case runtime.PolishReasoningRequired:
+		if reasoningAllowed {
+			return Notice{copy.PolishNoteRefusedTitle, copy.PolishNoteRefusedHint}, true
+		}
+		return Notice{copy.PolishNoteReasoningTitle, copy.PolishNoteReasoningHint}, true
+	case runtime.PolishRateLimited:
+		return Notice{copy.PolishNoteRateTitle, copy.PolishNoteRateHint}, true
+	case runtime.PolishQuotaExhausted:
+		return Notice{copy.PolishNoteQuotaTitle, copy.PolishNoteQuotaHint}, true
+	case runtime.PolishCredentialRejected:
+		if provider == runtime.CloudChatGPT {
+			return Notice{copy.PolishNoteSignInTitle, copy.PolishNoteSignInHint}, true
+		}
+		return Notice{copy.PolishNoteCredentialTitle, copy.PolishNoteCredentialHint}, true
+	case runtime.PolishModelUnavailable:
+		return Notice{copy.PolishNoteOutageTitle, copy.PolishNoteOutageHint}, true
+	case runtime.PolishModelNotFound:
+		return Notice{copy.PolishNoteNotFoundTitle, copy.PolishNoteNotFoundHint}, true
+	case runtime.PolishTimeout:
+		return Notice{copy.PolishNoteTimeoutTitle, copy.PolishNoteTimeoutHint}, true
+	}
+	return Notice{}, false
+}
+
+// PolishNoteRemaining is how long until the note's visibility changes.
+func PolishNoteRemaining(d runtime.Dictation, now time.Time) time.Duration {
+	if d.PolishNote == "" || d.State != runtime.StateCompleted || d.Failure != "" {
+		return 0
+	}
+	return max(DoneVisible+PolishNoteVisible-now.Sub(d.Changed), 0)
+}
+
 // PhaseOf maps the session state to an overlay phase at time now.
 func PhaseOf(d runtime.Dictation, now time.Time) Phase {
 	since := now.Sub(d.Changed)
@@ -170,6 +221,14 @@ func NoticeOf(d runtime.Dictation, permissions runtime.Permissions) Notice {
 		return Notice{copy.FailBusyTitle, ""}
 	}
 	return Notice{copy.FailGenericTitle, ""}
+}
+
+// ShortcutCommitPasted is the pill's paste mark for one shortcut commit.
+// Both Windows delivery preferences post one system paste, the same as
+// macOS. A posted paste is unknown and labeled pasted (ADR 003). Copied
+// and not-applied commits are not that label.
+func ShortcutCommitPasted(mode runtime.SessionMode, outcome runtime.CommitOutcome) bool {
+	return mode == runtime.ModeShortcut && outcome != runtime.OutcomeNotApplied && outcome != runtime.OutcomeCopied
 }
 
 // OutcomeLabel names a completed commit honestly: only a verified

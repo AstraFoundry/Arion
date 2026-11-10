@@ -97,7 +97,18 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, s *State) {
 	if learned {
 		c.After(dictation.LearnedVisible - now.Sub(state.Learned.At) + 10*time.Millisecond)
 	}
+	note, noted := dictation.PolishNoteOf(d.PolishNote, state.Cloud.Provider, state.Preferences.CloudReasoning)
+	noted = noted && dictation.PolishNoteShown(d, now)
+	if remaining := dictation.PolishNoteRemaining(d, now); remaining > 0 {
+		c.After(remaining + 10*time.Millisecond)
+	}
 	ui.Column(c).Font(typography.Family).Fill().Justify(ui.End).AlignItems(ui.Center).Padding(0, 0, 22, 0).Children(func() {
+		if noted && phase == dictation.Hidden {
+			kit.Pill(c.Key("polish-note"), tokens).MaxWidth(600).Transition(pillMotion).Children(func() {
+				polishNote(c, messages, tokens, note)
+			})
+			return
+		}
 		if learned {
 			kit.Pill(c.Key("learned"), tokens).MaxWidth(600).Transition(pillMotion).Children(func() {
 				learnedNotice(c, store, tokens)
@@ -178,8 +189,11 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, s *Stat
 	s.widen(d.SessionID, hint.LayoutBounds().W)
 	hint.Children(func() {
 		key := state.Preferences.HoldKey
-		if d.Translating && state.Preferences.TranslateKey != "" && state.Preferences.TranslateKey != runtime.HoldOff {
+		switch {
+		case d.Translating && state.Preferences.TranslateKey != "" && state.Preferences.TranslateKey != runtime.HoldOff:
 			key = state.Preferences.TranslateKey
+		case state.Hold.PressedKey == state.Preferences.SecondHoldKey && state.Preferences.SecondHoldKey != "" && state.Preferences.SecondHoldKey != runtime.HoldOff:
+			key = state.Preferences.SecondHoldKey
 		}
 		kit.Kbd(c, tokens, holdkey.Legend(key), true)
 		if state.Hold.Holding {
@@ -207,10 +221,19 @@ func draft(c *ui.Context, tokens theme.Tokens, s *State, session string, frame d
 	for i, r := range runes {
 		starts[i+1] = starts[i] + advance(c, r)
 	}
-	// Shaped as runs, the line can come out wider than its characters
-	// measured singly; keep the wider so the end stays inside.
+	// Shaped as a run, the line differs from its characters measured singly:
+	// the shaper adds spacing, for example between Chinese and Latin text,
+	// that no single character has. The difference grows with every
+	// character, so positions are scaled to the shaped width; mixing the two
+	// models moved the end of a long draft left of the line's edge.
 	shaped, _ := c.MeasureText(0, ui.Span{Text: string(runes), Font: typography.Family, Size: theme.Body})
-	full := max(starts[len(runes)], shaped) + 1
+	if len(runes) > 0 && starts[len(runes)] > 0 && shaped > 0 {
+		scale := shaped / starts[len(runes)]
+		for i := range starts {
+			starts[i] *= scale
+		}
+	}
+	full := starts[len(runes)] + 1
 	room := s.widen(session, slotStep*float32(math.Ceil(float64((full+slotHeadroom)/slotStep))))
 	hidden := max(0, full-room)
 	line := ui.Row(c.Key("draft")).Shrink(1).ClipX().AlignItems(ui.Center)
@@ -224,6 +247,9 @@ func draft(c *ui.Context, tokens theme.Tokens, s *State, session string, frame d
 	for first < len(runes) && starts[first+1] <= shift {
 		first++
 	}
+	// Keep two characters of margin: the left edge is placed from the
+	// measured end below, and may differ from the scaled position by a pixel.
+	first = max(0, first-2)
 	zone := first
 	for zone < len(runes) && shift > 0 && starts[zone] < shift+edgeFade {
 		zone++
@@ -246,11 +272,25 @@ func draft(c *ui.Context, tokens theme.Tokens, s *State, session string, frame d
 	// Absolute text no longer follows the row's centering; center its line
 	// box in the line as the row did.
 	_, textHeight := c.MeasureText(0, ui.Span{Text: "中", Font: typography.Family, Size: theme.Body})
+	// Once the line scrolls, the end of the text is placed from the width the
+	// drawn spans actually measure, so it sits where the glide puts it
+	// however the shaper spaced the characters before it.
+	left := starts[first] - shift
+	drawn := starts[len(runes)] - starts[first]
+	if shift > 0 {
+		measured := make([]ui.Span, len(spans))
+		for i, span := range spans {
+			span.Font, span.Size = typography.Family, theme.Body
+			measured[i] = span
+		}
+		drawn, _ = c.MeasureText(0, measured...)
+		left = full - 1 - shift - drawn
+	}
 	line.Height(lineHeight).Children(func() {
 		// Out of the row's layout and unwrapped, the text keeps its full
 		// width instead of truncating to the line; the row clips it.
 		ui.RichText(c, spans...).FontSize(theme.Body).TextColor(color).NoWrap().
-			Absolute().Left(starts[first] - shift).Top((lineHeight - textHeight) / 2).Width(starts[len(runes)] - starts[first] + edgeFade)
+			Absolute().Left(left).Top((lineHeight - textHeight) / 2).Width(drawn + edgeFade)
 	})
 }
 
@@ -307,6 +347,16 @@ func failure(c *ui.Context, state *runtime.State, tokens theme.Tokens) {
 		if notice.Hint != "" {
 			ui.Text(c, messages.Text(notice.Hint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 		}
+	})
+}
+
+// polishNote tells that the dictation was inserted with local cleanup because
+// the cloud model could not polish it, with the next step.
+func polishNote(c *ui.Context, messages copy.Catalog, tokens theme.Tokens, notice dictation.Notice) {
+	ui.Icon(c, icons.Info).FontSize(16).TextColor(tokens.PillMuted)
+	ui.Column(c).Gap(1).MaxWidth(420).Children(func() {
+		ui.Text(c, messages.Text(notice.Title)).FontSize(theme.Body).FontWeight(500).SingleLine()
+		ui.Text(c, messages.Text(notice.Hint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 	})
 }
 

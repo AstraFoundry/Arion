@@ -212,6 +212,7 @@ func TestClipboardInlineImageAndFileRows(t *testing.T) {
 	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
 		t.Run(string(locale), func(t *testing.T) {
 			state, rec, store := fixture()
+			state.Preferences.Clipboard.FilesEnabled = true
 			state.Preferences.UILanguage = locale
 			imagePayload := runtime.ClipPayload{Kind: runtime.ClipImage, PNG: []byte("\x89PNG\r\n\x1a\n")}
 			filePayload := runtime.ClipPayload{Kind: runtime.ClipFiles, Files: []string{"/workspace/Plan.pdf"}}
@@ -351,6 +352,7 @@ func dwell(tt *ui.Tester) {
 
 func TestClipboardHoverPreviewContent(t *testing.T) {
 	state, rec, store := fixture()
+	state.Preferences.Clipboard.FilesEnabled = true
 	payload := runtime.ClipPayload{Kind: runtime.ClipFiles, Files: []string{"/workspace/Research notes/Quarterly design review.pdf"}}
 	item := runtime.Clip{ID: payload.ID(), Payload: payload}
 	state.Clipboard.Items = []runtime.Clip{item}
@@ -526,5 +528,97 @@ func TestClipboardActivationFollowsTarget(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestClipboardFilesOffHidesPinnedRowsButKeepsTextAndImages(t *testing.T) {
+	state, _, store := fixture()
+	state.Preferences.Clipboard.FilesEnabled = false
+	file := runtime.ClipPayload{Kind: runtime.ClipFiles, Files: []string{"/owned/hidden-file.pdf"}}
+	text := runtime.ClipboardText("kept text")
+	bitmap := runtime.ClipPayload{Kind: runtime.ClipImage, PNG: []byte("\x89PNG\r\n\x1a\n")}
+	state.Clipboard.Items = []runtime.Clip{{ID: file.ID(), Payload: file, Pinned: true}, {ID: text.ID(), Payload: text}, {ID: bitmap.ID(), Payload: bitmap}}
+	state.Clipboard.Meta = map[string]runtime.ClipboardMeta{bitmap.ID(): {Thumbnail: ui.NewBitmap(image.NewRGBA(image.Rect(0, 0, 2, 2)))}}
+	panel := &clipboardfeature.Panel{}
+	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, clipboardfeature.Width, clipboardfeature.MaxHeight)
+	settle(tt)
+	if hasText(tt, "hidden-file") || !hasText(tt, "kept text") {
+		t.Fatal("off mode exposed files or removed text")
+	}
+	if _, ok := tt.Find(store.Copy().Text(copy.ClipboardImages)); !ok {
+		t.Fatal("off mode removed direct bitmap")
+	}
+	state.Preferences.Clipboard.FilesEnabled = true
+	settle(tt)
+	if !hasText(tt, "hidden-file") {
+		t.Fatal("retained file not restored")
+	}
+}
+
+func TestClipboardImageFileThumbnailAndHoverPreview(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		t.Run(string(locale), func(t *testing.T) {
+			state, rec, store := fixture()
+			state.Preferences.Clipboard.FilesEnabled = true
+			state.Preferences.UILanguage = locale
+			payload := runtime.ClipPayload{Kind: runtime.ClipFiles, Files: []string{"/owned/Photo.png"}}
+			item := runtime.Clip{ID: payload.ID(), Payload: payload}
+			pixels := image.NewRGBA(image.Rect(0, 0, 96, 48))
+			ink := color.RGBA{R: 35, G: 150, B: 175, A: 255}
+			for y := range 48 {
+				for x := range 96 {
+					pixels.SetRGBA(x, y, ink)
+				}
+			}
+			bitmap := ui.NewBitmap(pixels)
+			state.Clipboard.Items = []runtime.Clip{item}
+			state.Clipboard.Meta = map[string]runtime.ClipboardMeta{item.ID: {Thumbnail: bitmap, Files: []runtime.ClipboardFile{{Name: "Photo.png", Path: payload.Files[0], Available: true}}}}
+			panel := &clipboardfeature.Panel{}
+			tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, clipboardfeature.Width, clipboardfeature.Height(state.Clipboard.Items))
+			assertImage := func(tt *ui.Tester) {
+				t.Helper()
+				count := 0
+				rendered := tt.Image()
+				for y := rendered.Bounds().Min.Y; y < rendered.Bounds().Max.Y; y++ {
+					for x := rendered.Bounds().Min.X; x < rendered.Bounds().Max.X; x++ {
+						r, g, b, _ := rendered.At(x, y).RGBA()
+						if r>>8 == uint32(ink.R) && g>>8 == uint32(ink.G) && b>>8 == uint32(ink.B) {
+							count++
+						}
+					}
+				}
+				if count < 100 {
+					t.Fatal("file image was not drawn")
+				}
+			}
+			for _, dark := range []bool{false, true} {
+				tt.SetDark(dark)
+				settle(tt)
+				if !hasText(tt, "Photo") || !hasText(tt, "PNG") {
+					t.Fatal("image preview hid file identity")
+				}
+				assertImage(tt)
+				snapshot(t, tt, fmt.Sprintf("clipboard-image-file-%s-dark-%t", locale, dark))
+			}
+			row, ok := tt.Find("Photo.png")
+			if !ok {
+				t.Fatal("accessible filename missing")
+			}
+			tt.Move(row.X+16, row.Y+row.H/2)
+			dwell(tt)
+			if !rec.called("clipboard-hover:" + item.ID) {
+				t.Fatal("image file did not request hover preview")
+			}
+			if err := tt.Click("Photo.png"); err != nil {
+				t.Fatal(err)
+			}
+			if !rec.called("clipboard-paste:"+item.ID) || item.Payload.Kind != runtime.ClipFiles {
+				t.Fatal("thumbnail changed file delivery")
+			}
+			preview := ui.NewTester(func(c *ui.Context) { clipboardfeature.Preview(c, item, bitmap) }, clipboardfeature.PreviewWidth, clipboardfeature.PreviewHeight)
+			settle(preview)
+			assertImage(preview)
+			snapshot(t, preview, "clipboard-image-file-hover-"+string(locale))
+		})
 	}
 }

@@ -462,6 +462,7 @@ func (a *App) restartUpdate() {
 	p.verifiedInstalled = false
 	p.applying = true
 	p.release = release
+	a.dismissClipboardAccess()
 	a.closeUpdateReminder()
 	a.clearUpdateNotification()
 	a.stopMonitor()

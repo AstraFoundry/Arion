@@ -30,7 +30,11 @@ type Preferences struct {
 	UILanguage          UILanguage           `json:"uiLanguage"`
 	OnboardingCompleted bool                 `json:"onboardingCompleted"`
 	HoldKey             HoldKey              `json:"holdKey"`
-	TranslateKey        HoldKey              `json:"translateKey,omitempty"`
+	// SecondHoldKey is an optional second dictation shortcut. It uses the
+	// same hold and tap gesture as HoldKey and can listen at the same time.
+	// HoldOff disables it. Profiles written before it existed stay off.
+	SecondHoldKey HoldKey `json:"secondHoldKey,omitempty"`
+	TranslateKey  HoldKey `json:"translateKey,omitempty"`
 	// PreviousTranslateKey retains the last assignment while translation is off.
 	PreviousTranslateKey HoldKey                    `json:"previousTranslateKey,omitempty"`
 	TranslateLanguage    domain.TranslationLanguage `json:"translateLanguage,omitempty"`
@@ -63,6 +67,11 @@ type Preferences struct {
 	// CloudModel is the model ID chosen for cloud polishing, among those the
 	// connected provider lists. Credentials are never preferences.
 	CloudModel string `json:"cloudModel,omitempty"`
+	// CloudReasoning lets cloud polishing retry with the least reasoning a
+	// model accepts when the model refuses to turn reasoning off. It is off
+	// by default: polishing keeps reasoning disabled to stay fast, so a model
+	// that requires reasoning fails instead of slowing every dictation.
+	CloudReasoning bool `json:"cloudReasoning,omitempty"`
 	// MatchApp lets polishing follow the focused app, field and web site
 	// (email, work chat, coding prompt, search) instead of always writing
 	// plain chat text. Profiles written before it existed load the default.
@@ -120,7 +129,8 @@ const (
 func DefaultPreferences(platform string) Preferences {
 	return Preferences{
 		Version: PreferencesVersion, UILanguage: English, HoldKey: DefaultHoldKey(platform),
-		TranslateKey: DefaultTranslateKey(platform), TranslateLanguage: domain.TargetEnglish,
+		SecondHoldKey: DefaultSecondHoldKey(platform),
+		TranslateKey:  DefaultTranslateKey(platform), TranslateLanguage: domain.TargetEnglish,
 		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, Punctuation: domain.PunctuationSmart, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 		Keyboard:  DefaultKeyboardPreferences(),
@@ -154,6 +164,10 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 		p.HoldKey = defaults.HoldKey
 		repaired = append(repaired, "holdKey")
 	}
+	if !knownSecondHoldKey(platform, p.SecondHoldKey) {
+		p.SecondHoldKey = defaults.SecondHoldKey
+		repaired = append(repaired, "secondHoldKey")
+	}
 	if p.PreviousTranslateKey != "" && (!knownHoldKey(platform, p.PreviousTranslateKey) || p.PreviousTranslateKey == HoldOff) {
 		p.PreviousTranslateKey = ""
 		repaired = append(repaired, "previousTranslateKey")
@@ -165,6 +179,9 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 	if HoldKeysConflict(p.TranslateKey, p.HoldKey) {
 		p.PreviousTranslateKey = p.TranslateKey
 		p.TranslateKey = HoldOff
+	}
+	if HoldKeysConflict(p.SecondHoldKey, p.HoldKey) || HoldKeysConflict(p.SecondHoldKey, p.TranslateKey) {
+		p.SecondHoldKey = defaults.SecondHoldKey
 	}
 	if !p.TranslateLanguage.Known() {
 		p.TranslateLanguage = defaults.TranslateLanguage

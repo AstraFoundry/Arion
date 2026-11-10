@@ -35,6 +35,7 @@ func Settings(c *ui.Context, store runtime.Store, tokens theme.Tokens, shortcut 
 					store.Actions.SetClipboardLimits(limits)
 				}
 			})
+			accessSettings(c, store, tokens)
 		})
 	})
 	Status(c, store, tokens)

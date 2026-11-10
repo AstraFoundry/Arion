@@ -112,6 +112,55 @@ func TestUnsupportedKeys(t *testing.T) {
 	}
 }
 
+func TestThreeShortcutsListenTogether(t *testing.T) {
+	mac, ok := NewMac(application.HoldRightOption, "f8", application.HoldRightCommand)
+	if !ok {
+		t.Fatal("macOS rejected three shortcuts")
+	}
+	f8 := keySpecs["f8"].mac
+	steps := []struct {
+		kind  int
+		code  int64
+		flags uint64
+		key   application.HoldKey
+		event Event
+	}{
+		{MacFlagsChanged, 0x3d, 0x40, application.HoldRightOption, Down},
+		{MacFlagsChanged, 0x3d, 0, application.HoldRightOption, Up},
+		{MacKeyDown, f8, 0, "f8", Down},
+		{MacKeyUp, f8, 0, "f8", Up},
+		{MacFlagsChanged, 0x36, 0x10, application.HoldRightCommand, Down},
+		{MacKeyDown, f8, 0x10, application.HoldRightCommand, Other},
+		{MacKeyUp, f8, 0x10, "", 0},
+		{MacFlagsChanged, 0x36, 0, application.HoldRightCommand, Up},
+	}
+	for i, s := range steps {
+		key, event, got := mac.InterpretKey(s.kind, s.code, s.flags, false)
+		if s.key == "" {
+			if got {
+				t.Fatalf("mac step %d reported %s %v", i, key, event)
+			}
+			continue
+		}
+		if !got || key != s.key || event != s.event {
+			t.Fatalf("mac step %d: %s %v %v", i, key, event, got)
+		}
+	}
+	win, ok := NewWindows(application.HoldRightAlt, "f8", application.HoldRightCtrl)
+	if !ok {
+		t.Fatal("Windows rejected three shortcuts")
+	}
+	if key, event, got := win.InterpretKey(WinKeyDown, keySpecs["f8"].win, 0); !got || key != "f8" || event != Down {
+		t.Fatalf("windows second shortcut: %s %v %v", key, event, got)
+	}
+	if key, event, got := win.InterpretKey(WinKeyUp, keySpecs["f8"].win, 0); !got || key != "f8" || event != Up {
+		t.Fatalf("windows second shortcut release: %s %v %v", key, event, got)
+	}
+	if key, event, got := win.InterpretKey(WinKeyDown, 0xA3, 0x11D); !got || key != application.HoldRightCtrl || event != Down {
+		t.Fatalf("windows translation after second shortcut: %s %v %v", key, event, got)
+	}
+}
+
 func TestMacDualHoldKeys(t *testing.T) {
 	m, ok := NewMac(application.HoldRightOption, application.HoldRightCommand)
 	if !ok {

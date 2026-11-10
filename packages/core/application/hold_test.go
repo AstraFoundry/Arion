@@ -23,6 +23,28 @@ func TestHoldDictatesUntilRelease(t *testing.T) {
 	}
 }
 
+// Issue 110: the press that ends a latched session returns stop while the
+// shortcut key is still down. Its later release is not another stop, so a
+// paste started from that press can run before the key-up.
+func TestToggleStopReturnsWhileShortcutKeyIsDown(t *testing.T) {
+	var g HoldGesture
+	if g.Press(at(0), HoldIdle) != HoldStart {
+		t.Fatal("start")
+	}
+	if g.Release(at(80)) != HoldNone {
+		t.Fatal("tap release")
+	}
+	if g.Press(at(500), HoldCapturing) != HoldStop {
+		t.Fatal("stop on key-down")
+	}
+	if !g.down {
+		t.Fatal("shortcut key was up at the stop that starts commit")
+	}
+	if g.Release(at(700)) != HoldNone {
+		t.Fatal("key-up after stop was a second action")
+	}
+}
+
 // A quick tap keeps dictating hands-free; the next press ends it and its
 // release does nothing more.
 func TestTapLatchesHandsFree(t *testing.T) {

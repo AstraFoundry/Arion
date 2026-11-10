@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Mock recordings for the "Arion 0.1.2 to 0.1.4" post (Japanese copy; Arion's own labels stay in English, as in the app).
+      The hash picks the scene: #hotwords, #compatible, #deepseek or #feedback.
+      Illustrations only: nothing is recorded, no model runs and no provider is
+      contacted. Arion's labels come from the desktop copy catalogs. Loaded in a
+      sandboxed frame; follows the system color scheme. Engine: stage.js.
+    -->
+    <link rel="stylesheet" href="stage.css" />
+    <script>
+      window.ARION_COPY = {
+        "menu": [
+          "ファイル",
+          "編集",
+          "表示",
+          "ウインドウ"
+        ],
+        "clock": "日 10:00",
+        "inserted": "入力しました",
+        "keys": {
+          "enter": "↩",
+          "paste": [
+            "⌘",
+            "V"
+          ]
+        },
+        "hotwords": {
+          "app": "チームチャット",
+          "channels": [
+            "# release",
+            "# design",
+            "# feedback"
+          ],
+          "thread": [
+            {
+              "who": "Lena",
+              "text": "Apple シリコン版の準備はできましたか？"
+            }
+          ],
+          "me": "自分",
+          "composer": "# release へのメッセージ",
+          "key": "右 Option",
+          "hold": "押して話す",
+          "vocabLabel": "単語帳",
+          "vocab": [
+            "Arion",
+            "MLX",
+            "Qwen"
+          ],
+          "quiet": "無音：何も送らない",
+          "partials": [
+            "今夜",
+            "今夜 Arion の",
+            "今夜 Arion の MLX 版を",
+            "今夜 Arion の MLX 版を出します"
+          ],
+          "final": "今夜 Arion の MLX 版を出します。"
+        },
+        "settings": {
+          "app": "Arion",
+          "title": "Arion Settings",
+          "nav": [
+            "Overview",
+            "General",
+            "Dictation",
+            "Keyboard",
+            "Microphone",
+            "Speech & Polish",
+            "Vocabulary",
+            "Clipboard",
+            "About"
+          ],
+          "navOn": 5,
+          "cloudTitle": "Cloud model",
+          "inUse": "In use",
+          "apiKeys": "API keys",
+          "keyLabel": "API key",
+          "disconnect": "Disconnect",
+          "modelLabel": "Model",
+          "baseLabel": "Base URL",
+          "basePlaceholder": "https://example.com/v1",
+          "keyPlaceholder": "Paste API key",
+          "connect": "Connect",
+          "providers": [
+            {
+              "id": "openai",
+              "name": "OpenAI",
+              "mark": "O",
+              "color": "hsl(165 18% 24%)"
+            },
+            {
+              "id": "anthropic",
+              "name": "Anthropic",
+              "mark": "A",
+              "color": "hsl(18 42% 46%)"
+            },
+            {
+              "id": "google",
+              "name": "Google Gemini",
+              "mark": "G",
+              "color": "hsl(214 70% 52%)"
+            },
+            {
+              "id": "deepseek",
+              "name": "DeepSeek",
+              "mark": "D",
+              "color": "hsl(228 78% 60%)"
+            },
+            {
+              "id": "openrouter",
+              "name": "OpenRouter",
+              "mark": "R",
+              "color": "hsl(250 16% 32%)"
+            },
+            {
+              "id": "openai-compatible",
+              "name": "OpenAI compatible",
+              "mark": "O",
+              "color": "hsl(165 18% 24%)",
+              "compatible": true
+            },
+            {
+              "id": "anthropic-compatible",
+              "name": "Anthropic compatible",
+              "mark": "A",
+              "color": "hsl(18 42% 46%)",
+              "compatible": true
+            }
+          ]
+        },
+        "compatible": {
+          "provider": "openai-compatible",
+          "baseURL": "https://gateway.example.com/v1",
+          "models": [
+            "llama-3.3-70b",
+            "qwen3-32b",
+            "gpt-oss-120b"
+          ],
+          "pick": 1
+        },
+        "deepseek": {
+          "provider": "deepseek",
+          "models": [
+            "deepseek-chat",
+            "deepseek-reasoner"
+          ],
+          "pick": 1,
+          "noteLabel": "モデル一覧",
+          "note": "GET /models（ボディなし）",
+          "status": "200 OK"
+        },
+        "feedback": {
+          "app": "Codex",
+          "agent": "Codex",
+          "ask": "Codex に質問",
+          "ready": "Ready",
+          "start": "Start dictation",
+          "settings": "Settings…",
+          "quit": "Quit Arion",
+          "windowTitle": "Report a problem",
+          "title": "Report a problem with an agent",
+          "body": "Paste this prompt into Codex, Claude Code or another coding agent. It asks what went wrong in plain words, cleans up the logs and files a GitHub issue for you. It can help fix the problem too.",
+          "prompt": "Fetch https://arion.astrafoundry.si/feedback.md with curl and follow it to help me report a problem with Arion. I use Arion 0.1.4 on macOS arm64.",
+          "copy": "Copy",
+          "copied": "Copied",
+          "yourself": "Open an issue yourself",
+          "reply": "いくつか質問してから Issue を作成します。",
+          "opened": "Issue opened",
+          "issue": "Dictation stops after a long pause"
+        }
+      };
+    </script>
+    <script src="stage.js" defer></script>
+  </head>
+  <body></body>
+</html>

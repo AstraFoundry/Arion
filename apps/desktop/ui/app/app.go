@@ -3,6 +3,7 @@ package app
 
 import (
 	"arion.local/desktop/ui/pages/clipboard"
+	"arion.local/desktop/ui/pages/clipboardaccess"
 	"arion.local/desktop/ui/pages/feedback"
 	"arion.local/desktop/ui/pages/guide"
 	"arion.local/desktop/ui/pages/menubar"
@@ -22,6 +23,18 @@ func Clipboard(store runtime.Store) View {
 }
 
 const ClipboardWidth = clipboard.Width
+
+const ClipboardAccessWidth = clipboardaccess.Width
+const ClipboardAccessHeight = clipboardaccess.Height
+
+func ClipboardAccess(store runtime.Store, resize func(int)) View {
+	return View{Content: view(func(c *ui.Context) {
+		height := clipboardaccess.Render(c, store)
+		if resize != nil && height > 0 {
+			resize(height)
+		}
+	}), Close: func() {}}
+}
 
 func ClipboardHeight(items []runtime.Clip) int { return clipboard.Height(items) }
 

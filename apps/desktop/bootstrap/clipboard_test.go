@@ -30,6 +30,7 @@ func clipboardFixture(t *testing.T) *App {
 	}
 	p := application.DefaultPreferences(runtime.GOOS)
 	p.Clipboard.Enabled = true
+	p.Clipboard.FilesEnabled = true
 	return &App{prefs: p, prefStore: settings.Store{Path: filepath.Join(dir, "preferences.json")}, state: arion.State{Preferences: p}, clipboard: &clipboardController{service: application.NewClipboard(repo)}, queueReady: make(chan struct{}, 1)}
 }
 func finishClipboardWork(t *testing.T, a *App) {
@@ -73,8 +74,11 @@ func TestClipboardLimitEditProtectsPinsAndOtherPreferences(t *testing.T) {
 	l.Count = 10
 	actions{a}.SetClipboardLimits(l)
 	// Another setting changes while the history worker finishes.
-	a.prefs.Sounds = false
-	a.state.Preferences.Sounds = false
+	next := a.state.Preferences
+	next.Sounds = false
+	if !a.savePreferences(next) {
+		t.Fatal("unrelated preference could not be saved")
+	}
 	finishClipboardWork(t, a)
 	if a.state.Preferences.Sounds || a.state.Preferences.Clipboard.Limits.Count != 10 {
 		t.Fatal("late clipboard work replaced unrelated preferences")
@@ -304,8 +308,9 @@ func TestClipboardShortcutConflictsRejectVoiceAssignments(t *testing.T) {
 	a.state.Preferences = a.prefs
 	before := a.prefs
 	actions{a}.SetHoldKey("ctrl+shift+k")
+	actions{a}.SetSecondHoldKey("ctrl+shift+k")
 	actions{a}.SetTranslateKey("ctrl+shift+k")
-	if a.prefs.HoldKey != before.HoldKey || a.prefs.TranslateKey != before.TranslateKey || a.prefs.Clipboard != before.Clipboard {
+	if a.prefs.HoldKey != before.HoldKey || a.prefs.SecondHoldKey != before.SecondHoldKey || a.prefs.TranslateKey != before.TranslateKey || a.prefs.Clipboard != before.Clipboard {
 		t.Fatal("clipboard shortcut was assigned to a voice action")
 	}
 }
@@ -384,7 +389,7 @@ func TestClipboardLegacyFolderPinsReturnToCountRetention(t *testing.T) {
 	if _, err = a.clipboard.service.Pin(items[0].ID, true, limits); err != nil {
 		t.Fatal(err)
 	}
-	kept, err := refreshClipboard(a.clipboard.service, limits)
+	kept, err := refreshClipboard(a.clipboard.service, limits, true)
 	if err != nil || len(kept) != 1 || kept[0].Pinned {
 		t.Fatal("hidden unsupported pin remained protected")
 	}
@@ -408,7 +413,7 @@ func TestClipboardLegacyFoldersStayOutOfPublishedItems(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(a.clipboard.service, limits) }, copy.ClipboardLoadFailed)
+	a.clipboardWork(func() ([]domain.Clip, error) { return refreshClipboard(a.clipboard.service, limits, true) }, copy.ClipboardLoadFailed)
 	finishClipboardWork(t, a)
 	if len(a.state.Clipboard.Items) != 1 || a.state.Clipboard.Items[0].Payload.Files[0] != file {
 		t.Fatal("legacy folder was published or ordinary file was hidden")

@@ -3,7 +3,6 @@ package bootstrap
 import (
 	"arion.local/core/domain"
 	uiapp "arion.local/desktop/ui/app"
-	"arion.local/desktop/ui/shared/copy"
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
 )
@@ -57,7 +56,7 @@ func (a *App) prepareClipboardPreview() {
 	if !ok {
 		return
 	}
-	if item.Payload.Kind != domain.ClipImage {
+	if item.Payload.Kind != domain.ClipImage && !clipImageFile(item.Payload) {
 		a.showClipboardPreview(item, nil)
 		return
 	}
@@ -69,7 +68,7 @@ func (a *App) prepareClipboardPreview() {
 	seq := cc.previewSeq
 	a.resourceJobs.Add(1)
 	go func() {
-		bitmap, err := clipBitmap(item.Payload.PNG, 640)
+		bitmap, err := clipPreviewBitmap(item.Payload, 640)
 		a.post(func() {
 			a.resourceJobs.Add(-1)
 			cc.previewLoading = false
@@ -84,7 +83,7 @@ func (a *App) prepareClipboardPreview() {
 				return
 			}
 			if err != nil {
-				a.state.Clipboard.Error = copy.ClipboardPreviewFailed
+				// CLP-06: an unavailable hover image adds no error or empty flyout.
 				return
 			}
 			a.showClipboardPreview(item, bitmap)
