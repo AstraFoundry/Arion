@@ -31,6 +31,36 @@ static void replace_board(NSPasteboard *board, NSString *text) {
     [board setString:text forType:NSPasteboardTypeString];
 }
 
+// Qt applications such as WeChat and QQ publish these flavors through the
+// Carbon pasteboard. Their names are not valid UTIs, so AppKit lists them but
+// returns no data for them.
+static NSString *const weChatFlavor = @"com.trolltech.anymime.WeChat_RichEdit_Format";
+static NSString *const qqFlavor = @"com.trolltech.anymime.QQ_Unicode_RichEdit_Format";
+static char carbonTextItem, carbonOpaqueItem;
+
+static BOOL put_carbon_flavor(PasteboardRef pasteboard, void *item, NSString *flavor, const char *bytes) {
+    CFDataRef data = CFDataCreate(kCFAllocatorDefault, (const UInt8 *)bytes, (CFIndex)strlen(bytes));
+    OSStatus status = PasteboardPutItemFlavor(pasteboard, (PasteboardItemID)item, (__bridge CFStringRef)flavor, data, kPasteboardFlavorNoFlags);
+    CFRelease(data);
+    return status == noErr;
+}
+
+static BOOL write_carbon_board(NSPasteboard *board, BOOL withText) {
+    PasteboardRef pasteboard = NULL;
+    if (PasteboardCreate((__bridge CFStringRef)board.name, &pasteboard) != noErr) return NO;
+    BOOL ok = PasteboardClear(pasteboard) == noErr;
+    PasteboardSynchronize(pasteboard);
+    if (withText) {
+        ok = ok && put_carbon_flavor(pasteboard, &carbonTextItem, NSPasteboardTypeString, "carbon text");
+        ok = ok && put_carbon_flavor(pasteboard, &carbonTextItem, weChatFlavor, "rich");
+        ok = ok && put_carbon_flavor(pasteboard, &carbonTextItem, qqFlavor, "rich");
+    }
+    ok = ok && put_carbon_flavor(pasteboard, &carbonOpaqueItem, weChatFlavor, "rich");
+    PasteboardSynchronize(pasteboard);
+    CFRelease(pasteboard);
+    return ok;
+}
+
 int main(void) {
     @autoreleasepool {
         NSPasteboard *board = [NSPasteboard pasteboardWithUniqueName];
@@ -108,6 +138,27 @@ int main(void) {
         CHECK(arion_paste_finish(retain_tx(tx)) == 1);
         CHECK(board.pasteboardItems.count == 0);
         CHECK(begin_paste(@"", board) == nil);
+
+        CHECK(!valid_type_identifier(weChatFlavor) && !valid_type_identifier(qqFlavor) && !valid_type_identifier(@""));
+        CHECK(valid_type_identifier(NSPasteboardTypeString) && valid_type_identifier(@"dyn.ah62d4rv4gu8y"));
+        CHECK(write_carbon_board(board, YES));
+        CHECK(board.pasteboardItems.count == 2);
+        CHECK([board.pasteboardItems[0].types containsObject:weChatFlavor]);
+        CHECK([board.pasteboardItems[0].types containsObject:qqFlavor]);
+        NSInteger carbonChange = board.changeCount;
+        tx = begin_paste(@"text over a Qt rich clipboard", board);
+        CHECK(tx);
+        CHECK(tx.saved.count == 1);
+        CHECK([tx.saved[0].types isEqual:@[NSPasteboardTypeString]]);
+        CHECK(board.changeCount == carbonChange);
+        CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_OK);
+        CHECK(arion_paste_finish(retain_tx(tx)) == 1);
+        CHECK(board.pasteboardItems.count == 1);
+        CHECK([[board stringForType:NSPasteboardTypeString] isEqual:@"carbon text"]);
+        CHECK(write_carbon_board(board, NO));
+        CHECK(board.pasteboardItems.count == 1);
+        CHECK(begin_paste(@"nothing readable to restore", board) == nil);
+        [board clearContents];
 
         NSURL *file = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString]];
         CHECK([NSData.data writeToURL:file atomically:YES]);
