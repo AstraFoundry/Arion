@@ -58,6 +58,7 @@
 - **Go 1.27.1** 且启用 `cgo`（`go.work` 使用 Go 自动工具链选择）。
 - **macOS（`arm64`）**：带 macOS 14 SDK 的 Apple Command Line Tools、CMake 与 Apple silicon 主机；`speech.cpp` 会在本地构建 Metal 后端。
 - **Windows（`amd64`）**：原生 C/C++ 工具链、CMake、MinGW-w64 GCC（`CC=x86_64-w64-mingw32-gcc`）与 NSIS。
+- **Linux**：仅用于 `make desktop-check` 的 GCC、Pango 和 Cairo，以及覆盖拉丁文与中日韩文字的字体。这是测试路径，不是打包发布。它不注册输入法，也不增加按住说话快捷键。
 - **Node 24**（`.nvmrc`）与**锁定版本的 `pnpm@10.33.0`**（`package.json`）。
 
 ### 构建与运行
@@ -65,7 +66,7 @@
 ```sh
 make install        # 安装锁定版本的 pnpm 工作区依赖 (--frozen-lockfile)
 make check          # 文档、JSON、Go 分层边界、工作流检查，以及 core/sync/updates/i18n/公开 Driver 测试
-make desktop-check  # 桌面端测试、键盘检查与 go vet (cgo)
+make desktop-check  # 桌面端测试与 go vet (cgo)；键盘检查仅在 macOS
 make desktop-dev    # 准备原生运行时并以开发模式启动 Arion Dev
 make build desktop  # 在 apps/desktop/build/ 下打包 Arion.app + DMG (macOS) 或 NSIS 安装包 (Windows)
 make e2e            # 在真实桌面会话中运行原生窗口生命周期 E2E 测试

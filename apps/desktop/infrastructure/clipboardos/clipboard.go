@@ -20,7 +20,16 @@ import (
 
 const Internal transfer.Format = "application/x-arion-internal"
 
-var ErrBusy = errors.New("clipboard transaction in progress")
+var (
+	ErrBusy                = errors.New("clipboard transaction in progress")
+	ErrRevisionUnsupported = errors.New("clipboard revision unsupported")
+)
+
+// revisionAvailable reports a host clipboard counter. macOS and Windows have
+// one. Linux does not, so a write cannot prove it still owns the board.
+func revisionAvailable() bool {
+	return runtime.GOOS == "darwin" || runtime.GOOS == "windows"
+}
 
 type Target interface {
 	// Anchor is optional input geometry in top-left screen DIPs. It does not
@@ -254,6 +263,9 @@ func ValidateFiles(p domain.ClipPayload) error {
 func Write(p domain.ClipPayload) (uint64, error) {
 	if err := p.Validate(); err != nil {
 		return 0, err
+	}
+	if !revisionAvailable() {
+		return 0, ErrRevisionUnsupported
 	}
 	var data transfer.Data
 	var err error

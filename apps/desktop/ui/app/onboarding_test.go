@@ -83,6 +83,20 @@ func TestOnboardingFlow(t *testing.T) {
 			expect(t, tt, true, messages.Text(copy.OnbDictateTitle), messages.Text(copy.PolishLabel), messages.Text(copy.HoldKeyEdit))
 			expect(t, tt, false, messages.Text(copy.TranslateGroup), messages.Text(copy.OnbTryPlaceholder))
 			snapshot(t, tt, "onboarding-practice-downloading-"+string(locale))
+			if state.Preferences.HoldKey == "" {
+				click(copy.OnbFinish)
+				if actions.called("complete") {
+					t.Fatal("finished before dictation could run")
+				}
+				state.Model.State = runtime.ModelReady
+				state.Hold = runtime.Hold{Active: true}
+				settle(tt)
+				click(copy.OnbFinish)
+				if !actions.called("complete") {
+					t.Fatal("onboarding not completed")
+				}
+				return
+			}
 			click(copy.Continue)
 			expect(t, tt, true, messages.Text(copy.OnbDictateTitle))
 			state.Model.State = runtime.ModelFailed

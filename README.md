@@ -60,6 +60,7 @@ See [Release Status](docs/operations/release-status.md), [Agent Handoff](docs/pr
 - **Go 1.27.1** with `cgo` enabled (`go.work` uses automatic toolchain selection).
 - **macOS (`arm64`)**: Apple Command Line Tools with the macOS 14 SDK, CMake and an Apple silicon host; `speech.cpp` builds its Metal backend locally.
 - **Windows (`amd64`)**: Native C/C++ toolchain, CMake, MinGW-w64 GCC (`CC=x86_64-w64-mingw32-gcc`), and NSIS.
+- **Linux**: GCC, Pango and Cairo with Latin and CJK fonts, for `make desktop-check` only. This is a test path, not a packaged release. It does not register an input method or add a hold-key shortcut.
 - **Node 24** (`.nvmrc`) and **pinned `pnpm@10.33.0`** (`package.json`).
 
 ### Build and Run
@@ -67,7 +68,7 @@ See [Release Status](docs/operations/release-status.md), [Agent Handoff](docs/pr
 ```sh
 make install        # install the pinned pnpm workspace (--frozen-lockfile)
 make check          # docs, JSON, Go layer boundaries, workflow lint, and core/sync/updates/i18n/public driver tests
-make desktop-check  # desktop tests, keyboard checks, and go vet (cgo)
+make desktop-check  # desktop tests and go vet (cgo); keyboard checks on macOS
 make desktop-dev    # stage native runtimes and launch Arion Dev in dev mode
 make build desktop  # package Arion.app + DMG (macOS) or NSIS installer (Windows) under apps/desktop/build/
 make e2e            # native window lifecycle E2E on a real desktop session

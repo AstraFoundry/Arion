@@ -65,6 +65,12 @@ func TestEmbeddedNativeAdoption(t *testing.T) {
 		t.Fatal(err)
 	}
 	bundle, selection, err := SelectDefault(catalog)
+	if platform := Platform(); platform != "darwin-arm64" && platform != "windows-amd64" {
+		if domain.CodeOf(err) != domain.CodeEvaluationUnavailable {
+			t.Fatalf("adoption: %+v %+v %v", bundle, selection, err)
+		}
+		return
+	}
 	if err != nil || !bundle.Adopted {
 		t.Fatalf("adoption: %+v %+v %v", bundle, selection, err)
 	}

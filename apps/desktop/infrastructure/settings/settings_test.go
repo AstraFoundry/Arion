@@ -39,8 +39,13 @@ func TestLanguagePersistenceAndLegacyProfiles(t *testing.T) {
 		t.Fatal(err)
 	}
 	loaded, repairs, err = store.Load()
-	if err != nil || loaded.HoldKey != application.DefaultHoldKey(runtime.GOOS) || !slices.Contains(repairs, "holdKey") {
+	wantKey := application.DefaultHoldKey(runtime.GOOS)
+	if err != nil || loaded.HoldKey != wantKey {
 		t.Fatalf("hold key off: %v %v %v", loaded, repairs, err)
+	}
+	// An empty key is already valid where the host has no hold-key adapter.
+	if (wantKey != "") != slices.Contains(repairs, "holdKey") {
+		t.Fatalf("hold key repair: %v", repairs)
 	}
 	if err := os.WriteFile(store.Path, []byte(`{"version":1,"uiLanguage":"fr"}`), 0600); err != nil {
 		t.Fatal(err)
@@ -111,6 +116,12 @@ func TestCustomShortcutRoundTrip(t *testing.T) {
 		t.Fatal(err)
 	}
 	loaded, repairs, err := store.Load()
+	if application.DefaultHoldKey(runtime.GOOS) == "" {
+		if err != nil || loaded.HoldKey != "" || loaded.TranslateKey != "" || !slices.Contains(repairs, "holdKey") || !slices.Contains(repairs, "translateKey") {
+			t.Fatalf("unsupported shortcut kept: %+v %v %v", loaded, repairs, err)
+		}
+		return
+	}
 	if err != nil || len(repairs) != 0 || loaded.HoldKey != "ctrl+space" || loaded.TranslateKey != "shift+f8" {
 		t.Fatalf("restart: %+v %v %v", loaded, repairs, err)
 	}

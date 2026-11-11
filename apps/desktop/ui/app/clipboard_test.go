@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	platform "runtime"
 	"testing"
 	"time"
 
@@ -95,6 +96,12 @@ func TestClipboardSettingsDisclosureAndRecorder(t *testing.T) {
 			state.Hold.RecordedKey = "ctrl+shift+k"
 			state.Hold.RecordedSeq++
 			settle(tt)
+			if _, ok := runtime.ClipboardShortcutKey(platform.GOOS, "ctrl+shift+k"); !ok {
+				if state.Preferences.Clipboard.Shortcut == "ctrl+shift+k" {
+					t.Fatal("saved a clipboard shortcut without a hold-key adapter")
+				}
+				return
+			}
 			if state.Preferences.Clipboard.Shortcut != "ctrl+shift+k" || state.Hold.Recording != "" {
 				t.Fatal("recorded chord not saved")
 			}

@@ -187,9 +187,16 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	}
 }
 
+// holdKeyObservable is a key this host's existing adapter can listen for.
+// Linux has no adapter, so nothing here adds one.
+func holdKeyObservable(key application.HoldKey) bool {
+	_, ok := application.ParseHoldShortcut(runtime.GOOS, key)
+	return ok
+}
+
 // SetHoldKey persists the hold-to-talk key and restarts its listener.
 func (x actions) SetHoldKey(key application.HoldKey) {
-	if application.HoldKeysConflict(key, x.a.prefs.TranslateKey) || application.HoldKeysConflict(key, x.a.prefs.SecondHoldKey) || x.a.clipboardKeyConflicts(key) {
+	if !holdKeyObservable(key) || application.HoldKeysConflict(key, x.a.prefs.TranslateKey) || application.HoldKeysConflict(key, x.a.prefs.SecondHoldKey) || x.a.clipboardKeyConflicts(key) {
 		return
 	}
 	x.a.core.Cancel()
@@ -203,7 +210,7 @@ func (x actions) SetHoldKey(key application.HoldKey) {
 // restarts the listener. HoldOff disables it.
 func (x actions) SetSecondHoldKey(key application.HoldKey) {
 	if key != application.HoldOff {
-		if _, ok := application.ParseHoldShortcut(runtime.GOOS, key); !ok {
+		if !holdKeyObservable(key) {
 			return
 		}
 		if application.HoldKeysConflict(key, x.a.prefs.HoldKey) || application.HoldKeysConflict(key, x.a.prefs.TranslateKey) || x.a.clipboardKeyConflicts(key) {
@@ -219,7 +226,11 @@ func (x actions) SetSecondHoldKey(key application.HoldKey) {
 
 // SetTranslateKey persists the translation hold-to-talk key and restarts the listener.
 func (x actions) SetTranslateKey(key application.HoldKey) {
-	if application.HoldKeysConflict(key, x.a.prefs.HoldKey) || application.HoldKeysConflict(key, x.a.prefs.SecondHoldKey) || x.a.clipboardKeyConflicts(key) {
+	if key == application.HoldOff {
+		if application.DefaultTranslateKey(runtime.GOOS) == "" {
+			return
+		}
+	} else if !holdKeyObservable(key) || application.HoldKeysConflict(key, x.a.prefs.HoldKey) || application.HoldKeysConflict(key, x.a.prefs.SecondHoldKey) || x.a.clipboardKeyConflicts(key) {
 		return
 	}
 	x.a.core.Cancel()

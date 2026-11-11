@@ -17,7 +17,9 @@ package malgo
 
 #cgo !noasm,!arm,!arm64 CFLAGS: -msse2
 #cgo !noasm,amd64.v3 CFLAGS: -mavx -mavx2
-#cgo !noasm,arm,arm64 CFLAGS: -mfpu=neon -mfloat-abi=hard
+// 32-bit ARM needs an explicit NEON ABI. aarch64 enables it by default, and
+// its GCC rejects -mfpu/-mfloat-abi.
+#cgo !noasm,arm CFLAGS: -mfpu=neon -mfloat-abi=hard
 #cgo noasm CFLAGS: -DMA_NO_SSE2 -DMA_NO_AVX2 -DMA_NO_AVX512 -DMA_NO_NEON
 
 #include "malgo.h"

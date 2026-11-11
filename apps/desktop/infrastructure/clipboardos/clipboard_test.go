@@ -7,11 +7,34 @@ import (
 	"image/png"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"arion.local/core/domain"
 	"github.com/egoist/mygo/transfer"
 )
+
+func TestClipboardRevisionFollowsHost(t *testing.T) {
+	supported := runtime.GOOS == "darwin" || runtime.GOOS == "windows"
+	if revisionAvailable() != supported {
+		t.Fatalf("revision available %v on %s", revisionAvailable(), runtime.GOOS)
+	}
+	if supported {
+		return
+	}
+	if seq := Sequence(); seq != 0 {
+		t.Fatalf("sequence %d", seq)
+	}
+	if rev, excluded := Revision(); rev != 0 || excluded {
+		t.Fatalf("revision %d excluded %v", rev, excluded)
+	}
+	if CaptureTarget() != nil {
+		t.Fatal("captured a target")
+	}
+	if _, err := Write(domain.ClipTextPayload("canary")); !errors.Is(err, ErrRevisionUnsupported) {
+		t.Fatal(err)
+	}
+}
 
 func TestClipboardCaptureFormatsPreserveResourcesAndExcludeInternal(t *testing.T) {
 	if _, err := captureFormat([]transfer.Format{transfer.Text, Internal}); !errors.Is(err, transfer.ErrFormat) {

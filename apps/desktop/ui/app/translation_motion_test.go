@@ -1,6 +1,7 @@
 package app
 
 import (
+	platform "runtime"
 	"testing"
 	"time"
 
@@ -19,6 +20,23 @@ func TestTranslationDisclosureLeavesDictationAndSwitchStationary(t *testing.T) {
 				name = string(locale) + "-reduced-motion"
 			}
 			t.Run(name, func(t *testing.T) {
+				if runtime.DefaultHoldKey(platform.GOOS) == "" {
+					state, _, store := fixture()
+					state.Preferences.UILanguage = locale
+					state.Preferences.TranslateKey = runtime.HoldOff
+					page := settings.NewPage()
+					page.Section = settings.Dictation
+					tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+					messages := store.Copy()
+					if err := tt.Click(messages.Text(copy.TranslateEnabled)); err != nil {
+						t.Fatal(err)
+					}
+					settle(tt)
+					if hasText(tt, messages.Text(copy.TranslateKeyLabel)) {
+						t.Fatal("translation shortcut appeared without a hold-key adapter")
+					}
+					return
+				}
 				state, _, store := fixture()
 				state.Preferences.UILanguage = locale
 				state.Preferences.TranslateKey = runtime.HoldOff

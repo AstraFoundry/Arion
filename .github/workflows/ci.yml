@@ -109,6 +109,15 @@ jobs:
           key: actionlint-${{ hashFiles('scripts/lib/workflow-check.mjs') }}-${{ runner.os }}-${{ runner.arch }}
       - if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'
         run: pnpm test
+      # MyGo loads Pango and Cairo at runtime to lay out text; UI tests also need Latin and CJK fonts.
+      - name: Install Linux desktop text runtime
+        if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends libpangocairo-1.0-0 fonts-dejavu-core fonts-wqy-microhei
+      - name: Linux desktop tests
+        if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'
+        run: pnpm desktop:check
       - if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'
         run: pnpm updater:check
       - if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'

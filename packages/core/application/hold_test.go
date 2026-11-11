@@ -129,4 +129,7 @@ func TestHoldKeyNormalization(t *testing.T) {
 	if DefaultTranslateKey("darwin") != HoldRightCommand || DefaultTranslateKey("windows") != HoldRightCtrl {
 		t.Fatal("default translate keys changed")
 	}
+	if DefaultHoldKey("linux") != "" || DefaultTranslateKey("linux") != "" || HoldKeysFor("linux") != nil {
+		t.Fatal("linux has no hold-key adapter")
+	}
 }
