@@ -207,3 +207,27 @@ func TestBitmapUpdate(t *testing.T) {
 		t.Errorf("resized to %dx%d", w, h)
 	}
 }
+
+func TestDecodeBitmapThumbnailPreservesOrientationAndBounds(t *testing.T) {
+	pixels := stripedImage(128, 64, 16, 0)
+	data := withOrientation(t, pixels, 6, binary.BigEndian)
+	thumb, err := DecodeBitmapThumbnail(data, 32)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if thumb.w != 16 || thumb.h != 32 {
+		t.Fatalf("oriented thumbnail = %dx%d", thumb.w, thumb.h)
+	}
+	small, err := DecodeBitmapThumbnail(data, 256)
+	if err != nil || small.w != 64 || small.h != 128 {
+		t.Fatal("thumbnail upscaled its source", err)
+	}
+	for _, edge := range []int{0, -1} {
+		if _, err := DecodeBitmapThumbnail(data, edge); err == nil {
+			t.Fatal("invalid bound accepted")
+		}
+	}
+	if _, err := DecodeBitmapThumbnail([]byte("corrupt"), 32); err == nil {
+		t.Fatal("corrupt image accepted")
+	}
+}

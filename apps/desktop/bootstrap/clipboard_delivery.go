@@ -172,10 +172,7 @@ func (a *App) withClipboardResource(item domain.Clip, done func()) {
 		err := clipboardos.ValidateFiles(item.Payload)
 		var meta arion.ClipboardMeta
 		if item.Payload.Kind == domain.ClipFiles {
-			entries, e := clipboardMetadata([]domain.Clip{item}, nil)
-			if e != nil {
-				err = e
-			}
+			entries := clipboardMetadata([]domain.Clip{item}, nil)
 			meta = entries[item.ID]
 		}
 		a.post(func() {

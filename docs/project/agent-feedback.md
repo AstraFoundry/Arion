@@ -8,7 +8,7 @@ All of them open the same **Report a problem** window (`pages/feedback`, opened 
 
 | Where | Control |
 | --- | --- |
-| Menu bar panel | **?** icon button beside the readiness state (`widgets/statusheader`) |
+| Menu bar panel | **?** icon button at the end of the header (`widgets/statusheader`); the header shows a state word (Listening, Permission needed, Model failed…) only when Arion is not ready |
 | Settings › About | **Report a bug** row: the existing GitHub Issues link and an **Ask an agent** button |
 | macOS input menu | **Report a problem…** under **Open Arion**, shown when LaunchServices resolves the app; opens `arion://feedback` |
 | Windows language bar menu | **Report a problem…** after **Open Arion**; opens `arion://feedback` and reports the open failure like **Open Arion** |

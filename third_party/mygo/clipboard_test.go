@@ -282,3 +282,24 @@ func TestClipboardReleaseWaitsForNestedStorage(t *testing.T) {
 		t.Fatal("release hook did not run safely after flush")
 	}
 }
+
+func TestClipboardWithFileAccessDoesNotPublish(t *testing.T) {
+	data, err := transfer.FileData("/owned/preview.png")
+	if err != nil {
+		t.Fatal(err)
+	}
+	before := Clipboard.ReadText()
+	expected := errors.New("owned callback failure")
+	calls := 0
+	if err := Clipboard.WithFileAccess(data, func() error { calls++; return expected }); !errors.Is(err, expected) {
+		t.Fatal("callback error lost", err)
+	}
+	if calls != 1 || Clipboard.ReadText() != before {
+		t.Fatal("file access changed the live clipboard")
+	}
+	files, _ := data.Read(transfer.FileList)
+	credential := transfer.New(transfer.NewItem(transfer.Bytes(transfer.FileList, files), transfer.Bytes(transfer.MacOSFileBookmark, []byte("private"))))
+	if err := Clipboard.WithFileAccess(credential, func() error { calls++; return nil }); err == nil || calls != 1 {
+		t.Fatal("unsupported credential reached callback")
+	}
+}

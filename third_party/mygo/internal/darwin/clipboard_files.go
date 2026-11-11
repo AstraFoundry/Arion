@@ -16,6 +16,20 @@ const (
 	bookmarkResolveScope  = 1<<8 | 1<<9 | 1<<10 | 1<<15
 )
 
+func (clipboard) WithFileAccess(data transfer.Data, read func() error) (err error) {
+	load()
+	withPool(func() {
+		var closeAccess func()
+		closeAccess, err = macClipboardFileAccess(data)
+		if err != nil {
+			return
+		}
+		defer closeAccess()
+		err = read()
+	})
+	return err
+}
+
 // History credentials apply only to ordinary files. Preserve other native
 // file representations without requesting access to unsupported resources.
 func macClipboardOrdinaryFileBookmark(url id) ([]byte, error) {

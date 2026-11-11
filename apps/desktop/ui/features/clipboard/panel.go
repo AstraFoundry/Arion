@@ -179,7 +179,7 @@ func (p *Panel) history(c *ui.Context, store runtime.Store, tokens theme.Tokens,
 						p.previewID, p.previewAnchor = item.ID, image.Bounds()
 					}
 				} else if item.Payload.Kind == runtime.ClipFiles {
-					fileContent(c, item, tokens, messages)
+					fileContent(c, item, state.Meta[item.ID].Thumbnail, tokens, messages)
 				} else {
 					text := ui.Text(c, name).SingleLine().FontSize(theme.Body).TextColor(tokens.Text).Grow(1).Shrink(1)
 					if pointerOver && text.Bounds().Contains(pointerX, pointerY) {

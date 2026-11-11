@@ -32,6 +32,15 @@ var ErrClipboardChanged = platform.ErrClipboardChanged
 // after the owning application exits. Providers have still been materialized.
 var ErrClipboardPersistence = platform.ErrClipboardPersistence
 
+// WithFileAccess runs read while the file references in data are accessible.
+// On macOS it resolves and validates private bookmarks using the same scopes
+// as publication, releasing them even when read fails or panics. It neither
+// reads nor replaces the live clipboard. The callback runs synchronously on
+// the calling goroutine; use a worker for file IO and image decoding.
+func (ClipboardModule) WithFileAccess(data transfer.Data, read func() error) error {
+	return backend().Clipboard().WithFileAccess(data, read)
+}
+
 // Clipboard state is main-thread only. User release hooks are deferred until
 // native callbacks unwind, including callbacks made during Write itself.
 type clipboardLifetime struct {

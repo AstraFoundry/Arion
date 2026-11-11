@@ -10,7 +10,6 @@
     "download": "下载",
     "downloadLong": "免费下载",
     "viewSource": "查看源代码",
-    "replay": "重播",
     "themeToDark": "切换到深色主题",
     "themeToLight": "切换到浅色主题",
     "language": "语言",
@@ -28,28 +27,40 @@
     "community": "社区"
   },
   "hero": {
-    "title": "语音输入，​从不离开​你的电脑",
-    "lead": "在任意应用里按 {shortcut}，说中文、英文或中英混说。Arion 在本机识别语音，把文字输入到光标所在的位置。",
+    "title": "话音刚落，​字已成行",
+    "lead": "按下语音键，开口就好。声音只留在你的电脑里，字句随之而至。",
     "note": "免费开源（{license}）· macOS {macos} 及以上 · Windows 预览版",
-    "demoLabel": "示意图：Arion 在文档窗口下方的深色胶囊中聆听，随后把听写的句子输入文档。"
+    "demoLabel": "示意图：在一份摘抄文档里，Arion 输入一句听写的《哈姆雷特》台词，记住一个被纠正的词，润色一句口述的十四行诗，再用输入法打出“莎士比亚”的拼音，并按 Shift 切换到英文。"
   },
   "demo": {
-    "editorTitle": "发布说明",
-    "editorLines": [
-      "引导流程现在一次只申请一项权限。",
-      "菜单栏面板会显示上一次听写。"
+    "editorTitle": "摘抄",
+    "sentence": "To be, or not to be，这是一个值得考虑的问题。",
+    "learnSentence": "全世界是一个{term}，所有的男男女女不过是一些演员。",
+    "learnWrong": "午台",
+    "learnRight": "舞台",
+    "spoken": "嗯，我能不能把你比作，呃，夏天",
+    "polished": "我能否将你比作夏日？",
+    "pinyinStart": "sha",
+    "pinyin": "shashibiya",
+    "candidates": [
+      "莎士比亚",
+      "沙士比亚",
+      "莎",
+      "沙",
+      "傻"
     ],
-    "sentence": "把这个 PR merge 到 main 之前，先跑一下 CI。",
+    "committed": "莎士比亚",
     "finishHint": "结束听写",
+    "polishing": "正在润色",
     "inserted": "已插入",
     "learned": "已记住",
     "undo": "撤销"
   },
   "tour": {
     "title": "按你工作时说话的方式设计",
+    "lead": "识别、纠错和输入都在你的电脑上完成，文字直接写进你正在用的应用。",
     "offline": {
       "title": "离线可用",
-      "body": "语音识别在本机运行。模型下载一次之后，听写不需要网络，音频和文字都不会发往任何地方。",
       "mockLabel": "示意图：菜单栏显示网络已断开，Arion 面板仍显示在本机识别的听写内容。",
       "networkOn": "Wi-Fi",
       "networkOff": "离线",
@@ -61,7 +72,6 @@
     },
     "mixed": {
       "title": "一句话，两种语言",
-      "body": "像讨论代码和会议时那样，在一句话里中英切换。不需要先选语言。说话时，文字先作为草稿留在胶囊里，说完的整句才会输入。",
       "mockLabel": "示意图：聊天输入框。Arion 胶囊里的中英混说草稿随识别不断修正，说完后整句输入到消息框。",
       "channel": "# release",
       "author": "Lena",
@@ -77,7 +87,6 @@
     },
     "learning": {
       "title": "从你的修改中学习",
-      "body": "改掉 Arion 输入错的词，下次它就会照你的改法来，并且可以撤销。学到的词只留在本机，加密保存。",
       "mockLabel": "示意图：文档里 Arion 输入了“Orion”，改成“Arion”后，胶囊提示已记住这个词，并可撤销。",
       "document": "会议记录",
       "sentence": "明天和 {term} 团队对一下 roadmap。",
@@ -86,7 +95,6 @@
     },
     "polish": {
       "title": "可选的润色",
-      "body": "本机小型语言模型（或你连接的云端模型）可以在文字输入前理顺措辞、处理口头改口。默认关闭。",
       "mockLabel": "示意图：上方是原话，带有语气词和中途的更正；下方是 Arion 输入的整洁句子。",
       "heard": "听到的",
       "typed": "输入的",
@@ -95,7 +103,6 @@
     },
     "keyboard": {
       "title": "同一个输入法里的拼音键盘",
-      "body": "Arion 输入法也能离线打全拼，候选会从你选过的词里学习。轻按 Shift 切换中英文，光标旁的标识会翻过来，显示当前是哪一种。",
       "mockLabel": "示意图：输入“nihao”弹出候选栏，选第一个候选输入“你好”，再轻按 Shift，光标旁的标识从“中”翻成“英”。",
       "document": "备忘录",
       "pinyinStart": "ni",

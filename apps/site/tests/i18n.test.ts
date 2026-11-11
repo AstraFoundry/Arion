@@ -40,22 +40,12 @@ describe("locale paths", () => {
   });
 });
 
-/** The sentence the release-post dictation stage types for this locale. */
-function stageDictation(locale: (typeof LOCALES)[number]): string {
-  const html = readFileSync(path.resolve(`public/blog/arion-0-1-1/stage.${locale}.html`), "utf8");
-  const block = html.match(/"dictation": \{[\s\S]*?\n        \}/);
-  const final = block?.[0].match(/"final": "([^"]+)"/);
-  if (!final?.[1]) throw new Error(`stage.${locale}.html has no dictation final`);
-  return final[1];
-}
-
 describe("hero demo language", () => {
-  it("types the page language's sentence, the same line as the release-post stage", () => {
+  it("types a sentence of its own in each page language", () => {
     const sentences = LOCALES.map((locale) => {
       const messages = JSON.parse(
         readFileSync(path.resolve(`src/shared/i18n/messages/${locale}.json`), "utf8"),
       ) as { demo: { sentence: string } };
-      expect(messages.demo.sentence, locale).toBe(stageDictation(locale));
       return messages.demo.sentence;
     });
     expect(new Set(sentences).size).toBe(LOCALES.length);

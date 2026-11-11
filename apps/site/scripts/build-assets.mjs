@@ -1,6 +1,8 @@
 // Regenerates the site's raster assets in public/ from repository sources:
-//   apps/site/assets/backdrops/pink-motion.jpg  → hero crops and public/og.jpg
-//   apps/site/assets/backdrops/*.jpg            → feature-tour crops and blog covers
+//   apps/site/assets/backdrops/misty-hillside.jpg → hero ground
+//   apps/site/assets/backdrops/coastal-blur.jpg   → the highlights grid's shared ground
+//   apps/site/assets/backdrops/pink-motion.jpg    → public/og.jpg
+//   apps/site/assets/backdrops/*.jpg              → blog covers
 //   apps/desktop/resources/icon.png             → public/brand/*.png, the mark on og.jpg
 //   apps/desktop/ui/shared/assets/feishu.png    → public/brand/feishu.png (community link)
 // The desktop app keeps its own backdrop. Run with
@@ -13,7 +15,7 @@ import sharp from "sharp";
 const site = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const desktop = path.resolve(site, "../desktop");
 const sources = path.join(site, "assets/backdrops");
-const heroPhoto = path.join(sources, "pink-motion.jpg");
+const ogPhoto = path.join(sources, "pink-motion.jpg");
 const source = (name) => path.join(sources, name);
 const icon = path.join(desktop, "resources/icon.png");
 const feishuLogo = path.join(desktop, "ui/shared/assets/feishu.png");
@@ -22,45 +24,22 @@ const out = (...parts) => path.join(site, "public", ...parts);
 await mkdir(out("backdrops"), { recursive: true });
 await mkdir(out("brand"), { recursive: true });
 
-// pink-motion.jpg is 2400×3600. The wide band keeps a readable blossom and the
-// darker green at the bottom of the frame; both outputs are downscales.
-const wideBand = { left: 0, top: 1800, width: 2400, height: 1500 };
-for (const width of [1200, 1600]) {
-  await sharp(heroPhoto)
-    .extract(wideBand)
+// misty-hillside.jpg is 2400×1600: mist across the upper half carries the
+// hero copy, pink flowers fill the lower third. Full frame, downscaled.
+for (const width of [960, 1600, 2400]) {
+  await sharp(source("misty-hillside.jpg"))
     .resize({ width, kernel: "lanczos3" })
-    .webp({ quality: 80 })
-    .toFile(out("backdrops", `flowers-wide-${width}.webp`));
+    .webp({ quality: width > 1600 ? 72 : 78 })
+    .toFile(out("backdrops", `hillside-${width}.webp`));
 }
-await sharp(heroPhoto)
-  .resize({ width: 800, kernel: "lanczos3" })
-  .webp({ quality: 80 })
-  .toFile(out("backdrops", "flowers-tall-800.webp"));
 
-// Each chapter is its own photograph, cropped to 4:5, so the sticky stage
-// changes ground as the reader moves. The two gladiolus chapters keep
-// different regions of that frame (2400×3626). Keys are the chapter ids in
-// src/widgets/feature-tour/config/chapters.ts.
-const tourChapters = {
-  offline: { file: "gladiolus.jpg", region: { left: 480, top: 180, width: 1440, height: 1800 } },
-  mixed: { file: "coneflower-swirl.jpg" },
-  learning: { file: "rose-bush.jpg" },
-  polish: { file: "gladiolus.jpg", region: { left: 480, top: 1700, width: 1440, height: 1800 } },
-  keyboard: { file: "dark-roses.jpg" },
-};
-for (const [chapter, spec] of Object.entries(tourChapters)) {
-  let image = sharp(source(spec.file));
-  if (spec.region) image = image.extract(spec.region);
-  await image
-    .resize({
-      width: 800,
-      height: 1000,
-      fit: "cover",
-      position: spec.region ? "centre" : "attention",
-      kernel: "lanczos3",
-    })
+// coastal-blur.jpg is 2400×1609: one photograph behind every card of the
+// highlights grid, each card a window onto its own part of the frame.
+for (const width of [960, 1600]) {
+  await sharp(source("coastal-blur.jpg"))
+    .resize({ width, kernel: "lanczos3" })
     .webp({ quality: 78 })
-    .toFile(out("backdrops", `tour-${chapter}-800.webp`));
+    .toFile(out("backdrops", `coastal-${width}.webp`));
 }
 
 // Blog covers are 4:3, the shape of the index lead.
@@ -93,8 +72,8 @@ await mark
 await copyFile(feishuLogo, out("brand", "feishu.png"));
 
 const ogMark = await sharp(icon).resize(280).png().toBuffer();
-await sharp(heroPhoto)
-  .extract(wideBand)
+await sharp(ogPhoto)
+  .extract({ left: 0, top: 1800, width: 2400, height: 1500 })
   .resize({ width: 1200, height: 630, fit: "cover", position: "centre", kernel: "lanczos3" })
   .composite([{ input: ogMark, gravity: "center" }])
   .jpeg({ quality: 82, mozjpeg: true })

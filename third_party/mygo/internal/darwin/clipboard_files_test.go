@@ -191,3 +191,55 @@ func TestClipboardFileAccessRejectsWrongMovedAndInvalidReferences(t *testing.T) 
 		}
 	})
 }
+
+func TestClipboardWithFileAccessCallbackAndFailure(t *testing.T) {
+	load()
+	path := filepath.Join(t.TempDir(), "owned-preview.png")
+	content := []byte("owned preview source")
+	if err := os.WriteFile(path, content, 0600); err != nil {
+		t.Fatal(err)
+	}
+	var bookmark []byte
+	withPool(func() {
+		var err error
+		bookmark, err = macClipboardOrdinaryFileBookmark(fileURL(path))
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+	data := ownedFileAccessData(path, bookmark)
+	expected := errors.New("owned read failure")
+	err := (clipboard{}).WithFileAccess(data, func() error {
+		got, err := os.ReadFile(path)
+		if err != nil || !bytes.Equal(got, content) {
+			t.Fatal("scope did not allow reading", err)
+		}
+		return expected
+	})
+	if !errors.Is(err, expected) {
+		t.Fatal("callback failure discarded", err)
+	}
+	calls := 0
+	for _, bad := range []transfer.Data{
+		ownedFileAccessData(path, []byte("invalid grant")),
+		ownedFileAccessData(path+".other", bookmark),
+	} {
+		if err := (clipboard{}).WithFileAccess(bad, func() error { calls++; return nil }); err == nil {
+			t.Fatal("invalid reference authorized callback")
+		}
+	}
+	if calls != 0 {
+		t.Fatal("invalid scope ran callback")
+	}
+	func() {
+		defer func() {
+			if recover() != expected {
+				t.Error("callback panic was swallowed")
+			}
+		}()
+		_ = (clipboard{}).WithFileAccess(data, func() error { panic(expected) })
+	}()
+	if err := (clipboard{}).WithFileAccess(data, func() error { return nil }); err != nil {
+		t.Fatal("scope unusable after failed callback", err)
+	}
+}

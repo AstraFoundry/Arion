@@ -17,13 +17,13 @@ export function PolishMock({ playing }: { playing: boolean }) {
 
   return (
     <div className="flex w-full max-w-md flex-col items-center gap-3">
-      <div className="w-full rounded-2xl border border-substrate-edge bg-substrate px-5 py-4 text-substrate-ink shadow-4">
+      <div className="w-full rounded-2xl border border-substrate-edge bg-substrate px-5 py-4 text-substrate-ink">
         <span className="text-xs text-substrate-muted">{copy.heard}</span>
         <p className="mt-1.5 text-sm leading-relaxed">{copy.spoken}</p>
       </div>
       <motion.span
         aria-hidden="true"
-        className="flex size-8 items-center justify-center rounded-full bg-card text-foreground shadow-2"
+        className="flex size-8 items-center justify-center rounded-full bg-card text-foreground"
         animate={step === STEP.polishing ? { y: [0, 3, 0] } : { y: 0 }}
         transition={step === STEP.polishing ? { duration: 0.8, repeat: Infinity } : undefined}
       >

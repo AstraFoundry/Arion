@@ -35,7 +35,8 @@ export function Container<T extends ElementType = "div">({
 interface SectionHeadingProps {
   title: ReactNode;
   lead?: ReactNode;
-  align?: "start" | "center";
+  /** `split` sets the title on the left and the lead on the right from `lg` up. */
+  align?: "start" | "center" | "split";
   className?: string;
   titleClassName?: string;
   as?: "h1" | "h2";
@@ -55,6 +56,8 @@ export function SectionHeading({
       className={cn(
         "flex flex-col gap-4",
         align === "center" && "items-center text-center",
+        align === "split" &&
+          "lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-end lg:gap-16",
         className,
       )}
     >
@@ -67,7 +70,12 @@ export function SectionHeading({
         {title}
       </Heading>
       {lead ? (
-        <p className="max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
+        <p
+          className={cn(
+            "max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground",
+            align === "split" && "lg:justify-self-end lg:pb-1.5",
+          )}
+        >
           {lead}
         </p>
       ) : null}

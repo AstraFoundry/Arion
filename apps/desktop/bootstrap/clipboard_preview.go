@@ -1,70 +1,100 @@
 package bootstrap
 
 import (
-	"bytes"
-	"image"
-	"image/png"
+	"crypto/sha256"
+	"encoding/binary"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/clipboardhistory"
+	"arion.local/desktop/infrastructure/clipboardos"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo/ui"
-	"golang.org/x/image/draw"
 )
 
 func clipBitmap(data []byte, edge int) (*ui.Bitmap, error) {
 	if err := clipboardhistory.ValidateResource(domain.ClipPayload{Kind: domain.ClipImage, PNG: data}); err != nil {
 		return nil, err
 	}
-	img, err := png.Decode(bytes.NewReader(data))
+	return ui.DecodeBitmapThumbnail(data, edge)
+}
+
+// File groups keep their ordered names and paths rather than implying that
+// one image represents the entire selection. File delivery stays unchanged.
+func clipImageFile(p domain.ClipPayload) bool {
+	if p.Kind != domain.ClipFiles || len(p.Files) != 1 {
+		return false
+	}
+	switch strings.ToLower(filepath.Ext(p.Files[0])) {
+	case ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp":
+		return true
+	}
+	return false
+}
+
+func clipPreviewBitmap(p domain.ClipPayload, edge int) (*ui.Bitmap, error) {
+	if p.Kind == domain.ClipImage {
+		return clipBitmap(p.PNG, edge)
+	}
+	if !clipImageFile(p) {
+		return nil, domain.ErrClipInvalid
+	}
+	data, err := clipboardos.ReadPreviewFile(p, domain.DefaultClipLimits().ItemBytes)
 	if err != nil {
 		return nil, err
 	}
-	b := img.Bounds()
-	w, h := b.Dx(), b.Dy()
-	if max(w, h) > edge {
-		if w >= h {
-			h = max(1, h*edge/w)
-			w = edge
-		} else {
-			w = max(1, w*edge/h)
-			h = edge
-		}
-		resized := image.NewRGBA(image.Rect(0, 0, w, h))
-		draw.ApproxBiLinear.Scale(resized, resized.Bounds(), img, b, draw.Src, nil)
-		img = resized
+	if err := clipboardhistory.ValidatePreviewImage(data); err != nil {
+		return nil, err
 	}
-	return ui.NewBitmap(img), nil
+	return ui.DecodeBitmapThumbnail(data, edge)
 }
 
-func clipboardMetadata(items []domain.Clip, cached map[string]arion.ClipboardMeta) (map[string]arion.ClipboardMeta, error) {
+func clipboardMetadata(items []domain.Clip, cached map[string]arion.ClipboardMeta) map[string]arion.ClipboardMeta {
 	meta := make(map[string]arion.ClipboardMeta, len(items))
-	var failure error
 	for _, item := range items {
 		m := arion.ClipboardMeta{}
+		fileImage := clipImageFile(item.Payload)
 		for _, path := range item.Payload.Files {
 			f := arion.ClipboardFile{Name: filepath.Base(path), Path: path}
 			if info, err := os.Lstat(path); err == nil {
 				f.Available = info.Mode().IsRegular()
 				f.Directory = info.IsDir()
+				fileImage = fileImage && f.Available
+				if fileImage {
+					version := binary.LittleEndian.AppendUint64(nil, uint64(info.Size()))
+					version = binary.LittleEndian.AppendUint64(version, uint64(info.ModTime().UnixNano()))
+					if len(item.Payload.FileAccess) != 0 {
+						version = append(version, item.Payload.FileAccess[0]...)
+					}
+					m.ThumbnailRevision = sha256.Sum256(version)
+				}
 			}
 			m.Files = append(m.Files, f)
 		}
 		if item.Payload.Kind == domain.ClipImage {
 			m.Thumbnail = cached[item.ID].Thumbnail
 			if m.Thumbnail == nil {
+				// CLP-06: preview failures are silent; delivery validates separately.
+				m.Thumbnail, _ = clipBitmap(item.Payload.PNG, 96)
+			}
+		} else if fileImage {
+			previous := cached[item.ID]
+			if m.ThumbnailRevision != ([32]byte{}) && previous.ThumbnailRevision == m.ThumbnailRevision {
+				m.Thumbnail = previous.Thumbnail
+			}
+			if m.Thumbnail == nil {
 				var err error
-				m.Thumbnail, err = clipBitmap(item.Payload.PNG, 96)
-				if err != nil {
-					failure = err
+				m.Thumbnail, err = clipPreviewBitmap(item.Payload, 96)
+				if err == nil {
+					m.Files[0].Available = true
 				}
 			}
 		}
 		meta[item.ID] = m
 	}
-	return meta, failure
+	return meta
 }
 
 // Folder-containing legacy records remain encrypted until retention removes
