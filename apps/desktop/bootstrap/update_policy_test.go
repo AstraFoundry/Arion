@@ -156,6 +156,35 @@ func TestFailedRollbackBlocksFurtherUpdatesAndPreservesJournal(t *testing.T) {
 	}
 }
 
+func TestUnusableStageKeepsInputUnlessTransactionNeedsRepair(t *testing.T) {
+	saved := updatestate.State{Stage: "/Applications/.Arion.app.update-1/record.json", Version: "0.1.5"}
+	for name, tc := range map[string]struct {
+		err     error
+		blocked bool
+	}{
+		"installation replaced": {errors.New("the installed app changed after update preparation"), false},
+		"foreign stage":         {errors.New("invalid update staging path"), false},
+		"interrupted swap":      {mygo.ErrUpdateRecoveryRequired, true},
+	} {
+		t.Run(name, func(t *testing.T) {
+			a := &App{updatePolicy: &updatePolicy{saved: saved}}
+			a.updates = newUpdates(&fakeFeed{enabled: true}, &a.state.Update, nil)
+			forgotten := false
+			a.updates.persist = func(stage preparedRelease, _ bool) error {
+				forgotten = stage == nil
+				return nil
+			}
+			a.unusableStage(saved, tc.err)
+			if a.updates.blocked != tc.blocked || a.updateApplying() != tc.blocked || forgotten == tc.blocked {
+				t.Fatalf("blocked=%v applying=%v forgotten=%v, want blocked=%v", a.updates.blocked, a.updateApplying(), forgotten, tc.blocked)
+			}
+			if tc.blocked && a.state.Update.Phase != arion.UpdateRecoveryFailed {
+				t.Fatalf("repair not reported: %+v", a.state.Update)
+			}
+		})
+	}
+}
+
 func TestUnsupportedBuildDoesNotRecoverOrRewriteSavedUpdate(t *testing.T) {
 	for _, content := range []string{`{"schema":1,"stage":"/release/update-stage","version":"9.9.9"}`, `invalid state`} {
 		t.Run(content, func(t *testing.T) {
