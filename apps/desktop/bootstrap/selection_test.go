@@ -11,6 +11,7 @@ import (
 	"arion.local/core/application"
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/vocabulary"
+	"github.com/egoist/mygo"
 )
 
 type selectionPlatform struct {
@@ -29,6 +30,7 @@ func (p *selectionPlatform) ReadSelection() (string, bool, error) {
 	p.reads.Add(1)
 	return p.text, p.secure, p.readErr
 }
+func (p *selectionPlatform) SelectionAnchor() (int, int, int, int, bool) { return 0, 0, 0, 0, false }
 func (p *selectionPlatform) StartSelectionWatch(sink func()) error {
 	p.started++
 	p.sink = sink
@@ -131,6 +133,32 @@ func TestSelectionVocabularyReopens(t *testing.T) {
 	}
 	if !found {
 		t.Fatalf("reopened profile missing hotword: %+v", entries)
+	}
+}
+
+func TestSelectionPlacementAndEmptySecure(t *testing.T) {
+	bounds := mygo.Rectangle{X: 8, Y: 16, Width: 40, Height: 12}
+	if got := selectionPlacement(bounds, true, mygo.Point{X: 1, Y: 2}); got != bounds {
+		t.Fatalf("bounds %+v", got)
+	}
+	if got := selectionPlacement(mygo.Rectangle{}, false, mygo.Point{X: 3, Y: 4}); got != (mygo.Rectangle{X: 3, Y: 4}) {
+		t.Fatalf("cursor %+v", got)
+	}
+
+	platform := &selectionPlatform{}
+	app := &App{platform: platform}
+	app.prefs.Selection.Enabled = true
+	app.syncSelectionWatch(false, true)
+	platform.sink()
+	waitSelection(t, func() bool { return platform.reads.Load() == 1 })
+	if _, ok := app.currentSelection(); ok {
+		t.Fatal("empty selection produced an offer")
+	}
+	platform.text, platform.secure = "secret", true
+	platform.sink()
+	waitSelection(t, func() bool { return platform.reads.Load() == 2 })
+	if _, ok := app.currentSelection(); ok {
+		t.Fatal("secure field produced an offer")
 	}
 }
 

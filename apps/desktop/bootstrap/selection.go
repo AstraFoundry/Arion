@@ -4,6 +4,7 @@ import (
 	"arion.local/core/application"
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/urlopen"
+	"github.com/egoist/mygo"
 )
 
 func (a *App) syncSelectionWatch(before, next bool) {
@@ -12,7 +13,7 @@ func (a *App) syncSelectionWatch(before, next bool) {
 	}
 	if !next {
 		a.platform.StopSelectionWatch()
-		a.publishSelection(application.SelectionOffer{}, false)
+		a.publishSelection(application.SelectionOffer{}, false, mygo.Rectangle{}, false, false)
 		return
 	}
 	a.ensureSelectionLoop()
@@ -56,10 +57,18 @@ func (a *App) applySelectionRead() {
 		if domain.CodeOf(err) == domain.CodePermissionDenied {
 			a.record("selection_watch", err)
 		}
-		a.publishSelection(application.SelectionOffer{}, false)
+		a.publishSelection(application.SelectionOffer{}, false, mygo.Rectangle{}, false, true)
 		return
 	}
-	a.publishSelection(offer, ok)
+	var anchor mygo.Rectangle
+	hasAnchor := false
+	if ok && a.platform != nil {
+		if x, y, width, height, anchored := a.platform.SelectionAnchor(); anchored {
+			anchor = mygo.Rectangle{X: x, Y: y, Width: width, Height: height}
+			hasAnchor = true
+		}
+	}
+	a.publishSelection(offer, ok, anchor, hasAnchor, true)
 }
 
 func (a *App) readSelection() (application.SelectionReading, error) {
@@ -73,7 +82,7 @@ func (a *App) readSelection() (application.SelectionReading, error) {
 	return application.SelectionReading{Text: text, Secure: secure}, nil
 }
 
-func (a *App) publishSelection(offer application.SelectionOffer, ok bool) {
+func (a *App) publishSelection(offer application.SelectionOffer, ok bool, anchor mygo.Rectangle, hasAnchor bool, wait bool) {
 	a.selectionMu.Lock()
 	a.selectionOK = ok
 	if ok {
@@ -85,15 +94,26 @@ func (a *App) publishSelection(offer application.SelectionOffer, ok bool) {
 	apply := func() {
 		if ok {
 			a.state.Selection = offer
+			a.presentSelection(anchor, hasAnchor)
 			return
 		}
 		a.state.Selection = application.SelectionOffer{}
+		a.dismissSelection()
 	}
 	if a.queueReady == nil {
 		apply()
 		return
 	}
-	a.post(apply)
+	if !wait {
+		a.post(apply)
+		return
+	}
+	done := make(chan struct{})
+	a.post(func() {
+		apply()
+		close(done)
+	})
+	<-done
 }
 
 func (a *App) currentSelection() (application.SelectionOffer, bool) {

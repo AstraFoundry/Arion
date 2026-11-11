@@ -4,6 +4,7 @@ package e2e
 
 import (
 	"bytes"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -12,6 +13,8 @@ import (
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/clipboardos"
 	"arion.local/desktop/infrastructure/vocabulary"
+	uiapp "arion.local/desktop/ui/app"
+	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
 )
 
@@ -118,4 +121,150 @@ func assertSecureSelectionRefused(t *testing.T, reading application.SelectionRea
 	if err != nil || len(entries) != 0 {
 		t.Fatalf("secure field stored %+v %v", entries, err)
 	}
+}
+
+func selectionActionIDs() []string {
+	return []string{
+		application.SelectionActionTranslate,
+		application.SelectionActionExplain,
+		application.SelectionActionSummarize,
+		application.SelectionActionRewrite,
+		application.SelectionActionAsk,
+		application.SelectionActionAskChatGPT,
+		application.SelectionActionCopy,
+		application.SelectionActionVocabulary,
+	}
+}
+
+func setSelectionEnabled(t *testing.T, on bool) {
+	t.Helper()
+	app.Update(func(*arion.State) {
+		app.Store().Actions.UpdatePreferences(func(p *arion.Preferences) {
+			p.Selection.Enabled = on
+			if !on {
+				return
+			}
+			clients := append([]application.SelectionClient(nil), p.Selection.Clients...)
+			if len(clients) == 0 {
+				clients = application.DefaultSelectionPreferences().Clients
+			}
+			for i := range clients {
+				clients[i].Enabled = true
+			}
+			p.Selection.Clients = clients
+		})
+	})
+}
+
+// exerciseSelectionPopover opens the production popover for selected and runs
+// copy and vocabulary through the actions the menu calls. It does not launch a client.
+func exerciseSelectionPopover(t *testing.T, selected string) {
+	t.Helper()
+	setSelectionEnabled(t, true)
+	t.Cleanup(func() { setSelectionEnabled(t, false) })
+	app.NotifySelectionMouseUp()
+	window := app.Windows()["selection"]
+	if window == nil || !window.IsVisible() || window.Page() != nil {
+		t.Fatal("selection popover was not shown")
+	}
+	var text string
+	var ids []string
+	var height int
+	app.Update(func(*arion.State) {
+		text = app.Store().State.Selection.Text
+		height = uiapp.SelectionHeightFor(app.Store())
+		for _, action := range app.Store().State.Selection.Actions {
+			ids = append(ids, action.ID)
+		}
+	})
+	if text != selected || !sameIDs(ids, selectionActionIDs()) {
+		t.Fatalf("popover %q %v", text, ids)
+	}
+	if width, got := window.ContentSize(); width != uiapp.SelectionWidth || got != height {
+		t.Fatalf("popover size %d,%d", width, got)
+	}
+	var copyErr error
+	app.Update(func(*arion.State) { copyErr = app.Store().Actions.CopySelection() })
+	if copyErr != nil {
+		t.Fatal(copyErr)
+	}
+	var clipboard string
+	mygo.RunOnMain(func() { clipboard = mygo.Clipboard.ReadText() })
+	if clipboard != selected {
+		t.Fatalf("clipboard %q", clipboard)
+	}
+	var addErr error
+	app.Update(func(*arion.State) { addErr = app.Store().Actions.AddSelectionVocabulary() })
+	if addErr != nil {
+		t.Fatal(addErr)
+	}
+	entries, err := app.ReopenedVocabulary()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var id string
+	found := false
+	for _, entry := range entries {
+		if entry.To == selected && entry.Hotword {
+			found = true
+			id = entry.ID
+		}
+	}
+	if !found {
+		t.Fatalf("reopened profile missing hotword: %+v", entries)
+	}
+	t.Cleanup(func() {
+		app.Update(func(*arion.State) {
+			if id != "" {
+				app.Store().Actions.RemoveReplacement(id)
+			}
+		})
+	})
+	assertSelectionLogsOmit(t, selected)
+}
+
+func assertNoSelectionPopover(t *testing.T) {
+	t.Helper()
+	app.NotifySelectionMouseUp()
+	if window := app.Windows()["selection"]; window != nil && window.IsVisible() {
+		t.Fatal("selection popover was shown")
+	}
+	var text string
+	app.Update(func(*arion.State) { text = app.Store().State.Selection.Text })
+	if text != "" {
+		t.Fatalf("selection offer %q", text)
+	}
+}
+
+func assertSelectionLogsOmit(t *testing.T, selected string) {
+	t.Helper()
+	dir := filepath.Join(profileDir, "logs")
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return
+		}
+		t.Fatal(err)
+	}
+	for _, entry := range entries {
+		data, err := os.ReadFile(filepath.Join(dir, entry.Name()))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if bytes.Contains(data, []byte(selected)) {
+			t.Fatalf("selected text was logged in %s", entry.Name())
+		}
+	}
+}
+
+func sameIDs(got, want []string) bool {
+	if len(got) != len(want) {
+		return false
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			return false
+		}
+	}
+	return true
 }

@@ -276,6 +276,11 @@ func (t *HistoryTarget) Anchor() (int, int, int, int, bool) {
 			r = historyRect{top.X, top.Y, bottom.X, bottom.Y}
 		}
 	}
+	return historyDIP(r)
+}
+
+// historyDIP converts a physical-pixel screen rectangle to DIPs.
+func historyDIP(r historyRect) (int, int, int, int, bool) {
 	if r.Right < r.Left || r.Bottom <= r.Top {
 		return 0, 0, 0, 0, false
 	}

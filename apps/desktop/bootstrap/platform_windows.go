@@ -54,6 +54,9 @@ func (windowsPlatform) StopHoldKey() { windows.StopHold() }
 func (windowsPlatform) ReadSelection() (string, bool, error) {
 	return windows.ReadSelectedText()
 }
+func (windowsPlatform) SelectionAnchor() (int, int, int, int, bool) {
+	return windows.SelectedTextAnchor()
+}
 func (windowsPlatform) StartSelectionWatch(sink func()) error {
 	return windows.StartSelectionWatch(sink)
 }

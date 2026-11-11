@@ -8,6 +8,7 @@ import (
 
 	"arion.local/core/application"
 	"arion.local/desktop/infrastructure/macos"
+	arion "arion.local/desktop/ui/shared/runtime"
 )
 
 func TestSelectionActions(t *testing.T) {
@@ -29,9 +30,12 @@ func TestSelectionActions(t *testing.T) {
 		t.Fatal(err)
 	}
 	assertSelectionCopyHotwordURLAndSwitch(t, selected, application.SelectionReading{Text: text, Secure: secure})
+	exerciseSelectionPopover(t, selected)
 	if !request("clipboardCheck", map[string]any{"text": selected}).ClipboardOwned {
 		t.Fatal("copy did not leave the selection on the clipboard")
 	}
+	request("set", map[string]any{"text": "prefix " + selected + " suffix", "location": 7, "length": 0})
+	assertNoSelectionPopover(t)
 
 	request("focus", map[string]any{"target": "secure"})
 	eventually(t, "secure field focused", func() bool { return request("state", nil).Focused == "secure" })
@@ -40,4 +44,22 @@ func TestSelectionActions(t *testing.T) {
 		t.Fatal(err)
 	}
 	assertSecureSelectionRefused(t, application.SelectionReading{Text: text, Secure: secure})
+	before, err := app.ReopenedVocabulary()
+	if err != nil {
+		t.Fatal(err)
+	}
+	assertNoSelectionPopover(t)
+	var actionErr error
+	app.Update(func(*arion.State) { actionErr = app.Store().Actions.AddSelectionVocabulary() })
+	if actionErr == nil {
+		t.Fatal("secure field saved a hotword")
+	}
+	after, err := app.ReopenedVocabulary()
+	if err != nil || len(after) != len(before) {
+		t.Fatalf("secure field changed vocabulary: %v %v", before, after)
+	}
+	setSelectionEnabled(t, false)
+	request("focus", map[string]any{"target": "A"})
+	request("set", map[string]any{"text": "prefix " + selected + " suffix", "location": 7, "length": len(selected)})
+	assertNoSelectionPopover(t)
 }
