@@ -25,7 +25,7 @@ MyGo v0.8.3 requires Go 1.27.3, which the workspace declares. The workspace/tool
 
 Both supported desktop targets also need a native Rust/Cargo toolchain for the locked keyboard ranking worker; see [resource preparation](README.md).
 
-`make desktop-dev`, `make build desktop` and `make desktop-libs` check the active Node version from `.nvmrc` and verify Go, Cargo, rustc and CMake before preparing native resources. All detected toolchain failures are reported together; no tool is installed automatically. This preflight does not replace native compiler, SDK, signing or host acceptance checks.
+`make build` loads nvm from `$NVM_DIR/nvm.sh` (default `~/.nvm`) when it exists, runs `nvm use` with `.nvmrc` and puts that Node first on `PATH` for the recipe, so no manual `nvm use` is needed; a missing nvm-installed version fails with nvm's install instruction. `make desktop-dev`, `make build desktop` and `make desktop-libs` check the active Node version from `.nvmrc` and verify Go, Cargo, rustc and CMake before preparing native resources. All detected toolchain failures are reported together; no tool is installed automatically. This preflight does not replace native compiler, SDK, signing or host acceptance checks.
 
 Install Rust using the [official rustup installer](https://rust-lang.org/tools/install/). On macOS, then reopen the terminal or run `source "$HOME/.cargo/env"`, and verify `cargo --version` and `rustc --version`. `spawnSync cargo ENOENT` means Cargo is missing from the invoking shell's PATH; it is unrelated to the preceding Xcode destination warnings. Activate Node from `.nvmrc` in that same shell and verify `node --version` before rebuilding; installing Node alongside an older version does not switch the active executable.
 

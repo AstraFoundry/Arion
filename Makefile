@@ -39,6 +39,13 @@ $(filter-out reset,$(MAKECMDGOALS)): reset
 endif
 endif
 
+# Recipes run in a non-interactive shell that never reads the profile loading nvm.
+# Without nvm, the Node on PATH must still satisfy .nvmrc (desktop toolchain check).
+NVM_DIR ?= $(HOME)/.nvm
+ifneq ($(wildcard $(NVM_DIR)/nvm.sh),)
+NVM_USE = . "$(NVM_DIR)/nvm.sh" --no-use && nvm use && PATH="$$NVM_BIN:$$PATH" &&
+endif
+
 install: ## Install the pinned pnpm workspace with its frozen lockfile
 	@pnpm install --frozen-lockfile
 
@@ -78,7 +85,7 @@ desktop-libs: ## Stage speech runtimes, the LLM worker, localized permission cop
 	@node scripts/stage-desktop-resources.mjs
 
 build: ## Build a component: make build desktop | make build site (desktop signing follows ENV)
-	@node scripts/build.mjs $(word 2,$(MAKECMDGOALS))
+	@$(NVM_USE) node scripts/build.mjs $(word 2,$(MAKECMDGOALS))
 
 desktop-dev: ## Launch an exclusive development session with persistent macOS signing
 	@node scripts/desktop-command.mjs dev
