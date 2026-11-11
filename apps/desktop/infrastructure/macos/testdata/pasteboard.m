@@ -94,7 +94,7 @@ int main(void) {
         CHECK(posts == 2);
         CHECK(arion_paste_post((__bridge void *)tx, NULL, NULL, 1) == ARION_PASTE_FAILED);
         CHECK(posts == 2);
-        CHECK(arion_paste_finish(retain_tx(tx)) == 1);
+        CHECK(arion_paste_finish(retain_tx(tx)) == ARION_PASTE_FINISH_RESTORED);
         CHECK(board.pasteboardItems.count == 2);
         CHECK([[board.pasteboardItems[0] dataForType:@"example.binary"] isEqual:bytes]);
         CHECK([[board.pasteboardItems[1] stringForType:NSPasteboardTypeString] isEqual:@"second item"]);
@@ -102,14 +102,14 @@ int main(void) {
         tx = begin_paste(@"before stage", board);
         replace_board(board, @"new owner before stage");
         CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_CHANGED);
-        CHECK(arion_paste_finish(retain_tx(tx)) == 0);
+        CHECK(arion_paste_finish(retain_tx(tx)) == ARION_PASTE_FINISH_LEFT);
         CHECK([[board stringForType:NSPasteboardTypeString] isEqual:@"new owner before stage"]);
 
         tx = begin_paste(@"after stage", board);
         CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_OK);
         replace_board(board, @"new owner before post");
         CHECK(arion_paste_post((__bridge void *)tx, NULL, NULL, 1) == ARION_PASTE_CHANGED);
-        CHECK(arion_paste_finish(retain_tx(tx)) == 0);
+        CHECK(arion_paste_finish(retain_tx(tx)) == ARION_PASTE_FINISH_LEFT);
         CHECK([[board stringForType:NSPasteboardTypeString] isEqual:@"new owner before post"]);
         CHECK(posts == 2);
 
@@ -119,7 +119,7 @@ int main(void) {
             focus_ok = failure != 0; selection_ok = failure != 1; secure = failure == 2;
             CHECK(arion_paste_post((__bridge void *)tx, NULL, NULL, 1) ==
                   (failure == 2 ? ARION_PASTE_SECURE : ARION_PASTE_TARGET_CHANGED));
-            CHECK(arion_paste_finish(retain_tx(tx)) == 1);
+            CHECK(arion_paste_finish(retain_tx(tx)) == ARION_PASTE_FINISH_RESTORED);
             CHECK(posts == 2);
         }
         focus_ok = selection_ok = 1; secure = 0;
@@ -129,13 +129,13 @@ int main(void) {
         CHECK(arion_paste_post((__bridge void *)tx, NULL, NULL, 1) == ARION_PASTE_OK);
         CHECK(posts == 4);
         replace_board(board, @"new owner after post");
-        CHECK(arion_paste_finish(retain_tx(tx)) == 0);
+        CHECK(arion_paste_finish(retain_tx(tx)) == ARION_PASTE_FINISH_LEFT);
         CHECK([[board stringForType:NSPasteboardTypeString] isEqual:@"new owner after post"]);
 
         [board clearContents];
         tx = begin_paste(@"empty original clipboard", board);
         CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_OK);
-        CHECK(arion_paste_finish(retain_tx(tx)) == 1);
+        CHECK(arion_paste_finish(retain_tx(tx)) == ARION_PASTE_FINISH_RESTORED);
         CHECK(board.pasteboardItems.count == 0);
         CHECK(begin_paste(@"", board) == nil);
 
@@ -152,7 +152,7 @@ int main(void) {
         CHECK([tx.saved[0].types isEqual:@[NSPasteboardTypeString]]);
         CHECK(board.changeCount == carbonChange);
         CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_OK);
-        CHECK(arion_paste_finish(retain_tx(tx)) == 1);
+        CHECK(arion_paste_finish(retain_tx(tx)) == ARION_PASTE_FINISH_RESTORED);
         CHECK(board.pasteboardItems.count == 1);
         CHECK([[board stringForType:NSPasteboardTypeString] isEqual:@"carbon text"]);
         CHECK(write_carbon_board(board, NO));
@@ -166,7 +166,7 @@ int main(void) {
         tx = begin_paste(@"text over a file clipboard", board);
         CHECK(tx);
         CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_OK);
-        CHECK(arion_paste_finish(retain_tx(tx)) == 1);
+        CHECK(arion_paste_finish(retain_tx(tx)) == ARION_PASTE_FINISH_RESTORED);
         CHECK(tx.fileAccess.count == 0);
         CHECK([board.pasteboardItems[0].types containsObject:NSPasteboardTypeFileURL]);
         NSArray<NSURL *> *restored = [board readObjectsForClasses:@[NSURL.class]
@@ -177,7 +177,7 @@ int main(void) {
         CHECK(tx);
         CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_OK);
         replace_board(board, @"new user copy replaces the file");
-        CHECK(arion_paste_finish(retain_tx(tx)) == 0);
+        CHECK(arion_paste_finish(retain_tx(tx)) == ARION_PASTE_FINISH_LEFT);
         CHECK(tx.fileAccess.count == 0);
         CHECK([[board stringForType:NSPasteboardTypeString] isEqual:@"new user copy replaces the file"]);
         CHECK([NSFileManager.defaultManager removeItemAtURL:file error:nil]);

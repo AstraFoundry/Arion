@@ -97,7 +97,7 @@ func TestUpdateFailures(t *testing.T) {
 	// One the user asked for says so.
 	u.check(time.Now(), true)
 	drain()
-	if state.Phase != arion.UpdateFailed || state.Failed != arion.UpdateStepCheck {
+	if state.Phase != arion.UpdateCheckFailed {
 		t.Fatalf("manual failure: %+v", state)
 	}
 	feed.err, feed.installErr = nil, errors.New("bad signature")
@@ -106,7 +106,7 @@ func TestUpdateFailures(t *testing.T) {
 	drain()
 	u.install()
 	drain()
-	if state.Phase != arion.UpdateFailed || state.Failed != arion.UpdateStepPrepare || state.Version != "0.2.0" {
+	if state.Phase != arion.UpdatePrepareFailed || state.Version != "0.2.0" {
 		t.Fatalf("install failure: %+v", state)
 	}
 	// Retrying the install starts over.

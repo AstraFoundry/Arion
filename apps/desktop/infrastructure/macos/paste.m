@@ -177,8 +177,8 @@ int arion_clipboard_publish(const char *utf8) {
 int arion_paste_finish(void *transaction) {
     @autoreleasepool {
         ArionPasteTransaction *tx = (__bridge_transfer ArionPasteTransaction *)transaction;
-        if (!tx) return 0;
-        int result = 0;
+        if (!tx) return ARION_PASTE_FINISH_LEFT;
+        int result = ARION_PASTE_FINISH_LEFT;
         if (owns_pasteboard(tx)) {
             [tx.board clearContents];
             // Items are written one at a time so a rejected item does not
@@ -188,7 +188,7 @@ int arion_paste_finish(void *transaction) {
                 if (![tx.board writeObjects:@[item]]) ok = NO;
             }
             if (tx.board == NSPasteboard.generalPasteboard) atomic_store(&historyExcludedRevision, tx.board.changeCount);
-            result = ok ? 1 : -1;
+            result = ok ? ARION_PASTE_FINISH_RESTORED : ARION_PASTE_FINISH_RESTORE_FAILED;
         }
         [tx releaseFileAccess];
         return result;

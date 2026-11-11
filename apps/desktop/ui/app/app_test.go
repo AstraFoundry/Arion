@@ -390,7 +390,7 @@ func TestSettingsSections(t *testing.T) {
 	page := settings.NewPage()
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	for _, section := range []struct{ id, label, want string }{
-		{settings.Overview, copy.For(copy.English).Text(copy.NavOverview), copy.For(copy.English).Text(copy.UsageActivity)},
+		{settings.Overview, copy.For(copy.English).Text(copy.NavOverview), copy.For(copy.English).Text(copy.UsageFirstTitle)},
 		{settings.General, copy.For(copy.English).Text(copy.NavGeneral), copy.For(copy.English).Text(copy.LaunchAtLogin)},
 		{settings.Dictation, copy.For(copy.English).Text(copy.NavDictation), copy.For(copy.English).Text(copy.HoldKeyLabel)},
 		{settings.Microphone, copy.For(copy.English).Text(copy.NavMicrophone), copy.For(copy.English).Text(copy.MicTest)},
@@ -533,8 +533,8 @@ func TestUpdateStates(t *testing.T) {
 		{runtime.Update{Phase: runtime.UpdateAvailable, Version: "0.2.0"}, en.UpdateAvailable("0.2.0"), en.Text(copy.UpdateInstall), "install-update"},
 		{runtime.Update{Phase: runtime.UpdateDownloading, Version: "0.2.0", Downloaded: 3 << 20, Total: 12 << 20}, en.Progress(3<<20, 12<<20), "", ""},
 		{runtime.Update{Phase: runtime.UpdateReady, Version: "0.2.0"}, en.Text(copy.UpdateReady), en.Text(copy.UpdateRestart), "restart-update"},
-		{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepCheck}, en.Text(copy.UpdateCheckFailed), en.Text(copy.UpdateCheck), "check-update"},
-		{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepInstall, Version: "0.2.0"}, en.Text(copy.UpdateInstallFailed), en.Text(copy.Retry), "install-update"},
+		{runtime.Update{Phase: runtime.UpdateCheckFailed}, en.Text(copy.UpdateCheckFailed), en.Text(copy.UpdateCheck), "check-update"},
+		{runtime.Update{Phase: runtime.UpdatePrepareFailed, Version: "0.2.0"}, en.Text(copy.UpdatePrepareFailed), en.Text(copy.Retry), "install-update"},
 	} {
 		state.Update = step.update
 		actions.calls = nil
@@ -551,7 +551,7 @@ func TestUpdateStates(t *testing.T) {
 				t.Errorf("%s: click %q: %v %q", step.update.Phase, step.click, err, actions.calls)
 			}
 		}
-		snapshot(t, tt, "settings-about-update-"+string(step.update.Phase)+string(step.update.Failed))
+		snapshot(t, tt, "settings-about-update-"+string(step.update.Phase))
 	}
 	state.Update = runtime.Update{Phase: runtime.UpdateCurrent}
 	settle(tt)
@@ -659,14 +659,36 @@ func usageFixture(state *runtime.State) {
 
 func TestUsageOverview(t *testing.T) {
 	state, _, store := fixture()
+	// The first-run card names the dictation key; Linux has none of its own.
+	state.Preferences.HoldKey = runtime.HoldFn
 	en := copy.For(copy.English)
 	page := settings.NewPage()
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	settle(tt)
-	if page.Section != settings.Overview || !hasText(tt, en.Text(copy.UsageActivity)) || !hasText(tt, en.Text(copy.UsageScenesEmpty)) {
+	// Before the first dictation the totals give way to the first-run
+	// card, labeled figure and hold key included; the vocabulary stays.
+	for _, want := range []copy.Key{copy.UsageFirstTitle, copy.UsageFirstPrompt, copy.UsageFirstHold, copy.UsageFirstFigureLabel, copy.VocabEmptyTitle} {
+		if !hasText(tt, en.Text(want)) {
+			t.Fatalf("empty overview has no %s: %q", want, tt.Texts())
+		}
+	}
+	if page.Section != settings.Overview || hasText(tt, en.Text(copy.UsageActivity)) || !hasText(tt, holdname.Legend(runtime.HoldFn)) {
 		t.Fatalf("empty overview: %s %q", page.Section, tt.Texts())
 	}
+	rest(tt, 2400*time.Millisecond)
 	snapshot(t, tt, "settings-overview-empty")
+	tt.SetDark(true)
+	rest(tt, 900*time.Millisecond)
+	snapshot(t, tt, "dark-overview-empty")
+	tt.SetDark(false)
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	rest(tt, 900*time.Millisecond)
+	if !hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.UsageFirstPrompt)) {
+		t.Fatalf("Chinese first-run card: %q", tt.Texts())
+	}
+	snapshot(t, tt, "settings-overview-empty-zh-CN")
+	state.Preferences.UILanguage = ""
+	settle(tt)
 
 	// Entering the overview lights the heatmap up from the oldest week.
 	usageFixture(state)
@@ -1014,6 +1036,9 @@ func TestHoldKeySettingsAndPill(t *testing.T) {
 		t.Fatalf("hold row missing: %q", tt.Texts())
 	}
 	keys := runtime.HoldKeysFor(platform.GOOS)
+	if len(keys) == 0 {
+		return
+	}
 	choice := keys[0]
 	if err := tt.Click(en.Text(copy.HoldKeyEdit)); err != nil {
 		t.Fatal(err)
@@ -1074,6 +1099,12 @@ func TestTranslationSettingsAndPill(t *testing.T) {
 		t.Fatal(err)
 	}
 	settle(tt)
+	if runtime.DefaultTranslateKey(platform.GOOS) == "" {
+		if key := state.Preferences.TranslateKey; key != "" && key != runtime.HoldOff || hasText(tt, en.Text(copy.TranslateKeyLabel)) {
+			t.Fatal("host without a hold key assigned a translation shortcut")
+		}
+		return
+	}
 	for _, key := range []copy.Key{copy.TranslateGroup, copy.TranslateKeyLabel, copy.TranslateLanguageLabel, copy.TranslateEnglish} {
 		if !hasText(tt, en.Text(key)) {
 			t.Fatalf("missing translation control %s", key)
@@ -1750,6 +1781,20 @@ func TestKeyboardSettings(t *testing.T) {
 				t.Fatal(err)
 			}
 			settle(tt)
+			// A taller host font can leave the last accent below the popup's scroll cap,
+			// where its label is laid out with an empty rect and a click misses.
+			for i := 0; i < 8; i++ {
+				r, ok := tt.Find(messages.Text(copy.KbdAccentCustom))
+				if ok && r.W > 0 && r.H > 0 && r.Y >= 0 && r.Y+r.H <= SettingsHeight {
+					break
+				}
+				anchor, ok := tt.Find(messages.Text(copy.KbdAccentYellow))
+				if !ok {
+					t.Fatal("accent menu missing")
+				}
+				tt.Scroll(anchor.X+anchor.W/2, anchor.Y+anchor.H+24, 0, 80)
+				settle(tt)
+			}
 			if err := tt.Click(messages.Text(copy.KbdAccentCustom)); err != nil {
 				t.Fatal(err)
 			}

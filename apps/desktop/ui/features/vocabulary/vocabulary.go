@@ -78,11 +78,11 @@ func Editor(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *Draf
 			composer(c, store, tokens, draft)
 			if len(groups) == 0 {
 				kit.Divider(c, tokens)
-				message := copy.VocabEmpty
 				if strings.TrimSpace(draft.Query) != "" {
-					message = copy.VocabNoMatches
+					kit.Empty(c, tokens, messages.Text(copy.VocabNoMatches))
+				} else {
+					kit.EmptyNote(c, tokens, messages.Text(copy.VocabEmptyTitle), messages.Text(copy.VocabEmpty))
 				}
-				kit.Empty(c, tokens, messages.Text(message))
 			}
 			for _, group := range groups {
 				ui.Column(c.Key(group.Text)).Transition(rowMotion).Children(func() {

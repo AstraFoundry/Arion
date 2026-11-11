@@ -48,6 +48,12 @@ func TestSpeechDuringPreparationIsRecognized(t *testing.T) {
 	c.Start()
 	events.wait(t, stateIs(domain.Capturing))
 	<-target.entered
+	c.mu.Lock()
+	phase, recognizerReady := c.current.audio, c.current.recognizer != nil
+	c.mu.Unlock()
+	if phase != audioQueued || recognizerReady {
+		t.Fatalf("early audio phase %v recognizer ready %v", phase, recognizerReady)
+	}
 	audio.push(3, .2) // the target lookup is still running
 	if rec.n != 0 {
 		t.Fatalf("recognizer received %d frames before setup finished", rec.n)
@@ -104,6 +110,12 @@ func TestStopDuringPreparationFinishesQueuedAudio(t *testing.T) {
 	<-target.entered
 	audio.push(2, .2)
 	c.Stop()
+	c.mu.Lock()
+	phase := c.current.audio
+	c.mu.Unlock()
+	if phase != audioQueued {
+		t.Fatalf("stop abandoned queued audio: %v", phase)
+	}
 	close(target.release)
 	done := events.wait(t, kindIs(contracts.CommitResultReady))
 	if rec.n != 2 || done.Outcome != contracts.Applied || done.Text == "" {
@@ -120,6 +132,12 @@ func TestCancelDuringPreparationDropsQueuedAudio(t *testing.T) {
 	<-target.entered
 	audio.push(3, .2)
 	c.Cancel()
+	c.mu.Lock()
+	phase := c.current.audio
+	c.mu.Unlock()
+	if phase != audioAbandoned {
+		t.Fatalf("cancel left queued audio in %v", phase)
+	}
 	events.wait(t, stateIs(domain.Cancelled))
 	audio.released(t)
 	if rec.n != 0 {

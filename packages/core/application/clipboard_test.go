@@ -69,6 +69,9 @@ func TestClipboardShortcutNormalization(t *testing.T) {
 			t.Fatalf("accepted %q", raw)
 		}
 	}
+	if _, ok := ClipboardShortcutKey("linux", "CmdOrCtrl+Shift+V"); ok {
+		t.Fatal("linux accepted a clipboard shortcut")
+	}
 }
 
 func TestClipboardPersistsRefreshedFileAccessAtSameTimestamp(t *testing.T) {

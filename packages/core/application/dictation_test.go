@@ -273,6 +273,33 @@ func TestCancelDuringFinalizeDropsLateResult(t *testing.T) {
 	}
 }
 
+// Issue 110: stopping while the capsule still shows a partial does not
+// paste it. The commit waits for Finish and delivers its text once.
+func TestEarlyStopDoesNotCommitBeforeFinish(t *testing.T) {
+	rec := &fakeRecognizer{words: []string{"你好"}, finish: make(chan struct{})}
+	target := &fakeTarget{outcome: contracts.Unknown}
+	c, audio, events := setup(t, rec, target, Options{AutoCommit: true})
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	events.wait(t, func(e contracts.Event) bool { return e.Kind == contracts.DraftReplaced && e.Text == "你好" })
+	c.Stop()
+	events.wait(t, stateIs(domain.Finalizing))
+	time.Sleep(50 * time.Millisecond)
+	if target.commits.Load() != 0 || events.count(kindIs(contracts.CommitResultReady)) != 0 {
+		t.Fatalf("committed %d times before Finish returned", target.commits.Load())
+	}
+	close(rec.finish)
+	done := events.wait(t, kindIs(contracts.CommitResultReady))
+	time.Sleep(20 * time.Millisecond)
+	target.mu.Lock()
+	texts := append([]string(nil), target.texts...)
+	target.mu.Unlock()
+	if done.Outcome != contracts.Unknown || target.commits.Load() != 1 || len(texts) != 1 || texts[0] != "你好" {
+		t.Fatalf("commit %+v texts %q", done, texts)
+	}
+}
+
 // SPH-A07: silence produces no commit.
 func TestSilenceDoesNotCommit(t *testing.T) {
 	rec := &fakeRecognizer{silence: true}

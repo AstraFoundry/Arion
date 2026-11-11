@@ -155,19 +155,13 @@ type colors struct {
 }
 
 func colorsOf(t theme.Tokens) colors {
-	shade, well, top, edge := float32(0.16), float32(0.1), t.Card, t.Faint
-	if t.Dark {
-		shade, well, top, edge = 0.5, 0.5, t.Card.Mix(t.Text, 0.05), t.Faint.Mix(t.Card, 0.35)
-	}
+	ink := iso.InkOf(t)
 	screen := t.PillSurface
 	screen.A = 255
-	body := iso.Palette{Top: top, Shadow: t.Card.Mix(t.Shade, shade), Lit: t.Card.Mix(t.Shade, shade/4), Edge: edge, Crease: t.CardBorder}
-	lit := iso.Palette{Top: top.Mix(t.Accent, 0.24), Shadow: t.Card.Mix(t.Accent, 0.3).Mix(t.Shade, shade), Lit: t.Card.Mix(t.Accent, 0.3), Edge: t.AccentInk, Crease: t.AccentInk.Alpha(0.5)}
 	return colors{
-		body: body, lit: lit,
-		well: t.Card.Mix(t.Shade, well), pad: top.Mix(t.Shade, well/3), screen: screen,
-		halo: t.Shade.Alpha(map[bool]float32{false: 0.08, true: 0.22}[t.Dark]),
-		ink:  edge, litInk: t.AccentInk, lens: t.Faint,
+		body: ink.Body, lit: ink.Lit,
+		well: t.Card.Mix(t.Shade, ink.Well), pad: ink.Top.Mix(t.Shade, ink.Well/3), screen: screen,
+		halo: ink.Halo, ink: ink.Edge, litInk: t.AccentInk, lens: t.Faint,
 	}
 }
 
