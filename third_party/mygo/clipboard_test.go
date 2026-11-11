@@ -284,7 +284,7 @@ func TestClipboardReleaseWaitsForNestedStorage(t *testing.T) {
 }
 
 func TestClipboardWithFileAccessDoesNotPublish(t *testing.T) {
-	data, err := transfer.FileData("/owned/preview.png")
+	data, err := transfer.FileData(filepath.Join(t.TempDir(), "preview.png"))
 	if err != nil {
 		t.Fatal(err)
 	}
