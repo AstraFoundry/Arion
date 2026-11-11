@@ -58,7 +58,7 @@
 - **Go 1.27.1** 且启用 `cgo`（`go.work` 使用 Go 自动工具链选择）。
 - **macOS（`arm64`）**：带 macOS 14 SDK 的 Apple Command Line Tools、CMake 与 Apple silicon 主机；`speech.cpp` 会在本地构建 Metal 后端。
 - **Windows（`amd64`）**：原生 C/C++ 工具链、CMake、MinGW-w64 GCC（`CC=x86_64-w64-mingw32-gcc`）与 NSIS。
-- **Linux**：仅用于 `make desktop-check` 的 GCC。这是测试路径，不是打包发布。它不注册输入法，也不增加按住说话快捷键。
+- **Linux**：仅用于 `make desktop-check` 的 GCC、Pango 和 Cairo，以及覆盖拉丁文与中日韩文字的字体。这是测试路径，不是打包发布。它不注册输入法，也不增加按住说话快捷键。
 - **Node 24**（`.nvmrc`）与**锁定版本的 `pnpm@10.33.0`**（`package.json`）。
 
 ### 构建与运行

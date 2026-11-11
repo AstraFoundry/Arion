@@ -60,7 +60,7 @@ See [Release Status](docs/operations/release-status.md), [Agent Handoff](docs/pr
 - **Go 1.27.1** with `cgo` enabled (`go.work` uses automatic toolchain selection).
 - **macOS (`arm64`)**: Apple Command Line Tools with the macOS 14 SDK, CMake and an Apple silicon host; `speech.cpp` builds its Metal backend locally.
 - **Windows (`amd64`)**: Native C/C++ toolchain, CMake, MinGW-w64 GCC (`CC=x86_64-w64-mingw32-gcc`), and NSIS.
-- **Linux**: GCC, for `make desktop-check` only. This is a test path, not a packaged release. It does not register an input method or add a hold-key shortcut.
+- **Linux**: GCC, Pango and Cairo with Latin and CJK fonts, for `make desktop-check` only. This is a test path, not a packaged release. It does not register an input method or add a hold-key shortcut.
 - **Node 24** (`.nvmrc`) and **pinned `pnpm@10.33.0`** (`package.json`).
 
 ### Build and Run

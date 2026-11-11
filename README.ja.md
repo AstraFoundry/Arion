@@ -58,7 +58,7 @@
 - `cgo` が有効化された **Go 1.27.1**（`go.work` は自動ツールチェーン選択を使用）。
 - **macOS（`arm64`）**：macOS 14 SDK を含む Apple Command Line Tools、CMake、Apple silicon ホスト。`speech.cpp` の Metal バックエンドはローカルでビルドされます。
 - **Windows（`amd64`）**：ネイティブ C/C++ ツールチェーン、CMake、MinGW-w64 GCC（`CC=x86_64-w64-mingw32-gcc`）、および NSIS。
-- **Linux**：`make desktop-check` 専用の GCC。これはテスト手順であり、パッケージ配布ではありません。入力メソッドの登録やホールドキーの追加は行いません。
+- **Linux**：`make desktop-check` 専用の GCC、Pango、Cairo と、ラテン文字および CJK 文字をカバーするフォント。これはテスト手順であり、パッケージ配布ではありません。入力メソッドの登録やホールドキーの追加は行いません。
 - **Node 24**（`.nvmrc`）と**バージョン固定された `pnpm@10.33.0`**（`package.json`）。
 
 ### ビルドと実行
