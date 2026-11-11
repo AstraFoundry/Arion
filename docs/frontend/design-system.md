@@ -1,6 +1,6 @@
 # Design system
 
-Arion's native UI uses Sunbeam, the system it shares with Lyra and the marketing site, rendered with MyGo and the coss ui component anatomy ported to Go ([ADR 007](../decisions/007-sunbeam-design-system.md)). Its tokens and materials come from the design repository's MyGo package, `github.com/AstraFoundry/design/packages/mygo` (package `sunbeam`), generated from the same `sunbeam.json` as the site's `@astrafoundry/design` ([ADR 048](../decisions/048-sunbeam-package-and-materials.md)). `ui/shared/theme` resolves Arion's semantic tokens from that palette and defines only the colors Sunbeam has no token for; views use the semantic tokens and the `ui/shared/kit` primitives.
+Arion's native UI uses Sunbeam, the system it shares with Lyra and the marketing site, rendered with MyGo and the coss ui component anatomy ported to Go ([ADR 007](../decisions/007-sunbeam-design-system.md)). Its tokens and materials come from the design repository's MyGo package, `github.com/AstraFoundry/design/packages/mygo` (package `sunbeam`), generated from the same `sunbeam.json` as the site's `@astrafoundry/design` ([ADR 049](../decisions/049-sunbeam-package-and-materials.md)). `ui/shared/theme` resolves Arion's semantic tokens from that palette and defines only the colors Sunbeam has no token for; views use the semantic tokens and the `ui/shared/kit` primitives.
 
 ## Color
 
@@ -72,7 +72,7 @@ Rules:
 
 ## Materials and elevation
 
-Sunbeam gives every layer one material ([ADR 048](../decisions/048-sunbeam-package-and-materials.md); the design repository's `packages/web/skills/sunbeam/SKILL.md` §4):
+Sunbeam gives every layer one material ([ADR 049](../decisions/049-sunbeam-package-and-materials.md); the design repository's `packages/web/skills/sunbeam/SKILL.md` §4):
 
 - **Flat**: the settings window, the menu-bar panel, onboarding and their cards. A button is one fill with no edge, gradient or shadow: `sunbeam.Face` for `Outline`, `sunbeam.PrimaryFace` for `Primary`, and the same flat anatomy in the recording color for `Live`. `Ghost` has no face until hovered. A card is the `Card` face with a hairline and no shadow.
 - **Raised**: layers that float over the window, which are select popups, tooltips and field-error callouts. `kit.Popover` gives them `sunbeam.PanelSurface`: a faint gradient, a translucent edge, a top highlight and Sunbeam's three-layer panel shadow, at Arion's radius (10 for popups, 6 for tooltips and callouts). Their content is built in `sunbeam.Layer(sunbeam.Raised, …)`, so any control in it takes the raised face.

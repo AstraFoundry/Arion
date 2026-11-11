@@ -1,6 +1,6 @@
 # ADR 007: Sunbeam design system and coss anatomy in Go
 
-Status: Accepted; token ownership and the button and card anatomy are superseded by [ADR 048](048-sunbeam-package-and-materials.md).
+Status: Accepted; token ownership and the button and card anatomy are superseded by [ADR 049](049-sunbeam-package-and-materials.md).
 
 ## Context
 

@@ -31,9 +31,10 @@ import (
 
 // recorder implements runtime.Actions for view tests.
 type recorder struct {
-	calls      []string
-	state      *runtime.State
-	vocabError error
+	calls          []string
+	state          *runtime.State
+	vocabError     error
+	selectionError error
 }
 
 func (r *recorder) call(name string)           { r.calls = append(r.calls, name) }
@@ -200,12 +201,14 @@ func fixture() (*runtime.State, *recorder, runtime.Store) {
 		Version:     "0.1.0",
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
 		Preferences: runtime.Preferences{HoldKey: runtime.DefaultHoldKey(platform.GOOS), Delivery: runtime.DeliveryAutomatic, Sounds: true, CheckUpdates: true,
-			Keyboard: runtime.KeyboardPreferences{PageSize: 6, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, Accent: runtime.AccentYellow, EmojiSuggestions: true}},
-		InputMethod: runtime.InputMethodAbsent,
-		Account:     runtime.Account{Phase: runtime.AccountSignedOut, Issuer: "https://astrafoundry.si", Portal: "https://astrafoundry.si/account"},
-		Hold:        runtime.Hold{Active: true},
-		Model:       runtime.Model{State: runtime.ModelReady, Active: recommended, Automatic: true, LatencyMeasured: true, Bundles: []runtime.Bundle{recommended, other}},
-		Devices:     []runtime.Device{{ID: "a", Name: "MacBook Pro Microphone", Default: true}, {ID: "b", Name: "AirPods Pro"}},
+			Keyboard:  runtime.KeyboardPreferences{PageSize: 6, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, Accent: runtime.AccentYellow, EmojiSuggestions: true},
+			Selection: runtime.DefaultSelectionPreferences()},
+		SelectionReader: true,
+		InputMethod:     runtime.InputMethodAbsent,
+		Account:         runtime.Account{Phase: runtime.AccountSignedOut, Issuer: "https://astrafoundry.si", Portal: "https://astrafoundry.si/account"},
+		Hold:            runtime.Hold{Active: true},
+		Model:           runtime.Model{State: runtime.ModelReady, Active: recommended, Automatic: true, LatencyMeasured: true, Bundles: []runtime.Bundle{recommended, other}},
+		Devices:         []runtime.Device{{ID: "a", Name: "MacBook Pro Microphone", Default: true}, {ID: "b", Name: "AirPods Pro"}},
 	}
 	actions := &recorder{state: state}
 	return state, actions, runtime.Store{State: state, Actions: actions}

@@ -22,6 +22,8 @@ type (
 	ErrorCode           = domain.ErrorCode
 	CommitOutcome       = contracts.CommitOutcome
 	Preferences         = application.Preferences
+	SelectionOffer      = application.SelectionOffer
+	SelectionAction     = application.SelectionAction
 	Delivery            = application.Delivery
 	UILanguage          = application.UILanguage
 	HoldKey             = application.HoldKey
@@ -114,6 +116,29 @@ const (
 	HoldRightCtrl    = application.HoldRightCtrl
 )
 
+// Selection popover kinds, built-in actions and clients.
+const (
+	SelectionKindPrompt       = application.SelectionKindPrompt
+	SelectionKindClient       = application.SelectionKindClient
+	SelectionKindCopy         = application.SelectionKindCopy
+	SelectionKindVocabulary   = application.SelectionKindVocabulary
+	SelectionActionTranslate  = application.SelectionActionTranslate
+	SelectionActionExplain    = application.SelectionActionExplain
+	SelectionActionSummarize  = application.SelectionActionSummarize
+	SelectionActionRewrite    = application.SelectionActionRewrite
+	SelectionActionAsk        = application.SelectionActionAsk
+	SelectionActionAskChatGPT = application.SelectionActionAskChatGPT
+	SelectionActionCopy       = application.SelectionActionCopy
+	SelectionActionVocabulary = application.SelectionActionVocabulary
+	SelectionClientClaude     = application.SelectionClientClaude
+	SelectionClientChatGPT    = application.SelectionClientChatGPT
+)
+
+// DefaultSelectionPreferences is off, with both clients present and disabled.
+func DefaultSelectionPreferences() application.SelectionPreferences {
+	return application.DefaultSelectionPreferences()
+}
+
 // TranslationLanguages are the selectable translation target languages.
 var TranslationLanguages = domain.TranslationLanguages
 
@@ -193,6 +218,9 @@ const (
 	CodeRewriteRejected        = domain.CodeRewriteRejected
 	CodeRewriteTimeout         = domain.CodeRewriteTimeout
 )
+
+// CodeOf returns the stable code carried by err, if any.
+func CodeOf(err error) ErrorCode { return domain.CodeOf(err) }
 
 // Diagnostic categories adapters attach to PERMISSION_DENIED.
 const (
@@ -557,17 +585,23 @@ type Diagnostics struct{ Phase DiagnosticsPhase }
 // State is everything views read. The composition root mutates it only on
 // the main thread and then invalidates windows.
 type State struct {
-	Clipboard     Clipboard
-	Diagnostics   Diagnostics
-	Version       string
-	Dictation     Dictation
-	Model         Model
-	Polish        Polish
-	KeyboardModel Polish
-	Permissions   Permissions
-	Preferences   Preferences
-	Devices       []Device
-	Vocabulary    []Replacement
+	Clipboard Clipboard
+	// Selection is the latest mouse-up offer. Its text stays in memory and
+	// is never written to diagnostics.
+	Selection SelectionOffer
+	// SelectionReader is true where the platform reads another app's
+	// selected text; onboarding omits the selection page without it.
+	SelectionReader bool
+	Diagnostics     Diagnostics
+	Version         string
+	Dictation       Dictation
+	Model           Model
+	Polish          Polish
+	KeyboardModel   Polish
+	Permissions     Permissions
+	Preferences     Preferences
+	Devices         []Device
+	Vocabulary      []Replacement
 	// Empty only after acknowledgement or when no keyboard edit needs reporting.
 	VocabularyKeyboardNotice copy.Key
 	// Learned is the entry last learned from a correction, shown with an
@@ -671,6 +705,12 @@ type Actions interface {
 	// UndoLearned forgets the entry just learned and dismisses its notice.
 	UndoLearned(id string)
 	CopyText(text string) bool
+	// CopySelection writes the current offer with the clipboard writer.
+	CopySelection() error
+	// AddSelectionVocabulary saves the current offer with AddHotword.
+	AddSelectionVocabulary() error
+	// OpenSelection fills one prompt or client action and opens that URL.
+	OpenSelection(actionID, question string) error
 	// ChooseScene keeps scene for SceneTarget's site or app; empty follows
 	// the built-in rules again.
 	ChooseScene(scene domain.Scene)

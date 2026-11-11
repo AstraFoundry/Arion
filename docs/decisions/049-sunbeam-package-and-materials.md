@@ -1,4 +1,4 @@
-# ADR 048: Sunbeam from its MyGo package, with flat and raised materials
+# ADR 049: Sunbeam from its MyGo package, with flat and raised materials
 
 Status: Accepted. Supersedes the token ownership and button and card anatomy of [ADR 007](007-sunbeam-design-system.md); the rest of ADR 007 stands.
 
