@@ -18,6 +18,8 @@ type darwinPlatform struct{ permissions macos.Permissions }
 
 func newPlatform() Platform { return darwinPlatform{} }
 
+const selectionReader = true
+
 func configureInputMethodDiagnostics(record func(diagnostics.Entry)) {
 	macos.SetIMEDiagnostics(record)
 }

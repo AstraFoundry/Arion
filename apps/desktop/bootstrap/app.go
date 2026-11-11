@@ -293,7 +293,7 @@ func New(opts Options) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	a.state = arion.State{Preferences: prefs, Platform: modelruntime.Platform(), SelectionReader: a.platform != nil,
+	a.state = arion.State{Preferences: prefs, Platform: modelruntime.Platform(), SelectionReader: a.platform != nil && selectionReader,
 		Model:   arion.Model{State: arion.ModelUnselected},
 		Account: arion.Account{Phase: arion.AccountSignedOut, Issuer: profile.Issuer, Portal: accountPortal(profile), Disabled: profile.AuthMode == "device", WaitlistDisabled: !profile.Standard()}}
 	// Construction stays idle; restoration starts off the main thread after readiness.
