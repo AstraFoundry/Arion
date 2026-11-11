@@ -114,7 +114,7 @@ func TestNSISCloseApp(t *testing.T) {
 // uninstall removes both.
 func TestWindowsInstaller(t *testing.T) {
 	dir, work, artifacts := buildTestInstaller(t, map[string]string{
-		"main.go":              "package main\n\nfunc main() {}\n",
+		"main.go":              "package main\nimport (\"os\"; \"time\")\nfunc main() { if len(os.Args)>1 { _ = os.WriteFile(os.Args[1], []byte(\"ready\"), 0600); for {time.Sleep(time.Second)} } }\n",
 		"mygo.json":            `{"name": "Setup Test", "identifier": "com.example.setuptest", "version": "2.0.0", "urlSchemes": ["setuptest"], "fileAssociations": [{"ext": ["setuptest"], "name": "Setup Test File"}], "windows": {"signCommand": "echo %1>>signed.txt"}, "i18n": {}}`,
 		"locales/en.json":      `{}`,
 		"locales/zh-Hans.json": `{}`,
