@@ -760,3 +760,26 @@ const (
 	ShowcaseSentenceRussian            Key = "ShowcaseSentenceRussian"
 	ShowcaseSentenceArabic             Key = "ShowcaseSentenceArabic"
 )
+
+// Selection popover, its settings and its onboarding page.
+const (
+	SelectionEnabled       Key = "SelectionEnabled"
+	SelectionEnabledDetail Key = "SelectionEnabledDetail"
+	SelectionClientsGroup  Key = "SelectionClientsGroup"
+	SelectionClaude        Key = "SelectionClaude"
+	SelectionClaudeDetail  Key = "SelectionClaudeDetail"
+	SelectionChatGPT       Key = "SelectionChatGPT"
+	SelectionChatGPTDetail Key = "SelectionChatGPTDetail"
+	SelectionTranslate     Key = "SelectionTranslate"
+	SelectionExplain       Key = "SelectionExplain"
+	SelectionSummarize     Key = "SelectionSummarize"
+	SelectionRewrite       Key = "SelectionRewrite"
+	SelectionAsk           Key = "SelectionAsk"
+	SelectionAskChatGPT    Key = "SelectionAskChatGPT"
+	SelectionVocabulary    Key = "SelectionVocabulary"
+	SelectionReturn        Key = "SelectionReturn"
+	SelectionFailed        Key = "SelectionFailed"
+	SelectionOpenFailed    Key = "SelectionOpenFailed"
+	OnbSelectionTitle      Key = "OnbSelectionTitle"
+	OnbSelectionBody       Key = "OnbSelectionBody"
+)

@@ -1,6 +1,6 @@
 # ADR 048: Selection action URLs
 
-Status: Accepted. Backend contract for [011](../../specs/011-selection-actions.md). The popover, onboarding page, and settings card are deferred.
+Status: Accepted. Backend contract for [011](../../specs/011-selection-actions.md). The popover, onboarding page, and settings card are SEL-06 and SEL-07.
 
 ## Context
 
@@ -20,4 +20,4 @@ Portable tests cover encoding, the length cap, refused schemes, and a missing cl
 
 ## Consequences
 
-The popover can bind the in-memory offer later without changing the URL rules. Onboarding order stays where DSK-14 puts it until that page is built.
+The popover renders the in-memory offer without changing the URL rules. Onboarding ends with the selection page DSK-14 describes.

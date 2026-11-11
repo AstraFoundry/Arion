@@ -129,3 +129,47 @@ func TestWelcomeBlocksSignInAndCloudStaysInsidePolish(t *testing.T) {
 		t.Fatal("cloud setup became its own step")
 	}
 }
+
+func TestSelectionStepCompletesSetup(t *testing.T) {
+	s := readyState()
+	s.SelectionReader = true
+	f := Flow{Index: int(Dictate)}
+	if Last(f, s) || !f.Move(1, s) || f.Step() != Translate || Last(f, s) {
+		t.Fatal("translate no longer leads to the selection step")
+	}
+	if !f.Move(1, s) || f.Step() != Selection || !Last(f, s) {
+		t.Fatalf("step = %v, want the last step Selection", f.Step())
+	}
+	s.Model.State = runtime.ModelLoading
+	s.Hold.Active = false
+	if !Ready(Selection, s) || s.Preferences.Selection.Enabled {
+		t.Fatal("finishing with selection off was blocked")
+	}
+	if f.Move(1, s) {
+		t.Fatal("advanced past the selection step")
+	}
+	if current, total := Progress(f, s); current != total {
+		t.Fatalf("progress %d of %d on the last step", current, total)
+	}
+}
+
+func TestSelectionStepSkips(t *testing.T) {
+	s := readyState()
+	f := Flow{Index: int(Dictate)}
+	if !f.Move(1, s) || f.Step() != Translate || !Last(f, s) {
+		t.Fatal("without a selection reader translate must finish")
+	}
+	s.SelectionReader = true
+	s.Preferences.HoldKey = ""
+	f = Flow{Index: int(Dictate)}
+	if Last(f, s) || !f.Move(1, s) || f.Step() != Selection || !Last(f, s) {
+		t.Fatalf("skipped translate did not reach selection: %v", f.Step())
+	}
+	if !f.Move(-1, s) || f.Step() != Dictate {
+		t.Fatal("back from selection did not skip translate")
+	}
+	s.SelectionReader = false
+	if !Last(f, s) {
+		t.Fatal("dictate must finish when both later steps are skipped")
+	}
+}

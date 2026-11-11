@@ -117,20 +117,26 @@ func TestOnboardingFlow(t *testing.T) {
 			expect(t, tt, false, messages.Text(copy.TranslateKeyEdit))
 			click(copy.TranslateEnabled)
 			expect(t, tt, true, messages.Text(copy.TranslateKeyEdit), messages.Text(copy.TranslateLanguageLabel), messages.Text(copy.OnbTryPlaceholder))
+			expect(t, tt, false, messages.Text(copy.OnbFinish), messages.Text(copy.OnbDoneBody))
 			state.Dictation.State = runtime.StateFinalizing
 			settle(tt)
-			click(copy.OnbFinish)
+			click(copy.Continue)
 			expect(t, tt, true, messages.Text(copy.OnbTranslateTitle))
 			state.Dictation.State = runtime.StateCompleted
 			settle(tt)
-			expect(t, tt, true, messages.Text(copy.OnbDoneBody))
-			snapshot(t, tt, "onboarding-complete-"+string(locale))
+			snapshot(t, tt, "onboarding-translate-"+string(locale))
 			state.Permissions.Microphone = runtime.ConsentDenied
 			settle(tt)
 			expect(t, tt, true, messages.Text(copy.OnbTranslateTitle), messages.Text(copy.OpenSettings), messages.Text(copy.MicPermission))
 			state.Permissions.Microphone = runtime.ConsentGranted
 			settle(tt)
+			click(copy.Continue)
+			expect(t, tt, true, messages.Text(copy.OnbSelectionTitle), messages.Text(copy.SelectionEnabled), messages.Text(copy.OnbDoneBody), messages.Text(copy.OnbFinish))
+			snapshot(t, tt, "onboarding-complete-"+string(locale))
 			click(copy.OnbFinish)
+			if state.Preferences.Selection.Enabled {
+				t.Fatal("finishing turned selection actions on")
+			}
 			if !actions.called("complete") {
 				t.Fatal("onboarding not completed")
 			}
