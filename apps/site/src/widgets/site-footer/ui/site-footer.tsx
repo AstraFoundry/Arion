@@ -1,5 +1,6 @@
 import { format, useCopy } from "@/shared/i18n";
-import { AppLink, BrandMark, BrandWord, Container } from "@/shared/ui";
+import { Container } from "@astrafoundry/design/ui";
+import { AppLink, BrandMark, BrandWord } from "@/shared/ui";
 import { footerColumns } from "../config/columns";
 
 export function SiteFooter() {

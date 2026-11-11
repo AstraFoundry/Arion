@@ -1,7 +1,8 @@
 import { DownloadOptions } from "@/features/download-release";
 import { sections } from "@/shared/config";
 import { useCopy } from "@/shared/i18n";
-import { Container, Reveal, SectionHeading } from "@/shared/ui";
+import { Container, Reveal } from "@astrafoundry/design/ui";
+import { SectionHeading } from "@/shared/ui";
 import { CommunityLinks } from "./community-links";
 
 export function DownloadCta() {

@@ -1,6 +1,7 @@
 import { buildCommands, sections, siteConfig } from "@/shared/config";
 import { format, useCopy } from "@/shared/i18n";
-import { Container, GitHubMark, LinkButton, Reveal } from "@/shared/ui";
+import { Container, Reveal } from "@astrafoundry/design/ui";
+import { GitHubMark, LinkButton } from "@/shared/ui";
 
 export function OpenSource() {
   const copy = useCopy();

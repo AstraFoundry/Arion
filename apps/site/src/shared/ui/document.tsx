@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Container, SectionHeading } from "./layout";
+import { Container } from "@astrafoundry/design/ui";
+import { SectionHeading } from "./layout";
 
 export interface DocumentSection {
   title: string;

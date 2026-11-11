@@ -1,7 +1,8 @@
-import { TextReveal } from "@/shared/beui/components/motion/text-reveal";
+import { TextReveal } from "@astrafoundry/design/beui/motion/text-reveal";
 import { downloadHref, siteConfig } from "@/shared/config";
 import { format, useCopy } from "@/shared/i18n";
-import { Container, LinkButton, Reveal } from "@/shared/ui";
+import { Container, Reveal } from "@astrafoundry/design/ui";
+import { LinkButton } from "@/shared/ui";
 import { HeroStage } from "./hero-stage";
 
 /**

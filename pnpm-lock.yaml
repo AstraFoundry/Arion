@@ -10,6 +10,9 @@ importers:
 
   apps/site:
     dependencies:
+      '@astrafoundry/design':
+        specifier: 0.1.0
+        version: 0.1.0(@types/react@19.3.0)(motion@13.5.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(next-themes@0.4.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sharp@0.35.5(@types/node@26.6.5))(shiki@4.5.0)(tailwindcss@4.3.3)
       '@base-ui/react':
         specifier: ^1.9.0
         version: 1.9.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -127,6 +130,19 @@ packages:
   '@alloc/quick-lru@5.3.0':
     resolution: {integrity: sha512-U4+70Pc5ZS9osnCBCE5Jha/ciHM+Yp+CNMNC/7HvYbNRk1Ldd+f7qO65W5qfhu/TCv+/ozljlXXe9Nj8419DMA==}
     engines: {node: '>=10'}
+
+  '@astrafoundry/design@0.1.0':
+    resolution: {integrity: sha512-bZlncFgLIG1wsiaifMdtUB0Uv+QQ2Rv0lBwNYx1M39jS6DmJMXNM/XSA4ya66JQlszwYqTWgm6o5A9smPRkp5w==, tarball: https://npm.pkg.github.com/download/@astrafoundry/design/0.1.0/bead09931a6f3857c3fc6a651be4d21105fd8f5a}
+    engines: {node: '>=24'}
+    hasBin: true
+    peerDependencies:
+      motion: ^13.4.2
+      next-themes: ^0.4.6
+      react: ^19.0.0
+      react-dom: ^19.0.0
+      sharp: '>=0.34.0'
+      shiki: ^4.4.3
+      tailwindcss: ^4.1.0
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -3507,6 +3523,21 @@ packages:
 snapshots:
 
   '@alloc/quick-lru@5.3.0': {}
+
+  '@astrafoundry/design@0.1.0(@types/react@19.3.0)(motion@13.5.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(next-themes@0.4.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sharp@0.35.5(@types/node@26.6.5))(shiki@4.5.0)(tailwindcss@4.3.3)':
+    dependencies:
+      clsx: 2.1.1
+      lucide-react: 1.57.0(@types/react@19.3.0)(react@19.3.1)
+      motion: 13.5.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      next-themes: 0.4.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
+      sharp: 0.35.5(@types/node@26.6.5)
+      shiki: 4.5.0
+      tailwind-merge: 3.7.0
+      tailwindcss: 4.3.3
+    transitivePeerDependencies:
+      - '@types/react'
 
   '@babel/code-frame@7.29.7':
     dependencies:

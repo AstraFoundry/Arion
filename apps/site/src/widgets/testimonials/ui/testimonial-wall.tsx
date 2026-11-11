@@ -6,7 +6,8 @@ import type { Testimonial } from "@/entities/testimonial";
 import { sections } from "@/shared/config";
 import { useCopy } from "@/shared/i18n";
 import { cn } from "@/shared/lib";
-import { Container, SectionHeading } from "@/shared/ui";
+import { Container } from "@astrafoundry/design/ui";
+import { SectionHeading } from "@/shared/ui";
 import { TestimonialCard } from "./testimonial-card";
 
 /** Seconds one row takes to move by one copy of its cards. */
@@ -74,12 +75,12 @@ export function TestimonialWall({ testimonials }: { testimonials: readonly Testi
           >
             <div
               className={cn(
-                "flex w-max animate-marquee items-stretch motion-reduce:animate-none",
+                "flex w-max animate-ticker items-stretch motion-reduce:animate-none",
                 "group-hover/row:[animation-play-state:paused] group-focus-within/row:[animation-play-state:paused]",
                 "in-data-paused:[animation-play-state:paused]",
                 index % 2 === 1 && "[animation-direction:reverse]",
               )}
-              style={{ "--marquee-duration": `${row.length * SECONDS_PER_CARD}s` } as CSSProperties}
+              style={{ "--ticker-duration": `${row.length * SECONDS_PER_CARD}s` } as CSSProperties}
             >
               <Cards row={row} copy="first" />
               <Cards row={row} copy="repeat" />

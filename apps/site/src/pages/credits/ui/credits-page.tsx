@@ -1,6 +1,7 @@
 import { type Credit, photoCredits, softwareCredits } from "@/shared/config";
 import { format, useCopy } from "@/shared/i18n";
-import { Container, SectionHeading } from "@/shared/ui";
+import { Container } from "@astrafoundry/design/ui";
+import { SectionHeading } from "@/shared/ui";
 
 function CreditList({ title, credits }: { title: string; credits: readonly Credit[] }) {
   const { creditsPage } = useCopy();

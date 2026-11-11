@@ -43,16 +43,8 @@ Three build-time variables, inlined into the bundle (`src/shared/config/env.ts`)
 - Every photograph is credited on `/credits/`. These files are separate from the desktop app's backdrop.
 - `public/brand/*.png`, and the mark composited onto `public/og.jpg`, from `apps/desktop/resources/icon.png`; `public/brand/feishu.png` is copied from `apps/desktop/ui/shared/assets/feishu.png` (source and terms in that directory's README).
 
-## Temporary vendored design code
+## Design system
 
-`@astrafoundry/design` is not published yet. Until it is, the site carries a minimal copy of the Sunbeam tokens and beUI components from `lyra-landing`. Each piece is replaced by the package and must not grow in the meantime:
-
-| Path | Source |
-| --- | --- |
-| `src/app/styles/sunbeam.css` | `lyra-landing` Sunbeam tokens, without the canvas and info tokens |
-| `src/shared/beui/components/motion/text-reveal.tsx` | beUI text animation; local change: U+200B separates units, and reduced motion settles the full final state |
-| `src/shared/beui/components/motion/theme-toggle.tsx`, `action-swap.tsx` | beUI, unchanged |
-| `src/shared/beui/lib/ease.ts`, `utils.ts` | beUI helpers |
-| `src/app/fonts.ts` | `lyra-landing` font setup (Fraunces, IBM Plex Sans, JetBrains Mono) |
+The site's tokens, font stacks, `Button`/`LinkButton`, `Container`, `Reveal`, the language controls, the demo timeline hooks and the beUI motion pieces (`TextReveal`, `ThemeToggle`) come from [`@astrafoundry/design`](https://github.com/AstraFoundry/design) (Sunbeam), pinned in `package.json`. `src/app/styles/globals.css` imports `@astrafoundry/design/styles.css` and adds only the site's own rules; `src/app/fonts.ts` loads the Latin faces as the `--font-latin-*` variables the package's stacks read. The package is installed from GitHub Packages, which needs a token: see [operations](../../docs/operations/README.md#github-packages).
 
 beUI is MIT licensed (Saurabh Chauhan); the typefaces are OFL. Both are credited on `/credits/`.

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import { siteConfig } from "@/shared/config";
 import { useCopy } from "@/shared/i18n";
 import { cn, useStepTimeline } from "@/shared/lib";
@@ -68,7 +68,13 @@ export function HeroDemo({ playing }: { playing: boolean }) {
   const copy = useCopy();
   const { demo } = copy;
   const { keyboard } = copy.tour;
-  const { step } = useStepTimeline(HERO_DELAYS, playing, { loopAfter: HERO_LOOP_REST });
+  const { step, done, replay, reduce } = useStepTimeline(HERO_DELAYS, playing);
+  // The hero's documented exception to play-once: rest on the final frame, then start over.
+  useEffect(() => {
+    if (!playing || !done || reduce) return;
+    const timer = window.setTimeout(replay, HERO_LOOP_REST);
+    return () => window.clearTimeout(timer);
+  }, [done, playing, reduce, replay]);
 
   const [learnBefore, learnAfter] = demo.learnSentence.split("{term}");
   const learnSentence = (term: ReactNode) => (

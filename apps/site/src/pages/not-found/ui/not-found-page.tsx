@@ -1,6 +1,7 @@
 import { routes } from "@/shared/config";
 import { useCopy } from "@/shared/i18n";
-import { Container, LinkButton, SectionHeading } from "@/shared/ui";
+import { Container } from "@astrafoundry/design/ui";
+import { LinkButton, SectionHeading } from "@/shared/ui";
 
 export function NotFoundPage() {
   const copy = useCopy();

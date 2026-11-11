@@ -46,7 +46,6 @@ The macOS whole-input generation path is implemented under [ADR 038](../decision
 | STR (streaming sweep) | P1 | Reviewed timestamp annotations | Chunk/endpoint sweep with annotated onsets (STR-A01–A04) |
 | MEM-01 (sync parts) | P1 | Crypto/pairing ADR | Outbox, approval provenance UI, export/delete |
 | SYNC-10 UI | P1 | Desktop sync client; SYNC-07 actions | The sidebar account card and Settings › Account are built ([views](account-signin.md#views)). Stored sign-in restores automatically after readiness, with proactive renewal and transient-failure retry; no Reconnect control is shown. Remaining: device enrollment from the entitled hosted-sync row, Turn off sync and Delete server data once their actions exist, and a native run on macOS and Windows |
-| SITE-01 | P1 | `@astrafoundry/design` published | `apps/site` is built ([site](../frontend/site.md), [ADR 016](../decisions/016-marketing-site.md)); remaining: replace the vendored Sunbeam/beUI copy listed in the [site README](../../apps/site/README.md#temporary-vendored-design-code) with the package |
 | REL-01 | P1 | Release host acceptance | A canonical macOS arm64 Developer ID signed/notarized package passed Gatekeeper; Windows publisher signing, clean-machine acceptance and a published old-to-new signed update remain open ([ADR 010](../decisions/010-in-app-updates.md)) |
 | MOBILE-01 | P2 | Desktop contract stabilization | Native keyboard constraints research only |
 

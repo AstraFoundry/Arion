@@ -37,6 +37,7 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 # Superseded pull requests cancel. Main, tags, and signed macOS dispatch do not.
 # release.yml and signed-macos.yml keep their own groups with cancel-in-progress false.
@@ -65,13 +66,19 @@ jobs:
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           run_install: false
+      # registry-url writes a user-level npmrc that reads NODE_AUTH_TOKEN, for
+      # the site's @astrafoundry/design on GitHub Packages.
       - uses: actions/setup-node@v4
         id: node
         with:
           node-version-file: .nvmrc
+          registry-url: https://npm.pkg.github.com
+          scope: "@astrafoundry"
           cache: ${{ (github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false') && 'pnpm' || '' }}
       - if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'
         run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Same patched toolchain as the native job and go.work. Module go lines stay lower; this SDK still enforces them.
       # The module and build cache restores from main when these sums match.
       - if: github.event_name != 'pull_request' || needs.scope.outputs.tests != 'false'

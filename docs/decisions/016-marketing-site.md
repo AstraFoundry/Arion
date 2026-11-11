@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted. Clarifies the scope of [ADR 001](001-desktop-native-boundaries.md).
+Accepted. Clarifies the scope of [ADR 001](001-desktop-native-boundaries.md). The temporary vendored copy has been replaced: the site depends on the published `@astrafoundry/design` ([site README](../../apps/site/README.md#design-system)).
 
 ## Context
 

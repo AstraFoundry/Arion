@@ -23,6 +23,16 @@ Both dispatch through `scripts/build.mjs`, also used by desktop CI. Missing, uns
 
 The foundation uses Node 24 and pinned pnpm 10.33.0 for workspace/check/driver tooling. `packages/core` declares Go 1.25.7 and `models` declares Go 1.25. The sync relay, updates service, and MyGo desktop declare Go 1.27.1. `go.work` and those modules select the patched `go1.27.3` toolchain for standard-library security fixes. Portable CI and native CI both install Go 1.27.3, and the service images build with that same toolchain. A newer toolchain still enforces each module's language version. Go automatic toolchain selection may download `go1.27.3` when a local `go` binary is older. Native shell compilation is distinct from functional speech/IME support.
 
+### GitHub Packages
+
+The marketing site depends on `@astrafoundry/design`, published to GitHub Packages (`https://npm.pkg.github.com`), which asks for a token even for public packages. The root `.npmrc` only maps the `@astrafoundry` scope to that registry; pnpm ignores tokens in a project `.npmrc`, so put a token with `read:packages` in your user-level config before `make install`:
+
+```sh
+pnpm config set "//npm.pkg.github.com/:_authToken" "<GitHub token with read:packages>"
+```
+
+Portable CI writes the same line with `actions/setup-node` (`registry-url`) and the job's `GITHUB_TOKEN` (`packages: read`). In a Claude cloud session, a network secret for `npm.pkg.github.com` supplies the header instead.
+
 For macOS development, use the [explicit release/development switch](local-dev.md#switch-between-the-release-and-development) and a persistent development signing identity.
 
 The desktop shell does not need a database. Optional [clipboard history](../project/clipboard.md) uses its own bounded encrypted snapshot and OS-kept key. The marketing site builds from committed public configuration (`apps/site/.env.production`); only `make site-deploy` needs Cloudflare credentials, supplied by the shell running it. The sync relay has its own PostgreSQL, configuration and runbook under [deploy/sync](../../deploy/sync/README.md). Do not point it at another product's database.

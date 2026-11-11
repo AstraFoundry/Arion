@@ -1,6 +1,10 @@
+import {
+  LinkButton as SunbeamLinkButton,
+  type ButtonSize,
+  type ButtonVariant,
+} from "@astrafoundry/design/ui";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { AppLink } from "./app-link";
-import { buttonClasses, type ButtonSize, type ButtonVariant } from "./button-styles";
 
 interface LinkButtonProps extends Omit<ComponentPropsWithoutRef<"a">, "href"> {
   href: string;
@@ -14,29 +18,11 @@ function isExternal(href: string) {
 }
 
 /**
- * A link styled as a button. Internal routes use Next's client navigation in
- * the current locale; external links (releases, source, the AstraFoundry
- * account) are plain anchors in the same tab.
+ * Sunbeam's `LinkButton`. Internal routes use Next's client navigation in the
+ * current locale; external links (releases, source, the AstraFoundry account)
+ * are plain anchors in the same tab.
  */
-export function LinkButton({
-  href,
-  variant = "primary",
-  size = "md",
-  className,
-  children,
-  ...rest
-}: LinkButtonProps) {
-  const classes = buttonClasses(variant, size, className);
-  if (isExternal(href)) {
-    return (
-      <a href={href} className={classes} {...rest}>
-        {children}
-      </a>
-    );
-  }
-  return (
-    <AppLink href={href} className={classes} {...rest}>
-      {children}
-    </AppLink>
-  );
+export function LinkButton({ href, ...rest }: LinkButtonProps) {
+  if (isExternal(href)) return <SunbeamLinkButton href={href} {...rest} />;
+  return <SunbeamLinkButton as={AppLink} href={href} {...rest} />;
 }

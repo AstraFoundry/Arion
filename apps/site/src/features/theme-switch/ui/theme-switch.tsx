@@ -1,6 +1,6 @@
 "use client";
 
-import { ThemeToggle } from "@/shared/beui/components/motion/theme-toggle";
+import { ThemeToggle } from "@astrafoundry/design/beui/motion/theme-toggle";
 import { useCopy } from "@/shared/i18n";
 import { cn } from "@/shared/lib";
 

@@ -28,7 +28,7 @@ function layerRule(layer) {
 
 const config = [
   {
-    ignores: [".next/**", "out/**", "node_modules/**", "next-env.d.ts", "src/shared/beui/**"],
+    ignores: [".next/**", "out/**", "node_modules/**", "next-env.d.ts"],
   },
   ...nextCoreWebVitals,
   ...nextTypescript,

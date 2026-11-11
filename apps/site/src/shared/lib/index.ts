@@ -1,4 +1,3 @@
-export { cn } from "./cn";
-export { useInViewOnce } from "./use-in-view-once";
-export { useStepTimeline } from "./use-step-timeline";
+export { cn } from "@astrafoundry/design";
+export { useInViewOnce, useStepTimeline } from "@astrafoundry/design/mock";
 export { isRemoteUrl } from "./remote-url";

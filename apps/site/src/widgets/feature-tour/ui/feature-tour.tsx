@@ -3,7 +3,8 @@
 import { sections } from "@/shared/config";
 import { useCopy } from "@/shared/i18n";
 import { cn, useInViewOnce } from "@/shared/lib";
-import { Container, SectionHeading } from "@/shared/ui";
+import { Container } from "@astrafoundry/design/ui";
+import { SectionHeading } from "@/shared/ui";
 import { CHAPTER_SPANS, CHAPTERS, type ChapterId } from "../config/chapters";
 import { ChapterMock } from "./chapter-mock";
 import { GridGround } from "./grid-ground";

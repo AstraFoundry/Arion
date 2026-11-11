@@ -20,7 +20,7 @@ The site at `arion.astrafoundry.si` is the one place in the repository where Rea
 | `content/testimonials` | Home page testimonial quotes and their cached X profiles ([testimonials](#testimonials)) |
 | `src/shared` | `config` (env, links, credits), `i18n`, `lib`, `ui`, and the temporary `beui` copy |
 
-Route files only set the locale and render a page from `src/pages`. Imports point downward and cross slices through `index.ts`; ESLint enforces both. `src/shared/beui` is vendored and exempt from lint until `@astrafoundry/design` replaces it.
+Route files only set the locale and render a page from `src/pages`. Imports point downward and cross slices through `index.ts`; ESLint enforces both. Sunbeam tokens, primitives and motion components come from `@astrafoundry/design` ([site README](../../apps/site/README.md#design-system)); `shared/lib` re-exports its `cn`, `useInViewOnce` and `useStepTimeline`.
 
 ## Rules
 
@@ -39,7 +39,7 @@ Route files only set the locale and render a page from `src/pages`. Imports poin
 
 Below it, `HeroStage` is a 200svh track with a sticky, viewport-tall stage (a size container) holding the hillside photograph (`public/backdrops/hillside-*.webp`) with the demo floating on it. The photograph fills a 3:2 box that covers the stage from its top edge. The first screen shows the whole stage as a card under the copy, with the top half of the demo's window on the photograph and its lower part cut off by the card's bottom edge. As the reader scrolls, the card's bottom edge stays at the bottom of the viewport while its top rises with the page, and its gutter and corners shrink until it fills the viewport; then it sticks while the demo rises to rest, and holds before the page moves on. `HeroStage` measures the track, the stage and the demo to place these frames. Under reduced motion it shows the final frame; the static HTML carries an opening card and motion values move to the measured frame, so hydration never meets a differing attribute.
 
-The demo (`HeroDemo`, script in `config/timeline.ts`) is a document of Shakespeare quotes, its copy under `demo.*`. Each loop shows the highlights in turn: a dictation (mixed Chinese or Japanese and English on those pages), a correction Arion learns, a polished dictation, and Shakespeare's name typed in Pinyin with the input method followed by a Shift switch to English. It plays while the stage is in view (`useStepTimeline` with `loopAfter`) and under reduced motion shows the final frame. This loop is a deliberate exception to Sunbeam's play-once rule for the hero; the feature cards still play once.
+The demo (`HeroDemo`, script in `config/timeline.ts`) is a document of Shakespeare quotes, its copy under `demo.*`. Each loop shows the highlights in turn: a dictation (mixed Chinese or Japanese and English on those pages), a correction Arion learns, a polished dictation, and Shakespeare's name typed in Pinyin with the input method followed by a Shift switch to English. It plays while the stage is in view; after the final step it rests for `HERO_LOOP_REST` and `replay()`s the timeline, and under reduced motion it shows the final frame. This loop is a deliberate exception to Sunbeam's play-once rule for the hero; the feature cards still play once.
 
 ## Feature tour
 

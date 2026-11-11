@@ -1,6 +1,7 @@
 import { listPosts } from "@/entities/post";
 import { useCopy, useLocale } from "@/shared/i18n";
-import { Container, SectionHeading } from "@/shared/ui";
+import { Container } from "@astrafoundry/design/ui";
+import { SectionHeading } from "@/shared/ui";
 import { FeaturedPost, PostList } from "@/widgets/post-list";
 
 export function BlogPage() {

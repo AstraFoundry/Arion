@@ -1,6 +1,6 @@
 import { getPost, listPosts, type Post } from "@/entities/post";
 import { useCopy, useLocale } from "@/shared/i18n";
-import { Container } from "@/shared/ui";
+import { Container } from "@astrafoundry/design/ui";
 import { PostArticle } from "@/widgets/post-article";
 import { PostList } from "@/widgets/post-list";
 import { blogPostingData, jsonLd } from "../model/structured-data";
