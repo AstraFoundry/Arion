@@ -2,8 +2,8 @@
 // Go with the fetch of its JavaScript package, @mygo-plugins/fetch, which
 // takes and returns the standard Request options and Response. Requests
 // made this way are not subject to CORS, may set any header (Origin,
-// Cookie, User-Agent, ...) and read every response header but Set-Cookie,
-// which a Response cannot hold.
+// Cookie, User-Agent, ...) and read every response header but Set-Cookie
+// and Set-Cookie2, which are filtered before sending the response to pages.
 //
 //	mygo.Use(fetch.Plugin)
 //
@@ -31,11 +31,13 @@ import (
 	"strings"
 
 	"github.com/egoist/mygo"
+	"github.com/egoist/mygo/netproxy"
 )
 
 // Options configure the plugin.
 type Options struct {
-	// Client makes the requests; nil means http.DefaultClient. Its
+	// Client makes the requests; nil means a client of
+	// netproxy.Transport(), which follows the system's proxy settings. Its
 	// CheckRedirect limits the redirects followed when the request's
 	// redirect mode is "follow".
 	Client *http.Client
@@ -50,7 +52,7 @@ var Plugin = New(Options{})
 // New returns the plugin with options.
 func New(opts Options) mygo.Plugin {
 	if opts.Client == nil {
-		opts.Client = http.DefaultClient
+		opts.Client = &http.Client{Transport: netproxy.Transport()}
 	}
 	return mygo.Plugin{Name: "fetch", Service: &service{opts}}
 }
@@ -146,6 +148,9 @@ func (s *service) fetch(ctx context.Context, req request, send func(part) error)
 	}
 	for k, vs := range res.Header {
 		k = strings.ToLower(k)
+		if k == "set-cookie" || k == "set-cookie2" {
+			continue
+		}
 		for _, v := range vs {
 			head.Headers = append(head.Headers, [2]string{k, v})
 		}

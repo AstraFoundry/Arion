@@ -1,0 +1,15 @@
+
+// Thinking text: the text's color with a band of brightness sweeping
+// across it, again and again.
+
+var Time float
+var Base vec4
+var Shine vec4
+
+func Fragment(dst vec4, pos vec2) vec4 {
+	x := pos.x / rectSize().x
+	s := fract(Time*0.6)*2.2 - 0.6
+	k := exp(-(x-s)*(x-s)*14)
+	c := mix(Base, Shine, k)
+	return vec4(c.rgb*c.a, c.a)
+}

@@ -5,6 +5,7 @@ package text
 import (
 	"errors"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 	"syscall/js"
@@ -42,15 +43,16 @@ type canvasEngine struct {
 	// its fillStyle.
 	current, kerning, fill string
 	fonts                  map[string]*Font
-	css                    []fontCSS // the CSS font of each Font, by native
 	// emoji are the twins of fonts that draw emoji, unshaded: emoji
 	// keep their colors whatever the text's.
 	emoji map[*Font]*Font
-	// The glyphs' texts, by ID.
-	ids   map[string]uint32
-	texts []string
+	// glyphs are the texts of the glyphs of the Fonts made since the
+	// System last let go of them.
+	glyphs *glyphTexts
 	// words caches the pen positions of the clusters of words.
 	words map[wordKey][]float32
+	// names are the families the app registered fonts under.
+	names []string
 	seg   segmenter.Segmenter
 	para  bidi.Paragraph
 	// image is the canvas's pixels read back, reused.
@@ -62,14 +64,33 @@ type canvasEngine struct {
 // the families after.
 type fontCSS struct{ pre, family string }
 
+// canvasFont is what the engine keeps of a Font (Font.data): its CSS font,
+// and the texts of its glyphs, which a layout kept after the System let go
+// of the Font still draws.
+type canvasFont struct {
+	css    fontCSS
+	glyphs *glyphTexts
+}
+
+// glyphTexts are the texts of glyphs, by ID: the engine's glyphs are
+// texts drawn whole.
+type glyphTexts struct {
+	ids   map[string]uint32
+	texts []string
+}
+
+func newGlyphTexts() *glyphTexts {
+	return &glyphTexts{ids: map[string]uint32{"": 0}, texts: []string{""}}
+}
+
 type wordKey struct {
-	font   uintptr
+	font   *Font
 	word   string
 	noKern bool
 }
 
 func newCanvas() *canvasEngine {
-	e := &canvasEngine{fonts: map[string]*Font{}, ids: map[string]uint32{"": 0}, texts: []string{""}, words: map[wordKey][]float32{}}
+	e := &canvasEngine{fonts: map[string]*Font{}, glyphs: newGlyphTexts(), words: map[wordKey][]float32{}}
 	doc := js.Global().Get("document")
 	if doc.IsUndefined() {
 		e.canvas = js.Global().Get("OffscreenCanvas").New(64, 64)
@@ -145,7 +166,7 @@ func (e *canvasEngine) font(style Style) *Font {
 	// Core Text's font smoothing emboldens lighter text more, and Skia
 	// corrects coverage by the text's luminance. Thick text is drawn in
 	// white, the boldest.
-	f := &Font{Size: size, native: uintptr(len(e.css)), shaded: true, thickens: true}
+	f := &Font{Size: size, data: &canvasFont{fc, e.glyphs}, shaded: true, thickens: true}
 	if a := m.Get("fontBoundingBoxAscent"); a.Type() == js.TypeNumber {
 		f.Ascent, f.Descent = float32(a.Float()), float32(m.Get("fontBoundingBoxDescent").Float())
 	} else {
@@ -162,19 +183,19 @@ func (e *canvasEngine) font(style Style) *Font {
 		f.strikeTop = size * 0.3
 	}
 	f.strikeThick = thick
-	e.css = append(e.css, fc)
 	e.fonts[css] = f
 	return f
 }
 
 // glyphID returns the ID of a glyph drawing text.
 func (e *canvasEngine) glyphID(text string) uint32 {
-	if id, ok := e.ids[text]; ok {
+	g := e.glyphs
+	if id, ok := g.ids[text]; ok {
 		return id
 	}
-	id := uint32(len(e.texts))
-	e.texts = append(e.texts, text)
-	e.ids[text] = id
+	id := uint32(len(g.texts))
+	g.texts = append(g.texts, text)
+	g.ids[text] = id
 	return id
 }
 
@@ -205,7 +226,9 @@ func noKern(style Style) bool {
 }
 
 // sized returns the CSS font of f at size px.
-func (e *canvasEngine) sized(f *Font, size float32) string { return e.css[f.native].at(size) }
+func (e *canvasEngine) sized(f *Font, size float32) string {
+	return f.data.(*canvasFont).css.at(size)
+}
 
 // cluster is a glyph being laid out: a grapheme cluster, or a word of a
 // script whose letters join, of runes [start, end).
@@ -289,6 +312,21 @@ func (e *canvasEngine) shape(text []rune, style Style, spans []Span, width float
 		l := it.Line()
 		breaks = append(breaks, l.Offset+len(l.Text))
 	}
+	if width > 0 && keepsAnyWords(style.Lang, spans) {
+		// Korean breaks between words (keepWordsWhole).
+		at := make([]bool, len(text)+1)
+		for _, b := range breaks {
+			at[b] = true
+		}
+		if keepWordsWhole(at, text, style.Lang, spans) {
+			breaks = breaks[:0]
+			for i, ok := range at {
+				if ok {
+					breaks = append(breaks, i)
+				}
+			}
+		}
+	}
 	var bounds []int
 	for it := e.seg.GraphemeIterator(); it.Next(); {
 		g := it.Grapheme()
@@ -327,10 +365,43 @@ func (e *canvasEngine) shape(text []rune, style Style, spans []Span, width float
 		}
 	}
 
+	// Inline objects take their width, whatever the canvas measured of
+	// their character.
+	{
+		start := 0
+		for _, sp := range spans {
+			end := min(sp.End, len(text))
+			if sp.ObjectWidth > 0 {
+				for k := range clusters {
+					if c := &clusters[k]; c.start >= start && c.start < end {
+						c.advance = sp.ObjectWidth
+					}
+				}
+			}
+			start = max(start, end)
+		}
+	}
+
+	// Tabs advance to the next of the stops of the style, from the start
+	// of their line, where it sets them; the canvas measures them as
+	// spaces otherwise.
+	tabbed := style.tabStop > 0 && slices.Contains(text, '\t')
+	tabs := func(cs []cluster, x float32) {
+		for k := range cs {
+			if c := &cs[k]; c.end-c.start == 1 && text[c.start] == '\t' {
+				c.advance = tabAdvance(x, style.tabStop)
+			}
+			x += cs[k].advance
+		}
+	}
+
 	// Lines: whole pieces between breaks that fit, or clusters of those
 	// longer than a line unless wholeWords.
 	var lines [][2]int // clusters [i, j)
 	if width <= 0 {
+		if tabbed {
+			tabs(clusters, 0)
+		}
 		lines = append(lines, [2]int{0, len(clusters)})
 	} else {
 		lineStart, lineW := 0, float32(0)
@@ -341,16 +412,25 @@ func (e *canvasEngine) shape(text []rune, style Style, spans []Span, width float
 				cj++
 			}
 			// The piece's width, less the whitespace ending it.
-			var w, trail float32
-			for k := ci; k < cj; k++ {
-				w += clusters[k].advance
+			measure := func() (w, trail float32) {
+				if tabbed {
+					tabs(clusters[ci:cj], lineW)
+				}
+				for k := ci; k < cj; k++ {
+					w += clusters[k].advance
+				}
+				for k := cj - 1; k >= ci && isSpace(text, clusters[k]); k-- {
+					trail += clusters[k].advance
+				}
+				return w, trail
 			}
-			for k := cj - 1; k >= ci && isSpace(text, clusters[k]); k-- {
-				trail += clusters[k].advance
-			}
+			w, trail := measure()
 			if lineW+w-trail > width+1e-3 && ci > lineStart {
 				lines = append(lines, [2]int{lineStart, ci})
 				lineStart, lineW = ci, 0
+				if tabbed {
+					w, trail = measure()
+				}
 			}
 			if w-trail > width+1e-3 && !wholeWords {
 				// Break the piece within itself.
@@ -396,8 +476,15 @@ func (e *canvasEngine) shape(text []rune, style Style, spans []Span, width float
 	return out
 }
 
+// tabAdvance returns the advance of a tab x DIPs from the start of its
+// line to the next stop of those every stop DIPs.
+func tabAdvance(x, stop float32) float32 {
+	next := (float32(math.Floor(float64(x/stop+1e-4))) + 1) * stop
+	return next - x
+}
+
 func isSpace(text []rune, c cluster) bool {
-	return c.end-c.start == 1 && unicode.IsSpace(text[c.start])
+	return c.end-c.start == 1 && hangs(text[c.start])
 }
 
 // measureWord appends the clusters of a word of runes [bounds[0],
@@ -427,7 +514,7 @@ func (e *canvasEngine) measureWord(out []cluster, text []rune, bounds []int, f *
 // each drawn alone, at the positions the browser gives them in the whole.
 func (e *canvasEngine) measureClusters(out []cluster, text []rune, bounds []int, f *Font, spacing float32, noKern bool, level bidi.Level) []cluster {
 	start, end := bounds[0], bounds[len(bounds)-1]
-	key := wordKey{f.native, string(text[start:end]), noKern}
+	key := wordKey{f, string(text[start:end]), noKern}
 	pens, ok := e.words[key]
 	if !ok {
 		pens = make([]float32, len(bounds))
@@ -547,10 +634,12 @@ var shadeGray = [...]uint8{0, 137, 188, 225, 255, 0}
 // glyph draws a glyph's text in the gray of its shade and reads its
 // coverage back: gray, or color for color fonts (emoji).
 func (e *canvasEngine) glyph(f *Font, id uint32, scale, dx float32, shade Shade, _ bool) bitmap {
-	if int(id) >= len(e.texts) || id == 0 {
+	// The texts of the glyphs of f's time: the engine's may be newer.
+	texts := f.data.(*canvasFont).glyphs.texts
+	if int(id) >= len(texts) || id == 0 {
 		return bitmap{}
 	}
-	text := e.texts[id]
+	text := texts[id]
 	if strings.TrimSpace(text) == "" {
 		return bitmap{}
 	}
@@ -658,23 +747,23 @@ func (e *canvasEngine) glyph(f *Font, id uint32, scale, dx float32, shade Shade,
 const maxTexts = 1 << 16
 
 func (e *canvasEngine) fontCount() int {
-	if len(e.texts) > maxTexts {
+	if len(e.glyphs.texts) > maxTexts {
 		return maxFonts + 1
 	}
 	return len(e.fonts)
 }
 
-// forgetFonts lets go of the fonts, and of the glyphs and measurements,
-// which refer to them by number.
+// forgetFonts lets go of the fonts, and of the glyphs and measurements.
+// A Font kept by a layout keeps its CSS font and its glyphs' texts.
 func (e *canvasEngine) forgetFonts() {
 	clear(e.fonts)
 	clear(e.emoji)
-	e.css = e.css[:0]
 	clear(e.words)
-	clear(e.ids)
-	e.ids[""] = 0
-	e.texts = e.texts[:1]
+	e.glyphs = newGlyphTexts()
 }
+
+// releaseFonts has nothing to release: the browser keeps its fonts.
+func (e *canvasEngine) releaseFonts() {}
 
 // textParams leaves coverage as the browser drew it, without subpixel
 // antialiasing, which canvases do not read back.
@@ -712,6 +801,22 @@ func (e *canvasEngine) decorate(r decoRange) []Stroke {
 	return out
 }
 
+// appFamilies lists the app's families. A family is monospaced when an
+// "i" is as wide as a "W" in it, which tells only once its face has
+// loaded.
+func (e *canvasEngine) appFamilies() []FontFamily {
+	out := make([]FontFamily, len(e.names))
+	for i, name := range e.names {
+		e.setFont("100px " + strconv.Quote(name))
+		mono := e.ctx.Call("measureText", "i").Get("width").Float() == e.ctx.Call("measureText", "W").Get("width").Float()
+		out[i] = FontFamily{Name: name, Monospaced: mono}
+	}
+	return out
+}
+
+// systemFamilies lists none: a browser does not tell what fonts it has.
+func (e *canvasEngine) systemFamilies() func() []FontFamily { return nil }
+
 // register adds a font file to the document's fonts, as a FontFace of
 // family, or of its own family when family is "" (which the browser does
 // not tell: the face needs a family). Browsers load faces in the
@@ -726,6 +831,7 @@ func (e *canvasEngine) register(data []byte, family string) error {
 	fonts := js.Global().Get("document").Get("fonts")
 	fonts.Call("add", face)
 	face.Call("load").Call("catch", js.Global().Get("Function").New(""))
+	e.names = append(e.names, family)
 	clear(e.words)
 	return nil
 }

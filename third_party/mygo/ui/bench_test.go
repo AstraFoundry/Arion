@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"testing"
+	"time"
 )
 
 // BenchmarkFrame builds, lays out, paints and renders on the CPU a whole
@@ -195,6 +196,10 @@ func (d *diffScene) lineRow(c *context, i int) {
 func diffSceneTester(diff bool) (*Tester, *diffScene) {
 	d := newDiffScene(diff)
 	tt := coreNewTester(d.view, 1280, 800)
+	// Frames happen at one time, however long they take: nothing that
+	// waits on the clock, as a tooltip, changes what they allocate.
+	now := time.Date(2026, 10, 16, 12, 0, 0, 0, time.UTC)
+	tt.rt.clock = func() time.Time { return now }
 	tt.SetScale(2)
 	tt.Move(sidebarX, sidebarY)
 	s := &sidebarScroller{tt: tt, d: d}
@@ -206,8 +211,8 @@ func diffSceneTester(diff bool) (*Tester, *diffScene) {
 
 // The pointer scrolls the history over the rows' hashes, which have no
 // tooltip: resting on a subject or an age shows its tip after
-// tooltipDelay of the clock, so frames measured that slowly, as on a busy
-// runner, would show it.
+// tooltipDelay of the clock. The tester's clock stands still, so it would
+// not show anyway.
 const sidebarX, sidebarY = 40, 400
 
 // sidebarScroller scrolls the history by 40 DIPs a frame, down to its end

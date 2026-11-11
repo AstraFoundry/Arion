@@ -29,6 +29,9 @@ const (
 	// item inside Data. Native clipboard publication consumes this metadata;
 	// it never advertises or publishes the bookmark bytes to other apps.
 	MacOSFileBookmark Format = "application/x-mygo-macos-file-bookmark"
+	// Markdown is Markdown's text (RFC 7763), net.daringfireball.markdown
+	// on macOS.
+	Markdown Format = "text/markdown"
 )
 
 // ErrFormat means the requested item or representation is not available.

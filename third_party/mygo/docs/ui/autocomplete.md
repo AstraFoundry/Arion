@@ -18,4 +18,6 @@ autocomplete keeps what the user typed.
 ## Accessibility
 
 Assistive technology sees a combo box named by its `Label`, editable as a
-text field; the suggestion the arrows are on has the focus for it.
+text field, whose suggestions complete what was typed
+(`aria-autocomplete="list"`); the suggestion the arrows are on has the
+focus for it.

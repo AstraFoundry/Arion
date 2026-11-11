@@ -118,33 +118,57 @@ function transform(tree: Root, out: RenderedMarkdown, shiki: Highlighter, file: 
   cardLists(tree)
 }
 
-const preview = /^<!--\s*preview\s+([\w-]+)\s+(\d+)\s*-->$/
+const preview = /^<!--\s*(preview|app)\s+([\w-]+)\s+(\d+)\s*-->$/
 
 /**
  * A comment `<!-- preview button 140 -->`, which GitHub does not show,
  * becomes a frame of the demo of that name (website/docs-demo), as high
- * as it says, in a window of macOS titled as the page.
+ * as it says, in a window of macOS titled as the page. `<!-- app mayoi
+ * 480 -->` runs the example app of that name (examples/mayoi, one of
+ * docs-demo.ts's apps), in a window titled as the app.
  */
 function previews(tree: MdRoot) {
   const heading = tree.children.find((node) => node.type === "heading" && node.depth === 1)
-  const title = heading ? mdToString(heading) : ""
+  const pageTitle = heading ? mdToString(heading) : ""
   visit(tree, "html", (node, index, parent) => {
     const m = preview.exec(node.value.trim())
     if (!m || !parent || index === undefined) return
-    const [, name, height] = m
+    const [, kind, name, height] = m
+    const isApp = kind === "app"
+    const title = isApp ? name[0].toUpperCase() + name.slice(1) : pageTitle
     const el = (tagName: string, className: string, children: ElementContent[] = [], properties: Element["properties"] = {}): Element => ({
       type: "element",
       tagName,
       properties: { className: [className], ...properties },
       children,
     })
+    const src = isApp ? `/docs-demo?app=${name}` : `/docs-demo?demo=${name}`
+    // Lucide's square-arrow-out-up-right.
+    const icon: Element = {
+      type: "element",
+      tagName: "svg",
+      properties: {
+        viewBox: "0 0 24 24", width: 14, height: 14, fill: "none", stroke: "currentColor",
+        strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round", ariaHidden: "true",
+      },
+      children: ["M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6", "m21 3-9 9", "M15 3h6v6"].map(
+        (d): Element => ({ type: "element", tagName: "path", properties: { d }, children: [] }),
+      ),
+    }
     const titlebar = el("div", "ui-preview-titlebar", [
       el("span", "ui-preview-lights", [el("i", "close"), el("i", "minimize"), el("i", "zoom")], { ariaHidden: "true" }),
       el("span", "ui-preview-title", [{ type: "text", value: title || name }]),
+      el("a", "ui-preview-open", [icon], {
+        href: src,
+        target: "_blank",
+        rel: "noopener",
+        title: "Open in a new tab",
+        ariaLabel: `Open ${title || name} in a new tab`,
+      }),
     ])
     const iframe = el("iframe", "ui-preview-frame", [], {
-      src: `/docs-demo?demo=${name}`,
-      title: `A preview of ${title || name}`,
+      src,
+      title: isApp ? `${title}, running` : `A preview of ${title || name}`,
       loading: "lazy",
       style: `height:${height}px`,
     })

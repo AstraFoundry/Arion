@@ -34,6 +34,9 @@ export function SiteHeader() {
         <Link to="/benchmarks" className={navLink}>
           Benchmarks
         </Link>
+        <Link to="/showcase" className={navLink}>
+          Showcase
+        </Link>
       </nav>
       <div className="ml-auto flex items-center gap-1">
         <Search />
@@ -63,6 +66,9 @@ export function SiteHeader() {
             </DropdownMenuItem>
             <DropdownMenuItem className={mobileNavLink} render={<Link to="/benchmarks" />}>
               Benchmarks
+            </DropdownMenuItem>
+            <DropdownMenuItem className={mobileNavLink} render={<Link to="/showcase" />}>
+              Showcase
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

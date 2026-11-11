@@ -185,5 +185,34 @@ func (a *Application) IsURLSchemeRegistered(scheme string) bool {
 }
 
 // launchArgs delivers the URLs and files the app was started with, once it
-// is ready.
-func launchArgs() { deliverArgs(os.Args[1:], startDir) }
+// is ready, then runs the functions waiting for that (main thread).
+func launchArgs() {
+	deliverArgs(os.Args[1:], startDir)
+	launch.Lock()
+	launch.done = true
+	fns := launch.fns
+	launch.fns = nil
+	launch.Unlock()
+	for _, fn := range fns {
+		fn()
+	}
+}
+
+var launch struct {
+	sync.Mutex
+	done bool
+	fns  []func()
+}
+
+// whenLaunched runs fn on the main thread once the app delivered the
+// files and URLs it was started with: right away when it did.
+func whenLaunched(fn func()) {
+	launch.Lock()
+	if !launch.done {
+		launch.fns = append(launch.fns, fn)
+		launch.Unlock()
+		return
+	}
+	launch.Unlock()
+	postMain(fn)
+}

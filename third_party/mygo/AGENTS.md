@@ -34,6 +34,19 @@ wire protocol, TypeScript generation, and the checklist for adding features.
   in `loop.go`). Never block the main thread waiting on work that needs it.
 - **purego callbacks are a scarce, never-freed resource.** Create them once
   per signature at startup and route by user data, never per window or call.
+- **Apps pay only for what they use.** A feature must not grow apps that
+  don't use it: `examples/counter-native` (native UI) and `examples/hello`
+  (webview) are measured on every push. What every app reaches (`App.Run`,
+  windows, the default menus, `init` functions, the backends' methods)
+  must not call into opt-in features: reach them through functions their
+  constructor registers (as `linkedDocuments`), and keep heavy
+  dependencies and data out of those paths. Never call
+  `reflect.Type.Method`, `Value.Method` or `MethodByName` there: it makes
+  the linker keep every exported method of the program (2.5 MB). Measure
+  both apps before and after a change to `mygo`, `ui`, a backend or the
+  dependencies; explain any growth of an app that doesn't use the feature
+  in the PR, and find its cause with `-dumpdep` ("Binary size" in the
+  architecture guide).
 
 ## Commands
 
@@ -43,6 +56,7 @@ go vet ./... && GOOS=linux go vet ./... && GOOS=windows go vet ./...
 go vet -tags mygo_noinspector ./...        # production builds, without the inspector of native UI
 GOOS=js GOARCH=wasm go vet $(GOOS=js GOARCH=wasm go list ./... | grep -v /cmd/mygo)  # browsers, all but the CLI
 go test ./...                              # core (fake backend), tsgen, CLI, accelerator
+go build -trimpath -tags mygo_noinspector -ldflags "-s -w -X github.com/egoist/mygo.production=1" -o /tmp/counter-native ./examples/counter-native  # an app's release size, as the benchmarks build it
 MYGO_E2E=1 go test ./internal/e2e          # real GUI tests (macOS desktop session)
 bun install && bun run test && bun run typecheck   # the workspace, from the root
 bun run build                              # build internal/bridge/bridge.js and the npm packages' dist/
@@ -53,14 +67,25 @@ go run ./cmd/mygo dev -web examples/counter-native   # native UI in the browser,
 go run ./cmd/mygo build examples/todo      # .app + .dmg in examples/todo/build
 go run ./cmd/mygo build -platform web examples/counter-native   # a static site in examples/counter-native/dist/web
 go run ./examples/gallery                  # the native UI toolkit's tour
+go run ./examples/code-editor              # the code editor and the diff viewer (ui/editor)
+go run ./examples/markdown-chat            # Markdown replies streaming in (ui/markdown)
+go run ./examples/notes                    # the rich text editor (ui/richtext), in a notes app
 go run ./examples/terminal                 # a terminal (downloads libghostty-vt once)
+go run ./examples/loading                  # loading.dev's 29 indicators (plugins/loading)
+go run ./examples/permissionflow           # the system's permissions, asked for and guided to (plugins/permissionflow)
+go run ./plugins/automation/cmd/mygo-automation skills   # the automation CLI's guide, for agents driving an app
+go run ./examples/sf-symbols               # the system's SF Symbols on macOS (plugins/sfsymbols)
 go generate ./plugins/terminal             # build libghostty-vt for every platform (with Zig), write Ghostty's themes
 go generate ./internal/gpu/d3d11           # recompile the Direct3D shader (on Windows)
 go generate ./internal/gpu/metal           # recompile the Metal shader (on macOS, with Xcode)
+go generate ./cmd/mygo                     # the Mandarin readings of slugs (cmd/mygo/pinyin.bin), from Unicode's Unihan
+go generate ./internal/l10n                # MyGo's own strings: their functions, and the packages of translations in locales/
 go generate ./plugins/glass                # recompile the glass plugin's shaders (on macOS, and on Windows)
 bun run --cwd website dev                  # the website, with docs/ at /docs (see website/README.md)
-bun scripts/bench.ts run [--e2e]           # benchmarks and app sizes, medians of 6 runs (CI: bench.yml, /benchmarks)
+bun scripts/bench.ts run [--e2e]           # benchmarks and app sizes, medians of 6 runs (CI: bench.yml, /measures)
+go run ./benchmarks/run -out benchmarks/results.json  # MyGo, GPUI, GPUI Fast and egui on the same apps, for /benchmarks (opens windows, on a real Mac)
 go run ./internal/idlemem app...           # apps' memory once idle, with their webviews' processes
+go run ./internal/inputlatency             # native UI's input-to-screen latency on macOS (opens windows)
 ```
 
 Linux GUI tests cross-compile and run in a container with WebKitGTK and Xvfb;
@@ -88,6 +113,24 @@ Windows GUI tests need Windows with the WebView2 Runtime (a GitHub Actions
   plugin is Go only too, an effect of the renderers (`scene.Effect`): its
   shader in Metal, HLSL and GLSL with a CPU twin that must draw the same
   pixels, compiled ahead of time by `go generate` on macOS and Windows.
+  The game plugin is Go only too, what games need beyond what apps do,
+  opt-in, kept out of core `ui`: a game loop and a camera for native UI,
+  and `plugins/game/gamepad`, which reads controllers. The loading plugin
+  is Go only too, loading.dev's indicators drawn with `ui.Painter` on
+  ui's public API: keep them as loading-dev draws them in a browser.
+  The sfsymbols plugin is Go only too: on macOS it rasterizes the system's
+  SF Symbols through purego, and elsewhere it has none (`Image` says so).
+  The automation plugin is Go only too, gated with the inspector
+  (`mygo_noinspector`): a socket (`MYGO_AUTOMATION`) through which
+  other processes drive the app, reaching native UI only through
+  `surface.Automate`, which it sets. Its command line client for agents,
+  `mygo-automation` (`plugins/automation/cmd/mygo-automation`, the code
+  in `internal/automationcli`), uses the socket alone and Go's standard
+  library; keep its embedded `SKILL.md` true to its commands.
+  The permissionflow plugin is Go only too, after PermissionFlow: TCC's
+  permissions through purego on macOS, with a panel of AppKit under
+  System Settings to drag the app from, the consent store on Windows,
+  and errors.ErrUnsupported elsewhere.
 - The `dist/` of npm packages is not committed: run `bun run build` after
   `bun install` (CI and releases do). Commit `internal/bridge/bridge.js`
   whenever its sources change, and keep the generated clients of examples
@@ -103,3 +146,14 @@ Windows GUI tests need Windows with the WebView2 Runtime (a GitHub Actions
 - The configuration types of `packages/cli/index.d.ts` (for `mygo.config.ts`)
   mirror `Config` in `cmd/mygo/config.go`; `TestConfigTypes` checks them.
 - Tests: unit tests through `internal/fake`; GUI behavior in `internal/e2e`.
+- Tests never pass or fail on wall-clock time ("Waiting in tests" in the
+  architecture guide): wait for the condition or event with
+  `internal/wait`, whose one-minute guard only turns a hang into a
+  failure and is never tuned; advance a `ui.Tester`'s clock instead of
+  sleeping; measure work by counts, not durations. A test that can time
+  out while the code is right has a race to fix, in the test or the
+  product, not a timeout to raise or a rerun to hide behind.
+  GUI tests share a process and, on Linux, an X server: what one leaves
+  behind ("What tests leave behind" in the architecture guide) fails it, not
+  the tests after it. Before calling a failure older than a pull request,
+  reproduce it on a new X server, without running the branch's binary on it.

@@ -137,6 +137,9 @@ export const Notes = {
 Methods become lower camel case (`GetUserByID` → `getUserByID`, `URLFor` →
 `urlFor`), parameters keep their Go names, and Go doc comments become
 TSDoc. The client imports `mygo-runtime`, which the frontend depends on.
+Generation fails if two methods of the same service, or two events, map
+to the same client property name. The error names both declarations so
+you can rename one without silently hiding the other.
 
 To generate the client, mygo generate builds the app and runs it with
 `MYGO_GENERATE` set: `App.Run` then writes the client and returns without
@@ -172,6 +175,11 @@ tagged `omitempty` or `omitzero` are optional (`body?: string`), and `-`
 leaves a field out. JavaScript numbers are exact up to 2⁵³, so encode
 larger IDs as strings with the `string` option, `json:"id,string"`, which
 makes them `string` in TypeScript.
+
+An embedded `map[string]T` or `jsontext.Value` (`json:",embed"`) adds
+top-level members instead of a nested field. Its generated object allows
+additional keys with `[key: string]: unknown`, while declared fields keep
+their types.
 
 Named string types with constants become unions:
 
@@ -367,6 +375,9 @@ mygo.NewWindow(mygo.WindowOptions{
 it in windows that show content you do not control. Frames embedded in a
 page never call Go, whatever their origin; only the top-level page of a
 window does.
+
+What else a trusted page may do, and how to show content that is not the
+app's: see [trust](frontend.md#trust).
 
 ## From Go to the page
 

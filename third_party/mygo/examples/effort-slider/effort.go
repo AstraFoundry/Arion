@@ -117,10 +117,6 @@ type slider struct {
 	// held levels, and the level is the nearest; let go, it eases there.
 	holding bool
 	held    float64
-
-	// clock, when set, gives the time instead of the frames', for tests
-	// that draw the demo at a moment.
-	clock func() time.Time
 }
 
 func newSlider() *slider {
@@ -131,13 +127,6 @@ var (
 	titleFont = ui.Font{Family: "system-ui", Size: titleSize, Antialiased: true}
 	labelFont = ui.Font{Family: "system-ui", Size: labelSize, Antialiased: true}
 )
-
-func (s *slider) now(t time.Time) time.Time {
-	if s.clock != nil {
-		return s.clock()
-	}
-	return t
-}
 
 // thumb returns where the thumb is at t, in levels, and whether it is
 // still moving.
@@ -190,7 +179,7 @@ func (s *slider) view(c *ui.Context) {
 	// Centered across, on whole DIPs so that the card's edges are crisp.
 	ox, oy := float32(math.Round(float64(w-cardW)/2)), float32(math.Round(float64(cardY+(h-windowH)/2)))
 	ui.Box(c).Fill().Draw(func(p *ui.Painter, _ ui.Rect) {
-		t := s.now(p.Now())
+		t := p.Now()
 		if s.drawCard(p, ox, oy, t) {
 			p.AnimationFrame()
 		}
@@ -204,7 +193,7 @@ func (s *slider) view(c *ui.Context) {
 	// level to level.
 	sb := ui.SliderBase(c, &s.value, 0, galaxy).Step(1).FocusRing(false).Absolute().
 		Left(ox+trackX).Top(oy+trackY-6).Size(trackW, trackH+12).PaddingX(stopX - trackX)
-	t := s.now(c.Now())
+	t := c.Now()
 	if sb.Changed() && !s.holding {
 		s.setLevel(int(math.Round(s.value)), t)
 	}

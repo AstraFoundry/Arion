@@ -4,6 +4,7 @@ package ui
 
 import (
 	"fmt"
+	"math"
 	"strings"
 	"sync"
 	"time"
@@ -39,12 +40,14 @@ func inspPaletteFor(dark bool) inspPalette {
 }
 
 // inspIcons are the inspector's icons, parsed once a window opens it.
-var inspIcons = sync.OnceValue(func() (icons struct{ pick, close, warn, arrow *SVG }) {
+var inspIcons = sync.OnceValue(func() (icons struct{ pick, close, warn, arrow, plus, check *SVG }) {
 	stroked := func(shapes string) *SVG {
 		return MustParseSVG([]byte(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">` + shapes + `</svg>`))
 	}
 	icons.pick = stroked(`<path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><path d="m12 12 4.2 10 1.6-4.4L22 16z"/>`)
 	icons.close = stroked(`<path d="M18 6 6 18M6 6l12 12"/>`)
+	icons.plus = stroked(`<path d="M12 5v14M5 12h14"/>`)
+	icons.check = stroked(`<path d="m5 12 5 5 9-10"/>`)
 	icons.warn = stroked(`<path d="m21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/><path d="M12 9v4M12 17h.01"/>`)
 	icons.arrow = MustParseSVG([]byte(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><path d="M3 1.5 7.5 5 3 8.5z" fill="currentColor"/></svg>`))
 	return icons
@@ -55,6 +58,10 @@ var inspIcons = sync.OnceValue(func() (icons struct{ pick, close, warn, arrow *S
 func (rt *engine) buildInspector(c *context, appW, w, h float32) {
 	in := &rt.insp
 	in.shown, in.changed = in.sum, false
+	// Typing a value ends with the pane that shows it.
+	if in.editing.active && (in.tab != inspElements || in.side != inspStyles || in.sel.name == "") {
+		in.finishEdit(true)
+	}
 	if in.opened == nil {
 		in.opened = map[uint64]bool{}
 	}
@@ -80,7 +87,9 @@ func (rt *engine) buildInspector(c *context, appW, w, h float32) {
 	c.theme, c.parent = t, c.root
 	defer func() { c.theme, c.parent = saved, savedParent }()
 
-	panel := coreColumn(c).Key(inspectorKey)
+	// The panel reads left to right whatever the window, as browsers'
+	// developer tools do.
+	panel := coreColumn(c).Key(inspectorKey).Direction(LeftToRight)
 	in.panel = panel.id
 	panel.Absolute().Left(appW).Top(0).Width(w-appW).Height(h).Background(pal.bg).
 		BorderWidth(0, 0, 0, 1).BorderColor(pal.border).FontSize(12).TextColor(pal.text).Label("Developer tools")
@@ -134,6 +143,17 @@ func (in *inspector) toolbar(c *context, rt *engine) {
 			}
 		}
 		coreSpacer(c)
+		// Lays the window out right to left, or back, to try it without
+		// translations, as GTK's inspector can.
+		rtl := rt.direction()
+		dir := in.tab0(c, "RTL", rtl, 30).Role(RoleToggleButton).Tooltip("Lay the window out right to left")
+		if dir.Clicked() {
+			rt.dirOverride = 2
+			if rtl {
+				rt.dirOverride = 1
+			}
+			rt.requestFrame()
+		}
 		if n := len(rt.warnings); n > 0 {
 			badge := coreRow(c).Gap(3).PaddingX(6).AlignItems(Center).Cursor(CursorPointer).Label(fmt.Sprintf("%d issues", n))
 			badge.Children(func() {
@@ -166,6 +186,29 @@ func (in *inspector) iconButton(c *context, icon *SVG, on bool, label string) *n
 	}
 	b.Children(func() { coreIcon(c, icon).FontSize(16).TextColor(color) })
 	return b
+}
+
+// layoutBadge builds the badge of a container, which shows its layout over
+// the content.
+func (in *inspector) layoutBadge(c *context, n *inspNode) {
+	pal := &in.pal
+	name, tip := "flex", "Show the room between its children"
+	if n.layout == inspGrid {
+		name, tip = "grid", "Show its tracks and gaps"
+	}
+	on := in.layoutOn[n.id]
+	b := coreText(c, name).Font("monospace").FontSize(10).Padding(0, 4).Margin(0, 0, 0, 6).Radius(3).Shrink(0).SingleLine().
+		Role(RoleToggleButton).Cursor(CursorPointer).Tooltip(tip)
+	b.checked = 1
+	if on {
+		b.checked = 2
+		b.TextColor(pal.bg).Background(pal.accent)
+	} else {
+		b.TextColor(pal.muted).Border(1, pal.border)
+	}
+	if b.Clicked() {
+		in.toggleLayout(c.rt, n.id)
+	}
 }
 
 // tab0 builds a tab of a bar height high, underlined in the accent color
@@ -348,6 +391,13 @@ func (in *inspector) treeRow(c *context, r inspRow, n *inspNode) {
 		}
 	}
 	coreRichText(c, spans...).Font("monospace").FontSize(11.5).SingleLine().Ellipsis("…").Shrink(1).MinWidth(0)
+	if names := in.forcedNames(n.id); !r.close && names != "" {
+		coreText(c, names).Font("monospace").FontSize(10).TextColor(pal.accent).Padding(0, 4).Margin(0, 0, 0, 6).
+			Radius(3).Border(1, pal.accent).Shrink(0).SingleLine()
+	}
+	if !r.close && n.layout != inspNoLayout {
+		in.layoutBadge(c, n)
+	}
 	if !r.close && n.hasTrans {
 		coreText(c, "transition").Font("monospace").FontSize(10).TextColor(pal.muted).Padding(0, 4).Margin(0, 0, 0, 6).
 			Radius(3).Border(1, pal.border).Shrink(0)
@@ -482,29 +532,223 @@ func (in *inspector) decl(c *context, d inspDecl, name Color) {
 // those it inherits, as Chrome's Styles tab.
 func (in *inspector) stylesPane(c *context) {
 	pal := &in.pal
+	in.statesBar(c)
+	if n := in.changes(); n > 0 {
+		coreRow(c).Padding(4, 10).Gap(8).AlignItems(Center).Background(pal.toolbar).BorderWidth(0, 0, 1, 0).BorderColor(pal.border).Children(func() {
+			what := "1 change"
+			if n > 1 {
+				what = fmt.Sprintf("%d changes", n)
+			}
+			coreText(c, what+", until the inspector closes").FontSize(11).TextColor(pal.muted).Grow(1).MinWidth(0)
+			button := func(label string) *node {
+				b := coreBox(c).PaddingX(6).PaddingY(1).Radius(3).Border(1, pal.border).Role(RoleButton).Label(label)
+				if b.Hovered() {
+					b.Background(pal.hover)
+				}
+				b.Children(func() { coreText(c, label).FontSize(11).SingleLine() })
+				return b
+			}
+			if button("Copy as Go").Clicked() {
+				c.WriteClipboard(in.changesAsGo())
+			}
+			if button("Reset").Clicked() {
+				in.resetEdits()
+			}
+		})
+	}
 	for i, r := range in.sel.rules {
 		if r.inherited {
 			coreRow(c).Padding(4, 10).Background(pal.toolbar).Children(func() {
 				coreRichText(c, Span{Text: "Inherited from ", Color: pal.muted}, Span{Text: r.selector, Color: pal.tag, Font: "monospace"}).FontSize(11)
 			})
 		}
-		coreColumn(c).Padding(6, 10, 8).Gap(1).BorderWidth(0, 0, 1, 0).BorderColor(pal.border).Children(func() {
-			coreRow(c).AlignItems(Center).Children(func() {
+		// Keyed, for an input in it to keep its state as the bar of changes
+		// comes above it.
+		coreColumn(c).Key(r.id).Padding(6, 10, 8).Gap(1).BorderWidth(0, 0, 1, 0).BorderColor(pal.border).Children(func() {
+			coreRow(c).AlignItems(Center).Gap(4).Children(func() {
 				mono(c, Span{Text: r.selector, Color: pal.text}, Span{Text: " {", Color: pal.text})
 				coreSpacer(c)
 				if i == 0 && in.sel.source != "" {
-					coreText(c, shortSource(in.sel.source)).FontSize(11).TextColor(pal.muted).Underline().
+					link := coreText(c, shortSource(in.sel.source)).FontSize(11).TextColor(pal.muted).
 						SingleLine().Ellipsis("…").Shrink(1).MinWidth(0).Tooltip(in.sel.source)
+					if in.canOpenSource(in.sel.source) {
+						link.Underline().Cursor(CursorPointer).Role(RoleLink)
+						if link.Hovered() {
+							link.TextColor(pal.text)
+						}
+						if link.Clicked() {
+							in.openSource(c.rt, in.sel.source)
+						}
+					}
+				}
+				if !r.inherited {
+					if in.iconButton(c, inspIcons().plus, false, "Add a style").Size(18, 18).Clicked() {
+						in.startEdit(r.id, inspDecl{}, math.MaxInt32)
+					}
 				}
 			})
-			coreColumn(c).Padding(0, 0, 0, 16).Gap(1).Children(func() {
-				for _, d := range r.decls {
-					in.decl(c, d, pal.prop)
+			coreColumn(c).Padding(0, 0, 0, 2).Gap(1).Children(func() {
+				seen := map[string]int{}
+				for k, d := range r.decls {
+					key := fmt.Sprintf("%x %s %d", r.id, d.name, seen[d.name])
+					seen[d.name]++
+					in.styleDecl(c, r.id, d, k, key)
+				}
+				if ed := &in.editing; ed.active && ed.id == r.id && ed.name == "" {
+					coreRow(c).Key("add").Padding(0, 0, 0, 14).Children(func() {
+						in.editorInput(c, "Add a style", "property: value")
+					})
 				}
 			})
 			mono(c, Span{Text: "}", Color: pal.text})
 		})
 	}
+}
+
+// statesBar builds the bar that forces states on the element chosen, as
+// Chrome's :hov: the view sees them as it asks for them, whatever the
+// pointer and the focus do, to style them.
+func (in *inspector) statesBar(c *context) {
+	pal := &in.pal
+	id := in.sel.id
+	open := in.statesOpen || in.forced[id] != 0
+	coreColumn(c).Padding(3, 6).Gap(3).Background(pal.toolbar).BorderWidth(0, 0, 1, 0).BorderColor(pal.border).Children(func() {
+		toggle := in.tab0(c, ":hov", open, 20).Role(RoleToggleButton).Tooltip("Force an element's state").AlignSelf(Start)
+		if toggle.Clicked() && in.forced[id] == 0 {
+			in.statesOpen = !in.statesOpen
+		}
+		if !open {
+			return
+		}
+		coreRow(c).Wrap().GapY(2).GapX(10).PaddingX(4).Children(func() {
+			for _, s := range inspStates {
+				on := in.isForced(id, s.state)
+				item := coreRow(c).Gap(4).AlignItems(Center).Role(RoleCheckBox).Label(s.name).Cursor(CursorPointer)
+				item.checked = 1
+				if on {
+					item.checked = 2
+				}
+				item.Children(func() {
+					box := coreBox(c).Size(11, 11).Radius(2).Center().Shrink(0)
+					if on {
+						box.Background(pal.accent).Children(func() { coreIcon(c, inspIcons().check).FontSize(9).TextColor(pal.bg) })
+					} else {
+						box.Border(1, pal.muted)
+					}
+					coreText(c, s.name).Font("monospace").FontSize(11).SingleLine()
+				})
+				if item.Clicked() {
+					in.toggleForced(id, s.state)
+				}
+			}
+		})
+	})
+}
+
+// styleDecl builds declaration d of the rule of element id, at index in
+// the rule, as the Styles tab shows it: a checkbox that turns it off, and a
+// value a click edits, for those it can change.
+func (in *inspector) styleDecl(c *context, id uint64, d inspDecl, index int, key string) {
+	pal := &in.pal
+	if !editable(d) {
+		coreRow(c).Key(key).Padding(0, 0, 0, 14).AlignItems(Center).Children(func() { in.decl(c, d, pal.prop) })
+		return
+	}
+	row := coreRow(c).Key(key).AlignItems(Center)
+	hovered := row.Hovered()
+	editing := in.editing.active && in.editing.id == id && in.editing.name == d.name
+	row.Children(func() {
+		check := coreBox(c).Size(10, 10).Margin(0, 4, 0, 0).Shrink(0).Radius(2).Center().Role(RoleCheckBox).Label(d.name + " on")
+		check.checked = 2
+		if d.off {
+			check.checked = 1
+		}
+		switch {
+		case !d.off && hovered:
+			check.Background(pal.accent).Children(func() { coreIcon(c, inspIcons().check).FontSize(9).TextColor(pal.bg) })
+		case d.off:
+			check.Border(1, pal.muted)
+		}
+		if check.Clicked() {
+			in.toggle(id, d, index)
+		}
+		color, value := pal.text, pal.text
+		name := pal.prop
+		switch {
+		case d.off:
+			color, name, value = pal.muted, pal.muted, pal.muted
+		case d.invalid:
+			value = pal.warn
+		}
+		struck := d.off || d.invalid
+		mono(c, Span{Text: d.name, Color: name, Strikethrough: struck}, Span{Text: ":", Color: color}).Shrink(0)
+		if editing {
+			coreBox(c).Width(6).Shrink(0)
+			in.editorInput(c, "Value of "+d.name, "")
+			return
+		}
+		if d.swatch {
+			coreBox(c).Size(10, 10).Margin(0, 0, 0, 6).Border(1, pal.border).Background(d.color).Shrink(0)
+		}
+		v := mono(c, Span{Text: " " + d.value, Color: value, Strikethrough: struck}, Span{Text: ";", Color: color}).
+			Shrink(1).MinWidth(0).Cursor(CursorText).Role(RoleButton).Label("Value of " + d.name + ": " + d.value)
+		if v.Clicked() {
+			in.startEdit(id, d, index)
+		}
+		if d.invalid {
+			coreIcon(c, inspIcons().warn).FontSize(11).TextColor(pal.warn).Margin(0, 0, 0, 4).Shrink(0).Tooltip("Invalid value")
+		}
+	})
+}
+
+// editorInput builds the input of the value being typed: each change shows
+// in the window at once, Enter keeps it, Escape goes back, the arrows move
+// its number (by 10 with Shift, 0.1 with Alt), and losing the focus keeps
+// it.
+func (in *inspector) editorInput(c *context, label, placeholder string) {
+	pal := &in.pal
+	ed := &in.editing
+	input := coreTextInputBase(c, &ed.text).Grow(1).MinWidth(40).Font("monospace").FontSize(11.5).
+		Background(pal.bg).Border(1, pal.accent).PaddingX(2).Label(label).Placeholder(placeholder)
+	if ed.focus {
+		ed.focus = false
+		input.Focus()
+		if st := input.st.editor; st != nil {
+			st.selectAll()
+		}
+	}
+	input.afterInput(func() {
+		if !in.editing.active {
+			return
+		}
+		for _, k := range []struct {
+			key Key
+			by  float64
+		}{{KeyUp, 1}, {KeyDown, -1}} {
+			switch {
+			case input.Shortcut(0, k.key):
+				ed.text = nudge(ed.text, k.by)
+			case input.Shortcut(Shift, k.key):
+				ed.text = nudge(ed.text, 10*k.by)
+			case input.Shortcut(Alt, k.key):
+				ed.text = nudge(ed.text, k.by/10)
+			}
+		}
+		in.previewEdit()
+		switch {
+		case input.Submitted():
+			in.finishEdit(true)
+			c.rt.consumed = true
+		case input.Shortcut(0, KeyEscape):
+			in.finishEdit(false)
+			c.rt.consumed = true
+		case input.Focused():
+			ed.held = true
+		case ed.held:
+			in.finishEdit(true)
+			c.rt.consumed = true
+		}
+	})
 }
 
 // computedPane shows the box model of the element and its computed values,

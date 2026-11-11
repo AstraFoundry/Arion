@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"net/http"
+	"net/http/cookiejar"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -115,6 +116,42 @@ func TestFetch(t *testing.T) {
 	deny := New(Options{Allow: func(r *http.Request) bool { return r.URL.Path != "/echo" }}).Service.(*service)
 	if _, err = run(t, deny, request{URL: srv.URL + "/echo", Method: "GET"}); err == nil || !strings.Contains(err.Error(), "does not allow") {
 		t.Errorf("Allow: %v", err)
+	}
+}
+
+func TestFetchFiltersCookieHeaders(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Set-Cookie", "session=secret; HttpOnly; Path=/")
+		w.Header().Add("Set-Cookie", "other=value; Path=/")
+		w.Header().Set("Set-Cookie2", "legacy=secret")
+		w.Header().Set("X-Visible", "yes")
+	}))
+	defer srv.Close()
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	client := srv.Client()
+	client.Jar = jar
+	s := New(Options{Client: client}).Service.(*service)
+	parts, err := run(t, s, request{URL: srv.URL, Method: "GET"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, h := range parts[0].Headers {
+		if strings.EqualFold(h[0], "Set-Cookie") || strings.EqualFold(h[0], "Set-Cookie2") {
+			t.Errorf("cookie header sent to the page: %v", h)
+		}
+	}
+	if header(parts[0], "x-visible") != "yes" {
+		t.Error("ordinary response header was filtered")
+	}
+	r, err := http.NewRequest("GET", srv.URL, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cookies := jar.Cookies(r.URL); len(cookies) != 2 {
+		t.Errorf("Go cookie jar = %v; want both cookies retained", cookies)
 	}
 }
 

@@ -21,6 +21,9 @@ import (
 // creates.
 type session struct {
 	u *updater
+	// t are the texts of the window, in the language the app showed when
+	// the check began: a window keeps its language while it is open.
+	t *text
 	// ctx is canceled when the session ends, the user cancels or the
 	// window closes.
 	ctx       context.Context
@@ -42,10 +45,10 @@ type session struct {
 	release bool // the window has the size of a release view
 }
 
-func newSession(u *updater, user bool) *session {
+func newSession(u *updater, t *text, user bool) *session {
 	ctx, cancel := context.WithCancel(context.Background())
 	return &session{
-		u: u, user: user, ctx: ctx, cancel: cancel,
+		u: u, t: t, user: user, ctx: ctx, cancel: cancel,
 		responses: make(chan response, 1),
 		changed:   make(chan struct{}),
 	}
@@ -102,7 +105,7 @@ func (s *session) NewWindow(content mygo.Content) *mygo.Window {
 	width, height := frontend.Size(v.Release)
 	light, dark := frontend.Background()
 	win := mygo.NewWindow(mygo.WindowOptions{
-		Title:             s.u.text().Title,
+		Title:             s.t.Title,
 		Width:             width,
 		Height:            height,
 		UseContentSize:    true,
@@ -153,7 +156,7 @@ func (s *session) Fit(width, height int) {
 }
 
 // Texts returns the texts of the window around its views.
-func (s *session) Texts() frontend.Texts { return s.u.text().texts() }
+func (s *session) Texts() frontend.Texts { return s.t.texts() }
 
 // Icon returns the icon of the window, or nil.
 func (s *session) Icon() []byte { return s.u.icon() }

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/egoist/mygo"
+	"github.com/egoist/mygo/internal/wait"
 	"github.com/egoist/mygo/plugins/updater/internal/frontend"
 	"github.com/egoist/mygo/plugins/updater/internal/markdown"
 	"github.com/egoist/mygo/ui"
@@ -83,7 +84,7 @@ func (s *session) fit(t *testing.T) [2]int {
 	var size [2]int
 	select {
 	case size = <-s.fits:
-	case <-time.After(5 * time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("the window did not ask for a size")
 	}
 	for {
@@ -243,6 +244,38 @@ func TestFit(t *testing.T) {
 	tt.SetSize(frontend.ReleaseWidth, frontend.ReleaseHeight)
 	if wide := s.fit(t); wide[0] <= frontend.ReleaseWidth {
 		t.Errorf("long labels ask for %v", wide)
+	}
+}
+
+// A long error shows in full, in a window that grows to fit it, and no
+// tooltip covers the title.
+func TestLongDetail(t *testing.T) {
+	var icon bytes.Buffer
+	png.Encode(&icon, image.NewRGBA(image.Rect(0, 0, 128, 128)))
+	v := status(1, "Update Error!", "An error occurred while checking for updates. Please try again later.")
+	v.Detail = "i/o timeout"
+	s := newSession(v)
+	s.icon = icon.Bytes()
+	tt := ui.NewTester(newWindow(s).view, frontend.StatusWidth, frontend.StatusHeight)
+	line, _ := tt.Find(v.Detail)
+	// Three lines at the window's width.
+	v.Detail = `mygo: checking for updates: Get "https://example.com/releases/latest/download/update-darwin-arm64.json": dial tcp 20.205.243.166:443: i/o timeout`
+	s.set(v)
+	tt.Frame()
+	size := s.fit(t)
+	tt.SetSize(max(size[0], frontend.StatusWidth), size[1])
+	r, ok := tt.Find(v.Detail)
+	if !ok || r.H < 2.5*line.H {
+		t.Fatalf("the detail takes %v, a line of it %v", r, line)
+	}
+	if r.Y+r.H > float32(size[1]) {
+		t.Errorf("the detail ends at %v in a window %v high", r.Y+r.H, size[1])
+	}
+	tt.Move(r.X+r.W/2, r.Y+r.H/2)
+	tt.Advance(2 * time.Second)
+	tt.Frame()
+	if n := len(slices.DeleteFunc(tt.Texts(), func(s string) bool { return s != v.Detail })); n != 1 {
+		t.Errorf("hovering the detail shows it %d times: %q", n, tt.Texts())
 	}
 }
 

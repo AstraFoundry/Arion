@@ -6,10 +6,10 @@ import (
 	"slices"
 	"sort"
 	"strings"
-	"unicode"
 	"unicode/utf16"
 	"unicode/utf8"
 
+	"github.com/egoist/mygo/internal/rope"
 	"github.com/egoist/mygo/internal/text"
 )
 
@@ -26,7 +26,7 @@ type buffer struct {
 	// version counts the edits.
 	version uint64
 	indexed bool
-	root    *textNode
+	root    *rope.Node
 }
 
 func (b *buffer) string() string {
@@ -37,13 +37,13 @@ func (b *buffer) string() string {
 }
 func (b *buffer) byteLen() int {
 	if b.indexed {
-		return textSum(b.root).bytes
+		return rope.Sum(b.root).Bytes
 	}
 	return len(b.s)
 }
 func (b *buffer) start(p int) int {
 	if b.indexed {
-		return textPrefix(b.root, textLineStart(b.root, p)).runes
+		return rope.Prefix(b.root, rope.LineStart(b.root, p)).Runes
 	}
 	return b.paras[p].rune
 }
@@ -184,8 +184,8 @@ func (b *buffer) para(i int) int {
 // the end of the text.
 func (b *buffer) next(p int) (rune, byte int) {
 	if b.indexed {
-		off := textLineStart(b.root, p+1)
-		return textPrefix(b.root, off).runes, off
+		off := rope.LineStart(b.root, p+1)
+		return rope.Prefix(b.root, off).Runes, off
 	}
 	if p+1 < len(b.paras) {
 		return b.paras[p+1].rune, b.paras[p+1].byte
@@ -205,7 +205,7 @@ func (b *buffer) end(p int) int {
 // byteOf returns the byte of the text rune i starts at.
 func (b *buffer) byteOf(i int) int {
 	if b.indexed {
-		return textByteAt(b.root, i)
+		return rope.ByteOfRune(b.root, i)
 	}
 	i = max(0, min(i, b.n))
 	p := b.para(i)
@@ -261,8 +261,9 @@ func (b *buffer) replace(a, z int, s string) (first int, old []paragraph, after 
 	if b.indexed {
 		pa, pz := b.para(a), b.para(z)
 		old = slices.Clone(b.paras[pa : pz+1])
-		b.root = textReplace(b.root, a, z, s)
-		b.n, b.units = textSum(b.root).runes, textSum(b.root).units
+		b.root = rope.Replace(b.root, a, z, s)
+		sum := rope.Sum(b.root)
+		b.n, b.units = sum.Runes, sum.Units
 		added := make([]paragraph, strings.Count(s, "\n"))
 		b.paras = slices.Replace(b.paras, pa+1, pz+1, added...)
 		b.paras[pa] = paragraph{}
@@ -298,33 +299,28 @@ func (b *buffer) replace(a, z int, s string) (first int, old []paragraph, after 
 	return pa, old, len(added) + 1
 }
 
-func isWordRune(r rune) bool { return unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_' }
-
 // nextWord returns the end of the word after i, skipping what is between,
-// as text.Boundaries does.
+// as text.Boundaries does: each ideograph and kana is a word.
 func (b *buffer) nextWord(i int) int {
+	word, prev := false, rune(0)
 	if b.indexed {
-		word := false
 		for i < b.n {
 			r := b.runeAt(i)
-			if isWordRune(r) {
-				word = true
-			} else if word {
+			if word && text.WordBoundary(prev, r) {
 				break
 			}
+			word, prev = word || text.IsWordRune(r), r
 			i++
 		}
 		return i
 	}
 	off := b.byteOf(i)
-	word := false
 	for i < b.n {
 		r, size := utf8.DecodeRuneInString(b.s[off:])
-		if isWordRune(r) {
-			word = true
-		} else if word {
+		if word && text.WordBoundary(prev, r) {
 			break
 		}
+		word, prev = word || text.IsWordRune(r), r
 		i, off = i+1, off+size
 	}
 	return i
@@ -332,99 +328,79 @@ func (b *buffer) nextWord(i int) int {
 
 // prevWord returns the start of the word before i.
 func (b *buffer) prevWord(i int) int {
+	word, next := false, rune(0)
 	if b.indexed {
-		word := false
 		for i > 0 {
 			r := b.runeAt(i - 1)
-			if isWordRune(r) {
-				word = true
-			} else if word {
+			if word && text.WordBoundary(r, next) {
 				break
 			}
+			word, next = word || text.IsWordRune(r), r
 			i--
 		}
 		return i
 	}
 	off := b.byteOf(i)
-	word := false
 	for i > 0 {
 		r, size := utf8.DecodeLastRuneInString(b.s[:off])
-		if isWordRune(r) {
-			word = true
-		} else if word {
+		if word && text.WordBoundary(r, next) {
 			break
 		}
+		word, next = word || text.IsWordRune(r), r
 		i, off = i-1, off-size
 	}
 	return i
 }
 
 // wordAt returns the word, or the run of other runes, around i, within
-// its line.
+// its line: an ideograph or a kana is a word alone.
 func (b *buffer) wordAt(i int) (start, end int) {
-	if b.indexed {
-		if b.n == 0 {
-			return 0, 0
-		}
-		i = max(0, min(i, b.n-1))
-		word := isWordRune(b.runeAt(i))
-		start, end = i, i
-		for start > 0 {
-			r := b.runeAt(start - 1)
-			if r == '\n' || isWordRune(r) != word {
-				break
-			}
-			start--
-		}
-		for end < b.n {
-			r := b.runeAt(end)
-			if r == '\n' || isWordRune(r) != word {
-				break
-			}
-			end++
-		}
-		return start, end
-	}
 	if b.n == 0 {
 		return 0, 0
 	}
+	if b.indexed {
+		i = max(0, min(i, b.n-1))
+		at := b.runeAt(i)
+		start, end = i, i
+		for next := at; start > 0; start-- {
+			r := b.runeAt(start - 1)
+			if r == '\n' || text.WordBoundary(r, next) {
+				break
+			}
+			next = r
+		}
+		for prev := at; end < b.n; end++ {
+			r := b.runeAt(end)
+			if r == '\n' || end > i && text.WordBoundary(prev, r) {
+				break
+			}
+			prev = r
+		}
+		return start, end
+	}
 	i = min(i, b.n-1)
 	off := b.byteOf(i)
-	r, _ := utf8.DecodeRuneInString(b.s[off:])
-	word := isWordRune(r)
+	at, _ := utf8.DecodeRuneInString(b.s[off:])
 	start, end = i, i
-	for o := off; start > 0; {
+	for o, next := off, at; start > 0; {
 		r, size := utf8.DecodeLastRuneInString(b.s[:o])
-		if isWordRune(r) != word || r == '\n' {
+		if r == '\n' || text.WordBoundary(r, next) {
 			break
 		}
-		start, o = start-1, o-size
+		start, o, next = start-1, o-size, r
 	}
-	for o := off; end < b.n; {
+	for o, prev := off, at; end < b.n; {
 		r, size := utf8.DecodeRuneInString(b.s[o:])
-		if isWordRune(r) != word || r == '\n' {
+		if r == '\n' || end > i && text.WordBoundary(prev, r) {
 			break
 		}
-		end, o = end+1, o+size
+		end, o, prev = end+1, o+size, r
 	}
 	return start, end
 }
 
 func (b *buffer) runeAt(i int) rune {
-	n := b.root
-	off := textByteAt(n, i)
-	for n != nil && n.left != nil {
-		if off < n.left.sum.bytes {
-			n = n.left
-		} else {
-			off -= n.left.sum.bytes
-			n = n.right
-		}
-	}
-	if n == nil || off >= len(n.text) {
-		return 0
-	}
-	r, _ := utf8.DecodeRuneInString(n.text[off:])
+	r, _ := rope.TextOf(b.root).RuneAt(rope.ByteOfRune(b.root, i))
 	return r
 }
 

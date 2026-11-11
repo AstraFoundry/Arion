@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/egoist/mygo/internal/platform"
+	"github.com/egoist/mygo/internal/wait"
 	"github.com/egoist/mygo/transfer"
 	"github.com/egoist/mygo/ui"
 )
@@ -25,7 +26,7 @@ func clipboardRelease(t *testing.T, ch <-chan bool) {
 		if !main {
 			t.Fatal("release hook ran off the main thread")
 		}
-	case <-time.After(time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("clipboard providers were not released")
 	}
 }

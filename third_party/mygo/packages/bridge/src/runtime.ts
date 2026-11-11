@@ -1,4 +1,13 @@
-import type { BridgeConfig, Channel, Incoming, Outgoing, Runtime } from "./types";
+import type {
+  BridgeConfig,
+  Channel,
+  Direction,
+  Incoming,
+  LocaleChange,
+  Outgoing,
+  Runtime,
+  ThemePreferences,
+} from "./types";
 
 type Pending = {
   method: string;
@@ -55,11 +64,27 @@ export function createRuntime(
   const token = Math.random().toString(36).slice(2) + Date.now().toString(36);
   const pending = new Map<number, Pending>();
   const listeners = new Map<string, Set<Listener>>();
+  // The desktop's preferences, which Go tells at document start and on
+  // every change; the defaults stand until then.
+  let preferences: ThemePreferences = {
+    accent: null,
+    reduceMotion: false,
+    reduceTransparency: false,
+    highContrast: false,
+    textScale: 1,
+  };
   let seq = 0;
   // Channels passed to calls, by id, and the state of every channel.
   const channels = new Map<number, ChannelState>();
   const states = new WeakMap<object, ChannelState>();
   let channelSeq = 0;
+  // The language the app shows: the configuration tells it at document
+  // start, and the mygo:locale event when it changes.
+  let locale = config.locale || "en";
+  let dir: Direction = config.dir === "rtl" ? "rtl" : "ltr";
+  // Whether the window is drawn as active: pages start active, and the
+  // mygo:window-active event tells otherwise.
+  let windowActive = true;
 
   const send = (message: Outgoing) => post(JSON.stringify(message));
 
@@ -72,7 +97,10 @@ export function createRuntime(
         const ch = typeof arg === "object" && arg !== null ? states.get(arg) : undefined;
         if (!ch) continue;
         if (ch.id || ch.closed) {
-          chans?.forEach((c) => channels.delete(c.id));
+          chans?.forEach((c) => {
+            channels.delete(c.id);
+            c.id = 0;
+          });
           reject(new Error("mygo: a channel can be passed to one call, before it is closed"));
           return;
         }
@@ -85,7 +113,10 @@ export function createRuntime(
         send({ t: "call", id, k: token, m: method, a: args });
       } catch (err) {
         pending.delete(id);
-        chans?.forEach((c) => channels.delete(c.id));
+        chans?.forEach((c) => {
+          channels.delete(c.id);
+          c.id = 0;
+        });
         reject(err);
       }
     });
@@ -227,6 +258,24 @@ export function createRuntime(
     receive(messages) {
       for (const msg of Array.isArray(messages) ? messages : [messages]) {
         if (msg.t === "event") {
+          // Before the listeners, which may read it.
+          if (msg.n === "mygo:preferences") preferences = Object.freeze(msg.p as ThemePreferences);
+          if (msg.n === "mygo:window-active") {
+            if (typeof msg.p !== "boolean") continue;
+            // Listeners hear changes only.
+            if (msg.p === windowActive) continue;
+            windowActive = msg.p;
+          }
+          if (msg.n === "mygo:locale") {
+            const p = msg.p as Partial<LocaleChange> | undefined;
+            if (typeof p?.locale !== "string") continue;
+            // Go tells a page the language again as it loads, for one that
+            // started loading as it changed: listeners hear of a language
+            // the page did not have only.
+            if (p.locale === locale) continue;
+            locale = p.locale;
+            dir = p.dir === "rtl" ? "rtl" : "ltr";
+          }
           const set = listeners.get(msg.n);
           if (!set) continue;
           for (const listener of [...set]) {
@@ -267,6 +316,18 @@ export function createRuntime(
     platform: config.platform,
     windowId: config.windowId,
     version: config.version,
+    get preferences() {
+      return preferences;
+    },
+    get locale() {
+      return locale;
+    },
+    get dir() {
+      return dir;
+    },
+    get windowActive() {
+      return windowActive;
+    },
     window: Object.freeze({
       minimize: win("Minimize"),
       maximize: win("Maximize"),

@@ -126,6 +126,12 @@ func (v *WebView) TabOut(back bool) {
 	v.host.surface.Send(ev)
 }
 
+// UnhandledKey presses a key in the page that the page leaves unhandled,
+// which the platform passes on to the content (WebViewKey).
+func (v *WebView) UnhandledKey(mods platform.Modifiers, key platform.Key) {
+	v.host.surface.Send(platform.SurfaceEvent{Kind: platform.WebViewKey, Key: key, Mods: mods, WebView: v})
+}
+
 // Close closes the web view; its handler hears no more of it.
 func (v *WebView) Close() {
 	v.mu.Lock()

@@ -329,6 +329,36 @@ func EncodePaste(text string, bracketed bool) []byte {
 	return out[:n]
 }
 
+// PasteEvent tells the program what the clipboard offers a paste, by the
+// MIME types, for it to read what it wants (mode 5522, the Kitty
+// clipboard protocol); the program's reads come to Effects.ClipboardRead,
+// granted. The event goes to the program through Effects.WritePTY. It
+// reports whether the event was sent: it is not when the mode is not set
+// or the terminal has no ClipboardRead, when the paste is the embedder's
+// to encode (EncodePaste).
+func (t *Terminal) PasteEvent(mimes []string) bool {
+	if !t.Mode(ModePasteEvents) || t.effects.ClipboardRead == nil {
+		return false
+	}
+	var keep [][]byte
+	cs := make([]cString, 0, len(mimes))
+	for _, m := range mimes {
+		cs = append(cs, cStringOf(m, &keep))
+	}
+	p := paste{size: unsafe.Sizeof(paste{}), source: 0 /* the clipboard */, mimesLen: uintptr(len(cs))}
+	if len(cs) > 0 {
+		p.mimes = uintptr(unsafe.Pointer(&cs[0]))
+		// The library asks a reader for data only when it pastes text
+		// itself, which it does not for an event; one is still required.
+		p.reader = mimeReader{read: cbNoRead}
+	}
+	var written bool
+	r := call(fnTerminalPaste, t.h, uintptr(unsafe.Pointer(&p)), uintptr(unsafe.Pointer(&written)))
+	runtime.KeepAlive(keep)
+	runtime.KeepAlive(cs)
+	return ok(r) && written
+}
+
 // PasteIsSafe reports whether pasting text cannot run a command by itself.
 func PasteIsSafe(text string) bool {
 	if text == "" {

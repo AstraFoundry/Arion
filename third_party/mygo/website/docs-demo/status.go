@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"io"
 	"math"
 	"time"
 
@@ -42,8 +43,15 @@ func statusMix(a, b color.RGBA, t float64) color.RGBA {
 
 // statusPhoto draws a sunset over hills, a photo of 320×180 pixels.
 func statusPhoto() *image.RGBA {
+	img := image.NewRGBA(image.Rect(0, 0, 320, 180))
+	statusSunset(img, 112)
+	return img
+}
+
+// statusSunset draws a sunset over hills into img, of 320×180 pixels, its
+// sun's center sunY pixels from the top.
+func statusSunset(img *image.RGBA, sunY float64) {
 	const w, h = 320, 180
-	img := image.NewRGBA(image.Rect(0, 0, w, h))
 	top, mid, low := color.RGBA{30, 41, 99, 255}, color.RGBA{219, 39, 119, 255}, color.RGBA{251, 146, 60, 255}
 	sun := color.RGBA{254, 240, 138, 255}
 	far, near := color.RGBA{88, 28, 135, 255}, color.RGBA{30, 27, 75, 255}
@@ -55,9 +63,9 @@ func statusPhoto() *image.RGBA {
 				c = statusMix(mid, low, (fy-0.6)/0.4)
 			}
 			// The sun, with a soft edge.
-			d := math.Hypot(float64(x)-210, float64(y)-112) - 30
+			d := math.Hypot(float64(x)-210, float64(y)-sunY) - 30
 			c = statusMix(c, sun, 0.5-d)
-			if glow := 1 - math.Hypot(float64(x)-210, float64(y)-112)/110; glow > 0 {
+			if glow := 1 - math.Hypot(float64(x)-210, float64(y)-sunY)/110; glow > 0 {
 				c = statusMix(c, sun, glow*glow*0.35)
 			}
 			// Two hills, the far one first.
@@ -71,8 +79,30 @@ func statusPhoto() *image.RGBA {
 			img.SetRGBA(x, y, c)
 		}
 	}
-	return img
 }
+
+// statusClip is a video decoder of the sunset's sun sinking behind the
+// hills and rising again, drawn into one picture frame after frame: two
+// seconds of 24 frames a second.
+type statusClip struct {
+	pic  *image.RGBA
+	next int
+}
+
+func (d *statusClip) Next() (ui.VideoFrame, error) {
+	const frames = 48
+	if d.next == frames {
+		return ui.VideoFrame{}, io.EOF
+	}
+	if d.pic == nil {
+		d.pic = image.NewRGBA(image.Rect(0, 0, 320, 180))
+	}
+	statusSunset(d.pic, 112+24*math.Sin(2*math.Pi*float64(d.next)/frames))
+	d.next++
+	return ui.VideoFrame{Image: d.pic, Duration: time.Second / 24}, nil
+}
+
+func (d *statusClip) Rewind() error { d.next = 0; return nil }
 
 // statusPortrait draws a person's silhouette on a gradient, 96 pixels
 // square.
@@ -226,6 +256,26 @@ func init() {
 			ui.Segmented(c, &fit, "Contain", "Cover", "Fill box", "Scale down", "Natural size").Label("Fit")
 			ui.Checkbox(c, &gray, "Grayscale")
 		})
+	})
+
+	clip, err := ui.NewVideoPlayer(&statusClip{})
+	if err != nil {
+		panic(err)
+	}
+	clip.SetLoop(true)
+	demo("video", func(c *ui.Context) {
+		ui.Video(c, clip).Size(240, 135).Fit(ui.Cover).Radius(12)
+		label := "Pause"
+		if !clip.Playing() {
+			label = "Play"
+		}
+		if ui.Button(c.Key("play"), label).Width(96).Clicked() {
+			if clip.Playing() {
+				clip.Pause()
+			} else {
+				clip.Play()
+			}
+		}
 	})
 
 	demo("icon", func(c *ui.Context) {

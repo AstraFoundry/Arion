@@ -9,6 +9,8 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/egoist/mygo/internal/platform"
 )
 
 // inspDetails describes the element chosen in the inspector, for the
@@ -33,17 +35,21 @@ type inspDetails struct {
 // inspRule is a rule of the Styles tab: the element's own, or those of an
 // element it inherits from.
 type inspRule struct {
+	// id is the element that sets the declarations.
+	id        uint64
 	selector  string
 	inherited bool
 	decls     []inspDecl
 }
 
 // inspDecl is a declaration: a property and its value, with a color
-// swatch before the value when swatch is set.
+// swatch before the value when swatch is set. off, edited, invalid and
+// added tell what the Styles tab did to it (inspEdit).
 type inspDecl struct {
-	name, value string
-	color       Color
-	swatch      bool
+	name, value                 string
+	color                       Color
+	swatch                      bool
+	off, edited, invalid, added bool
 }
 
 // inspSection is a section of the Properties tab.
@@ -64,6 +70,13 @@ func (d *inspDetails) hash() uint64 {
 		for _, dc := range r.decls {
 			b.WriteString(dc.name)
 			b.WriteString(dc.value)
+			for _, on := range [...]bool{dc.off, dc.edited, dc.invalid, dc.added} {
+				if on {
+					b.WriteByte('1')
+				} else {
+					b.WriteByte('0')
+				}
+			}
 		}
 	}
 	for _, dc := range d.computed {
@@ -84,17 +97,27 @@ func describe(rt *engine, e *node) inspDetails {
 	if k, ok := rt.insp.keys[e.id]; ok {
 		sel += "#" + fmt.Sprint(k)
 	}
-	d.rules = append(d.rules, inspRule{selector: sel, decls: ownStyles(rt, e)})
+	own := inspRule{id: e.id, selector: sel, decls: ownStyles(rt, e)}
+	rt.insp.overlayEdits(&own, nil)
+	d.rules = append(d.rules, own)
 	// What it inherits: the text styles that the elements around it set
-	// and nothing nearer overrides.
+	// and nothing nearer overrides, with those turned off there, to turn
+	// on again.
 	taken := e.ts.set
 	for p := e.parent; p != nil && taken != setAll; p = p.parent {
 		set := p.ts.set &^ taken
-		if set == 0 {
+		before := taken
+		edited := false
+		for _, ed := range rt.insp.edits[p.id] {
+			edited = edited || textStyleBit(ed.name)&^before != 0
+		}
+		if set == 0 && !edited {
 			continue
 		}
 		taken |= set
-		d.rules = append(d.rules, inspRule{selector: elementName(p), inherited: true, decls: textStyles(&p.ts, set)})
+		r := inspRule{id: p.id, selector: elementName(p), inherited: true, decls: textStyles(&p.ts, set)}
+		rt.insp.overlayEdits(&r, func(name string) bool { return textStyleBit(name)&^before != 0 })
+		d.rules = append(d.rules, r)
 	}
 	d.margin, d.border, d.padding = e.margin, e.border, e.pad
 	d.w, d.h = max(e.w-e.padX(), 0), max(e.h-e.padY(), 0)
@@ -155,6 +178,9 @@ func ownStyles(rt *engine, e *node) []inspDecl {
 	if e.self != alignAuto {
 		add("align-self", cssAlign(e.self))
 	}
+	if e.dir&dirSet != 0 {
+		add("direction", Direction(e.dir&dirRTL).String())
+	}
 	switch {
 	case e.attach != 0:
 		at, self := e.attach.anchors()
@@ -162,6 +188,8 @@ func ownStyles(rt *engine, e *node) []inspDecl {
 		add("attach", anchorText(at)+" / "+anchorText(self))
 	case e.flags&flagAbsolute != 0:
 		add("position", "absolute")
+	case e.sticky:
+		add("position", "sticky")
 	case e.inset != [4]length{}:
 		add("position", "relative")
 	}
@@ -173,9 +201,18 @@ func ownStyles(rt *engine, e *node) []inspDecl {
 	for _, l := range []struct {
 		name string
 		v    length
-	}{{"width", e.width}, {"height", e.height}, {"min-width", e.minW}, {"min-height", e.minH}, {"max-width", e.maxW}, {"max-height", e.maxH}} {
+	}{{"width", e.width}, {"height", e.height}} {
 		if l.v.u != unitAuto {
 			add(l.name, cssLength(l.v))
+		}
+	}
+	for _, b := range []struct {
+		name  string
+		v     bound
+		upper bool
+	}{{"min-width", e.minW, false}, {"min-height", e.minH, false}, {"max-width", e.maxW, true}, {"max-height", e.maxH, true}} {
+		if b.v.set != 0 {
+			add(b.name, cssBound(b.v, b.upper))
 		}
 	}
 	if e.aspect > 0 {
@@ -204,7 +241,15 @@ func ownStyles(rt *engine, e *node) []inspDecl {
 		if e.borderStyle == BorderDashed {
 			style = "dashed"
 		}
-		ds = append(ds, inspDecl{name: "border", value: v + " " + style + " " + colorText(e.borderC), color: e.borderC, swatch: true})
+		if e.grads != nil && e.grads.border != borderColor {
+			add("border", v+" "+style)
+			add("border-image", "gradient")
+		} else {
+			ds = append(ds, inspDecl{name: "border", value: v + " " + style + " " + colorText(e.borderC), color: e.borderC, swatch: true})
+		}
+	}
+	if e.blur > 0 {
+		add("filter", "blur("+num(e.blur)+"px)")
 	}
 	if v, ok := edgesCSS(e.radius); ok {
 		add("border-radius", v)
@@ -225,9 +270,21 @@ func ownStyles(rt *engine, e *node) []inspDecl {
 	}
 	if e.kind == kindBox || e.kind == kindText && e.bg.A > 0 {
 		switch {
+		case e.fill == fillGradient && len(e.grad.Stops) > 0:
+			add("background", fmt.Sprintf("linear-gradient(%sdeg, %d stops)", num(e.grad.Angle), len(e.grad.Stops)))
 		case e.fill == fillGradient:
 			g := e.grad
 			add("background", fmt.Sprintf("linear-gradient(%sdeg, %s, %s)", num(g.Angle), colorText(g.From), colorText(g.To)))
+		case e.fill == fillConic:
+			g := e.grads.conic
+			add("background", fmt.Sprintf("conic-gradient(from %sdeg, %d stops)", num(g.Angle), len(g.Stops)))
+		case e.fill == fillRadial:
+			g := e.grads.radial
+			size := "farthest-corner"
+			if g.Radius > 0 {
+				size = num(g.Radius) + "px"
+			}
+			add("background", fmt.Sprintf("radial-gradient(circle %s, %d stops)", size, len(g.Stops)))
 		case e.fill == fillStripes:
 			add("background", "stripes "+colorText(e.stripes.c))
 		case e.fill == fillMaterial:
@@ -251,11 +308,19 @@ func ownStyles(rt *engine, e *node) []inspDecl {
 	if e.opacitySet && e.opacity < 1 {
 		add("opacity", num(e.opacity))
 	}
+	if e.zIndex != 0 {
+		add("z-index", strconv.Itoa(int(e.zIndex)))
+	}
 	if e.flags&flagInvisible != 0 {
 		add("visibility", "hidden")
 	}
-	if e.flags&flagPassThrough != 0 {
+	if e.hidden {
+		add("display", "none")
+	}
+	if e.flags&flagPassThrough != 0 || e.ignoreInput {
 		add("pointer-events", "none")
+	} else if e.hitFn != nil {
+		add("pointer-events", "visiblePainted")
 	}
 	if e.cursor != 0 {
 		add("cursor", cursorText(e.cursor-1))
@@ -273,11 +338,19 @@ func ownStyles(rt *engine, e *node) []inspDecl {
 		if p&propPosition != 0 {
 			what = append(what, "position")
 		}
-		if p&propSize != 0 {
+		switch p & propSize {
+		case propSize:
 			what = append(what, "size")
+		case propWidth:
+			what = append(what, "width")
+		case propHeight:
+			what = append(what, "height")
 		}
 		if p&propColors != 0 {
 			what = append(what, "colors")
+		}
+		if p&propShadows != 0 {
+			what = append(what, "shadows")
 		}
 		add("transition", strings.Join(what, " ")+" "+strconv.Itoa(int(r.duration().Milliseconds()))+"ms")
 	}
@@ -297,7 +370,7 @@ func ownStyles(rt *engine, e *node) []inspDecl {
 }
 
 // textStyles returns the text styles of ts in set, as CSS declarations.
-func textStyles(ts *textStyle, set uint16) []inspDecl {
+func textStyles(ts *textStyle, set uint32) []inspDecl {
 	var ds []inspDecl
 	add := func(name, value string) { ds = append(ds, inspDecl{name: name, value: value}) }
 	if set&setFamily != 0 {
@@ -335,11 +408,17 @@ func textStyles(ts *textStyle, set uint16) []inspDecl {
 	if set&setFeatures != 0 {
 		add("font-feature-settings", ts.features)
 	}
+	if set&setLang != 0 {
+		add("lang", ts.lang)
+	}
 	var deco []string
 	if set&setUnderline != 0 && ts.underline {
-		if ts.wavy {
+		switch {
+		case ts.wavy:
 			deco = append(deco, "underline wavy")
-		} else {
+		case ts.dotted:
+			deco = append(deco, "underline dotted")
+		default:
 			deco = append(deco, "underline")
 		}
 	}
@@ -355,6 +434,19 @@ func textStyles(ts *textStyle, set uint16) []inspDecl {
 	if set&setSelection != 0 {
 		ds = append(ds, inspDecl{name: "selection-color", value: colorText(ts.selection), color: ts.selection, swatch: true})
 	}
+	if set&setCaret != 0 {
+		ds = append(ds, inspDecl{name: "caret-color", value: colorText(ts.caret), color: ts.caret, swatch: true})
+	}
+	if set&setStroke != 0 {
+		ds = append(ds, inspDecl{name: "-webkit-text-stroke", value: pxText(ts.strokeWidth) + " " + colorText(ts.strokeColor), color: ts.strokeColor, swatch: true})
+	}
+	if set&setTabSize != 0 {
+		add("tab-size", num(ts.tabSize))
+	}
+	if set&setShadow != 0 {
+		sh := ts.shadow
+		ds = append(ds, inspDecl{name: "text-shadow", value: pxText(sh.x) + " " + pxText(sh.y) + " " + pxText(sh.blur) + " " + colorText(sh.color), color: sh.color, swatch: true})
+	}
 	return ds
 }
 
@@ -364,6 +456,8 @@ func computed(e *node) []inspDecl {
 	add := func(name, value string) { ds = append(ds, inspDecl{name: name, value: value}) }
 	display := "flex"
 	switch {
+	case e.hidden:
+		display = "none"
 	case e.grid:
 		display = "grid"
 	case e.kind == kindText:
@@ -372,6 +466,7 @@ func computed(e *node) []inspDecl {
 		display = "image"
 	}
 	add("display", display)
+	add("direction", Direction(e.dir&dirRTL).String())
 	if e.kind == kindBox && !e.grid {
 		dir := "column"
 		if e.row {
@@ -401,6 +496,7 @@ func computed(e *node) []inspDecl {
 		o = e.opacity
 	}
 	add("opacity", num(o))
+	add("z-index", strconv.Itoa(int(e.zIndex)))
 	if e.scrolls() {
 		add("scroll-left", pxText(float32(e.st.scrollX)))
 		add("scroll-top", pxText(float32(e.st.scrollY)))
@@ -439,15 +535,19 @@ func properties(rt *engine, e *node) []inspSection {
 	if r := e.st.trec; r != nil && r.built == rt.frame && r.elem == e {
 		moving = r.moving != 0 || r.colorMoving
 	}
+	in := &rt.insp
 	state := inspSection{title: "State", rows: []inspDecl{
-		{name: "focused", value: yes(rt.focused == e.id)},
-		{name: "hovered", value: yes(hovered)},
-		{name: "pressed", value: yes(e.st.pressed)},
+		{name: "focused", value: yes(rt.focused == e.id || in.isForced(e.id, forceFocus|forceFocusVisible))},
+		{name: "hovered", value: yes(hovered || in.isForced(e.id, forceHover))},
+		{name: "pressed", value: yes(e.st.pressed || in.isForced(e.id, forceActive))},
 		{name: "disabled", value: yes(e.IsDisabled())},
 		{name: "moving", value: yes(moving)},
 	}}
 	if e.leaving != 0 {
 		state.rows = append(state.rows, inspDecl{name: "leaving", value: "true"})
+	}
+	if names := in.forcedNames(e.id); names != "" {
+		state.rows = append(state.rows, inspDecl{name: "forced", value: names})
 	}
 	role, seen := accessibleRole(e)
 	name := e.label
@@ -457,11 +557,65 @@ func properties(rt *engine, e *node) []inspSection {
 	acc := inspSection{title: "Accessibility", rows: []inspDecl{
 		{name: "role", value: role},
 		{name: "name", value: strconv.Quote(name)},
-		{name: "keyboard-focusable", value: yes(e.flags&flagFocusable != 0 && !e.IsDisabled())},
-		{name: "ignored", value: yes(!seen || e.flags&(flagInvisible|flagInert) != 0)},
+		{name: "keyboard-focusable", value: yes(e.flags&flagFocusable != 0 && !e.IsDisabled() && !e.st.ignoreInput)},
+		{name: "ignored", value: yes(!seen || e.flags&(flagInvisible|flagInert) != 0 || e.inHidden() || e.st.accessHidden)},
 	}}
+	// Unavailable to assistive technology alone, focusable still
+	// (AccessDisabled), as aria-disabled.
+	if e.st.accessDisabled && !e.IsDisabled() {
+		acc.rows = append(acc.rows, inspDecl{name: "disabled", value: "true"})
+	}
 	if e.description != "" {
 		acc.rows = append(acc.rows, inspDecl{name: "description", value: strconv.Quote(e.description)})
+	}
+	if e.keyShortcuts != "" {
+		acc.rows = append(acc.rows, inspDecl{name: "keyshortcuts", value: strconv.Quote(e.keyShortcuts)})
+	}
+	if e.busy {
+		acc.rows = append(acc.rows, inspDecl{name: "busy", value: "true"})
+	}
+	if e.current != CurrentNone {
+		acc.rows = append(acc.rows, inspDecl{name: "current", value: platform.AccessCurrent(e.current).String()})
+	}
+	if e.chooseMany {
+		acc.rows = append(acc.rows, inspDecl{name: "multiselectable", value: "true"})
+	}
+	for i, name := range [...]string{"rowcount", "colcount", "rowindex", "colindex"} {
+		if v := e.accGrid[i]; v > 0 {
+			acc.rows = append(acc.rows, inspDecl{name: name, value: strconv.Itoa(int(v))})
+		}
+	}
+	for i, name := range [...]string{"posinset", "setsize"} {
+		if v := e.accSet[i]; v > 0 {
+			acc.rows = append(acc.rows, inspDecl{name: name, value: strconv.Itoa(int(v))})
+		}
+	}
+	if e.autoComplete != AutoCompleteNone {
+		acc.rows = append(acc.rows, inspDecl{name: "autocomplete", value: platform.AccessAutoComplete(e.autoComplete).String()})
+	}
+	if e.roleDescription != "" {
+		acc.rows = append(acc.rows, inspDecl{name: "roledescription", value: strconv.Quote(e.roleDescription)})
+	}
+	if e.hasPopup != PopupNone {
+		acc.rows = append(acc.rows, inspDecl{name: "haspopup", value: platform.AccessPopup(e.hasPopup).String()})
+	}
+	if len(e.controls) > 0 {
+		acc.rows = append(acc.rows, inspDecl{name: "controls", value: strconv.Itoa(len(e.controls)) + " elements"})
+	}
+	if len(e.describedBy) > 0 {
+		acc.rows = append(acc.rows, inspDecl{name: "describedby", value: strconv.Itoa(len(e.describedBy)) + " elements"})
+	}
+	if e.invalid {
+		acc.rows = append(acc.rows, inspDecl{name: "invalid", value: "true"})
+	}
+	if len(e.errorMessage) > 0 {
+		acc.rows = append(acc.rows, inspDecl{name: "errormessage", value: strconv.Itoa(len(e.errorMessage)) + " elements"})
+	}
+	switch e.orient {
+	case Horizontal:
+		acc.rows = append(acc.rows, inspDecl{name: "orientation", value: "horizontal"})
+	case Vertical:
+		acc.rows = append(acc.rows, inspDecl{name: "orientation", value: "vertical"})
 	}
 	return []inspSection{el, state, acc}
 }
@@ -482,6 +636,8 @@ func cssAlign(a Align) string {
 		return "space-around"
 	case SpaceEvenly:
 		return "space-evenly"
+	case Baseline:
+		return "baseline"
 	}
 	return "auto"
 }
@@ -494,6 +650,21 @@ func cssLength(l length) string {
 		return num(l.v) + "%"
 	}
 	return "auto"
+}
+
+// cssBound returns a minimum or a maximum size as CSS writes it: one of
+// both sizes in max() for a minimum, and in min() for a maximum.
+func cssBound(b bound, upper bool) string {
+	px, pct := pxText(b.px), num(b.pct)+"%"
+	switch {
+	case b.set == boundPx:
+		return px
+	case b.set == boundPct:
+		return pct
+	case upper:
+		return "min(" + pct + ", " + px + ")"
+	}
+	return "max(" + pct + ", " + px + ")"
 }
 
 // edgesCSS returns the four sides top, right, bottom and left as CSS
@@ -518,7 +689,8 @@ func edgesCSS(v [4]float32) (string, bool) {
 }
 
 func anchorText(a Anchor) string {
-	return [...]string{"top left", "top", "top right", "left", "center", "right", "bottom left", "bottom", "bottom right"}[min(int(a), 8)]
+	return [...]string{"top left", "top", "top right", "left", "center", "right", "bottom left", "bottom", "bottom right",
+		"top start", "start", "bottom start", "top end", "end", "bottom end"}[min(int(a), 14)]
 }
 
 func cursorText(c Cursor) string {
@@ -543,6 +715,22 @@ func cursorText(c Cursor) string {
 		return "grabbing"
 	case CursorNone:
 		return "none"
+	case CursorProgress:
+		return "progress"
+	case CursorWait:
+		return "wait"
+	case CursorHelp:
+		return "help"
+	case CursorCell:
+		return "cell"
+	case CursorZoomIn:
+		return "zoom-in"
+	case CursorZoomOut:
+		return "zoom-out"
+	case CursorAllScroll:
+		return "all-scroll"
+	case CursorNoDrop:
+		return "no-drop"
 	}
 	return "default"
 }

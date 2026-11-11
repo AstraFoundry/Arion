@@ -3,6 +3,7 @@ package ui
 import (
 	"math"
 	"testing"
+	"time"
 )
 
 func TestTrackScroll(t *testing.T) {
@@ -215,6 +216,273 @@ func TestScrollIntoViewNested(t *testing.T) {
 	// bottom at its own.
 	if row.y != 150 {
 		t.Errorf("row 8 shows at %v", row.y)
+	}
+}
+
+// revealTester shows 30 boxes of 20 DIPs in a container 100 DIPs long,
+// down or sideways, which brings box 15 into view as *o says while ask
+// is set; *s tracks the container.
+func revealTester(sideways bool, s *ScrollState, ask *bool, o *[]ScrollIntoViewOptions) *Tester {
+	return coreNewTester(func(c *context) {
+		box := coreScroll(c).Height(100).Width(100)
+		if sideways {
+			box = coreScrollHorizontal(c).Height(100).Width(100)
+		}
+		box.TrackScroll(s).Children(func() {
+			for i := range 30 {
+				r := coreBox(c).Height(20).Width(20).Shrink(0)
+				if i == 15 && *ask {
+					r.ScrollIntoView(*o...)
+				}
+			}
+		})
+	}, 200, 200)
+}
+
+// TestScrollIntoViewAlign lines a box up as the web's scrollIntoView's
+// block and inline do, down and sideways, both ways.
+func TestScrollIntoViewAlign(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		o    []ScrollIntoViewOptions
+		want float32
+	}{
+		{"none", nil, 220},
+		{"zero", []ScrollIntoViewOptions{{}}, 220},
+		{"nearest", []ScrollIntoViewOptions{{Block: ScrollNearest, Inline: ScrollNearest}}, 220},
+		{"start", []ScrollIntoViewOptions{{Block: ScrollStart, Inline: ScrollStart}}, 300},
+		{"center", []ScrollIntoViewOptions{{Block: ScrollCenter, Inline: ScrollCenter}}, 260},
+		{"end", []ScrollIntoViewOptions{{Block: ScrollEnd, Inline: ScrollEnd}}, 220},
+	} {
+		for _, way := range []string{"down", "sideways", "sideways right to left"} {
+			var s ScrollState
+			ask := false
+			tt := revealTester(way != "down", &s, &ask, &tc.o)
+			if way == "sideways right to left" {
+				// Offsets count from the start, at the right, as does the
+				// inline start: the same offsets line the box up.
+				tt.SetDirection(RightToLeft)
+			}
+			ask = true
+			tt.Frame()
+			ask = false
+			got := s.Y
+			if way != "down" {
+				got = s.X
+			}
+			if got != tc.want {
+				t.Errorf("%s, %s: scrolled to %v, want %v", tc.name, way, got, tc.want)
+			}
+			// It stays there in the next frame.
+			tt.Frame()
+			if way == "down" && s.Y != got || way != "down" && s.X != got {
+				t.Errorf("%s, %s: moved on to %v, %v in the next frame", tc.name, way, s.X, s.Y)
+			}
+		}
+	}
+	// Lined up from below, as from above.
+	var s ScrollState
+	ask := false
+	o := []ScrollIntoViewOptions{{Block: ScrollStart}}
+	tt := revealTester(false, &s, &ask, &o)
+	s.Y = math.MaxFloat32
+	tt.Frame()
+	ask = true
+	tt.Frame()
+	if s.Y != 300 {
+		t.Errorf("start from the end: scrolled to %v, want 300", s.Y)
+	}
+}
+
+// TestScrollIntoViewSmooth glides to the box, as the web's behavior:
+// "smooth" does.
+func TestScrollIntoViewSmooth(t *testing.T) {
+	var s ScrollState
+	ask := false
+	o := []ScrollIntoViewOptions{{Block: ScrollCenter, Animation: &Animation{Duration: 200 * time.Millisecond, Ease: Linear}}}
+	tt := revealTester(false, &s, &ask, &o)
+	ask = true
+	tt.Frame()
+	ask = false
+	if s.Y != 0 || !tt.FramePending() {
+		t.Fatalf("a glide scrolled at once to %v, or asked for no frame (%v)", s.Y, tt.FramePending())
+	}
+	tt.Advance(100 * time.Millisecond)
+	if s.Y < 100 || s.Y > 160 {
+		t.Errorf("half way: at %v, want about 130", s.Y)
+	}
+	tt.Advance(time.Second)
+	if math.Abs(float64(s.Y-260)) > 0.01 || tt.FramePending() {
+		t.Errorf("there: at %v, want 260, frames pending %v", s.Y, tt.FramePending())
+	}
+	// Asked again on the way, it goes on.
+	s.Y = 0
+	tt.Frame()
+	ask = true
+	for range 30 {
+		tt.Frame()
+		tt.Advance(10 * time.Millisecond)
+	}
+	ask = false
+	if math.Abs(float64(s.Y-260)) > 0.01 {
+		t.Errorf("asked in every frame: at %v, want 260", s.Y)
+	}
+	// The user's wheel takes over.
+	s.Y = 0
+	tt.Frame()
+	ask = true
+	tt.Frame()
+	ask = false
+	tt.Advance(50 * time.Millisecond)
+	tt.Move(50, 50)
+	tt.Wheel(50, 50, 0, -100)
+	tt.Advance(time.Second)
+	if s.Y != 0 {
+		t.Errorf("a notch up on the way: at %v, want 0", s.Y)
+	}
+	// So does the app.
+	ask = true
+	tt.Frame()
+	ask = false
+	tt.Advance(50 * time.Millisecond)
+	s.Y = 10
+	tt.Advance(time.Second)
+	if s.Y != 10 {
+		t.Errorf("set to 10 on the way: at %v", s.Y)
+	}
+	// With less motion, or animations disabled, it scrolls at once.
+	tt.SetPreferences(Preferences{ReduceMotion: true, TextScale: 1})
+	s.Y = 0
+	tt.Frame()
+	ask = true
+	tt.Frame()
+	ask = false
+	if s.Y != 260 {
+		t.Errorf("with less motion: at %v, want 260", s.Y)
+	}
+}
+
+// TestScrollIntoViewSmoothSideways glides sideways, right to left too.
+func TestScrollIntoViewSmoothSideways(t *testing.T) {
+	for _, dir := range []Direction{LeftToRight, RightToLeft} {
+		var s ScrollState
+		ask := false
+		o := []ScrollIntoViewOptions{{Inline: ScrollCenter, Animation: &Smooth}}
+		tt := revealTester(true, &s, &ask, &o)
+		tt.SetDirection(dir)
+		ask = true
+		tt.Frame()
+		ask = false
+		tt.Advance(50 * time.Millisecond)
+		if s.X <= 0 || s.X >= 260 {
+			t.Errorf("%v: on the way at %v", dir, s.X)
+		}
+		tt.Advance(2 * time.Second)
+		if math.Abs(float64(s.X-260)) > 0.01 {
+			t.Errorf("%v: at %v, want 260", dir, s.X)
+		}
+	}
+}
+
+// TestScrollIntoViewSmoothSnaps rests a container that snaps at the place
+// nearest where it glided.
+func TestScrollIntoViewSmoothSnaps(t *testing.T) {
+	var s ScrollState
+	ask := false
+	tt := coreNewTester(func(c *context) {
+		coreScroll(c).Height(100).ScrollSnap(SnapMandatory).TrackScroll(&s).Children(func() {
+			for i := range 30 {
+				r := coreBox(c).Height(30).Shrink(0).SnapAlign(Start)
+				if i == 15 && ask {
+					// Centered at 415, 5 DIPs from box 14's place.
+					r.ScrollIntoView(ScrollIntoViewOptions{Block: ScrollCenter, Animation: &Smooth})
+				}
+			}
+		})
+	}, 200, 200)
+	ask = true
+	tt.Frame()
+	ask = false
+	tt.Advance(3 * time.Second)
+	if math.Abs(float64(s.Y-420)) > 0.01 {
+		t.Errorf("at %v, want 420", s.Y)
+	}
+}
+
+// TestScrollIntoViewSmoothNested glides the containers around the box,
+// each to where it lines the box up once they all are there.
+func TestScrollIntoViewSmoothNested(t *testing.T) {
+	ask := false
+	var outer, inner ScrollState
+	var row *node
+	tt := coreNewTester(func(c *context) {
+		coreScroll(c).Fill().TrackScroll(&outer).Children(func() {
+			coreBox(c).Height(300).Shrink(0)
+			coreScroll(c).Height(150).Shrink(0).TrackScroll(&inner).Children(func() {
+				for i := range 10 {
+					r := coreBox(c).Height(50).Shrink(0)
+					if i == 8 {
+						row = r
+						if ask {
+							r.ScrollIntoView(ScrollIntoViewOptions{Block: ScrollStart, Animation: &Smooth})
+						}
+					}
+				}
+			})
+			coreBox(c).Height(1000).Shrink(0)
+		})
+	}, 200, 200)
+	ask = true
+	tt.Frame()
+	ask = false
+	tt.Advance(2 * time.Second)
+	// The inner container scrolls as far as it goes, showing row 8 50
+	// DIPs from its top, and the window row 8 at its own.
+	if math.Abs(float64(inner.Y-350)) > 0.01 || math.Abs(float64(outer.Y-350)) > 0.01 || math.Abs(float64(row.y)) > 0.01 {
+		t.Errorf("inner at %v, outer at %v, row 8 at %v; want 350, 350, 0", inner.Y, outer.Y, row.y)
+	}
+}
+
+// TestScrollIntoViewSmoothList glides a List to a row it built.
+func TestScrollIntoViewSmoothList(t *testing.T) {
+	var s ListState
+	show := -1
+	rows := map[int]*node{}
+	tt := coreNewTester(func(c *context) {
+		coreList(c, &s, 200, func(i int) {
+			r := coreBox(c).Height(20)
+			rows[i] = r
+			if i == show {
+				r.ScrollIntoView(ScrollIntoViewOptions{Block: ScrollCenter, Animation: &Smooth})
+				show = -1
+			}
+		}).Fill()
+	}, 200, 200)
+	show = 9
+	tt.Frame()
+	tt.Advance(2 * time.Second)
+	if first, last := s.Visible(); first != 4 || last != 14 {
+		t.Errorf("row 9 centered: rows %v to %v show, want 4 to 14", first, last)
+	}
+	if r := rows[9]; math.Abs(float64(r.y-90)) > 0.01 {
+		t.Errorf("row 9 shows at %v, want 90", r.y)
+	}
+}
+
+func TestScrollIntoViewOptionsPanic(t *testing.T) {
+	for name, o := range map[string][]ScrollIntoViewOptions{
+		"two":       {{}, {}},
+		"alignment": {{Block: ScrollEnd + 1}},
+		"animation": {{Animation: &Animation{Duration: -1}}},
+	} {
+		func() {
+			defer func() {
+				if recover() == nil {
+					t.Errorf("%s: no panic", name)
+				}
+			}()
+			coreNewTester(func(c *context) { coreBox(c).ScrollIntoView(o...) }, 100, 100)
+		}()
 	}
 }
 

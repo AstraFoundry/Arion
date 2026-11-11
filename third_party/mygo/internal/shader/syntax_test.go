@@ -1,0 +1,7516 @@
+// Copyright 2022 The Ebiten Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Modified by the MyGo contributors: loops that are not constant.
+
+package shader_test
+
+import (
+	"fmt"
+	gconstant "go/constant"
+	"strings"
+	"testing"
+
+	"github.com/egoist/mygo/internal/shader"
+	"github.com/egoist/mygo/internal/shaderir"
+)
+
+func compileToIR(src []byte) (*shaderir.Program, error) {
+	return shader.Compile(src, "Vertex", "Fragment", 0)
+}
+
+func TestSyntaxShadowing(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var dstPos vec4
+	return dstPos
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+func TestSyntaxDuplicatedVariables(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var foo vec4
+	var foo vec4
+	return foo
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var foo, foo vec4
+	return foo
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var foo vec4
+	foo := vec4(0)
+	return foo
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (vec4, vec4) {
+	return vec4(0), vec4(0)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	foo, foo := Foo()
+	return foo
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func foo() {
+	var x int
+	var y float
+	var x vec2
+	_ = x
+	_ = y
+}
+
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+}
+
+func TestSyntaxDuplicatedFunctions(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+}
+
+func Foo() {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo(x float) float {
+	return x
+}
+
+func Foo(x vec2) vec2 {
+	return x
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+func TestSyntaxNoNewVariables(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	_ := 1
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	_, _ := 1, 1
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (int, int) {
+	return 1, 1
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	_, _ := Foo()
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a, _ := 1, 1
+	_ = a
+	return vec4(0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	_, a := 1, 1
+	_ = a
+	return vec4(0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestSyntaxLoopVariableScope(t *testing.T) {
+	// A loop variable's scope ends with the loop. Redeclaring a variable with the same name after
+	// the loop is fine.
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	for i := 0; i < 3; i++ {
+	}
+	i := 10.0
+	return vec4(i)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	for i := range 3 {
+		_ = i
+	}
+	i := 10.0
+	return vec4(i)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := [3]float{1, 2, 3}
+	sum := 0.0
+	for _, v := range a {
+		sum += v
+	}
+	v := 10.0
+	return vec4(sum + v)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := [3]float{1, 2, 3}
+	sum := 0.0
+	for _, v := range a {
+		sum += v
+	}
+	var v float = 10.0
+	return vec4(sum + v)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	for i := range 3 {
+		_ = i
+	}
+	const i = 10
+	return vec4(float(i))
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	// After the loop, the name refers to the global variable, not the loop variable.
+	if _, err := compileToIR([]byte(`package main
+
+var I float
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	for I := 0; I < 3; I++ {
+	}
+	return vec4(sin(I))
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	// A loop variable is not available after the loop.
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	for i := 0; i < 3; i++ {
+	}
+	return vec4(float(i))
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	for i := range 3 {
+		_ = i
+	}
+	return vec4(float(i))
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := [3]float{1, 2, 3}
+	sum := 0.0
+	for _, v := range a {
+		sum += v
+	}
+	return vec4(sum + v)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+func TestSyntaxWrongReturn(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return 0.0
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (float, float) {
+	return 0
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() float {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+func TestSyntaxMultipleValueReturn(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (float, float) {
+	return 0.0
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() float {
+	return 0.0, 0.0
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (float, float, float) {
+	return 0.0, 0.0
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (float, float) {
+	return 0.0, 0.0
+}
+
+func Foo2() (float, float, float) {
+	return Foo()
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (float, float, float) {
+	return 0.0, 0.0, 0.0
+}
+
+func Foo2() (float, float, float) {
+	return Foo()
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0.0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestSyntaxInit(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func init() {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+func TestSyntaxTooManyFragmentArguments(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Vertex(pos vec2) vec4 {
+	return vec4(pos, 0, 1)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2) vec4 {
+	return dstPos + vec4(src0Pos, 0, 0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+func TestSyntaxUnsupportedSyntax(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := func() {
+	}
+	_ = x
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	go func() {
+	}()
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	ch := make(chan int)
+	_ = ch
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1i
+	_ = x
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x [4]float
+	y := x[1:2]
+	_ = y
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x [4]float
+	y := x[1:2:3]
+	_ = y
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+func TestSyntaxForbidAssigningSpecialVariables(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+var U vec4
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	U = vec4(0)
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+var U vec4
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	U.x = 0
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+var U [2]vec4
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	U[0] = vec4(0)
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	src0Pos = vec2(0)
+	return vec4(0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	src0Pos.x = 0
+	return vec4(0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestSyntaxBoolLiteral(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	true := vec4(0)
+	return true
+}
+`)); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestSyntaxUnusedVariable(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 0
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 0
+	x = 1
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := vec4(0)
+	x.x = 1
+	return vec4(0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	// Increment statement treats a variable 'used'.
+	// https://go.dev/play/p/2RuYMrSLjt3
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 0
+	x++
+	return vec4(0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a int
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a, b int
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	// Issue #2848
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var floats [4]float
+	for i := 0; i < 3; i++ {
+		j := i + 1
+		floats[j] = float(i)
+	}
+	return vec4(floats[0], floats[1], floats[2], floats[3])
+}
+`)); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestSyntaxBlankLhs(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := _
+	_ = x
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x int = _
+	_ = x
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1
+	x = _
+	_ = x
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1 + _
+	_ = x
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	_++
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	_ += 1
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	_.x = 1
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+func TestSyntaxDuplicatedVarsAndConstants(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a = 0
+	const a = 0
+	_ = a
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const a = 0
+	var a = 0
+	_ = a
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const a = 0
+	const a = 0
+	_ = a
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+const U0 = 0
+var U0 float
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(a)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+var U0 float
+const U0 = 0
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(a)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+func TestSyntaxUnmatchedArgs(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	Foo(1)
+	return dstPos
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo(x float) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	Foo()
+	return dstPos
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo(x, y float) {
+}
+
+func Bar() (float, float, float) {
+	return 0, 1
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	Foo(Bar())
+	return dstPos
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo(x, y, z float) {
+}
+
+func Bar() (float, float) {
+	return 0, 1
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	Foo(Bar())
+	return dstPos
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+// Issue #1898
+func TestSyntaxMeaninglessSentence(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+var Time float
+var ScreenSize vec2
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	dstPos
+	return dstPos
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+var Time float
+var ScreenSize vec2
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	vec2(dstPos)
+	return dstPos
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+// Issue #1947
+func TestSyntaxOperatorMod(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 2.0 % 0.5
+	_ = a
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	// If both are constants, both must be an integer!
+	a := 2.0 % 1.0
+	_ = a
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := int(2) % 0.5
+	_ = a
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := int(2) % 1.0
+	_ = a
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 2.0
+	b := 0.5
+	_ = a % b
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 2
+	b := 0.5
+	_ = a % b
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 2.5
+	b := 1
+	_ = a % b
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 2
+	b := 1
+	_ = a % b
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 2
+	_ = a % 1
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	// If only one of two is a constant, the constant can be a float.
+	a := 2
+	_ = a % 1.0
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1
+	_ = 2 % a
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	// If only one of two is a constant, the constant can be a float.
+	a := 1
+	_ = 2.0 % a
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 2
+	a %= 1
+	_ = a
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 2
+	a %= 1.0
+	_ = a
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 2
+	a %= 0.5
+	_ = a
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1 / 0
+	_ = a
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1 % 0
+	_ = a
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1.0 / 0.0
+	_ = a
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	// A division by a non-constant zero is not an error at the compile time.
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1
+	b := 0
+	c := a / b
+	_ = c
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1 << -1
+	_ = a
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1 << 30
+	_ = a
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 2.0
+	a %= 1
+	_ = a
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+func TestSyntaxOperatorAssign(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1.0
+	a += 2
+	_ = a
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1.0
+	a += 2.0
+	_ = a
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1.0
+	a += 2.1
+	_ = a
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1
+	a += 2
+	_ = a
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1
+	a += 2.0
+	_ = a
+	return vec4(0)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := 1
+	a += 2.1
+	_ = a
+	return vec4(0)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x float = true
+	_ = x
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x bool = true
+	_ = x
+	return vec4(0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x int = 1.0
+	_ = x
+	return vec4(0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+}
+
+// Issue #1963
+func TestSyntaxOperatorVecAndNumber(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := vec2(1) + 2
+	return a.xxyy
+}`)); err != nil {
+		t.Error(err)
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := ivec2(1) + 2
+	return vec4(a.xxyy)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := vec2(1) + 2.1
+	return a.xxyy
+}`)); err != nil {
+		t.Error(err)
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := ivec2(1) + 2.1
+	return vec4(a.xxyy)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := vec2(1) % 2
+	return a.xxyy
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := ivec2(1) % 2
+	return vec4(a.xxyy)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := vec2(1) % 2.1
+	return a.xxyy
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := ivec2(1) % 2.1
+	return vec4(a.xxyy)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := vec2(1)
+	a += 2
+	return a.xxyy
+}`)); err != nil {
+		t.Error(err)
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := ivec2(1)
+	a += 2
+	return vec4(a.xxyy)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := vec2(1)
+	a += 2.1
+	return a.xxyy
+}`)); err != nil {
+		t.Error(err)
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := ivec2(1)
+	a += 2.1
+	return vec4(a.xxyy)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := vec2(1)
+	a %= 2
+	return a.xxyy
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := ivec2(1)
+	a %= 2
+	return vec4(a.xxyy)
+}`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := vec2(1)
+	a %= 2.1
+	return a.xxyy
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := ivec2(1)
+	a %= 2.1
+	return vec4(a.xxyy)
+}`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+// Issue #1971
+func TestSyntaxOperatorMultiply(t *testing.T) {
+	// Note: mat + float is allowed in GLSL but not in Metal.
+
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := 1 * vec2(2); _ = a", err: false},
+		{stmt: "a := int(1) * vec2(2); _ = a", err: true},
+		{stmt: "a := 1.0 * vec2(2); _ = a", err: false},
+		{stmt: "a := 1.1 * vec2(2); _ = a", err: false},
+		{stmt: "a := 1 + vec2(2); _ = a", err: false},
+		{stmt: "a := int(1) + vec2(2); _ = a", err: true},
+		{stmt: "a := 1.0 / vec2(2); _ = a", err: false},
+		{stmt: "a := 1.1 / vec2(2); _ = a", err: false},
+		{stmt: "a := 1.0 + vec2(2); _ = a", err: false},
+		{stmt: "a := 1.1 + vec2(2); _ = a", err: false},
+		{stmt: "a := 1 * vec3(2); _ = a", err: false},
+		{stmt: "a := 1.0 * vec3(2); _ = a", err: false},
+		{stmt: "a := 1.1 * vec3(2); _ = a", err: false},
+		{stmt: "a := 1 * vec4(2); _ = a", err: false},
+		{stmt: "a := 1.0 * vec4(2); _ = a", err: false},
+		{stmt: "a := 1.1 * vec4(2); _ = a", err: false},
+
+		{stmt: "a := 1 * ivec2(2); _ = a", err: false},
+		{stmt: "a := int(1) * ivec2(2); _ = a", err: false},
+		{stmt: "a := 1.0 * ivec2(2); _ = a", err: false},
+		{stmt: "a := 1.1 * ivec2(2); _ = a", err: true},
+		{stmt: "a := 1 + ivec2(2); _ = a", err: false},
+		{stmt: "a := int(1) + ivec2(2); _ = a", err: false},
+		{stmt: "a := 1.0 / ivec2(2); _ = a", err: false},
+		{stmt: "a := 1.1 / ivec2(2); _ = a", err: true},
+		{stmt: "a := 1.0 + ivec2(2); _ = a", err: false},
+		{stmt: "a := 1.1 + ivec2(2); _ = a", err: true},
+		{stmt: "a := 1 * ivec3(2); _ = a", err: false},
+		{stmt: "a := 1.0 * ivec3(2); _ = a", err: false},
+		{stmt: "a := 1.1 * ivec3(2); _ = a", err: true},
+		{stmt: "a := 1 * ivec4(2); _ = a", err: false},
+		{stmt: "a := 1.0 * ivec4(2); _ = a", err: false},
+		{stmt: "a := 1.1 * ivec4(2); _ = a", err: true},
+
+		{stmt: "a := 1 * mat2(2); _ = a", err: false},
+		{stmt: "a := 1.0 * mat2(2); _ = a", err: false},
+		{stmt: "a := float(1.0) / mat2(2); _ = a", err: true},
+		{stmt: "a := 1.0 / mat2(2); _ = a", err: true},
+		{stmt: "a := float(1.0) + mat2(2); _ = a", err: true},
+		{stmt: "a := 1.0 + mat2(2); _ = a", err: true},
+		{stmt: "a := 1 * mat3(2); _ = a", err: false},
+		{stmt: "a := 1.0 * mat3(2); _ = a", err: false},
+		{stmt: "a := 1 * mat4(2); _ = a", err: false},
+		{stmt: "a := 1.0 * mat4(2); _ = a", err: false},
+
+		{stmt: "a := vec2(1) * 2; _ = a", err: false},
+		{stmt: "a := vec2(1) * 2.0; _ = a", err: false},
+		{stmt: "a := vec2(1) * 2.1; _ = a", err: false},
+		{stmt: "a := vec2(1) / 2.0; _ = a", err: false},
+		{stmt: "a := vec2(1) / 2.1; _ = a", err: false},
+		{stmt: "a := vec2(1) + 2.0; _ = a", err: false},
+		{stmt: "a := vec2(1) + 2.1; _ = a", err: false},
+		{stmt: "a := vec2(1) * int(2); _ = a", err: true},
+		{stmt: "a := vec2(1) * vec2(2); _ = a", err: false},
+		{stmt: "a := vec2(1) + vec2(2); _ = a", err: false},
+		{stmt: "a := vec2(1) * vec3(2); _ = a", err: true},
+		{stmt: "a := vec2(1) * vec4(2); _ = a", err: true},
+		{stmt: "a := vec2(1) * ivec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1) + ivec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1) * ivec3(2); _ = a", err: true},
+		{stmt: "a := vec2(1) * ivec4(2); _ = a", err: true},
+		{stmt: "a := vec2(1) * mat2(2); _ = a", err: false},
+		{stmt: "a := vec2(1) + mat2(2); _ = a", err: true},
+		{stmt: "a := vec2(1) * mat3(2); _ = a", err: true},
+		{stmt: "a := vec2(1) * mat4(2); _ = a", err: true},
+
+		{stmt: "a := ivec2(1) * 2; _ = a", err: false},
+		{stmt: "a := ivec2(1) * 2.0; _ = a", err: false},
+		{stmt: "a := ivec2(1) * 2.1; _ = a", err: true},
+		{stmt: "a := ivec2(1) / 2.0; _ = a", err: false},
+		{stmt: "a := ivec2(1) / 2.1; _ = a", err: true},
+		{stmt: "a := ivec2(1) + 2.0; _ = a", err: false},
+		{stmt: "a := ivec2(1) + 2.1; _ = a", err: true},
+		{stmt: "a := ivec2(1) * int(2); _ = a", err: false},
+		{stmt: "a := ivec2(1) * vec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) + vec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) * vec3(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) * vec4(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) * ivec2(2); _ = a", err: false},
+		{stmt: "a := ivec2(1) + ivec2(2); _ = a", err: false},
+		{stmt: "a := ivec2(1) * ivec3(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) * ivec4(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) * mat2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) + mat2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) * mat3(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) * mat4(2); _ = a", err: true},
+
+		{stmt: "a := mat2(1) * 2; _ = a", err: false},
+		{stmt: "a := mat2(1) * 2.0; _ = a", err: false},
+		{stmt: "a := mat2(1) * 2.1; _ = a", err: false},
+		{stmt: "a := mat2(1) / 2.0; _ = a", err: false},
+		{stmt: "a := mat2(1) / 2.1; _ = a", err: false},
+		{stmt: "a := mat2(1) / float(2); _ = a", err: false},
+		{stmt: "a := mat2(1) * int(2); _ = a", err: true},
+		{stmt: "a := mat2(1) + 2.0; _ = a", err: true},
+		{stmt: "a := mat2(1) + 2.1; _ = a", err: true},
+		{stmt: "a := mat2(1) + float(2); _ = a", err: true},
+		{stmt: "a := mat2(1) * vec2(2); _ = a", err: false},
+		{stmt: "a := mat2(1) + vec2(2); _ = a", err: true},
+		{stmt: "a := mat2(1) * vec3(2); _ = a", err: true},
+		{stmt: "a := mat2(1) * vec4(2); _ = a", err: true},
+		{stmt: "a := mat2(1) * ivec2(2); _ = a", err: true},
+		{stmt: "a := mat2(1) + ivec2(2); _ = a", err: true},
+		{stmt: "a := mat2(1) * ivec3(2); _ = a", err: true},
+		{stmt: "a := mat2(1) * ivec4(2); _ = a", err: true},
+		{stmt: "a := mat2(1) * mat2(2); _ = a", err: false},
+		{stmt: "a := mat2(1) / mat2(2); _ = a", err: true},
+		{stmt: "a := mat2(1) * mat3(2); _ = a", err: true},
+		{stmt: "a := mat2(1) * mat4(2); _ = a", err: true},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR(fmt.Appendf(nil, `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", c.stmt, err)
+		}
+	}
+}
+
+// Issue: #2755
+func TestSyntaxOperatorShift(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := 1 << 2; _ = a", err: false},
+		{stmt: "a := 1 << 2.0; _ = a", err: false},
+		{stmt: "a := 1.0 << 2; _ = a", err: false},
+		{stmt: "a := 1.0 << 2.0; _ = a", err: false},
+		{stmt: "a := 1.0 << int(1); _ = a", err: false},
+		{stmt: "a := int(1) << 2.0; _ = a", err: false},
+		{stmt: "a := ivec2(1) << 2.0; _ = a", err: false},
+		{stmt: "var a = 1; b := a << 2.0; _ = b", err: false},
+		{stmt: "var a = 1; b := 2.0 << a; _ = b", err: false}, // PR: #2916
+		{stmt: "a := float(1.0) << 2; _ = a", err: true},
+		{stmt: "a := 1 << float(2.0); _ = a", err: true},
+		{stmt: "a := ivec2(1) << 2; _ = a", err: false},
+		{stmt: "a := 1 << ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) << float(2.0); _ = a", err: true},
+		{stmt: "a := float(1.0) << ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) << ivec2(2); _ = a", err: false},
+		{stmt: "a := ivec3(1) << ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) << ivec3(2); _ = a", err: true},
+		{stmt: "a := 1 << vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1) << 2; _ = a", err: true},
+		{stmt: "a := float(1.0) << vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1) << float(2.0); _ = a", err: true},
+		{stmt: "a := vec2(1) << vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1) << vec3(2); _ = a", err: true},
+		{stmt: "a := vec3(1) << vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1) << ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) << vec2(2); _ = a", err: true},
+		{stmt: "a := vec3(1) << ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) << vec3(2); _ = a", err: true},
+
+		{stmt: "a := 1 >> 2; _ = a", err: false},
+		{stmt: "a := 1 >> 2.0; _ = a", err: false},
+		{stmt: "a := 1.0 >> 2; _ = a", err: false},
+		{stmt: "a := 1.0 >> 2.0; _ = a", err: false},
+		{stmt: "a := 1.0 >> int(1); _ = a", err: false},
+		{stmt: "a := int(1) >> 2.0; _ = a", err: false},
+		{stmt: "a := ivec2(1) >> 2.0; _ = a", err: false},
+		{stmt: "var a = 1; b := a >> 2.0; _ = b", err: false},
+		{stmt: "var a = 1; b := 2.0 >> a; _ = b", err: false}, // PR: #2916
+		{stmt: "a := float(1.0) >> 2; _ = a", err: true},
+		{stmt: "a := 1 >> float(2.0); _ = a", err: true},
+		{stmt: "a := ivec2(1) >> 2; _ = a", err: false},
+		{stmt: "a := 1 >> ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) >> float(2.0); _ = a", err: true},
+		{stmt: "a := float(1.0) >> ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) >> ivec2(2); _ = a", err: false},
+		{stmt: "a := ivec3(1) >> ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) >> ivec3(2); _ = a", err: true},
+		{stmt: "a := 1 >> vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1) >> 2; _ = a", err: true},
+		{stmt: "a := float(1.0) >> vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1) >> float(2.0); _ = a", err: true},
+		{stmt: "a := vec2(1) >> vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1) >> vec3(2); _ = a", err: true},
+		{stmt: "a := vec3(1) >> vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1) >> ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) >> vec2(2); _ = a", err: true},
+		{stmt: "a := vec3(1) >> ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1) >> vec3(2); _ = a", err: true},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR(fmt.Appendf(nil, `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxOperatorShiftAssign(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := 1; a <<= 2; _ = a", err: false},
+		{stmt: "a := 1; a <<= 2.0; _ = a", err: false},
+		{stmt: "a := float(1.0); a <<= 2; _ = a", err: true},
+		{stmt: "a := 1; a <<= float(2.0); _ = a", err: true},
+		{stmt: "a := ivec2(1); a <<= 2; _ = a", err: false},
+		{stmt: "a := 1;  a <<= ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1); a <<= float(2.0); _ = a", err: true},
+		{stmt: "a := float(1.0); a <<= ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1); a <<= ivec2(2); _ = a", err: false},
+		{stmt: "a := ivec3(1); a <<= ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1); a <<= ivec3(2); _ = a", err: true},
+		{stmt: "a := 1; a <<= vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1); a <<= 2; _ = a", err: true},
+		{stmt: "a := float(1.0); a <<= vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1); a <<= float(2.0); _ = a", err: true},
+		{stmt: "a := vec2(1); a <<= vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1); a <<= vec3(2); _ = a", err: true},
+		{stmt: "a := vec3(1); a <<= vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1); a <<= ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1); a <<= vec2(2); _ = a", err: true},
+		{stmt: "a := vec3(1); a <<= ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1); a <<= vec3(2); _ = a", err: true},
+		{stmt: "const c = 2; a := 1; a <<= c; _ = a", err: false},
+		{stmt: "const c = 2.0; a := 1; a <<= c; _ = a", err: false},
+		{stmt: "const c = 2; a := float(1.0); a <<= c; _ = a", err: true},
+		{stmt: "const c float = 2; a := 1; a <<= c; _ = a", err: true},
+		{stmt: "const c float = 2.0; a := 1; a <<= c; _ = a", err: true},
+		{stmt: "const c int = 2; a := ivec2(1); a <<= c; _ = a", err: false},
+		{stmt: "const c int = 2; a := vec2(1); a <<= c; _ = a", err: true},
+
+		{stmt: "a := 1; a >>= 2; _ = a", err: false},
+		{stmt: "a := 1; a >>= 2.0; _ = a", err: false},
+		{stmt: "a := float(1.0); a >>= 2; _ = a", err: true},
+		{stmt: "a := 1; a >>= float(2.0); _ = a", err: true},
+		{stmt: "a := ivec2(1); a >>= 2; _ = a", err: false},
+		{stmt: "a := 1;  a >>= ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1); a >>= float(2.0); _ = a", err: true},
+		{stmt: "a := float(1.0); a >>= ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1); a >>= ivec2(2); _ = a", err: false},
+		{stmt: "a := ivec3(1); a >>= ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1); a >>= ivec3(2); _ = a", err: true},
+		{stmt: "a := 1; a >>= vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1); a >>= 2; _ = a", err: true},
+		{stmt: "a := float(1.0); a >>= vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1); a >>= float(2.0); _ = a", err: true},
+		{stmt: "a := vec2(1); a >>= vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1); a >>= vec3(2); _ = a", err: true},
+		{stmt: "a := vec3(1); a >>= vec2(2); _ = a", err: true},
+		{stmt: "a := vec2(1); a >>= ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1); a >>= vec2(2); _ = a", err: true},
+		{stmt: "a := vec3(1); a >>= ivec2(2); _ = a", err: true},
+		{stmt: "a := ivec2(1); a >>= vec3(2); _ = a", err: true},
+		{stmt: "const c = 2; a := 1; a >>= c; _ = a", err: false},
+		{stmt: "const c = 2.0; a := 1; a >>= c; _ = a", err: false},
+		{stmt: "const c = 2; a := float(1.0); a >>= c; _ = a", err: true},
+		{stmt: "const c float = 2; a := 1; a >>= c; _ = a", err: true},
+		{stmt: "const c float = 2.0; a := 1; a >>= c; _ = a", err: true},
+		{stmt: "const c int = 2; a := ivec2(1); a >>= c; _ = a", err: false},
+		{stmt: "const c int = 2; a := vec2(1); a >>= c; _ = a", err: true},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR(fmt.Appendf(nil, `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", c.stmt, err)
+		}
+	}
+}
+
+// Issue #1971
+func TestSyntaxOperatorMultiplyAssign(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := 1.0; a *= 2", err: false},
+		{stmt: "a := 1.0; a *= 2.0", err: false},
+		{stmt: "const c = 2; a := 1.0; a *= c", err: false},
+		{stmt: "const c = 2.0; a := 1.0; a *= c", err: false},
+		{stmt: "const c int = 2; a := 1.0; a *= c", err: true},
+		{stmt: "const c int = 2.0; a := 1.0; a *= c", err: true},
+		{stmt: "const c float = 2; a := 1.0; a *= c", err: false},
+		{stmt: "const c float = 2.0; a := 1.0; a *= c", err: false},
+		{stmt: "a := 1.0; a *= int(2)", err: true},
+		{stmt: "a := 1.0; a *= vec2(2)", err: true},
+		{stmt: "a := 1.0; a *= vec3(2)", err: true},
+		{stmt: "a := 1.0; a *= vec4(2)", err: true},
+		{stmt: "a := 1.0; a *= ivec2(2)", err: true},
+		{stmt: "a := 1.0; a *= ivec3(2)", err: true},
+		{stmt: "a := 1.0; a *= ivec4(2)", err: true},
+		{stmt: "a := 1.0; a *= mat2(2)", err: true},
+		{stmt: "a := 1.0; a *= mat3(2)", err: true},
+		{stmt: "a := 1.0; a *= mat4(2)", err: true},
+
+		{stmt: "a := vec2(1); a *= 2", err: false},
+		{stmt: "a := vec2(1); a *= 2.0", err: false},
+		{stmt: "const c = 2; a := vec2(1); a *= c", err: false},
+		{stmt: "const c = 2.0; a := vec2(1); a *= c", err: false},
+		{stmt: "const c int = 2; a := vec2(1); a *= c", err: true},
+		{stmt: "const c int = 2.0; a := vec2(1); a *= c", err: true},
+		{stmt: "const c float = 2; a := vec2(1); a *= c", err: false},
+		{stmt: "const c float = 2.0; a := vec2(1); a *= c", err: false},
+		{stmt: "a := vec2(1); a /= 2.0", err: false},
+		{stmt: "a := vec2(1); a += 2.0", err: false},
+		{stmt: "a := vec2(1); a *= int(2)", err: true},
+		{stmt: "a := vec2(1); a *= float(2)", err: false},
+		{stmt: "a := vec2(1); a /= float(2)", err: false},
+		{stmt: "a := vec2(1); a *= vec2(2)", err: false},
+		{stmt: "a := vec2(1); a += vec2(2)", err: false},
+		{stmt: "a := vec2(1); a *= vec3(2)", err: true},
+		{stmt: "a := vec2(1); a *= vec4(2)", err: true},
+		{stmt: "a := vec2(1); a *= ivec2(2)", err: true},
+		{stmt: "a := vec2(1); a += ivec2(2)", err: true},
+		{stmt: "a := vec2(1); a *= ivec3(2)", err: true},
+		{stmt: "a := vec2(1); a *= ivec4(2)", err: true},
+		{stmt: "a := vec2(1); a *= mat2(2)", err: false},
+		{stmt: "a := vec2(1); a += mat2(2)", err: true},
+		{stmt: "a := vec2(1); a /= mat2(2)", err: true},
+		{stmt: "a := vec2(1); a *= mat3(2)", err: true},
+		{stmt: "a := vec2(1); a *= mat4(2)", err: true},
+
+		{stmt: "a := ivec2(1); a *= 2", err: false},
+		{stmt: "a := ivec2(1); a *= 2.0", err: false},
+		{stmt: "const c = 2; a := ivec2(1); a *= c", err: false},
+		{stmt: "const c = 2.0; a := ivec2(1); a *= c", err: false},
+		{stmt: "const c int = 2; a := ivec2(1); a *= c", err: false},
+		{stmt: "const c int = 2.0; a := ivec2(1); a *= c", err: false},
+		{stmt: "const c float = 2; a := ivec2(1); a *= c", err: true},
+		{stmt: "const c float = 2.0; a := ivec2(1); a *= c", err: true},
+		{stmt: "a := ivec2(1); a /= 2.0", err: false},
+		{stmt: "a := ivec2(1); a += 2.0", err: false},
+		{stmt: "a := ivec2(1); a *= int(2)", err: false},
+		{stmt: "a := ivec2(1); a *= float(2)", err: true},
+		{stmt: "a := ivec2(1); a /= float(2)", err: true},
+		{stmt: "a := ivec2(1); a *= vec2(2)", err: true},
+		{stmt: "a := ivec2(1); a += vec2(2)", err: true},
+		{stmt: "a := ivec2(1); a *= vec3(2)", err: true},
+		{stmt: "a := ivec2(1); a *= vec4(2)", err: true},
+		{stmt: "a := ivec2(1); a *= ivec2(2)", err: false},
+		{stmt: "a := ivec2(1); a += ivec2(2)", err: false},
+		{stmt: "a := ivec2(1); a *= ivec3(2)", err: true},
+		{stmt: "a := ivec2(1); a *= ivec4(2)", err: true},
+		{stmt: "a := ivec2(1); a *= mat2(2)", err: true},
+		{stmt: "a := ivec2(1); a += mat2(2)", err: true},
+		{stmt: "a := ivec2(1); a /= mat2(2)", err: true},
+		{stmt: "a := ivec2(1); a *= mat3(2)", err: true},
+		{stmt: "a := ivec2(1); a *= mat4(2)", err: true},
+
+		{stmt: "a := mat2(1); a *= 2", err: false},
+		{stmt: "a := mat2(1); a *= 2.0", err: false},
+		{stmt: "const c = 2; a := mat2(1); a *= c", err: false},
+		{stmt: "const c = 2.0; a := mat2(1); a *= c", err: false},
+		{stmt: "const c int = 2; a := mat2(1); a *= c", err: true},
+		{stmt: "const c int = 2.0; a := mat2(1); a *= c", err: true},
+		{stmt: "const c float = 2; a := mat2(1); a *= c", err: false},
+		{stmt: "const c float = 2.0; a := mat2(1); a *= c", err: false},
+		{stmt: "a := mat2(1); a /= 2.0", err: false},
+		{stmt: "a := mat2(1); a += 2.0", err: true},
+		{stmt: "a := mat2(1); a *= int(2)", err: true},
+		{stmt: "a := mat2(1); a *= float(2)", err: false},
+		{stmt: "a := mat2(1); a /= float(2)", err: false},
+		{stmt: "a := mat2(1); a *= vec2(2)", err: true},
+		{stmt: "a := mat2(1); a += vec2(2)", err: true},
+		{stmt: "a := mat2(1); a *= vec3(2)", err: true},
+		{stmt: "a := mat2(1); a *= vec4(2)", err: true},
+		{stmt: "a := mat2(1); a *= ivec2(2)", err: true},
+		{stmt: "a := mat2(1); a += ivec2(2)", err: true},
+		{stmt: "a := mat2(1); a *= ivec3(2)", err: true},
+		{stmt: "a := mat2(1); a *= ivec4(2)", err: true},
+		{stmt: "a := mat2(1); a *= mat2(2)", err: false},
+		{stmt: "a := mat2(1); a += mat2(2)", err: false},
+		{stmt: "a := mat2(1); a /= mat2(2)", err: true},
+		{stmt: "a := mat2(1); a *= mat3(2)", err: true},
+		{stmt: "a := mat2(1); a *= mat4(2)", err: true},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR(fmt.Appendf(nil, `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", c.stmt, err)
+		}
+	}
+}
+
+// Issue #2754
+func TestSyntaxBitwiseOperatorAssign(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := 1; a &= 2", err: false},
+		{stmt: "a := 1; a &= 2.0", err: false},
+		{stmt: "const c = 2; a := 1; a &= c", err: false},
+		{stmt: "const c = 2.0; a := 1; a &= c", err: false},
+		{stmt: "const c int = 2; a := 1; a &= c", err: false},
+		{stmt: "const c int = 2.0; a := 1; a &= c", err: false},
+		{stmt: "const c float = 2; a := 1; a &= c", err: true},
+		{stmt: "const c float = 2.0; a := 1; a &= c", err: true},
+		{stmt: "a := 1; a &= int(2)", err: false},
+		{stmt: "a := 1; a &= vec2(2)", err: true},
+		{stmt: "a := 1; a &= vec3(2)", err: true},
+		{stmt: "a := 1; a &= vec4(2)", err: true},
+		{stmt: "a := 1; a &= ivec2(2)", err: true},
+		{stmt: "a := 1; a &= ivec3(2)", err: true},
+		{stmt: "a := 1; a &= ivec4(2)", err: true},
+		{stmt: "a := 1; a &= mat2(2)", err: true},
+		{stmt: "a := 1; a &= mat3(2)", err: true},
+		{stmt: "a := 1; a &= mat4(2)", err: true},
+		{stmt: "a := 1.0; a &= 2", err: true},
+		{stmt: "a := ivec2(1); a &= 2", err: false},
+		{stmt: "a := ivec2(1); a &= ivec2(1)", err: false},
+		{stmt: "a := ivec2(1); a &= ivec3(1)", err: true},
+		{stmt: "a := ivec2(1); a &= ivec4(1)", err: true},
+		{stmt: "a := vec2(1); a &= 2", err: true},
+		{stmt: "a := vec2(1); a &= vec2(2)", err: true},
+		{stmt: "a := mat2(1); a &= 2", err: true},
+		{stmt: "a := mat2(1); a &= mat2(2)", err: true},
+
+		{stmt: "a := 1; a &^= 2", err: false},
+		{stmt: "a := 1; a &^= 2.0", err: false},
+		{stmt: "const c = 2; a := 1; a &^= c", err: false},
+		{stmt: "const c = 2.0; a := 1; a &^= c", err: false},
+		{stmt: "const c int = 2; a := 1; a &^= c", err: false},
+		{stmt: "const c int = 2.0; a := 1; a &^= c", err: false},
+		{stmt: "const c float = 2; a := 1; a &^= c", err: true},
+		{stmt: "const c float = 2.0; a := 1; a &^= c", err: true},
+		{stmt: "a := 1; a &^= int(2)", err: false},
+		{stmt: "a := 1; a &^= vec2(2)", err: true},
+		{stmt: "a := 1; a &^= vec3(2)", err: true},
+		{stmt: "a := 1; a &^= vec4(2)", err: true},
+		{stmt: "a := 1; a &^= ivec2(2)", err: true},
+		{stmt: "a := 1; a &^= ivec3(2)", err: true},
+		{stmt: "a := 1; a &^= ivec4(2)", err: true},
+		{stmt: "a := 1; a &^= mat2(2)", err: true},
+		{stmt: "a := 1; a &^= mat3(2)", err: true},
+		{stmt: "a := 1; a &^= mat4(2)", err: true},
+		{stmt: "a := 1.0; a &^= 2", err: true},
+		{stmt: "a := ivec2(1); a &^= 2", err: false},
+		{stmt: "a := ivec2(1); a &^= ivec2(1)", err: false},
+		{stmt: "a := ivec2(1); a &^= ivec3(1)", err: true},
+		{stmt: "a := ivec2(1); a &^= ivec4(1)", err: true},
+		{stmt: "a := vec2(1); a &^= 2", err: true},
+		{stmt: "a := vec2(1); a &^= vec2(2)", err: true},
+		{stmt: "a := mat2(1); a &^= 2", err: true},
+		{stmt: "a := mat2(1); a &^= mat2(2)", err: true},
+
+		{stmt: "a := 1; a |= 2", err: false},
+		{stmt: "a := 1; a |= 2.0", err: false},
+		{stmt: "const c = 2; a := 1; a |= c", err: false},
+		{stmt: "const c = 2.0; a := 1; a |= c", err: false},
+		{stmt: "const c int = 2; a := 1; a |= c", err: false},
+		{stmt: "const c int = 2.0; a := 1; a |= c", err: false},
+		{stmt: "const c float = 2; a := 1; a |= c", err: true},
+		{stmt: "const c float = 2.0; a := 1; a |= c", err: true},
+		{stmt: "a := 1; a |= int(2)", err: false},
+		{stmt: "a := 1; a |= vec2(2)", err: true},
+		{stmt: "a := 1; a |= vec3(2)", err: true},
+		{stmt: "a := 1; a |= vec4(2)", err: true},
+		{stmt: "a := 1; a |= ivec2(2)", err: true},
+		{stmt: "a := 1; a |= ivec3(2)", err: true},
+		{stmt: "a := 1; a |= ivec4(2)", err: true},
+		{stmt: "a := 1; a |= mat2(2)", err: true},
+		{stmt: "a := 1; a |= mat3(2)", err: true},
+		{stmt: "a := 1; a |= mat4(2)", err: true},
+		{stmt: "a := 1.0; a |= 2", err: true},
+		{stmt: "a := ivec2(1); a |= 2", err: false},
+		{stmt: "a := ivec2(1); a |= ivec2(1)", err: false},
+		{stmt: "a := ivec2(1); a |= ivec3(1)", err: true},
+		{stmt: "a := ivec2(1); a |= ivec4(1)", err: true},
+		{stmt: "a := vec2(1); a |= 2", err: true},
+		{stmt: "a := vec2(1); a |= vec2(2)", err: true},
+		{stmt: "a := mat2(1); a |= 2", err: true},
+		{stmt: "a := mat2(1); a |= mat2(2)", err: true},
+
+		{stmt: "a := 1; a ^= 2", err: false},
+		{stmt: "a := 1; a ^= 2.0", err: false},
+		{stmt: "const c = 2; a := 1; a ^= c", err: false},
+		{stmt: "const c = 2.0; a := 1; a ^= c", err: false},
+		{stmt: "const c int = 2; a := 1; a ^= c", err: false},
+		{stmt: "const c int = 2.0; a := 1; a ^= c", err: false},
+		{stmt: "const c float = 2; a := 1; a ^= c", err: true},
+		{stmt: "const c float = 2.0; a := 1; a ^= c", err: true},
+		{stmt: "a := 1; a ^= int(2)", err: false},
+		{stmt: "a := 1; a ^= vec2(2)", err: true},
+		{stmt: "a := 1; a ^= vec3(2)", err: true},
+		{stmt: "a := 1; a ^= vec4(2)", err: true},
+		{stmt: "a := 1; a ^= ivec2(2)", err: true},
+		{stmt: "a := 1; a ^= ivec3(2)", err: true},
+		{stmt: "a := 1; a ^= ivec4(2)", err: true},
+		{stmt: "a := 1; a ^= mat2(2)", err: true},
+		{stmt: "a := 1; a ^= mat3(2)", err: true},
+		{stmt: "a := 1; a ^= mat4(2)", err: true},
+		{stmt: "a := 1.0; a ^= 2", err: true},
+		{stmt: "a := ivec2(1); a ^= 2", err: false},
+		{stmt: "a := ivec2(1); a ^= ivec2(1)", err: false},
+		{stmt: "a := ivec2(1); a ^= ivec3(1)", err: true},
+		{stmt: "a := ivec2(1); a ^= ivec4(1)", err: true},
+		{stmt: "a := vec2(1); a ^= 2", err: true},
+		{stmt: "a := vec2(1); a ^= vec2(2)", err: true},
+		{stmt: "a := mat2(1); a ^= 2", err: true},
+		{stmt: "a := mat2(1); a ^= mat2(2)", err: true},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR(fmt.Appendf(nil, `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxAtan(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		// `atan` takes 1 argument.
+		{stmt: "_ = atan(vec4(0))", err: false},
+		{stmt: "_ = atan(vec4(0), vec4(0))", err: true},
+
+		// `atan2` takes 2 arguments.
+		{stmt: "_ = atan2(vec4(0))", err: true},
+		{stmt: "_ = atan2(vec4(0), vec4(0))", err: false},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR(fmt.Appendf(nil, `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", c.stmt, err)
+		}
+	}
+}
+
+// Issue #1972
+func TestSyntaxType(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x vec2 = vec3(0)
+	_ = x
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x, y vec2 = vec2(0), vec3(0)
+	_, _ = x, y
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x vec2
+	x = vec3(0)
+	_ = x
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x, y vec2
+	x, y = vec2(0), vec3(0)
+	_ = x
+	_ = y
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x vec2
+	x = 0
+	_ = x
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (vec3, vec3) {
+	return vec3(0), vec3(1)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x, y vec2 = Foo()
+	_ = x
+	_ = y
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (vec3, vec3) {
+	return vec3(0), vec3(1)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x, y vec2
+	x, y = Foo()
+	_ = x
+	_ = y
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+// Issue #1972
+func TestSyntaxTypeBlankVar(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var _ vec2 = vec3(0)
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var _, _ vec2 = vec2(0), vec3(0)
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (vec3, vec3) {
+	return vec3(0), vec3(1)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var _, _ vec2 = Foo()
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+// Issue #2032
+func TestSyntaxTypeFuncCall(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Foo(x vec2) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	Foo(0)
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo(x vec2, y vec3) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	Foo(0, 1)
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo(x vec2, y vec3) {
+}
+
+func Bar() (int, int) {
+	return 0, 1
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	Foo(Bar())
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+	// Issue #2965
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	abs(sign)
+	return color
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+// Issue #2184
+func TestSyntaxConstructorFuncType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := bool(false); _ = a", err: false},
+		{stmt: "i := false; a := bool(i); _ = a", err: false},
+		{stmt: "a := bool(1); _ = a", err: true},
+		{stmt: "a := bool(1.0); _ = a", err: true},
+		{stmt: "a := bool(); _ = a", err: true},
+		{stmt: "a := bool(false, true); _ = a", err: true},
+
+		{stmt: "a := int(1); _ = a", err: false},
+		{stmt: "a := int(1.0); _ = a", err: false},
+		{stmt: "i := 1; a := int(i); _ = a", err: false},
+		{stmt: "i := 1.0; a := int(i); _ = a", err: false},
+		{stmt: "i := 1.1; a := int(i); _ = a", err: false},
+		{stmt: "a := int(1.1); _ = a", err: true},
+		{stmt: "a := int(false); _ = a", err: true},
+		{stmt: "a := int(); _ = a", err: true},
+		{stmt: "a := int(1, 2); _ = a", err: true},
+
+		{stmt: "a := float(1); _ = a", err: false},
+		{stmt: "a := float(1.0); _ = a", err: false},
+		{stmt: "a := float(1.1); _ = a", err: false},
+		{stmt: "i := 1; a := float(i); _ = a", err: false},
+		{stmt: "i := 1.0; a := float(i); _ = a", err: false},
+		{stmt: "i := 1.1; a := float(i); _ = a", err: false},
+		{stmt: "a := float(false); _ = a", err: true},
+		{stmt: "a := float(); _ = a", err: true},
+		{stmt: "a := float(1, 2); _ = a", err: true},
+
+		{stmt: "a := vec2(1); _ = a", err: false},
+		{stmt: "a := vec2(1.0); _ = a", err: false},
+		{stmt: "i := 1; a := vec2(i); _ = a", err: true},
+		{stmt: "i := 1.0; a := vec2(i); _ = a", err: false},
+		{stmt: "a := vec2(vec2(1)); _ = a", err: false},
+		{stmt: "a := vec2(vec3(1)); _ = a", err: true},
+		{stmt: "a := vec2(ivec2(1)); _ = a", err: false},
+		{stmt: "a := vec2(ivec3(1)); _ = a", err: true},
+
+		{stmt: "a := vec2(1, 1); _ = a", err: false},
+		{stmt: "a := vec2(1.0, 1.0); _ = a", err: false},
+		{stmt: "a := vec2(1.1, 1.1); _ = a", err: false},
+		{stmt: "i := 1; a := vec2(i, i); _ = a", err: true},
+		{stmt: "i := 1.0; a := vec2(i, i); _ = a", err: false},
+		{stmt: "a := vec2(vec2(1), 1); _ = a", err: true},
+		{stmt: "a := vec2(1, vec2(1)); _ = a", err: true},
+		{stmt: "a := vec2(vec2(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := vec2(1, 1, 1); _ = a", err: true},
+
+		{stmt: "a := vec3(1); _ = a", err: false},
+		{stmt: "a := vec3(1.0); _ = a", err: false},
+		{stmt: "a := vec3(1.1); _ = a", err: false},
+		{stmt: "i := 1; a := vec3(i); _ = a", err: true},
+		{stmt: "i := 1.0; a := vec3(i); _ = a", err: false},
+		{stmt: "a := vec3(vec3(1)); _ = a", err: false},
+		{stmt: "a := vec3(vec2(1)); _ = a", err: true},
+		{stmt: "a := vec3(vec4(1)); _ = a", err: true},
+		{stmt: "a := vec3(ivec3(1)); _ = a", err: false},
+		{stmt: "a := vec3(ivec2(1)); _ = a", err: true},
+		{stmt: "a := vec3(ivec4(1)); _ = a", err: true},
+
+		{stmt: "a := vec3(1, 1, 1); _ = a", err: false},
+		{stmt: "a := vec3(1.0, 1.0, 1.0); _ = a", err: false},
+		{stmt: "a := vec3(1.1, 1.1, 1.1); _ = a", err: false},
+		{stmt: "i := 1; a := vec3(i, i, i); _ = a", err: true},
+		{stmt: "i := 1.0; a := vec3(i, i, i); _ = a", err: false},
+		{stmt: "a := vec3(vec2(1), 1); _ = a", err: false},
+		{stmt: "a := vec3(1, vec2(1)); _ = a", err: false},
+		{stmt: "a := vec3(ivec2(1), 1); _ = a", err: true},
+		{stmt: "a := vec3(1, ivec2(1)); _ = a", err: true},
+		{stmt: "a := vec3(vec3(1), 1); _ = a", err: true},
+		{stmt: "a := vec3(1, vec3(1)); _ = a", err: true},
+		{stmt: "a := vec3(vec3(1), vec3(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := vec3(1, 1, 1, 1); _ = a", err: true},
+
+		{stmt: "a := vec4(1); _ = a", err: false},
+		{stmt: "a := vec4(1.0); _ = a", err: false},
+		{stmt: "i := 1; a := vec4(i); _ = a", err: true},
+		{stmt: "i := 1.0; a := vec4(i); _ = a", err: false},
+		{stmt: "a := vec4(vec4(1)); _ = a", err: false},
+		{stmt: "a := vec4(vec2(1)); _ = a", err: true},
+		{stmt: "a := vec4(vec3(1)); _ = a", err: true},
+		{stmt: "a := vec4(ivec4(1)); _ = a", err: false},
+		{stmt: "a := vec4(ivec2(1)); _ = a", err: true},
+		{stmt: "a := vec4(ivec3(1)); _ = a", err: true},
+
+		{stmt: "a := vec4(1, 1, 1, 1); _ = a", err: false},
+		{stmt: "a := vec4(1.0, 1.0, 1.0, 1.0); _ = a", err: false},
+		{stmt: "a := vec4(1.1, 1.1, 1.1, 1.1); _ = a", err: false},
+		{stmt: "i := 1; a := vec4(i, i, i, i); _ = a", err: true},
+		{stmt: "i := 1.0; a := vec4(i, i, i, i); _ = a", err: false},
+		{stmt: "a := vec4(vec2(1), 1, 1); _ = a", err: false},
+		{stmt: "a := vec4(1, vec2(1), 1); _ = a", err: false},
+		{stmt: "a := vec4(ivec2(1), 1, 1); _ = a", err: true},
+		{stmt: "a := vec4(1, ivec2(1), 1); _ = a", err: true},
+		{stmt: "a := vec4(1, 1, vec2(1)); _ = a", err: false},
+		{stmt: "a := vec4(vec2(1), vec2(1)); _ = a", err: false},
+		{stmt: "a := vec4(ivec2(1), ivec2(1)); _ = a", err: true},
+		{stmt: "a := vec4(vec3(1), 1); _ = a", err: false},
+		{stmt: "a := vec4(1, vec3(1)); _ = a", err: false},
+		{stmt: "a := vec4(ivec3(1), 1); _ = a", err: true},
+		{stmt: "a := vec4(1, ivec3(1)); _ = a", err: true},
+		{stmt: "a := vec4(vec4(1), 1); _ = a", err: true},
+		{stmt: "a := vec4(1, vec4(1)); _ = a", err: true},
+		{stmt: "a := vec4(vec4(1), vec4(1), vec4(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := vec4(1, 1, 1, 1, 1); _ = a", err: true},
+
+		{stmt: "a := ivec2(1); _ = a", err: false},
+		{stmt: "a := ivec2(1.0); _ = a", err: false},
+		{stmt: "i := 1; a := ivec2(i); _ = a", err: false},
+		{stmt: "i := 1.0; a := ivec2(i); _ = a", err: true},
+		{stmt: "a := ivec2(vec2(1)); _ = a", err: false},
+		{stmt: "a := ivec2(vec3(1)); _ = a", err: true},
+		{stmt: "a := ivec2(ivec2(1)); _ = a", err: false},
+		{stmt: "a := ivec2(ivec3(1)); _ = a", err: true},
+
+		{stmt: "a := ivec2(1, 1); _ = a", err: false},
+		{stmt: "a := ivec2(1.0, 1.0); _ = a", err: false},
+		{stmt: "i := 1; a := ivec2(i, i); _ = a", err: false},
+		{stmt: "i := 1.0; a := ivec2(i, i); _ = a", err: true},
+		{stmt: "a := ivec2(vec2(1), 1); _ = a", err: true},
+		{stmt: "a := ivec2(1, vec2(1)); _ = a", err: true},
+		{stmt: "a := ivec2(ivec2(1), 1); _ = a", err: true},
+		{stmt: "a := ivec2(1, ivec2(1)); _ = a", err: true},
+		{stmt: "a := ivec2(ivec2(1), ivec2(1)); _ = a", err: true},
+		{stmt: "a := ivec2(1, 1, 1); _ = a", err: true},
+
+		{stmt: "a := ivec3(1); _ = a", err: false},
+		{stmt: "a := ivec3(1.0); _ = a", err: false},
+		{stmt: "a := ivec3(1.1); _ = a", err: true},
+		{stmt: "i := 1; a := ivec3(i); _ = a", err: false},
+		{stmt: "i := 1.0; a := ivec3(i); _ = a", err: true},
+		{stmt: "a := ivec3(vec3(1)); _ = a", err: false},
+		{stmt: "a := ivec3(vec2(1)); _ = a", err: true},
+		{stmt: "a := ivec3(vec4(1)); _ = a", err: true},
+		{stmt: "a := ivec3(ivec3(1)); _ = a", err: false},
+		{stmt: "a := ivec3(ivec2(1)); _ = a", err: true},
+		{stmt: "a := ivec3(ivec4(1)); _ = a", err: true},
+
+		{stmt: "a := ivec3(1, 1, 1); _ = a", err: false},
+		{stmt: "a := ivec3(1.0, 1.0, 1.0); _ = a", err: false},
+		{stmt: "a := ivec3(1.1, 1.1, 1.1); _ = a", err: true},
+		{stmt: "i := 1; a := ivec3(i, i, i); _ = a", err: false},
+		{stmt: "i := 1.0; a := ivec3(i, i, i); _ = a", err: true},
+		{stmt: "a := ivec3(vec2(1), 1); _ = a", err: true},
+		{stmt: "a := ivec3(1, vec2(1)); _ = a", err: true},
+		{stmt: "a := ivec3(ivec2(1), 1); _ = a", err: false},
+		{stmt: "a := ivec3(1, ivec2(1)); _ = a", err: false},
+		{stmt: "a := ivec3(vec3(1), 1); _ = a", err: true},
+		{stmt: "a := ivec3(1, vec3(1)); _ = a", err: true},
+		{stmt: "a := ivec3(vec3(1), vec3(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := ivec3(1, 1, 1, 1); _ = a", err: true},
+
+		{stmt: "a := ivec4(1); _ = a", err: false},
+		{stmt: "a := ivec4(1.0); _ = a", err: false},
+		{stmt: "i := 1; a := ivec4(i); _ = a", err: false},
+		{stmt: "i := 1.0; a := ivec4(i); _ = a", err: true},
+		{stmt: "a := ivec4(vec4(1)); _ = a", err: false},
+		{stmt: "a := ivec4(vec2(1)); _ = a", err: true},
+		{stmt: "a := ivec4(vec3(1)); _ = a", err: true},
+		{stmt: "a := ivec4(ivec4(1)); _ = a", err: false},
+		{stmt: "a := ivec4(ivec2(1)); _ = a", err: true},
+		{stmt: "a := ivec4(ivec3(1)); _ = a", err: true},
+
+		{stmt: "a := ivec4(1, 1, 1, 1); _ = a", err: false},
+		{stmt: "a := ivec4(1.0, 1.0, 1.0, 1.0); _ = a", err: false},
+		{stmt: "a := ivec4(1.1, 1.1, 1.1, 1.1); _ = a", err: true},
+		{stmt: "i := 1; a := ivec4(i, i, i, i); _ = a", err: false},
+		{stmt: "i := 1.0; a := ivec4(i, i, i, i); _ = a", err: true},
+		{stmt: "a := ivec4(vec2(1), 1, 1); _ = a", err: true},
+		{stmt: "a := ivec4(1, vec2(1), 1); _ = a", err: true},
+		{stmt: "a := ivec4(1, 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := ivec4(ivec2(1), 1, 1); _ = a", err: false},
+		{stmt: "a := ivec4(1, ivec2(1), 1); _ = a", err: false},
+		{stmt: "a := ivec4(1, 1, ivec2(1)); _ = a", err: false},
+		{stmt: "a := ivec4(vec2(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := ivec4(ivec2(1), ivec2(1)); _ = a", err: false},
+		{stmt: "a := ivec4(vec3(1), 1); _ = a", err: true},
+		{stmt: "a := ivec4(1, vec3(1)); _ = a", err: true},
+		{stmt: "a := ivec4(ivec3(1), 1); _ = a", err: false},
+		{stmt: "a := ivec4(1, ivec3(1)); _ = a", err: false},
+		{stmt: "a := ivec4(vec4(1), 1); _ = a", err: true},
+		{stmt: "a := ivec4(1, vec4(1)); _ = a", err: true},
+		{stmt: "a := ivec4(vec4(1), vec4(1), vec4(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := ivec4(1, 1, 1, 1, 1); _ = a", err: true},
+
+		{stmt: "a := mat2(1); _ = a", err: false},
+		{stmt: "a := mat2(1.0); _ = a", err: false},
+		{stmt: "i := 1; a := mat2(i); _ = a", err: true},
+		{stmt: "i := 1.0; a := mat2(i); _ = a", err: false},
+		{stmt: "a := mat2(mat2(1)); _ = a", err: false},
+		{stmt: "a := mat2(vec2(1)); _ = a", err: true},
+		{stmt: "a := mat2(ivec2(1)); _ = a", err: true},
+		{stmt: "a := mat2(mat3(1)); _ = a", err: true},
+		{stmt: "a := mat2(mat4(1)); _ = a", err: true},
+
+		{stmt: "a := mat2(vec2(1), vec2(1)); _ = a", err: false},
+		{stmt: "a := mat2(ivec2(1), ivec2(1)); _ = a", err: true},
+		{stmt: "a := mat2(1, 1); _ = a", err: true},
+		{stmt: "a := mat2(1, vec2(1)); _ = a", err: true},
+		{stmt: "a := mat2(vec2(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := mat2(mat2(1), mat2(1)); _ = a", err: true},
+
+		{stmt: "a := mat2(1, 1, 1, 1); _ = a", err: false},
+		{stmt: "a := mat2(1.0, 1.0, 1.0, 1.0); _ = a", err: false},
+		{stmt: "i := 1; a := mat2(i, i, i, i); _ = a", err: true},
+		{stmt: "i := 1.0; a := mat2(i, i, i, i); _ = a", err: false},
+		{stmt: "a := mat2(vec2(1), vec2(1), vec2(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := mat2(1, 1, 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := mat2(1, 1, 1, vec3(1)); _ = a", err: true},
+		{stmt: "a := mat2(mat2(1), mat2(1), mat2(1), mat2(1)); _ = a", err: true},
+		{stmt: "a := mat2(1, 1, 1); _ = a", err: true},
+		{stmt: "a := mat2(1, 1, 1, 1, 1); _ = a", err: true},
+
+		{stmt: "a := mat3(1); _ = a", err: false},
+		{stmt: "a := mat3(1.0); _ = a", err: false},
+		{stmt: "i := 1; a := mat3(i); _ = a", err: true},
+		{stmt: "i := 1.0; a := mat3(i); _ = a", err: false},
+		{stmt: "a := mat3(mat3(1)); _ = a", err: false},
+		{stmt: "a := mat3(vec2(1)); _ = a", err: true},
+		{stmt: "a := mat3(ivec2(1)); _ = a", err: true},
+		{stmt: "a := mat3(mat2(1)); _ = a", err: true},
+		{stmt: "a := mat3(mat4(1)); _ = a", err: true},
+
+		{stmt: "a := mat3(vec3(1), vec3(1), vec3(1)); _ = a", err: false},
+		{stmt: "a := mat3(ivec3(1), ivec3(1), ivec3(1)); _ = a", err: true},
+		{stmt: "a := mat3(1, 1, 1); _ = a", err: true},
+		{stmt: "a := mat3(1, 1, vec3(1)); _ = a", err: true},
+		{stmt: "a := mat3(vec3(1), vec3(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := mat3(mat3(1), mat3(1), mat3(1)); _ = a", err: true},
+
+		{stmt: "a := mat3(1, 1, 1, 1, 1, 1, 1, 1, 1); _ = a", err: false},
+		{stmt: "a := mat3(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0); _ = a", err: false},
+		{stmt: "i := 1; a := mat3(i, i, i, i, i, i, i, i, i); _ = a", err: true},
+		{stmt: "i := 1.0; a := mat3(i, i, i, i, i, i, i, i, i); _ = a", err: false},
+		{stmt: "a := mat3(vec3(1), vec3(1), vec3(1), vec3(1), vec3(1), vec3(1), vec3(1), vec3(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := mat3(1, 1, 1, 1, 1, 1, 1, 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := mat3(1, 1, 1, 1, 1, 1, 1, 1, vec3(1)); _ = a", err: true},
+		{stmt: "a := mat3(mat3(1), mat3(1), mat3(1), mat3(1), mat3(1), mat3(1), mat3(1), mat3(1), mat3(1)); _ = a", err: true},
+		{stmt: "a := mat3(1, 1, 1, 1, 1, 1, 1, 1); _ = a", err: true},
+		{stmt: "a := mat3(1, 1, 1, 1, 1, 1, 1, 1, 1, 1); _ = a", err: true},
+
+		{stmt: "a := mat4(1); _ = a", err: false},
+		{stmt: "a := mat4(1.0); _ = a", err: false},
+		{stmt: "i := 1; a := mat4(i); _ = a", err: true},
+		{stmt: "i := 1.0; a := mat4(i); _ = a", err: false},
+		{stmt: "a := mat4(mat4(1)); _ = a", err: false},
+		{stmt: "a := mat4(vec2(1)); _ = a", err: true},
+		{stmt: "a := mat4(ivec2(1)); _ = a", err: true},
+		{stmt: "a := mat4(mat2(1)); _ = a", err: true},
+		{stmt: "a := mat4(mat3(1)); _ = a", err: true},
+
+		{stmt: "a := mat4(vec4(1), vec4(1), vec4(1), vec4(1)); _ = a", err: false},
+		{stmt: "a := mat4(ivec4(1), ivec4(1), ivec4(1), ivec4(1)); _ = a", err: true},
+		{stmt: "a := mat4(1, 1, 1, 1); _ = a", err: true},
+		{stmt: "a := mat4(1, 1, 1, vec4(1)); _ = a", err: true},
+		{stmt: "a := mat4(vec4(1), vec4(1), vec4(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := mat4(mat4(1), mat4(1), mat4(1), mat4(1)); _ = a", err: true},
+
+		{stmt: "a := mat4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); _ = a", err: false},
+		{stmt: "a := mat4(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0); _ = a", err: false},
+		{stmt: "i := 1; a := mat4(i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i); _ = a", err: true},
+		{stmt: "i := 1.0; a := mat4(i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i); _ = a", err: false},
+		{stmt: "a := mat4(vec4(1), vec4(1), vec4(1), vec4(1), vec4(1), vec4(1), vec4(1), vec4(1), vec4(1), vec4(1), vec4(1), vec4(1), vec4(1), vec4(1), vec4(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := mat4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := mat4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, vec3(1)); _ = a", err: true},
+		{stmt: "a := mat4(mat4(1), mat4(1), mat4(1), mat4(1), mat4(1), mat4(1), mat4(1), mat4(1), mat4(1), mat4(1), mat4(1), mat4(1), mat4(1), mat4(1), mat4(1), mat4(1)); _ = a", err: true},
+		{stmt: "a := mat4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); _ = a", err: true},
+		{stmt: "a := mat4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); _ = a", err: true},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR(fmt.Appendf(nil, `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", c.stmt, err)
+		}
+	}
+}
+
+// Issue #2248
+func TestSyntaxDiscard(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	if true {
+		discard()
+	}
+	return vec4(0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	discard()
+	return vec4(0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	discard()
+}
+`)); err != nil {
+		t.Error(err)
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	if dstPos.x > 0 {
+		discard()
+	} else {
+		return vec4(0)
+	}
+}
+`)); err != nil {
+		t.Error(err)
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func foo() {
+	discard()
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	foo()
+	return vec4(0)
+}
+`)); err == nil {
+		t.Errorf("error must be non-nil but was nil")
+	}
+}
+
+// Issue #2184
+func TestSyntaxBuiltinFuncSingleArgType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := {{.Func}}(); _ = a", err: true},
+		{stmt: "a := {{.Func}}(false); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(int(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec3(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec4(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(ivec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(mat2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(mat3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(mat4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, 1); _ = a", err: true},
+	}
+
+	funcs := []string{
+		"sin",
+		"cos",
+		"tan",
+		"asin",
+		"acos",
+		"atan",
+		"exp",
+		"log",
+		"exp2",
+		"log2",
+		"sqrt",
+		"inversesqrt",
+		"floor",
+		"ceil",
+		"fract",
+		"length",
+		"normalize",
+		"dfdx",
+		"dfdy",
+		"fwidth",
+	}
+	for _, c := range cases {
+		for _, f := range funcs {
+			stmt := strings.ReplaceAll(c.stmt, "{{.Func}}", f)
+			src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+			_, err := compileToIR([]byte(src))
+			if err == nil && c.err {
+				t.Errorf("%s must return an error but does not", stmt)
+			} else if err != nil && !c.err {
+				t.Errorf("%s must not return nil but returned %v", stmt, err)
+			}
+		}
+	}
+}
+
+func TestSyntaxBuiltinFuncSingleArgTypeInteger(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := {{.Func}}(); _ = a", err: true},
+		{stmt: "a := {{.Func}}(false); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(int(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec2(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec3(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec4(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(ivec2(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(ivec3(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(ivec4(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(mat2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(mat3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(mat4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, 1); _ = a", err: true},
+	}
+
+	funcs := []string{
+		"abs",
+		"sign",
+	}
+	for _, c := range cases {
+		for _, f := range funcs {
+			stmt := strings.ReplaceAll(c.stmt, "{{.Func}}", f)
+			src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+			_, err := compileToIR([]byte(src))
+			if err == nil && c.err {
+				t.Errorf("%s must return an error but does not", stmt)
+			} else if err != nil && !c.err {
+				t.Errorf("%s must not return nil but returned %v", stmt, err)
+			}
+		}
+	}
+}
+
+// Issue #2184
+func TestSyntaxBuiltinFuncDoubleArgsType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := {{.Func}}(); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(false, false); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.0, 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(int(1), 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(int(1), 1.0); _ = a", err: true},
+		{stmt: "a := {{.Func}}(int(1), 1.1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(float(1), 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(float(1), 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(float(1), 1.1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, int(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1.0, int(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1.1, int(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, float(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.0, float(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.1, float(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(int(1), int(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, vec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, vec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1), 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1), vec2(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec2(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec3(1), 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec3(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec3(1), vec3(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec3(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), vec4(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(mat2(1), mat2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec2(1), 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec2(1), ivec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, 1, 1); _ = a", err: true},
+	}
+
+	funcs := []string{
+		"atan2",
+		"pow",
+		"distance",
+		"dot",
+		"reflect",
+	}
+	for _, c := range cases {
+		for _, f := range funcs {
+			stmt := strings.ReplaceAll(c.stmt, "{{.Func}}", f)
+			src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+			_, err := compileToIR([]byte(src))
+			if err == nil && c.err {
+				t.Errorf("%s must return an error but does not", stmt)
+			} else if err != nil && !c.err {
+				t.Errorf("%s must not return nil but returned %v", stmt, err)
+			}
+		}
+	}
+}
+
+// Issue #2184
+func TestSyntaxBuiltinFuncDoubleArgsType2(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := {{.Func}}(); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(false, false); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.0, 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(int(1), 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(int(1), 1.0); _ = a", err: true},
+		{stmt: "a := {{.Func}}(int(1), 1.1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(float(1), 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(float(1), 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(float(1), 1.1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, int(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1.0, int(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1.1, int(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, float(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.0, float(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.1, float(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(int(1), int(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, vec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, vec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, ivec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, ivec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, ivec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1), 1); _ = a", err: false}, // The second argument can be a scalar.
+		{stmt: "a := {{.Func}}(vec2(1), vec2(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec2(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec3(1), 1); _ = a", err: false}, // The second argument can be a scalar.
+		{stmt: "a := {{.Func}}(vec3(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec3(1), vec3(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec3(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), 1); _ = a", err: false}, // The second argument can be a scalar.
+		{stmt: "a := {{.Func}}(vec4(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), vec4(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(mat2(1), mat2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec2(1), 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec2(1), ivec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, 1, 1); _ = a", err: true},
+	}
+
+	funcs := []string{
+		"mod",
+	}
+	for _, c := range cases {
+		for _, f := range funcs {
+			stmt := strings.ReplaceAll(c.stmt, "{{.Func}}", f)
+			src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+			_, err := compileToIR([]byte(src))
+			if err == nil && c.err {
+				t.Errorf("%s must return an error but does not", stmt)
+			} else if err != nil && !c.err {
+				t.Errorf("%s must not return nil but returned %v", stmt, err)
+			}
+		}
+	}
+}
+
+func TestSyntaxBuiltinFuncArgsMinMax(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := {{.Func}}(); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(false, false); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, 1); var _ int = a", err: false},
+		{stmt: "a := {{.Func}}(1.0, 1); var _ float = a", err: false},
+		{stmt: "a := {{.Func}}(1, 1.0); var _ float = a", err: false},
+		{stmt: "a := {{.Func}}(1.1, 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, 1.1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(int(1), 1); var _ int = a", err: false},
+		{stmt: "a := {{.Func}}(int(1), 1.0); var _ int = a", err: false},
+		{stmt: "a := {{.Func}}(int(1), 1.1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(float(1), 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(float(1), 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(float(1), 1.1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, int(1)); var _ int = a", err: false},
+		{stmt: "a := {{.Func}}(1.0, int(1)); var _ int = a", err: false},
+		{stmt: "a := {{.Func}}(1.1, int(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, float(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.0, float(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.1, float(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(int(1), int(1)); var _ int = a", err: false},
+		{stmt: "a := {{.Func}}(int(1), float(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(float(1), int(1)); _ = a", err: true},
+		{stmt: "x := 1.1; a := {{.Func}}(int(x), 1); _ = a", err: false},
+		{stmt: "x := 1; a := {{.Func}}(float(x), 1.1); _ = a", err: false},
+		{stmt: "x := 1.1; a := {{.Func}}(1, int(x)); _ = a", err: false},
+		{stmt: "x := 1; a := {{.Func}}(1.1, float(x)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, vec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, vec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, ivec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, ivec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, ivec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1), 1); _ = a", err: false}, // The second argument can be a scalar.
+		{stmt: "a := {{.Func}}(vec2(1), 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec2(1), 1.1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec2(1), vec2(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec2(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec3(1), 1); _ = a", err: false}, // The second argument can be a scalar.
+		{stmt: "a := {{.Func}}(vec3(1), 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec3(1), 1.1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec3(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec3(1), vec3(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec3(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), 1); _ = a", err: false}, // The second argument can be a scalar.
+		{stmt: "a := {{.Func}}(vec4(1), 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec4(1), 1.1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec4(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), vec4(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(mat2(1), mat2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec2(1), 1); _ = a", err: false}, // The second argument can be a scalar.
+		{stmt: "a := {{.Func}}(ivec2(1), 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(ivec2(1), 1.1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec2(1), ivec2(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(ivec2(1), ivec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec2(1), ivec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec3(1), 1); _ = a", err: false}, // The second argument can be a scalar.
+		{stmt: "a := {{.Func}}(ivec3(1), 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(ivec3(1), 1.1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec3(1), ivec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec3(1), ivec3(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(ivec3(1), ivec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec4(1), 1); _ = a", err: false}, // The second argument can be a scalar.
+		{stmt: "a := {{.Func}}(ivec4(1), 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(ivec4(1), 1.1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec4(1), ivec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec4(1), ivec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(ivec4(1), ivec4(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, 1, 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, 1, 1, 1, 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.0, 2.0, 3.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec2(1), vec2(2), vec2(3)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec2(1), 1, 1); _ = a", err: true},
+	}
+
+	funcs := []string{
+		"min",
+		"max",
+	}
+	for _, c := range cases {
+		for _, f := range funcs {
+			stmt := strings.ReplaceAll(c.stmt, "{{.Func}}", f)
+			src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+			_, err := compileToIR([]byte(src))
+			if err == nil && c.err {
+				t.Errorf("%s must return an error but does not", stmt)
+			} else if err != nil && !c.err {
+				t.Errorf("%s must not return nil but returned %v", stmt, err)
+			}
+		}
+	}
+}
+
+// Issue #2184
+func TestSyntaxBuiltinFuncStepType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := step(); _ = a", err: true},
+		{stmt: "a := step(1); _ = a", err: true},
+		{stmt: "a := step(false, false); _ = a", err: true},
+		{stmt: "a := step(1, 1); _ = a", err: false},
+		{stmt: "a := step(1.0, 1); _ = a", err: false},
+		{stmt: "a := step(1, 1.0); _ = a", err: false},
+		{stmt: "a := step(int(1), int(1)); _ = a", err: true},
+		{stmt: "a := step(1, vec2(1)); _ = a", err: false}, // The first argument can be a scalar.
+		{stmt: "a := step(1, vec3(1)); _ = a", err: false}, // The first argument can be a scalar.
+		{stmt: "a := step(1, vec4(1)); _ = a", err: false}, // The first argument can be a scalar.
+		{stmt: "a := step(1, ivec2(1)); _ = a", err: true},
+		{stmt: "a := step(1, ivec3(1)); _ = a", err: true},
+		{stmt: "a := step(1, ivec4(1)); _ = a", err: true},
+		{stmt: "a := step(vec2(1), 1); _ = a", err: true},
+		{stmt: "a := step(vec2(1), vec2(1)); _ = a", err: false},
+		{stmt: "a := step(vec2(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := step(vec2(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := step(vec3(1), 1); _ = a", err: true},
+		{stmt: "a := step(vec3(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := step(vec3(1), vec3(1)); _ = a", err: false},
+		{stmt: "a := step(vec3(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := step(vec4(1), 1); _ = a", err: true},
+		{stmt: "a := step(vec4(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := step(vec4(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := step(vec4(1), vec4(1)); _ = a", err: false},
+		{stmt: "a := step(mat2(1), mat2(1)); _ = a", err: true},
+		{stmt: "a := step(ivec2(1), ivec2(1)); _ = a", err: true},
+		{stmt: "a := step(1, 1, 1); _ = a", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2184
+func TestSyntaxBuiltinFuncTripleArgsType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := {{.Func}}(); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(false, false); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(false, false, false); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, 1, 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1.0, 1, 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, 1.0, 1); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, 1, 1.0); _ = a", err: false},
+		{stmt: "a := {{.Func}}(1, vec2(1), 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(1, vec2(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1), 1, 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1), 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1), vec2(1), 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec2(1), vec2(1), vec2(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec2(1), vec2(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec3(1), 1, 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec3(1), 1, vec3(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec3(1), vec3(1), 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec3(1), vec3(1), vec3(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(vec4(1), 1, 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), 1, vec4(1)); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), vec4(1), 1); _ = a", err: true},
+		{stmt: "a := {{.Func}}(vec4(1), vec4(1), vec4(1)); _ = a", err: false},
+		{stmt: "a := {{.Func}}(ivec2(1), ivec2(1), ivec2(1)); _ = a", err: true},
+	}
+
+	funcs := []string{
+		"faceforward",
+	}
+	for _, c := range cases {
+		for _, f := range funcs {
+			stmt := strings.ReplaceAll(c.stmt, "{{.Func}}", f)
+			src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+			_, err := compileToIR([]byte(src))
+			if err == nil && c.err {
+				t.Errorf("%s must return an error but does not", stmt)
+			} else if err != nil && !c.err {
+				t.Errorf("%s must not return nil but returned %v", stmt, err)
+			}
+		}
+	}
+}
+
+// Issue #2184
+func TestSyntaxBuiltinFuncClampType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := clamp(); _ = a", err: true},
+		{stmt: "a := clamp(1); _ = a", err: true},
+		{stmt: "a := clamp(false, false); _ = a", err: true},
+		{stmt: "a := clamp(1, 1); _ = a", err: true},
+		{stmt: "a := clamp(false, false, false); _ = a", err: true},
+		{stmt: "a := clamp(1, 1, 1); var _ int = a", err: false},
+		{stmt: "a := clamp(int(1), 1, 1); var _ int = a", err: false},
+		{stmt: "a := clamp(int(1), 1.0, 1); var _ int = a", err: false},
+		{stmt: "a := clamp(int(1), 1, 1.0); var _ int = a", err: false},
+		{stmt: "a := clamp(int(1), 1.1, 1); _ = a", err: true},
+		{stmt: "a := clamp(int(1), 1, 1.1); _ = a", err: true},
+		{stmt: "a := clamp(float(1), 1, 1); var _ float = a", err: false},
+		{stmt: "a := clamp(float(1), 1.0, 1); var _ float = a", err: false},
+		{stmt: "a := clamp(float(1), 1, 1.0); var _ float = a", err: false},
+		{stmt: "a := clamp(float(1), 1.1, 1); _ = a", err: false},
+		{stmt: "a := clamp(float(1), 1, 1.1); _ = a", err: false},
+		{stmt: "x := 1.1; a := clamp(int(x), 1, 1); _ = a", err: false},
+		{stmt: "x := 1; a := clamp(float(x), 1.1, 1.1); _ = a", err: false},
+		{stmt: "x := 1.1; a := clamp(1, int(x), 1); _ = a", err: false},
+		{stmt: "x := 1; a := clamp(1.1, float(x), 1.1); _ = a", err: false},
+		{stmt: "x := 1.1; a := clamp(1, 1, int(x)); _ = a", err: false},
+		{stmt: "x := 1; a := clamp(1.1, 1.1, float(x)); _ = a", err: false},
+		{stmt: "a := clamp(1.0, 1, 1); var _ float = a", err: false},
+		{stmt: "a := clamp(1, 1.0, 1); var _ float = a", err: false},
+		{stmt: "a := clamp(1, 1, 1.0); var _ float = a", err: false},
+		{stmt: "a := clamp(1.1, 1, 1); var _ float = a", err: false},
+		{stmt: "a := clamp(1, 1.1, 1); var _ float = a", err: false},
+		{stmt: "a := clamp(1, 1, 1.1); var _ float = a", err: false},
+		{stmt: "a := clamp(1, vec2(1), 1); _ = a", err: true},
+		{stmt: "a := clamp(1, 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := clamp(1, vec2(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := clamp(vec2(1), 1, 1); _ = a", err: false},
+		{stmt: "a := clamp(vec2(1), 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := clamp(vec2(1), vec2(1), 1); _ = a", err: true},
+		{stmt: "a := clamp(vec2(1), vec2(1), vec2(1)); _ = a", err: false},
+		{stmt: "a := clamp(vec2(1), vec2(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := clamp(vec3(1), 1, 1); _ = a", err: false},
+		{stmt: "a := clamp(vec3(1), 1, vec3(1)); _ = a", err: true},
+		{stmt: "a := clamp(vec3(1), vec3(1), 1); _ = a", err: true},
+		{stmt: "a := clamp(vec3(1), vec3(1), vec3(1)); _ = a", err: false},
+		{stmt: "a := clamp(vec4(1), 1, 1); _ = a", err: false},
+		{stmt: "a := clamp(vec4(1), 1, vec4(1)); _ = a", err: true},
+		{stmt: "a := clamp(vec4(1), vec4(1), 1); _ = a", err: true},
+		{stmt: "a := clamp(vec4(1), vec4(1), vec4(1)); _ = a", err: false},
+		{stmt: "a := clamp(ivec2(1), 1, 1); _ = a", err: false},
+		{stmt: "a := clamp(ivec2(1), 1.1, 1); _ = a", err: true},
+		{stmt: "a := clamp(ivec2(1), 1, 1.1); _ = a", err: true},
+		{stmt: "a := clamp(ivec2(1), 1, ivec2(1)); _ = a", err: true},
+		{stmt: "a := clamp(ivec2(1), ivec2(1), 1); _ = a", err: true},
+		{stmt: "a := clamp(ivec2(1), ivec2(1), ivec2(1)); _ = a", err: false},
+		{stmt: "a := clamp(ivec2(1), ivec2(1), ivec3(1)); _ = a", err: true},
+		{stmt: "a := clamp(ivec3(1), 1, 1); _ = a", err: false},
+		{stmt: "a := clamp(ivec3(1), 1.1, 1); _ = a", err: true},
+		{stmt: "a := clamp(ivec3(1), 1, 1.1); _ = a", err: true},
+		{stmt: "a := clamp(ivec3(1), 1, ivec3(1)); _ = a", err: true},
+		{stmt: "a := clamp(ivec3(1), ivec3(1), 1); _ = a", err: true},
+		{stmt: "a := clamp(ivec3(1), ivec3(1), ivec3(1)); _ = a", err: false},
+		{stmt: "a := clamp(ivec4(1), 1, 1); _ = a", err: false},
+		{stmt: "a := clamp(ivec4(1), 1.1, 1); _ = a", err: true},
+		{stmt: "a := clamp(ivec4(1), 1, 1.1); _ = a", err: true},
+		{stmt: "a := clamp(ivec4(1), 1, ivec4(1)); _ = a", err: true},
+		{stmt: "a := clamp(ivec4(1), ivec4(1), 1); _ = a", err: true},
+		{stmt: "a := clamp(ivec4(1), ivec4(1), ivec4(1)); _ = a", err: false},
+		{stmt: "a := clamp(1, 1, 1, 1); _ = a", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2184
+func TestSyntaxBuiltinFuncMixType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := mix(); _ = a", err: true},
+		{stmt: "a := mix(1); _ = a", err: true},
+		{stmt: "a := mix(false, false); _ = a", err: true},
+		{stmt: "a := mix(1, 1); _ = a", err: true},
+		{stmt: "a := mix(false, false, false); _ = a", err: true},
+		{stmt: "a := mix(1, 1, 1); _ = a", err: false},
+		{stmt: "a := mix(1.0, 1, 1); _ = a", err: false},
+		{stmt: "a := mix(1, 1.0, 1); _ = a", err: false},
+		{stmt: "a := mix(1, 1, 1.0); _ = a", err: false},
+		{stmt: "a := mix(1, vec2(1), 1); _ = a", err: true},
+		{stmt: "a := mix(1, 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := mix(1, vec2(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := mix(vec2(1), 1, 1); _ = a", err: true},
+		{stmt: "a := mix(vec2(1), 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := mix(vec2(1), vec2(1), 1); _ = a", err: false}, // The third argument can be a float.
+		{stmt: "a := mix(vec2(1), vec2(1), vec2(1)); _ = a", err: false},
+		{stmt: "a := mix(vec2(1), vec2(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := mix(vec3(1), 1, 1); _ = a", err: true},
+		{stmt: "a := mix(vec3(1), 1, vec3(1)); _ = a", err: true},
+		{stmt: "a := mix(vec3(1), vec3(1), 1); _ = a", err: false}, // The third argument can be a float.
+		{stmt: "a := mix(vec3(1), vec3(1), vec3(1)); _ = a", err: false},
+		{stmt: "a := mix(vec4(1), 1, 1); _ = a", err: true},
+		{stmt: "a := mix(vec4(1), 1, vec4(1)); _ = a", err: true},
+		{stmt: "a := mix(vec4(1), vec4(1), 1); _ = a", err: false}, // The third argument can be a float.
+		{stmt: "a := mix(vec4(1), vec4(1), vec4(1)); _ = a", err: false},
+		{stmt: "a := mix(ivec2(1), ivec2(1), 1); _ = a", err: true},
+		{stmt: "a := mix(ivec2(1), ivec2(1), ivec2(1)); _ = a", err: true},
+		{stmt: "a := mix(1, 1, 1, 1); _ = a", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2184
+func TestSyntaxBuiltinFuncSmoothstepType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := smoothstep(); _ = a", err: true},
+		{stmt: "a := smoothstep(1); _ = a", err: true},
+		{stmt: "a := smoothstep(false, false); _ = a", err: true},
+		{stmt: "a := smoothstep(1, 1); _ = a", err: true},
+		{stmt: "a := smoothstep(false, false, false); _ = a", err: true},
+		{stmt: "a := smoothstep(1, 1, 1); _ = a", err: false},
+		{stmt: "a := smoothstep(1.0, 1, 1); _ = a", err: false},
+		{stmt: "a := smoothstep(1, 1.0, 1); _ = a", err: false},
+		{stmt: "a := smoothstep(1, 1, 1.0); _ = a", err: false},
+		{stmt: "a := smoothstep(1, vec2(1), 1); _ = a", err: true},
+		{stmt: "a := smoothstep(1, 1, vec2(1)); _ = a", err: false},
+		{stmt: "a := smoothstep(1, 1, vec3(1)); _ = a", err: false},
+		{stmt: "a := smoothstep(1, 1, vec4(1)); _ = a", err: false},
+		{stmt: "a := smoothstep(1, vec2(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := smoothstep(vec2(1), 1, 1); _ = a", err: true},
+		{stmt: "a := smoothstep(vec2(1), 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := smoothstep(vec2(1), vec2(1), 1); _ = a", err: true},
+		{stmt: "a := smoothstep(vec2(1), vec2(1), vec2(1)); _ = a", err: false},
+		{stmt: "a := smoothstep(vec2(1), vec2(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := smoothstep(vec3(1), 1, 1); _ = a", err: true},
+		{stmt: "a := smoothstep(vec3(1), 1, vec3(1)); _ = a", err: true},
+		{stmt: "a := smoothstep(vec3(1), vec3(1), 1); _ = a", err: true},
+		{stmt: "a := smoothstep(vec3(1), vec3(1), vec3(1)); _ = a", err: false},
+		{stmt: "a := smoothstep(vec4(1), 1, 1); _ = a", err: true},
+		{stmt: "a := smoothstep(vec4(1), 1, vec4(1)); _ = a", err: true},
+		{stmt: "a := smoothstep(vec4(1), vec4(1), 1); _ = a", err: true},
+		{stmt: "a := smoothstep(vec4(1), vec4(1), vec4(1)); _ = a", err: false},
+		{stmt: "a := smoothstep(ivec2(1), 1, 1); _ = a", err: true},
+		{stmt: "a := smoothstep(1, ivec2(1), 1); _ = a", err: true},
+		{stmt: "a := smoothstep(1, 1, ivec2(1)); _ = a", err: true},
+		{stmt: "a := smoothstep(1, 1, 1, 1); _ = a", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2184
+func TestSyntaxBuiltinFuncRefractType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := refract(); _ = a", err: true},
+		{stmt: "a := refract(1); _ = a", err: true},
+		{stmt: "a := refract(false, false); _ = a", err: true},
+		{stmt: "a := refract(1, 1); _ = a", err: true},
+		{stmt: "a := refract(false, false, false); _ = a", err: true},
+		{stmt: "a := refract(1, 1, 1); _ = a", err: false},
+		{stmt: "a := refract(1.0, 1, 1); _ = a", err: false},
+		{stmt: "a := refract(1, 1.0, 1); _ = a", err: false},
+		{stmt: "a := refract(1, 1, 1.0); _ = a", err: false},
+		{stmt: "a := refract(1, vec2(1), 1); _ = a", err: true},
+		{stmt: "a := refract(1, 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := refract(1, vec2(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := refract(vec2(1), 1, 1); _ = a", err: true},
+		{stmt: "a := refract(vec2(1), 1, vec2(1)); _ = a", err: true},
+		{stmt: "a := refract(vec2(1), vec2(1), 1); _ = a", err: false}, // The third argument must be a float.
+		{stmt: "a := refract(vec2(1), vec2(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := refract(vec2(1), vec2(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := refract(vec3(1), 1, 1); _ = a", err: true},
+		{stmt: "a := refract(vec3(1), 1, vec3(1)); _ = a", err: true},
+		{stmt: "a := refract(vec3(1), vec3(1), 1); _ = a", err: false}, // The third argument must be a float.
+		{stmt: "a := refract(vec3(1), vec3(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := refract(vec4(1), 1, 1); _ = a", err: true},
+		{stmt: "a := refract(vec4(1), 1, vec4(1)); _ = a", err: true},
+		{stmt: "a := refract(vec4(1), vec4(1), 1); _ = a", err: false}, // The third argument must be a float.
+		{stmt: "a := refract(vec4(1), vec4(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := refract(ivec2(1), ivec2(1), 1); _ = a", err: true},
+		{stmt: "a := refract(1, 1, 1, 1); _ = a", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2184
+func TestSyntaxBuiltinFuncCrossType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := cross(); _ = a", err: true},
+		{stmt: "a := cross(1); _ = a", err: true},
+		{stmt: "a := cross(false, false); _ = a", err: true},
+		{stmt: "a := cross(1, 1); _ = a", err: true},
+		{stmt: "a := cross(1.0, 1); _ = a", err: true},
+		{stmt: "a := cross(1, 1.0); _ = a", err: true},
+		{stmt: "a := cross(int(1), int(1)); _ = a", err: true},
+		{stmt: "a := cross(1, vec2(1)); _ = a", err: true},
+		{stmt: "a := cross(1, vec3(1)); _ = a", err: true},
+		{stmt: "a := cross(1, vec4(1)); _ = a", err: true},
+		{stmt: "a := cross(vec2(1), 1); _ = a", err: true},
+		{stmt: "a := cross(vec2(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := cross(vec2(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := cross(vec2(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := cross(vec3(1), 1); _ = a", err: true},
+		{stmt: "a := cross(vec3(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := cross(vec3(1), vec3(1)); _ = a", err: false}, // Only two vec3s are allowed
+		{stmt: "a := cross(vec3(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := cross(vec4(1), 1); _ = a", err: true},
+		{stmt: "a := cross(vec4(1), vec2(1)); _ = a", err: true},
+		{stmt: "a := cross(vec4(1), vec3(1)); _ = a", err: true},
+		{stmt: "a := cross(vec4(1), vec4(1)); _ = a", err: true},
+		{stmt: "a := cross(mat2(1), mat2(1)); _ = a", err: true},
+		{stmt: "a := cross(ivec3(1), ivec3(1)); _ = a", err: true},
+		{stmt: "a := cross(1, 1, 1); _ = a", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2184
+func TestSyntaxBuiltinFuncTransposeType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := transpose(); _ = a", err: true},
+		{stmt: "a := transpose(false); _ = a", err: true},
+		{stmt: "a := transpose(1); _ = a", err: true},
+		{stmt: "a := transpose(1.0); _ = a", err: true},
+		{stmt: "a := transpose(int(1)); _ = a", err: true},
+		{stmt: "a := transpose(vec2(1)); _ = a", err: true},
+		{stmt: "a := transpose(vec3(1)); _ = a", err: true},
+		{stmt: "a := transpose(vec4(1)); _ = a", err: true},
+		{stmt: "a := transpose(ivec2(1)); _ = a", err: true},
+		{stmt: "a := transpose(ivec3(1)); _ = a", err: true},
+		{stmt: "a := transpose(ivec4(1)); _ = a", err: true},
+		{stmt: "a := transpose(mat2(1)); _ = a", err: false},
+		{stmt: "a := transpose(mat3(1)); _ = a", err: false},
+		{stmt: "a := transpose(mat4(1)); _ = a", err: false},
+		{stmt: "a := transpose(1, 1); _ = a", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2187
+func TestSyntaxEqual(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "_ = false == true", err: false},
+		{stmt: "_ = false != true", err: false},
+		{stmt: "_ = false == 1", err: true},
+		{stmt: "_ = false != 1", err: true},
+		{stmt: "_ = false == 1.0", err: true},
+		{stmt: "_ = false != 1.0", err: true},
+		{stmt: "_ = false == 1.1", err: true},
+		{stmt: "_ = false != 1.1", err: true},
+		{stmt: "a, b := false, true; _ = a == b", err: false},
+		{stmt: "a, b := false, true; _ = a != b", err: false},
+		{stmt: "a, b := false, 1; _ = a == b", err: true},
+		{stmt: "a, b := false, 1; _ = a != b", err: true},
+		{stmt: "a, b := false, 1.0; _ = a == b", err: true},
+		{stmt: "a, b := false, 1.0; _ = a != b", err: true},
+		{stmt: "a, b := false, 1.1; _ = a == b", err: true},
+		{stmt: "a, b := false, 1.1; _ = a != b", err: true},
+		{stmt: "a, b := false, vec2(1); _ = a == b", err: true},
+		{stmt: "a, b := false, vec2(1); _ = a != b", err: true},
+		{stmt: "a, b := false, ivec2(1); _ = a == b", err: true},
+		{stmt: "a, b := false, ivec2(1); _ = a != b", err: true},
+		{stmt: "a, b := false, mat2(1); _ = a == b", err: true},
+		{stmt: "a, b := false, mat2(1); _ = a != b", err: true},
+
+		{stmt: "_ = 1 == true", err: true},
+		{stmt: "_ = 1 != true", err: true},
+		{stmt: "_ = 1 == 1", err: false},
+		{stmt: "_ = 1 != 1", err: false},
+		{stmt: "_ = 1 == 1.0", err: false},
+		{stmt: "_ = 1 != 1.0", err: false},
+		{stmt: "_ = 1 == 1.1", err: false},
+		{stmt: "_ = 1 != 1.1", err: false},
+		{stmt: "a, b := 1, true; _ = a == b", err: true},
+		{stmt: "a, b := 1, true; _ = a != b", err: true},
+		{stmt: "a, b := 1, 1; _ = a == b", err: false},
+		{stmt: "a, b := 1, 1; _ = a != b", err: false},
+		{stmt: "a, b := 1, 1.0; _ = a == b", err: true},
+		{stmt: "a, b := 1, 1.0; _ = a != b", err: true},
+		{stmt: "a, b := 1, 1.1; _ = a == b", err: true},
+		{stmt: "a, b := 1, 1.1; _ = a != b", err: true},
+		{stmt: "a, b := 1, vec2(1); _ = a == b", err: true},
+		{stmt: "a, b := 1, vec2(1); _ = a != b", err: true},
+		{stmt: "a, b := 1, ivec2(1); _ = a == b", err: true},
+		{stmt: "a, b := 1, ivec2(1); _ = a != b", err: true},
+		{stmt: "a, b := 1, mat2(1); _ = a == b", err: true},
+		{stmt: "a, b := 1, mat2(1); _ = a != b", err: true},
+
+		{stmt: "_ = 1.0 == true", err: true},
+		{stmt: "_ = 1.0 != true", err: true},
+		{stmt: "_ = 1.0 == 1", err: false},
+		{stmt: "_ = 1.0 != 1", err: false},
+		{stmt: "_ = 1.0 == 1.0", err: false},
+		{stmt: "_ = 1.0 != 1.0", err: false},
+		{stmt: "_ = 1.0 == 1.1", err: false},
+		{stmt: "_ = 1.0 != 1.1", err: false},
+		{stmt: "a, b := 1.0, true; _ = a == b", err: true},
+		{stmt: "a, b := 1.0, true; _ = a != b", err: true},
+		{stmt: "a, b := 1.0, 1; _ = a == b", err: true},
+		{stmt: "a, b := 1.0, 1; _ = a != b", err: true},
+		{stmt: "a, b := 1.0, 1.0; _ = a == b", err: false},
+		{stmt: "a, b := 1.0, 1.0; _ = a != b", err: false},
+		{stmt: "a, b := 1.0, 1.1; _ = a == b", err: false},
+		{stmt: "a, b := 1.0, 1.1; _ = a != b", err: false},
+		{stmt: "a, b := 1.0, vec2(1); _ = a == b", err: true},
+		{stmt: "a, b := 1.0, vec2(1); _ = a != b", err: true},
+		{stmt: "a, b := 1.0, ivec2(1); _ = a == b", err: true},
+		{stmt: "a, b := 1.0, ivec2(1); _ = a != b", err: true},
+		{stmt: "a, b := 1.0, mat2(1); _ = a == b", err: true},
+		{stmt: "a, b := 1.0, mat2(1); _ = a != b", err: true},
+
+		{stmt: "_ = 1.1 == true", err: true},
+		{stmt: "_ = 1.1 != true", err: true},
+		{stmt: "_ = 1.1 == 1", err: false},
+		{stmt: "_ = 1.1 != 1", err: false},
+		{stmt: "_ = 1.1 == 1.0", err: false},
+		{stmt: "_ = 1.1 != 1.0", err: false},
+		{stmt: "_ = 1.1 == 1.1", err: false},
+		{stmt: "_ = 1.1 != 1.1", err: false},
+		{stmt: "a, b := 1.1, true; _ = a == b", err: true},
+		{stmt: "a, b := 1.1, true; _ = a != b", err: true},
+		{stmt: "a, b := 1.1, 1; _ = a == b", err: true},
+		{stmt: "a, b := 1.1, 1; _ = a != b", err: true},
+		{stmt: "a, b := 1.1, 1.0; _ = a == b", err: false},
+		{stmt: "a, b := 1.1, 1.0; _ = a != b", err: false},
+		{stmt: "a, b := 1.1, 1.1; _ = a == b", err: false},
+		{stmt: "a, b := 1.1, 1.1; _ = a != b", err: false},
+		{stmt: "a, b := 1.1, vec2(1); _ = a == b", err: true},
+		{stmt: "a, b := 1.1, vec2(1); _ = a != b", err: true},
+		{stmt: "a, b := 1.1, ivec2(1); _ = a == b", err: true},
+		{stmt: "a, b := 1.1, ivec2(1); _ = a != b", err: true},
+		{stmt: "a, b := 1.1, mat2(1); _ = a == b", err: true},
+		{stmt: "a, b := 1.1, mat2(1); _ = a != b", err: true},
+
+		{stmt: "_ = vec2(1) == true", err: true},
+		{stmt: "_ = vec2(1) != true", err: true},
+		{stmt: "_ = vec2(1) == 1", err: true},
+		{stmt: "_ = vec2(1) != 1", err: true},
+		{stmt: "_ = vec2(1) == 1.0", err: true},
+		{stmt: "_ = vec2(1) != 1.0", err: true},
+		{stmt: "_ = vec2(1) == 1.1", err: true},
+		{stmt: "_ = vec2(1) != 1.1", err: true},
+		{stmt: "a, b := vec2(1), true; _ = a == b", err: true},
+		{stmt: "a, b := vec2(1), true; _ = a != b", err: true},
+		{stmt: "a, b := vec2(1), 1; _ = a == b", err: true},
+		{stmt: "a, b := vec2(1), 1; _ = a != b", err: true},
+		{stmt: "a, b := vec2(1), 1.0; _ = a == b", err: true},
+		{stmt: "a, b := vec2(1), 1.0; _ = a != b", err: true},
+		{stmt: "a, b := vec2(1), 1.1; _ = a == b", err: true},
+		{stmt: "a, b := vec2(1), 1.1; _ = a != b", err: true},
+		{stmt: "a, b := vec2(1), vec2(1); _ = a == b", err: false},
+		{stmt: "a, b := vec2(1), vec2(1); _ = a != b", err: false},
+		{stmt: "a, b := vec2(1), ivec2(1); _ = a == b", err: true},
+		{stmt: "a, b := vec2(1), ivec2(1); _ = a != b", err: true},
+		{stmt: "a, b := vec2(1), mat2(1); _ = a == b", err: true},
+		{stmt: "a, b := vec2(1), mat2(1); _ = a != b", err: true},
+
+		{stmt: "_ = ivec2(1) == true", err: true},
+		{stmt: "_ = ivec2(1) != true", err: true},
+		{stmt: "_ = ivec2(1) == 1", err: true},
+		{stmt: "_ = ivec2(1) != 1", err: true},
+		{stmt: "_ = ivec2(1) == 1.0", err: true},
+		{stmt: "_ = ivec2(1) != 1.0", err: true},
+		{stmt: "_ = ivec2(1) == 1.1", err: true},
+		{stmt: "_ = ivec2(1) != 1.1", err: true},
+		{stmt: "a, b := ivec2(1), true; _ = a == b", err: true},
+		{stmt: "a, b := ivec2(1), true; _ = a != b", err: true},
+		{stmt: "a, b := ivec2(1), 1; _ = a == b", err: true},
+		{stmt: "a, b := ivec2(1), 1; _ = a != b", err: true},
+		{stmt: "a, b := ivec2(1), 1.0; _ = a == b", err: true},
+		{stmt: "a, b := ivec2(1), 1.0; _ = a != b", err: true},
+		{stmt: "a, b := ivec2(1), 1.1; _ = a == b", err: true},
+		{stmt: "a, b := ivec2(1), 1.1; _ = a != b", err: true},
+		{stmt: "a, b := ivec2(1), vec2(1); _ = a == b", err: true},
+		{stmt: "a, b := ivec2(1), vec2(1); _ = a != b", err: true},
+		{stmt: "a, b := ivec2(1), ivec2(1); _ = a == b", err: false},
+		{stmt: "a, b := ivec2(1), ivec2(1); _ = a != b", err: false},
+		{stmt: "a, b := ivec2(1), mat2(1); _ = a == b", err: true},
+		{stmt: "a, b := ivec2(1), mat2(1); _ = a != b", err: true},
+
+		{stmt: "_ = mat2(1) == true", err: true},
+		{stmt: "_ = mat2(1) != true", err: true},
+		{stmt: "_ = mat2(1) == 1", err: true},
+		{stmt: "_ = mat2(1) != 1", err: true},
+		{stmt: "_ = mat2(1) == 1.0", err: true},
+		{stmt: "_ = mat2(1) != 1.0", err: true},
+		{stmt: "_ = mat2(1) == 1.1", err: true},
+		{stmt: "_ = mat2(1) != 1.1", err: true},
+		{stmt: "a, b := mat2(1), true; _ = a == b", err: true},
+		{stmt: "a, b := mat2(1), true; _ = a != b", err: true},
+		{stmt: "a, b := mat2(1), 1; _ = a == b", err: true},
+		{stmt: "a, b := mat2(1), 1; _ = a != b", err: true},
+		{stmt: "a, b := mat2(1), 1.0; _ = a == b", err: true},
+		{stmt: "a, b := mat2(1), 1.0; _ = a != b", err: true},
+		{stmt: "a, b := mat2(1), 1.1; _ = a == b", err: true},
+		{stmt: "a, b := mat2(1), 1.1; _ = a != b", err: true},
+		{stmt: "a, b := mat2(1), vec2(1); _ = a == b", err: true},
+		{stmt: "a, b := mat2(1), vec2(1); _ = a != b", err: true},
+		{stmt: "a, b := mat2(1), ivec2(1); _ = a == b", err: true},
+		{stmt: "a, b := mat2(1), ivec2(1); _ = a != b", err: true},
+		{stmt: "a, b := mat2(1), mat2(1); _ = a == b", err: true}, // Comparing matrices is not allowed.
+		{stmt: "a, b := mat2(1), mat2(1); _ = a != b", err: true}, // Comparing matrices is not allowed.
+
+		{stmt: "_ = false && true", err: false},
+		{stmt: "_ = false || true", err: false},
+		{stmt: "_ = false && 1", err: true},
+		{stmt: "_ = false || 1", err: true},
+		{stmt: "_ = false && 1.0", err: true},
+		{stmt: "_ = false || 1.0", err: true},
+		{stmt: "_ = false && 1.1", err: true},
+		{stmt: "_ = false || 1.1", err: true},
+		{stmt: "a, b := false, true; _ = a && b", err: false},
+		{stmt: "a, b := false, true; _ = a || b", err: false},
+		{stmt: "a, b := false, 1; _ = a && b", err: true},
+		{stmt: "a, b := false, 1; _ = a || b", err: true},
+		{stmt: "a, b := false, 1.0; _ = a && b", err: true},
+		{stmt: "a, b := false, 1.0; _ = a || b", err: true},
+		{stmt: "a, b := false, 1.1; _ = a && b", err: true},
+		{stmt: "a, b := false, 1.1; _ = a || b", err: true},
+		{stmt: "a, b := false, vec2(1); _ = a && b", err: true},
+		{stmt: "a, b := false, vec2(1); _ = a || b", err: true},
+		{stmt: "a, b := false, ivec2(1); _ = a && b", err: true},
+		{stmt: "a, b := false, ivec2(1); _ = a || b", err: true},
+		{stmt: "a, b := false, mat2(1); _ = a && b", err: true},
+		{stmt: "a, b := false, mat2(1); _ = a || b", err: true},
+
+		{stmt: "_ = 1.0 && true", err: true},
+		{stmt: "_ = 1.0 || true", err: true},
+		{stmt: "_ = 1.0 && 1", err: true},
+		{stmt: "_ = 1.0 || 1", err: true},
+		{stmt: "_ = 1.0 && 1.0", err: true},
+		{stmt: "_ = 1.0 || 1.0", err: true},
+		{stmt: "_ = 1.0 && 1.1", err: true},
+		{stmt: "_ = 1.0 || 1.1", err: true},
+		{stmt: "a, b := 1.0, true; _ = a && b", err: true},
+		{stmt: "a, b := 1.0, true; _ = a || b", err: true},
+		{stmt: "a, b := 1.0, 1; _ = a && b", err: true},
+		{stmt: "a, b := 1.0, 1; _ = a || b", err: true},
+		{stmt: "a, b := 1.0, 1.0; _ = a && b", err: true},
+		{stmt: "a, b := 1.0, 1.0; _ = a || b", err: true},
+		{stmt: "a, b := 1.0, 1.1; _ = a && b", err: true},
+		{stmt: "a, b := 1.0, 1.1; _ = a || b", err: true},
+		{stmt: "a, b := 1.0, vec2(1); _ = a && b", err: true},
+		{stmt: "a, b := 1.0, vec2(1); _ = a || b", err: true},
+		{stmt: "a, b := 1.0, ivec2(1); _ = a && b", err: true},
+		{stmt: "a, b := 1.0, ivec2(1); _ = a || b", err: true},
+		{stmt: "a, b := 1.0, mat2(1); _ = a && b", err: true},
+		{stmt: "a, b := 1.0, mat2(1); _ = a || b", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #3535
+func TestSyntaxEqualArray(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		// Comparing arrays is not allowed, as most of the shading languages don't have the operation.
+		{stmt: "var a [2]int; var b [2]int; _ = a == b", err: true},
+		{stmt: "var a [2]int; var b [2]int; _ = a != b", err: true},
+		{stmt: "var a [2]float; var b [2]float; _ = a == b", err: true},
+		{stmt: "var a [2]float; var b [2]float; _ = a != b", err: true},
+		{stmt: "var a [2]bool; var b [2]bool; _ = a == b", err: true},
+		{stmt: "var a [2]bool; var b [2]bool; _ = a != b", err: true},
+		{stmt: "var a [2]vec2; var b [2]vec2; _ = a == b", err: true},
+		{stmt: "var a [2]vec2; var b [2]vec2; _ = a != b", err: true},
+		{stmt: "var a [2]mat2; var b [2]mat2; _ = a == b", err: true},
+		{stmt: "var a [2]mat2; var b [2]mat2; _ = a != b", err: true},
+		{stmt: "_ = [2]int{1, 2} == [2]int{1, 3}", err: true},
+		{stmt: "_ = [2]int{1, 2} != [2]int{1, 3}", err: true},
+
+		{stmt: "var a [2]int; var b [3]int; _ = a == b", err: true},
+		{stmt: "var a [2]int; var b [3]int; _ = a != b", err: true},
+		{stmt: "var a [2]int; var b [2]float; _ = a == b", err: true},
+		{stmt: "var a [2]int; var b [2]float; _ = a != b", err: true},
+		{stmt: "var a [2]int; b := 1; _ = a == b", err: true},
+		{stmt: "var a [2]int; b := 1; _ = a != b", err: true},
+
+		{stmt: "var a [2]int; var b [2]int; _ = a < b", err: true},
+		{stmt: "var a [2]int; var b [2]int; _ = a <= b", err: true},
+		{stmt: "var a [2]int; var b [2]int; _ = a > b", err: true},
+		{stmt: "var a [2]int; var b [2]int; _ = a >= b", err: true},
+
+		// Comparing elements is still allowed.
+		{stmt: "var a [2]int; var b [2]int; _ = a[0] == b[0]", err: false},
+		{stmt: "var a [2]int; var b [2]int; _ = a[0] != b[0]", err: false},
+		{stmt: "var a [2]vec2; var b [2]vec2; _ = a[0] == b[0]", err: false},
+		{stmt: "var a [2]vec2; var b [2]vec2; _ = a[0] != b[0]", err: false},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, srcPos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+func TestSyntaxTypeDeclaration(t *testing.T) {
+	cases := []struct {
+		decls string
+		stmt  string
+	}{
+		{
+			decls: "type T float",
+		},
+		{
+			decls: "type (\n\tT float\n\tU int\n)",
+		},
+		{
+			decls: "type T = float",
+		},
+		{
+			stmt: "type T float",
+		},
+		{
+			stmt: "{ type T int }",
+		},
+		{
+			stmt: "type _ int",
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+%s
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.decls, c.stmt)
+		if _, err := compileToIR([]byte(src)); err == nil {
+			t.Errorf("%s must return an error but does not", src)
+		}
+	}
+}
+
+func TestSyntaxSwizzling(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "var a vec2; var b float = a.x; _ = b", err: false},
+		{stmt: "var a vec2; var b float = a.y; _ = b", err: false},
+		{stmt: "var a vec2; var b float = a.z; _ = b", err: true},
+		{stmt: "var a vec2; var b float = a.w; _ = b", err: true},
+		{stmt: "var a vec2; var b vec2 = a.xy; _ = b", err: false},
+		{stmt: "var a vec2; var b vec3 = a.xyz; _ = b", err: true},
+		{stmt: "var a vec2; var b vec3 = a.xyw; _ = b", err: true},
+		{stmt: "var a vec2; var b vec3 = a.xyy; _ = b", err: false},
+		{stmt: "var a vec2; var b vec3 = a.zzz; _ = b", err: true},
+		{stmt: "var a vec2; var b vec4 = a.xyzw; _ = b", err: true},
+
+		{stmt: "var a vec2; var b float = a.r; _ = b", err: false},
+		{stmt: "var a vec2; var b float = a.g; _ = b", err: false},
+		{stmt: "var a vec2; var b float = a.b; _ = b", err: true},
+		{stmt: "var a vec2; var b float = a.a; _ = b", err: true},
+		{stmt: "var a vec2; var b vec2 = a.rg; _ = b", err: false},
+		{stmt: "var a vec2; var b vec3 = a.rgb; _ = b", err: true},
+		{stmt: "var a vec2; var b vec3 = a.rga; _ = b", err: true},
+		{stmt: "var a vec2; var b vec3 = a.rgg; _ = b", err: false},
+		{stmt: "var a vec2; var b vec3 = a.bbb; _ = b", err: true},
+		{stmt: "var a vec2; var b vec4 = a.rgba; _ = b", err: true},
+
+		{stmt: "var a vec2; var b float = a.s; _ = b", err: false},
+		{stmt: "var a vec2; var b float = a.t; _ = b", err: false},
+		{stmt: "var a vec2; var b float = a.p; _ = b", err: true},
+		{stmt: "var a vec2; var b float = a.q; _ = b", err: true},
+		{stmt: "var a vec2; var b vec2 = a.st; _ = b", err: false},
+		{stmt: "var a vec2; var b vec3 = a.stp; _ = b", err: true},
+		{stmt: "var a vec2; var b vec3 = a.stq; _ = b", err: true},
+		{stmt: "var a vec2; var b vec3 = a.stt; _ = b", err: false},
+		{stmt: "var a vec2; var b vec3 = a.ppp; _ = b", err: true},
+		{stmt: "var a vec2; var b vec4 = a.stpq; _ = b", err: true},
+
+		{stmt: "var a vec3; var b float = a.x; _ = b", err: false},
+		{stmt: "var a vec3; var b float = a.y; _ = b", err: false},
+		{stmt: "var a vec3; var b float = a.z; _ = b", err: false},
+		{stmt: "var a vec3; var b float = a.w; _ = b", err: true},
+		{stmt: "var a vec3; var b vec2 = a.xy; _ = b", err: false},
+		{stmt: "var a vec3; var b vec3 = a.xyz; _ = b", err: false},
+		{stmt: "var a vec3; var b vec3 = a.xyw; _ = b", err: true},
+		{stmt: "var a vec3; var b vec3 = a.xyy; _ = b", err: false},
+		{stmt: "var a vec3; var b vec3 = a.zzz; _ = b", err: false},
+		{stmt: "var a vec3; var b vec4 = a.xyzw; _ = b", err: true},
+
+		{stmt: "var a vec4; var b float = a.x; _ = b", err: false},
+		{stmt: "var a vec4; var b float = a.y; _ = b", err: false},
+		{stmt: "var a vec4; var b float = a.z; _ = b", err: false},
+		{stmt: "var a vec4; var b float = a.w; _ = b", err: false},
+		{stmt: "var a vec4; var b vec2 = a.xy; _ = b", err: false},
+		{stmt: "var a vec4; var b vec3 = a.xyz; _ = b", err: false},
+		{stmt: "var a vec4; var b vec3 = a.xyw; _ = b", err: false},
+		{stmt: "var a vec4; var b vec3 = a.xyy; _ = b", err: false},
+		{stmt: "var a vec4; var b vec3 = a.zzz; _ = b", err: false},
+		{stmt: "var a vec4; var b vec4 = a.xyzw; _ = b", err: false},
+
+		{stmt: "var a ivec2; var b int = a.x; _ = b", err: false},
+		{stmt: "var a ivec2; var b int = a.y; _ = b", err: false},
+		{stmt: "var a ivec2; var b int = a.z; _ = b", err: true},
+		{stmt: "var a ivec2; var b int = a.w; _ = b", err: true},
+		{stmt: "var a ivec2; var b ivec2 = a.xy; _ = b", err: false},
+		{stmt: "var a ivec2; var b ivec3 = a.xyz; _ = b", err: true},
+		{stmt: "var a ivec2; var b ivec3 = a.xyw; _ = b", err: true},
+		{stmt: "var a ivec2; var b ivec3 = a.xyy; _ = b", err: false},
+		{stmt: "var a ivec2; var b ivec3 = a.zzz; _ = b", err: true},
+		{stmt: "var a ivec2; var b ivec4 = a.xyzw; _ = b", err: true},
+
+		{stmt: "var a ivec3; var b int = a.x; _ = b", err: false},
+		{stmt: "var a ivec3; var b int = a.y; _ = b", err: false},
+		{stmt: "var a ivec3; var b int = a.z; _ = b", err: false},
+		{stmt: "var a ivec3; var b int = a.w; _ = b", err: true},
+		{stmt: "var a ivec3; var b ivec2 = a.xy; _ = b", err: false},
+		{stmt: "var a ivec3; var b ivec3 = a.xyz; _ = b", err: false},
+		{stmt: "var a ivec3; var b ivec3 = a.xyw; _ = b", err: true},
+		{stmt: "var a ivec3; var b ivec3 = a.xyy; _ = b", err: false},
+		{stmt: "var a ivec3; var b ivec3 = a.zzz; _ = b", err: false},
+		{stmt: "var a ivec3; var b ivec4 = a.xyzw; _ = b", err: true},
+
+		{stmt: "var a ivec4; var b int = a.x; _ = b", err: false},
+		{stmt: "var a ivec4; var b int = a.y; _ = b", err: false},
+		{stmt: "var a ivec4; var b int = a.z; _ = b", err: false},
+		{stmt: "var a ivec4; var b int = a.w; _ = b", err: false},
+		{stmt: "var a ivec4; var b ivec2 = a.xy; _ = b", err: false},
+		{stmt: "var a ivec4; var b ivec3 = a.xyz; _ = b", err: false},
+		{stmt: "var a ivec4; var b ivec3 = a.xyw; _ = b", err: false},
+		{stmt: "var a ivec4; var b ivec3 = a.xyy; _ = b", err: false},
+		{stmt: "var a ivec4; var b ivec3 = a.zzz; _ = b", err: false},
+		{stmt: "var a ivec4; var b ivec4 = a.xyzw; _ = b", err: false},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+func TestSyntaxIntConstantRange(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := 2147483647; _ = a", err: false},
+		{stmt: "a := 2147483648; _ = a", err: true},
+		{stmt: "a := -2147483648; _ = a", err: false},
+		{stmt: "a := -2147483649; _ = a", err: true},
+		{stmt: "a := 1 << 30; _ = a", err: false},
+		{stmt: "a := 1 << 31; _ = a", err: true},
+		{stmt: "a := 1 << 40; _ = a", err: true},
+		{stmt: "a := 0x7fffffff; _ = a", err: false},
+		{stmt: "a := 0xffffffff; _ = a", err: true},
+		{stmt: "var a int = 2147483647; _ = a", err: false},
+		{stmt: "var a int = 2147483648; _ = a", err: true},
+		{stmt: "var a int = 1 << 40; _ = a", err: true},
+		{stmt: "var a int; a = 2147483648; _ = a", err: true},
+		{stmt: "var a int; b := a + 2147483648; _ = b", err: true},
+		{stmt: "var a int; b := a == 2147483648; _ = b", err: true},
+		{stmt: "a := int(2147483647); _ = a", err: false},
+		{stmt: "a := int(2147483648); _ = a", err: true},
+		{stmt: "a := int(1 << 40); _ = a", err: true},
+		{stmt: "a := ivec2(1 << 40); _ = a", err: true},
+		{stmt: "a := ivec2(1 << 40, 0); _ = a", err: true},
+		{stmt: "a := min(int(1), 1 << 40); _ = a", err: true},
+		{stmt: "const a = 1 << 40; b := float(a); _ = b", err: false},
+		{stmt: "const a = 1 << 40; b := a; _ = b", err: true},
+		{stmt: "const a int = 2147483647; _ = a", err: false},
+		{stmt: "const a int = 2147483648", err: true},
+		{stmt: "const a int = 1 << 40", err: true},
+		{stmt: "for i := 0; i < 2147483647; i++ {}", err: false},
+		{stmt: "for i := 0; i < 2147483648; i++ {}", err: true},
+		{stmt: "for i := 2147483648; i < 0; i++ {}", err: true},
+		{stmt: "for i := 0; i < 1; i += 2147483648 {}", err: true},
+		{stmt: "for range 2147483647 {}", err: false},
+		{stmt: "for range 2147483648 {}", err: true},
+		{stmt: "a := 2147483648.0; _ = a", err: false},
+		{stmt: "a := float(2147483648); _ = a", err: false},
+		{stmt: "a := float(1 << 40); _ = a", err: false},
+		{stmt: "a := vec2(1 << 40); _ = a", err: false},
+		{stmt: "a := 1.0 * 1099511627776; _ = a", err: false},
+		{stmt: "var a float; b := a + 2147483648; _ = b", err: false},
+		{stmt: "var a [4096]int; _ = a", err: false},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+func TestSyntaxConstType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "const a = false", err: false},
+		{stmt: "const a bool = false", err: false},
+		{stmt: "const a int = false", err: true},
+		{stmt: "const a float = false", err: true},
+		{stmt: "const a vec2 = false", err: true},
+		{stmt: "const a ivec2 = false", err: true},
+
+		{stmt: "const a = bool(false)", err: false},
+		{stmt: "const a bool = bool(false)", err: false},
+		{stmt: "const a int = bool(false)", err: true},
+		{stmt: "const a float = bool(false)", err: true},
+		{stmt: "const a vec2 = bool(false)", err: true},
+		{stmt: "const a ivec2 = bool(false)", err: true},
+
+		{stmt: "const a = int(false)", err: true},
+		{stmt: "const a bool = int(false)", err: true},
+		{stmt: "const a int = int(false)", err: true},
+		{stmt: "const a float = int(false)", err: true},
+		{stmt: "const a vec2 = int(false)", err: true},
+		{stmt: "const a ivec2 = int(false)", err: true},
+
+		{stmt: "const a = float(false)", err: true},
+		{stmt: "const a bool = float(false)", err: true},
+		{stmt: "const a int = float(false)", err: true},
+		{stmt: "const a float = float(false)", err: true},
+		{stmt: "const a vec2 = float(false)", err: true},
+		{stmt: "const a ivec2 = float(false)", err: true},
+
+		{stmt: "const a = 1", err: false},
+		{stmt: "const a bool = 1", err: true},
+		{stmt: "const a int = 1", err: false},
+		{stmt: "const a float = 1", err: false},
+		{stmt: "const a vec2 = 1", err: true},
+		{stmt: "const a ivec2 = 1", err: true},
+
+		{stmt: "const a = int(1)", err: false},
+		{stmt: "const a bool = int(1)", err: true},
+		{stmt: "const a int = int(1)", err: false},
+		{stmt: "const a float = int(1)", err: true},
+		{stmt: "const a vec2 = int(1)", err: true},
+		{stmt: "const a ivec2 = int(1)", err: true},
+
+		{stmt: "const a = float(1)", err: false},
+		{stmt: "const a bool = float(1)", err: true},
+		{stmt: "const a int = float(1)", err: true},
+		{stmt: "const a float = float(1)", err: false},
+		{stmt: "const a vec2 = float(1)", err: true},
+		{stmt: "const a ivec2 = float(1)", err: true},
+
+		{stmt: "const a = 1.0", err: false},
+		{stmt: "const a bool = 1.0", err: true},
+		{stmt: "const a int = 1.0", err: false},
+		{stmt: "const a float = 1.0", err: false},
+		{stmt: "const a vec2 = 1.0", err: true},
+		{stmt: "const a ivec2 = 1.0", err: true},
+
+		{stmt: "const a = int(1.0)", err: false},
+		{stmt: "const a bool = int(1.0)", err: true},
+		{stmt: "const a int = int(1.0)", err: false},
+		{stmt: "const a float = int(1.0)", err: true},
+		{stmt: "const a vec2 = int(1.0)", err: true},
+		{stmt: "const a ivec2 = int(1.0)", err: true},
+
+		{stmt: "const a = float(1.0)", err: false},
+		{stmt: "const a bool = float(1.0)", err: true},
+		{stmt: "const a int = float(1.0)", err: true},
+		{stmt: "const a float = float(1.0)", err: false},
+		{stmt: "const a vec2 = float(1.0)", err: true},
+		{stmt: "const a ivec2 = float(1.0)", err: true},
+
+		{stmt: "const a = 1.1", err: false},
+		{stmt: "const a bool = 1.1", err: true},
+		{stmt: "const a int = 1.1", err: true},
+		{stmt: "const a float = 1.1", err: false},
+		{stmt: "const a vec2 = 1.1", err: true},
+		{stmt: "const a ivec2 = 1.1", err: true},
+
+		{stmt: "const a = int(1.1)", err: true},
+		{stmt: "const a bool = int(1.1)", err: true},
+		{stmt: "const a int = int(1.1)", err: true},
+		{stmt: "const a float = int(1.1)", err: true},
+		{stmt: "const a vec2 = int(1.1)", err: true},
+		{stmt: "const a ivec2 = int(1.1)", err: true},
+
+		{stmt: "const a = float(1.1)", err: false},
+		{stmt: "const a bool = float(1.1)", err: true},
+		{stmt: "const a int = float(1.1)", err: true},
+		{stmt: "const a float = float(1.1)", err: false},
+		{stmt: "const a vec2 = float(1.1)", err: true},
+		{stmt: "const a ivec2 = float(1.1)", err: true},
+
+		{stmt: "const a = vec2(0)", err: true},
+		{stmt: "const a bool = vec2(0)", err: true},
+		{stmt: "const a int = vec2(0)", err: true},
+		{stmt: "const a float = vec2(0)", err: true},
+		{stmt: "const a vec2 = vec2(0)", err: true},
+		{stmt: "const a ivec2 = vec2(0)", err: true},
+
+		{stmt: "const a = ivec2(0)", err: true},
+		{stmt: "const a bool = ivec2(0)", err: true},
+		{stmt: "const a int = ivec2(0)", err: true},
+		{stmt: "const a float = ivec2(0)", err: true},
+		{stmt: "const a vec2 = ivec2(0)", err: true},
+		{stmt: "const a ivec2 = ivec2(0)", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2549
+func TestSyntaxConstType2(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "const x = 1; y := x*x; _ = vec4(1) / y", err: true},
+		{stmt: "const x = 1.0; y := x*x; _ = vec4(1) / y", err: false},
+		{stmt: "const x int = 1; y := x*x; _ = vec4(1) / y", err: true},
+		{stmt: "const x int = 1.0; y := x*x; _ = vec4(1) / y", err: true},
+		{stmt: "const x float = 1; y := x*x; _ = vec4(1) / y", err: false},
+		{stmt: "const x float = 1.0; y := x*x; _ = vec4(1) / y", err: false},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2704
+func TestSyntaxConstType3(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "const x = 1; const y = 1; _ = x * y", err: false},
+		{stmt: "const x = 1; const y int = 1; _ = x * y", err: false},
+		{stmt: "const x int = 1; const y = 1; _ = x * y", err: false},
+		{stmt: "const x int = 1; const y int = 1; _ = x * y", err: false},
+		{stmt: "const x = 1; const y float = 1; _ = x * y", err: false},
+		{stmt: "const x float = 1; const y = 1; _ = x * y", err: false},
+		{stmt: "const x float = 1; const y float = 1; _ = x * y", err: false},
+		{stmt: "const x int = 1; const y float = 1; _ = x * y", err: true},
+		{stmt: "const x float = 1; const y int = 1; _ = x * y", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2348
+func TestSyntaxCompositeLit(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "_ = undefined{1, 2, 3, 4}", err: true},
+		{stmt: "_ = int{1, 2, 3, 4}", err: true},
+		{stmt: "_ = vec4{1, 2, 3, 4}", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2654
+func TestSyntaxOmittedReturnType(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func foo(x vec2) {
+	x = bar(x)
+	_ = x
+}
+
+func bar(x vec2) {
+	return x
+}`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+}
+
+// Issue #2590
+func TestSyntaxAssignToUniformVariables(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+var Foo float
+
+func foo(x vec2) {
+	Foo = 0
+}`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+var Foo float
+
+func foo(x vec2) {
+	var x int
+	x, Foo = 0, 0
+	_ = x
+}`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+var Foo float
+
+func foo(x vec2) {
+	Foo += 0
+}`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+
+	// Issue #2711
+	if _, err := compileToIR([]byte(`package main
+
+var Foo float = 1
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+var Foo, Bar int = 1, 1
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+}
+
+// Issue #3759
+func TestSyntaxAssignToEntryPointArguments(t *testing.T) {
+	signatures := []string{
+		"func Vertex(p vec2, q vec2, i int, iv ivec2) vec4",
+		"func Fragment(dstPos vec4, p vec2, q vec2, i int, iv ivec2) vec4",
+		"func foo(p vec2, q vec2, i int, iv ivec2) vec4",
+	}
+	stmts := []string{
+		"p = vec2(1)",
+		"p += vec2(1)",
+		"p -= vec2(1)",
+		"p *= 2",
+		"p /= 2",
+		"i %= 2",
+		"i &= 1",
+		"i |= 1",
+		"i ^= 1",
+		"i &^= 1",
+		"i <<= 1",
+		"i >>= 1",
+		"p++",
+		"p--",
+		"i++",
+		"i--",
+		"p.x = 1",
+		"p.yx = vec2(1)",
+		"p.x += 1",
+		"p.y++",
+		"iv.x <<= 1",
+		"p[0] = 1",
+		"p[1] *= 2",
+		"p[0]--",
+		"iv[1] |= 1",
+		"p, i = f()",
+		"p.x, iv[0] = g()",
+		"p, q = q, p",
+	}
+	for _, sig := range signatures {
+		for _, stmt := range stmts {
+			src := fmt.Sprintf(`package main
+
+func f() (vec2, int) {
+	return vec2(1), 1
+}
+
+func g() (float, int) {
+	return 1, 1
+}
+
+%s {
+	%s
+	return vec4(p, q) + vec4(float(i), float(iv.x), 0, 0)
+}
+`, sig, stmt)
+			if _, err := compileToIR([]byte(src)); err != nil {
+				t.Errorf("%s: %s: %v", sig, stmt, err)
+			}
+		}
+	}
+}
+
+// Issue #3759
+func TestSyntaxAssignToUniformVariablePartially(t *testing.T) {
+	signatures := []string{
+		"func Vertex(dstPos vec2, src0Pos vec2, color vec4) vec4",
+		"func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4",
+		"func foo() vec4",
+	}
+	stmts := []string{
+		"U = vec4(1)",
+		"U += vec4(1)",
+		"U -= vec4(1)",
+		"U *= 2",
+		"U /= 2",
+		"I %= 2",
+		"I &= 1",
+		"I |= 1",
+		"I ^= 1",
+		"I &^= 1",
+		"I <<= 1",
+		"I >>= 1",
+		"U++",
+		"U--",
+		"I++",
+		"U.x = 1",
+		"U.yx = vec2(1)",
+		"U.x += 1",
+		"U.y++",
+		"IV.x <<= 1",
+		"U[0] = 1",
+		"U[1] *= 2",
+		"U[0]--",
+		"IV[1] |= 1",
+		"A[0] = vec4(1)",
+		"A[1] += vec4(1)",
+		"A[0]++",
+		"A[0].x = 1",
+		"A[1].x -= 1",
+		"A[0][2]++",
+		"U, x = f()",
+		"x, U.x = g()",
+		"A[1], x = f()",
+		"x, A[0][3] = g()",
+		"U, x = vec4(1), 1",
+		"x, U.x = 1, 1",
+	}
+	for _, sig := range signatures {
+		for _, stmt := range stmts {
+			for _, local := range []bool{false, true} {
+				var decls string
+				if local {
+					decls = "var U vec4\n\tvar A [2]vec4\n\tvar I int\n\tvar IV ivec2"
+				}
+				src := fmt.Sprintf(`package main
+
+var U vec4
+var A [2]vec4
+var I int
+var IV ivec2
+
+func f() (vec4, float) {
+	return vec4(1), 1
+}
+
+func g() (float, float) {
+	return 1, 1
+}
+
+%s {
+	%s
+	var x float
+	%s
+	return U + A[0] + vec4(float(I), float(IV.x), x, 0)
+}
+`, sig, decls, stmt)
+				_, err := compileToIR([]byte(src))
+				if local && err != nil {
+					t.Errorf("%s: %s must compile with local variables but returned %v", sig, stmt, err)
+				}
+				if !local && err == nil {
+					t.Errorf("%s: %s must return an error with uniform variables but did not", sig, stmt)
+				}
+			}
+		}
+	}
+}
+
+// Issue #2705
+func TestSyntaxInitWithNegativeInteger(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var x float = -0
+	_ = x
+	return dstPos
+}`)); err != nil {
+		t.Error(err)
+	}
+}
+
+// Issue #2706
+func TestSyntaxReturnConst(t *testing.T) {
+	cases := []struct {
+		typ  string
+		stmt string
+		err  bool
+	}{
+		{typ: "bool", stmt: "true", err: false},
+		{typ: "int", stmt: "true", err: true},
+		{typ: "float", stmt: "true", err: true},
+		{typ: "bool", stmt: "1", err: true},
+		{typ: "int", stmt: "1", err: false},
+		{typ: "float", stmt: "1", err: false},
+		{typ: "bool", stmt: "1.0", err: true},
+		{typ: "int", stmt: "1.0", err: false},
+		{typ: "float", stmt: "1.0", err: false},
+		{typ: "bool", stmt: "1.1", err: true},
+		{typ: "int", stmt: "1.1", err: true},
+		{typ: "float", stmt: "1.1", err: false},
+	}
+
+	for _, c := range cases {
+		typ := c.typ
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Foo() %s {
+	return %s
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return dstPos
+}`, typ, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("return %s for type %s must return an error but does not", stmt, typ)
+		} else if err != nil && !c.err {
+			t.Errorf("return %s for type %s must not return nil but returned %v", stmt, typ, err)
+		}
+	}
+}
+
+// Issue #2706
+func TestSyntaxScalarAndVector(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := vec2(1) + 1; var b vec2 = a; _ = b", err: false},
+		{stmt: "a := 1 + vec2(1); var b vec2 = a; _ = b", err: false},
+		{stmt: "a := vec2(1); b := 1; var c vec2 = a + b; _ = c", err: true},
+		{stmt: "a := vec2(1); b := 1; var c vec2 = b + a; _ = c", err: true},
+		{stmt: "a := vec2(1) + 1.0; var b vec2 = a; _ = b", err: false},
+		{stmt: "a := 1.0 + vec2(1); var b vec2 = a; _ = b", err: false},
+		{stmt: "a := vec2(1); b := 1.0; var c vec2 = a + b; _ = c", err: false},
+		{stmt: "a := vec2(1); b := 1.0; var c vec2 = b + a; _ = c", err: false},
+		{stmt: "a := vec2(1) + 1.1; var b vec2 = a; _ = b", err: false},
+		{stmt: "a := 1.1 + vec2(1); var b vec2 = a; _ = b", err: false},
+		{stmt: "a := vec2(1); b := 1.1; var c vec2 = a + b; _ = c", err: false},
+		{stmt: "a := vec2(1); b := 1.1; var c vec2 = b + a; _ = c", err: false},
+
+		{stmt: "a := ivec2(1) + 1; var b ivec2 = a; _ = b", err: false},
+		{stmt: "a := 1 + ivec2(1); var b ivec2 = a; _ = b", err: false},
+		{stmt: "a := ivec2(1); b := 1; var c ivec2 = a + b; _ = c", err: false},
+		{stmt: "a := ivec2(1); b := 1; var c ivec2 = b + a; _ = c", err: false},
+		{stmt: "a := ivec2(1) + 1.0; var b ivec2 = a; _ = b", err: false},
+		{stmt: "a := 1.0 + ivec2(1); var b ivec2 = a; _ = b", err: false},
+		{stmt: "a := ivec2(1); b := 1.0; var c ivec2 = a + b; _ = c", err: true},
+		{stmt: "a := ivec2(1); b := 1.0; var c ivec2 = b + a; _ = c", err: true},
+		{stmt: "a := ivec2(1) + 1.1; var b ivec2 = a; _ = b", err: true},
+		{stmt: "a := 1.1 + ivec2(1); var b ivec2 = a; _ = b", err: true},
+		{stmt: "a := ivec2(1); b := 1.1; var c ivec2 = a + b; _ = c", err: true},
+		{stmt: "a := ivec2(1); b := 1.1; var c ivec2 = b + a; _ = c", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2712
+func TestSyntaxCast(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := int(1); _ = a", err: false},
+		{stmt: "a := int(1.0); _ = a", err: false},
+		{stmt: "a := int(1.1); _ = a", err: true},
+		{stmt: "const c = 1.1; a := int(c); _ = a", err: true},
+		{stmt: "const c float = 1.1; a := int(c); _ = a", err: true},
+		{stmt: "a := float(1); _ = a", err: false},
+		{stmt: "a := float(1.0); _ = a", err: false},
+		{stmt: "a := float(1.1); _ = a", err: false},
+		{stmt: "a := 1; _ = int(a)", err: false},
+		{stmt: "a := 1.0; _ = int(a)", err: false},
+		{stmt: "a := 1.1; _ = int(a)", err: false},
+		{stmt: "a := 1; _ = float(a)", err: false},
+		{stmt: "a := 1.0; _ = float(a)", err: false},
+		{stmt: "a := 1.1; _ = float(a)", err: false},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2718
+func TestSyntaxCompare(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "_ = false == true", err: false},
+		{stmt: "_ = int(0) == int(1)", err: false},
+		{stmt: "_ = float(0) == float(1)", err: false},
+		{stmt: "_ = vec2(0) == vec2(1)", err: false},
+		{stmt: "_ = vec3(0) == vec3(1)", err: false},
+		{stmt: "_ = vec4(0) == vec4(1)", err: false},
+		{stmt: "_ = ivec2(0) == ivec2(1)", err: false},
+		{stmt: "_ = ivec3(0) == ivec3(1)", err: false},
+		{stmt: "_ = ivec4(0) == ivec4(1)", err: false},
+		{stmt: "_ = mat2(0) == mat2(1)", err: true},
+		{stmt: "_ = mat3(0) == mat3(1)", err: true},
+		{stmt: "_ = mat4(0) == mat4(1)", err: true},
+
+		{stmt: "_ = false != true", err: false},
+		{stmt: "_ = int(0) != int(1)", err: false},
+		{stmt: "_ = float(0) != float(1)", err: false},
+		{stmt: "_ = vec2(0) != vec2(1)", err: false},
+		{stmt: "_ = vec3(0) != vec3(1)", err: false},
+		{stmt: "_ = vec4(0) != vec4(1)", err: false},
+		{stmt: "_ = ivec2(0) != ivec2(1)", err: false},
+		{stmt: "_ = ivec3(0) != ivec3(1)", err: false},
+		{stmt: "_ = ivec4(0) != ivec4(1)", err: false},
+		{stmt: "_ = mat2(0) != mat2(1)", err: true},
+		{stmt: "_ = mat3(0) != mat3(1)", err: true},
+		{stmt: "_ = mat4(0) != mat4(1)", err: true},
+
+		{stmt: "_ = false < true", err: true},
+		{stmt: "_ = int(0) < int(1)", err: false},
+		{stmt: "_ = float(0) < float(1)", err: false},
+		{stmt: "_ = vec2(0) < vec2(1)", err: true},
+		{stmt: "_ = vec3(0) < vec3(1)", err: true},
+		{stmt: "_ = vec4(0) < vec4(1)", err: true},
+		{stmt: "_ = ivec2(0) < ivec2(1)", err: true},
+		{stmt: "_ = ivec3(0) < ivec3(1)", err: true},
+		{stmt: "_ = ivec4(0) < ivec4(1)", err: true},
+		{stmt: "_ = mat2(0) < mat2(1)", err: true},
+		{stmt: "_ = mat3(0) < mat3(1)", err: true},
+		{stmt: "_ = mat4(0) < mat4(1)", err: true},
+
+		{stmt: "_ = false <= true", err: true},
+		{stmt: "_ = int(0) <= int(1)", err: false},
+		{stmt: "_ = float(0) <= float(1)", err: false},
+		{stmt: "_ = vec2(0) <= vec2(1)", err: true},
+		{stmt: "_ = vec3(0) <= vec3(1)", err: true},
+		{stmt: "_ = vec4(0) <= vec4(1)", err: true},
+		{stmt: "_ = ivec2(0) <= ivec2(1)", err: true},
+		{stmt: "_ = ivec3(0) <= ivec3(1)", err: true},
+		{stmt: "_ = ivec4(0) <= ivec4(1)", err: true},
+		{stmt: "_ = mat2(0) <= mat2(1)", err: true},
+		{stmt: "_ = mat3(0) <= mat3(1)", err: true},
+		{stmt: "_ = mat4(0) <= mat4(1)", err: true},
+
+		{stmt: "_ = false > true", err: true},
+		{stmt: "_ = int(0) > int(1)", err: false},
+		{stmt: "_ = float(0) > float(1)", err: false},
+		{stmt: "_ = vec2(0) > vec2(1)", err: true},
+		{stmt: "_ = vec3(0) > vec3(1)", err: true},
+		{stmt: "_ = vec4(0) > vec4(1)", err: true},
+		{stmt: "_ = ivec2(0) > ivec2(1)", err: true},
+		{stmt: "_ = ivec3(0) > ivec3(1)", err: true},
+		{stmt: "_ = ivec4(0) > ivec4(1)", err: true},
+		{stmt: "_ = mat2(0) > mat2(1)", err: true},
+		{stmt: "_ = mat3(0) > mat3(1)", err: true},
+		{stmt: "_ = mat4(0) > mat4(1)", err: true},
+
+		{stmt: "_ = false >= true", err: true},
+		{stmt: "_ = int(0) >= int(1)", err: false},
+		{stmt: "_ = float(0) >= float(1)", err: false},
+		{stmt: "_ = vec2(0) >= vec2(1)", err: true},
+		{stmt: "_ = vec3(0) >= vec3(1)", err: true},
+		{stmt: "_ = vec4(0) >= vec4(1)", err: true},
+		{stmt: "_ = ivec2(0) >= ivec2(1)", err: true},
+		{stmt: "_ = ivec3(0) >= ivec3(1)", err: true},
+		{stmt: "_ = ivec4(0) >= ivec4(1)", err: true},
+		{stmt: "_ = mat2(0) >= mat2(1)", err: true},
+		{stmt: "_ = mat3(0) >= mat3(1)", err: true},
+		{stmt: "_ = mat4(0) >= mat4(1)", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2680
+func TestSyntaxForWithLocalVariable(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func foo() {
+	i := 0
+	for i = 0; i < 1; i++ {
+	}
+}`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func foo() {
+	for i, j := 0, 0; i < 1; i++ {
+		_ = j
+	}
+}`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+}
+
+// Issue #2648
+func TestSyntaxDuplicatedUniformVariables(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+var Foo int
+var Foo int
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+var Foo int
+var Bar float
+var Foo vec2
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+}
+
+// Issue #2747
+func TestSyntaxMultipleAssignmentsAndTypeCheck(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (float, bool) {
+	return 0, false
+}
+
+func Bar() {
+	f, b := Foo()
+	_, _ = f, b
+	return
+}
+`)); err != nil {
+		t.Error(err)
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() (float, bool) {
+	return 0, false
+}
+
+func Bar() {
+	var f float
+	var b bool
+	f, b = Foo()
+	_, _ = f, b
+	return
+}
+`)); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+	a, b := 0
+	_, _ = a, b
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+	a, b, c := 0, 0
+	_, _ = a, b, c
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+	var a, b int
+	a, b = 0
+	_, _ = a, b
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+	var a, b, c int
+	a, b, c = 0, 0
+	_, _ = a, b, c
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+}
+
+func TestSyntaxBitwiseOperator(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "_ = false & true", err: true},
+		{stmt: "_ = int(0) & int(1)", err: false},
+		{stmt: "_ = float(0) & float(1)", err: true},
+		{stmt: "_ = vec2(0) & vec2(1)", err: true},
+		{stmt: "_ = vec3(0) & vec3(1)", err: true},
+		{stmt: "_ = vec4(0) & vec4(1)", err: true},
+		{stmt: "_ = ivec2(0) & ivec2(1)", err: false},
+		{stmt: "_ = ivec3(0) & ivec3(1)", err: false},
+		{stmt: "_ = ivec4(0) & ivec4(1)", err: false},
+		{stmt: "_ = ivec2(0) & int(1)", err: false},
+		{stmt: "_ = ivec3(0) & int(1)", err: false},
+		{stmt: "_ = ivec4(0) & int(1)", err: false},
+		{stmt: "_ = int(0) & ivec2(1)", err: false},
+		{stmt: "_ = int(0) & ivec3(1)", err: false},
+		{stmt: "_ = int(0) & ivec4(1)", err: false},
+		{stmt: "_ = mat2(0) & mat2(1)", err: true},
+		{stmt: "_ = mat3(0) & mat3(1)", err: true},
+		{stmt: "_ = mat4(0) & mat4(1)", err: true},
+
+		{stmt: "_ = false &^ true", err: true},
+		{stmt: "_ = int(0) &^ int(1)", err: false},
+		{stmt: "_ = float(0) &^ float(1)", err: true},
+		{stmt: "_ = vec2(0) &^ vec2(1)", err: true},
+		{stmt: "_ = vec3(0) &^ vec3(1)", err: true},
+		{stmt: "_ = vec4(0) &^ vec4(1)", err: true},
+		{stmt: "_ = ivec2(0) &^ ivec2(1)", err: false},
+		{stmt: "_ = ivec3(0) &^ ivec3(1)", err: false},
+		{stmt: "_ = ivec4(0) &^ ivec4(1)", err: false},
+		{stmt: "_ = ivec2(0) &^ int(1)", err: false},
+		{stmt: "_ = ivec3(0) &^ int(1)", err: false},
+		{stmt: "_ = ivec4(0) &^ int(1)", err: false},
+		{stmt: "_ = int(0) &^ ivec2(1)", err: false},
+		{stmt: "_ = int(0) &^ ivec3(1)", err: false},
+		{stmt: "_ = int(0) &^ ivec4(1)", err: false},
+		{stmt: "_ = mat2(0) &^ mat2(1)", err: true},
+		{stmt: "_ = mat3(0) &^ mat3(1)", err: true},
+		{stmt: "_ = mat4(0) &^ mat4(1)", err: true},
+
+		{stmt: "_ = false | true", err: true},
+		{stmt: "_ = int(0) | int(1)", err: false},
+		{stmt: "_ = float(0) | float(1)", err: true},
+		{stmt: "_ = vec2(0) | vec2(1)", err: true},
+		{stmt: "_ = vec3(0) | vec3(1)", err: true},
+		{stmt: "_ = vec4(0) | vec4(1)", err: true},
+		{stmt: "_ = ivec2(0) | ivec2(1)", err: false},
+		{stmt: "_ = ivec3(0) | ivec3(1)", err: false},
+		{stmt: "_ = ivec4(0) | ivec4(1)", err: false},
+		{stmt: "_ = ivec2(0) | int(1)", err: false},
+		{stmt: "_ = ivec3(0) | int(1)", err: false},
+		{stmt: "_ = ivec4(0) | int(1)", err: false},
+		{stmt: "_ = int(0) | ivec2(1)", err: false},
+		{stmt: "_ = int(0) | ivec3(1)", err: false},
+		{stmt: "_ = int(0) | ivec4(1)", err: false},
+		{stmt: "_ = mat2(0) | mat2(1)", err: true},
+		{stmt: "_ = mat3(0) | mat3(1)", err: true},
+		{stmt: "_ = mat4(0) | mat4(1)", err: true},
+
+		{stmt: "_ = false ^ true", err: true},
+		{stmt: "_ = int(0) ^ int(1)", err: false},
+		{stmt: "_ = float(0) ^ float(1)", err: true},
+		{stmt: "_ = vec2(0) ^ vec2(1)", err: true},
+		{stmt: "_ = vec3(0) ^ vec3(1)", err: true},
+		{stmt: "_ = vec4(0) ^ vec4(1)", err: true},
+		{stmt: "_ = ivec2(0) ^ ivec2(1)", err: false},
+		{stmt: "_ = ivec3(0) ^ ivec3(1)", err: false},
+		{stmt: "_ = ivec4(0) ^ ivec4(1)", err: false},
+		{stmt: "_ = ivec2(0) ^ int(1)", err: false},
+		{stmt: "_ = ivec3(0) ^ int(1)", err: false},
+		{stmt: "_ = ivec4(0) ^ int(1)", err: false},
+		{stmt: "_ = int(0) ^ ivec2(1)", err: false},
+		{stmt: "_ = int(0) ^ ivec3(1)", err: false},
+		{stmt: "_ = int(0) ^ ivec4(1)", err: false},
+		{stmt: "_ = mat2(0) ^ mat2(1)", err: true},
+		{stmt: "_ = mat3(0) ^ mat3(1)", err: true},
+		{stmt: "_ = mat4(0) ^ mat4(1)", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+func TestSyntaxUnaryOperator(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "_ = ^1", err: false},
+		{stmt: "_ = ^1.0", err: true},
+		{stmt: "_ = ^true", err: true},
+		{stmt: "const c = 1; _ = ^c", err: false},
+		{stmt: "const c = 1.0; _ = ^c", err: true},
+		{stmt: "const c int = 1; _ = ^c", err: false},
+		{stmt: "const c float = 1; _ = ^c", err: true},
+		{stmt: "a := 1; _ = ^a", err: false},
+		{stmt: "a := 1.0; _ = ^a", err: true},
+		{stmt: "b := true; _ = ^b", err: true},
+		{stmt: "_ = ^int(1)", err: false},
+		{stmt: "_ = ^float(1)", err: true},
+		{stmt: "_ = ^vec2(1)", err: true},
+		{stmt: "_ = ^vec3(1)", err: true},
+		{stmt: "_ = ^vec4(1)", err: true},
+		{stmt: "_ = ^ivec2(1)", err: false},
+		{stmt: "_ = ^ivec3(1)", err: false},
+		{stmt: "_ = ^ivec4(1)", err: false},
+		{stmt: "_ = ^mat2(1)", err: true},
+		{stmt: "_ = ^mat3(1)", err: true},
+		{stmt: "_ = ^mat4(1)", err: true},
+
+		{stmt: "_ = !true", err: false},
+		{stmt: "_ = !1", err: true},
+		{stmt: "_ = !1.0", err: true},
+
+		{stmt: "_ = -1", err: false},
+		{stmt: "_ = -1.0", err: false},
+		{stmt: "_ = -true", err: true},
+		{stmt: "_ = +1", err: false},
+		{stmt: "_ = +1.0", err: false},
+		{stmt: "_ = +true", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2891
+func TestSyntaxInvalidArgument(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Foo(x int) int {
+	return 0
+}
+
+func Bar() int {
+	return Foo(Foo)
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+}
+
+// Issue #2891, #2910
+func TestSyntaxTailingUnaryOperator(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+	1 + x := vec2(2)
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+	1 + x, y := Bar()
+}
+
+func Bar() (int, int) {
+	return 0, 0
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+}
+
+// Issue #2926, #2989
+func TestSyntaxNonTypeExpression(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+}
+
+func Bar() float {
+	return +Foo
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+}
+
+func Bar() float {
+	return Foo + 1.0
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+}
+
+func Bar() float {
+	return 1.0 + Foo
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+}
+
+func Bar() float {
+	return Foo.x
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() {
+}
+
+func Bar() float {
+	return Foo[0]
+}
+`)); err == nil {
+		t.Error("compileToIR must return an error but did not")
+	}
+}
+
+// Issue #2993
+func TestSyntaxIfAndConstBool(t *testing.T) {
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() int {
+	const X = true
+	if X {
+		return 1
+	}
+	return 0
+}
+`)); err != nil {
+		t.Error(err)
+	}
+	if _, err := compileToIR([]byte(`package main
+
+func Foo() int {
+	const X bool = true
+	if X {
+		return 1
+	}
+	return 0
+}
+`)); err != nil {
+		t.Error(err)
+	}
+}
+
+// Issue #3111
+func TestSyntaxTooManyElementsAtInitialization(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "_ = [-1]int{}", err: true},
+		{stmt: "_ = [-1]int{0}", err: true},
+		{stmt: "_ = [-1]int{0, 0}", err: true},
+		{stmt: "_ = [-1]int{0, 0, 0}", err: true},
+		{stmt: "_ = [0]int{}", err: true},
+		{stmt: "_ = [0]int{0}", err: true},
+		{stmt: "_ = [0]int{0, 0}", err: true},
+		{stmt: "_ = [0]int{0, 0, 0}", err: true},
+		{stmt: "_ = [1]int{}", err: false},
+		{stmt: "_ = [1]int{0}", err: false},
+		{stmt: "_ = [1]int{0, 0}", err: true},
+		{stmt: "_ = [1]int{0, 0, 0}", err: true},
+		{stmt: "_ = [2]int{}", err: false},
+		{stmt: "_ = [2]int{0}", err: false},
+		{stmt: "_ = [2]int{0, 0}", err: false},
+		{stmt: "_ = [2]int{0, 0, 0}", err: true},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+func TestSyntaxArrayOutOfBounds(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{stmt: "a := [1]int{}; _ = a[-1]", err: true},
+		{stmt: "a := [1]int{}; _ = a[0]", err: false},
+		{stmt: "a := [1]int{}; _ = a[1]", err: true},
+		{stmt: "a := [1]int{}; _ = a[2]", err: true},
+		{stmt: "a := [1]int{}; _ = a[3]", err: true},
+		{stmt: "a := [1]int{}; b := -1; _ = a[b]", err: false},
+		{stmt: "a := [1]int{}; b := 0; _ = a[b]", err: false},
+		{stmt: "a := [1]int{}; b := 1; _ = a[b]", err: false},
+		{stmt: "a := [1]int{}; b := 2; _ = a[b]", err: false},
+		{stmt: "a := [1]int{}; b := 3; _ = a[b]", err: false},
+
+		{stmt: "a := [2]int{}; _ = a[-1]", err: true},
+		{stmt: "a := [2]int{}; _ = a[0]", err: false},
+		{stmt: "a := [2]int{}; _ = a[1]", err: false},
+		{stmt: "a := [2]int{}; _ = a[2]", err: true},
+		{stmt: "a := [2]int{}; _ = a[3]", err: true},
+		{stmt: "a := [2]int{}; b := -1; _ = a[b]", err: false},
+		{stmt: "a := [2]int{}; b := 0; _ = a[b]", err: false},
+		{stmt: "a := [2]int{}; b := 1; _ = a[b]", err: false},
+		{stmt: "a := [2]int{}; b := 2; _ = a[b]", err: false},
+		{stmt: "a := [2]int{}; b := 3; _ = a[b]", err: false},
+
+		{stmt: "a := vec2(0); _ = a[-1]", err: true},
+		{stmt: "a := vec2(0); _ = a[0]", err: false},
+		{stmt: "a := vec2(0); _ = a[1]", err: false},
+		{stmt: "a := vec2(0); _ = a[2]", err: true},
+		{stmt: "a := vec2(0); _ = a[3]", err: true},
+		{stmt: "a := vec2(0); b := -1; _ = a[b]", err: false},
+		{stmt: "a := vec2(0); b := 0; _ = a[b]", err: false},
+		{stmt: "a := vec2(0); b := 1; _ = a[b]", err: false},
+		{stmt: "a := vec2(0); b := 2; _ = a[b]", err: false},
+		{stmt: "a := vec2(0); b := 3; _ = a[b]", err: false},
+
+		{stmt: "a := mat3(0); _ = a[-1]", err: true},
+		{stmt: "a := mat3(0); _ = a[0]", err: false},
+		{stmt: "a := mat3(0); _ = a[1]", err: false},
+		{stmt: "a := mat3(0); _ = a[2]", err: false},
+		{stmt: "a := mat3(0); _ = a[3]", err: true},
+		{stmt: "a := mat3(0); b := -1; _ = a[b]", err: false},
+		{stmt: "a := mat3(0); b := 0; _ = a[b]", err: false},
+		{stmt: "a := mat3(0); b := 1; _ = a[b]", err: false},
+		{stmt: "a := mat3(0); b := 2; _ = a[b]", err: false},
+		{stmt: "a := mat3(0); b := 3; _ = a[b]", err: false},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+// Issue #2905
+func TestSyntaxForRange(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "for i := range 3 { _ = i }",
+			err:  false,
+		},
+		{
+			stmt: "for i := range 3 {}",
+			err:  true,
+		},
+		{
+			stmt: "for range 3 {}",
+			err:  false,
+		},
+		{
+			stmt: "for _ = range 3 {}",
+			err:  false,
+		},
+		{
+			stmt: "for _ := range 3 {}",
+			err:  true,
+		},
+		{
+			stmt: "for i, j := range 3 { _, _ = i, j }",
+			err:  true,
+		},
+		{
+			stmt: "i := 0; for i = range 3 { _ = i }",
+			err:  true,
+		},
+		{
+			stmt: "const c = 3; for i := range c { _ = i }",
+			err:  false,
+		},
+		{
+			stmt: "for i := range int(3) { _ = i }",
+			err:  false,
+		},
+		{
+			stmt: "for i := range -3 { _ = i }",
+			err:  false,
+		},
+		{
+			stmt: "for i := range 3.0 { _ = i }",
+			err:  true,
+		},
+		{
+			stmt: "for i := range 3.5 { _ = i }",
+			err:  true,
+		},
+		{
+			stmt: "for i := range float(3) { _ = i }",
+			err:  true,
+		},
+		{
+			// MyGo's loops may run to a count that is not a constant.
+			stmt: "n := 3; for i := range n { _ = i }",
+			err:  false,
+		},
+
+		{
+			stmt: "var a [3]int; for i := range a { _ = i }",
+			err:  false,
+		},
+		{
+			stmt: "var a [3]int; for range a {}",
+			err:  false,
+		},
+		{
+			stmt: "var a [3]int; for _ = range a {}",
+			err:  false,
+		},
+		{
+			stmt: "var a [3]int; for i, v := range a { _, _ = i, v }",
+			err:  false,
+		},
+		{
+			stmt: "var a [3]int; for _, v := range a { _ = v }",
+			err:  false,
+		},
+		{
+			stmt: "var a [3]int; for i, _ := range a { _ = i }",
+			err:  false,
+		},
+		{
+			stmt: "var a [3]int; for _, _ := range a {}",
+			err:  true,
+		},
+		{
+			stmt: "var a [3]int; for i, v := range a { _ = i }",
+			err:  true,
+		},
+		{
+			stmt: "var a [3]int; for i, v := range a { _ = v }",
+			err:  true,
+		},
+		{
+			stmt: "var a [3]int; i, v := 0, 0; for i, v = range a { _, _ = i, v }",
+			err:  true,
+		},
+		{
+			stmt: "var a [3]vec2; for _, v := range a { _ = v.x }",
+			err:  false,
+		},
+		{
+			stmt: "var a [3]int; for _, v := range a { _ = v.x }",
+			err:  true,
+		},
+		{
+			stmt: "var a [3]int; for _, v := range a { v = 1; _ = v }",
+			err:  false,
+		},
+		{
+			stmt: "var a [3]int; for i, v := range a { a[i] = v + 1 }; _ = a",
+			err:  false,
+		},
+
+		{
+			stmt: "for i := range 3 { if i == 1 { continue }; break }",
+			err:  false,
+		},
+		{
+			stmt: "for i := range 3 { for j := range 3 { _ = i * j } }",
+			err:  false,
+		},
+		{
+			stmt: "var a [3]int; for i := range a { for j := range a { _ = i + j } }",
+			err:  false,
+		},
+		{
+			stmt: "for i := range 3 { i := 1; _ = i }",
+			err:  true,
+		},
+		{
+			stmt: "for i := range 3 { _ = i }; for i := range 3 { _ = i }",
+			err:  false,
+		},
+	}
+
+	for _, c := range cases {
+		stmt := c.stmt
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return nil but returned %v", stmt, err)
+		}
+	}
+}
+
+func TestSyntaxVarDeclValueCount(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func f() {}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a float = f()
+	_ = a
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() {}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a, b float = f(), 1.0
+	_, _ = a, b
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() {}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a, b float = 1.0, f()
+	_, _ = a, b
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() (float, float) {
+	return 1, 2
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a float = f()
+	_ = a
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() (float, float) {
+	return 1, 2
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a, b float = f(), 1.0
+	_, _ = a, b
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() (float, float) {
+	return 1, 2
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a, b float = f()
+	_, _ = a, b
+	return dstPos
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+func f() float {
+	return 1
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a, b float = f(), 1.0
+	_, _ = a, b
+	return dstPos
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR([]byte(c.src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+func TestSyntaxConstValueCount(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const a, b float = 1.0
+	return vec4(a, b, 0, 0)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const a, b = 1.0
+	return vec4(a, b, 0, 0)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const a float = 1.0, 2.0
+	return vec4(a)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const a float
+	return vec4(a)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const (
+		a = 1.0
+		b
+	)
+	return vec4(a, b, 0, 0)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+const a, b float = 1.0
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(a, b, 0, 0)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+const a, b float = 1.0, 2.0
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const c, d = 3, 4.5
+	return vec4(a, b, c, d)
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR([]byte(c.src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+func TestSyntaxVarDeclConstantKind(t *testing.T) {
+	cases := []struct {
+		stmt  string
+		kinds []gconstant.Kind
+	}{
+		{
+			stmt:  "var x int = 1.0; _ = x",
+			kinds: []gconstant.Kind{gconstant.Int},
+		},
+		{
+			stmt:  "const c = 2.0; var x int = c; _ = x",
+			kinds: []gconstant.Kind{gconstant.Int},
+		},
+		{
+			stmt:  "var x, y int = 1.0, 2; _, _ = x, y",
+			kinds: []gconstant.Kind{gconstant.Int, gconstant.Int},
+		},
+		{
+			stmt:  "var x float = 1; _ = x",
+			kinds: []gconstant.Kind{gconstant.Float},
+		},
+		{
+			stmt:  "var x, y float = 1, 2.0; _, _ = x, y",
+			kinds: []gconstant.Kind{gconstant.Float, gconstant.Float},
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt)
+		p, err := compileToIR([]byte(src))
+		if err != nil {
+			t.Errorf("%s: unexpected error: %v", c.stmt, err)
+			continue
+		}
+
+		// Collect the constants assigned to the declared variables.
+		var kinds []gconstant.Kind
+		for _, s := range p.FragmentFunc.Block.Stmts {
+			if s.Type != shaderir.Assign {
+				continue
+			}
+			if rhs := s.Exprs[1]; rhs.Type == shaderir.NumberExpr {
+				kinds = append(kinds, rhs.Const.Kind())
+			}
+		}
+		if got, want := len(kinds), len(c.kinds); got != want {
+			t.Errorf("%s: the number of constant initializations: got: %d, want: %d", c.stmt, got, want)
+			continue
+		}
+		for i := range kinds {
+			if got, want := kinds[i], c.kinds[i]; got != want {
+				t.Errorf("%s: constant kind at %d: got: %v, want: %v", c.stmt, i, got, want)
+			}
+		}
+	}
+}
+
+func TestSyntaxIncDecOperand(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func f() {}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	f()++
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() (int, int) {
+	return 1, 2
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	f()--
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	int++
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+var U int
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	U++
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1
+	x++
+	x--
+	y := 1.0
+	y++
+	v := vec2(1)
+	v--
+	var a [2]int
+	a[0]++
+	return vec4(float(x) + y + v.x + float(a[0]))
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR([]byte(c.src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+func TestSyntaxOperatorAssignOperand(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func f() {}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	f() += 1
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() {}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1
+	x += f()
+	_ = x
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() (int, int) {
+	return 1, 2
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1
+	x += f()
+	_ = x
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	int += 1
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1
+	x += int
+	_ = x
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() int {
+	return 1
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1
+	x += f()
+	x *= 2
+	_ = x
+	return dstPos
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR([]byte(c.src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+func TestSyntaxTextureIndexOutOfRange(t *testing.T) {
+	cases := []struct {
+		expr         string
+		textureCount int
+		err          bool
+	}{
+		{
+			expr:         "__texelAt(__t0, src0Pos)",
+			textureCount: 1,
+			err:          false,
+		},
+		{
+			expr:         "__texelAt(__t1, src0Pos)",
+			textureCount: 2,
+			err:          false,
+		},
+		{
+			expr:         "__texelAt(__t1, src0Pos)",
+			textureCount: 1,
+			err:          true,
+		},
+		{
+			expr:         "__texelAt(__t0, src0Pos)",
+			textureCount: 0,
+			err:          true,
+		},
+		{
+			expr:         "__texelAt(__t99999999999999999999, src0Pos)",
+			textureCount: 4,
+			err:          true,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return %s
+}`, c.expr)
+		_, err := shader.Compile([]byte(src), "Vertex", "Fragment", c.textureCount)
+		if err == nil && c.err {
+			t.Errorf("%s with %d textures must return an error but does not", c.expr, c.textureCount)
+		} else if err != nil && !c.err {
+			t.Errorf("%s with %d textures must not return an error but returned %v", c.expr, c.textureCount, err)
+		}
+	}
+}
+
+func TestSyntaxDivisionByConstantZero(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "x := 1.0; y := x / 0.0; _ = y",
+			err:  true,
+		},
+		{
+			stmt: "x := 1; y := x / 0; _ = y",
+			err:  true,
+		},
+		{
+			stmt: "x := 1; y := x % 0; _ = y",
+			err:  true,
+		},
+		{
+			stmt: "x := 1.0; y := x / (1.0 - 1.0); _ = y",
+			err:  true,
+		},
+		{
+			stmt: "x := vec2(1); y := x / 0.0; _ = y",
+			err:  true,
+		},
+		{
+			stmt: "x := 1.0; x /= 0.0",
+			err:  true,
+		},
+		{
+			stmt: "x := 1; x %= 0",
+			err:  true,
+		},
+		{
+			stmt: "x := 1.0; y := x / 2.0; _ = y",
+			err:  false,
+		},
+		{
+			stmt: "x := 1; y := x % 2; _ = y",
+			err:  false,
+		},
+		{
+			stmt: "x := 1.0; z := 0.0; y := x / z; _ = y",
+			err:  false,
+		},
+		{
+			stmt: "x := 1.0; x /= 2.0",
+			err:  false,
+		},
+		{
+			stmt: "x := 1; x %= 2",
+			err:  false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxAssignToNonVariable(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1.0
+	abs = x
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() float {
+	return 1
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1.0
+	f = x
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() float {
+	return 1
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	f += 1.0
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f(x float) float {
+	return x
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	f(1.0) = 2.0
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f(x float) float {
+	return x
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	f(1.0) += 2.0
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := vec2(1)
+	vec2(1) = x
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := vec2(1)
+	vec2(1) += x
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	__t0 = __t1
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	__t0 += __t1
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f(x float) float {
+	return x
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := f(1.0)
+	x = f(2.0)
+	x += f(3.0)
+	v := vec2(1)
+	v = vec2(2)
+	v += vec2(3)
+	return vec4(v, x, 1)
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return __texelAt(__t0, src0Pos) + __texelAt(__t1, src0Pos)
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := shader.Compile([]byte(c.src), "Vertex", "Fragment", 2)
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+func TestSyntaxAssignToDuplicatedSwizzling(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "v := vec4(0); v.xx = vec2(1); _ = v",
+			err:  true,
+		},
+		{
+			stmt: "v := vec4(0); v.xyx += vec3(1); _ = v",
+			err:  true,
+		},
+		{
+			stmt: "v := vec4(0); v.xx++; _ = v",
+			err:  true,
+		},
+		{
+			stmt: "v := ivec4(0); v.rgr = ivec3(1); _ = v",
+			err:  true,
+		},
+		{
+			stmt: "x := vec3(0); x.xxx.xy = vec2(1); _ = x",
+			err:  true,
+		},
+		{
+			stmt: "v := vec4(0); v.xy.yy = vec2(1); _ = v",
+			err:  true,
+		},
+		{
+			stmt: "v := vec4(0); v.xx.x = 1; _ = v",
+			err:  true,
+		},
+		{
+			stmt: "v := vec4(0); v.xy = vec2(1); _ = v",
+			err:  false,
+		},
+		{
+			stmt: "v := vec4(0); v.xy.yx = vec2(1); _ = v",
+			err:  false,
+		},
+		{
+			stmt: "v := vec4(0); v.xy.yx += vec2(1); _ = v",
+			err:  false,
+		},
+		{
+			stmt: "v := vec4(0); v.xy.x = 1; _ = v",
+			err:  false,
+		},
+		{
+			stmt: "v := vec4(0); v.zw += vec2(1); _ = v",
+			err:  false,
+		},
+		{
+			stmt: "v := vec4(0); v.w++; _ = v",
+			err:  false,
+		},
+		{
+			stmt: "v := vec4(0); w := v.xx; _ = w",
+			err:  false,
+		},
+		{
+			stmt: "v := vec4(0); w := vec3(0); w = v.xyx; _ = w",
+			err:  false,
+		},
+		{
+			stmt: "v := vec4(0); w := vec3(0); w += v.xyx; _ = w",
+			err:  false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxOperatorAssignValueCount(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "a, b := 1, 2; a, b += 1; _, _ = a, b",
+			err:  true,
+		},
+		{
+			stmt: "a := 1; a += 1, 2; _ = a",
+			err:  true,
+		},
+		{
+			stmt: "a, b := 1, 2; a, b += 1, 2; _, _ = a, b",
+			err:  true,
+		},
+		{
+			stmt: "a, b := 1, 2; a += 1; b += a; _, _ = a, b",
+			err:  false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxOperatorAssignBool(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "b := true; c := false; b += c; _ = b",
+			err:  true,
+		},
+		{
+			stmt: "b := true; c := false; b -= c; _ = b",
+			err:  true,
+		},
+		{
+			stmt: "b := true; c := false; b *= c; _ = b",
+			err:  true,
+		},
+		{
+			stmt: "b := true; c := false; b /= c; _ = b",
+			err:  true,
+		},
+		{
+			stmt: "b := true; c := false; b &= c; _ = b",
+			err:  true,
+		},
+		{
+			stmt: "b := true; c := false; b |= c; _ = b",
+			err:  true,
+		},
+		{
+			stmt: "var a, b [2]float; a += b; _ = a",
+			err:  true,
+		},
+		{
+			stmt: "a := 1; b := 2; a += b; _ = a",
+			err:  false,
+		},
+		{
+			stmt: "a := 1.0; b := 2.0; a *= b; _ = a",
+			err:  false,
+		},
+		{
+			stmt: "a := vec2(1); b := vec2(2); a -= b; _ = a",
+			err:  false,
+		},
+		{
+			stmt: "a := ivec2(1); b := ivec2(2); a &= b; _ = a",
+			err:  false,
+		},
+		{
+			stmt: "a := mat2(1); b := mat2(2); a *= b; _ = a",
+			err:  false,
+		},
+		{
+			stmt: "b := true; c := false; b = b && c; _ = b",
+			err:  false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxReturnVoidCall(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func g() {
+}
+
+func f() float {
+	return g()
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f())
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func g() {
+}
+
+func f() (x float) {
+	return g()
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f())
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func g() {
+}
+
+func f() (float, float) {
+	return g()
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a, b := f()
+	return vec4(a + b)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func g() {
+}
+
+func f() {
+	return g()
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	f()
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f() {
+	return 1
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	f()
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func g() {
+}
+
+func f(x float) float {
+	if x > 0 {
+		return g()
+	}
+	return 1
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f(dstPos.x))
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func h() (float, float) {
+	return 1, 2
+}
+
+func f() float {
+	return h()
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f())
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func g() float {
+	return 1
+}
+
+func h() (float, float) {
+	return 1, 2
+}
+
+func f() float {
+	return g()
+}
+
+func f2() (float, float) {
+	return h()
+}
+
+func f3() (x float) {
+	x = g()
+	return
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a, b := f2()
+	return vec4(f() + a + b + f3())
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR([]byte(c.src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+func TestSyntaxBranchOutsideLoop(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "break",
+			err:  true,
+		},
+		{
+			stmt: "continue",
+			err:  true,
+		},
+		{
+			stmt: "if dstPos.x > 0 { break }",
+			err:  true,
+		},
+		{
+			stmt: "if dstPos.x > 0 { continue }",
+			err:  true,
+		},
+		{
+			stmt: "{ break }",
+			err:  true,
+		},
+		{
+			stmt: "for i := 0; i < 2; i++ { }; break",
+			err:  true,
+		},
+		{
+			stmt: "for i := 0; i < 2; i++ { break }",
+			err:  false,
+		},
+		{
+			stmt: "for i := 0; i < 2; i++ { continue }",
+			err:  false,
+		},
+		{
+			stmt: "for i := 0; i < 2; i++ { if i == 1 { break } }",
+			err:  false,
+		},
+		{
+			stmt: "for i := 0; i < 2; i++ { { if i == 1 { continue } } }",
+			err:  false,
+		},
+		{
+			stmt: "for i := range 2 { if i == 1 { break }; continue }",
+			err:  false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxLabel(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "for i := 0; i < 2; i++ { for j := 0; j < 2; j++ { break outer } }",
+			err:  true,
+		},
+		{
+			stmt: "for i := 0; i < 2; i++ { for j := 0; j < 2; j++ { continue outer } }",
+			err:  true,
+		},
+		{
+			stmt: "for i := range 2 { if i == 1 { break outer } }",
+			err:  true,
+		},
+		{
+			stmt: "break outer",
+			err:  true,
+		},
+		{
+			stmt: "continue outer",
+			err:  true,
+		},
+		{
+			stmt: "outer: for i := 0; i < 2; i++ { for j := 0; j < 2; j++ { break outer } }",
+			err:  true,
+		},
+		{
+			stmt: "outer: for i := 0; i < 2; i++ { for j := 0; j < 2; j++ { continue outer } }",
+			err:  true,
+		},
+		{
+			stmt: "outer: for i := range 2 { if i == 1 { break outer } }",
+			err:  true,
+		},
+		{
+			stmt: "outer: for i := 0; i < 2; i++ { break }",
+			err:  true,
+		},
+		{
+			stmt: "outer: { }",
+			err:  true,
+		},
+		{
+			stmt: "for i := 0; i < 2; i++ { for j := 0; j < 2; j++ { break } }",
+			err:  false,
+		},
+		{
+			stmt: "for i := 0; i < 2; i++ { for j := 0; j < 2; j++ { continue } }",
+			err:  false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxReturnOnEveryPath(t *testing.T) {
+	cases := []struct {
+		fn  string
+		err bool
+	}{
+		{
+			fn: `func f(x float) float {
+	if x > 0 {
+		return 1
+	}
+}`,
+			err: true,
+		},
+		{
+			fn: `func f(x float) float {
+	if x > 0 {
+		return 1
+	} else if x < 0 {
+		return -1
+	}
+}`,
+			err: true,
+		},
+		{
+			fn: `func f(x float) float {
+	for i := 0; i < 4; i++ {
+		return 1
+	}
+}`,
+			err: true,
+		},
+		{
+			fn: `func f(x float) float {
+	if x > 0 {
+		return 1
+	} else {
+		return 0
+	}
+	x = 1
+}`,
+			err: true,
+		},
+		{
+			fn: `func f(x float) (y float) {
+	if x > 0 {
+		y = 1
+		return
+	}
+}`,
+			err: true,
+		},
+		{
+			fn: `func f(x float) float {
+	if x > 0 {
+		return 1
+	} else {
+		return 0
+	}
+}`,
+			err: false,
+		},
+		{
+			fn: `func f(x float) float {
+	if x > 0 {
+		return 1
+	} else if x < 0 {
+		return -1
+	} else {
+		return 0
+	}
+}`,
+			err: false,
+		},
+		{
+			fn: `func f(x float) float {
+	if y := x; y > 0 {
+		return 1
+	} else {
+		return 0
+	}
+}`,
+			err: false,
+		},
+		{
+			fn: `func f(x float) float {
+	{
+		return x
+	}
+}`,
+			err: false,
+		},
+		{
+			fn: `func f(x float) (y float) {
+	if x > 0 {
+		y = 1
+		return
+	} else {
+		return
+	}
+}`,
+			err: false,
+		},
+		{
+			fn: `func f(x float) float {
+	for i := 0; i < 2; i++ {
+		if x > 0 {
+			return 1
+		}
+	}
+	return 0
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+%s
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f(dstPos.x))
+}`, c.fn)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.fn)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.fn, err)
+		}
+	}
+}
+
+func TestSyntaxDuplicatedEntryPoints(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(1)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Vertex(dstPos vec2, src0Pos vec2, color vec4) (vec4, vec2, vec4) {
+	return vec4(dstPos, 0, 1), src0Pos, color
+}
+
+func Vertex(dstPos vec2, src0Pos vec2, color vec4) (vec4, vec2, vec4) {
+	return vec4(dstPos, 0, 1), src0Pos, color
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Vertex(dstPos vec2, src0Pos vec2, color vec4) (vec4, vec2, vec4) {
+	return vec4(dstPos, 0, 1), src0Pos, color
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR([]byte(c.src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+func TestSyntaxUnnamedParams(t *testing.T) {
+	named, err := compileToIR([]byte(`package main
+
+func Vertex(dstPos vec2, src0Pos vec2, color vec4) (vec4, vec2, vec4) {
+	return vec4(dstPos, 0, 1), src0Pos, color
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	unnamed, err := compileToIR([]byte(`package main
+
+func Vertex(vec2, vec2, vec4) (vec4, vec2, vec4) {
+	return vec4(0), vec2(0), vec4(0)
+}
+
+func Fragment(vec4, vec2, vec4) vec4 {
+	return vec4(0)
+}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if got, want := len(unnamed.Attributes), len(named.Attributes); got != want {
+		t.Errorf("len(Attributes): got: %d, want: %d", got, want)
+	} else {
+		for i := range named.Attributes {
+			if got, want := unnamed.Attributes[i], named.Attributes[i]; !got.Equal(&want) {
+				t.Errorf("Attributes[%d]: got: %s, want: %s", i, got.String(), want.String())
+			}
+		}
+	}
+	if got, want := len(unnamed.Varyings), len(named.Varyings); got != want {
+		t.Errorf("len(Varyings): got: %d, want: %d", got, want)
+	} else {
+		for i := range named.Varyings {
+			if got, want := unnamed.Varyings[i], named.Varyings[i]; !got.Equal(&want) {
+				t.Errorf("Varyings[%d]: got: %s, want: %s", i, got.String(), want.String())
+			}
+		}
+	}
+
+	if _, err := compileToIR([]byte(`package main
+
+func f(float, vec2) float {
+	return 1
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f(1, src0Pos))
+}`)); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestSyntaxDuplicatedParamNames(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func f(x float) (x float) {
+	return
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f(1))
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f(x float, x float) float {
+	return x
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f(1, 2))
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f(x float) (y float, y float) {
+	return
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a, b := f(1)
+	return vec4(a + b)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Vertex(dstPos vec2, src0Pos vec2, color vec4) (dstPos vec4, src0Pos vec2, color vec4) {
+	return vec4(dstPos, 0, 1), src0Pos, color
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f(x float) (y float) {
+	y = x
+	return
+}
+
+func g(_ float, _ float) (_ float, _ float) {
+	return 1, 2
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a, b := g(1, 2)
+	return vec4(f(1) + a + b)
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR([]byte(c.src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+// Issue #3536
+func TestSyntaxRecursiveCall(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func f(x float) float {
+	return f(x)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f(1))
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f(x float) float {
+	return g(x)
+}
+
+func g(x float) float {
+	return f(x)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f(1))
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f(x float) float {
+	return g(x)
+}
+
+func g(x float) float {
+	return h(x)
+}
+
+func h(x float) float {
+	return f(x)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f(1))
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f(x float) float {
+	if x > 0 {
+		return f(x - 1)
+	}
+	return 0
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f(1))
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func f(x float) {
+	f(x)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(0)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func h(x float) float {
+	return x
+}
+
+func g(x float) float {
+	return h(x) + h(x)
+}
+
+func f(x float) float {
+	return g(x) + h(x)
+}
+
+func k(x float) float {
+	return f(x)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(k(1) + f(2))
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR([]byte(c.src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+func TestSyntaxConstTypeFromValue(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "const c = int(1); var f float = c; _ = f",
+			err:  true,
+		},
+		{
+			stmt: "const c = float(1); var i int = c; _ = i",
+			err:  true,
+		},
+		{
+			stmt: "const c = int(1); _ = 1.5 + c",
+			err:  true,
+		},
+		{
+			stmt: "const c = int(1); var i int = c; _ = i",
+			err:  false,
+		},
+		{
+			stmt: "const c = float(1); var f float = c; _ = f",
+			err:  false,
+		},
+		{
+			stmt: "const c = 1; var f float = c; _ = f",
+			err:  false,
+		},
+		{
+			stmt: "const c = 1 << 2; var f float = c; _ = f",
+			err:  false,
+		},
+		{
+			stmt: "const a, b = int(1), 2.5; var f float = b; _ = f",
+			err:  false,
+		},
+		{
+			stmt: "const c = true; var b bool = c; _ = b",
+			err:  false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxDuplicatedConstNames(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const b, b = 1, 2
+	return vec4(b)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const a, b, a float = 1, 2, 3
+	return vec4(a, b, 0, 0)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+const b, b = 1, 2
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(b)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const a, b = 1, 2
+	const _, _ = 3, 4
+	return vec4(a, b, 0, 0)
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+const a, b = 1, 2
+const _, _ = 3, 4
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(a, b, 0, 0)
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR([]byte(c.src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+func TestSyntaxDuplicatedBlankNames(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const _ = 1
+	const _ = 2
+	return dstPos
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var _, _ float
+	var _ = 1.0
+	return dstPos
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+func f() (float, float) {
+	return 1, 2
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var _, _ = f()
+	return dstPos
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const _ = 1
+	var _ float
+	const _ = 2
+	return dstPos
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+const (
+	_ = 1
+	_ = 2
+)
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return dstPos
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+func _() {
+}
+
+func _() {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return dstPos
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+func _() {
+}
+
+func _() float {
+	return true
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const b = 1
+	var b float
+	return vec4(b)
+}`,
+			err: true,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var b float
+	const b = 1
+	return vec4(b)
+}`,
+			err: true,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR([]byte(c.src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+// MyGo's loops may start from any value of the counter's type.
+func TestSyntaxForNonConstantInitialValue(t *testing.T) {
+	cases := []struct {
+		src string
+		err bool
+	}{
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := dstPos.x
+	for i := x; i < 4; i++ {
+		_ = i
+	}
+	return vec4(0)
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1.0
+	for i := x; i < 4; i++ {
+		_ = i
+	}
+	return vec4(0)
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := int(dstPos.x)
+	for i := x; i < 4; i++ {
+		_ = i
+	}
+	return vec4(0)
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	x := 1
+	for i := x; i < 4; i++ {
+		_ = i
+	}
+	return vec4(0)
+}`,
+			err: false,
+		},
+		{
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	const x = 1
+	for i := x; i < 4; i++ {
+		_ = i
+	}
+	return vec4(0)
+}`,
+			err: false,
+		},
+	}
+
+	for _, c := range cases {
+		_, err := compileToIR([]byte(c.src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.src)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.src, err)
+		}
+	}
+}
+
+func TestSyntaxDuplicatedPackageLevelNames(t *testing.T) {
+	cases := []struct {
+		decls string
+		err   bool
+	}{
+		{
+			decls: "var A float\nconst A = 1",
+			err:   true,
+		},
+		{
+			decls: "const A = 1\nfunc A() {}",
+			err:   true,
+		},
+		{
+			decls: "func A() {}\nconst A = 1",
+			err:   true,
+		},
+		{
+			decls: "var A float\nfunc A() {}",
+			err:   true,
+		},
+		{
+			decls: "type A float\nconst A = 1",
+			err:   true,
+		},
+		{
+			decls: "const A = 1\ntype A float",
+			err:   true,
+		},
+		{
+			decls: "type A float\nvar A float",
+			err:   true,
+		},
+		{
+			decls: "var A float\ntype A float",
+			err:   true,
+		},
+		{
+			decls: "type A float\nfunc A() {}",
+			err:   true,
+		},
+		{
+			decls: "const Fragment = 1",
+			err:   true,
+		},
+		{
+			decls: "const A = 1\nvar B float\nfunc C() {}",
+			err:   false,
+		},
+		{
+			decls: "const _ = 1\nconst _ = 2",
+			err:   false,
+		},
+		{
+			decls: "const A = 1\nfunc f(A float) float {\n\tvar B = A\n\treturn B\n}\nvar B float",
+			err:   false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+%s
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return dstPos
+}`, c.decls)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.decls)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.decls, err)
+		}
+	}
+}
+
+func TestSyntaxDuplicatedLocalNames(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "type T float; var T float; _ = T",
+			err:  true,
+		},
+		{
+			stmt: "var T float; type T float; _ = T",
+			err:  true,
+		},
+		{
+			stmt: "type T float; const T = 1",
+			err:  true,
+		},
+		{
+			stmt: "const T = 1; type T float",
+			err:  true,
+		},
+		{
+			stmt: "type T float; T := 1.0; _ = T",
+			err:  true,
+		},
+		{
+			stmt: "T := 1.0; type T float; _ = T",
+			err:  true,
+		},
+		{
+			stmt: "type T float; a, T := f(); _, _ = a, T",
+			err:  true,
+		},
+		{
+			stmt: "const c = 1; c := 2.0; _ = c",
+			err:  true,
+		},
+		{
+			stmt: "const c = 1; a, c := f(); _, _ = a, c",
+			err:  true,
+		},
+		{
+			stmt: "type color float",
+			err:  true,
+		},
+		{
+			stmt: "const c = 1; { c := 2.0; _ = c }",
+			err:  false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func f() (float, float) {
+	return 1, 2
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxMethod(t *testing.T) {
+	cases := []struct {
+		decls string
+		err   bool
+	}{
+		{
+			decls: "type T float\n\nfunc (t T) M() float {\n\treturn 1\n}",
+			err:   true,
+		},
+		{
+			decls: "type T float\n\nfunc (T) M() {}",
+			err:   true,
+		},
+		{
+			decls: "func (x float) M() float {\n\treturn 1\n}",
+			err:   true,
+		},
+		{
+			decls: "func (vec2) M() {}\n\nfunc g() {\n\tM()\n}",
+			err:   true,
+		},
+		{
+			decls: "func M() float {\n\treturn 1\n}",
+			err:   false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+%s
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return dstPos
+}`, c.decls)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.decls)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.decls, err)
+		}
+	}
+}
+
+func TestSyntaxShortVarRedeclaration(t *testing.T) {
+	cases := []struct {
+		decls string
+		stmt  string
+		err   bool
+	}{
+		{
+			stmt: "a := 1.0; _ = a; a, b := 2.0, 3.0; _, _ = a, b",
+			err:  false,
+		},
+		{
+			stmt: "a := 1.0; _ = a; b, a := f(); _, _ = a, b",
+			err:  false,
+		},
+		{
+			stmt: "a := 1.0; _ = a; a, b := 2, 3.0; _, _ = a, b",
+			err:  false,
+		},
+		{
+			stmt: "a := 1; _ = a; a, b := 1.5, 2.0; _, _ = a, b",
+			err:  true,
+		},
+		{
+			stmt: "a := 1; x := 2.0; _ = a; a, b := x, 3.0; _, _ = a, b",
+			err:  true,
+		},
+		{
+			stmt: "a := 1.0; _ = a; a := 2.0; _ = a",
+			err:  true,
+		},
+		{
+			stmt: "a, b := 1.0, 2.0; _, _ = a, b; a, b := 3.0, 4.0; _, _ = a, b",
+			err:  true,
+		},
+		{
+			stmt: "a, a := 1.0, 2.0; _ = a",
+			err:  true,
+		},
+		{
+			stmt: "a := 1.0; _ = a; a, a, b := 2.0, 3.0, 4.0; _, _ = a, b",
+			err:  true,
+		},
+		{
+			stmt: "const c = 1; c, d := 2.0, 3.0; _, _ = c, d",
+			err:  true,
+		},
+		{
+			stmt: "a := 1.0; _ = a; { a, b := 2.0, 3.0; _, _ = a, b }",
+			err:  false,
+		},
+		{
+			stmt: "_, _ := 1.0, 2.0",
+			err:  true,
+		},
+		{
+			stmt: "a := 1.0; _ = a; _, a := 2.0, 3.0; _ = a",
+			err:  true,
+		},
+		{
+			decls: "func g(x float) float {\n\tx, y := 2.0, 3.0\n\treturn x + y\n}",
+			stmt:  "_ = g(1)",
+			err:   false,
+		},
+		{
+			decls: "func g() (r float) {\n\tr, y := 2.0, 3.0\n\t_ = y\n\treturn\n}",
+			stmt:  "_ = g()",
+			err:   false,
+		},
+		{
+			stmt: "a := 1.0; b := 2.0; a, b, c := b, a, 3.0; _, _, _ = a, b, c",
+			err:  false,
+		},
+		{
+			stmt: "a := 1.0; a, b := 2.0, 3.0; _ = b",
+			err:  true,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func f() (float, float) {
+	return 1, 2
+}
+
+%s
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.decls, c.stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxShortVarDeclRHSScope(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "x, y := 2.0, x; _, _ = x, y",
+			err:  true,
+		},
+		{
+			stmt: "x, y := 2.0, y; _, _ = x, y",
+			err:  true,
+		},
+		{
+			stmt: "x := 5.0; _ = x; { x, y := 1.0, x; _, _ = x, y }",
+			err:  false,
+		},
+	}
+
+	for _, c := range cases {
+		src := fmt.Sprintf(`package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, c.stmt)
+		_, err := compileToIR([]byte(src))
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestSyntaxArgumentWithoutValue(t *testing.T) {
+	for _, expr := range []string{
+		"_ = min(bar(), 1.0, 2.0)",
+		"_ = min(discard(), 1.0, 2.0)",
+		"_ = foo(bar(), 1.0, 2.0)",
+		"bar(bar())",
+	} {
+		t.Run(expr, func(t *testing.T) {
+			src := `package main
+func bar() {}
+func foo(x, y float) float { return x + y }
+func Fragment() vec4 {
+	` + expr + `
+	return vec4(0)
+}
+`
+			if _, err := compileToIR([]byte(src)); err == nil {
+				t.Error("compileToIR must return an error but did not")
+			}
+		})
+	}
+
+	if _, err := compileToIR([]byte(`package main
+func pair() (float, float) { return 1, 2 }
+func foo(x, y float) float { return x + y }
+func Fragment() vec4 {
+	return vec4(foo(pair()) + min(pair()))
+}
+`)); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestSyntaxUnusedBuiltinCall(t *testing.T) {
+	for _, expr := range []string{
+		"int(1.0)", "float(2)", "bool(true)",
+		"len([2]float{})", "cap([2]float{})",
+		"int(x)", "float(x)", "bool(b)", "(int)(1.0)",
+	} {
+		t.Run(expr, func(t *testing.T) {
+			src := `package main
+func foo(x float, b bool) {
+	` + expr + `
+}
+`
+			if _, err := compileToIR([]byte(src)); err == nil {
+				t.Error("compileToIR must return an error but did not")
+			}
+		})
+	}
+
+	if _, err := compileToIR([]byte(`package main
+func foo() float { return 1 }
+func pair() (float, float) { return 1, 2 }
+func bar() {}
+func Fragment() vec4 {
+	foo()
+	pair()
+	bar()
+	discard()
+	return vec4(0)
+}
+`)); err != nil {
+		t.Error(err)
+	}
+}

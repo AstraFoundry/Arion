@@ -21,7 +21,7 @@ make e2e
 
 ## Native desktop
 
-MyGo v0.4.6 requires Go 1.27.1; the workspace selects the patched `go1.27.3` toolchain. The workspace/tool directive uses Go automatic toolchain selection when available; a first native build may download it. Use an installed matching Go toolchain with `GOTOOLCHAIN=local` for explicitly offline development after dependencies are provisioned.
+MyGo v0.8.3 requires Go 1.27.3, which the workspace declares. The workspace/tool directive uses Go automatic toolchain selection when available; a first native build may download it. Use an installed matching Go toolchain with `GOTOOLCHAIN=local` for explicitly offline development after dependencies are provisioned.
 
 Both supported desktop targets also need a native Rust/Cargo toolchain for the locked keyboard ranking worker; see [resource preparation](README.md).
 

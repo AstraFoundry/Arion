@@ -59,7 +59,7 @@ type toastState struct {
 }
 type toastActivation struct{ id, action string }
 
-func hstring(s string) (uintptr, error) {
+func toastHString(s string) (uintptr, error) {
 	units := utf16.Encode([]rune(s))
 	var data *uint16
 	if len(units) > 0 {
@@ -73,8 +73,8 @@ func hstring(s string) (uintptr, error) {
 	}
 	return h, nil
 }
-func activationFactory(name string, iid *GUID) (uintptr, error) {
-	h, err := hstring(name)
+func toastActivationFactory(name string, iid *GUID) (uintptr, error) {
+	h, err := toastHString(name)
 	if err != nil {
 		return 0, err
 	}
@@ -87,7 +87,7 @@ func activationFactory(name string, iid *GUID) (uintptr, error) {
 	return out, nil
 }
 func activateRuntime(name string) (uintptr, error) {
-	h, err := hstring(name)
+	h, err := toastHString(name)
 	if err != nil {
 		return 0, err
 	}
@@ -100,12 +100,12 @@ func activateRuntime(name string) (uintptr, error) {
 	return out, nil
 }
 func toastInterfaces(appID string) (uintptr, uintptr, error) {
-	manager, err := activationFactory(toastManagerClass, &iidToastManager)
+	manager, err := toastActivationFactory(toastManagerClass, &iidToastManager)
 	if err != nil {
 		return 0, 0, err
 	}
 	defer release(manager)
-	app, err := hstring(appID)
+	app, err := toastHString(appID)
 	if err != nil {
 		return 0, 0, err
 	}
@@ -270,7 +270,7 @@ func (b *Backend) showToast(n *platform.Notification) error {
 		return errors.New("mygo: XML document loader unavailable")
 	}
 	defer release(io)
-	xml, err := hstring(payload)
+	xml, err := toastHString(payload)
 	if err != nil {
 		return err
 	}
@@ -278,7 +278,7 @@ func (b *Backend) showToast(n *platform.Notification) error {
 	if hr := comCall(io, 6, xml); failed(hr) {
 		return hresultError("XmlDocument.LoadXml", hr)
 	}
-	factory, err := activationFactory("Windows.UI.Notifications.ToastNotification", &iidToastFactory)
+	factory, err := toastActivationFactory("Windows.UI.Notifications.ToastNotification", &iidToastFactory)
 	if err != nil {
 		return err
 	}
@@ -293,12 +293,12 @@ func (b *Backend) showToast(n *platform.Notification) error {
 		return errors.New("mygo: native toast tag/group unavailable")
 	}
 	defer release(tagged)
-	tag, err := hstring(wire.Tag(n.ID))
+	tag, err := toastHString(wire.Tag(n.ID))
 	if err != nil {
 		return err
 	}
 	defer procWindowsDeleteString.Call(tag)
-	group, err := hstring(toastGroup)
+	group, err := toastHString(toastGroup)
 	if err != nil {
 		return err
 	}
@@ -315,7 +315,7 @@ func (b *Backend) showToast(n *platform.Notification) error {
 	return nil
 }
 func removeToast(history uintptr, appID, id string) error {
-	app, err := hstring(appID)
+	app, err := toastHString(appID)
 	if err != nil {
 		return err
 	}
@@ -326,12 +326,12 @@ func removeToast(history uintptr, appID, id string) error {
 		}
 		return nil
 	}
-	tag, err := hstring(wire.Tag(id))
+	tag, err := toastHString(wire.Tag(id))
 	if err != nil {
 		return err
 	}
 	defer procWindowsDeleteString.Call(tag)
-	group, err := hstring(toastGroup)
+	group, err := toastHString(toastGroup)
 	if err != nil {
 		return err
 	}

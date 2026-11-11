@@ -1,6 +1,9 @@
 package ui
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
 
 // Bases are widgets without a look. A base handles the pointer, the
 // keyboard and the focus, and tells assistive technology what it is,
@@ -40,6 +43,71 @@ func coreCheckboxBase(c *context, checked *bool) *node {
 	return toggle(c, checked, RoleCheckBox, "Checkbox")
 }
 
+// CheckState is what a check box that can be mixed shows
+// (CheckboxStateBase): unchecked, checked, or mixed, as one checking a
+// group whose boxes differ.
+type CheckState uint8
+
+const (
+	CheckOff CheckState = iota
+	CheckOn
+	CheckMixed
+)
+
+// CheckboxStateBase creates a check box without a look that can be mixed,
+// as a "select all" box in a table's header, checked when every row is
+// and mixed when some are: a row that sets *state to CheckOn when
+// clicked, or with Space while it has the focus, or to CheckOff when it
+// is CheckOn, which Changed reports, and that assistive technology sees
+// as a check box, checked, unchecked or mixed. Draw its box from *state;
+// CheckboxState is CheckboxStateBase with the theme's look.
+//
+//	all := ui.CheckOff
+//	switch n := app.selectedCount(); {
+//	case n == len(app.rows):
+//		all = ui.CheckOn
+//	case n > 0:
+//		all = ui.CheckMixed
+//	}
+//	cb := ui.CheckboxStateBase(c, &all).Label("Select all")
+//	cb.Children(func() { app.box(c, all) }) // a dash while mixed
+//	if cb.Changed() {
+//		app.selectAll(all == ui.CheckOn)
+//	}
+func coreCheckboxStateBase(c *context, state *CheckState) *node {
+	e := coreRow(c).Focusable().Shrink(0)
+	e.flags |= flagClickable | flagHover | flagToggle
+	e.widget, e.role = "Checkbox", RoleCheckBox
+	*valueBinding[*CheckState](e) = state
+	e.onValueInput(checkStateInput)
+	e.checked = checkedOf(*state)
+	return e
+}
+
+// checkedOf returns what assistive technology sees of a check box in
+// state s: off (1), on (2) or mixed (3), as node.checked holds.
+func checkedOf(s CheckState) int8 {
+	switch s {
+	case CheckOn:
+		return 2
+	case CheckMixed:
+		return 3
+	}
+	return 1
+}
+
+func checkStateInput(n *node) {
+	if n.Clicked() {
+		p := *valueBinding[*CheckState](n)
+		if *p == CheckOn {
+			*p = CheckOff
+		} else {
+			*p = CheckOn
+		}
+		n.st.markChanged()
+	}
+}
+
 // SwitchBase creates a switch without a look: CheckboxBase, which
 // assistive technology sees as a switch. Switch is SwitchBase with the
 // theme's look.
@@ -76,7 +144,9 @@ func coreRadioBase[T comparable](c *context, selected *T, value T) *node {
 // range unless Step says otherwise; Changed reports a new value, and
 // assistive technology sees a slider of that range. Draw its track and
 // thumb where (*value-lo)/(hi-lo) puts them, and pad it by half the
-// thumb's width to keep the thumb inside it:
+// thumb's width to keep the thumb inside it. Right to left
+// (Context.Direction), lo is at the right of the content box, as the
+// arrows go: draw it mirrored.
 //
 //	s := ui.SliderBase(c, &app.volume, 0, 100).Height(24).PaddingX(12)
 //	s.Draw(func(p *ui.Painter, r ui.Rect) {
@@ -93,9 +163,14 @@ func coreSliderBase(c *context, value *float64, lo, hi float64) *node {
 	return s
 }
 
-// sliderSettings are what Step and Vertical said of a slider as the last
-// frame built it, which the input since applies by.
+// sliderSettings are what Step and Vertical say of a slider in this
+// build, and what they said in the build before, which the input since
+// applies by: the slider the user dragged.
 type sliderSettings struct {
+	now, shown sliderOptions
+}
+
+type sliderOptions struct {
 	step     float64
 	vertical bool
 }
@@ -108,7 +183,8 @@ func sliderBase(c *context, value *float64, lo, hi, step float64) *node {
 	s := coreBox(c).Focusable()
 	s.flags |= flagDraggable | flagHover
 	s.widget = "Slider"
-	*coreLocal(s, sliderKey{}, func() sliderSettings { return sliderSettings{} }) = sliderSettings{}
+	set := coreLocal(s, sliderKey{}, func() sliderSettings { return sliderSettings{} })
+	set.shown, set.now = set.now, sliderOptions{}
 	*valueBinding[sliderValue](s) = sliderValue{value: value, lo: lo, hi: hi, step: step}
 	s.onValueInput(sliderInput)
 	if step <= 0 {
@@ -128,7 +204,7 @@ func (e *node) Step(step float64) *node {
 	}
 	e.accStep = step
 	if e.widget == "Slider" || e.widget == "SliderBase" {
-		coreLocal(e, sliderKey{}, func() sliderSettings { return sliderSettings{} }).step = step
+		coreLocal(e, sliderKey{}, func() sliderSettings { return sliderSettings{} }).now.step = step
 	}
 	return e
 }
@@ -139,8 +215,8 @@ func (e *node) Step(step float64) *node {
 // so.
 func (e *node) Vertical() *node {
 	if e.widget == "SliderBase" {
-		coreLocal(e, sliderKey{}, func() sliderSettings { return sliderSettings{} }).vertical = true
-		e.vertical = true
+		coreLocal(e, sliderKey{}, func() sliderSettings { return sliderSettings{} }).now.vertical = true
+		e.orient = Vertical
 	}
 	return e
 }
@@ -154,15 +230,16 @@ type tabsParts struct {
 	selected *int
 	n        int
 	// follow is set when the keys chose a tab, which then takes the
-	// focus.
+	// focus. ids are the tabs' elements, by index, as last built.
 	follow *bool
+	ids    *[]uint64
 }
 
 // TabsBase creates a list of n tabs without a look, of which *selected is
 // the index of the one chosen. A click chooses a tab, as do the arrows,
 // Home and End while one has the keyboard focus, which follows the
-// choice; List's Changed reports a new choice. Build the tabs in List
-// with Tab:
+// choice, past the tabs disabled; List's Changed reports a new choice.
+// Build the tabs in List with Tab:
 //
 //	tabs := ui.TabsBase(c, &app.tab, len(names))
 //	tabs.List.Gap(4).Children(func() {
@@ -182,19 +259,40 @@ func coreTabsBase(c *context, selected *int, n int) tabsParts {
 	if n > 0 {
 		*selected = max(0, min(*selected, n-1))
 	}
-	return tabsParts{List: list, c: c, selected: selected, n: n, follow: coreLocal(list, "follow", func() bool { return false })}
+	return tabsParts{
+		List: list, c: c, selected: selected, n: n,
+		follow: coreLocal(list, "follow", func() bool { return false }),
+		ids:    coreLocal(list, "ids", func() []uint64 { return nil }),
+	}
 }
 
 // Tab creates tab i of the list: a row that takes the focus and chooses
-// i when clicked. Style it from whether i is the one chosen.
+// i when clicked. Style it from whether i is the one chosen. Disabled
+// leaves it out of the keys' way and of the pointer's, and assistive
+// technology sees it disabled.
 func (p tabsParts) Tab(i int) *node {
 	c := p.c
 	tab := coreRow(c).Focusable().Shrink(0).Role(RoleTab)
 	tab.widget = "Tab"
 	tab.flags |= flagClickable | flagHover
+	if len(*p.ids) != p.n {
+		*p.ids = slices.Grow((*p.ids)[:0], p.n)[:p.n]
+	}
+	if i >= 0 && i < p.n {
+		(*p.ids)[i] = tab.id
+	}
 	tab.afterInput(func() {
-		choose := func(i int, keys bool) {
-			i = (i%p.n + p.n) % p.n
+		// choose chooses the first tab from i on, going round by d, that
+		// is not disabled, as the last frame showed them: this one, which
+		// takes input, is not.
+		choose := func(i, d int, keys bool) {
+			for range p.n {
+				i = (i%p.n + p.n) % p.n
+				if s := c.rt.states[(*p.ids)[i]]; s == nil || s == tab.st || s.flags&flagDisabled == 0 {
+					break
+				}
+				i += d
+			}
 			if i != *p.selected {
 				*p.selected = i
 				p.List.st.markChanged()
@@ -203,17 +301,18 @@ func (p tabsParts) Tab(i int) *node {
 			*p.follow = keys
 		}
 		if tab.Clicked() {
-			choose(i, false)
+			choose(i, 1, false)
 		}
+		back, forth := tab.arrows()
 		switch {
-		case tab.Shortcut(0, KeyRight), tab.Shortcut(0, KeyDown):
-			choose(i+1, true)
-		case tab.Shortcut(0, KeyLeft), tab.Shortcut(0, KeyUp):
-			choose(i-1, true)
+		case tab.Shortcut(0, forth), tab.Shortcut(0, KeyDown):
+			choose(i+1, 1, true)
+		case tab.Shortcut(0, back), tab.Shortcut(0, KeyUp):
+			choose(i-1, -1, true)
 		case tab.Shortcut(0, KeyHome):
-			choose(0, true)
+			choose(0, 1, true)
 		case tab.Shortcut(0, KeyEnd):
-			choose(p.n-1, true)
+			choose(p.n-1, -1, true)
 		}
 	})
 	on := i == *p.selected
@@ -237,25 +336,34 @@ type selectParts[T comparable] struct {
 	open     *bool
 	// highlight is the index of the option the pointer or the arrows are
 	// on, -1 until the popup finds the chosen one; values are the
-	// options of the last frame that showed them, and next those of this
-	// frame. pointer is where the pointer was when it last highlighted an
-	// option: it highlights another once it moves. shown is the option
-	// last scrolled into view as the highlight moved to it, while shows
-	// says whether it is one.
+	// options of the last frame that showed them, off whether each was
+	// disabled, and next and items those of this frame. pointer is where
+	// the pointer was when it last highlighted an option: it highlights
+	// another once it moves. shown is the option last scrolled into view
+	// as the highlight moved to it, while shows says whether it is one.
+	// later is the value Highlight asked for before Popup built its
+	// option, as the popup opens.
+	// opened is set once the popup opened, until a pass builds the select
+	// closed: the highlight starts afresh as it opens, however it does.
 	highlight *int
 	values    *[]T
+	off       *[]bool
 	next      []T
+	items     []*node
+	later     *T
 	pointer   *[2]float32
 	shown     *T
 	shows     *bool
+	opened    *bool
 }
 
 // SelectBase creates a select without a look: a trigger that opens a
 // popup of options, which choose *selected. With the focus on the
-// trigger, the arrows open the popup and move among its options, Enter
-// and Space choose one, and Escape closes it; the trigger's Changed
-// reports a new choice. Give the trigger children showing the choice, and
-// build the options in Popup with Item:
+// trigger, the arrows open the popup and move among its options, past
+// those disabled, as do Home and End; Enter and Space choose one, and
+// Escape closes it; the trigger's Changed reports a new choice. Give the
+// trigger children showing the choice, and build the options in Popup
+// with Item:
 //
 //	sel := ui.SelectBase(c, &app.size)
 //	sel.Trigger.Padding(6, 10).Border(1, gray).Children(func() {
@@ -274,47 +382,80 @@ type selectParts[T comparable] struct {
 //
 // Select is SelectBase with the theme's look.
 func coreSelectBase[T comparable](c *context, selected *T) *selectParts[T] {
+	return selectBase(c, selected, nil)
+}
+
+// SelectBaseOpen is SelectBase whose popup shows while *open, a flag the
+// caller owns, as PopoverBase's: the select sets it as it opens and
+// closes, and the caller may set it too, as typing on the closed trigger
+// opens the popup, or Tab moving on closes it. The highlight starts on the
+// choice each time the popup opens. Owning the flag, the caller can keep
+// the popup a little longer as it closes, to shrink it back into the
+// trigger.
+func coreSelectBaseOpen[T comparable](c *context, selected *T, open *bool) *selectParts[T] {
+	return selectBase(c, selected, open)
+}
+
+// shownValue is the select's copy of the value its trigger shows, one of
+// the app's, which the select does not close as it goes (keepLocal).
+func shownValue[T comparable](b *node) *T {
+	v, _ := keepLocal(b.st, "shown", func() T { var zero T; return zero })
+	return v
+}
+
+// selectBase is SelectBase, open while *open, or while a local of its own
+// is when open is nil.
+func selectBase[T comparable](c *context, selected *T, open *bool) *selectParts[T] {
 	b := coreButtonBase(c)
 	b.widget, b.role, b.accValue = "Select", RolePopUpButton, fmt.Sprint(*selected)
+	if open == nil {
+		open = coreLocal(b, "open", func() bool { return false })
+	}
 	s := &selectParts[T]{
-		Trigger: b, c: c, selected: selected,
-		open:      coreLocal(b, "open", func() bool { return false }),
+		Trigger: b, c: c, selected: selected, open: open,
 		highlight: coreLocal(b, "highlight", func() int { return -1 }),
 		values:    coreLocal(b, "values", func() []T { return nil }),
+		off:       coreLocal(b, "off", func() []bool { return nil }),
 		pointer:   coreLocal(b, "pointer", func() [2]float32 { return [2]float32{} }),
-		shown:     coreLocal(b, "shown", func() T { var zero T; return zero }),
+		shown:     shownValue[T](b),
 		shows:     coreLocal(b, "shows", func() bool { return false }),
+		opened:    coreLocal(b, "opened", func() bool { return false }),
+	}
+	if !*s.open {
+		*s.opened = false
 	}
 	b.afterInput(func() {
-		open := func(o bool) {
-			*s.open, *s.highlight, *s.shows = o, -1, false
-			*s.pointer = [2]float32{c.rt.pointerX, c.rt.pointerY}
-			c.rt.consumed = true
-		}
 		if b.Clicked() {
-			open(!*s.open)
+			s.SetOpen(!*s.open)
 		}
-		n := len(*s.values)
-		move := func(i int) {
-			*s.highlight = max(0, min(i, n-1))
+		n, off := len(*s.values), *s.off
+		// move highlights the first option from i on, going by d, that
+		// is not disabled, if there is one.
+		move := func(i, d int) {
+			for ; i >= 0 && i < n; i += d {
+				if !off[i] {
+					*s.highlight = i
+					break
+				}
+			}
 			c.rt.consumed = true
 		}
 		if !*s.open {
 			if b.Shortcut(0, KeyDown) || b.Shortcut(0, KeyUp) {
-				open(true)
+				s.SetOpen(true)
 			}
 		} else if n > 0 {
 			switch {
 			case b.Shortcut(0, KeyDown):
-				move(*s.highlight + 1)
+				move(max(*s.highlight+1, 0), 1)
 			case b.Shortcut(0, KeyUp):
-				move(*s.highlight - 1)
+				move(max(*s.highlight-1, 0), -1)
 			case b.Shortcut(0, KeyHome):
-				move(0)
+				move(0, 1)
 			case b.Shortcut(0, KeyEnd):
-				move(n - 1)
+				move(n-1, -1)
 			case b.Shortcut(0, KeyEnter), b.Shortcut(0, KeySpace):
-				if h := *s.highlight; h >= 0 && h < n {
+				if h := *s.highlight; h >= 0 && h < n && !off[h] {
 					s.choose((*s.values)[h])
 				}
 			}
@@ -336,19 +477,46 @@ func (s *selectParts[T]) choose(v T) {
 // Open reports whether the popup shows.
 func (s *selectParts[T]) Open() bool { return *s.open }
 
+// SetOpen opens or closes the popup, as typing on the closed trigger may
+// open it, or Tab moving on close it. It opens with the highlight on the
+// choice, which Highlight then moves.
+func (s *selectParts[T]) SetOpen(o bool) {
+	if *s.open == o {
+		return
+	}
+	*s.open, *s.opened = o, false
+	s.fresh()
+	s.Trigger.expanded = o
+	s.c.rt.consumed = true
+}
+
+// fresh starts the highlight afresh as the popup opens, on the choice: the
+// pointer, resting where it was, highlights another once it moves.
+func (s *selectParts[T]) fresh() {
+	if *s.open && !*s.opened {
+		*s.opened = true
+		*s.highlight, *s.shows = -1, false
+		*s.pointer = [2]float32{s.c.rt.pointerX, s.c.rt.pointerY}
+	}
+}
+
 // Highlight moves the highlight to the option of value while the popup
-// shows, as a select of your own may do as the user types the option's
-// first letters; Enter then chooses it.
+// shows, unless it is disabled, as a select of your own may do as the
+// user types the option's first letters; Enter then chooses it. Called
+// before Popup as the popup opens, it highlights the option once Popup
+// builds it.
 func (s *selectParts[T]) Highlight(value T) {
+	s.fresh()
 	for i, v := range *s.values {
 		if v == value {
-			if *s.highlight != i {
+			if *s.highlight != i && !(*s.off)[i] {
 				*s.highlight = i
 				s.c.rt.consumed = true
 			}
 			return
 		}
 	}
+	s.later = &value
 }
 
 // Popup shows the popup below the trigger, at least as wide, while it is
@@ -357,28 +525,85 @@ func (s *selectParts[T]) Highlight(value T) {
 // or nil when the popup is closed.
 func (s *selectParts[T]) Popup(fn func(panel *node)) *node {
 	b := s.Trigger
+	// Opened or closed since the trigger was built, as by the caller.
+	b.expanded = *s.open
+	s.fresh()
 	return popover(s.c, b, s.open, true, func(panel *node) {
-		panel.MinWidth(b.Bounds().W)
-		s.next = s.next[:0]
+		// A list box of options, as a native select's popup.
+		panel.Role(RoleListBox).MinWidth(b.Bounds().W)
+		s.next, s.items = s.next[:0], s.items[:0]
 		fn(panel)
 		*s.values = append((*s.values)[:0], s.next...)
+		off := (*s.off)[:0]
+		for _, it := range s.items {
+			off = append(off, it.IsDisabled())
+		}
+		*s.off = off
+		h := *s.highlight
+		if s.later != nil {
+			// Asked for before its option was built.
+			if i := slices.Index(*s.values, *s.later); i >= 0 && !off[i] {
+				h = i
+			}
+			s.later = nil
+		}
+		if h < 0 {
+			// The choice, which its option, disabled in the pass
+			// before, did not highlight.
+			h = slices.Index(*s.values, *s.selected)
+		}
+		if h >= 0 && h < len(off) && off[h] {
+			// Disabled after it was built: the first option that is
+			// not, as a menu's (MenuBase), or none.
+			h = slices.Index(off, false)
+		}
+		if h != *s.highlight {
+			*s.highlight = h
+			s.c.rt.consumed = true
+		}
+		// The options say which of how many they are, and the trigger,
+		// which keeps the focus, has it for the one highlighted, as a
+		// combobox's input.
+		for i, it := range s.items {
+			it.setPos, it.setSize = i+1, len(s.items)
+		}
+		if h >= 0 && h < len(s.items) {
+			b.activeDescendant = s.items[h]
+		}
 	})
 }
 
 // Item creates an option choosing value: a row that is Highlighted when
 // the pointer or the arrows are on it, and chooses value and closes the
-// popup when clicked. The option the highlight moves to scrolls into view,
-// once, so that the wheel scrolls on past it.
+// popup when clicked. Disabled leaves it out of the keys' way and of the
+// pointer's. The option the highlight moves to scrolls into view, once,
+// so that the wheel scrolls on past it. Assistive technology reads it as
+// an option of a list box (RoleOption), selected while it is
+// highlighted, as a native select's; focusing it highlights it, and
+// pressing it chooses it.
 func (s *selectParts[T]) Item(value T) *node {
 	c := s.c
 	i := len(s.next)
 	s.next = append(s.next, value)
-	item := coreRow(c)
+	item := coreRow(c).Role(RoleOption)
 	item.flags |= flagClickable | flagHover
-	if *s.highlight < 0 && value == *s.selected {
+	item.focusHighlights = true
+	s.items = append(s.items, item)
+	// Disabled once built, which the pass before learned.
+	off := i < len(*s.off) && (*s.off)[i]
+	if *s.highlight < 0 && value == *s.selected && !off {
 		*s.highlight = i
 	}
-	if p := [2]float32{c.rt.pointerX, c.rt.pointerY}; item.Hovered() && p != *s.pointer {
+	if st := item.st; st != nil && st.focusAsked {
+		// Assistive technology focused it, which highlights it, as the
+		// arrows do, without choosing it.
+		st.focusAsked = false
+		if !off && *s.highlight != i {
+			*s.highlight = i
+			c.rt.consumed = true
+		}
+	}
+	if p := [2]float32{c.rt.pointerX, c.rt.pointerY}; !off && item.Hovered() && p != *s.pointer {
 		// The pointer moved onto it, which moves the highlight; the
 		// options built before learn it as the frame builds again.
 		*s.pointer = p
@@ -392,7 +617,9 @@ func (s *selectParts[T]) Item(value T) *node {
 		*s.shown, *s.shows = value, true
 		item.ScrollIntoView()
 	}
-	item.checked = 1 + int8(b2f(value == *s.selected))
+	// The option highlighted is the one assistive technology reads as
+	// selected, as in a list box; the trigger's value is the choice.
+	item.checked = 1 + int8(b2f(item.highlighted))
 	item.afterInput(func() {
 		if item.Clicked() {
 			s.choose(value)
@@ -401,20 +628,21 @@ func (s *selectParts[T]) Item(value T) *node {
 	return item
 }
 
-// Highlighted reports whether an option of a select is the one the pointer
-// or the arrows are on.
+// Highlighted reports whether an option of a select, or an item of a menu
+// (MenuBase), is the one the pointer or the arrows are on.
 func (e *node) Highlighted() bool { return e.highlighted }
 
 // PopoverBase shows a panel without a look below anchor while *open is
 // true: fn styles the panel and builds its content. Pressing outside the
 // panel and the anchor, or Escape, sets *open to false, which Dismissed
 // reports; the press goes on to what is under the pointer, as with the
-// web's popovers. Where there is
+// web's popovers. It starts at the anchor's start: its left, or its right
+// right to left (Direction). Where there is
 // no room below the anchor, the panel shows above it; a top margin keeps
 // it apart from the anchor on either side. fn may place it elsewhere with
-// AttachTo, as to the right of the anchor:
+// AttachTo, as after the anchor:
 //
-//	panel.AttachTo(anchor, ui.AnchorRight, ui.AnchorLeft).Margin(0, 0, 0, 6)
+//	panel.AttachTo(anchor, ui.AnchorEnd, ui.AnchorStart).MarginStart(6)
 //
 // It returns the panel, or nil while closed; Popover is PopoverBase with
 // the theme's look.
@@ -441,7 +669,7 @@ func popover(c *context, anchor *node, open *bool, modal bool, fn func(panel *no
 				dismissed = true
 			}
 		}
-		panel = coreBox(c).Role(RolePopup).AttachTo(anchor, AnchorBottomLeft, AnchorTopLeft)
+		panel = coreBox(c).Role(RolePopup).AttachTo(anchor, AnchorBottomStart, AnchorTopStart)
 		// Presses on it stay in it.
 		panel.flags |= flagClickable
 		panel.Children(func() { fn(panel) })

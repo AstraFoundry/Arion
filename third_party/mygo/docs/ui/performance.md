@@ -10,6 +10,12 @@ They were taken on October 8, 2026 on Apple M5, macOS arm64, Go 1.27.1, with
 | 1,000 static labels | 397 µs | 0 | 0 |
 | Visible rows of a million-row list | 14.5 µs | 20 | 176 |
 | Diff view with no changes | 389 µs | 2 | 72 |
+| A 50 KB Markdown reply, shown whole | 1.3 ms | 353 | 15,894 |
+| The same reply streaming, 16 bytes a frame | 0.8 ms | 350 | 35,946 |
+
+The Markdown rows, `BenchmarkViewSteady` and `BenchmarkViewStream` of
+`ui/markdown`, were taken on October 14, 2026, on a busier machine; see
+[Markdown](markdown.md#performance) for the parser's own costs.
 
 Element handles validate their owner, arena slot and build generation.
 Static label handles do not allocate. Input bindings, action queues and
@@ -47,6 +53,8 @@ From the MyGo repository root:
 CGO_ENABLED=0 GOMAXPROCS=1 go test ./ui -run '^$' \
   -bench '^(BenchmarkValueFrame|BenchmarkValueList|BenchmarkDiffSteady)$' \
   -benchmem -count=6 -benchtime=300ms
+CGO_ENABLED=0 GOMAXPROCS=1 go test ./ui/markdown -run '^$' \
+  -bench '^BenchmarkView' -benchmem -count=6 -benchtime=300ms
 CGO_ENABLED=0 GOMAXPROCS=1 go test ./ui \
   -run '^TestValueFrameRetainedHeap$' -count=3 -v
 ```

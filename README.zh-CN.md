@@ -14,8 +14,8 @@
 </p>
 
 <p align="center">
-  <a href="go.work"><img src="https://img.shields.io/badge/Go-1.27.1-00ADD8?logo=go&logoColor=white" alt="Go 1.27.1" style="display: inline-block; margin: 2px;" /></a>
-  <a href="apps/desktop/go.mod"><img src="https://img.shields.io/badge/MyGo-v0.4.6-4B5563" alt="MyGo v0.4.6" style="display: inline-block; margin: 2px;" /></a>
+  <a href="go.work"><img src="https://img.shields.io/badge/Go-1.27.3-00ADD8?logo=go&logoColor=white" alt="Go 1.27.3" style="display: inline-block; margin: 2px;" /></a>
+  <a href="apps/desktop/go.mod"><img src="https://img.shields.io/badge/MyGo-v0.8.3-4B5563" alt="MyGo v0.8.3" style="display: inline-block; margin: 2px;" /></a>
   <a href="docs/decisions/020-native-qwen-asr.md"><img src="https://img.shields.io/badge/ASR-Qwen3_1.7B-0F766E" alt="Native Qwen3-ASR" style="display: inline-block; margin: 2px;" /></a>
   <a href=".nvmrc"><img src="https://img.shields.io/badge/Node-24-339933?logo=nodedotjs&logoColor=white" alt="Node 24" style="display: inline-block; margin: 2px;" /></a>
   <a href="package.json"><img src="https://img.shields.io/badge/pnpm-10.33.0-F69220?logo=pnpm&logoColor=white" alt="pnpm 10.33.0" style="display: inline-block; margin: 2px;" /></a>
@@ -37,7 +37,7 @@
 - **端侧原生语音识别** — 通过 `speech.cpp` 与 Q8_0 GGUF 权重本地运行 Qwen3-ASR 1.7B，在 Apple silicon 上使用 Metal，在 Windows x64 上使用 CPU/Vulkan（[ADR 020](docs/decisions/020-native-qwen-asr.md)）。模型下载并通过 SHA-256 校验后即可完全离线运行；麦克风音频仅驻留当次会话内存，自动跳过密码框，并内置分档软件输入增益（`−6 dB` 至 `+12 dB`）以支持开放办公区低声口述。
 - **改词自学习与草稿隔离** — 说话期间流式草稿仅保留在悬浮胶囊内，松开按键后才一次性提交至编辑器。本地自动应用确定性清理规则与个人词库；在 macOS 原生编辑器中，文字上屏后若手动修改了误识别词，系统会在端侧自动学习并支持一键撤销（[ADR 014](docs/decisions/014-edit-learning.md)）。
 - **两阶段上下文智能润色** — 松开听写键后可选执行一次两阶段润色（[ADR 023](docs/decisions/023-final-only-polishing.md)），剔除口语停顿词、合并句内自我更正，结合当前窗口/光标附近的可见术语消歧（[ADR 013](docs/decisions/013-rewrite-context-on-device.md)），并按当前应用自动排版（**匹配当前应用**，[ADR 012](docs/decisions/012-context-scene-selection.md)）。可选的翻译快捷键可边听写边翻译为 12 种目标语言。支持在 macOS Apple silicon 与 Windows x64 上通过 `llama.cpp` 本地运行 Qwen3.5-2B（`Q4_K_M` GGUF，[ADR 018](docs/decisions/018-staged-gguf-rewriting.md)、[ADR 025](docs/decisions/025-windows-local-polishing.md)），或显式接入云端模型（ChatGPT 登录，OpenAI、Anthropic、Gemini、DeepSeek、OpenRouter 的 API Key，或 OpenAI 兼容与 Anthropic 兼容接口的地址和 API Key），原始音频始终留在本地（[ADR 022](docs/decisions/022-cloud-polishing.md)）。
-- **原生 Go 桌面外壳** — 基于 [MyGo](https://github.com/egoist/mygo)（`v0.4.6`）并在 Go 中采用功能切片设计（FSD）构建，无 Electron 或 WebView（[ADR 001](docs/decisions/001-desktop-native-boundaries.md)、[ADR 007](docs/decisions/007-sunbeam-design-system.md)）。常驻菜单栏/系统托盘，悬浮胶囊支持跨全屏空间展示与点击穿透，不抢占编辑器焦点，支持中英文界面实时切换（[i18n](docs/frontend/i18n.md)）。
+- **原生 Go 桌面外壳** — 基于 [MyGo](https://github.com/egoist/mygo)（`v0.8.3`）并在 Go 中采用功能切片设计（FSD）构建，无 Electron 或 WebView（[ADR 001](docs/decisions/001-desktop-native-boundaries.md)、[ADR 007](docs/decisions/007-sunbeam-design-system.md)）。常驻菜单栏/系统托盘，悬浮胶囊支持跨全屏空间展示与点击穿透，不抢占编辑器焦点，支持中英文界面实时切换（[i18n](docs/frontend/i18n.md)）。
 - **零知识加密同步与签名更新** — 个人词库使用存储在 macOS Keychain 或 Windows DPAPI 中的密钥进行本地 AES-256-GCM 加密（[ADR 005](docs/decisions/005-local-encryption.md)）。仓库内置支持 Docker 自托管且不持有解密密钥的 Go 密文中继服务 `services/sync`（[ADR 015](docs/decisions/015-hosted-relay-account-authorization.md)），以及提供 Ed25519 签名 `stable`/`beta` 通道的更新服务 `services/updates`（[ADR 019](docs/decisions/019-center-update-channels.md)）。
 
 - **可控更新与产品通知** — 自动检查与已验证下载独立设置，下载后的更新等待用户明确选择安全重启。系统通知设置统一控制更新提醒和登录后的账户定向通知，支持应用运行时接收及下次启动补收。参阅[更新生命周期](docs/project/update-lifecycle.md)与[产品通知](docs/project/product-notifications.md)。
@@ -55,7 +55,7 @@
 
 ### 前置条件
 
-- **Go 1.27.1** 且启用 `cgo`（`go.work` 使用 Go 自动工具链选择）。
+- **Go 1.27.3** 且启用 `cgo`（`go.work` 使用 Go 自动工具链选择）。
 - **macOS（`arm64`）**：带 macOS 14 SDK 的 Apple Command Line Tools、CMake 与 Apple silicon 主机；`speech.cpp` 会在本地构建 Metal 后端。
 - **Windows（`amd64`）**：原生 C/C++ 工具链、CMake、MinGW-w64 GCC（`CC=x86_64-w64-mingw32-gcc`）与 NSIS。
 - **Node 24**（`.nvmrc`）与**锁定版本的 `pnpm@10.33.0`**（`package.json`）。

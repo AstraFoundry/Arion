@@ -66,8 +66,10 @@ func Nearest(points ...Point) func(Point) Point {
 // building the view, as AnimatePose moves it. Dragging reports that the
 // pointer drags it, once the pointer moved a few DIPs, Transitioning that
 // it moves, and DragOffset where it shows. A press dragging it is no
-// click; a press catches it as it moves. While the desktop asks for less
-// motion (Preferences.ReduceMotion), it goes to rest at once.
+// click; a press catches it as it moves. A press the system cancels
+// (PressCanceled) throws nothing, and the element goes back to where the
+// press took it. While the desktop asks for less motion
+// (Preferences.ReduceMotion), it goes to rest at once.
 //
 //	sheet.Draggable(&app.sheet, ui.DraggableOptions{
 //		Axis:   ui.Vertical,
@@ -75,6 +77,7 @@ func Nearest(points ...Point) func(Point) Point {
 //		Snap:   ui.Nearest(ui.Point{}, ui.Point{Y: 200}, ui.Point{Y: 400}),
 //	})
 func (e *node) Draggable(offset *Point, o DraggableOptions) *node {
+	scene.FoldTranslations() // renderers draw its moves as untransformed content
 	axes := o.Axis
 	if axes&^(Horizontal|Vertical) != 0 {
 		panic("ui: Draggable's Axis must be Horizontal, Vertical or both")
@@ -130,9 +133,9 @@ func (e *node) Draggable(offset *Point, o DraggableOptions) *node {
 		}
 	}
 
-	held := st.pressed && rt.pressButton == 0 && !e.disabled()
+	held := st.pressedPrimary() && !e.disabled()
 	// A press that began and ended since the last frame.
-	ended := !st.pressed && st.released && rt.pressButton == 0
+	ended := !st.pressed && st.released
 	if !r.pressing && (held || ended) {
 		// The press holds the element where it shows.
 		r.pressing, r.caught, r.from = true, r.moving(), shown
@@ -155,14 +158,19 @@ func (e *node) Draggable(offset *Point, o DraggableOptions) *node {
 		r.pressing = false
 		if st.drag.far || r.caught {
 			var v Point
-			if st.drag.far && ended && invertible {
+			to := shown
+			switch {
+			case st.canceled:
+				// The system took the press: no throw, and the element
+				// goes back to where the press took it.
+				to = r.from
+			case st.drag.far && ended && invertible:
 				d := &st.drag
 				v.X, v.Y = space.VectorAt(d.ox+d.wx, d.oy+d.wy, st.releaseWX, st.releaseWY)
 				v = flingVelocity(v)
 			}
-			to := shown
 			if o.Snap != nil {
-				to = o.Snap(r.clamp(Point{Project(shown.X, v.X), Project(shown.Y, v.Y)}, shown))
+				to = o.Snap(r.clamp(Point{Project(to.X, v.X), Project(to.Y, v.Y)}, shown))
 				finiteMotion("drag offset", float64(to.X), float64(to.Y))
 			}
 			to = r.clamp(to, shown)

@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/egoist/mygo/internal/nsis"
 	"github.com/egoist/mygo/internal/webview2"
 )
 
@@ -39,9 +40,20 @@ func runDoctor(args []string) error {
 		major, _ := strconv.Atoi(strings.Split(v, ".")[0])
 		check("macOS", err == nil && major >= 12, v+" (WKWebView; macOS 12 or later is required)")
 	case "linux":
-		out, _ := exec.Command("sh", "-c", "ldconfig -p 2>/dev/null | grep -o 'libwebkit2gtk-4\\.[01]\\.so[.0-9]*' | sort -u").Output()
-		libs := strings.TrimSpace(string(out))
-		check("webkit", libs != "", or(libs, "WebKitGTK not found: install libwebkit2gtk-4.1-0 (Debian/Ubuntu) or webkit2gtk4.1 (Fedora)"))
+		libs := func(pattern string) string {
+			out, _ := exec.Command("sh", "-c", "ldconfig -p 2>/dev/null | grep -o '"+pattern+"' | sort -u").Output()
+			return strings.TrimSpace(string(out))
+		}
+		gtk := libs(`libgtk-3\.so\.0`)
+		check("gtk", gtk != "", or(gtk, "GTK 3 not found: install libgtk-3-0 (Debian/Ubuntu) or gtk3 (Fedora)"))
+		// Only web pages need WebKitGTK: not the project in the current
+		// directory when it says it shows none.
+		if c, err := loadConfig("."); err == nil && !c.Linux.webView() {
+			fmt.Printf("- %-10s not needed (linux.webview is false)\n", "webkit")
+			break
+		}
+		webkit := libs(`libwebkit2gtk-4\.[01]\.so[.0-9]*`)
+		check("webkit", webkit != "", or(webkit, "WebKitGTK not found: install libwebkit2gtk-4.1-0 (Debian/Ubuntu) or webkit2gtk4.1 (Fedora)"))
 	case "windows":
 		// The runtime a window showing a web page gets, not the install
 		// EdgeUpdate registers, which outlives its files.
@@ -66,10 +78,10 @@ func runDoctor(args []string) error {
 		p, _ := exec.LookPath(name)
 		return p
 	}
-	if nsis := makensis(); nsis != "" || runtime.GOOS != "windows" {
-		optional("makensis", "the Windows installer, https://nsis.sourceforge.io", nsis != "", nsis)
+	if compiler := makensis(); compiler != "" || runtime.GOOS != "windows" {
+		optional("makensis", "the Windows installer, https://nsis.sourceforge.io", compiler != "", compiler)
 	} else {
-		fmt.Printf("- %-10s not found (mygo build downloads NSIS %s for the Windows installer)\n", "makensis", nsisRelease.version)
+		fmt.Printf("- %-10s not found (mygo build downloads NSIS %s for the Windows installer, unless -skip-installer)\n", "makensis", nsis.Release.Version)
 	}
 	if runtime.GOOS == "windows" {
 		st := signtool()

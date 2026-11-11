@@ -11,7 +11,7 @@ import "unsafe"
 
 var (
 	clsidTaskbarList = guid("56fdf344-fd6d-11d0-958a-006097c9a090")
-	iidITaskbarList3 = guid("ea1afb91-9e28-4b86-90e9-9e9f8a5eee84")
+	iidITaskbarList3 = guid("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf")
 )
 
 // ITaskbarList3 vtable indices and progress flags (ShObjIdl_core.h).

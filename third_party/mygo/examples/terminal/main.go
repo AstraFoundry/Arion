@@ -15,10 +15,14 @@ import (
 
 func main() {
 	mygo.App.WhenReady(func() {
+		// The window shows the terminal, so it comes second, but the shell
+		// may set its title before it exists: the callbacks, on a goroutine
+		// of the terminal, wait for it.
 		var win *mygo.Window
+		ready := make(chan struct{})
 		term, err := terminal.New(terminal.Options{
-			OnTitle: func(title string) { win.SetTitle(title) },
-			OnExit:  func(int) { win.Close() },
+			OnTitle: func(title string) { <-ready; win.SetTitle(title) },
+			OnExit:  func(int) { <-ready; win.Close() },
 		})
 		if err != nil {
 			log.Fatal(err)
@@ -31,6 +35,7 @@ func main() {
 				terminal.View(c, term).Fill().AutoFocus()
 			}),
 		})
+		close(ready)
 		win.OnClosed(func() { term.Close() })
 	})
 	if err := mygo.App.Run(); err != nil {

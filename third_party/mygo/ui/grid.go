@@ -1,9 +1,12 @@
 package ui
 
-// Track sizes a column or a row of a grid: Fixed, Fr or FitContent.
+// Track sizes a column or a row of a grid: Fixed, Fr or FitContent, and
+// with Min or MinContent a least size.
 type Track struct {
 	kind trackKind
-	v    float32
+	// minContent makes an Fr track no smaller than its items' content.
+	minContent bool
+	v, min     float32
 }
 
 type trackKind uint8
@@ -15,19 +18,38 @@ const (
 )
 
 // Fixed is a track of v DIPs.
-func Fixed(v float32) Track { return Track{trackFixed, v} }
+func Fixed(v float32) Track { return Track{kind: trackFixed, v: v} }
 
 // Fr is a track taking a share f of the room the other tracks leave, as
 // CSS's minmax(0, <f>fr): tracks of Fr(1) share it equally, even where
 // their content is wider. Where the grid's size is not set, as the height
 // of a grid that grows with its rows, they are as large as their content
-// asks, in proportion to f.
-func Fr(f float32) Track { return Track{trackFr, max(f, 0)} }
+// asks, in proportion to f. Min and MinContent give it a least size.
+func Fr(f float32) Track { return Track{kind: trackFr, v: max(f, 0)} }
 
 // FitContent is a track as wide, or as high, as its content, within the
 // room there is, as CSS's auto. Tracks beyond those a grid sets, such as
 // the rows it adds for its children, fit their content.
 func FitContent() Track { return Track{} }
+
+// Min makes the track no smaller than v DIPs, as CSS's minmax(<v>px, …):
+// a main pane beside a side column that keeps a readable width, the grid
+// overflowing its box rather than squeezing it.
+//
+//	ui.Grid(c).ColumnTracks(ui.Fr(1).Min(240), ui.Fixed(320))
+//
+// An Fr track whose share of the room would be less is sized by its
+// minimum, and the other Fr tracks share the rest, as CSS finds the size
+// of an fr.
+func (t Track) Min(v float32) Track { t.min = max(v, 0); return t }
+
+// MinContent makes an Fr track no smaller than the content of the items in
+// it, their min-content widths (or heights, for a row), as CSS's
+// minmax(auto, <f>fr), the automatic minimum CSS's plain 1fr has: a
+// label's column that takes the room left but never cuts the label. Items
+// spanning several tracks widen the MinContent Fr tracks among them, in
+// proportion to their shares. Other tracks are unchanged by it.
+func (t Track) MinContent() Track { t.minContent = t.kind == trackFr; return t }
 
 // gridCell is where an element goes in its grid: lines from 1, 0 for
 // automatic placement, and spans, 0 for 1 and negative to the last line.
@@ -107,17 +129,48 @@ func (e *node) RowStart(n int) *node { e.cell.row = int16(max(n, 1)); return e }
 
 // ColumnSpan makes the element span n columns of its grid, or, for a
 // negative n, every column from its start to the grid's last, as a header
-// across a grid does.
+// across a grid does. A cell of a table or a grid (RoleCell,
+// RoleColumnHeader, RoleRowHeader) tells assistive technology it covers
+// them, as ARIA's aria-colspan, whether or not its row lays it out in a
+// grid: screen readers read a cell covering two columns as one.
 func (e *node) ColumnSpan(n int) *node { e.cell.colSpan = int16(n); return e }
 
 // RowSpan makes the element span n rows of its grid, or, for a negative n,
-// every row from its start to the last the grid sets.
+// every row from its start to the last the grid sets. A cell of a table
+// or a grid tells assistive technology it covers them, as ARIA's
+// aria-rowspan: the cells of the rows below it then say their columns
+// with ColumnIndex where they follow it.
 func (e *node) RowSpan(n int) *node { e.cell.rowSpan = int16(n); return e }
+
+// cellSpan returns how many columns and rows the element spans, as
+// ColumnSpan and RowSpan set them, 0 for one: a span to the last line
+// counts those its parent's grid sets, and is 0 outside one.
+func (e *node) cellSpan() (cols, rows int) {
+	var nc, nr int
+	if p := e.parent; p != nil && p.grid {
+		nc, nr = len(p.cols), len(p.rows)
+	}
+	span := func(n, start int16, lines int) int {
+		v := int(n)
+		if v < 0 {
+			v = lines - max(int(start)-1, 0) // as layout places it
+		}
+		if v <= 1 {
+			return 0
+		}
+		return v
+	}
+	return span(e.cell.colSpan, e.cell.col, nc), span(e.cell.rowSpan, e.cell.row, nr)
+}
 
 type gridItem struct {
 	e                *node
 	col, row         int // from 0
 	colSpan, rowSpan int
+	// baseline is how far below the top of its margin box the baseline of
+	// an item aligned by its baseline is, which laid it out.
+	baseline float32
+	laidOut  bool
 }
 
 // contrib is the size an item asks of the tracks it spans.
@@ -141,7 +194,7 @@ func gridPlace(e *node, s *gridScratch) (items []gridItem, nc, nr int) {
 	first := len(s.items)
 	nc = max(len(e.cols), 1)
 	for c := e.first; c != nil; c = c.next {
-		if c.flags&flagAbsolute != 0 {
+		if c.flags&flagAbsolute != 0 || c.hidden {
 			continue
 		}
 		it := gridItem{e: c, col: int(c.cell.col) - 1, row: int(c.cell.row) - 1, colSpan: int(c.cell.colSpan), rowSpan: int(c.cell.rowSpan)}
@@ -248,18 +301,77 @@ func track(tracks []Track, i int) Track {
 	return Track{}
 }
 
+// contributes reports whether sizing the tracks along an axis reads what
+// an item spanning span of them from start asks (sizeTracks): of those
+// spanning a FitContent track or a MinContent Fr track, and, where the
+// room is not known, of those spanning an Fr track, as large as the
+// content asks. The others take no part, as CSS's minmax(0, 1fr) tracks
+// with room known measure no items, and are not measured.
+func contributes(tracks []Track, start, span int, avail float32, minContent bool) bool {
+	for i := start; i < start+span; i++ {
+		switch t := track(tracks, i); t.kind {
+		case trackFit:
+			return true
+		case trackFr:
+			if t.minContent || !minContent && !finite(avail) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// frSize finds the size of an fr over n tracks of sizes sizes, filling
+// space, as CSS Grid's "find the size of an fr" does: the room the tracks
+// other than Fr ones leave, shared by the Fr tracks in proportion to their
+// factors, less the Fr tracks whose sizes so far, their minimums, are more
+// than their shares, which keep those sizes instead.
+func frSize(tracks []Track, n int, space float32, sizes []float32) float32 {
+	var fr float32
+	for i := range n {
+		if t := track(tracks, i); t.kind == trackFr {
+			fr += t.v
+		} else {
+			space -= sizes[i]
+		}
+	}
+	unit := max(space, 0) / max(fr, 1)
+	// Setting a track aside makes the size smaller, so that the tracks set
+	// aside stay so, and each pass sets aside more or ends.
+	for aside := 0; ; {
+		left, f, k := space, float32(0), 0
+		for i := range n {
+			if t := track(tracks, i); t.kind == trackFr {
+				if sizes[i] > unit*t.v {
+					left -= sizes[i]
+					k++
+				} else {
+					f += t.v
+				}
+			}
+		}
+		if k <= aside {
+			return unit
+		}
+		aside, unit = k, max(left, 0)/max(f, 1)
+	}
+}
+
 // sizeTracks sizes n tracks along an axis, of which tracks are explicit,
 // with room avail (inf when unknown) and gap between them, from what the
 // items ask: their min-content sizes when minContent. Stretch spreads room
 // left over FitContent tracks, when there are no Fr ones. It writes the
 // sizes in sizes, using limits as scratch.
 func sizeTracks(tracks []Track, n int, avail, gap float32, cs []contrib, minContent, stretch bool, sizes, limits []float32) {
+	autoFr := false
 	for i := range n {
 		t := track(tracks, i)
-		sizes[i], limits[i] = 0, 0
+		sizes[i], limits[i] = t.min, 0
 		if t.kind == trackFixed {
-			sizes[i], limits[i] = t.v, t.v
+			sizes[i] = max(t.v, t.min)
+			limits[i] = sizes[i]
 		}
+		autoFr = autoFr || t.minContent
 	}
 	spans := func(c contrib, kind trackKind) int {
 		k := 0
@@ -270,12 +382,18 @@ func sizeTracks(tracks []Track, n int, avail, gap float32, cs []contrib, minCont
 		}
 		return k
 	}
-	// What items ask of the FitContent tracks they span, those spanning
-	// one first.
+	// What items ask of the FitContent tracks they span, and of the
+	// MinContent Fr ones, those spanning one first.
 	for _, c := range cs {
-		if c.span == 1 && track(tracks, c.start).kind == trackFit {
+		if c.span != 1 {
+			continue
+		}
+		switch t := track(tracks, c.start); {
+		case t.kind == trackFit:
 			sizes[c.start] = max(sizes[c.start], c.min)
 			limits[c.start] = max(limits[c.start], c.max)
+		case t.minContent:
+			sizes[c.start] = max(sizes[c.start], c.min)
 		}
 	}
 	for _, c := range cs {
@@ -305,11 +423,49 @@ func sizeTracks(tracks []Track, n int, avail, gap float32, cs []contrib, minCont
 			}
 		}
 	}
+	// Then what items spanning MinContent Fr tracks ask of them, in
+	// proportion to their factors, as CSS considers them all together: each
+	// track grows by the most any item asks of it (in limits until then).
+	if autoFr {
+		for _, c := range cs {
+			if c.span == 1 {
+				continue
+			}
+			extra := c.min - gap*float32(c.span-1)
+			var fr float32
+			k := 0
+			for i := c.start; i < c.start+c.span; i++ {
+				extra -= sizes[i]
+				if t := track(tracks, i); t.minContent {
+					fr += t.v
+					k++
+				}
+			}
+			if k == 0 || extra <= 0 {
+				continue
+			}
+			// By their factors, and where they add up to less than 1,
+			// the rest equally.
+			for i := c.start; i < c.start+c.span; i++ {
+				if t := track(tracks, i); t.minContent {
+					limits[i] = max(limits[i], extra*(t.v/max(fr, 1)+max(1-fr, 0)/float32(k)))
+				}
+			}
+		}
+		for i := range n {
+			if track(tracks, i).minContent {
+				sizes[i] += limits[i]
+				limits[i] = 0
+			}
+		}
+	}
 	var frSum float32
+	floors := false // Fr tracks with a minimum
 	for i := range n {
 		limits[i] = max(limits[i], sizes[i])
 		if t := track(tracks, i); t.kind == trackFr {
 			frSum += t.v
+			floors = floors || sizes[i] > 0
 		}
 	}
 	if minContent {
@@ -318,7 +474,11 @@ func sizeTracks(tracks []Track, n int, avail, gap float32, cs []contrib, minCont
 	gaps := gap * float32(max(n-1, 0))
 	if !finite(avail) {
 		// As large as the content asks: FitContent tracks at their limits,
-		// Fr tracks by the largest share any item asks.
+		// Fr tracks by the largest share any item asks, or that any of
+		// their minimums is, as CSS finds the size of an fr without room
+		// known. (CSS sets aside, in an item's share, the Fr tracks whose
+		// minimums are more than it; those minimums then make the share of
+		// every track larger still, for factors of 1 or more.)
 		var unit float32
 		for _, c := range cs {
 			var fr, other float32
@@ -333,9 +493,14 @@ func sizeTracks(tracks []Track, n int, avail, gap float32, cs []contrib, minCont
 				unit = max(unit, (c.max-other-gap*float32(c.span-1))/fr)
 			}
 		}
+		for i := 0; floors && i < n; i++ {
+			if t := track(tracks, i); t.kind == trackFr {
+				unit = max(unit, sizes[i]/max(t.v, 1))
+			}
+		}
 		for i := range n {
 			if t := track(tracks, i); t.kind == trackFr {
-				sizes[i] = unit * t.v
+				sizes[i] = max(sizes[i], unit*t.v)
 			} else {
 				sizes[i] = limits[i]
 			}
@@ -370,9 +535,12 @@ func sizeTracks(tracks []Track, n int, avail, gap float32, cs []contrib, minCont
 	free = max(free, 0)
 	if frSum > 0 {
 		unit := free / max(frSum, 1)
+		if floors {
+			unit = frSize(tracks, n, avail-gaps, sizes)
+		}
 		for i := range n {
 			if t := track(tracks, i); t.kind == trackFr {
-				sizes[i] = unit * t.v
+				sizes[i] = max(sizes[i], unit*t.v)
 			}
 		}
 		return
@@ -393,8 +561,8 @@ func sizeTracks(tracks []Track, n int, avail, gap float32, cs []contrib, minCont
 }
 
 // gridColumns sizes the columns of a grid placed in items, with room avail
-// in a content box cw wide (both inf when unknown), in the scratch.
-func gridColumns(e *node, s *gridScratch, items []gridItem, nc int, avail, cw float32, minContent bool) []float32 {
+// (inf when unknown), in the scratch.
+func gridColumns(e *node, s *gridScratch, items []gridItem, nc int, avail float32, minContent bool) []float32 {
 	first, cfirst := len(s.f), len(s.cs)
 	for range 2 * nc {
 		s.f = append(s.f, 0)
@@ -408,10 +576,13 @@ func gridColumns(e *node, s *gridScratch, items []gridItem, nc int, avail, cw fl
 		it := &items[i]
 		c := it.e
 		cs[i] = contrib{start: it.col, span: it.colSpan}
-		if v, ok := c.width.resolve(base(cw)); ok {
-			w := c.clampW(v, cw) + c.marginX()
+		// Percentages are of the item's cell, which the columns being
+		// sized make: until they are, they count as automatic sizes, as
+		// in CSS.
+		if v, ok := c.width.resolve(-1); ok {
+			w := c.clampW(v, inf) + c.marginX()
 			cs[i].min, cs[i].max = w, w
-		} else {
+		} else if contributes(e.cols, it.col, it.colSpan, avail, minContent) || e.c.rt.noLayoutCache {
 			cs[i].min = intrinsic(c, false) + c.marginX()
 			cs[i].max = intrinsic(c, true) + c.marginX()
 		}
@@ -426,9 +597,13 @@ func gridColumns(e *node, s *gridScratch, items []gridItem, nc int, avail, cw fl
 func gridIntrinsic(e *node, maxContent bool) float32 {
 	s := &e.c.rt.grid
 	firstItem, firstF := len(s.items), len(s.f)
-	defer func() { s.items, s.f = s.items[:firstItem], s.f[:firstF] }()
+	defer func() {
+		// Laid out again only when it changed, it lets go of its elements.
+		clear(s.items[firstItem:])
+		s.items, s.f = s.items[:firstItem], s.f[:firstF]
+	}()
 	items, nc, _ := gridPlace(e, s)
-	sizes := gridColumns(e, s, items, nc, inf, inf, !maxContent)
+	sizes := gridColumns(e, s, items, nc, inf, !maxContent)
 	w := e.gapX * float32(max(nc-1, 0))
 	for _, v := range sizes {
 		w += v
@@ -443,14 +618,17 @@ func gridIntrinsic(e *node, maxContent bool) float32 {
 func gridLayout(e *node, cw, ch float32, commit bool) (usedW, usedH float32) {
 	s := &e.c.rt.grid
 	firstItem, firstF, firstC := len(s.items), len(s.f), len(s.cs)
-	defer func() { s.items, s.f, s.cs = s.items[:firstItem], s.f[:firstF], s.cs[:firstC] }()
+	defer func() {
+		clear(s.items[firstItem:])
+		s.items, s.f, s.cs = s.items[:firstItem], s.f[:firstF], s.cs[:firstC]
+	}()
 	items, nc, nr := gridPlace(e, s)
-	cols := gridColumns(e, s, items, nc, cw, cw, false)
+	cols := gridColumns(e, s, items, nc, cw, false)
 
 	// The rows, from the heights of the items at the widths their columns
 	// give them.
 	at := len(s.f)
-	for range 2*nr + 2*len(items) {
+	for range 3*nr + 2*len(items) {
 		s.f = append(s.f, 0)
 	}
 	for range items {
@@ -458,10 +636,20 @@ func gridLayout(e *node, cw, ch float32, commit bool) (usedW, usedH float32) {
 	}
 	rows, limits := s.f[at:at+nr], s.f[at+nr:at+2*nr]
 	widths, offs := s.f[at+2*nr:at+2*nr+len(items)], s.f[at+2*nr+len(items):at+2*nr+2*len(items)]
+	// How far below the top of each row the baseline of its items aligned
+	// by their baselines is.
+	rowBase := s.f[at+2*nr+2*len(items) : at+3*nr+2*len(items)]
 	cs := s.cs[firstC:]
 	align := e.align
 	if align == alignAuto {
 		align = Stretch
+	}
+	// Right to left, the columns go from the right, and items start at
+	// the right of their cells.
+	rtl := e.rtl()
+	ms, me := 3, 1
+	if rtl {
+		ms, me = 1, 3
 	}
 	for i := range items {
 		it := &items[i]
@@ -470,10 +658,31 @@ func gridLayout(e *node, cw, ch float32, commit bool) (usedW, usedH float32) {
 		for k := it.col; k < it.col+it.colSpan; k++ {
 			area += cols[k]
 		}
-		w, off := gridPlaceIn(c, area, c.width, c.marginX(), 3, 1, gridJustify(e, c), cw, func(avail float32) float32 { return fitWidth(c, avail, cw) }, c.clampW)
+		w, off := gridPlaceIn(c, area, c.width, c.marginX(), ms, me, gridJustify(e, c), func(avail float32) float32 { return fitWidth(c, avail, area) }, c.clampW)
 		widths[i], offs[i] = w, off
-		h := heightAt(c, w, ch) + c.marginY()
+		// Percentage heights count as automatic ones until the rows are
+		// sized.
+		h := heightAt(c, w, inf)
+		if it.rowSpan == 1 && byBaseline(c, align, e) {
+			layoutBox(c, w, h)
+			it.laidOut = true
+			b, ok := boxBaseline(c)
+			if !ok {
+				b = h
+			}
+			it.baseline = c.m(0) + b
+			rowBase[it.row] = max(rowBase[it.row], it.baseline)
+		}
+		h += c.marginY()
 		cs[i] = contrib{start: it.row, span: it.rowSpan, min: h, max: h}
+	}
+	// An item aligned by its baseline asks for the room above it that
+	// lines its baseline up with its row's.
+	for i := range items {
+		if it := &items[i]; it.laidOut {
+			cs[i].min += rowBase[it.row] - it.baseline
+			cs[i].max = cs[i].min
+		}
 	}
 	sizeTracks(e.rows, nr, ch, e.gapY, cs, false, e.alignContent == alignAuto, rows, limits)
 
@@ -511,25 +720,46 @@ func gridLayout(e *node, cw, ch float32, commit bool) (usedW, usedH float32) {
 	for k, p := 0, y0; k < nr; k++ {
 		rowAt[k], p = p, p+rows[k]+e.gapY+betweenY
 	}
+	if inspectorBuilt {
+		noteGridTracks(e, colAt, cols, rowAt, rows, cw, usedW, rtl)
+	}
 	for i := range items {
 		it := &items[i]
 		c := it.e
 		x := colAt[it.col] + offs[i]
+		aw := e.gapX * float32(it.colSpan-1)
+		for k := it.col; k < it.col+it.colSpan; k++ {
+			aw += cols[k]
+		}
 		ah := (e.gapY + betweenY) * float32(it.rowSpan-1)
 		for k := it.row; k < it.row+it.rowSpan; k++ {
 			ah += rows[k]
 		}
 		w := widths[i]
-		h, offY := gridPlaceIn(c, ah, c.height, c.marginY(), 0, 2, selfAlign(c, align), ch, func(float32) float32 {
+		h, offY := gridPlaceIn(c, ah, c.height, c.marginY(), 0, 2, selfAlign(c, align), func(float32) float32 {
 			if c.aspect > 0 {
-				return c.clampH(w/c.aspect, ch)
+				return c.clampH(w/c.aspect, ah)
 			}
-			return heightAt(c, w, ch)
+			return heightAt(c, w, ah)
 		}, c.clampH)
+		if it.laidOut {
+			offY = rowBase[it.row] - it.baseline + c.m(0)
+		}
 		y := rowAt[it.row] + offY
+		if rtl {
+			// x is from the right of the content, which is as wide as the
+			// columns where its width is not known.
+			right := cw
+			if !finite(right) {
+				right = usedW
+			}
+			x = right - x - w
+		}
 		c.x, c.y = e.contentX()+x, e.contentY()+y
-		layoutBox(c, w, h)
-		dx, dy := c.relative(cw, ch)
+		if !it.laidOut || h != c.h {
+			layoutBox(c, w, h)
+		}
+		dx, dy := c.relative(aw, ah)
 		c.x += dx
 		c.y += dy
 	}
@@ -551,14 +781,15 @@ func gridJustify(e, c *node) Align {
 // long, and returns its size and where it starts in the area, margin
 // included: its own size, or the area less its margins when it
 // stretches, placed as a says or as its automatic margins (indexes ms and
-// me of its margins) take the room left.
-func gridPlaceIn(c *node, area float32, size length, margins float32, ms, me int, a Align, cb float32, natural func(avail float32) float32, clamp func(v, cb float32) float32) (float32, float32) {
+// me of its margins) take the room left. Percentages are of the area, as
+// in CSS.
+func gridPlaceIn(c *node, area float32, size length, margins float32, ms, me int, a Align, natural func(avail float32) float32, clamp func(v, cb float32) float32) (float32, float32) {
 	autoS, autoE := isAuto(c.margin[ms]), isAuto(c.margin[me])
 	var v float32
-	if l, ok := size.resolve(base(cb)); ok {
-		v = clamp(l, cb)
-	} else if a == Stretch && !autoS && !autoE && c.kind != kindIcon && (c.aspect == 0 || ms == 3) {
-		v = clamp(area-margins, cb)
+	if l, ok := size.resolve(base(area)); ok {
+		v = clamp(l, area)
+	} else if a == Stretch && !autoS && !autoE && c.kind != kindIcon && (c.aspect == 0 || ms%2 == 1) {
+		v = clamp(area-margins, area)
 	} else {
 		v = natural(area - margins)
 	}

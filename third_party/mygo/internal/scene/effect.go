@@ -45,6 +45,45 @@ type Effect struct {
 	// Pixels makes what draws the effect on the CPU, one for each
 	// renderer.
 	Pixels func() EffectPixels
+	// Shader is set for an effect that a shader of package ui/shader
+	// draws: its code is the shader's (the Fragment of package shaderir's
+	// backends, and a function calling it), which reads the words of
+	// EffectOp.Uniforms in a buffer laid out as Shader says, and the images
+	// of EffectOp.Images. Metal's is a whole library, with a tail of its
+	// own (ShaderSource in package metal); the others' go between the
+	// effects' head and tail.
+	Shader *ShaderLayout
+}
+
+// ShaderLayout is where a shader's uniforms lie in the buffer its code
+// reads: the offset in bytes of each word of EffectOp.Uniforms, and the
+// buffer's size in bytes, a multiple of 16.
+type ShaderLayout struct {
+	Lanes []int32
+	Size  int
+}
+
+// Pack writes words into buf, grown to the layout's size, as the layout
+// lays them out, and returns it. A lane takes 4 bytes, but for a bool of
+// Metal, which takes 1 and may lie in the last bytes: the bytes that fit
+// are written, little end first, and lanes in ascending order write over
+// what the one before spilled.
+func (l *ShaderLayout) Pack(buf []byte, words []uint32) []byte {
+	if cap(buf) < l.Size {
+		buf = make([]byte, l.Size)
+	}
+	buf = buf[:l.Size]
+	clear(buf)
+	for i, at := range l.Lanes {
+		if i >= len(words) {
+			break
+		}
+		w := words[i]
+		for k := 0; k < 4 && int(at)+k < len(buf); k++ {
+			buf[int(at)+k] = byte(w >> (8 * k))
+		}
+	}
+	return buf
 }
 
 // EffectCode is an effect's shader in a language: its source, and the
@@ -66,6 +105,57 @@ type EffectOp struct {
 	Blur float32
 	// Params are the effect's own, which its shaders read as e.p0 to e.p4.
 	Params [5][4]float32
+	// Uniforms and Images are what a shader's effect reads
+	// (Effect.Shader): the words of its uniforms' lanes, and up to four
+	// images, bitmaps or canvases, nil for none.
+	Uniforms []uint32
+	Images   [4]*Image
+	// WideUniforms, unless nil, are the words of Uniforms that renderers
+	// drawing a wide gamut (Scene.Wide) read in its place: colors outside
+	// the sRGB gamut in extended sRGB, where Uniforms holds the nearest
+	// sRGB ones.
+	WideUniforms []uint32
+	// Glyphs, unless empty, are the mask glyphs Scene.Glyphs[Glyphs[0]:
+	// Glyphs[1]] that a shader's effect paints instead of the rounded
+	// rectangle: the shapes of text, paths and icons, which it fills, each
+	// pixel's color times the glyph's coverage, corrected as text's is
+	// (TextCoverage) for the color the shader returns. Rect then holds
+	// them, and Origin is the point its shader's positions start from, the
+	// top left corner of the box it fills.
+	Glyphs [2]int32
+	Origin [2]float32
+}
+
+// Masked reports whether op paints mask glyphs (Glyphs).
+func (op *EffectOp) Masked() bool { return op.Glyphs[1] > op.Glyphs[0] }
+
+// Same reports whether op draws what o does: the same effect with the same
+// parameters, the same uniforms and no images, whose pixels may change.
+// Glyphs are compared by what they point at, which the caller does.
+func (op *EffectOp) Same(o *EffectOp) bool {
+	if op.Effect != o.Effect || op.Blur != o.Blur || op.Params != o.Params || len(op.Uniforms) != len(o.Uniforms) ||
+		op.Masked() != o.Masked() || op.Glyphs[1]-op.Glyphs[0] != o.Glyphs[1]-o.Glyphs[0] || op.Origin != o.Origin {
+		return false
+	}
+	for i := range op.Images {
+		if op.Images[i] != nil || o.Images[i] != nil {
+			return false
+		}
+	}
+	for i := range op.Uniforms {
+		if op.Uniforms[i] != o.Uniforms[i] {
+			return false
+		}
+	}
+	if len(op.WideUniforms) != len(o.WideUniforms) {
+		return false
+	}
+	for i := range op.WideUniforms {
+		if op.WideUniforms[i] != o.WideUniforms[i] {
+			return false
+		}
+	}
+	return true
 }
 
 // EffectPixels draws an effect on the CPU, for one renderer.
@@ -114,6 +204,36 @@ func BackdropOf(r Rect, blur float32, w, h int) Backdrop {
 	area := image.Rect(int(math.Floor(float64(r.X-reach))), int(math.Floor(float64(r.Y-reach))),
 		int(math.Ceil(float64(r.X+r.W+reach))), int(math.Ceil(float64(r.Y+r.H+reach))))
 	return Backdrop{Area: area.Intersect(image.Rect(0, 0, w, h)), Down: down, Sigma: sigma, Radius: radius}
+}
+
+// ImageBlur returns how an image's area is blurred by blur, the standard
+// deviation in its pixels (Op.Blur): averaged over squares of Down pixels
+// a side and blurred as a backdrop is (BackdropOf), within the area, which
+// it reads as transparent beyond.
+func ImageBlur(area image.Rectangle, blur float32) Backdrop {
+	b := BackdropOf(Rect{}, blur, 0, 0)
+	b.Area = area
+	return b
+}
+
+// ImageSrc returns where src, a rectangle of an image's pixels within the
+// area b blurs, lies in the blurred texels.
+func (b Backdrop) ImageSrc(src Rect) Rect {
+	k := float32(b.Down)
+	return Rect{X: (src.X - float32(b.Area.Min.X)) / k, Y: (src.Y - float32(b.Area.Min.Y)) / k, W: src.W / k, H: src.H / k}
+}
+
+// ImageArea returns the pixels of an image of w×h that src, a rectangle
+// of them, touches, which a blur of it reads.
+func ImageArea(src Rect, w, h int) image.Rectangle {
+	if src.W < 0 {
+		src.X, src.W = src.X+src.W, -src.W
+	}
+	if src.H < 0 {
+		src.Y, src.H = src.Y+src.H, -src.H
+	}
+	return image.Rect(int(math.Floor(float64(src.X))), int(math.Floor(float64(src.Y))),
+		int(math.Ceil(float64(src.X+src.W))), int(math.Ceil(float64(src.Y+src.H)))).Intersect(image.Rect(0, 0, w, h))
 }
 
 // Size returns the size of the averaged image, in texels.

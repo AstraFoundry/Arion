@@ -31,6 +31,12 @@ Maintainer-only instructions can stay in the repository docs between
 separate lines. The website omits those blocks from the page, table of
 contents, search index and Markdown downloads; GitHub still renders their contents.
 
+A comment `<!-- preview button 140 -->` in a page becomes a window of
+macOS, as high as it says, running that demo of `website/docs-demo` (a Go
+app of native UI compiled to WebAssembly), and `<!-- app mayoi 480 -->`
+runs an example app, one of `apps` in `docs-demo.ts`; a button of its title
+bar opens it in a tab of its own.
+
 Native UI's docs, in `docs/ui`, have a sidebar of their own, from the lists
 of `docs/ui/README.md` (the page at `/docs/ui`), and the header's UI link;
 the docs' sidebar leaves them out. A directory's `README.md` is the page of

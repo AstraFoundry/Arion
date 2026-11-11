@@ -9,6 +9,7 @@ func TestPlainCallbackNil(t *testing.T) {
 	}{
 		{"Draw", func(e Element) { e.Draw(nil) }},
 		{"DrawOver", func(e Element) { e.DrawOver(nil) }},
+		{"DrawObjects", func(e Element) { e.DrawObjects(nil) }},
 		{"HandleInput", func(e Element) { e.HandleInput(nil) }},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -16,7 +17,7 @@ func TestPlainCallbackNil(t *testing.T) {
 				element := Box(c).Size(10, 10)
 				tc.install(element)
 				n := element.node()
-				if n.paintFn != nil || n.paintAfterFn != nil || n.inputFn != nil {
+				if n.paintFn != nil || n.paintAfterFn != nil || n.objectFn != nil || n.inputFn != nil {
 					t.Error("nil callback became a non-nil handler")
 				}
 			}, 20, 20)

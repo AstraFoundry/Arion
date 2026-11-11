@@ -36,6 +36,10 @@ func (l *Layout) visualStops(li int) []caretStop {
 		l.boundaries = b.GraphemeOffsets()
 	}
 	var stops []caretStop
+	// Offsets the glyph scan appended, so the boundary sweep below skips
+	// them without rescanning the stops. Stops outside the line's range
+	// can't match a swept offset, so only in-range ones set a flag.
+	seen := make([]bool, line.End-line.Start+1)
 	line.upstream = slices.Clone(line.lineCarets())
 	for i := 0; i < len(line.Glyphs); {
 		g := line.Glyphs[i]
@@ -72,6 +76,9 @@ func (l *Layout) visualStops(li int) []caretStop {
 				line.upstream[at-line.Start] = x
 			}
 			stops = append(stops, caretStop{CaretPosition{at, affinity}, x, arrival})
+			if at >= line.Start && at <= line.End {
+				seen[at-line.Start] = true
+			}
 		}
 	}
 	// Keep trimmed spaces and empty lines navigable too.
@@ -79,7 +86,7 @@ func (l *Layout) visualStops(li int) []caretStop {
 	first, _ := slices.BinarySearch(l.boundaries, line.Start)
 	for k := first; k < len(l.boundaries) && l.boundaries[k] <= line.End; k++ {
 		at := l.boundaries[k]
-		if !slices.ContainsFunc(stops, func(s caretStop) bool { return s.position.Index == at }) {
+		if !seen[at-line.Start] {
 			stops = append(stops, caretStop{CaretPosition{at, Downstream}, carets[at-line.Start], 0})
 		}
 	}

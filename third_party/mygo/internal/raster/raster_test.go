@@ -1,6 +1,7 @@
 package raster
 
 import (
+	"bytes"
 	"image"
 	"image/png"
 	"math"
@@ -244,5 +245,26 @@ func TestThinLineCoverage(t *testing.T) {
 		if got := 1 - float64(pixel(m, 5, c.y)[0])/255; math.Abs(got-c.want) > 0.01 {
 			t.Errorf("row %d covered %.3f, want %.3f", c.y, got, c.want)
 		}
+	}
+}
+
+func TestMovedClipDrawsAsPlaced(t *testing.T) {
+	// A rounded clip moved by a translation covers what the same clip
+	// placed there covers, to the pixel.
+	draw := func(clip scene.Op) *Image {
+		s := &scene.Scene{Width: 120, Height: 100, Clear: scene.Color{R: 255, G: 255, B: 255, A: 255}, Ops: []scene.Op{
+			clip,
+			{Kind: scene.OpFill, Rect: scene.Rect{W: 120, H: 100}, Color: scene.Color{R: 37, G: 99, B: 235, A: 255}},
+			{Kind: scene.OpPopClip},
+		}}
+		dst := NewImage(s.Width, s.Height)
+		Render(dst, s)
+		return dst
+	}
+	radii := [4]float32{14, 14, 14, 14}
+	moved := draw(scene.Op{Kind: scene.OpPushClip, Rect: scene.Rect{X: 10, Y: 10, W: 60, H: 40}, Radii: radii, Transform: scene.Translation(20.25, 15.5), Continuous: true})
+	placed := draw(scene.Op{Kind: scene.OpPushClip, Rect: scene.Rect{X: 30.25, Y: 25.5, W: 60, H: 40}, Radii: radii, Continuous: true})
+	if !bytes.Equal(moved.Pix, placed.Pix) {
+		t.Fatal("a moved clip draws otherwise than the same clip placed there")
 	}
 }

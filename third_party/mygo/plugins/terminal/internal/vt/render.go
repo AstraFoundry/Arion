@@ -1,6 +1,11 @@
 package vt
 
-import "unsafe"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+	"unsafe"
+)
 
 // RenderState is a GhosttyRenderState: what a frame draws of a terminal,
 // copied from it by an update, with the rows that changed since the last
@@ -23,6 +28,7 @@ const (
 	rsDataColors      = 19
 
 	rowDataDirty     = 1
+	rowDataRaw       = 2
 	rowDataCells     = 3
 	rowDataSelection = 4
 	rowDataCellsRaw  = 5
@@ -170,6 +176,29 @@ func (r *RenderState) RowDirty() bool {
 	return r.rowGet(rowDataDirty, unsafe.Pointer(&v)) && v
 }
 
+// RowWrapped reports whether the row soft-wraps into the next.
+func (r *RenderState) RowWrapped() bool {
+	var raw uint64
+	if !r.rowGet(rowDataRaw, unsafe.Pointer(&raw)) {
+		return false
+	}
+	var v bool
+	return ok(call(fnRowData, uintptr(raw), rowDataWrap, uintptr(unsafe.Pointer(&v)))) && v
+}
+
+// RowPrompt returns how the row belongs to a shell's prompt.
+func (r *RenderState) RowPrompt() RowPrompt {
+	var raw uint64
+	if !r.rowGet(rowDataRaw, unsafe.Pointer(&raw)) {
+		return NoPrompt
+	}
+	v := NoPrompt
+	if !ok(call(fnRowData, uintptr(raw), rowDataSemanticPrompt, uintptr(unsafe.Pointer(&v)))) {
+		return NoPrompt
+	}
+	return v
+}
+
 // RowID returns the identity of the row, which it keeps as it scrolls.
 func (r *RenderState) RowID() RowID {
 	var id RowID
@@ -283,6 +312,43 @@ type Style struct {
 	FG, BG, UnderlineColor                                                  Color
 	Bold, Italic, Faint, Blink, Inverse, Invisible, Strikethrough, Overline bool
 	Underline                                                               int
+}
+
+// SGR returns the SGR sequence that sets the style from none.
+func (s Style) SGR() string {
+	p := []string{"0"}
+	add := func(on bool, code string) {
+		if on {
+			p = append(p, code)
+		}
+	}
+	add(s.Bold, "1")
+	add(s.Faint, "2")
+	add(s.Italic, "3")
+	switch s.Underline {
+	case UnderlineNone:
+	case UnderlineSingle:
+		p = append(p, "4")
+	default:
+		p = append(p, "4:"+strconv.Itoa(s.Underline))
+	}
+	add(s.Blink, "5")
+	add(s.Inverse, "7")
+	add(s.Invisible, "8")
+	add(s.Strikethrough, "9")
+	add(s.Overline, "53")
+	for _, c := range []struct {
+		c    Color
+		base string
+	}{{s.FG, "38"}, {s.BG, "48"}, {s.UnderlineColor, "58"}} {
+		switch c.c.Kind {
+		case 1:
+			p = append(p, c.base+":5:"+strconv.Itoa(int(c.c.Index)))
+		case 2:
+			p = append(p, fmt.Sprintf("%s:2::%d:%d:%d", c.base, c.c.RGB.R, c.c.RGB.G, c.c.RGB.B))
+		}
+	}
+	return "\x1b[" + strings.Join(p, ";") + "m"
 }
 
 // CellStyle returns the style of cell x of the row RowCells read.

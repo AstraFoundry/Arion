@@ -9,6 +9,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/egoist/mygo/internal/wait"
 )
 
 // serverConn is the server's side of a hijacked connection.
@@ -99,7 +101,7 @@ func next(t *testing.T, events <-chan event) event {
 	select {
 	case e := <-events:
 		return e
-	case <-time.After(5 * time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("no event")
 		return event{}
 	}
@@ -190,7 +192,7 @@ func TestWebSocketPageGoesAway(t *testing.T) {
 		if code != closeGoingAway {
 			t.Errorf("closed with %d", code)
 		}
-	case <-time.After(5 * time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("the connection was not closed")
 	}
 	for range events {

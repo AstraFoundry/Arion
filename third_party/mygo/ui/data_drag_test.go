@@ -144,6 +144,139 @@ func TestNativeDragCloseReleasesTextInputClient(t *testing.T) {
 	}
 }
 
+// Native drags arrive through the destination events even in their source
+// window. A stationary pointer must keep scrolling without more over events.
+func TestNativeDragEdgeScroll(t *testing.T) {
+	for _, local := range []bool{false, true} {
+		t.Run(map[bool]string{false: "external", true: "same window"}[local], func(t *testing.T) {
+			var scroll ScrollState
+			var rows [100]uint64
+			gotRow, reads := -1, 0
+			var got string
+			data := transfer.New(transfer.NewItem(transfer.Lazy(transfer.Text, func() ([]byte, error) {
+				reads++
+				return []byte("payload"), nil
+			})))
+			opts := transfer.DropOptions{Formats: []transfer.Format{transfer.Text}, Operations: transfer.Copy}
+			tt := coreNewTester(func(c *context) {
+				coreScroll(c).Fill().TrackScroll(&scroll).Children(func() {
+					for i := range rows {
+						row := coreBox(c).Size(200, 40)
+						rows[i] = row.id
+						if local {
+							row.Drag("payload").DragData(data)
+							if v, ok := coreDrop[string](row); ok {
+								gotRow, got = i, v
+							}
+						} else if _, ok := coreDropData(row, opts); ok {
+							gotRow = i
+						}
+					}
+				})
+			}, 200, 200)
+			d := &platform.DataDragEvent{Offer: transfer.Offer{Formats: data.Formats(), Operations: transfer.Copy}, Data: data}
+			if local {
+				beginNativeDrag(tt)
+				d.Local = tt.h.dragLocal
+			}
+			tt.rt.event(platform.SurfaceEvent{Kind: platform.DataDragOver, X: 50, Y: 199, Drag: d})
+			first := tt.rt.dataOver
+			for i := 0; i < 8; i++ {
+				before := scroll.Y
+				tt.h.requested.Store(false)
+				tt.rt.runFrame()
+				if scroll.Y <= before || !tt.FramePending() {
+					t.Fatalf("frame %d: scroll %v -> %v, pending %v", i, before, scroll.Y, tt.FramePending())
+				}
+				// Hit-test the committed geometry, not the previous frame's.
+				expected := tt.rt.dataTargetAt(50, 199, tt.rt.incoming)
+				if expected == nil || tt.rt.dataOver != expected.id {
+					t.Fatalf("frame %d: hover did not follow the scrolled rows", i)
+				}
+			}
+			if tt.rt.dataOver == first || reads != 0 {
+				t.Fatalf("hover did not change or read data eagerly: target %d, reads %d", tt.rt.dataOver, reads)
+			}
+			wantRow := slices.Index(rows[:], tt.rt.dataOver)
+			if wantRow < 5 {
+				t.Fatalf("target row %d was not initially out of view", wantRow)
+			}
+			if !tt.send2(platform.SurfaceEvent{Kind: platform.DataDrop, X: 50, Y: 199, Drag: d}) || gotRow != wantRow {
+				t.Fatalf("drop row %d, want %d", gotRow, wantRow)
+			}
+			if local {
+				if got != "payload" || reads != 0 {
+					t.Fatalf("typed drop %q, provider reads %d", got, reads)
+				}
+				tt.h.finishDataDrag(transfer.Result{Operation: transfer.Copy})
+			} else if reads != 1 {
+				t.Fatalf("provider reads %d, want 1", reads)
+			}
+			before := scroll.Y
+			tt.Frame()
+			if scroll.Y != before || tt.rt.incoming != nil || tt.rt.dataOver != 0 {
+				t.Fatal("scrolling or hover continued after drop")
+			}
+		})
+	}
+}
+
+func TestNativeDragEdgeScrollStops(t *testing.T) {
+	var scroll ScrollState
+	tt := coreNewTester(func(c *context) {
+		coreScroll(c).Fill().TrackScroll(&scroll).Children(func() {
+			coreBox(c).Size(200, 40).Drag("payload").DragData(transfer.TextData("payload"))
+			coreBox(c).Size(200, 1000)
+		})
+	}, 200, 200)
+	beginNativeDrag(tt)
+	scroll.Y = 200
+	tt.Frame()
+	if scroll.Y != 200 {
+		t.Fatal("native source scrolled without an incoming drag")
+	}
+	// Scroll even over content that does not accept this offer: a target
+	// may still be out of view.
+	d := &platform.DataDragEvent{Offer: transfer.Offer{Formats: []transfer.Format{transfer.Text}, Operations: transfer.Copy}}
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.DataDragOver, X: 50, Y: 1, Drag: d})
+	tt.rt.runFrame()
+	if scroll.Y >= 200 {
+		t.Fatal("top edge did not scroll up")
+	}
+	for _, ev := range []platform.SurfaceEvent{
+		{Kind: platform.DataDragOver, X: 50, Y: 100, Drag: d},
+		{Kind: platform.DataDragLeave},
+	} {
+		before := scroll.Y
+		tt.send2(ev)
+		tt.Frame()
+		if scroll.Y != before || tt.FramePending() {
+			t.Fatalf("event %v did not stop scrolling: %v -> %v", ev.Kind, before, scroll.Y)
+		}
+	}
+	// Leave directly from an edge while the native source is still alive.
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.DataDragOver, X: 50, Y: 199, Drag: d})
+	tt.rt.runFrame()
+	before := scroll.Y
+	tt.send2(platform.SurfaceEvent{Kind: platform.DataDragLeave})
+	if scroll.Y != before || tt.rt.drag == nil || tt.FramePending() {
+		t.Fatal("leaving the source window did not stop edge scrolling")
+	}
+	// At the limit there must be no perpetual animation.
+	scroll.Y = scroll.MaxY
+	tt.Frame()
+	tt.send2(platform.SurfaceEvent{Kind: platform.DataDragOver, X: 50, Y: 199, Drag: d})
+	if scroll.Y != scroll.MaxY || tt.FramePending() {
+		t.Fatal("scrolling did not settle at the content boundary")
+	}
+	tt.Key(0, KeyEscape)
+	before = scroll.Y
+	tt.Frame()
+	if scroll.Y != before || tt.rt.incoming != nil || tt.rt.drag != nil {
+		t.Fatal("canceling the native drag did not stop scrolling")
+	}
+}
+
 func TestNativeDestinationRejectsMismatchDisabledAndFailedData(t *testing.T) {
 	disabled, drops := false, 0
 	tt := coreNewTester(func(c *context) {

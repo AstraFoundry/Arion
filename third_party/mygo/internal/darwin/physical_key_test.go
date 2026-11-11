@@ -85,3 +85,22 @@ func TestKeyAtCodeISO(t *testing.T) {
 		}
 	}
 }
+
+func TestKeyCodeForLayout(t *testing.T) {
+	const ansi = 0
+	for _, c := range []struct {
+		code   uint16
+		layout uint32
+		want   platform.KeyCode
+	}{
+		{macANSIGraveCode, ansi, platform.CodeBackquote},
+		{macISOSectionCode, ansi, platform.CodeIntlBackslash},
+		{macISOSectionCode, macISOLayoutType, platform.CodeBackquote},
+		{macANSIGraveCode, macISOLayoutType, platform.CodeIntlBackslash},
+		{0x00, macISOLayoutType, platform.CodeKeyA},
+	} {
+		if got := keyCodeForLayout(c.code, c.layout); got != c.want {
+			t.Errorf("code %#x, layout %#x: got %#x, want %#x", c.code, c.layout, got, c.want)
+		}
+	}
+}

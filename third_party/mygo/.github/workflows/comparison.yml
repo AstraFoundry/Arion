@@ -1,0 +1,49 @@
+name: Comparison
+
+# Checks that the apps written with MyGo, GPUI, GPUI Fast and egui (benchmarks/README.md)
+# still build and run, on changes to them or when started by hand. The website
+# shows benchmarks/results.json, from a real Mac: this runner's virtual GPU
+# and display would not compare with it, so its results stay an artifact.
+on:
+  pull_request:
+    paths:
+      - benchmarks/**
+      - .github/workflows/comparison.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    name: macOS
+    runs-on: macos-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - name: Install Rust
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+          echo "rustc=$(rustc --version)" >> "$GITHUB_OUTPUT"
+        id: rust
+      # GPUI's build compiles its Metal shaders.
+      - name: Install the Metal toolchain
+        run: xcrun -f metal || xcodebuild -downloadComponent MetalToolchain
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            benchmarks/egui/target
+            benchmarks/gpui/target
+            benchmarks/gpui-fast/target
+          key: comparison-${{ steps.rust.outputs.rustc }}-${{ hashFiles('benchmarks/*/Cargo.lock', 'benchmarks/*/Cargo.toml') }}
+      - name: Run the comparison
+        run: go run ./benchmarks/run -out "$RUNNER_TEMP/comparison.json"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: comparison
+          path: ${{ runner.temp }}/comparison.json

@@ -68,18 +68,22 @@ func systemBackdrops() bool { return windowsBuild() >= 22621 }
 
 var (
 	// kernel32
-	procGetModuleHandleW       = kernel32.NewProc("GetModuleHandleW")
-	procGetCurrentThreadId     = kernel32.NewProc("GetCurrentThreadId")
-	procGlobalAlloc            = kernel32.NewProc("GlobalAlloc")
-	procGlobalFree             = kernel32.NewProc("GlobalFree")
-	procGlobalLock             = kernel32.NewProc("GlobalLock")
-	procGlobalUnlock           = kernel32.NewProc("GlobalUnlock")
-	procGlobalSize             = kernel32.NewProc("GlobalSize")
-	procGetUserDefaultLocaleNm = kernel32.NewProc("GetUserDefaultLocaleName")
-	procCreateActCtxW          = kernel32.NewProc("CreateActCtxW")
-	procActivateActCtx         = kernel32.NewProc("ActivateActCtx")
-	procLoadLibraryExW         = kernel32.NewProc("LoadLibraryExW")
-	procGetProcAddress         = kernel32.NewProc("GetProcAddress")
+	procGetModuleHandleW               = kernel32.NewProc("GetModuleHandleW")
+	procGetCurrentThreadId             = kernel32.NewProc("GetCurrentThreadId")
+	procGlobalAlloc                    = kernel32.NewProc("GlobalAlloc")
+	procGlobalFree                     = kernel32.NewProc("GlobalFree")
+	procGlobalLock                     = kernel32.NewProc("GlobalLock")
+	procGlobalUnlock                   = kernel32.NewProc("GlobalUnlock")
+	procGlobalSize                     = kernel32.NewProc("GlobalSize")
+	procGetUserPreferredUILanguages    = kernel32.NewProc("GetUserPreferredUILanguages")
+	procGetUserDefaultUILanguage       = kernel32.NewProc("GetUserDefaultUILanguage")
+	procLCIDToLocaleName               = kernel32.NewProc("LCIDToLocaleName")
+	procGetLocaleInfoEx                = kernel32.NewProc("GetLocaleInfoEx")
+	procSetProcessPreferredUILanguages = kernel32.NewProc("SetProcessPreferredUILanguages")
+	procCreateActCtxW                  = kernel32.NewProc("CreateActCtxW")
+	procActivateActCtx                 = kernel32.NewProc("ActivateActCtx")
+	procLoadLibraryExW                 = kernel32.NewProc("LoadLibraryExW")
+	procGetProcAddress                 = kernel32.NewProc("GetProcAddress")
 
 	// user32
 	procSetProcessDpiAwarenessContext = user32.NewProc("SetProcessDpiAwarenessContext")
@@ -114,6 +118,7 @@ var (
 	procGetWindowLongPtrW             = user32.NewProc("GetWindowLongPtrW")
 	procSetWindowLongPtrW             = user32.NewProc("SetWindowLongPtrW")
 	procSetForegroundWindow           = user32.NewProc("SetForegroundWindow")
+	procAllowSetForegroundWindow      = user32.NewProc("AllowSetForegroundWindow")
 	procGetForegroundWindow           = user32.NewProc("GetForegroundWindow")
 	procNotifyWinEvent                = user32.NewProc("NotifyWinEvent")
 	procSetFocus                      = user32.NewProc("SetFocus")
@@ -126,6 +131,7 @@ var (
 	procEnumDisplaySettingsW          = user32.NewProc("EnumDisplaySettingsW")
 	procEnumDisplayMonitors           = user32.NewProc("EnumDisplayMonitors")
 	procGetCursorPos                  = user32.NewProc("GetCursorPos")
+	procWindowFromPoint               = user32.NewProc("WindowFromPoint")
 	procLoadCursorW                   = user32.NewProc("LoadCursorW")
 	procLoadIconW                     = user32.NewProc("LoadIconW")
 	procCreateIconFromResourceEx      = user32.NewProc("CreateIconFromResourceEx")
@@ -161,9 +167,11 @@ var (
 	procGetClipboardFormatNameW       = user32.NewProc("GetClipboardFormatNameW")
 	procFillRect                      = user32.NewProc("FillRect")
 	procGetNextWindow                 = user32.NewProc("GetWindow")
+	procGetTopWindow                  = user32.NewProc("GetTopWindow")
 	procInvalidateRectW               = user32.NewProc("InvalidateRect")
 	procUpdateLayeredWindow           = user32.NewProc("UpdateLayeredWindow")
 	procGetDC                         = user32.NewProc("GetDC")
+	procGetDCEx                       = user32.NewProc("GetDCEx")
 	procReleaseDC                     = user32.NewProc("ReleaseDC")
 	procDrawTextW                     = user32.NewProc("DrawTextW")
 	procTrackMouseEvent               = user32.NewProc("TrackMouseEvent")
@@ -198,17 +206,21 @@ var (
 
 	// shell32
 	procShellExecuteW               = shell32.NewProc("ShellExecuteW")
-	procSHFileOperationW            = shell32.NewProc("SHFileOperationW")
 	procShellNotifyIconW            = shell32.NewProc("Shell_NotifyIconW")
 	procShellNotifyIconGetRect      = shell32.NewProc("Shell_NotifyIconGetRect")
 	procSHCreateItemFromParsingName = shell32.NewProc("SHCreateItemFromParsingName")
+	procSHAddToRecentDocs           = shell32.NewProc("SHAddToRecentDocs")
+	procSHSimpleIDListFromPath      = shell32.NewProc("SHSimpleIDListFromPath")
+	procSHCreateItemFromIDList      = shell32.NewProc("SHCreateItemFromIDList")
 
 	// shlwapi
 	procSHCreateMemStream = shlwapi.NewProc("SHCreateMemStream")
 
 	// dwmapi
 	procDwmSetWindowAttribute        = dwmapi.NewProc("DwmSetWindowAttribute")
+	procDwmGetWindowAttribute        = dwmapi.NewProc("DwmGetWindowAttribute")
 	procDwmExtendFrameIntoClientArea = dwmapi.NewProc("DwmExtendFrameIntoClientArea")
+	procDwmFlush                     = dwmapi.NewProc("DwmFlush")
 
 	// shcore
 	procGetDpiForMonitor = shcore.NewProc("GetDpiForMonitor")
@@ -221,6 +233,7 @@ var (
 	procRegSetValueExW   = advapi32.NewProc("RegSetValueExW")
 	procRegDeleteValueW  = advapi32.NewProc("RegDeleteValueW")
 	procRegDeleteTreeW   = advapi32.NewProc("RegDeleteTreeW")
+	procRegEnumKeyExW    = advapi32.NewProc("RegEnumKeyExW")
 
 	// ntdll
 	procRtlGetVersion = ntdll.NewProc("RtlGetVersion")
@@ -243,6 +256,7 @@ const (
 	wmQuit              = 0x0012
 	wmEraseBkgnd        = 0x0014
 	wmEndSession        = 0x0016
+	wmShowWindow        = 0x0018
 	wmSettingChange     = 0x001A
 	wmGetMinMaxInfo     = 0x0024
 	wmWindowPosChanging = 0x0046
@@ -279,6 +293,16 @@ const (
 	// wmAppDeviceRemoved tells the application window that the GPU device
 	// of DirectComposition was removed (compositor.go).
 	wmAppDeviceRemoved = wmApp + 5
+	// wmAppNetwork tells the application window that the connectivity
+	// hint changed (network.go). wmApp + 6 is a flyout's wmAppDismiss.
+	wmAppNetwork = wmApp + 7
+	// wmAppCookieView tells the application window to close the hidden web
+	// view of the cookies, outside the callbacks of that web view (cookies.go).
+	wmAppCookieView = wmApp + 8
+	// wmAppTrayAdd adds the tray icons made since (tray.go).
+	wmAppTrayAdd = wmApp + 9
+	// wmAppRun runs what Backend.post posted.
+	wmAppRun = wmApp + 10
 
 	wsOverlapped       = 0x00000000
 	wsPopup            = 0x80000000
@@ -366,9 +390,15 @@ const (
 	mfsChecked    = 0x0008
 	mfsDisabled   = 0x0003
 
-	tpmRightButton = 0x0002
-	tpmReturnCmd   = 0x0100
-	mncClose       = 1
+	tpmRightButton  = 0x0002
+	tpmCenterAlign  = 0x0004
+	tpmRightAlign   = 0x0008
+	tpmVCenterAlign = 0x0010
+	tpmBottomAlign  = 0x0020
+	tpmVertical     = 0x0040
+	tpmReturnCmd    = 0x0100
+	tpmLayoutRTL    = 0x8000
+	mncClose        = 1
 
 	monitorDefaultToNull    = 0
 	monitorDefaultToNearest = 2
@@ -377,6 +407,8 @@ const (
 
 	smCxFrame        = 32
 	smCyFrame        = 33
+	smCxDoubleClk    = 36
+	smCyDoubleClk    = 37
 	smCxPaddedBorder = 92
 
 	vkShift   = 0x10
@@ -395,9 +427,13 @@ const (
 
 	idcArrow = 32512
 
+	dwmwaExtendedFrameBounds    = 9
 	dwmwaUseImmersiveDarkMode   = 20
 	dwmwaWindowCornerPreference = 33
+	dwmwaCaptionColor           = 35
 	dwmwaSystemBackdropType     = 38
+
+	dwmColorNone = 0xFFFFFFFE // DWMWA_COLOR_NONE: no color, not the accent
 
 	dwmwcpRound = 2 // DWM_WINDOW_CORNER_PREFERENCE
 
@@ -423,6 +459,11 @@ const (
 	qsAllInput         = 0x04FF
 	mwmoInputAvailable = 0x0004
 	pmRemove           = 0x0001
+	qsSendMessage      = 0x0040
+	pmNoRemove         = 0x0000
+	pmQSSendMessage    = qsSendMessage << 16
+
+	clipbrdECantOpen = 0x800401D0
 
 	sOK          = 0
 	eNoInterface = 0x80004002

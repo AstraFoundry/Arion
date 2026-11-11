@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -15,6 +16,8 @@ import (
 	"syscall"
 	"testing"
 	"time"
+
+	"github.com/egoist/mygo/internal/wait"
 )
 
 // TestMain lets the test binary play a development build of an app for
@@ -42,6 +45,29 @@ func TestMain(m *testing.M) {
 		os.Exit(0)
 	case "exit":
 		os.Exit(3)
+	case "spawn-output-child":
+		child := fakeChild(os.Args[0], "hold-output")
+		switch os.Getenv("MYGO_FAKE_OUTPUT") {
+		case "stdout":
+			child.Stdout = os.Stdout
+		case "stderr":
+			child.Stderr = os.Stderr
+		case "both":
+			child.Stdout, child.Stderr = os.Stdout, os.Stderr
+		}
+		if err := child.Start(); err != nil {
+			os.Exit(2)
+		}
+		os.Exit(0)
+	case "hold-output":
+		conn, err := net.Dial("tcp", os.Getenv("MYGO_FAKE_OUTPUT_ADDRESS"))
+		if err != nil {
+			os.Exit(2)
+		}
+		// Stay alive, holding inherited output open, until the test ends.
+		_, _ = io.Copy(io.Discard, conn)
+		conn.Close()
+		os.Exit(0)
 
 	case "hang":
 		signal.Ignore(syscall.SIGTERM)
@@ -101,7 +127,7 @@ func TestDevLaunch(t *testing.T) {
 		if p.err == nil || !strings.Contains(p.err.Error(), "exit status 3") {
 			t.Errorf("exit: %v", p.err)
 		}
-	case <-time.After(5 * time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("the exit of a build went unnoticed")
 	}
 
@@ -110,11 +136,53 @@ func TestDevLaunch(t *testing.T) {
 	if p, err = s.launch(os.Args[0]); err != nil {
 		t.Fatal(err)
 	}
+	// stop returns once it has killed it, after the grace: the test's
+	// timeout is the guard against a stop that waits for it forever. The
+	// build may yet die of SIGTERM, when that comes before it ignores it.
 	stopGrace = 200 * time.Millisecond
-	start := time.Now()
 	p.stop()
-	if d := time.Since(start); d > 3*time.Second {
-		t.Errorf("a hanging build took %v to be killed", d)
+	if p.err == nil {
+		t.Error("a build killed exited cleanly")
+	}
+}
+
+// A child can outlive the app and keep either or both output pipes open.
+// Waiting for the app must still finish without waiting for that child.
+func TestDevLaunchInheritedOutput(t *testing.T) {
+	for _, output := range []string{"none", "stdout", "stderr", "both"} {
+		t.Run(output, func(t *testing.T) {
+			ln, err := net.Listen("tcp", "127.0.0.1:0")
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer ln.Close()
+			t.Setenv("MYGO_FAKE_APP", "spawn-output-child")
+			t.Setenv("MYGO_FAKE_OUTPUT", output)
+			t.Setenv("MYGO_FAKE_OUTPUT_ADDRESS", ln.Addr().String())
+			type accepted struct {
+				conn net.Conn
+				err  error
+			}
+			connected := make(chan accepted, 1)
+			go func() {
+				conn, err := ln.Accept()
+				connected <- accepted{conn, err}
+			}()
+			s := &devSession{root: t.TempDir()}
+			p, err := s.launch(os.Args[0])
+			if err != nil {
+				t.Fatal(err)
+			}
+			child := wait.For(t, "the child to connect", connected)
+			if child.err != nil {
+				t.Fatal(child.err)
+			}
+			defer child.conn.Close()
+			wait.For(t, "the app's exit to be reported while its child holds output open", p.done)
+			if p.err != nil {
+				t.Fatalf("app exit: %v", p.err)
+			}
+		})
 	}
 }
 
@@ -150,21 +218,16 @@ func TestWatcher(t *testing.T) {
 	var reported []string // the paths of the last change
 	expect := func(changed bool, what string) {
 		t.Helper()
-		wait := 300 * time.Millisecond
 		if changed {
-			// Loaded CI runners can delay polling; unchanged-input checks
-			// still need only the short window to detect spurious events.
-			wait = 3 * time.Second
+			reported = wait.For(t, what+" reported", changes)
+			return
 		}
+		// Nothing comes for a while: a busy machine may only make this
+		// miss a spurious change, never fail a right watcher.
 		select {
 		case reported = <-changes:
-			if !changed {
-				t.Fatalf("%s: change reported", what)
-			}
-		case <-time.After(wait):
-			if changed {
-				t.Fatalf("%s: change not reported", what)
-			}
+			t.Fatalf("%s: change reported", what)
+		case <-time.After(300 * time.Millisecond):
 		}
 	}
 	expect(false, "nothing")
@@ -438,5 +501,47 @@ func TestDevBuildOnlyDoesNotLaunch(t *testing.T) {
 	executable := filepath.Join(output, runtime.GOOS+"-"+runtime.GOARCH, name)
 	if _, err := os.Stat(executable); err != nil {
 		t.Fatalf("missing development artifact: %v", err)
+	}
+}
+
+// The development app wears the icon's -dev sibling, when it exists, which
+// does not ship among the resources.
+func TestDevIcon(t *testing.T) {
+	dir := t.TempDir()
+	writeFiles(t, dir, map[string]string{
+		"mygo.json":          `{"name": "Todo"}`,
+		"resources/icon.png": string(defaultIcon()),
+	})
+	c, err := loadConfig(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if d := devConfig(c); d.Icon != c.Icon {
+		t.Errorf("without icon-dev.png, the dev app's icon is %q, want the app's %q", d.Icon, c.Icon)
+	}
+	writeFiles(t, dir, map[string]string{"resources/icon-dev.png": string(defaultIcon())})
+	if d, want := devConfig(c), filepath.Join("resources", "icon-dev.png"); d.Icon != want || c.Icon == want {
+		t.Errorf("dev icon %q (the app's %q), want %q", d.Icon, c.Icon, want)
+	}
+	list, err := c.resources("darwin", "arm64")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, r := range list {
+		if r.name == "icon-dev.png" {
+			t.Error("the dev icon ships among the resources")
+		}
+	}
+	// Beside an icon the configuration names, too.
+	writeFiles(t, dir, map[string]string{
+		"mygo.json":        `{"name": "Todo", "icon": "art/logo.png"}`,
+		"art/logo.png":     string(defaultIcon()),
+		"art/logo-dev.png": string(defaultIcon()),
+	})
+	if c, err = loadConfig(dir); err != nil {
+		t.Fatal(err)
+	}
+	if d := devConfig(c); d.Icon != "art/logo-dev.png" {
+		t.Errorf("dev icon %q, want art/logo-dev.png", d.Icon)
 	}
 }

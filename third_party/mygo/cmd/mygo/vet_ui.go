@@ -18,10 +18,10 @@ import (
 )
 
 type vetPackage struct {
-	ImportPath, Dir, Export  string
-	GoFiles, CompiledGoFiles []string
-	DepOnly                  bool
-	Error                    *struct{ Err string }
+	ImportPath, Dir, Export            string
+	GoFiles, CgoFiles, CompiledGoFiles []string
+	DepOnly                            bool
+	Error                              *struct{ Err string }
 }
 
 func runVetUI(args []string) error {
@@ -91,7 +91,9 @@ func runVetUI(args []string) error {
 			continue
 		}
 		var files []*ast.File
-		for _, name := range pkg.GoFiles {
+		// Files that import "C" are in CgoFiles: check them with the rest,
+		// against an empty package C whose members are not reported undefined.
+		for _, name := range append(pkg.GoFiles, pkg.CgoFiles...) {
 			f, err := parser.ParseFile(fs, filepath.Join(pkg.Dir, name), nil, parser.ParseComments)
 			if err != nil {
 				return err
@@ -99,7 +101,7 @@ func runVetUI(args []string) error {
 			files = append(files, f)
 		}
 		info := &types.Info{Defs: map[*ast.Ident]types.Object{}, Uses: map[*ast.Ident]types.Object{}, Types: map[ast.Expr]types.TypeAndValue{}}
-		checked, err := (&types.Config{Importer: imported}).Check(pkg.ImportPath, fs, files, info)
+		checked, err := (&types.Config{Importer: imported, FakeImportC: true}).Check(pkg.ImportPath, fs, files, info)
 		if err != nil {
 			return err
 		}

@@ -2,6 +2,7 @@ package text
 
 import (
 	"slices"
+	"strings"
 	"testing"
 )
 
@@ -220,4 +221,162 @@ func selectionVisualFullScan(l *Layout, start, end int, on bool) []Rect {
 		}
 	}
 	return out
+}
+
+// TestVisualStopsMatchesFullScan compares visualStops with the original
+// pairwise scan as an oracle, on fixtures for every stop source: glyph
+// edges, fractionally split clusters, bidi runs, offsets only the boundary
+// sweep visits (trimmed wrap spaces, empty lines) and glyphs outside the
+// line's range. Fixed geometry covers every boundary without depending on
+// platform fonts or shaping engines.
+func TestVisualStopsMatchesFullScan(t *testing.T) {
+	var long strings.Builder
+	for i := 0; i < 4096; i++ {
+		long.WriteRune('a')
+		if i%7 == 3 {
+			long.WriteRune('\u0301')
+		}
+	}
+	// Duplicate clusters append two stops at one offset, a ligature shares
+	// one cluster between glyphs, and the ellipsis has no runes at all.
+	ligature := mixedLayout()
+	ligature.Runes = append([]rune("fi"), append(ligature.Runes, 'x')...)
+	ligature.Lines[0].Start, ligature.Lines[0].End = 2, len(ligature.Runes)-1
+	ligature.Lines[0].Y = 20
+	for i := range ligature.Lines[0].Glyphs {
+		ligature.Lines[0].Glyphs[i].Cluster += 2
+	}
+	ligature.Lines = append([]Line{{Start: 0, End: 2, Width: 20, Height: 20, Glyphs: []Glyph{
+		{Advance: 12, Cluster: 0, Runes: 2}, {X: 10, Advance: 10, Cluster: 0, Runes: 2},
+	}}}, ligature.Lines...)
+	ligature.Lines = append(ligature.Lines, Line{Start: len(ligature.Runes) - 1, End: len(ligature.Runes), Y: 40, Width: 20, Height: 20, Glyphs: []Glyph{
+		{Advance: 10, Cluster: len(ligature.Runes) - 1, Runes: 1}, {X: 10, Advance: 10, Cluster: len(ligature.Runes), Runes: 0},
+	}})
+	for _, tc := range []struct {
+		name   string
+		layout *Layout
+	}{
+		{"ascii", graphemeLayout("hello world")},
+		{"crlf", graphemeLayout("a\r\nb")},
+		{"emoji_zwj", graphemeLayout("\U0001F468\u200D\U0001F469\u200D\U0001F466x")},
+		{"flags", graphemeLayout("🇯🇵🇯🇵")},
+		{"cjk", graphemeLayout("你好世界")},
+		{"combining", graphemeLayout("a\u0301e\u0327x")},
+		{"trailing_spaces", graphemeLayout("ab  ")},
+		{"rtl_bidi", mixedLayout()},
+		{"long_mixed", graphemeLayout(long.String())},
+		{"wrapped_trimmed_space", &Layout{Runes: []rune("ab cd"), Lines: []Line{
+			{Start: 0, End: 3, Width: 20, Height: 20, Glyphs: []Glyph{{Advance: 10, Cluster: 0, Runes: 1}, {X: 10, Advance: 10, Cluster: 1, Runes: 1}}},
+			{Start: 3, End: 5, Y: 20, Width: 20, Height: 20, Glyphs: []Glyph{{Advance: 10, Cluster: 3, Runes: 1}, {X: 10, Advance: 10, Cluster: 4, Runes: 1}}},
+		}}},
+		{"empty_lines", &Layout{Runes: []rune("\nx\n\n"), Lines: []Line{
+			{Start: 0, End: 0, Height: 20},
+			{Start: 1, End: 2, Y: 20, Width: 10, Height: 20, Glyphs: []Glyph{{Advance: 10, Cluster: 1, Runes: 1}}},
+			{Start: 3, End: 3, Y: 40, Height: 20, RTL: true},
+			{Start: 4, End: 4, Y: 60, Height: 20},
+		}}},
+		{"ligature", ligature},
+		{"glyphs_outside_line", &Layout{Runes: []rune("abcd"), Lines: []Line{
+			{Start: 0, End: 2, Width: 20, Height: 20, Glyphs: []Glyph{{Advance: 10, Cluster: 3, Runes: 1}}},
+			{Start: 2, End: 4, Y: 20, Width: 20, Height: 20, Glyphs: []Glyph{{Advance: 10, Cluster: 0, Runes: 1}}},
+		}}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			for li := range tc.layout.Lines {
+				got := tc.layout.visualStops(li)
+				want := visualStopsFullScan(tc.layout, li)
+				if !slices.Equal(got, want) {
+					t.Fatalf("line %d: got %v, full scan %v", li, got, want)
+				}
+			}
+		})
+	}
+}
+
+// graphemeLayout lays out s as one line of fixed-advance glyphs, one per
+// grapheme at the offsets the segmenter reports, so multi-rune graphemes
+// split their edge positions fractionally.
+func graphemeLayout(s string) *Layout {
+	runes := []rune(s)
+	var b Boundaries
+	b.Reset(runes)
+	offsets := b.GraphemeOffsets()
+	l := &Layout{Runes: runes, Lines: []Line{{Start: 0, End: len(runes), Width: float32(len(runes)) * 10, Height: 20}}}
+	for k := 0; k+1 < len(offsets); k++ {
+		l.Lines[0].Glyphs = append(l.Lines[0].Glyphs, Glyph{X: float32(offsets[k]) * 10, Advance: 10, Cluster: offsets[k], Runes: offsets[k+1] - offsets[k]})
+	}
+	return l
+}
+
+// visualStopsFullScan preserves the pre-mask implementation as an oracle:
+// it rebuilds a line's stops with the original pairwise ContainsFunc scan,
+// without touching the cache.
+func visualStopsFullScan(l *Layout, li int) []caretStop {
+	line := &l.Lines[li]
+	if l.boundaries == nil {
+		var b Boundaries
+		b.Reset(l.Runes)
+		l.boundaries = b.GraphemeOffsets()
+	}
+	var stops []caretStop
+	line.upstream = slices.Clone(line.lineCarets())
+	for i := 0; i < len(line.Glyphs); {
+		g := line.Glyphs[i]
+		x0, x1 := g.X, g.X+g.Advance
+		i++
+		for i < len(line.Glyphs) && line.Glyphs[i].Cluster == g.Cluster && line.Glyphs[i].Runes == g.Runes {
+			x0 = min(x0, line.Glyphs[i].X)
+			x1 = max(x1, line.Glyphs[i].X+line.Glyphs[i].Advance)
+			i++
+		}
+		if g.Runes <= 0 {
+			continue
+		}
+		for k := 0; k <= g.Runes; k++ {
+			at := g.Cluster + k
+			if _, ok := slices.BinarySearch(l.boundaries, at); !ok {
+				continue
+			}
+			x := x0 + (x1-x0)*float32(k)/float32(g.Runes)
+			if g.RTL {
+				x = x1 - (x1-x0)*float32(k)/float32(g.Runes)
+			}
+			affinity, arrival := Downstream, 0
+			if k == 0 {
+				arrival = -1
+			}
+			if k == g.Runes {
+				affinity, arrival = Upstream, 1
+			}
+			if g.RTL {
+				arrival = -arrival
+			}
+			if affinity == Upstream && at >= line.Start && at <= line.End {
+				line.upstream[at-line.Start] = x
+			}
+			stops = append(stops, caretStop{CaretPosition{at, affinity}, x, arrival})
+		}
+	}
+	// Keep trimmed spaces and empty lines navigable too.
+	carets := line.lineCarets()
+	first, _ := slices.BinarySearch(l.boundaries, line.Start)
+	for k := first; k < len(l.boundaries) && l.boundaries[k] <= line.End; k++ {
+		at := l.boundaries[k]
+		if !slices.ContainsFunc(stops, func(s caretStop) bool { return s.position.Index == at }) {
+			stops = append(stops, caretStop{CaretPosition{at, Downstream}, carets[at-line.Start], 0})
+		}
+	}
+	if len(stops) == 0 {
+		stops = append(stops, caretStop{CaretPosition{line.Start, Downstream}, line.X, 0})
+	}
+	slices.SortStableFunc(stops, func(a, b caretStop) int {
+		if a.x < b.x {
+			return -1
+		}
+		if a.x > b.x {
+			return 1
+		}
+		return 0
+	})
+	return stops
 }

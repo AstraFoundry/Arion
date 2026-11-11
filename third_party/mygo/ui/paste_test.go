@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"runtime"
 	"strconv"
 	"testing"
 )
@@ -70,5 +71,33 @@ func TestOnPaste(t *testing.T) {
 		if seen[i] != want[i] {
 			t.Fatalf("saw %q", seen)
 		}
+	}
+}
+
+// TestPasteCommandShortcut checks that the Edit menu's Paste, which takes
+// Command+V on macOS before the window sees it, runs the window's Cmd+V
+// when no text input has the focus, and pastes into one that does.
+func TestPasteCommandShortcut(t *testing.T) {
+	text := ""
+	pastes := 0
+	tt := NewTester(func(c *Context) {
+		TextInput(c, &text).Width(200).Label("field")
+		c.OnShortcut(Cmd, KeyV, func() { pastes++ })
+	}, 300, 100)
+	want := 0
+	if runtime.GOOS == "darwin" {
+		want = 1
+	}
+	tt.Command("paste")
+	tt.Frame()
+	if pastes != want {
+		t.Fatalf("the menu's Paste ran Cmd+V %d times, want %d", pastes, want)
+	}
+	tt.Click("field")
+	tt.SetClipboard("hi")
+	tt.Command("paste")
+	tt.Frame()
+	if text != "hi" || pastes != want {
+		t.Fatalf("a paste into the field made %q and ran Cmd+V %d times", text, pastes)
 	}
 }

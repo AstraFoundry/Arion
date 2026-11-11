@@ -59,3 +59,22 @@ func TestTransformedThinBorderGradientAndImage(t *testing.T) {
 		t.Fatalf("rotated image colors: %v %v", at(45, 21), at(45, 38))
 	}
 }
+
+// TestTransformedImageDrawsReleasedPixels checks that an image whose owner
+// dropped its pixels (Bitmap.ReleasePixels) still draws with a transform:
+// the op reads Pix, which the renderer must make again, as it does for an
+// image drawn without one.
+func TestTransformedImageDrawsReleasedPixels(t *testing.T) {
+	s := &scene.Scene{Width: 100, Height: 100}
+	img := scene.NewImageRGBA(2, 1, []byte{255, 0, 0, 255, 0, 0, 255, 255})
+	img.Restore = func() []byte { return []byte{255, 0, 0, 255, 0, 0, 255, 255} }
+	img.Dropped = func() { img.Pix = nil }
+	img.Dropped()
+	s.Ops = []scene.Op{{Kind: scene.OpImage, Rect: scene.Rect{W: 20, H: 10}, Src: scene.Rect{W: 2, H: 1}, Image: img, Transform: scene.Translation(50, 20).Mul(scene.Rotation(90))}}
+	m := NewImage(100, 100)
+	Render(m, s)
+	at := func(x, y int) []byte { return m.Pix[y*m.Stride+4*x:][:4] }
+	if at(45, 21)[2] < 240 || at(45, 38)[0] < 240 {
+		t.Fatalf("rotated image colors: %v %v", at(45, 21), at(45, 38))
+	}
+}

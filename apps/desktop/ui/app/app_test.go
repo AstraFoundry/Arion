@@ -239,19 +239,21 @@ func snapshot(t *testing.T, tt *ui.Tester, name string) {
 	}
 }
 
+// settle runs 40 frames at 60 Hz on the tester's clock, so short
+// transitions (hover, a section change, a disclosure) finish as they would
+// on screen.
 func settle(tt *ui.Tester) {
 	for i := 0; i < 40; i++ {
 		tt.Frame()
+		tt.Advance(time.Second / 60)
 	}
 }
 
-// rest runs frames for d of wall time: the tester's animations follow the
-// clock, so an entrance finishes only once its duration has passed.
+// rest advances the tester's clock by d, running the frames due meanwhile:
+// an entrance finishes only once its duration has passed.
 func rest(tt *ui.Tester, d time.Duration) {
-	for deadline := time.Now().Add(d); time.Now().Before(deadline); {
-		tt.Frame()
-		time.Sleep(16 * time.Millisecond)
-	}
+	tt.Frame()
+	tt.Advance(d)
 }
 
 // reveal scrolls the settings content until text is inside the viewport.
@@ -280,7 +282,7 @@ func TestOverlayPhases(t *testing.T) {
 	state, _, store := fixture()
 	overlayPage := overlay.NewPage()
 	tt := ui.NewTester(func(c *ui.Context) { overlayPage.Render(c, store) }, OverlayWidth, OverlayHeight)
-	now := time.Now()
+	now := tt.Now()
 	cases := []struct {
 		name string
 		d    runtime.Dictation
@@ -296,7 +298,7 @@ func TestOverlayPhases(t *testing.T) {
 	}
 	for _, tc := range cases {
 		state.Dictation = tc.d
-		state.Dictation.Changed = time.Now()
+		state.Dictation.Changed = tt.Now()
 		settle(tt)
 		if tc.d.Draft != "" {
 			// The draft types out rather than appearing whole.
@@ -318,7 +320,7 @@ func TestOverlayPhases(t *testing.T) {
 	}
 	// A denied microphone is named precisely.
 	state.Permissions.Microphone = runtime.ConsentDenied
-	state.Dictation = runtime.Dictation{SessionID: "6", State: runtime.StateFailed, Failure: runtime.CodePermissionDenied, Changed: time.Now()}
+	state.Dictation = runtime.Dictation{SessionID: "6", State: runtime.StateFailed, Failure: runtime.CodePermissionDenied, Changed: tt.Now()}
 	settle(tt)
 	if !hasText(tt, copy.For(copy.English).Text(copy.FailMicTitle)) {
 		t.Errorf("permission failure not explained: %q", tt.Texts())
@@ -676,9 +678,10 @@ func TestUsageOverview(t *testing.T) {
 		t.Fatal(err)
 	}
 	// A filmstrip of the entrance, each frame named by its time.
-	for entered := time.Now(); time.Since(entered) < 1600*time.Millisecond; {
+	for entered := tt.Now(); tt.Now().Sub(entered) < 1600*time.Millisecond; {
 		tt.Frame()
-		snapshot(t, tt, fmt.Sprintf("settings-overview-entering-%04d", time.Since(entered).Milliseconds()))
+		snapshot(t, tt, fmt.Sprintf("settings-overview-entering-%04d", tt.Now().Sub(entered).Milliseconds()))
+		tt.Advance(40 * time.Millisecond)
 	}
 	rest(tt, 300*time.Millisecond)
 	total := state.Usage.Since(time.Time{})
@@ -977,7 +980,7 @@ func TestChineseOverlayAndDownload(t *testing.T) {
 	} {
 		state.Dictation = tc.session
 		state.Dictation.SessionID = tc.want
-		state.Dictation.Changed = time.Now()
+		state.Dictation.Changed = tt.Now()
 		settle(tt)
 		if !hasText(tt, tc.want) {
 			t.Fatalf("want %q: %q", tc.want, tt.Texts())
@@ -1333,7 +1336,7 @@ func TestAboutDiagnosticExport(t *testing.T) {
 			if hasText(tt, messages.Text(copy.PrivacyNetTxt)) {
 				break
 			}
-			time.Sleep(25 * time.Millisecond)
+			tt.Advance(25 * time.Millisecond)
 		}
 		if !hasText(tt, messages.Text(copy.PrivacyNetTxt)) {
 			t.Fatalf("privacy tooltip not shown: %v", tt.Texts())

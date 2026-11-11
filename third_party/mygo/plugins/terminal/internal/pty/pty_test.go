@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/egoist/mygo/internal/wait"
 )
 
 // readAll reads the output of p until the process exits and the output
@@ -22,7 +24,7 @@ func readAll(t *testing.T, p *PTY) string {
 	}()
 	select {
 	case <-p.Exited():
-	case <-time.After(10 * time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("the process did not exit")
 	}
 	// What the process wrote before it exited is still to read.

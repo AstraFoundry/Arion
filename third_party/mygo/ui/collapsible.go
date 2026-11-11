@@ -82,7 +82,7 @@ func coreCollapsible(c *context, label string, open *bool, fn func()) *node {
 	root.Children(func() {
 		p := coreCollapsibleBase(c, open)
 		tr := p.Trigger.AlignSelf(Start).AlignItems(Center).Gap(t.Space(1)).
-			Padding(t.Space(1), t.Space(2), t.Space(1), t.Space(0.5)).Radius(t.Radius)
+			Padding(t.Space(1), 0).PaddingStart(t.Space(0.5)).PaddingEnd(t.Space(2)).Radius(t.Radius)
 		tr.styleFn = func(tr *node) {
 			if tr.Hovered() {
 				tr.bg = t.SurfaceHover
@@ -99,29 +99,94 @@ func coreCollapsible(c *context, label string, open *bool, fn func()) *node {
 		})
 		if panel := p.Panel(fn); panel != nil {
 			// Below the label.
-			panel.Padding(t.Space(1), 0, t.Space(1), t.Space(5.5)).Gap(t.Space(2))
+			panel.Padding(t.Space(1), 0).PaddingStart(t.Space(5.5)).Gap(t.Space(2))
 		}
 	})
 	return root
 }
 
 // disclosureArrow draws the arrow of a disclosure: pointing right, turned
-// by deg degrees clockwise.
+// by deg degrees clockwise, or right to left pointing left, turned as far
+// the other way, as Finder's do.
 func disclosureArrow(c *context, deg float32) *node {
 	t := c.theme
-	return coreBox(c).Size(t.Space(4), t.Space(4)).Shrink(0).Draw(func(p *Painter, r Rect) {
-		cx, cy, d := r.X+r.W/2, r.Y+r.H/2, r.W/8
-		at := rotate(cx, cy, deg)
-		var path Path
-		path.MoveTo(at(-d, -2*d)).LineTo(at(d, 0)).LineTo(at(-d, 2*d))
-		p.StrokePath(&path, 1.5, t.TextMuted)
+	e := coreBox(c).Size(t.Space(4), t.Space(4)).Shrink(0)
+	rtl := e.rtl()
+	return e.Draw(func(p *Painter, r Rect) {
+		p.StrokePath(disclosurePath(r, deg, rtl), 1.5, t.TextMuted)
 	})
 }
 
-// accordionBuild is an Accordion being built: the headers of its
-// sections, in order, and those of the last frame, for the arrows.
-type accordionBuild struct {
-	headers, last []uint64
+// disclosurePath returns the arrow of a disclosure in r, turned by deg
+// degrees from pointing right, or from pointing left the other way right
+// to left (rtl).
+func disclosurePath(r Rect, deg float32, rtl bool) *Path {
+	cx, cy, d := r.X+r.W/2, r.Y+r.H/2, r.W/8
+	s := float32(1)
+	if rtl {
+		s, deg = -1, -deg
+	}
+	at := rotate(cx, cy, deg)
+	var path Path
+	path.MoveTo(at(-s*d, -2*d)).LineTo(at(s*d, 0)).LineTo(at(-s*d, 2*d))
+	return &path
+}
+
+// AccordionParts are the parts of an accordion without a look:
+// AccordionBase makes it, and Item its sections.
+type accordionParts struct {
+	// Root holds the sections: build them in its children with Item.
+	Root    *node
+	c       *context
+	headers *accordionHeaders
+}
+
+// accordionHeaders are the headers of an accordion's sections, in order:
+// those built so far in this pass, and those of the last, which the keys
+// move between.
+type accordionHeaders struct {
+	now, last []uint64
+}
+
+// AccordionBase creates an accordion without a look: a column of
+// sections, each a CollapsibleBase that Item makes, opening and closing
+// on its own, whose headers Up and Down move the keyboard focus between,
+// as do Home and End. Build the sections in Root:
+//
+//	acc := ui.AccordionBase(c)
+//	acc.Root.Gap(4).Children(func() {
+//		for i := range app.sections {
+//			s := &app.sections[i]
+//			item := acc.Item(&s.open)
+//			item.Trigger.Padding(8, 12).Radius(6).Children(func() {
+//				ui.Text(c, s.title).Grow(1)
+//				ui.Icon(c, chevron).Rotate(180 * item.Progress())
+//			})
+//			item.Panel(func() { s.build(c) })
+//		}
+//	})
+//
+// Accordion is AccordionBase with the theme's look.
+func coreAccordionBase(c *context) accordionParts {
+	root := coreColumn(c)
+	root.widget = "Accordion"
+	h := coreLocal(root, "headers", func() accordionHeaders { return accordionHeaders{} })
+	h.last, h.now = h.now, h.last[:0]
+	return accordionParts{Root: root, c: c, headers: h}
+}
+
+// Item creates a section of the accordion, open while *open: a
+// CollapsibleBase, whose Trigger is its header, which a click opens and
+// closes, as do Enter and Space, and the arrows, Home and End leave for
+// the other sections' headers; Panel builds what shows below it while it
+// is open. Assistive technology sees the header as a disclosure, expanded
+// while open.
+func (p accordionParts) Item(open *bool) collapsibleParts {
+	s := coreCollapsibleBase(p.c, open)
+	h := p.headers
+	h.now = append(h.now, s.Trigger.id)
+	accordionKeys(p.c, s.Trigger, h.last)
+	return s
 }
 
 // Accordion creates sections, one above the other in a bordered box, that
@@ -146,15 +211,12 @@ type accordionBuild struct {
 //	}
 func coreAccordion(c *context, fn func()) *node {
 	t := c.theme
-	a := coreColumn(c).Radius(t.Radius).Border(1, t.Border).Clip()
-	a.widget = "Accordion"
-	last := coreLocal(a, "headers", func() []uint64 { return nil })
+	p := coreAccordionBase(c)
+	a := p.Root.Radius(t.Radius).Border(1, t.Border).Clip()
 	saved := c.accordion
-	ab := &accordionBuild{last: *last}
-	c.accordion = ab
+	c.accordion = &p
 	a.Children(fn)
 	c.accordion = saved
-	*last = ab.headers
 	return a
 }
 
@@ -163,32 +225,28 @@ func coreAccordion(c *context, fn func()) *node {
 // fn builds while *open is true. Changed reports a click.
 func coreAccordionItem(c *context, title string, open *bool, fn func()) *node {
 	t := c.theme
-	ab := c.accordion
-	if ab == nil {
-		ab = &accordionBuild{}
-	}
+	acc := c.accordion
 	item := coreColumn(c).Shrink(0)
 	item.widget = "AccordionItem"
-	if len(ab.headers) > 0 {
+	if acc != nil && len(acc.headers.now) > 0 {
 		item.BorderWidth(1, 0, 0, 0).BorderColor(t.Border)
 	}
 	item.Children(func() {
-		p := coreCollapsibleBase(c, open)
-		tr := p.Trigger.AlignItems(Center).Gap(t.Space(2)).Padding(t.Space(2.5), t.Space(3))
-		tr.flags |= flagOwnRing
-		ab.headers = append(ab.headers, tr.id)
-		accordionKeys(c, tr, ab)
+		var p collapsibleParts
+		if acc != nil {
+			p = acc.Item(open)
+		} else {
+			p = coreCollapsibleBase(c, open)
+		}
+		// Inside the header, as the accordion clips what is around: its
+		// outer edge half a unit in.
+		tr := p.Trigger.AlignItems(Center).Gap(t.Space(2)).Padding(t.Space(2.5), t.Space(3)).
+			FocusRingOffset(-t.focusRingWidth() - t.Space(0.5))
 		tr.styleFn = func(tr *node) {
 			if tr.Hovered() {
 				tr.bg = t.SurfaceHover
 			}
 		}
-		tr.DrawOver(func(p *Painter, r Rect) {
-			// Inside the header, as the accordion clips what is around.
-			if tr.FocusVisible() {
-				p.FocusRing(Rect{r.X + 4, r.Y + 4, r.W - 8, r.H - 8}, [4]float32{t.Radius, t.Radius, t.Radius, t.Radius})
-			}
-		})
 		tr.Children(func() {
 			coreText(c, title).Grow(1).FontWeight(500)
 			disclosureArrow(c, 90+180*p.Progress())
@@ -205,27 +263,27 @@ func coreAccordionItem(c *context, title string, open *bool, fn func()) *node {
 	return item
 }
 
-// accordionKeys moves the focus from an accordion's header to the others
-// with the arrows, Home and End.
-func accordionKeys(c *context, tr *node, ab *accordionBuild) {
-	at := slices.Index(ab.last, tr.id)
+// accordionKeys moves the focus from an accordion's header tr to the
+// others, last, with the arrows, Home and End.
+func accordionKeys(c *context, tr *node, last []uint64) {
+	at := slices.Index(last, tr.id)
 	if at < 0 {
 		return
 	}
 	to := -1
 	switch {
 	case tr.Shortcut(0, KeyDown):
-		to = min(at+1, len(ab.last)-1)
+		to = min(at+1, len(last)-1)
 	case tr.Shortcut(0, KeyUp):
 		to = max(at-1, 0)
 	case tr.Shortcut(0, KeyHome):
 		to = 0
 	case tr.Shortcut(0, KeyEnd):
-		to = len(ab.last) - 1
+		to = len(last) - 1
 	}
 	rt := c.rt
-	if to >= 0 && rt.states[ab.last[to]] != nil {
-		rt.focused, rt.focusVisible = ab.last[to], true
+	if to >= 0 && rt.states[last[to]] != nil {
+		rt.focused, rt.focusVisible = last[to], true
 		rt.consumed = true
 	}
 }

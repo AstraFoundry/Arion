@@ -67,20 +67,15 @@ func TestCollapsibleAnimates(t *testing.T) {
 			clip, inner = panel.parent.id, panel.id
 		}
 	}, 400, 400)
-	// A while into the animation: the frames right after a click may all
-	// read one time, as Windows's clock moves by steps.
-	partway := func() {
-		time.Sleep(60 * time.Millisecond)
-		tt.Frame()
-	}
+	// A while into the animation.
+	partway := func() { tt.Advance(60 * time.Millisecond) }
 	tt.Click("More")
 	partway()
 	h := func(id uint64) float32 { return tt.rt.states[id].h }
 	if progress <= 0 || progress >= 1 || h(clip) >= h(inner) || h(inner) == 0 {
 		t.Fatalf("opening: progress %v, the panel %v high of %v", progress, h(clip), h(inner))
 	}
-	time.Sleep(250 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(250 * time.Millisecond)
 	if progress != 1 || h(clip) != h(inner) {
 		t.Fatalf("open: progress %v, the panel %v high of %v", progress, h(clip), h(inner))
 	}
@@ -90,8 +85,7 @@ func TestCollapsibleAnimates(t *testing.T) {
 	if progress <= 0 || progress >= 1 || !tt.HasText("Line") {
 		t.Fatalf("closing: progress %v, shows %v", progress, tt.HasText("Line"))
 	}
-	time.Sleep(250 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(250 * time.Millisecond)
 	if progress != 0 || tt.HasText("Line") {
 		t.Fatalf("closed: progress %v, shows %v", progress, tt.HasText("Line"))
 	}

@@ -5,6 +5,7 @@ package linux
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/egoist/mygo/internal/platform"
@@ -49,7 +50,7 @@ func setupChooser(fc ptr, defaultPath string, filters []platform.FileFilter, hid
 		filter := gtkFileFilterNew()
 		name := f.Name
 		if name == "" {
-			name = strings.Join(f.Extensions, ", ")
+			name = strings.Join(append(slices.Clip(f.Extensions), f.MIMETypes...), ", ")
 		}
 		gtkFileFilterSetName(filter, cs(name))
 		for _, e := range f.Extensions {
@@ -63,24 +64,30 @@ func setupChooser(fc ptr, defaultPath string, filters []platform.FileFilter, hid
 				gtkFileFilterAddPattern(filter, cs("*."+up))
 			}
 		}
+		// GTK matches "kind/*" itself, and the portal's file chooser
+		// takes the types as they are.
+		for _, m := range f.MIMETypes {
+			gtkFileFilterAddMimeType(filter, cs(m))
+		}
 		gtkFileChooserAddFilter(fc, filter)
 	}
 }
 
 func (d dialogs) ShowOpenDialog(parent platform.Window, o *platform.OpenDialogOptions, cb func([]string, error)) {
+	tx := platform.CurrentTexts()
 	action := int32(0) // GTK_FILE_CHOOSER_ACTION_OPEN
-	title := "Open"
+	title := tx.Open
 	if o.OpenDirectories {
-		action, title = 2, "Select Folder" // SELECT_FOLDER
+		action, title = 2, tx.SelectFolder // SELECT_FOLDER
 	}
 	if o.Title != "" {
 		title = o.Title
 	}
-	accept := "_Open"
+	accept := "_" + tx.Open
 	if o.ButtonLabel != "" {
 		accept = o.ButtonLabel
 	}
-	fc := gtkFileChooserNativeNew(cs(title), parentWindow(parent), action, cs(accept), cs("_Cancel"))
+	fc := gtkFileChooserNativeNew(cs(title), parentWindow(parent), action, cs(accept), cs("_"+tx.Cancel))
 	gtkFileChooserSetSelectMultiple(fc, o.Multiple)
 	setupChooser(fc, o.DefaultPath, o.Filters, o.ShowHiddenFiles, false)
 	var paths []string
@@ -92,15 +99,16 @@ func (d dialogs) ShowOpenDialog(parent platform.Window, o *platform.OpenDialogOp
 }
 
 func (d dialogs) ShowSaveDialog(parent platform.Window, o *platform.SaveDialogOptions, cb func(string, error)) {
+	tx := platform.CurrentTexts()
 	title := o.Title
 	if title == "" {
-		title = "Save"
+		title = tx.Save
 	}
-	accept := "_Save"
+	accept := "_" + tx.Save
 	if o.ButtonLabel != "" {
 		accept = o.ButtonLabel
 	}
-	fc := gtkFileChooserNativeNew(cs(title), parentWindow(parent), 1, cs(accept), cs("_Cancel")) // SAVE
+	fc := gtkFileChooserNativeNew(cs(title), parentWindow(parent), 1, cs(accept), cs("_"+tx.Cancel)) // SAVE
 	gtkFileChooserSetDoOverwriteConfirm(fc, true)
 	setupChooser(fc, o.DefaultPath, o.Filters, o.ShowHiddenFiles, true)
 	path := ""
@@ -135,7 +143,10 @@ func (d dialogs) ShowMessageBox(parent platform.Window, o *platform.MessageBoxOp
 		gtkWindowSetTitle(dlg, cs(o.Title))
 	}
 	for i, label := range o.Buttons {
-		gtkDialogAddButton(dlg, cs(label), int32(i))
+		btn := gtkDialogAddButton(dlg, cs(label), int32(i))
+		if slices.Contains(o.DestructiveIDs, i) {
+			gtkStyleContextAddClass(gtkWidgetGetStyleContext(btn), cs("destructive-action"))
+		}
 	}
 	gtkDialogSetDefaultResponse(dlg, int32(o.DefaultID))
 	var check ptr

@@ -4,6 +4,7 @@ import { Link, createFileRoute } from "@tanstack/react-router"
 import { ArrowRightIcon } from "lucide-react"
 import * as React from "react"
 
+import { GopherRocket } from "@/components/gopher-rocket"
 import { InstallCommand } from "@/components/install-command"
 import { buttonVariants } from "@/components/ui/button"
 import { getHome } from "@/lib/home"
@@ -55,8 +56,8 @@ const features = [
 ]
 
 const kinds = [
-  { id: "web", label: "Web frontend" },
   { id: "native", label: "Native UI" },
+  { id: "web", label: "Web frontend" },
 ] as const
 
 type Kind = (typeof kinds)[number]["id"]
@@ -67,28 +68,31 @@ const magicMove = { duration: 600, stagger: 0, containerStyle: false, animateCon
 
 function Home() {
   const { main, ts } = Route.useLoaderData()
-  const [kind, setKind] = React.useState<Kind>("web")
+  const [kind, setKind] = React.useState<Kind>("native")
   // The code appears as it is, and only moves once the reader switches,
   // unless they asked for less motion.
   const [animate, setAnimate] = React.useState(false)
   return (
     <main>
-      <section className="px-4 py-20 sm:px-10 md:py-28">
-        <a href={`${site.repo}/releases/tag/v${__MYGO_VERSION__}`} className="label inline-flex items-center gap-2 hover:text-foreground">
-          <span className="size-1.5 rounded-full bg-gopher" />v{__MYGO_VERSION__} · macOS, Linux, Windows
-        </a>
-        <h1 className="mt-6 text-4xl leading-[1.05] font-semibold tracking-[-0.04em] sm:text-5xl md:text-6xl">
-          Desktop apps in Go.
-          <span className="block text-muted-foreground">Tiny, fast, fully typed.</span>
-        </h1>
-        <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
-          One small binary for macOS, Windows and Linux. Native UI or a web frontend in Go, with installers and auto-updates included.
-        </p>
-        <div className="mt-10 flex flex-wrap items-center gap-3">
-          <InstallCommand />
-          <Link to="/docs/$" params={{ _splat: "getting-started" }} className={buttonVariants({ size: "lg", className: "h-11 px-5" })}>
-            Get started <ArrowRightIcon />
-          </Link>
+      <section className="relative px-4 py-20 sm:px-10 md:py-28">
+        <GopherRocket className="pointer-events-none absolute inset-y-0 right-0 hidden w-[40%] lg:block xl:w-[46%]" />
+        <div className="relative">
+          <a href={`${site.repo}/releases/tag/v${__MYGO_VERSION__}`} className="label inline-flex items-center gap-2 hover:text-foreground">
+            <span className="size-1.5 rounded-full bg-gopher" />v{__MYGO_VERSION__} · macOS, Linux, Windows
+          </a>
+          <h1 className="mt-6 text-4xl leading-[1.05] font-semibold tracking-[-0.04em] sm:text-5xl md:text-6xl">
+            Desktop apps in Go.
+            <span className="block text-muted-foreground">Tiny, fast, fully typed.</span>
+          </h1>
+          <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
+            One small binary for macOS, Windows and Linux. Native UI or a web frontend in Go, with installers and auto-updates included.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            <InstallCommand />
+            <Link to="/docs/$" params={{ _splat: "getting-started" }} className={buttonVariants({ size: "lg", className: "h-11 px-5" })}>
+              Get started <ArrowRightIcon />
+            </Link>
+          </div>
         </div>
       </section>
 

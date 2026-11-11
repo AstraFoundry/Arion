@@ -20,40 +20,24 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/egoist/mygo/internal/accelerator"
 	"github.com/egoist/mygo/internal/platform"
+	"github.com/egoist/mygo/internal/schemehost"
 )
 
-// Custom schemes are served from http://<scheme>.localhost/, which
-// WebView2 lets the app answer (WebResourceRequested). Chromium treats
-// *.localhost as a secure origin, and unlike https, http blocks no mixed
-// content, so pages reach ws:// and http:// URLs as on macOS and Linux.
-// The rest of MyGo sees <scheme>://localhost/ URLs.
+// Custom schemes are served from http://<scheme>.localhost/, and their
+// other hosts from http://<host>.<scheme>.localhost/ (package schemehost),
+// which WebView2 lets the app answer (WebResourceRequested). Chromium
+// treats *.localhost as a secure origin, and unlike https, http blocks no
+// mixed content, so pages reach ws:// and http:// URLs as on macOS and
+// Linux. The rest of MyGo sees <scheme>://<host>/ URLs.
 
 // webURL maps a custom scheme URL of the window to the URL the webview
 // loads.
-func (w *window) webURL(raw string) string {
-	u, err := url.Parse(raw)
-	if err != nil || u.Host != "localhost" || !w.hasScheme(u.Scheme) {
-		return raw
-	}
-	u.Host = u.Scheme + ".localhost"
-	u.Scheme = "http"
-	return u.String()
-}
+func (w *window) webURL(raw string) string { return schemehost.WebURL(raw, w.hasScheme) }
 
 // appURL maps a URL loaded by the webview back to its custom scheme URL.
-func (w *window) appURL(raw string) string {
-	u, err := url.Parse(raw)
-	if err != nil || u.Scheme != "http" {
-		return raw
-	}
-	scheme, ok := strings.CutSuffix(u.Host, ".localhost")
-	if !ok || !w.hasScheme(scheme) {
-		return raw
-	}
-	u.Scheme, u.Host = scheme, "localhost"
-	return u.String()
-}
+func (w *window) appURL(raw string) string { return schemehost.AppURL(raw, w.hasScheme) }
 
 func (w *window) hasScheme(s string) bool {
 	for _, x := range w.opts.Schemes {
@@ -102,6 +86,7 @@ func (w *window) withWebViewOr(fn func(), fail func(error)) {
 
 // failPending fails the calls waiting for the webview.
 func (w *window) failPending(err error) {
+	failCookieRequests(w, err)
 	pending := w.pending
 	w.pending = nil
 	for _, c := range pending {
@@ -141,6 +126,10 @@ func (w *window) createWebView() {
 		w.webViewFailed(w.b.envErr)
 		return
 	}
+	if w.opts.DataStore != nil && !w.b.hasProfiles() {
+		w.webViewFailed(errNoProfiles)
+		return
+	}
 	fail := testFailWebViews > 0
 	if fail {
 		testFailWebViews--
@@ -178,7 +167,7 @@ func (w *window) createWebView() {
 		if w.host != nil {
 			return w.createEmbedded(h)
 		}
-		return comCall(w.b.env, envCreateController, w.hwnd, h)
+		return w.b.createController(storeOf(w.opts.DataStore), w.hwnd, false, h)
 	})
 	if failed(hr) {
 		w.creationFailed(hr)
@@ -213,36 +202,43 @@ func (w *window) setUp(controller uintptr) {
 	comCall(s, setPutAreDefaultScriptDialogsEnabled, 1)
 	comCall(s, setPutIsStatusBarEnabled, 0)
 	comCall(s, setPutAreDevToolsEnabled, boolArg(o.DevTools))
+	// The browser's own keys (F5 and Ctrl+R reload, Ctrl+P prints, Ctrl+F
+	// finds, Ctrl+Plus zooms) come with the inspector: WKWebView and
+	// WebKitGTK have none, and a reload is not a navigation OnWillNavigate
+	// is asked about. AcceleratorKeyPressed still sees every key, so the
+	// menu items' keys, as the View menu's Reload and Zoom In, still work.
+	if s3 := queryInterface(s, &iidICoreWebView2Settings3); s3 != 0 {
+		comCall(s3, set3PutAreBrowserAcceleratorKeysEnabled, boolArg(o.DevTools))
+		release(s3)
+	}
 	comCall(s, setPutAreDefaultContextMenusEnabled, 1)
 	comCall(s, setPutIsZoomControlEnabled, 1)
-	if o.UserAgent != "" {
-		w.setUserAgent(o.UserAgent)
+	// WebView2 has a touchscreen's pinch zoom and swipe navigation on:
+	// they are off unless the page asks, as in WKWebView.
+	if s5 := queryInterface(s, &iidICoreWebView2Settings5); s5 != 0 {
+		comCall(s5, set5PutIsPinchZoomEnabled, boolArg(o.PinchZoom))
+		release(s5)
+	}
+	if s6 := queryInterface(s, &iidICoreWebView2Settings6); s6 != 0 {
+		comCall(s6, set6PutIsSwipeNavigationEnabled, boolArg(o.SwipeNavigation))
+		release(s6)
+	}
+	if o.UserAgent != "" || o.UserAgentSuffix != "" {
+		w.setUpUserAgent()
 	}
 	w.applyWebViewBackground()
 
-	scripts := o.UserScripts
-	if w.caption != nil {
-		// After the bridge, which it tells.
-		scripts = append(scripts[:len(scripts):len(scripts)], platform.UserScript{Source: w.titleBarScript()})
-	}
-	for _, us := range scripts {
-		src := us.Source
-		if us.AtDocumentEnd {
-			src = "document.readyState===\"loading\"?document.addEventListener(\"DOMContentLoaded\",()=>{\n" + src + "\n},{once:true}):(()=>{\n" + src + "\n})();"
-		}
-		if !us.AllFrames {
-			// Scripts run in every frame unless told otherwise.
-			src = "if(window===window.top){\n" + src + "\n}"
-		}
-		withHandler(func(uintptr, uintptr) {}, func(h uintptr) uintptr {
-			return comCall(w.webview, wvAddScriptToExecuteOnDocumentCreated, uintptr(unsafe.Pointer(u16(src))), h)
-		})
+	w.addUserScripts()
+	if w.host != nil {
+		forwardKeys(w)
 	}
 
-	var token int64
-	tok := uintptr(unsafe.Pointer(&token))
+	// The add methods write a registration token. Its address is taken in
+	// each call (go:uintptrescapes), as a uintptr saved earlier goes stale
+	// when the goroutine stack moves.
+	var tok int64
 	add := func(index int, fn func(sender, args uintptr)) {
-		withHandler(fn, func(h uintptr) uintptr { return comCall(w.webview, index, h, tok) })
+		withHandler(fn, func(h uintptr) uintptr { return comCall(w.webview, index, h, uintptr(unsafe.Pointer(&tok))) })
 	}
 	add(wvAddNavigationStarting, w.navigationStarting)
 	add(wvAddContentLoading, func(_, _ uintptr) { w.h.NavigationCommitted(w.URL()) })
@@ -264,9 +260,23 @@ func (w *window) setUp(controller uintptr) {
 	})
 	add(wvAddNewWindowRequested, w.newWindowRequested)
 	add(wvAddPermissionRequested, w.permissionRequested)
+	w.addAuthHandlers()
+	w.addContextMenuHandler()
 	if wv4 := queryInterface(w.webview, &iidICoreWebView2_4); wv4 != 0 {
-		withHandler(w.downloadStarting, func(h uintptr) uintptr { return comCall(wv4, wv4AddDownloadStarting, h, tok) })
+		withHandler(w.downloadStarting, func(h uintptr) uintptr { return comCall(wv4, wv4AddDownloadStarting, h, uintptr(unsafe.Pointer(&tok))) })
 		release(wv4)
+	}
+	if wv8 := queryInterface(w.webview, &iidICoreWebView2_8); wv8 != 0 {
+		withHandler(func(_, _ uintptr) { w.h.AudibleChanged(w.IsAudible()) }, func(h uintptr) uintptr {
+			return comCall(wv8, wv8AddIsDocumentPlayingAudioChanged, h, uintptr(unsafe.Pointer(&tok)))
+		})
+		withHandler(func(_, _ uintptr) { w.mutedChanged() }, func(h uintptr) uintptr {
+			return comCall(wv8, wv8AddIsMutedChanged, h, uintptr(unsafe.Pointer(&tok)))
+		})
+		release(wv8)
+		if w.muted { // muted before the web view was made
+			w.SetAudioMuted(true)
+		}
 	}
 	add(wvAddWindowCloseRequested, func(_, _ uintptr) { w.h.ClosedByPage() })
 	add(wvAddProcessFailed, func(_, args uintptr) {
@@ -284,9 +294,11 @@ func (w *window) setUp(controller uintptr) {
 	add(wvAddWebResourceRequested, w.resourceRequested)
 	for _, scheme := range o.Schemes {
 		w.addFilter("http://" + scheme + ".localhost/*")
+		w.addFilter("http://*." + scheme + ".localhost/*") // its other hosts
 	}
+	w.filterAllRequests()
 	withHandler(w.acceleratorKeyPressed, func(h uintptr) uintptr {
-		return comCall(controller, ctlAddAcceleratorKeyPressed, h, tok)
+		return comCall(controller, ctlAddAcceleratorKeyPressed, h, uintptr(unsafe.Pointer(&tok)))
 	})
 
 	if w.host != nil {
@@ -298,9 +310,7 @@ func (w *window) setUp(controller uintptr) {
 		comCall(controller, ctlPutIsVisible, 1)
 		w.resizeWebView()
 	}
-	if w.caption != nil {
-		w.caption.layout() // above the webview's window
-	}
+	w.layoutControls() // above the webview's window
 	if o.Zoom > 0 && o.Zoom != 1 {
 		w.SetZoom(o.Zoom)
 	}
@@ -309,7 +319,19 @@ func (w *window) setUp(controller uintptr) {
 		w.focusWebView()
 	}
 
+	if !w.b.holdForCookies(w) {
+		w.becomeReady()
+	}
+}
+
+// becomeReady runs the calls that waited for the web view, its first
+// navigation among them.
+func (w *window) becomeReady() {
+	if w.closed {
+		return
+	}
 	w.ready = true
+	w.b.closeCookieView(w.b.cookiesOf(w.opts.DataStore))
 	pending := w.pending
 	w.pending = nil
 	for i, c := range pending {
@@ -366,6 +388,7 @@ func (w *window) navigationStarting(_, args uintptr) {
 		clear(w.htmlFor)
 	}
 	w.loading = true
+	w.navigating = uri
 	w.h.NavigationStarted(uri)
 }
 
@@ -394,6 +417,11 @@ func (w *window) navigationCompleted(_, args uintptr) {
 	var ok int32
 	comCall(args, navCompletedGetIsSuccess, uintptr(unsafe.Pointer(&ok)))
 	if ok != 0 {
+		if w.reloadAdopted {
+			w.reloadAdopted = false
+			comCall(w.webview, wvReload)
+			return
+		}
 		if zoomByScript && w.zoom != 1 {
 			putZoom(w, w.zoom) // a new document starts unzoomed
 		}
@@ -402,7 +430,7 @@ func (w *window) navigationCompleted(_, args uintptr) {
 	}
 	var status int32
 	comCall(args, navCompletedGetWebErrorStatus, uintptr(unsafe.Pointer(&status)))
-	if status == 13 { // COREWEBVIEW2_WEB_ERROR_STATUS_OPERATION_CANCELED: another navigation
+	if status == 14 { // COREWEBVIEW2_WEB_ERROR_STATUS_OPERATION_CANCELED: another navigation
 		return
 	}
 	w.h.LoadFailed(w.URL(), int(status), "navigation failed (COREWEBVIEW2_WEB_ERROR_STATUS "+strconv.Itoa(int(status))+")")
@@ -518,7 +546,10 @@ func (w *window) newWindowRequested(_, args uintptr) {
 	comCall(args, newWinPutHandled, 1)
 	var p uintptr
 	comCall(args, newWinGetURI, uintptr(unsafe.Pointer(&p)))
-	req := platform.NewWindowRequest{URL: w.appURL(takeWstr(p))}
+	raw := takeWstr(p)
+	var user int32
+	comCall(args, newWinGetIsUserInitiated, uintptr(unsafe.Pointer(&user)))
+	req := platform.NewWindowRequest{URL: w.appURL(raw), UserInitiated: user != 0}
 	var features uintptr
 	if comCall(args, newWinGetWindowFeatures, uintptr(unsafe.Pointer(&features))) == sOK && features != 0 {
 		var hasSize, hasPos int32
@@ -539,11 +570,44 @@ func (w *window) newWindowRequested(_, args uintptr) {
 		}
 		release(features)
 	}
-	// The new window loads the page itself, without a relation to its
-	// opener (as on Linux).
-	if child, ok := w.h.NewWindow(req).(*window); ok && child != nil {
-		child.LoadURL(req.URL)
+	child, ok := w.h.NewWindow(req).(*window)
+	if !ok || child == nil {
+		return // denied: window.open returns null
 	}
+	// The child's web view becomes the popup, keeping its relation to the
+	// opener (window.opener, postMessage), as on macOS: WebView2 waits
+	// for it (a deferral) and navigates it itself. It is handed over once
+	// set up, its scripts and handlers in place, and before it navigates;
+	// it shares the opener's environment, as every window does.
+	//
+	// WebView2 can't load a URL of the app's schemes, which window.open
+	// gives it as http://<scheme>.localhost/ (openScript), but a link
+	// still may: the child loads it as an independent page.
+	var deferral uintptr
+	if w.webURL(raw) != raw || failed(comCall(args, newWinGetDeferral, uintptr(unsafe.Pointer(&deferral)))) || deferral == 0 {
+		child.LoadURL(req.URL) // an independent page, as on Linux
+		return
+	}
+	addRef(args)
+	done := func() {
+		comCall(deferral, deferralComplete)
+		release(deferral)
+		release(args)
+	}
+	child.withWebViewOr(func() {
+		if hr := comCall(args, newWinPutNewWindow, child.webview); failed(hr) {
+			log.Print(hresultError("adopting the new window's web view", hr))
+			done()
+			child.LoadURL(req.URL)
+			return
+		}
+		done()
+		// WebView2 drops the chrome.webview messages the first document of
+		// an adopted popup posts once it loaded, so the bridge's calls get
+		// no reply; the popup's next document posts them all. A page of
+		// the app, which uses the bridge, loads again (navigationCompleted).
+		child.reloadAdopted = w.appURL(raw) != raw
+	}, func(error) { done() }) // the child closed, or has no web view
 }
 
 // Accelerator keys reach the webview, not the window: run the menu items
@@ -557,12 +621,43 @@ func (w *window) acceleratorKeyPressed(_, args uintptr) {
 	}
 	var vk uint32
 	comCall(args, accelGetVirtualKey, uintptr(unsafe.Pointer(&vk)))
-	cmd, ok := w.accels[accelKey{vk: vk, mods: currentModifiers()}]
+	cmd, ok := w.pageAccelerator(accelKey{vk: vk, mods: currentModifiers()})
 	if !ok {
 		return
 	}
 	comCall(args, accelPutHandled, 1)
 	w.b.menuCommand(cmd, w)
+}
+
+// pageAccelerator returns the menu command a key pressed in a page runs,
+// if any. A page keeps the keys of the edit roles, as in a browser and in
+// native UI: WebView2 cuts, copies and pastes with the page's own events
+// and every format of the clipboard.
+func (w *window) pageAccelerator(key accelKey) (uint16, bool) {
+	cmd, ok := w.accels[key]
+	if !ok {
+		return 0, false
+	}
+	if e := w.b.menus.entries[cmd]; e != nil && platform.EditCommands[e.role] && pageEditKey(key) {
+		return 0, false
+	}
+	return cmd, true
+}
+
+// pageEditKey reports a key WebView2 edits a page with itself, as Edge
+// does. An edit role's item on another key, as Copy on Ctrl+Shift+C in a
+// terminal, still runs from it: the page would do nothing with the key.
+func pageEditKey(key accelKey) bool {
+	const ctrl, shift = accelerator.Ctrl, accelerator.Shift
+	switch key.mods {
+	case ctrl:
+		return key.vk == 'Z' || key.vk == 'Y' || key.vk == 'X' || key.vk == 'C' || key.vk == 'V' || key.vk == 'A'
+	case ctrl | shift:
+		return key.vk == 'Z' || key.vk == 'V'
+	case 0:
+		return key.vk == 0x2E // VK_DELETE
+	}
+	return false
 }
 
 func (w *window) LoadURL(raw string) {
@@ -575,7 +670,7 @@ func (w *window) LoadURL(raw string) {
 func (w *window) LoadHTML(html, baseURL string) {
 	w.withWebView(func() {
 		w.programmatic = true
-		if baseURL == "" {
+		if !servedAtBase(baseURL) {
 			comCall(w.webview, wvNavigateToString, uintptr(unsafe.Pointer(u16(html))))
 			return
 		}
@@ -589,6 +684,15 @@ func (w *window) LoadHTML(html, baseURL string) {
 		}
 		comCall(w.webview, wvNavigate, uintptr(unsafe.Pointer(u16(target))))
 	})
+}
+
+// servedAtBase reports whether LoadHTML serves its document at baseURL,
+// answering the navigation's request for it. WebView2 requests no about:
+// URL, about:blank among them, so their documents, as those without a base
+// URL, go through NavigateToString, which shows them at about:blank.
+func servedAtBase(baseURL string) bool {
+	scheme, _, _ := strings.Cut(baseURL, ":")
+	return baseURL != "" && !strings.EqualFold(scheme, "about")
 }
 
 func (w *window) LoadFile(path, _ string) {
@@ -632,6 +736,64 @@ func (w *window) URL() string {
 }
 
 func (w *window) IsLoading() bool { return w.loading }
+
+// addUserScripts adds the user scripts of the options to every document,
+// and the title bar's after them, keeping their ids, which arrive later.
+func (w *window) addUserScripts() {
+	scripts := w.opts.UserScripts
+	if w.caption != nil {
+		// After the bridge, which it tells.
+		scripts = append(scripts[:len(scripts):len(scripts)], platform.UserScript{Source: w.titleBarScript()})
+	}
+	if w.hidingScript != "" {
+		scripts = append(scripts[:len(scripts):len(scripts)], platform.UserScript{Source: w.hidingScript, AllFrames: true})
+	}
+	if len(w.opts.Schemes) > 0 {
+		scripts = append(scripts[:len(scripts):len(scripts)], platform.UserScript{Source: w.openScript(), AllFrames: true})
+	}
+	gen := w.scriptGen
+	for _, us := range scripts {
+		src := us.Source
+		if us.AtDocumentEnd {
+			src = "document.readyState===\"loading\"?document.addEventListener(\"DOMContentLoaded\",()=>{\n" + src + "\n},{once:true}):(()=>{\n" + src + "\n})();"
+		}
+		if !us.AllFrames {
+			// Scripts run in every frame unless told otherwise.
+			src = "if(window===window.top){\n" + src + "\n}"
+		}
+		withHandler(func(hr, id uintptr) {
+			if failed(hr) || id == 0 || w.closed || w.webview == 0 {
+				return
+			}
+			if s := wstr(id); w.scriptGen == gen {
+				w.scriptIDs = append(w.scriptIDs, s)
+			} else {
+				// Replaced while it was being added.
+				comCall(w.webview, wvRemoveScriptToExecuteOnDocumentCreated, uintptr(unsafe.Pointer(u16(s))))
+			}
+		}, func(h uintptr) uintptr {
+			return comCall(w.webview, wvAddScriptToExecuteOnDocumentCreated, uintptr(unsafe.Pointer(u16(src))), h)
+		})
+	}
+}
+
+// SetUserScripts replaces the user scripts. Scripts run in the order they
+// were added, so all of them are removed and added again.
+func (w *window) SetUserScripts(scripts []platform.UserScript) {
+	if w.closed {
+		return
+	}
+	w.opts.UserScripts = scripts
+	if w.webview == 0 {
+		return // setUp adds them
+	}
+	w.scriptGen++
+	for _, id := range w.scriptIDs {
+		comCall(w.webview, wvRemoveScriptToExecuteOnDocumentCreated, uintptr(unsafe.Pointer(u16(id))))
+	}
+	w.scriptIDs = nil
+	w.addUserScripts()
+}
 
 func (w *window) Eval(js string) {
 	w.withWebView(func() {
@@ -722,13 +884,55 @@ func (w *window) SetZoom(f float64) {
 
 func (w *window) Zoom() float64 { return w.zoom }
 
+// setUpUserAgent applies UserAgent and UserAgentSuffix, which appends to
+// WebView2's own user agent when it is all that is set.
+func (w *window) setUpUserAgent() {
+	s2 := queryInterface(w.settings, &iidICoreWebView2Settings2)
+	if s2 == 0 {
+		return
+	}
+	defer release(s2)
+	ua := w.opts.UserAgent
+	if suffix := w.opts.UserAgentSuffix; suffix != "" {
+		if ua == "" {
+			ua = userAgentOf(s2)
+		}
+		if ua != "" {
+			ua += " " + suffix
+		}
+	}
+	if ua != "" {
+		comCall(s2, set2PutUserAgent, uintptr(unsafe.Pointer(u16(ua))))
+	}
+}
+
+// userAgentOf returns the user agent Settings2 sets.
+func userAgentOf(s2 uintptr) string {
+	var p uintptr
+	comCall(s2, set2GetUserAgent, uintptr(unsafe.Pointer(&p)))
+	return takeWstr(p)
+}
+
+// setUserAgent sets the user agent the page sends, which WebView2 decides for
+// an empty one. The suffix the options set stays on the end of it.
 func (w *window) setUserAgent(ua string) {
 	s2 := queryInterface(w.settings, &iidICoreWebView2Settings2)
 	if s2 == 0 {
 		return
 	}
 	defer release(s2)
+	suffix := w.opts.UserAgentSuffix
+	if ua != "" && suffix != "" {
+		ua += " " + suffix
+	}
 	comCall(s2, set2PutUserAgent, uintptr(unsafe.Pointer(u16(ua))))
+	if ua == "" && suffix != "" {
+		// Whether WebView2 kept the user agent or went back to its own,
+		// the suffix stays on the end of it.
+		if cur := userAgentOf(s2); cur != "" && !strings.HasSuffix(cur, " "+suffix) {
+			comCall(s2, set2PutUserAgent, uintptr(unsafe.Pointer(u16(cur+" "+suffix))))
+		}
+	}
 }
 
 func (w *window) SetUserAgent(ua string) { w.withWebView(func() { w.setUserAgent(ua) }) }
@@ -742,10 +946,183 @@ func (w *window) UserAgent() string {
 		return ""
 	}
 	defer release(s2)
-	var p uintptr
-	comCall(s2, set2GetUserAgent, uintptr(unsafe.Pointer(&p)))
-	return takeWstr(p)
+	return userAgentOf(s2)
 }
+
+// ProcessID returns the browser process of the web view
+// (ICoreWebView2::get_BrowserProcessId), which every web view of the
+// app's environment shares, 0 before the web view is made.
+func (w *window) ProcessID() int {
+	if w.webview == 0 {
+		return 0
+	}
+	var pid uint32
+	if r := comCall(w.webview, wvGetBrowserProcessId, uintptr(unsafe.Pointer(&pid))); failed(r) {
+		return 0
+	}
+	return int(pid)
+}
+
+// GPUProcessID returns the GPU process of the web view's environment,
+// which its web views share, from ICoreWebView2Environment8's
+// GetProcessInfos; 0 before the web view is made, on runtimes older than
+// it, and while the environment runs no GPU process.
+func (w *window) GPUProcessID() int {
+	if w.webview == 0 {
+		return 0
+	}
+	env8 := queryInterface(w.b.env, &iidICoreWebView2Environment8)
+	if env8 == 0 {
+		return 0
+	}
+	defer release(env8)
+	var infos uintptr
+	if failed(comCall(env8, env8GetProcessInfos, uintptr(unsafe.Pointer(&infos)))) || infos == 0 {
+		return 0
+	}
+	defer release(infos)
+	var n uint32
+	if failed(comCall(infos, procInfosGetCount, uintptr(unsafe.Pointer(&n)))) {
+		return 0
+	}
+	for i := range n {
+		var info uintptr
+		if failed(comCall(infos, procInfosGetValueAtIndex, uintptr(i), uintptr(unsafe.Pointer(&info)))) || info == 0 {
+			continue
+		}
+		var kind, pid int32
+		ok := !failed(comCall(info, procInfoGetKind, uintptr(unsafe.Pointer(&kind)))) && kind == processKindGPU &&
+			!failed(comCall(info, procInfoGetProcessId, uintptr(unsafe.Pointer(&pid))))
+		release(info)
+		if ok {
+			return int(pid)
+		}
+	}
+	return 0
+}
+
+// webView8 returns the web view's ICoreWebView2_8, which the caller
+// releases, or 0 before the web view is made and on runtimes older than
+// it.
+func (w *window) webView8() uintptr {
+	return queryInterface(w.webview, &iidICoreWebView2_8)
+}
+
+// getBool8 returns a BOOL property of ICoreWebView2_8, false without it.
+func (w *window) getBool8(index int) bool {
+	wv8 := w.webView8()
+	if wv8 == 0 {
+		return false
+	}
+	defer release(wv8)
+	var v int32
+	if failed(comCall(wv8, index, uintptr(unsafe.Pointer(&v)))) {
+		return false
+	}
+	return v != 0
+}
+
+// IsAudible returns ICoreWebView2_8's IsDocumentPlayingAudio, which
+// IsDocumentPlayingAudioChanged (setUp) tells the changes of.
+func (w *window) IsAudible() bool { return w.getBool8(wv8GetIsDocumentPlayingAudio) }
+
+// SetAudioMuted puts ICoreWebView2_8's IsMuted, or keeps it for setUp
+// until the web view is made. A runtime older than ICoreWebView2_8 can't
+// mute.
+//
+// WebView2 may lose a put that follows another before IsMutedChanged told
+// the first, or apply them out of order, and the page then plays muted or
+// stays silent unmuted. So one put is in flight at a time: w.muted is the
+// state wanted, and mutedChanged puts it again once the runtime told its
+// change, if it differs. A put whose IsMutedChanged never comes (none
+// does for no change) holds the next one back for mutePutTimeout only.
+func (w *window) SetAudioMuted(v bool) {
+	w.muted = v
+	if w.mutePut.IsZero() || time.Since(w.mutePut) >= mutePutTimeout {
+		w.putMuted()
+	}
+}
+
+// mutePutTimeout is how long a put of IsMuted holds the next back while
+// its IsMutedChanged doesn't come.
+const mutePutTimeout = time.Second
+
+// putMuted puts w.muted, and holds the next put back until IsMutedChanged
+// tells this one landed when it changes what the web view reports. A put
+// of what it reports already changes nothing, and none comes for it.
+func (w *window) putMuted() {
+	w.mutePut = time.Time{}
+	wv8 := w.webView8()
+	if wv8 == 0 {
+		return
+	}
+	defer release(wv8)
+	var cur int32
+	if failed(comCall(wv8, wv8GetIsMuted, uintptr(unsafe.Pointer(&cur)))) || (cur != 0) != w.muted {
+		w.mutePut = time.Now()
+	}
+	comCall(wv8, wv8PutIsMuted, boolArg(w.muted))
+}
+
+// mutedChanged runs on IsMutedChanged: the put in flight landed, and the
+// state wanted since is put if the web view reports another.
+func (w *window) mutedChanged() {
+	w.mutePut = time.Time{}
+	if wv8 := w.webView8(); wv8 != 0 {
+		var cur int32
+		bad := failed(comCall(wv8, wv8GetIsMuted, uintptr(unsafe.Pointer(&cur))))
+		release(wv8)
+		if bad || (cur != 0) != w.muted {
+			w.putMuted()
+		}
+	}
+}
+
+// IsAudioMuted returns ICoreWebView2_8's IsMuted, or what SetAudioMuted
+// keeps until the web view is made, unless it never will be.
+func (w *window) IsAudioMuted() bool {
+	if w.webview == 0 {
+		return w.muted && w.webViewErr == nil
+	}
+	return w.getBool8(wv8GetIsMuted)
+}
+
+// CaptureState is always CaptureNone: WebView2 tells nothing of a page's
+// capture of the camera, the microphone or the display.
+func (w *window) CaptureState(platform.CaptureKind) platform.CaptureState {
+	return platform.CaptureNone
+}
+
+// SetCaptureState does nothing: WebView2 can't mute or stop a page's
+// capture.
+func (w *window) SetCaptureState(platform.CaptureKind, platform.CaptureState) {}
+
+// TogglePictureInPicture runs platform.TogglePictureInPicture through the
+// DevTools protocol as a user's gesture, which
+// requestPictureInPicture() needs.
+func (w *window) TogglePictureInPicture() {
+	params, _ := json.Marshal(map[string]any{"expression": platform.TogglePictureInPicture, "userGesture": true})
+	w.withWebView(func() { w.devtools("Runtime.evaluate", string(params), nil) })
+}
+
+// PictureInPictureActive asks the page for its
+// document.pictureInPictureElement; false before the web view is made.
+func (w *window) PictureInPictureActive(cb func(bool)) {
+	if !w.ready || w.closed {
+		cb(false)
+		return
+	}
+	w.CallAsyncFunction(platform.PictureInPictureActive, func(s string, err error) {
+		cb(err == nil && s == "true")
+	})
+}
+
+// SessionState is nil: WebView2 has no API for the back/forward list,
+// so the core keeps the page's URL alone.
+func (w *window) SessionState() []byte { return nil }
+
+// RestoreSessionState can't, for the core to load the page's URL.
+func (w *window) RestoreSessionState([]byte) bool { return false }
 
 func (w *window) OpenDevTools() {
 	if !w.opts.DevTools {
@@ -857,6 +1234,9 @@ func (w *window) resourceRequested(_, args uintptr) {
 	var resource int32
 	comCall(args, resReqGetResourceContext, uintptr(unsafe.Pointer(&resource)))
 	const document = 1 // COREWEBVIEW2_WEB_RESOURCE_CONTEXT_DOCUMENT
+	if w.contentFilter != nil && w.contentFilter(args, req, uri, resource) {
+		return
+	}
 
 	if html, ok := w.htmlFor[uri]; ok && resource == document {
 		w.respond(args, 0, http.StatusOK, http.Header{"Content-Type": {"text/html; charset=utf-8"}}, []byte(html))
@@ -1003,4 +1383,25 @@ func (r *schemeResponse) release() {
 	r.cancel()
 	release(r.deferral)
 	release(r.args)
+}
+
+// openScript makes window.open give WebView2 the URLs of the app's schemes
+// as the http://[<host>.]<scheme>.localhost/ URLs that serve them (webURL), which
+// the popup can load as it opens, keeping its opener (newWindowRequested).
+func (w *window) openScript() string {
+	schemes, _ := json.Marshal(w.opts.Schemes)
+	return `(() => {
+	const schemes = ` + string(schemes) + `, open = window.open;
+	if (typeof open !== "function") return;
+	window.open = function (url, ...rest) {
+		try {
+			const u = new URL(String(url), location.href), scheme = u.protocol.slice(0, -1);
+			const host = u.hostname.toLowerCase();
+			if (!u.port && !u.username && !u.password && schemes.includes(scheme) && (host === "localhost" || /^(?=.{1,253}$)[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/.test(host))) {
+				url = "http://" + (host === "localhost" ? "" : host + ".") + scheme + ".localhost" + u.pathname + u.search + u.hash;
+			}
+		} catch {}
+		return open.call(this, url, ...rest);
+	};
+})();`
 }

@@ -138,6 +138,44 @@ area.Draw(func(p *ui.Painter, r ui.Rect) {
 })
 ```
 
+### Live data
+
+A line of thousands of samples, redrawn every frame as new ones arrive,
+needs fewer points than it has samples: `chart.MinMax` keeps the lowest
+and highest sample of each pixel column, in their order, and the ends of
+each run, so that the line looks the same and narrow spikes still show.
+Its `xs` are fractions that never decrease; a NaN still breaks the line.
+It writes into the slices you pass, and `chart.LineInto` into the path you
+pass, so that a view keeping them draws without allocating once warm.
+Keep the samples themselves for selections and readings.
+
+`Painter.StrokePolyline` strokes points in DIPs with round joins and caps,
+as `StrokePath` would, faster for lines that change every frame: on a GPU
+it draws each segment as a rounded rectangle, rather than rasterizing the
+whole line into a mask on the CPU. Where segments overlap, their
+antialiased edges can look a little bolder than `StrokePath`'s.
+Translucent lines, and drawing without a GPU, take `StrokePath`'s way,
+since overlapping segments would show darker there; a translucent line of
+one segment has none to overlap, and stays fast on a GPU.
+
+```go
+// bx, by and points live in the view's state, reused every frame.
+area.Draw(func(p *ui.Painter, r ui.Rect) {
+	bx, by = chart.MinMax(bx, by, xs, ys, int(math.Ceil(float64(r.W*p.Scale()))))
+	points = points[:0]
+	for i, x := range bx {
+		points = append(points, [2]float32{chart.X(r, x), chart.Y(r, by[i])})
+	}
+	p.StrokePolyline(points, 2, t.Accent)
+})
+```
+
+Ask for frames with `Context.AnimationFrame` and take in the samples that
+arrived since the last one, rather than invalidating per sample.
+`examples/chart-streaming` scrolls three waveforms of 15,000 samples,
+1,000 a second each; `-mode path` and `-mode raw` draw them with
+`StrokePath`, to compare.
+
 ## Stacks
 
 `chart.Stack(series, how)` piles series up, as stacked bars and areas show

@@ -135,13 +135,10 @@ func coreSidebarSection(c *context, title string, open *bool, fn func()) *node {
 			if open != nil {
 				arrow := disclosureArrow(c, 0)
 				turn := arrow.Animate("open", 90*b2f(shown), 150*time.Millisecond)
+				rtl := arrow.rtl()
 				arrow.paintFn = func(p *Painter, r Rect) {
 					if head.Hovered() {
-						cx, cy, d := r.X+r.W/2, r.Y+r.H/2, r.W/8
-						at := rotate(cx, cy, turn)
-						var path Path
-						path.MoveTo(at(-d, -2*d)).LineTo(at(d, 0)).LineTo(at(-d, 2*d))
-						p.StrokePath(&path, 1.5, t.TextMuted)
+						p.StrokePath(disclosurePath(r, turn, rtl), 1.5, t.TextMuted)
 					}
 				}
 			}
@@ -184,7 +181,7 @@ func coreSidebarItem(c *context, id string, icon *SVG, label string) *node {
 			sb.chosen = item
 		}
 	}
-	iconColor := t.Accent
+	iconColor := c.accent(t)
 	switch {
 	case chosen && focused:
 		item.checked = 2
@@ -206,7 +203,7 @@ func coreSidebarItem(c *context, id string, icon *SVG, label string) *node {
 		e := sb.e
 		item.DrawOver(func(p *Painter, r Rect) {
 			if e.FocusVisible() {
-				p.FocusRing(r, item.radius)
+				p.focusRingOf(e, r, item.radius)
 			}
 		})
 	}

@@ -20,6 +20,8 @@ import (
 var (
 	mainQueueMu sync.Mutex
 	mainQueue   []func()
+	// Registered by NewNotification so apps without senders do not link Intents.
+	prepareCommunication func(*Backend, *platform.Notification, id, func(error)) bool
 )
 
 // runOnMain runs fn on the main thread; used by callbacks the system
@@ -41,12 +43,24 @@ func (b *Backend) post(fn func()) {
 	b.Signal()
 }
 
+// drainMainQueue runs the functions posted, one at a time, as loop.drain
+// does: one running a loop of its own, as a frame showing a modal dialog
+// does (drawSoon), leaves those behind it to that loop, signaled again.
 func drainMainQueue() {
-	mainQueueMu.Lock()
-	q := mainQueue
-	mainQueue = nil
-	mainQueueMu.Unlock()
-	for _, fn := range q {
+	for {
+		mainQueueMu.Lock()
+		if len(mainQueue) == 0 {
+			mainQueueMu.Unlock()
+			return
+		}
+		fn := mainQueue[0]
+		mainQueue[0] = nil
+		mainQueue = mainQueue[1:]
+		more := len(mainQueue) > 0
+		mainQueueMu.Unlock()
+		if more {
+			theBackend.Signal()
+		}
 		fn()
 	}
 }
@@ -206,6 +220,7 @@ func (b *Backend) ShowNotification(n *platform.Notification, done func(error)) {
 // addNotification gives the system a request to show a notification. Its
 // trigger is nil, which shows it at once.
 func (b *Backend) addNotification(n *platform.Notification, done func(error)) {
+	b.cancelPreparingNotification(n.ID)
 	withPool(func() {
 		content := autorelease(alloc("UNMutableNotificationContent"))
 		send(content, "setTitle:", uintptr(nsString(n.Title)))
@@ -238,17 +253,34 @@ func (b *Backend) addNotification(n *platform.Notification, done func(error)) {
 		if n.Group != "" {
 			send(content, "setThreadIdentifier:", uintptr(nsString(n.Group)))
 		}
-		req := send(class("UNNotificationRequest"), "requestWithIdentifier:content:trigger:",
-			uintptr(nsString(n.ID)), uintptr(content), 0)
-		blk := newBlock(func(_ objc.Block, nsErr id) {
-			// The error is the caller's only while the block runs.
-			var err error
-			withPool(func() { err = notificationError(nsErr) })
-			b.runOnMain(func() { done(err) })
-		})
-		send(notificationCenter(), "addNotificationRequest:withCompletionHandler:", uintptr(req), uintptr(blk))
-		blk.Release()
+		if len(n.Image) > 0 && attachNotificationImage != nil {
+			done = attachNotificationImage(content, n.Image, done)
+		}
+		if n.Sender != nil && prepareCommunication != nil && prepareCommunication(b, n, content, done) {
+			return
+		}
+		b.submitNotification(n, content, done)
 	})
+}
+
+func (b *Backend) submitNotification(n *platform.Notification, content id, done func(error)) {
+	req := send(class("UNNotificationRequest"), "requestWithIdentifier:content:trigger:",
+		uintptr(nsString(n.ID)), uintptr(content), 0)
+	blk := newBlock(func(_ objc.Block, nsErr id) {
+		// The error is the caller's only while the block runs.
+		var err error
+		withPool(func() { err = notificationError(nsErr) })
+		b.runOnMain(func() { done(err) })
+	})
+	send(notificationCenter(), "addNotificationRequest:withCompletionHandler:", uintptr(req), uintptr(blk))
+	blk.Release()
+}
+
+func (b *Backend) cancelPreparingNotification(ident string) {
+	if cancel := b.notifyPreparing[ident]; cancel != nil {
+		delete(b.notifyPreparing, ident)
+		cancel()
+	}
 }
 
 // unErrorNotificationsNotAllowed is UNErrorCodeNotificationsNotAllowed.
@@ -267,6 +299,7 @@ func notificationError(err id) error {
 
 func (b *Backend) RemoveNotification(ident string) {
 	delete(b.notifyPending, ident)
+	b.cancelPreparingNotification(ident)
 	b.removeNativeNotification(ident)
 }
 
@@ -284,6 +317,11 @@ func (b *Backend) removeNativeNotification(ident string) {
 
 func (b *Backend) RemoveAllNotifications() {
 	clear(b.notifyPending)
+	preparing := b.notifyPreparing
+	b.notifyPreparing = nil
+	for _, cancel := range preparing {
+		cancel()
+	}
 	if !b.NotificationsSupported() {
 		return
 	}

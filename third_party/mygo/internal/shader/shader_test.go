@@ -1,0 +1,1711 @@
+// Copyright 2020 The Ebiten Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package shader_test
+
+import (
+	"errors"
+	"fmt"
+	"os"
+	"path/filepath"
+	"reflect"
+	"runtime"
+	"strings"
+	"testing"
+
+	"github.com/egoist/mygo/internal/shader"
+	"github.com/egoist/mygo/internal/shaderir"
+	"github.com/egoist/mygo/internal/shaderir/glsl"
+	"github.com/egoist/mygo/internal/shaderir/hlsl"
+	"github.com/egoist/mygo/internal/shaderir/msl"
+)
+
+func glslVertexNormalize(str string) string {
+	p := glsl.VertexPrelude(glsl.GLSLVersionDefault)
+	str = strings.TrimPrefix(str, p)
+	return strings.TrimSpace(str)
+}
+
+func glslFragmentNormalize(str string) string {
+	p := glsl.FragmentPrelude(glsl.GLSLVersionDefault)
+	str = strings.TrimPrefix(str, p)
+	return strings.TrimSpace(str)
+}
+
+func hlslNormalize(str string, prelude string) string {
+	str = strings.TrimPrefix(str, prelude)
+	return strings.TrimSpace(str)
+}
+
+func metalNormalize(str string) string {
+	prelude := msl.Prelude()
+	str = strings.TrimPrefix(str, prelude)
+	return strings.TrimSpace(str)
+}
+
+func compare(t *testing.T, title, got, want string) {
+	var msg string
+	gotlines := strings.Split(got, "\n")
+	wantlines := strings.Split(want, "\n")
+	for i := range gotlines {
+		if len(wantlines) <= i {
+			msg = fmt.Sprintf(`lines %d:
+got:  %s
+want: (out of range)`, i+1, gotlines[i])
+			break
+		}
+		if gotlines[i] != wantlines[i] {
+			msg = fmt.Sprintf(`lines %d:
+got:  %s
+want: %s`, i+1, gotlines[i], wantlines[i])
+			break
+		}
+	}
+	t.Errorf("%s: got: %v, want: %v\n\n%s", title, got, want, msg)
+}
+
+func TestCompile(t *testing.T) {
+	if runtime.GOOS == "js" {
+		t.Skip("file open might not be implemented in this environment")
+	}
+
+	files, err := os.ReadDir("testdata")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	type testcase struct {
+		Name  string
+		Src   []byte
+		VS    []byte
+		FS    []byte
+		HLSL  []byte
+		Metal []byte
+	}
+
+	fnames := map[string]struct{}{}
+	for _, f := range files {
+		if f.IsDir() {
+			continue
+		}
+		fnames[f.Name()] = struct{}{}
+	}
+
+	tests := []testcase{}
+	for n := range fnames {
+		if !strings.HasSuffix(n, ".go") {
+			continue
+		}
+
+		src, err := os.ReadFile(filepath.Join("testdata", n))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		name := n[:len(n)-len(".go")]
+		tc := testcase{
+			Name: name,
+			Src:  src,
+		}
+
+		vsn := name + ".expected.vs"
+		if _, ok := fnames[vsn]; ok {
+			vs, err := os.ReadFile(filepath.Join("testdata", vsn))
+			if err != nil {
+				t.Fatal(err)
+			}
+			tc.VS = vs
+		}
+
+		fsn := name + ".expected.fs"
+		if _, ok := fnames[fsn]; ok {
+			fs, err := os.ReadFile(filepath.Join("testdata", fsn))
+			if err != nil {
+				t.Fatal(err)
+			}
+			tc.FS = fs
+		}
+
+		if tc.VS == nil && tc.FS == nil {
+			t.Fatalf("no expected file for %s", name)
+		}
+
+		hlsln := name + ".expected.hlsl"
+		if _, ok := fnames[hlsln]; ok {
+			hlsl, err := os.ReadFile(filepath.Join("testdata", hlsln))
+			if err != nil {
+				t.Fatal(err)
+			}
+			tc.HLSL = hlsl
+		}
+
+		metaln := name + ".expected.metal"
+		if _, ok := fnames[metaln]; ok {
+			metal, err := os.ReadFile(filepath.Join("testdata", metaln))
+			if err != nil {
+				t.Fatal(err)
+			}
+			tc.Metal = metal
+		}
+
+		tests = append(tests, tc)
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.Name, func(t *testing.T) {
+			s, err := shader.Compile(tc.Src, "Vertex", "Fragment", 0)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			// GLSL
+			vs, fs := glsl.Compile(s, glsl.GLSLVersionDefault, -1)
+			if got, want := glslVertexNormalize(vs), glslVertexNormalize(string(tc.VS)); got != want {
+				compare(t, "GLSL Vertex", got, want)
+			}
+			if tc.FS != nil {
+				if got, want := glslFragmentNormalize(fs), glslFragmentNormalize(string(tc.FS)); got != want {
+					compare(t, "GLSL Fragment", got, want)
+				}
+			}
+
+			if tc.HLSL != nil {
+				vs, _, vertexPrelude, _ := hlsl.Compile(s)
+				if got, want := hlslNormalize(vs, vertexPrelude), hlslNormalize(string(tc.HLSL), vertexPrelude); got != want {
+					compare(t, "HLSL", got, want)
+				}
+			}
+
+			if tc.Metal != nil {
+				m := msl.Compile(s)
+				if got, want := metalNormalize(m), metalNormalize(string(tc.Metal)); got != want {
+					compare(t, "Metal", got, want)
+				}
+			}
+
+			// Just check that Compile doesn't cause panic.
+			// TODO: Should the results be tested?
+			msl.Compile(s)
+		})
+	}
+}
+
+func TestCompileAssignFromNoReturnValue(t *testing.T) {
+	srcs := []string{
+		`package main
+
+func bar() {
+}
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	x := bar()
+	return vec4(1)
+}`,
+		`package main
+
+func bar() {
+}
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	var x = bar()
+	return vec4(1)
+}`,
+	}
+	for _, src := range srcs {
+		_, err := shader.Compile([]byte(src), "Vertex", "Fragment", 0)
+		if err == nil {
+			t.Errorf("Compile must return an error for a function call with no return values, but got nil")
+		}
+	}
+}
+
+func TestCompileHLSLIntModulo(t *testing.T) {
+	src := []byte(`//kage:unit pixels
+
+package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := int(src0Pos.x)
+	b := a % 3
+	return vec4(float(b))
+}`)
+	s, err := compileEbitenShader(src)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, ps, _, _ := hlsl.Compile(s)
+	if !strings.Contains(ps, "modInt(") {
+		t.Errorf("HLSL pixel shader should use modInt for integer modulo, but got:\n%s", ps)
+	}
+	// The PSMain body must not use the '%' operator directly. modInt's own definition
+	// uses '%' on uints (which fxc does not warn about), so check only the body.
+	i := strings.Index(ps, "PSMain")
+	if i < 0 {
+		t.Fatalf("HLSL pixel shader should have a PSMain function, but got:\n%s", ps)
+	}
+	if body := ps[i:]; strings.Contains(body, " % ") {
+		t.Errorf("HLSL PSMain should not use the '%%' operator for integer modulo, but got:\n%s", body)
+	}
+}
+
+func TestCompileHLSLSwizzlingStpq(t *testing.T) {
+	src := []byte(`//kage:unit pixels
+
+package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	v := vec4(1, 2, 3, 4)
+	w := vec4(v.p)
+	w += vec4(v.stpq)
+	w += vec4(v.qp.yx, 0, 0)
+	return w
+}`)
+	s, err := compileEbitenShader(src)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, ps, _, _ := hlsl.Compile(s)
+	i := strings.Index(ps, "PSMain")
+	if i < 0 {
+		t.Fatalf("HLSL pixel shader should have a PSMain function, but got:\n%s", ps)
+	}
+	body := ps[i:]
+	// HLSL supports only the xyzw and rgba component naming sets, so stpq
+	// swizzles must be normalized to xyzw (#3741).
+	for _, c := range []string{".s", ".t", ".p", ".q"} {
+		if strings.Contains(body, c) {
+			t.Errorf("HLSL PSMain should not contain the %q swizzling, but got:\n%s", c, body)
+		}
+	}
+	for _, want := range []string{"(l0).z", "(l0).xyzw", "(l0).wz"} {
+		if !strings.Contains(body, want) {
+			t.Errorf("HLSL PSMain should contain %s, but got:\n%s", want, body)
+		}
+	}
+}
+
+func TestCompileMSLSwizzlingStpq(t *testing.T) {
+	src := []byte(`//kage:unit pixels
+
+package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	v := vec4(1, 2, 3, 4)
+	w := vec4(v.p)
+	w += vec4(v.stpq)
+	w += vec4(v.qp.yx, 0, 0)
+	return w
+}`)
+	s, err := compileEbitenShader(src)
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := msl.Compile(s)
+	i := strings.Index(m, "fragment float4 Fragment(")
+	if i < 0 {
+		t.Fatalf("Metal shader should have a Fragment function, but got:\n%s", m)
+	}
+	body := m[i:]
+	// MSL supports only the xyzw and rgba component naming sets, so stpq
+	// swizzles must be normalized to xyzw (#3741).
+	for _, c := range []string{".s", ".t", ".p", ".q"} {
+		if strings.Contains(body, c) {
+			t.Errorf("Metal Fragment should not contain the %q swizzling, but got:\n%s", c, body)
+		}
+	}
+	for _, want := range []string{"(l0).z", "(l0).xyzw", "(l0).wz"} {
+		if !strings.Contains(body, want) {
+			t.Errorf("Metal Fragment should contain %s, but got:\n%s", want, body)
+		}
+	}
+}
+
+func TestCompileVaryingTypeMismatchPosition(t *testing.T) {
+	src := `package main
+
+func Vertex(position vec4, texCoord vec2, color vec4) (vec4, vec2) {
+	return position, texCoord
+}
+
+func Fragment(position vec4, texCoord vec3, color vec4) vec4 {
+	return vec4(1)
+}`
+	_, err := shader.Compile([]byte(src), "Vertex", "Fragment", 0)
+	if err == nil {
+		t.Fatalf("Compile must return an error for a mismatched fragment argument, but got nil")
+	}
+	var perr *shader.ParseError
+	if !errors.As(err, &perr) {
+		t.Fatalf("Compile must return a *shader.ParseError, but got %v", err)
+	}
+	positions := perr.Positions()
+	if len(positions) == 0 {
+		t.Fatalf("Compile must report at least one error position, but got none")
+	}
+	// The errors must point at the fragment entry point, not at the beginning of the source.
+	for _, p := range positions {
+		if got, want := p.Line, 7; got != want {
+			t.Errorf("the error line: got: %d, want: %d (%v)", got, want, err)
+		}
+	}
+}
+
+func TestCompileBlankAsValue(t *testing.T) {
+	values := []string{
+		"min(_, 1)",
+		"1 + _",
+		"min(-_, 1)",
+		"max(+_, 1)",
+		"clamp(-_, 0, 1)",
+		"1 + (-_)",
+	}
+	for _, v := range values {
+		src := []byte(fmt.Sprintf(`package main
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	const x = %s
+	return vec4(x)
+}`, v))
+		t.Run(v, func(t *testing.T) {
+			defer func() {
+				if r := recover(); r != nil {
+					t.Fatalf("Compile must not panic when _ is used as a value, but panicked: %v", r)
+				}
+			}()
+			if _, err := shader.Compile(src, "Vertex", "Fragment", 0); err == nil {
+				t.Fatalf("Compile must return an error when _ is used as a value, but got nil")
+			}
+		})
+	}
+}
+func TestCompileFunctionAsValue(t *testing.T) {
+	cases := []struct {
+		Name string
+		Body string
+	}{
+		{
+			Name: "assignment",
+			Body: "var x float; x = f; return vec4(x)",
+		},
+		{
+			Name: "assignment builtin",
+			Body: "var x float; x = abs; return vec4(x)",
+		},
+		{
+			Name: "composite literal",
+			Body: "a := [2]float{f, 1}; return vec4(a[0])",
+		},
+		{
+			Name: "index",
+			Body: "var a [2]float; return vec4(a[f])",
+		},
+		{
+			Name: "argument",
+			Body: "return vec4(abs(f))",
+		},
+		{
+			Name: "binary operand",
+			Body: "return vec4(f + 1)",
+		},
+		{
+			Name: "return",
+			Body: "return f",
+		},
+		{
+			Name: "condition",
+			Body: "if f { return vec4(0) }; return vec4(1)",
+		},
+	}
+	for _, c := range cases {
+		src := []byte(fmt.Sprintf(`package main
+
+func f() float {
+	return 1
+}
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	%s
+}`, c.Body))
+		t.Run(c.Name, func(t *testing.T) {
+			defer func() {
+				if r := recover(); r != nil {
+					t.Errorf("Compile must not panic when a function is used as a value, but panicked: %v", r)
+				}
+			}()
+			if _, err := shader.Compile(src, "Vertex", "Fragment", 0); err == nil {
+				t.Errorf("Compile must return an error when a function is used as a value, but got nil")
+			}
+		})
+	}
+}
+
+func TestCompileHugeShift(t *testing.T) {
+	src := `package main
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	x := 1 << (1 << 40)
+	return vec4(x)
+}`
+	_, err := shader.Compile([]byte(src), "Vertex", "Fragment", 0)
+	if err == nil {
+		t.Errorf("Compile must return an error for a huge constant shift, but got nil")
+	}
+}
+
+func TestCompileVarCountMismatch(t *testing.T) {
+	srcs := []string{
+		`package main
+
+func f() (int, int) {
+	return 1, 2
+}
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	var a, b, c = f()
+	return vec4(a + b + c)
+}`,
+		`package main
+
+func f() (int, int) {
+	return 1, 2
+}
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	var a, b, c int = f()
+	return vec4(a + b + c)
+}`,
+		`package main
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	var a, b = 1
+	return vec4(a + b)
+}`,
+		`package main
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	var a, b int = 1
+	return vec4(a + b)
+}`,
+	}
+	for _, src := range srcs {
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					t.Errorf("Compile must not panic for a var count mismatch, but panicked: %v", r)
+				}
+			}()
+			if _, err := shader.Compile([]byte(src), "Vertex", "Fragment", 0); err == nil {
+				t.Errorf("Compile must return an error for a var count mismatch, but got nil")
+			}
+		}()
+	}
+}
+
+func TestCompileBoolArithmetic(t *testing.T) {
+	srcs := []string{
+		`package main
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	return vec4(float(true + true))
+}`,
+		`package main
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	return vec4(float(true - true))
+}`,
+		`package main
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	return vec4(float(true * true))
+}`,
+		`package main
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	return vec4(float(true / true))
+}`,
+		`package main
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	a := true
+	b := true
+	c := a + b
+	if c {
+		return vec4(1)
+	}
+	return vec4(0)
+}`,
+	}
+	for _, src := range srcs {
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					t.Errorf("Compile must not panic for bool arithmetic, but panicked: %v", r)
+				}
+			}()
+			if _, err := shader.Compile([]byte(src), "Vertex", "Fragment", 0); err == nil {
+				t.Errorf("Compile must return an error for bool arithmetic, but got nil")
+			}
+		}()
+	}
+}
+
+func TestCompileBareReturnInVoidFunc(t *testing.T) {
+	src := []byte(`package main
+
+func empty() {
+}
+
+func f(x float) {
+	if x > 0.0 {
+		return
+	}
+	empty()
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	f(src0Pos.x)
+	return vec4(1)
+}`)
+	prog, err := shader.Compile(src, "Vertex", "Fragment", 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, fs := glsl.Compile(prog, glsl.GLSLVersionDefault, -1)
+	if !strings.Contains(fs, "return;") {
+		t.Errorf("GLSL fragment shader should contain a bare return, but got:\n%s", fs)
+	}
+}
+
+func TestCompileBareReturnInNonVoidFunc(t *testing.T) {
+	src := []byte(`package main
+
+func f(x float) float {
+	if x > 0.0 {
+		return
+	}
+	return x
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(f(src0Pos.x))
+}`)
+	if _, err := shader.Compile(src, "Vertex", "Fragment", 0); err == nil {
+		t.Errorf("Compile must return an error for a bare return in a non-void function, but got nil")
+	}
+}
+
+func TestCompileLargeFloatConstant(t *testing.T) {
+	src := []byte(`package main
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	return vec4(1e19)
+}`)
+	s, err := shader.Compile(src, "Vertex", "Fragment", 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, fs := glsl.Compile(s, glsl.GLSLVersionDefault, -1)
+	if strings.Contains(fs, "-9223372036854775808") {
+		t.Errorf("GLSL must not contain the overflowed int64 literal, but got:\n%s", fs)
+	}
+	if !strings.Contains(fs, "1.0000000000e+19") {
+		t.Errorf("GLSL should contain the scientific-notation literal 1.0000000000e+19, but got:\n%s", fs)
+	}
+}
+
+func compileFragmentStmt(stmt string) error {
+	_, err := shader.Compile(fmt.Appendf(nil, `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	%s
+	return dstPos
+}`, stmt), "Vertex", "Fragment", 0)
+	return err
+}
+
+func TestCompileShiftCountWithVariable(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "x := 1; _ = x >> -1",
+			err:  true,
+		},
+		{
+			stmt: "x := 1; _ = x << (1 << 40)",
+			err:  true,
+		},
+		{
+			stmt: "x := ivec2(1); _ = x >> -1",
+			err:  true,
+		},
+		{
+			stmt: "x := 1; x <<= -1",
+			err:  true,
+		},
+		{
+			stmt: "x := 1; x >>= (1 << 40)",
+			err:  true,
+		},
+		{
+			stmt: "x := 1; _ = x >> 1",
+			err:  false,
+		},
+		{
+			stmt: "x := 1; _ = x << 2",
+			err:  false,
+		},
+		{
+			stmt: "x := ivec2(1); _ = x >> 1",
+			err:  false,
+		},
+		{
+			stmt: "x := 1; x <<= 1",
+			err:  false,
+		},
+		{
+			stmt: "x := 1; x >>= 1",
+			err:  false,
+		},
+		{
+			stmt: "x := 1; y := 2; _ = x << y",
+			err:  false,
+		},
+	}
+	for _, c := range cases {
+		err := compileFragmentStmt(c.stmt)
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestCompileIndexType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "a := [2]float{1, 2}; x := 1.5; _ = a[x]",
+			err:  true,
+		},
+		{
+			stmt: "a := [2]float{1, 2}; x := true; _ = a[x]",
+			err:  true,
+		},
+		{
+			stmt: "a := [2]float{1, 2}; x := ivec2(0); _ = a[x]",
+			err:  true,
+		},
+		{
+			stmt: "v := vec2(1); x := 1.5; _ = v[x]",
+			err:  true,
+		},
+		{
+			stmt: "m := mat2(1); x := 0.5; _ = m[x]",
+			err:  true,
+		},
+		{
+			stmt: "a := [2]float{1, 2}; i := 1; _ = a[i]",
+			err:  false,
+		},
+		{
+			stmt: "a := [2]float{1, 2}; _ = a[1.0]",
+			err:  false,
+		},
+		{
+			stmt: "v := vec4(1); i := 2; _ = v[i]",
+			err:  false,
+		},
+		{
+			stmt: "m := mat2(1); i := 0; _ = m[i]",
+			err:  false,
+		},
+	}
+	for _, c := range cases {
+		err := compileFragmentStmt(c.stmt)
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestCompileConstantFloatIndex(t *testing.T) {
+	const src = `//kage:unit pixels
+package main
+
+func Fragment(dstPos vec4, srcPos vec2, color vec4) vec4 {
+ values := [2]float{0, 1}
+ return vec4(values[1.0])
+}`
+	p, err := compileEbitenShader([]byte(src))
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, fragment := glsl.Compile(p, glsl.GLSLVersionDefault, -1)
+	if strings.Contains(fragment, "[1.0]") {
+		t.Errorf("GLSL contains a floating-point array index:\n%s", fragment)
+	}
+}
+
+func TestCompileUnaryOperandType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "b := true; _ = -b",
+			err:  true,
+		},
+		{
+			stmt: "b := true; _ = +b",
+			err:  true,
+		},
+		{
+			stmt: "x := 1.0; _ = !x",
+			err:  true,
+		},
+		{
+			stmt: "i := 1; _ = !i",
+			err:  true,
+		},
+		{
+			stmt: "v := vec2(1); _ = !v",
+			err:  true,
+		},
+		{
+			stmt: "m := mat2(1); _ = !m",
+			err:  true,
+		},
+		{
+			stmt: "x := 1.0; _ = -x",
+			err:  false,
+		},
+		{
+			stmt: "x := 1.0; _ = +x",
+			err:  false,
+		},
+		{
+			stmt: "i := 1; _ = -i",
+			err:  false,
+		},
+		{
+			stmt: "v := vec2(1); _ = -v",
+			err:  false,
+		},
+		{
+			stmt: "v := ivec3(1); _ = -v",
+			err:  false,
+		},
+		{
+			stmt: "m := mat2(1); _ = -m",
+			err:  false,
+		},
+		{
+			stmt: "b := true; _ = !b",
+			err:  false,
+		},
+	}
+	for _, c := range cases {
+		err := compileFragmentStmt(c.stmt)
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestCompileCompoundAssignmentErrors(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "var f float; f <<= 2.0",
+			err:  true,
+		},
+		{
+			stmt: "var f float; f >>= 2.0",
+			err:  true,
+		},
+		{
+			stmt: "var v vec2; v <<= 2.0",
+			err:  true,
+		},
+		{
+			stmt: "var v vec2; v >>= 2.0",
+			err:  true,
+		},
+		{
+			stmt: "var m mat2; m <<= 2.0",
+			err:  true,
+		},
+		{
+			stmt: "var m mat2; m >>= 2.0",
+			err:  true,
+		},
+		{
+			stmt: "var f float; f += 2.0",
+			err:  false,
+		},
+		{
+			stmt: "var v vec2; v *= 2.0",
+			err:  false,
+		},
+		{
+			stmt: "var m mat2; m *= 2.0",
+			err:  false,
+		},
+		{
+			stmt: "var i int; i <<= 2",
+			err:  false,
+		},
+		{
+			stmt: "var i int; i >>= 2",
+			err:  false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.stmt, func(t *testing.T) {
+			err := compileFragmentStmt(c.stmt)
+			if !c.err {
+				if err != nil {
+					t.Errorf("Compile must not return an error, but got %v", err)
+				}
+				return
+			}
+			var perr *shader.ParseError
+			if !errors.As(err, &perr) {
+				t.Errorf("Compile must return a *shader.ParseError, but got %v", err)
+			} else if got, want := len(perr.Positions()), 1; got != want {
+				t.Errorf("the number of the errors: got: %d, want: %d (%v)", got, want, err)
+			}
+		})
+	}
+}
+
+func TestCompileCompositeLitBoolConstant(t *testing.T) {
+	err := compileFragmentStmt("_ = [2]bool{1, 2}")
+	if err == nil {
+		t.Errorf("Compile must return an error for a non-bool constant in a bool array literal, but got nil")
+	} else if perr, ok := errors.AsType[*shader.ParseError](err); !ok {
+		t.Errorf("Compile must return a *shader.ParseError, but got %v", err)
+	} else if got, want := len(perr.Positions()), 1; got != want {
+		t.Errorf("the number of the errors: got: %d, want: %d (%v)", got, want, err)
+	}
+	if err := compileFragmentStmt("_ = [2]bool{true, false}"); err != nil {
+		t.Errorf("Compile must not return an error for a bool array literal, but got %v", err)
+	}
+}
+
+func TestCompileCompositeLitElementType(t *testing.T) {
+	cases := []struct {
+		stmt string
+		err  bool
+	}{
+		{
+			stmt: "x := 1; _ = [2]float{x, 2}",
+			err:  true,
+		},
+		{
+			stmt: "b := true; _ = [2]float{b, 2}",
+			err:  true,
+		},
+		{
+			stmt: "x := 1.0; _ = [2]int{x, 2}",
+			err:  true,
+		},
+		{
+			stmt: "x := 1.0; _ = [2]bool{x, true}",
+			err:  true,
+		},
+		{
+			stmt: "v := vec2(1); _ = [2]float{v, 2}",
+			err:  true,
+		},
+		{
+			stmt: "v := vec2(1); _ = [2]vec3{v, vec3(1)}",
+			err:  true,
+		},
+		{
+			stmt: "_ = [2]float{1, 2}",
+			err:  false,
+		},
+		{
+			stmt: "x := 1.0; _ = [2]float{x, 2}",
+			err:  false,
+		},
+		{
+			stmt: "i := 1; _ = [2]int{i, 2}",
+			err:  false,
+		},
+		{
+			stmt: "b := true; _ = [2]bool{b, false}",
+			err:  false,
+		},
+		{
+			stmt: "v := vec2(1); _ = [2]vec2{v, v}",
+			err:  false,
+		},
+	}
+	for _, c := range cases {
+		err := compileFragmentStmt(c.stmt)
+		if err == nil && c.err {
+			t.Errorf("%s must return an error but does not", c.stmt)
+		} else if err != nil && !c.err {
+			t.Errorf("%s must not return an error but returned %v", c.stmt, err)
+		}
+	}
+}
+
+func TestCompileEllipsisArrayOutsideCompositeLit(t *testing.T) {
+	cases := []struct {
+		name string
+		src  string
+		err  bool
+	}{
+		{
+			name: "local variable",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a [...]float
+	return vec4(float(len(a)))
+}`,
+			err: true,
+		},
+		{
+			name: "uniform variable",
+			src: `package main
+
+var U [...]float
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(float(len(U)))
+}`,
+			err: true,
+		},
+		{
+			name: "parameter",
+			src: `package main
+
+func f(a [...]float) int {
+	return len(a)
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(float(f([2]float{1, 2})))
+}`,
+			err: true,
+		},
+		{
+			name: "type declaration",
+			src: `package main
+
+type T [...]float
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return dstPos
+}`,
+			err: true,
+		},
+		{
+			name: "composite literal",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := [...]float{1, 2}
+	return vec4(a[0] + float(len(a)))
+}`,
+			err: false,
+		},
+		{
+			name: "uniform variable with a length",
+			src: `package main
+
+var U [4]float
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(U[0])
+}`,
+			err: false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			_, err := shader.Compile([]byte(c.src), "Vertex", "Fragment", 0)
+			if err == nil && c.err {
+				t.Errorf("Compile must return an error but does not")
+			} else if err != nil && !c.err {
+				t.Errorf("Compile must not return an error but returned %v", err)
+			}
+		})
+	}
+}
+
+func TestCompileArrayLengthLimit(t *testing.T) {
+	cases := []struct {
+		name string
+		src  string
+		err  bool
+	}{
+		{
+			name: "local variable",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a [20000000]float
+	return vec4(a[0])
+}`,
+			err: true,
+		},
+		{
+			name: "local variable just above the limit",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a [4097]float
+	return vec4(a[0])
+}`,
+			err: true,
+		},
+		{
+			name: "uniform variable",
+			src: `package main
+
+var U [4097]float
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(U[0])
+}`,
+			err: true,
+		},
+		{
+			name: "local variable at the limit",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a [4096]float
+	return vec4(a[0])
+}`,
+			err: false,
+		},
+		{
+			name: "uniform variable at the limit",
+			src: `package main
+
+var U [4096]float
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(U[0])
+}`,
+			err: false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			_, err := shader.Compile([]byte(c.src), "Vertex", "Fragment", 0)
+			if err == nil && c.err {
+				t.Errorf("Compile must return an error but does not")
+			} else if err != nil && !c.err {
+				t.Errorf("Compile must not return an error but returned %v", err)
+			}
+		})
+	}
+}
+
+func TestCompileNonIntegerArrayLength(t *testing.T) {
+	cases := []struct {
+		name string
+		src  string
+	}{
+		{
+			name: "float length",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a [1.5]float
+	return vec4(a[0])
+}`,
+		},
+		{
+			name: "bool length",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a [true]int
+	return vec4(float(a[0]))
+}`,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			defer func() {
+				if r := recover(); r != nil {
+					t.Fatalf("Compile must not panic for a non-integer array length, but panicked: %v", r)
+				}
+			}()
+			if _, err := shader.Compile([]byte(c.src), "Vertex", "Fragment", 0); err == nil {
+				t.Errorf("Compile must return an error for a non-integer array length, but got nil")
+			}
+		})
+	}
+}
+
+func TestCompileZeroLengthArray(t *testing.T) {
+	cases := []struct {
+		name string
+		src  string
+		err  bool
+	}{
+		{
+			name: "uniform variable",
+			src: `package main
+
+var Z [0]float
+var F float
+var V vec4
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(float(len(Z)) + F + V.x)
+}`,
+			err: true,
+		},
+		{
+			name: "local variable",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a [0]float
+	return vec4(float(len(a)))
+}`,
+			err: true,
+		},
+		{
+			name: "negative length",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a [-1]float
+	return vec4(float(len(a)))
+}`,
+			err: true,
+		},
+		{
+			name: "composite literal",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	_ = [0]float{}
+	return vec4(1)
+}`,
+			err: true,
+		},
+		{
+			name: "composite literal with an ellipsis",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a := [...]float{}
+	return vec4(float(len(a)))
+}`,
+			err: true,
+		},
+		{
+			name: "one element",
+			src: `package main
+
+var U [1]float
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(U[0])
+}`,
+			err: false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			_, err := shader.Compile([]byte(c.src), "Vertex", "Fragment", 0)
+			if err == nil && c.err {
+				t.Errorf("Compile must return an error but does not")
+			} else if err != nil && !c.err {
+				t.Errorf("Compile must not return an error but returned %v", err)
+			}
+		})
+	}
+}
+
+func TestCompileEntryPointTypesWithNoFragmentArguments(t *testing.T) {
+	cases := []struct {
+		name string
+		src  string
+		err  bool
+	}{
+		{
+			name: "vertex returning int",
+			src: `package main
+
+func Vertex(position vec2) int {
+	return 1
+}
+
+func Fragment() vec4 {
+	return vec4(1)
+}`,
+			err: true,
+		},
+		{
+			name: "vertex returning nothing",
+			src: `package main
+
+func Vertex(position vec2) {
+}
+
+func Fragment() vec4 {
+	return vec4(1)
+}`,
+			err: true,
+		},
+		{
+			name: "fragment returning int",
+			src: `package main
+
+func Vertex(position vec2) vec4 {
+	return vec4(position, 0, 1)
+}
+
+func Fragment() int {
+	return 1
+}`,
+			err: true,
+		},
+		{
+			name: "vertex and fragment returning vec4",
+			src: `package main
+
+func Vertex(position vec2) vec4 {
+	return vec4(position, 0, 1)
+}
+
+func Fragment() vec4 {
+	return vec4(1)
+}`,
+			err: false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			_, err := shader.Compile([]byte(c.src), "Vertex", "Fragment", 0)
+			if err == nil && c.err {
+				t.Errorf("Compile must return an error but does not")
+			} else if err != nil && !c.err {
+				t.Errorf("Compile must not return an error but returned %v", err)
+			}
+		})
+	}
+}
+
+func TestCompileReservedUniformName(t *testing.T) {
+	cases := []struct {
+		name string
+		src  string
+		err  bool
+	}{
+		{
+			name: "outside the internal region",
+			src: `package main
+
+var __foo float
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(__foo)
+}`,
+			err: true,
+		},
+		{
+			name: "inside the internal region",
+			src: fmt.Sprintf(`package main
+
+%s
+var __foo float
+%s
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(__foo)
+}`, shader.InternalRegionBegin, shader.InternalRegionEnd),
+			err: false,
+		},
+		{
+			name: "local variable",
+			src: `package main
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	__x := 1.0
+	return vec4(__x)
+}`,
+			err: false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			_, err := shader.Compile([]byte(c.src), "Vertex", "Fragment", 0)
+			if err == nil && c.err {
+				t.Errorf("Compile must return an error but does not")
+			} else if err != nil && !c.err {
+				t.Errorf("Compile must not return an error but returned %v", err)
+			}
+		})
+	}
+}
+
+func TestCompileInternalRegionDirectives(t *testing.T) {
+	begin := shader.InternalRegionBegin
+	end := shader.InternalRegionEnd
+	cases := []struct {
+		name       string
+		directives []string
+		err        bool
+	}{
+		{
+			name:       "none",
+			directives: nil,
+			err:        false,
+		},
+		{
+			name:       "one region",
+			directives: []string{begin, end},
+			err:        false,
+		},
+		{
+			name:       "two regions",
+			directives: []string{begin, end, begin, end},
+			err:        true,
+		},
+		{
+			name:       "begin only",
+			directives: []string{begin},
+			err:        true,
+		},
+		{
+			name:       "end only",
+			directives: []string{end},
+			err:        true,
+		},
+		{
+			name:       "end before begin",
+			directives: []string{end, begin},
+			err:        true,
+		},
+		{
+			name:       "unknown argument",
+			directives: []string{"//kage:internalregion middle"},
+			err:        true,
+		},
+		{
+			name:       "another directive with the same prefix",
+			directives: []string{"//kage:internalregionx begin"},
+			err:        false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			src := fmt.Sprintf(`package main
+
+%s
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return dstPos
+}`, strings.Join(c.directives, "\n"))
+			_, err := shader.Compile([]byte(src), "Vertex", "Fragment", 0)
+			if err == nil && c.err {
+				t.Errorf("Compile must return an error but does not")
+			} else if err != nil && !c.err {
+				t.Errorf("Compile must not return an error but returned %v", err)
+			}
+		})
+	}
+}
+
+func TestCompileReservedUniformNameWithBridge(t *testing.T) {
+	cases := []struct {
+		name string
+		src  string
+		err  bool
+	}{
+		{
+			name: "reserved uniform",
+			src: `//kage:unit pixels
+
+package main
+
+var __foo float
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(__foo)
+}`,
+			err: true,
+		},
+		{
+			name: "reserved uniform in a user's internal region",
+			src: fmt.Sprintf(`//kage:unit pixels
+
+package main
+
+%s
+var __foo float
+%s
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return vec4(__foo)
+}`, shader.InternalRegionBegin, shader.InternalRegionEnd),
+			err: true,
+		},
+		{
+			name: "exposed uniform",
+			src: `//kage:unit pixels
+
+package main
+
+var Foo float
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return imageSrc0At(src0Pos) * Foo
+}`,
+			err: false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			_, err := compileEbitenShader([]byte(c.src))
+			if err == nil && c.err {
+				t.Errorf("CompileShader must return an error but does not")
+			} else if err != nil && !c.err {
+				t.Errorf("CompileShader must not return an error but returned %v", err)
+			}
+		})
+	}
+}
+
+func TestCompileBlankFunctions(t *testing.T) {
+	compile := func(name0, name1 string) []shaderir.Func {
+		src := fmt.Sprintf(`package main
+
+func %s() float {
+	return 1
+}
+
+func %s() int {
+	x := 2
+	return x
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return dstPos
+}`, name0, name1)
+		p, err := shader.Compile([]byte(src), "Vertex", "Fragment", 0)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return p.Funcs
+	}
+	if got, want := compile("_", "_"), compile("a", "b"); !reflect.DeepEqual(got, want) {
+		t.Errorf("got: %v, want: %v", got, want)
+	}
+}
+
+func TestCompileTextureVariable(t *testing.T) {
+	cases := []struct {
+		name string
+		src  string
+		err  bool
+	}{
+		{
+			name: "short variable declaration",
+			src: `//kage:unit pixels
+
+package main
+
+func f(x vec4) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	t := __t0
+	_ = t
+	return imageSrc0At(src0Pos)
+}`,
+			err: true,
+		},
+		{
+			name: "variable declaration",
+			src: `//kage:unit pixels
+
+package main
+
+func f(x vec4) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var t = __t0
+	_ = t
+	return imageSrc0At(src0Pos)
+}`,
+			err: true,
+		},
+		{
+			name: "multiple short variable declaration",
+			src: `//kage:unit pixels
+
+package main
+
+func f(x vec4) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a, b := __t0, __t1
+	_, _ = a, b
+	return imageSrc0At(src0Pos)
+}`,
+			err: true,
+		},
+		{
+			name: "multiple variable declaration",
+			src: `//kage:unit pixels
+
+package main
+
+func f(x vec4) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var a, b = __t0, __t1
+	_, _ = a, b
+	return imageSrc0At(src0Pos)
+}`,
+			err: true,
+		},
+		{
+			name: "blank short variable declaration",
+			src: `//kage:unit pixels
+
+package main
+
+func f(x vec4) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	a, _ := 1, __t0
+	_ = a
+	return imageSrc0At(src0Pos)
+}`,
+			err: true,
+		},
+		{
+			name: "blank variable declaration",
+			src: `//kage:unit pixels
+
+package main
+
+func f(x vec4) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	var _ = __t0
+	return imageSrc0At(src0Pos)
+}`,
+			err: true,
+		},
+		{
+			name: "argument",
+			src: `//kage:unit pixels
+
+package main
+
+func f(x vec4) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	f(__t0)
+	return imageSrc0At(src0Pos)
+}`,
+			err: true,
+		},
+		{
+			name: "blank assignment",
+			src: `//kage:unit pixels
+
+package main
+
+func f(x vec4) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	_ = __t0
+	return imageSrc0At(src0Pos)
+}`,
+			err: false,
+		},
+		{
+			name: "texture read",
+			src: `//kage:unit pixels
+
+package main
+
+func f(x vec4) {
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return imageSrc0At(src0Pos)
+}`,
+			err: false,
+		},
+		{
+			name: "return value",
+			src: `//kage:unit pixels
+
+package main
+
+func f() vec4 {
+	return __t0
+}
+
+func Fragment(dstPos vec4, src0Pos vec2, color vec4) vec4 {
+	return f()
+}`,
+			err: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			s, err := compileEbitenShader([]byte(c.src))
+			if err == nil && c.err {
+				t.Errorf("CompileShader must return an error but does not")
+			} else if err != nil && !c.err {
+				t.Errorf("CompileShader must not return an error but returned %v", err)
+			}
+			if err != nil {
+				return
+			}
+			glsl.Compile(s, glsl.GLSLVersionDefault, -1)
+			hlsl.Compile(s)
+			msl.Compile(s)
+		})
+	}
+}

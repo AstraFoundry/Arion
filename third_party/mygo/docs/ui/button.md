@@ -43,6 +43,10 @@ if ui.Button(c, "").Label("Delete").Tooltip("Delete").Children(func() { ui.Icon(
 ## States
 
 `Disabled(true)` grays a button out: it takes neither clicks nor the focus.
+`AccessDisabled(true)` only tells screen readers it is unavailable, while
+it keeps the focus and its look, for one they must still reach, as a
+submit button while the form is not valid: see
+[accessibility](accessibility.md#unavailable-still-reachable).
 In a [toolbar](toolbar.md), buttons take no face of their own until
 hovered. A default button that Enter presses wherever the focus is takes
 the key with a [shortcut](input.md#shortcuts):

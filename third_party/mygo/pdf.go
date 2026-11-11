@@ -38,8 +38,12 @@ type Margins struct{ Top, Right, Bottom, Left float64 }
 // (the page's print style sheets apply) on pages of the given size:
 //
 //	pdf, err := win.Page().PrintToPDF(mygo.PDFOptions{PageSize: mygo.PageA4, Background: true})
+//
+// The PDF's text copies and searches as the page's: on macOS, where the
+// PDFs WebKit prints name radicals for many Chinese characters, as ⼈
+// (U+2F08) for 人, PrintToPDF puts back the characters the fonts draw.
 func (p *Page) PrintToPDF(opts PDFOptions) ([]byte, error) {
-	if p.w.content != nil {
+	if p.w.content {
 		return nil, errNoPage
 	}
 	size := opts.PageSize
@@ -67,5 +71,8 @@ func (p *Page) PrintToPDF(opts PDFOptions) ([]byte, error) {
 		return nil, errDestroyed
 	}
 	r := await(ch)
-	return r.pdf, r.err
+	if r.err != nil {
+		return nil, r.err
+	}
+	return fixPrintedPDF(r.pdf), nil
 }

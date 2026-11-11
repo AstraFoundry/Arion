@@ -128,8 +128,9 @@ func (w *window) body(c *ui.Context, t *ui.Theme, v frontend.View) {
 		}
 	}
 	if v.Detail != "" {
-		ui.Text(c.Key("detail"), v.Detail).FontSize(small).TextColor(t.TextMuted).
-			MaxLines(2).Tooltip(v.Detail).Selectable()
+		// All of it, however long: the window grows to fit it, and a
+		// tooltip would cover the title.
+		ui.Text(c.Key("detail"), v.Detail).FontSize(small).TextColor(t.TextMuted).Selectable()
 	}
 	if len(v.Notes) > 0 {
 		ui.Column(c.Key("notes")).Grow(1).Margin(6, 0, 0, 0).Children(func() {

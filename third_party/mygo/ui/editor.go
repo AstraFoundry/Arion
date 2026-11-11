@@ -23,6 +23,8 @@ type editEvent struct {
 	key   Key
 	text  string
 	caret int
+	// repeat marks a command whose key, held down, repeats (commandKey).
+	repeat bool
 	// replace makes an insertion or a composition take the runes from to
 	// to instead of the selection, as an input method asked.
 	replace  bool
@@ -51,19 +53,42 @@ type editor struct {
 	queue              []editEvent
 	multiline          bool
 	readOnly           bool   // selectable text: selected and copied, not edited
+	maxLength          int    // UTF-16 units the user may enter, none when <= 0 (MaxLength)
 	source             string // the text of selectable text
 	password           bool
 	// onPaste sees a paste before it is inserted (OnPaste).
 	onPaste func(text string) bool
+	// onTextKey sees a key before the editor takes it (OnTextKey).
+	onTextKey func(k TextKey) bool
+	// keying is set while onTextKey runs, as the TextKey numbered keySeq
+	// is valid.
+	keying bool
+	keySeq uint64
 	// leaveEmptyBackspace leaves Backspace to shortcuts while the text is
 	// empty, as a token field's input does to take out a token.
 	leaveEmptyBackspace bool
+	// shown are the options the build before set, of the input the user
+	// typed in, which its edits apply by (see withShown).
+	shown editorOptions
 	// lines are a text area's least and most lines (Lines), as high as its
 	// wrapped text between them; zero for the paragraphs, at least three.
 	lines       [2]int
 	placeholder string
-	// ranges style runs of the text (TextRanges), sorted by Start.
+	// Placeholder color is paint-only and reset by each widget build.
+	placeholderColor    Color
+	placeholderColorSet bool
+	// caretWidth is paint-only, in DIPs, and reset by each widget build.
+	caretWidth float32
+	// ranges style runs of the text (TextRanges): as given until apart is
+	// set, then merged into runs apart, sorted by Start (sortRanges).
 	ranges []TextRange
+	apart  bool
+	merge  rangeMerge
+	// paintStyles, paintSpans and painted hold what rangeSpans returns to
+	// paint a text, used again for the next: painting keeps none.
+	paintStyles []text.Span
+	paintSpans  []Span
+	painted     spanPaint
 	// layout is what the last frame laid out of a single-line input or a
 	// selectable text; area lays out a text area (textarea.go).
 	layout           *text.Layout
@@ -80,24 +105,60 @@ type editor struct {
 	hasDesired       bool
 	undo, redo       []undoStep
 	lastEdit         time.Time
-	coalesce         bool
-	dragging         bool
-	dragUnit         int // 1 rune, 2 word, 3 line
-	dragStart        [2]int
-	pressMods        Modifiers
-	contentW         float32
+	// now is the time, the engine's (engine.now), for what depends on it.
+	now       func() time.Time
+	coalesce  bool
+	dragging  bool
+	dragUnit  int // 1 rune, 2 word, 3 line
+	dragStart [2]int
+	pressMods Modifiers
+	contentW  float32
 }
 
-func newEditor() *editor { return &editor{} }
+func newEditor(now func() time.Time) *editor { return &editor{now: now} }
 
 func (ed *editor) String() string { return ed.buf.string() }
 
 // edit replaces the runes from a to z with s, and tells the area.
 func (ed *editor) edit(a, z int, s string) {
+	// An edit ends the drag of a press: a pointer still down would take the
+	// caret back to it, and the next key would land there or replace what it selects.
+	ed.dragging = false
 	first, old, after := ed.buf.replace(a, z, s)
 	if ed.area != nil {
 		ed.area.edited(&ed.buf, first, old, after)
 	}
+}
+
+// editorOptions are the options of a text input that its fluent methods
+// set in each build and its edits follow.
+type editorOptions struct {
+	readOnly, password bool
+	maxLength          int
+	onPaste            func(text string) bool
+	onTextKey          func(k TextKey) bool
+}
+
+// rebuild starts a build of the input: what the build before set becomes
+// the options its pending edits apply by, and this build's start from
+// the defaults.
+func (ed *editor) rebuild() {
+	ed.shown = editorOptions{ed.readOnly, ed.password, ed.maxLength, ed.onPaste, ed.onTextKey}
+	ed.readOnly, ed.password, ed.maxLength, ed.lines, ed.onPaste, ed.onTextKey = false, false, 0, [2]int{}, nil, nil
+	ed.placeholderColorSet = false
+	ed.caretWidth = 1
+}
+
+// withShown runs fn, which applies the user's edits, with the options of
+// the build the user typed in: input reaches an input as its constructor
+// returns, before this build's ReadOnly or OnPaste, and follows what the
+// user saw.
+func (ed *editor) withShown(fn func()) {
+	now := editorOptions{ed.readOnly, ed.password, ed.maxLength, ed.onPaste, ed.onTextKey}
+	o := ed.shown
+	ed.readOnly, ed.password, ed.maxLength, ed.onPaste, ed.onTextKey = o.readOnly, o.password, o.maxLength, o.onPaste, o.onTextKey
+	fn()
+	ed.readOnly, ed.password, ed.maxLength, ed.onPaste, ed.onTextKey = now.readOnly, now.password, now.maxLength, now.onPaste, now.onTextKey
 }
 
 func (ed *editor) insert(s string) {
@@ -107,6 +168,9 @@ func (ed *editor) insert(s string) {
 	s = strings.ReplaceAll(s, "\r\n", "\n")
 	a, b := ed.selection()
 	ranges := ed.selectedRanges()
+	if a == b && len(ranges) == 0 && ed.fit(a, a, s) == "" {
+		return // nothing fits (MaxLength): no step of undo either
+	}
 	ed.record(a == b && utf8.RuneCountInString(s) == 1)
 	if len(ranges) == 0 {
 		ed.replace(ed.caret, ed.caret, s)

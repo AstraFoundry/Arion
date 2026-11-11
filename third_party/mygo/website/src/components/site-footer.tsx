@@ -11,12 +11,15 @@ export function SiteFooter() {
           MIT License
         </a>
       </span>
-      <nav className="flex gap-6">
+      <nav className="flex flex-wrap gap-x-6 gap-y-2">
         <Link to="/docs" className="hover:text-foreground">
           Docs
         </Link>
         <Link to="/benchmarks" className="hover:text-foreground">
           Benchmarks
+        </Link>
+        <Link to="/showcase" className="hover:text-foreground">
+          Showcase
         </Link>
         <a href={`${site.repo}/releases`} className="hover:text-foreground">
           Releases

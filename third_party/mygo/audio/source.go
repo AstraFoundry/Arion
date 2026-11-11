@@ -7,22 +7,30 @@ import (
 
 // A memSource reads a sound's samples.
 type memSource struct {
-	samples  []float32
-	channels int
-	pos      int // sample
-	loop     bool
+	samples    []float32
+	channels   int
+	pos        int // sample
+	loop       bool
+	start, end int64 // the frames looped, end 0 for all
 }
 
 func (s *memSource) read(dst []float32) (int, bool) {
 	n := 0
 	for n < len(dst) {
-		if s.pos >= len(s.samples) {
-			if !s.loop || len(s.samples) == 0 {
+		limit := len(s.samples)
+		if s.loop && s.end > 0 {
+			limit = min(limit, int(s.end)*s.channels)
+		}
+		if s.pos >= limit {
+			if !s.loop || limit == 0 {
 				return n / s.channels, true
 			}
-			s.pos = 0
+			s.pos = int(s.start) * s.channels
+			if s.pos >= limit {
+				s.pos = 0
+			}
 		}
-		c := copy(dst[n:], s.samples[s.pos:])
+		c := copy(dst[n:], s.samples[s.pos:limit])
 		c -= c % s.channels
 		if c == 0 {
 			break
@@ -37,8 +45,10 @@ func (s *memSource) seek(frame int64) {
 	s.pos = int(min(frame*int64(s.channels), int64(len(s.samples))))
 }
 
-func (s *memSource) setLoop(loop bool) { s.loop = loop }
-func (s *memSource) close()            {}
+func (s *memSource) setLoop(loop bool, start, end int64) {
+	s.loop, s.start, s.end = loop, start, end
+}
+func (s *memSource) close() {}
 
 // A stream decodes ahead of a voice on a goroutine of its own, into a ring
 // the voice reads without waiting.
@@ -52,6 +62,10 @@ type stream struct {
 	ring   []float32 // frames of keep channels
 	r, n   int       // where the next sample is read, and how many there are
 	loop   bool
+	start  int64 // the frames looped, end 0 for all
+	end    int64
+	pos    int64 // the frame d decodes next
+	wrap   bool  // d decoded to the loop's end: it goes on from its start
 	atEOF  bool  // d reached its end
 	seekTo int64 // where to seek d next, or -1
 	gen    int   // counts seeks, to drop what was decoded before one
@@ -78,7 +92,7 @@ func (s *stream) decode() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	for {
-		for !s.closed && s.seekTo < 0 && (s.atEOF && !s.loop || len(s.ring)-s.n < 2048*s.keep) {
+		for !s.closed && s.seekTo < 0 && !s.wrap && (s.atEOF && !s.loop || len(s.ring)-s.n < 2048*s.keep) {
 			s.cond.Wait()
 		}
 		if s.closed {
@@ -87,10 +101,13 @@ func (s *stream) decode() {
 			}
 			return
 		}
-		if s.seekTo >= 0 || s.atEOF {
-			// A seek, or a loop back to the start.
-			to := max(s.seekTo, 0)
-			s.seekTo = -1
+		if s.seekTo >= 0 || s.wrap || s.atEOF {
+			// A seek, or a loop back to its start.
+			to := s.seekTo
+			if to < 0 {
+				to = s.start
+			}
+			s.seekTo, s.wrap = -1, false
 			gen := s.gen
 			s.mu.Unlock()
 			err := s.d.SetPosition(to)
@@ -99,6 +116,7 @@ func (s *stream) decode() {
 				// Where it cannot go, the stream ends.
 				s.atEOF = err != nil
 				s.loop = s.loop && err == nil
+				s.pos = to
 			}
 			continue
 		}
@@ -119,6 +137,13 @@ func (s *stream) decode() {
 			// Seeked meanwhile.
 			continue
 		}
+		frames := int64(n / s.channels)
+		if s.loop && s.end > 0 && s.pos+frames >= s.end {
+			// Past the loop's end: what is before it, then its start.
+			samples = samples[:max(s.end-s.pos, 0)*int64(s.keep)]
+			s.wrap = true
+		}
+		s.pos += frames
 		for len(samples) > 0 {
 			w := (s.r + s.n) % len(s.ring)
 			c := copy(s.ring[w:min(len(s.ring), w+len(s.ring)-s.n)], samples)
@@ -159,16 +184,20 @@ func (s *stream) seek(frame int64) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.seekTo = frame
-	s.atEOF = false
+	s.atEOF, s.wrap = false, false
 	s.r, s.n = 0, 0
 	s.gen++
 	s.cond.Signal()
 }
 
-func (s *stream) setLoop(loop bool) {
+func (s *stream) setLoop(loop bool, start, end int64) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.loop = loop
+	if s.wrap && !loop {
+		// Looping no more at its end: from there, where it decoded past.
+		s.wrap, s.seekTo = false, s.end
+	}
+	s.loop, s.start, s.end = loop, start, end
 	s.cond.Signal()
 }
 

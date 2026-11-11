@@ -3,6 +3,7 @@
 package linux
 
 import (
+	"cmp"
 	"math"
 	"slices"
 
@@ -19,8 +20,19 @@ import (
 // with a new GL context). The area keeps an alpha channel from then on:
 // its frames are transparent where the content shows a web view (holes),
 // so that what the content paints after it shows over the page, and an
-// input shape lets the pointer through to the page there. Its signals
-// find it by its id in Backend.webViews, apart from the windows.
+// input shape lets the pointer through to the page there. A drawing area
+// (frames drawn in memory) has a GdkWindow of its own, which X11 shows
+// over the page whatever its frames leave transparent: the same region
+// shapes it, so that the page shows in the holes. Its signals find it by
+// its id in Backend.webViews, apart from the windows.
+//
+// GTK 3 has no transforms of widgets: a page the content shows scaled has
+// its view at the size it shows, and WebKit zooms the page by the scale
+// (pageScale), so that it lays out in as many CSS pixels and only looks
+// smaller or larger. The view draws cut to the corners of the content's
+// hole, on whole pixels, as GTK draws WebKit's frames with OpenGL within
+// the rectangles of a clip alone, and the region shaping the area
+// follows them.
 
 var (
 	gtkLayoutNew                     func(h, v ptr) ptr
@@ -29,17 +41,28 @@ var (
 	gtkWidgetGetParent               func(w ptr) ptr
 	gtkWidgetGetParentWindow         func(w ptr) ptr
 	gdkWindowInputShapeCombineRegion func(w, region ptr, x, y int32)
+	gdkWindowShapeCombineRegion      func(w, region ptr, x, y int32)
 	cairoRegionCreateRectangle       func(r *gdkRectangle) ptr
 	cairoRegionSubtractRectangle     func(region ptr, r *gdkRectangle) int32
 	cairoRegionUnion                 func(region, other ptr) int32
 	cairoRegionDestroy               func(region ptr)
+	cairoRegionUnionRectangle        func(region ptr, r *gdkRectangle) int32
+	gdkCairoRegion                   func(cr, region ptr)
+	cairoClip                        func(cr ptr)
 	gtkWidgetEvent                   func(w, event ptr) bool
 	gtkContainerGetFocusChild        func(c ptr) ptr
 	webViewsLoaded                   bool
 
-	// cbWebViewFocus handles a web view's focus signal.
-	cbWebViewFocus ptr
+	// cbWebViewFocus handles a web view's focus signal, cbWebViewScroll
+	// the scroll-event of one that scrolls its container, and
+	// cbWebViewDraw its draw signal, and cbWebViewKey the key-press-events
+	// its page leaves unhandled.
+	cbWebViewFocus, cbWebViewScroll, cbWebViewDraw, cbWebViewKey ptr
 )
+
+// widgetClassDraw is the offset of draw in GtkWidgetClass: a GObjectClass,
+// activate_signal and 19 functions.
+const widgetClassDraw = 288
 
 func loadWebViews() {
 	if webViewsLoaded {
@@ -52,10 +75,14 @@ func loadWebViews() {
 	mustBind(libGTK, &gtkWidgetGetParent, "gtk_widget_get_parent")
 	mustBind(libGTK, &gtkWidgetGetParentWindow, "gtk_widget_get_parent_window")
 	mustBind(libGDK, &gdkWindowInputShapeCombineRegion, "gdk_window_input_shape_combine_region")
+	mustBind(libGDK, &gdkWindowShapeCombineRegion, "gdk_window_shape_combine_region")
 	mustBind(libCairo, &cairoRegionCreateRectangle, "cairo_region_create_rectangle")
 	mustBind(libCairo, &cairoRegionSubtractRectangle, "cairo_region_subtract_rectangle")
 	mustBind(libCairo, &cairoRegionUnion, "cairo_region_union")
 	mustBind(libCairo, &cairoRegionDestroy, "cairo_region_destroy")
+	mustBind(libCairo, &cairoRegionUnionRectangle, "cairo_region_union_rectangle")
+	mustBind(libGDK, &gdkCairoRegion, "gdk_cairo_region")
+	mustBind(libCairo, &cairoClip, "cairo_clip")
 	mustBind(libGTK, &gtkWidgetEvent, "gtk_widget_event")
 	mustBind(libGTK, &gtkContainerGetFocusChild, "gtk_container_get_focus_child")
 	// GTK moves the keyboard with Tab through focus signals, which
@@ -83,6 +110,65 @@ func loadWebViews() {
 		}
 		return true
 	})
+	// The wheel and the touchpad over a web view with ScrollToContainer
+	// scroll the content around it, as over the content itself, and never
+	// reach WebKit, whose handler of the signal runs last.
+	cbWebViewScroll = purego.NewCallback(func(widget, event, data ptr) bool {
+		w := theBackend.window(data)
+		if w == nil || w.host == nil || w.host.closed || w.host.surface == nil {
+			return false
+		}
+		// The event is in the web view's window, at its allocation in the
+		// layout, which is where the area is.
+		var a gdkRectangle
+		gtkWidgetGetAllocation(w.web, &a)
+		w.host.surface.send(scrollEvent(event, float64(a.X), float64(a.Y)))
+		return true
+	})
+	// A rounded page draws inside its corners: WebKit's handler, which
+	// GTK would run with the clip of none before it, draws clipped here.
+	cbWebViewDraw = purego.NewCallback(func(widget, cr, data ptr) bool {
+		w := theBackend.window(data)
+		if w == nil || w.corners == [4]float64{} {
+			return false
+		}
+		region := cairoRegionCreateRectangle(&gdkRectangle{Width: gtkWidgetGetAllocatedWidth(widget), Height: gtkWidgetGetAllocatedHeight(widget)})
+		box := platform.RectF{W: float64(gtkWidgetGetAllocatedWidth(widget)), H: float64(gtkWidgetGetAllocatedHeight(widget))}
+		for _, r := range cornerPixels(box, w.corners, w.corners) {
+			cairoRegionSubtractRectangle(region, &r)
+		}
+		gdkCairoRegion(cr, region)
+		cairoRegionDestroy(region)
+		cairoClip(cr)
+		// The instance's class, then its draw.
+		draw := *slot(*slot(widget, 0), widgetClassDraw)
+		purego.SyscallN(uintptr(draw), uintptr(widget), uintptr(cr))
+		return true
+	})
+	// A key the page leaves unhandled, which WebKit sends again once its
+	// web process said so, and which its class handler then passes on:
+	// this handler runs after it, for those keys alone. The content takes
+	// it as if the web view's element had the focus. Tab moves the
+	// keyboard (cbWebViewFocus), a modifier key on its own is no key of
+	// the content's, and the shortcut of a menu item with a role, as Edit
+	// › Copy's, goes on to the menu (cbMenuKey). GdkEventKey: state 24,
+	// keyval 28.
+	cbWebViewKey = purego.NewCallback(func(widget, event, data ptr) bool {
+		w := theBackend.window(data)
+		if w == nil || w.host == nil || w.host.closed || w.host.surface == nil {
+			return false
+		}
+		keyval := field[uint32](event, 28)
+		if roleKeys[w.host.accel][[2]uint32{gdkKeyvalToLower(keyval), field[uint32](event, 24) & modifierMask}] {
+			return false
+		}
+		k, physical, mods := keyvalKey(keyval), eventPhysicalKey(event), gdkMods(field[uint32](event, 24))
+		if k == platform.KeyTab || modifierKeyval(keyval) != 0 || k == platform.KeyUnknown && !platform.KeyByPosition(k, physical, mods) {
+			return false
+		}
+		w.host.surface.send(platform.SurfaceEvent{Kind: platform.WebViewKey, Key: k, PhysicalKey: physical, Mods: mods, WebView: w})
+		return true
+	})
 }
 
 func (s *surface) NewWebView(o *platform.WindowOptions, h platform.WindowHandler) (platform.WebView, error) {
@@ -100,6 +186,11 @@ func (s *surface) NewWebView(o *platform.WindowOptions, h platform.WindowHandler
 	b.webViews[v.id] = v
 	v.createWebView()
 	connect(v.web, "focus", cbWebViewFocus, ptr(v.id))
+	connect(v.web, "draw", cbWebViewDraw, ptr(v.id))
+	connectAfter(v.web, "key-press-event", cbWebViewKey, ptr(v.id))
+	if o.ScrollToContainer {
+		connect(v.web, "scroll-event", cbWebViewScroll, ptr(v.id))
+	}
 	gtkWidgetSetNoShowAll(v.web, true) // hidden until placed
 	gtkLayoutPut(s.web, v.web, 0, 0)
 	b.byWebView[v.web] = v
@@ -144,7 +235,7 @@ func (s *surface) makeLayers() {
 
 // PlaceWebViews shows the window's web views where the content shows
 // them, in its paint order under the surface, and hides the others; the
-// area's input shape lets the pointer through to them.
+// area's shapes show them and let the pointer through to them.
 func (s *surface) PlaceWebViews(views []platform.WebViewPlacement) {
 	host := s.w
 	if host.closed || s.layers == 0 {
@@ -159,8 +250,10 @@ func (s *surface) PlaceWebViews(views []platform.WebViewPlacement) {
 		}
 		f := p.Frame
 		x, y := int32(math.Round(f.X)), int32(math.Round(f.Y))
+		width, height := int32(math.Round(f.X+f.W))-x, int32(math.Round(f.Y+f.H))-y
 		gtkLayoutMove(s.web, v.web, x, y)
-		gtkWidgetSetSizeRequest(v.web, int32(math.Round(f.X+f.W))-x, int32(math.Round(f.Y+f.H))-y)
+		gtkWidgetSetSizeRequest(v.web, width, height)
+		v.present(&p, width)
 		if !gtkWidgetGetVisible(v.web) {
 			gtkWidgetShow(v.web)
 		}
@@ -176,39 +269,161 @@ func (s *surface) PlaceWebViews(views []platform.WebViewPlacement) {
 			gtkWidgetHide(v.web)
 		}
 	}
-	s.shapeInput()
+	s.shape()
 }
 
-// shapeInput lets the pointer through the area where the web views take
-// it: in their clips but where the content painted over them.
-func (s *surface) shapeInput() {
-	win := gtkWidgetGetParentWindow(s.area) // the overlay's window of the area
-	if win == 0 || win == gtkWidgetGetWindow(s.w.win) {
-		return
+// present zooms the page of the web view w by the scale its placement p
+// shows it at, width wide, and cuts its drawing to p's corners.
+func (w *window) present(p *platform.WebViewPlacement, width int32) {
+	scale := 1.0
+	if sx, _ := p.Scale(); math.Abs(sx-1) > 1e-6 && width > 0 {
+		// WebKit lays the page out at the view's width over its zoom: at
+		// the page's own, whatever whole pixels the view has.
+		pw, _ := p.Size()
+		scale = float64(width) / pw
 	}
+	if old := cmp.Or(w.pageScale, 1); scale != old {
+		webkitWebViewSetZoomLevel(w.web, webkitWebViewGetZoomLevel(w.web)/old*scale)
+		w.pageScale = scale
+	}
+	var corners [4]float64
+	for i, r := range p.Radii {
+		corners[i] = r * scale
+	}
+	if corners != w.corners {
+		w.corners = corners
+		gtkWidgetQueueDraw(w.web)
+	}
+}
+
+// shape lets the pointer through the area where the web views take it:
+// in their clips but where the content painted over them. A drawing area
+// (frames drawn in memory) is shaped by the same region, as only its
+// shape lets the pages show through its own GdkWindow (#693). A GtkGLArea
+// has no window of its own: it draws in its parent's, with an alpha
+// channel whose holes show the pages, and is left unshaped. The shapes
+// follow the area's size (cbSurfaceSize) and new windows
+// (cbSurfaceRealize), and go once no web view is placed.
+func (s *surface) shape() {
 	var all gdkRectangle
 	gtkWidgetGetAllocation(s.area, &all)
-	region := cairoRegionCreateRectangle(&gdkRectangle{Width: all.Width, Height: all.Height})
-	for _, p := range s.placed {
-		cairoRegionSubtractRectangle(region, gdkRect(p.Clip))
-		// Unless what the content painted over it takes the pointer:
-		// put back by a second region, as cairo has no union of a
-		// difference.
+	region := shapeRegion(all.Width, all.Height, s.placed) // none: no shape
+	// The overlay's window of the area.
+	if win := gtkWidgetGetParentWindow(s.area); win != 0 && win != gtkWidgetGetWindow(s.w.win) {
+		gdkWindowInputShapeCombineRegion(win, region, 0, 0)
+	}
+	if gtkWidgetGetHasWindow(s.area) {
+		if win := gtkWidgetGetWindow(s.area); win != 0 {
+			gdkWindowShapeCombineRegion(win, region, 0, 0)
+		}
+	}
+	if region != 0 {
+		cairoRegionDestroy(region)
+	}
+}
+
+// shapeRegion returns the region, in an area width by height, that shows
+// the content and takes the pointer with web views placed there: all of
+// it but their clips, save what the content painted over them; 0 without
+// web views. Clips leave out the pixels they cover only in part, covers
+// put back those they cover in part.
+func shapeRegion(width, height int32, placed []platform.WebViewPlacement) ptr {
+	if len(placed) == 0 {
+		return 0
+	}
+	region := cairoRegionCreateRectangle(&gdkRectangle{Width: width, Height: height})
+	for _, p := range placed {
+		clip := gdkRect(p.Clip)
+		cairoRegionSubtractRectangle(region, clip)
+		// Save what its corners cut off.
+		for _, r := range cornerRows(&p) {
+			if r = intersectRect(r, *clip); r.Width > 0 && r.Height > 0 {
+				cairoRegionUnionRectangle(region, &r)
+			}
+		}
+		// Unless what the content painted over it: put back by a second
+		// region, as cairo has no union of a difference.
 		for _, c := range p.Covers {
-			r := gdkRect(c)
-			cover := cairoRegionCreateRectangle(r)
+			cover := cairoRegionCreateRectangle(gdkRectOut(c))
 			cairoRegionUnion(region, cover)
 			cairoRegionDestroy(cover)
 		}
 	}
-	gdkWindowInputShapeCombineRegion(win, region, 0, 0)
-	cairoRegionDestroy(region)
+	return region
+}
+
+// cornerRows returns, by rows, the pixels of the surface that the corners
+// of a placed page cut off at all, in DIPs.
+func cornerRows(p *platform.WebViewPlacement) []gdkRectangle {
+	if !p.Rounded() {
+		return nil
+	}
+	sx, sy := p.Scale()
+	var rx, ry [4]float64
+	for i, r := range p.Radii {
+		rx[i], ry[i] = r*sx, r*sy
+	}
+	return cornerPixels(p.Frame, rx, ry)
+}
+
+// cornerPixels returns, by rows, the pixels that corners of radii rx, ry
+// (from the top-left clockwise) cut off at all from f.
+func cornerPixels(f platform.RectF, rx, ry [4]float64) []gdkRectangle {
+	var out []gdkRectangle
+	for i := range 4 {
+		rx, ry := rx[i], ry[i]
+		if rx <= 0 || ry <= 0 {
+			continue
+		}
+		right, bottom := i == 1 || i == 2, i >= 2
+		cx, cy := f.X+rx, f.Y+ry // the center of the corner's curve
+		if right {
+			cx = f.X + f.W - rx
+		}
+		if bottom {
+			cy = f.Y + f.H - ry
+		}
+		top := f.Y
+		if bottom {
+			top = cy
+		}
+		for y := math.Floor(top); y < top+ry; y++ {
+			// The curve is nearest the side at the row's edge furthest
+			// from its center.
+			dy := cy - max(y, top)
+			if bottom {
+				dy = min(y+1, top+ry) - cy
+			}
+			half := rx * math.Sqrt(max(1-dy*dy/(ry*ry), 0))
+			x0, x1 := math.Floor(f.X), math.Ceil(cx-half)
+			if right {
+				x0, x1 = math.Floor(cx+half), math.Ceil(f.X+f.W)
+			}
+			if x1 > x0 {
+				out = append(out, gdkRectangle{X: int32(x0), Y: int32(y), Width: int32(x1 - x0), Height: 1})
+			}
+		}
+	}
+	return out
+}
+
+// intersectRect returns the pixels a and b both have.
+func intersectRect(a, b gdkRectangle) gdkRectangle {
+	x0, y0 := max(a.X, b.X), max(a.Y, b.Y)
+	x1, y1 := min(a.X+a.Width, b.X+b.Width), min(a.Y+a.Height, b.Y+b.Height)
+	return gdkRectangle{X: x0, Y: y0, Width: max(x1-x0, 0), Height: max(y1-y0, 0)}
 }
 
 // gdkRect returns the pixels of r, in DIPs, that it covers wholly.
 func gdkRect(r platform.RectF) *gdkRectangle {
 	x, y := int32(math.Ceil(r.X)), int32(math.Ceil(r.Y))
 	return &gdkRectangle{X: x, Y: y, Width: max(int32(math.Floor(r.X+r.W))-x, 0), Height: max(int32(math.Floor(r.Y+r.H))-y, 0)}
+}
+
+// gdkRectOut returns the pixels of r, in DIPs, that it covers at all.
+func gdkRectOut(r platform.RectF) *gdkRectangle {
+	x, y := int32(math.Floor(r.X)), int32(math.Floor(r.Y))
+	return &gdkRectangle{X: x, Y: y, Width: max(int32(math.Ceil(r.X+r.W))-x, 0), Height: max(int32(math.Ceil(r.Y+r.H))-y, 0)}
 }
 
 // webViewAt returns the web view that takes the pointer at x, y in the
@@ -318,7 +533,7 @@ func (w *window) closeWebView() {
 	if s := h.surface; s != nil {
 		s.placed = slices.DeleteFunc(s.placed, func(p platform.WebViewPlacement) bool { return p.WebView == platform.WebView(w) })
 		if !h.closed {
-			s.shapeInput()
+			s.shape()
 		}
 	}
 }

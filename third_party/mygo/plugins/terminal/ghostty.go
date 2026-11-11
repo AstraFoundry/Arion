@@ -150,6 +150,14 @@ func ParseGhosttyTheme(data []byte) (*Theme, error) {
 			dst = &th.Selection
 		case "selection-foreground":
 			dst = &th.SelectionText
+		case "search-background":
+			dst = &th.Search
+		case "search-foreground":
+			dst = &th.SearchText
+		case "search-selected-background":
+			dst = &th.SearchSelected
+		case "search-selected-foreground":
+			dst = &th.SearchSelectedText
 		case "palette":
 			i, c, ok := strings.Cut(value, "=")
 			index, err := strconv.ParseUint(strings.TrimSpace(i), 0, 8)

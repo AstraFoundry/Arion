@@ -6,6 +6,7 @@ import (
 	"os"
 	"slices"
 	"testing"
+	"time"
 )
 
 func TestSuffixArray(t *testing.T) {
@@ -72,6 +73,38 @@ func TestDiffPatch(t *testing.T) {
 		if c.name == "edited" && len(patch) > len(c.new)/10 {
 			t.Errorf("the patch of an edited file takes %d bytes, for %d", len(patch), len(c.new))
 		}
+	}
+}
+
+// TestDiffShiftedMatch diffs a new file one of whose long matches is also
+// in the old file at the alignment of the previous match, but for a byte
+// at either end: Diff then steps byte by byte through the match, which
+// took time quadratic in its length while each search compared it whole.
+func TestDiffShiftedMatch(t *testing.T) {
+	r := rand.New(rand.NewPCG(5, 6))
+	x := make([]byte, 1<<20)
+	for i := range x {
+		x[i] = byte(r.Uint32())
+	}
+	near := slices.Clone(x)
+	near[0]++
+	near[len(near)-1]++
+	head := []byte("a header found once in the old file")
+	old, new := slices.Concat(x, head, near), slices.Concat(head, x)
+	done := make(chan []byte)
+	go func() { done <- Diff(old, new) }()
+	var patch []byte
+	select {
+	case patch = <-done:
+	case <-time.After(time.Minute):
+		t.Fatal("Diff takes over a minute")
+	}
+	var out bytes.Buffer
+	if err := Patch(&out, int64(len(new)), bytes.NewReader(old), int64(len(old)), bytes.NewReader(patch), int64(len(patch))); err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(out.Bytes(), new) {
+		t.Fatal("patching made bytes that differ from the new file")
 	}
 }
 

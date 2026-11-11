@@ -57,8 +57,8 @@ func TestActionQueriesReadPendingBoundEdit(t *testing.T) {
 				if name == "DoubleClicked" {
 					presses = 2
 				}
-				for range presses {
-					ev := platform.SurfaceEvent{Kind: platform.PointerDown, X: float64(r.X + r.W/2), Y: float64(r.Y + r.H/2), Button: button}
+				for i := range presses {
+					ev := platform.SurfaceEvent{Kind: platform.PointerDown, X: float64(r.X + r.W/2), Y: float64(r.Y + r.H/2), Button: button, Clicks: i + 1}
 					tt.rt.event(ev)
 					ev.Kind = platform.PointerUp
 					tt.rt.event(ev)
@@ -118,7 +118,12 @@ func TestScopedShortcutQueriesReadPendingBoundEdit(t *testing.T) {
 	}
 }
 
-func TestActionQueriesRespectFluentInputConfiguration(t *testing.T) {
+// TestActionQueriesFollowTheShownInput: input follows the options of the
+// frame the user acted on. Text typed in an editable input is kept, and
+// the action after it sees it, though the app makes the input read-only
+// (or disabled) in the frame that applies it; an input shown read-only
+// takes no typing.
+func TestActionQueriesFollowTheShownInput(t *testing.T) {
 	for _, search := range []bool{false, true} {
 		name := "ReadOnly"
 		if search {
@@ -147,8 +152,13 @@ func TestActionQueriesRespectFluentInputConfiguration(t *testing.T) {
 			if err := tt.Click("Save"); err != nil {
 				t.Fatal(err)
 			}
-			if saved != "old" || value != "old" {
-				t.Fatalf("saved %q, bound value %q: input applied before fluent configuration", saved, value)
+			if saved != "new" || value != "new" {
+				t.Fatalf("saved %q, bound value %q: the text typed while the input was editable is lost", saved, value)
+			}
+			tt.rt.event(platform.SurfaceEvent{Kind: platform.TextInput, Text: "more"})
+			tt.Frame()
+			if value != "new" {
+				t.Fatalf("bound value %q: an input shown %s took typing", value, name)
 			}
 		})
 	}

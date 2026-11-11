@@ -8,7 +8,7 @@ The product needs macOS and Windows voice input, optional system IME and local p
 
 ## Decision
 
-Pin MyGo v0.4.6 for native UI in a separate desktop Go module. Keep contracts/application/domain portable. OS infrastructure provides capture, hotkeys, target context and insertion. IMK/TSF host adapters are user-configurable P0 tasks rather than implicit behavior of the MyGo shell. Future mobile adapters reuse semantics without treating MyGo as a mobile framework.
+Pin MyGo for native UI (the version and local patches are in [third_party](../../third_party/README.md)) in a separate desktop Go module. Keep contracts/application/domain portable. OS infrastructure provides capture, hotkeys, target context and insertion. IMK/TSF host adapters are user-configurable P0 tasks rather than implicit behavior of the MyGo shell. Future mobile adapters reuse semantics without treating MyGo as a mobile framework.
 
 ## Consequences
 

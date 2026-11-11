@@ -29,4 +29,5 @@ Assistive technology sees a color well whose value is the color in hex,
 named by its `Label` or its [field](form.md). In the picker, it sees a
 slider of the saturation and brightness, sliders of the hue and the
 opacity, a text field named "Hex", and buttons named by the swatches'
-colors.
+colors, in the window's language
+([MyGo's own strings](../i18n.md#mygos-own-strings)).

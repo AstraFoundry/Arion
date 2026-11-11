@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+	time "time"
 )
 
 // codeLines returns n lines of code, as a text area of a code editor or a
@@ -39,7 +40,7 @@ func BenchmarkEditorRetainedDeletion(b *testing.B) {
 		runtime.GC()
 		var before, after runtime.MemStats
 		runtime.ReadMemStats(&before)
-		ed := newEditor()
+		ed := newEditor(time.Now)
 		ed.multiline = true
 		ed.buf.set(strings.Repeat("a", 8<<20))
 		for range 20 {

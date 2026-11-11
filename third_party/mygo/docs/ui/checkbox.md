@@ -31,14 +31,40 @@ ui.CheckboxGroup(c, "Notifications", func() {
 })
 ```
 
+## Mixed
+
+`ui.CheckboxState` is a check box that can be mixed, as a "select all"
+box in a table's header: checked when every row is, mixed when some are.
+It sets a `*ui.CheckState`, `ui.CheckOff`, `ui.CheckOn` or
+`ui.CheckMixed`, and shows a dash while mixed; a click, or Space while it
+has the focus, checks it, or unchecks it once it is checked, and `Changed`
+reports a click:
+
+```go
+all := ui.CheckOff
+switch n := app.selected(); {
+case n == len(app.rows):
+	all = ui.CheckOn
+case n > 0:
+	all = ui.CheckMixed
+}
+if ui.CheckboxState(c, &all, "").Label("Select all").Changed() {
+	app.selectAll(all == ui.CheckOn)
+}
+```
+
+`CheckboxGroup` is such a check box over the check boxes it holds.
+
 ## Without a look
 
 `ui.CheckboxBase` is a check box without a look: a row that toggles its
-`*bool` when clicked, which you draw from the value: see
-[custom widgets](custom-widgets.md).
+`*bool` when clicked, which you draw from the value, and
+`ui.CheckboxStateBase` one that sets a `*ui.CheckState`, as
+`CheckboxState` does: see [custom widgets](custom-widgets.md).
 
 ## Accessibility
 
 Assistive technology sees a check box named by its label, checked or not,
-which it toggles as a click does. A check box group is a check box, mixed
-while some are checked, and a group of the others named by its label.
+which it toggles as a click does, and one that can be mixed checked,
+unchecked or mixed. A check box group is a check box, mixed while some are
+checked, and a group of the others named by its label.

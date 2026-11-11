@@ -143,3 +143,37 @@ func TestContentTransitionOnlyPaints(t *testing.T) {
 		t.Error("over, it asks for more frames")
 	}
 }
+
+// TestContentTransitionAcrossFontFlush cross-fades a text while another's
+// font size animates, a size a frame, until the text system lets go of
+// its fonts mid-fade: the text fading out, laid out before, still paints
+// with its fonts (#982).
+func TestContentTransitionAcrossFontFlush(t *testing.T) {
+	frame := 0
+	tt := NewTester(func(c *Context) {
+		words := [...]string{"Saved", "Saving"}
+		Column(c).Children(func() {
+			Text(c, words[(frame/6)%2]).ContentTransition(ContentTransition{})
+			Text(c, "Title").FontSize(12 + float32(frame)*0.01)
+		})
+	}, 400, 200)
+	gen := textSystem().Generation()
+	flushed, fadedAfter := 0, 0
+	for flushed == 0 || frame < flushed+12 {
+		if frame > 1000 {
+			t.Fatal("the text system never let go of its fonts")
+		}
+		frame++
+		tt.Frame()
+		tt.Advance(16 * time.Millisecond)
+		if flushed == 0 && textSystem().Generation() != gen {
+			flushed = frame
+		}
+		if _, faded := paintedGlyphs(tt); flushed > 0 && faded > 0 {
+			fadedAfter++
+		}
+	}
+	if fadedAfter == 0 {
+		t.Error("no text faded after the text system let go of its fonts")
+	}
+}

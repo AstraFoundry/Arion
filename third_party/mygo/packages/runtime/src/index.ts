@@ -13,9 +13,16 @@
  *
  * @module
  */
-import type { Channel as ChannelType, Runtime, WindowControls } from "./types";
+import type {
+  Channel as ChannelType,
+  Direction,
+  LocaleChange,
+  Runtime,
+  ThemePreferences,
+  WindowControls,
+} from "./types";
 
-export type { Platform, Runtime, WindowControls } from "./types";
+export type { Direction, LocaleChange, Platform, Runtime, ThemePreferences, WindowControls } from "./types";
 
 declare global {
   interface Window {
@@ -84,6 +91,43 @@ export function once<T = unknown>(name: string, listener: (payload: T) => void):
   return runtime().once<T>(name, listener);
 }
 
+/**
+ * The language the app shows, a BCP 47 tag such as "en" or "zh-Hans"
+ * (`App.Locale`): the page has it from document start, so its first paint
+ * can be in it.
+ *
+ * ```ts
+ * document.documentElement.lang = locale();
+ * document.documentElement.dir = direction();
+ * ```
+ */
+export function locale(): string {
+  return runtime().locale;
+}
+
+/** The direction the language the app shows is written in: "ltr" or "rtl". */
+export function direction(): Direction {
+  return runtime().dir;
+}
+
+/**
+ * Subscribes to changes of the language the app shows, as `App.SetLocale`
+ * makes them, or the user's languages while the app follows them. The
+ * listener hears only of a language the page did not have: a page loaded
+ * after a change starts with the new one. Returns a function that
+ * unsubscribes.
+ *
+ * ```ts
+ * onLocaleChange((tag, dir) => {
+ *   document.documentElement.lang = tag;
+ *   document.documentElement.dir = dir;
+ * });
+ * ```
+ */
+export function onLocaleChange(listener: (locale: string, dir: Direction) => void): () => void {
+  return on<LocaleChange>("mygo:locale", (p) => listener(p.locale, p.dir));
+}
+
 /** A typed event sent by the Go side, declared with `mygo.NewEvent`. */
 export interface GoEvent<T> {
   readonly name: string;
@@ -137,6 +181,104 @@ export interface FileDrop {
  */
 export function onFileDrop(listener: (drop: FileDrop) => void): () => void {
   return on<FileDrop>("mygo:file-drop", listener);
+}
+
+/** The document a window shows (mygo.NewDocuments), as Go describes it. */
+export interface DocumentState {
+  /** The file name, or a name such as "Untitled 2" while untitled. */
+  name: string;
+  /** The file, "" while the document is untitled. */
+  path: string;
+  /** Whether the document has unsaved changes. */
+  edited: boolean;
+  /** Whether its file can't be written: saving asks for another. */
+  readOnly: boolean;
+  /** Whether another app changed its file while it had unsaved changes. */
+  conflict: boolean;
+  /** Whether its file was deleted: saving writes it again. */
+  deleted: boolean;
+}
+
+/**
+ * Subscribes to the state of the window's document: edited, saved,
+ * renamed, moved, changed by another app. Only the app's own pages get it.
+ * Returns a function that unsubscribes.
+ *
+ * ```ts
+ * onDocumentState(({ name, edited }) => {
+ *   heading.textContent = edited ? `${name} (edited)` : name;
+ * });
+ * ```
+ */
+export function onDocumentState(listener: (state: DocumentState) => void): () => void {
+  return on<DocumentState>("mygo:document-state", listener);
+}
+
+/**
+ * Subscribes to the window's document being read from its file again:
+ * reverted, or changed by another app while it had no unsaved changes.
+ * Fetch its content again, with the service bound to
+ * `Documents.Service()`. Returns a function that unsubscribes.
+ */
+export function onDocumentReload(listener: () => void): () => void {
+  return on<unknown>("mygo:document-reload", () => listener());
+}
+
+/**
+ * Returns the accent color and the accessibility settings of the desktop
+ * (`mygo.Theme.Preferences()` in Go), current from document start on.
+ * Throws outside MyGo, as {@link runtime} does.
+ *
+ * ```ts
+ * const { accent, reduceTransparency } = preferences();
+ * ```
+ *
+ * CSS gets the accent and the text scale from the `--mygo-accent` and
+ * `--mygo-text-scale` variables of `:root`.
+ */
+export function preferences(): ThemePreferences {
+  return runtime().preferences;
+}
+
+/**
+ * Subscribes to changes of the desktop's preferences, which
+ * {@link preferences} returns; the listener gets the new ones. Returns a
+ * function that unsubscribes.
+ *
+ * ```ts
+ * const apply = (p: ThemePreferences) => root.classList.toggle("opaque", p.reduceTransparency);
+ * apply(preferences());
+ * onPreferences(apply);
+ * ```
+ */
+export function onPreferences(listener: (preferences: ThemePreferences) => void): () => void {
+  return on<ThemePreferences>("mygo:preferences", listener);
+}
+
+/**
+ * Returns whether the window hosting the page is drawn as active: the
+ * window the user's input goes to, while it or one of its flyouts has the
+ * keyboard, as native apps tell which of their windows has it. Not DOM
+ * focus, which a click into a flyout or the window's menus takes away.
+ * Throws outside MyGo, as {@link runtime} does.
+ *
+ * CSS gets it from `<html>`, which has the `data-mygo-window-inactive`
+ * attribute while the window is not active:
+ *
+ * ```css
+ * :root[data-mygo-window-inactive] .sidebar .selected { background: #0000001a; color: inherit; }
+ * ```
+ */
+export function windowActive(): boolean {
+  return runtime().windowActive;
+}
+
+/**
+ * Subscribes to changes of whether the window is drawn as active, which
+ * {@link windowActive} returns. Returns a function that unsubscribes.
+ */
+export function onWindowActive(listener: (active: boolean) => void): () => void {
+  return on<boolean>("mygo:window-active", listener);
 }
 
 /** The window hosting the page, e.g. for a custom title bar. */

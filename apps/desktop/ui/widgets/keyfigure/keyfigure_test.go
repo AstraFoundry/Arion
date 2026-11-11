@@ -31,11 +31,10 @@ func render(dark bool, f *figure) *ui.Tester {
 	return tt
 }
 
+// rest advances the tester's clock by d, running the frames due meanwhile.
 func rest(tt *ui.Tester, d time.Duration) {
-	for deadline := time.Now().Add(d); time.Now().Before(deadline); {
-		tt.Frame()
-		time.Sleep(16 * time.Millisecond)
-	}
+	tt.Frame()
+	tt.Advance(d)
 }
 
 // differs counts the pixels two frames do not share, past the rounding

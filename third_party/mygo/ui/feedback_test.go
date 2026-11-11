@@ -88,8 +88,11 @@ func TestBreadcrumbs(t *testing.T) {
 		t.Errorf("a click on the last item: %d", chosen)
 	}
 	tt.send(platform.SurfaceEvent{Kind: platform.AccessibilityOn})
-	accessNode(t, tt.h.access, platform.RoleGroup, "Path")
+	accessNode(t, tt.h.access, platform.RoleNavigation, "Path")
 	accessNode(t, tt.h.access, platform.RoleLink, "ada")
+	if n := accessNode(t, tt.h.access, platform.RoleText, "Documents"); n.Current != platform.CurrentPage {
+		t.Errorf("the last item is current %v, not the page", n.Current)
+	}
 	for _, n := range tt.h.access.Nodes {
 		if n.Role == platform.RoleLink && n.Label == "Documents" {
 			t.Error("the last item is a link")
@@ -140,6 +143,80 @@ func TestAlertDialog(t *testing.T) {
 	tt.Key(0, KeyEnter)
 	if open || deleted != 1 {
 		t.Errorf("Enter: open %v, %d deleted", open, deleted)
+	}
+}
+
+// alertLayout builds an alert in a window of the width, and returns its box
+// and its buttons'.
+func alertLayout(t *testing.T, w float32, title, message string, buttons ...string) (panel Rect, boxes []Rect) {
+	t.Helper()
+	open := true
+	tt := coreNewTester(func(c *context) {
+		coreAlertDialog(c, &open, title, message, buttons...)
+	}, int(w), 400)
+	tt.send(platform.SurfaceEvent{Kind: platform.AccessibilityOn})
+	n := accessNode(t, tt.h.access, platform.RoleAlertDialog, title)
+	panel = Rect{float32(n.Bounds.X), float32(n.Bounds.Y), float32(n.Bounds.W), float32(n.Bounds.H)}
+	for _, label := range buttons {
+		b := accessNode(t, tt.h.access, platform.RoleButton, label)
+		boxes = append(boxes, Rect{float32(b.Bounds.X), float32(b.Bounds.Y), float32(b.Bounds.W), float32(b.Bounds.H)})
+	}
+	return panel, boxes
+}
+
+// An alert's buttons stay inside it, however many and however long.
+func TestAlertDialogFitsButtons(t *testing.T) {
+	inside := func(t *testing.T, panel Rect, boxes []Rect) {
+		t.Helper()
+		for i, b := range boxes {
+			if b.X < panel.X || b.X+b.W > panel.X+panel.W || b.Y+b.H > panel.Y+panel.H {
+				t.Errorf("button %d at %+v sticks out of the alert at %+v", i, b, panel)
+			}
+		}
+	}
+	labels := []string{"Cancel", "Shut Them Down", "Keep Running"}
+	const long = "One message long enough that it wraps onto lines of its own in the alert rather than widening it to the whole window."
+
+	// There is room: one line of buttons, in a wider alert.
+	panel, boxes := alertLayout(t, 900, "Quit OpenVM?", long, labels...)
+	inside(t, panel, boxes)
+	if boxes[0].Y+boxes[0].H <= boxes[2].Y {
+		t.Errorf("the buttons wrapped with room to spare: %+v in %+v", boxes, panel)
+	}
+	if boxes[2].X+boxes[2].W <= boxes[1].X {
+		t.Errorf("buttons out of order: %+v", boxes)
+	}
+	// The message wraps: it does not make the alert as wide as it is long.
+	if panel.W > 600 {
+		t.Errorf("the alert is %v wide: the text widened it", panel.W)
+	}
+
+	// Two short buttons: as wide as ever.
+	short, boxes := alertLayout(t, 900, "Delete Notes?", long, "Cancel", "Delete")
+	inside(t, short, boxes)
+	if short.W != 300 {
+		t.Errorf("an alert of short buttons is %v wide, want 300", short.W)
+	}
+
+	// A narrow window: the alert keeps inside it, the buttons wrap.
+	panel, boxes = alertLayout(t, 300, "Quit OpenVM?", long, labels...)
+	inside(t, panel, boxes)
+	if panel.X < 0 || panel.X+panel.W > 300 {
+		t.Errorf("the alert at %+v sticks out of the window", panel)
+	}
+	if panel.W != 260 {
+		t.Errorf("the alert in a narrow window is %v wide, want 260", panel.W)
+	}
+	if boxes[0].Y+boxes[0].H > boxes[2].Y {
+		t.Errorf("the buttons did not wrap: %+v", boxes)
+	}
+
+	// A label longer than the window lets the alert have: the button keeps
+	// inside it.
+	panel, boxes = alertLayout(t, 200, "Quit?", "", "Cancel", "A label too long to fit in a window as narrow as this one")
+	inside(t, panel, boxes)
+	if panel.X < 0 || panel.X+panel.W > 200 {
+		t.Errorf("the alert at %+v sticks out of the window", panel)
 	}
 }
 

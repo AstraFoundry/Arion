@@ -22,7 +22,10 @@ func (in *inspector) paintHighlight(rt *engine, p *Painter, h float32) {
 	if e == nil && in.listID != 0 && rt.focused == in.listID {
 		e = in.selElem
 	}
-	if e == nil || e.leaving != 0 {
+	if e != nil && e.leaving != 0 {
+		e = nil
+	}
+	if e == nil && len(in.overlays) == 0 {
 		return
 	}
 	savedClip, savedOpacity := p.clip, p.opacity
@@ -32,6 +35,10 @@ func (in *inspector) paintHighlight(rt *engine, p *Painter, h float32) {
 		p.popClip()
 		p.clip, p.opacity = savedClip, savedOpacity
 	}()
+	in.paintLayouts(p)
+	if e == nil {
+		return
+	}
 	border := Rect{e.x, e.y, e.w, e.h}
 	margin := Rect{border.X - e.m(3), border.Y - e.m(0), border.W + e.marginX(), border.H + e.marginY()}
 	padding := Rect{border.X + e.border[3], border.Y + e.border[0], border.W - e.border[1] - e.border[3], border.H - e.border[0] - e.border[2]}

@@ -1,4 +1,4 @@
-//go:build windows
+//go:build windows && (amd64 || arm64)
 
 package windows
 
@@ -64,5 +64,33 @@ func TestKeyAndPosition(t *testing.T) {
 				t.Fatalf("got (%v, %v, %v), want (%v, %v, %v)", key, physical, ok, tc.key, tc.physical, tc.ok)
 			}
 		})
+	}
+}
+
+func TestKeyCodeOfMessage(t *testing.T) {
+	const extended = 1 << 24
+	for _, c := range []struct {
+		vk, lp uintptr
+		want   platform.KeyCode
+	}{
+		{vkShift, 0x2A << 16, platform.CodeShiftLeft},
+		{vkShift, 0x36 << 16, platform.CodeShiftRight},
+		{vkControl, 0x1D << 16, platform.CodeControlLeft},
+		{vkControl, 0x1D<<16 | extended, platform.CodeControlRight},
+		{vkMenu, 0x38 << 16, platform.CodeAltLeft},
+		{vkMenu, 0x38<<16 | extended, platform.CodeAltRight},
+		{vkLWin, 0x5B<<16 | extended, platform.CodeSuperLeft},
+		{0x14, 0x3A << 16, platform.CodeCapsLock},
+		{0x2C, 0x37<<16 | extended, platform.CodePrintScreen},
+		{0x90, 0x45<<16 | extended, platform.CodeNumLock},
+		{0x13, 0x45 << 16, platform.CodePause},
+		{0xE2, 0x56 << 16, platform.CodeIntlBackslash},
+		// Input methods and injected text keep the key from the application.
+		{vkProcessKey, 0x1E << 16, platform.CodeUnknown},
+		{vkPacket, 0x1E << 16, platform.CodeUnknown},
+	} {
+		if got := keyCode(c.vk, c.lp); got != c.want {
+			t.Errorf("vk %#x, lp %#x: got %#x, want %#x", c.vk, c.lp, got, c.want)
+		}
 	}
 }

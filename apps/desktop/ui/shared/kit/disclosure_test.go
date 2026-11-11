@@ -27,26 +27,26 @@ func TestDisclosureReservesSpaceThroughOpeningAndClosing(t *testing.T) {
 	compact := y()
 	open = true
 	tt.Frame()
-	time.Sleep(30 * time.Millisecond)
+	tt.Advance(30 * time.Millisecond)
 	tt.Frame()
 	if at := y(); at <= compact || at >= compact+120 {
 		t.Fatalf("opening did not reserve intermediate space: %v", at)
 	}
-	time.Sleep(theme.Disclosure.Duration)
+	tt.Advance(theme.Disclosure.Duration)
 	tt.Frame()
 	if y() != compact+120 {
 		t.Fatal("opening did not reach content height")
 	}
 	open = false
 	tt.Frame()
-	time.Sleep(30 * time.Millisecond)
+	tt.Advance(30 * time.Millisecond)
 	tt.Frame()
 	if at := y(); at <= compact || at >= compact+120 {
 		t.Fatalf("closing removed space immediately: %v", at)
 	}
 	open = true
 	tt.Frame()
-	time.Sleep(theme.Disclosure.Duration)
+	tt.Advance(theme.Disclosure.Duration)
 	tt.Frame()
 	if y() != compact+120 {
 		t.Fatal("reversing the close did not restore content height")

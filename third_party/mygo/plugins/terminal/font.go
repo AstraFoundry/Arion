@@ -1,6 +1,8 @@
 package terminal
 
 import (
+	"math"
+	"runtime"
 	"strings"
 
 	"github.com/egoist/mygo/ui"
@@ -23,7 +25,15 @@ type Font struct {
 	// Ghostty's font-feature: "ss01" or "+ss01" turns one on, "calt=0" or
 	// "-calt" off, and "cv05=2" picks an alternate. Coding fonts make
 	// most of their ligatures with calt, and the others with liga.
+	// On macOS, kerning is off unless they name kern: each character
+	// keeps its place in its cells.
 	Features []string
+	// CellWidth is the width of columns, as a multiple of the font's
+	// advance: 1 when zero or less. It changes the grid, not the font's
+	// size or the height of rows: glyphs keep their size, centered in
+	// their cells, and below 1 they overlap. Widths round up to whole
+	// display pixels.
+	CellWidth float32
 	// LineHeight is the height of rows, as a multiple of the font's own
 	// line height: 1 when zero, and 1.2 rows 20% taller, as Ghostty's
 	// adjust-cell-height = 20%. Text is centered in its row.
@@ -41,13 +51,17 @@ type fontKey struct {
 	size       float32
 	weight     int
 	features   string
+	cellWidth  float32
 	lineHeight float32
 	thicken    bool
 	scale      float32
 }
 
 func (f *Font) key(scale float32) fontKey {
-	k := fontKey{family: f.Family, size: f.Size, weight: f.Weight, features: featureList(f.Features), lineHeight: f.LineHeight, thicken: f.Thicken, scale: scale}
+	k := fontKey{family: f.Family, size: f.Size, weight: f.Weight, features: featureList(f.Features), cellWidth: f.CellWidth, lineHeight: f.LineHeight, thicken: f.Thicken, scale: scale}
+	if runtime.GOOS == "darwin" {
+		k.features = unkerned(k.features)
+	}
 	if strings.TrimSpace(k.family) == "" {
 		k.family = "monospace"
 	}
@@ -58,6 +72,9 @@ func (f *Font) key(scale float32) fontKey {
 		k.weight = 400
 	}
 	k.weight = min(max(k.weight, 100), 900)
+	if !(k.cellWidth > 0) || math.IsInf(float64(k.cellWidth), 0) {
+		k.cellWidth = 1
+	}
 	if k.lineHeight <= 0 {
 		k.lineHeight = 1
 	}
@@ -89,4 +106,24 @@ func featureList(features []string) string {
 		}
 	}
 	return strings.Join(out, ",")
+}
+
+// unkerned adds kern=0 to a list of features that does not name kern.
+// Kerning moves characters within their cells, and Core Text shrinks the
+// CJK punctuation of the system's fonts that ends a run, as a 。 being
+// typed does, to half its width: centered in its two cells, it jumps
+// when text follows. Only macOS needs it: elsewhere, a list of features
+// could cost the font its default ones, as DirectWrite's typography
+// might.
+func unkerned(list string) string {
+	for _, f := range strings.Split(list, ",") {
+		tag, _, _ := strings.Cut(f, "=")
+		if strings.TrimSpace(tag) == "kern" {
+			return list
+		}
+	}
+	if list == "" {
+		return "kern=0"
+	}
+	return "kern=0," + list
 }

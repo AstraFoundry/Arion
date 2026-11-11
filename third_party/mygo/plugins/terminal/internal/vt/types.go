@@ -181,6 +181,45 @@ type clipboardWriteReply struct {
 	remember bool
 }
 
+// clipboardRead is a GhosttyClipboardRead.
+type clipboardRead struct {
+	size                 uintptr
+	location             int32
+	mimes                uintptr
+	mimesLen             uintptr
+	list                 bool
+	name                 cString
+	granted, canRemember bool
+	ctx, reply           uintptr
+}
+
+// clipboardReadReply is a GhosttyClipboardReadReply.
+type clipboardReadReply struct {
+	size         uintptr
+	result       int32
+	contents     uintptr
+	contentsLen  uintptr
+	available    uintptr
+	availableLen uintptr
+	remember     bool
+}
+
+// paste is a GhosttyPaste: what a paste offers the program.
+type paste struct {
+	size        uintptr
+	location    int32
+	source      int32
+	mimes       uintptr
+	mimesLen    uintptr
+	reader      mimeReader
+	allowUnsafe bool
+}
+
+// mimeReader is a GhosttyMimeReader.
+type mimeReader struct {
+	read, userdata uintptr
+}
+
 // desktopNotification is a GhosttyTerminalDesktopNotification.
 type desktopNotification struct {
 	size        uintptr
@@ -209,6 +248,8 @@ type RowID struct{ bits [2]uint64 }
 
 func layouts() map[string]layout {
 	var (
+		ri  renderInfo
+		si  sysImage
 		sc  styleColor
 		s   style
 		c   renderCursor
@@ -221,11 +262,15 @@ func layouts() map[string]layout {
 		gr  GridRef
 		pt  point
 		sel Selection
+		sbu selectionBuffer
 		sfo selectionFormatOptions
 		mes mouseEncoderSize
 		cw  clipboardWrite
 		cc  clipboardContent
 		cwr clipboardWriteReply
+		cr  clipboardRead
+		crr clipboardReadReply
+		pa  paste
 		dn  desktopNotification
 		pr  progressReport
 		da  deviceAttributes
@@ -259,6 +304,7 @@ func layouts() map[string]layout {
 		"GhosttyPoint":                   {unsafe.Sizeof(pt), map[string]uintptr{"tag": 0, "value": unsafe.Offsetof(pt.x)}},
 		"GhosttyPointCoordinate":         {8, map[string]uintptr{"x": unsafe.Offsetof(pt.x) - unsafe.Offsetof(pt.x), "y": unsafe.Offsetof(pt.y) - unsafe.Offsetof(pt.x)}},
 		"GhosttySelection":               {unsafe.Sizeof(sel), map[string]uintptr{"start": unsafe.Offsetof(sel.start), "end": unsafe.Offsetof(sel.end), "rectangle": unsafe.Offsetof(sel.rectangle)}},
+		"GhosttySelectionBuffer":         {unsafe.Sizeof(sbu), map[string]uintptr{"ptr": 0, "cap": unsafe.Offsetof(sbu.cap), "len": unsafe.Offsetof(sbu.len)}},
 		"GhosttyTerminalSelectionFormatOptions": {unsafe.Sizeof(sfo), map[string]uintptr{
 			"emit": unsafe.Offsetof(sfo.emit), "unwrap": unsafe.Offsetof(sfo.unwrap), "trim": unsafe.Offsetof(sfo.trim), "selection": unsafe.Offsetof(sfo.selection),
 		}},
@@ -267,7 +313,13 @@ func layouts() map[string]layout {
 			"cell_width": unsafe.Offsetof(mes.cellWidth), "cell_height": unsafe.Offsetof(mes.cellHeight),
 			"padding_top": unsafe.Offsetof(mes.paddingTop), "padding_left": unsafe.Offsetof(mes.paddingLeft),
 		}},
-		"GhosttyMousePosition":            {unsafe.Sizeof(mousePosition{}), map[string]uintptr{"x": 0, "y": 4}},
+		"GhosttyMousePosition": {unsafe.Sizeof(mousePosition{}), map[string]uintptr{"x": 0, "y": 4}},
+		"GhosttyKittyGraphicsPlacementRenderInfo": {unsafe.Sizeof(ri), map[string]uintptr{
+			"pixel_width": unsafe.Offsetof(ri.pixelWidth), "grid_rows": unsafe.Offsetof(ri.gridRows),
+			"viewport_col": unsafe.Offsetof(ri.viewportCol), "viewport_visible": unsafe.Offsetof(ri.viewportVisible),
+			"source_x": unsafe.Offsetof(ri.sourceX), "source_height": unsafe.Offsetof(ri.sourceH),
+		}},
+		"GhosttySysImage":                 {unsafe.Sizeof(si), map[string]uintptr{"width": 0, "height": 4, "data": unsafe.Offsetof(si.data), "data_len": unsafe.Offsetof(si.dataLen)}},
 		"GhosttySelectionGestureGeometry": {unsafe.Sizeof(gestureGeometry{}), map[string]uintptr{"columns": 0, "cell_width": 4, "padding_left": 8, "screen_height": 12}},
 		"GhosttySurfacePosition":          {unsafe.Sizeof(surfacePosition{}), map[string]uintptr{"x": 0, "y": 8}},
 		"GhosttySizeReportSize":           {unsafe.Sizeof(sizeReport{}), map[string]uintptr{"rows": 0, "columns": 2, "cell_width": 4, "cell_height": 8}},
@@ -275,8 +327,22 @@ func layouts() map[string]layout {
 			"location": unsafe.Offsetof(cw.location), "contents": unsafe.Offsetof(cw.contents), "contents_len": unsafe.Offsetof(cw.contentsLen),
 			"name": unsafe.Offsetof(cw.name), "granted": unsafe.Offsetof(cw.granted), "ctx": unsafe.Offsetof(cw.ctx), "reply": unsafe.Offsetof(cw.reply),
 		}},
-		"GhosttyClipboardContent":            {unsafe.Sizeof(cc), map[string]uintptr{"mime": 0, "data": unsafe.Offsetof(cc.data)}},
-		"GhosttyClipboardWriteReply":         {unsafe.Sizeof(cwr), map[string]uintptr{"result": unsafe.Offsetof(cwr.result), "remember": unsafe.Offsetof(cwr.remember)}},
+		"GhosttyClipboardContent":    {unsafe.Sizeof(cc), map[string]uintptr{"mime": 0, "data": unsafe.Offsetof(cc.data)}},
+		"GhosttyClipboardWriteReply": {unsafe.Sizeof(cwr), map[string]uintptr{"result": unsafe.Offsetof(cwr.result), "remember": unsafe.Offsetof(cwr.remember)}},
+		"GhosttyClipboardRead": {unsafe.Sizeof(cr), map[string]uintptr{
+			"location": unsafe.Offsetof(cr.location), "mimes": unsafe.Offsetof(cr.mimes), "mimes_len": unsafe.Offsetof(cr.mimesLen),
+			"list": unsafe.Offsetof(cr.list), "name": unsafe.Offsetof(cr.name), "granted": unsafe.Offsetof(cr.granted),
+			"can_remember": unsafe.Offsetof(cr.canRemember), "ctx": unsafe.Offsetof(cr.ctx), "reply": unsafe.Offsetof(cr.reply),
+		}},
+		"GhosttyClipboardReadReply": {unsafe.Sizeof(crr), map[string]uintptr{
+			"result": unsafe.Offsetof(crr.result), "contents": unsafe.Offsetof(crr.contents), "contents_len": unsafe.Offsetof(crr.contentsLen),
+			"available": unsafe.Offsetof(crr.available), "available_len": unsafe.Offsetof(crr.availableLen), "remember": unsafe.Offsetof(crr.remember),
+		}},
+		"GhosttyPaste": {unsafe.Sizeof(pa), map[string]uintptr{
+			"location": unsafe.Offsetof(pa.location), "source": unsafe.Offsetof(pa.source), "mimes": unsafe.Offsetof(pa.mimes),
+			"mimes_len": unsafe.Offsetof(pa.mimesLen), "reader": unsafe.Offsetof(pa.reader), "allow_unsafe": unsafe.Offsetof(pa.allowUnsafe),
+		}},
+		"GhosttyMimeReader":                  {unsafe.Sizeof(mimeReader{}), map[string]uintptr{"read": 0, "userdata": unsafe.Offsetof(mimeReader{}.userdata)}},
 		"GhosttyTerminalDesktopNotification": {unsafe.Sizeof(dn), map[string]uintptr{"title": unsafe.Offsetof(dn.title), "body": unsafe.Offsetof(dn.body)}},
 		"GhosttyTerminalProgressReport":      {unsafe.Sizeof(pr), map[string]uintptr{"state": unsafe.Offsetof(pr.state), "progress": unsafe.Offsetof(pr.progress)}},
 		"GhosttyDeviceAttributes":            {unsafe.Sizeof(da), map[string]uintptr{"primary": 0, "secondary": unsafe.Offsetof(da.deviceType), "tertiary": unsafe.Offsetof(da.unitID)}},

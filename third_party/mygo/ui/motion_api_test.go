@@ -4,6 +4,8 @@ import (
 	"math"
 	"testing"
 	"time"
+
+	"github.com/egoist/mygo/internal/platform"
 )
 
 func TestSpringDurationAndBounce(t *testing.T) {
@@ -307,6 +309,77 @@ func TestDragVelocity(t *testing.T) {
 	}
 }
 
+// TestDraggedBeforeRelease reports the moves no frame read as the pointer
+// lets go, the release's own and those just before it, while the element
+// is still pressed; the press ends, and clicks, in the pass after.
+func TestDraggedBeforeRelease(t *testing.T) {
+	var moved float32
+	var held bool
+	clicks := 0
+	tt := coreNewTester(func(c *context) {
+		b := coreBox(c).Size(200, 100)
+		var dx float32
+		dx, _, held = b.Dragged()
+		moved += dx
+		if b.Clicked() {
+			clicks++
+		}
+	}, 300, 150)
+	tt.Press(10, 50)
+	tt.Move(40, 50)
+	tt.Release(70, 50)
+	if moved != 60 || held || clicks != 1 {
+		t.Fatalf("let go 60 DIPs right: moved %v, still pressed %v, %d clicks", moved, held, clicks)
+	}
+	moved = 0
+	tt.Press(10, 50)
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.PointerMove, X: 40, Y: 50})
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.PointerUp, X: 70, Y: 50})
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.PointerMove, X: 150, Y: 50})
+	tt.settle()
+	if moved != 60 || held {
+		t.Errorf("moved 60 DIPs right and let go before a frame: moved %v, still pressed %v", moved, held)
+	}
+	// A press that comes after the release, before a frame, holds the
+	// element again.
+	moved, clicks = 0, 0
+	tt.Press(10, 50)
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.PointerMove, X: 40, Y: 50})
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.PointerUp, X: 70, Y: 50})
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.PointerDown, X: 70, Y: 50})
+	tt.settle()
+	if moved != 60 || !held || clicks != 1 {
+		t.Errorf("pressed again after a release before a frame: moved %v, still pressed %v, %d clicks, want 60, pressed, 1", moved, held, clicks)
+	}
+	tt.Release(70, 50)
+	if held || clicks != 2 {
+		t.Errorf("let go of the second press: still pressed %v, %d clicks, want 2", held, clicks)
+	}
+}
+
+// TestPressedBeforeRelease shows a view reading the pointer while the
+// element is pressed where the pointer let go of it, though no frame came
+// between the moves and the release, nor between the release and a move
+// on, and the press ends in the same frame.
+func TestPressedBeforeRelease(t *testing.T) {
+	var x float32
+	var held bool
+	tt := coreNewTester(func(c *context) {
+		b := coreBox(c).Size(200, 100)
+		if held = b.Pressed(); held {
+			x, _, _ = b.PointerPosition()
+		}
+	}, 300, 150)
+	tt.Press(10, 50)
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.PointerMove, X: 40, Y: 50})
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.PointerUp, X: 70, Y: 50})
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.PointerMove, X: 250, Y: 50})
+	tt.settle()
+	if x != 70 || held {
+		t.Errorf("let go at 70 before a frame: held at %v, still pressed %v", x, held)
+	}
+}
+
 func TestInView(t *testing.T) {
 	var top, bottom *node
 	var topIn, bottomIn bool
@@ -326,6 +399,71 @@ func TestInView(t *testing.T) {
 	tt.Frame()
 	if topIn || !bottomIn {
 		t.Fatalf("at the bottom, the top is in view %v, the bottom %v", topIn, bottomIn)
+	}
+}
+
+func TestInViewMargin(t *testing.T) {
+	// A card 60 DIPs below a scroll container's edge, as in the issue.
+	var in, near, notNear, below, above, inside, deep, sides, unused bool
+	var allocs float64
+	tt := coreNewTester(func(c *context) {
+		coreScroll(c).Height(200).Children(func() {
+			coreBox(c).Height(260)
+			card := coreBox(c).Key("card").Height(100)
+			coreBox(c).Height(400)
+			in, near, notNear = card.InView(), card.InViewMargin(80), card.InViewMargin(50)
+			below, above = card.InViewMargin(0, 0, 80, 0), card.InViewMargin(80, 0, 0, 0)
+			inside, deep = card.InViewMargin(-50), card.InViewMargin(-90)
+			sides, unused = card.InViewMargin(80, 0), card.InViewMargin()
+			allocs = testing.AllocsPerRun(10, func() { card.InViewMargin(80) })
+		})
+	}, 200, 400)
+	tt.Frame()
+	if in || !near || notNear || !below || above || !sides || unused {
+		t.Fatalf("60 DIPs below: in view %v, within 80 %v, within 50 %v, within 80 below %v, above %v, vertically %v, without a margin %v",
+			in, near, notNear, below, above, sides, unused)
+	}
+	if allocs != 0 {
+		t.Errorf("InViewMargin allocated %v times", allocs)
+	}
+	// Scrolled by 100, 40 DIPs of the card show, inside a margin of -50
+	// no more.
+	tt.Scroll(50, 50, 0, 100)
+	tt.Frame()
+	if !in || !near || inside || deep {
+		t.Fatalf("40 DIPs in: in view %v, within 80 %v, within -50 %v, within -90 %v", in, near, inside, deep)
+	}
+	// Scrolled by 200, the card shows from 60 to 160: within -50 (from 50
+	// to 150) and -90 (from 90 to 110) too.
+	tt.Scroll(50, 50, 0, 100)
+	tt.Frame()
+	if !in || !inside || !deep {
+		t.Fatalf("all in: in view %v, within -50 %v, within -90 %v", in, inside, deep)
+	}
+}
+
+func TestInViewMarginRoots(t *testing.T) {
+	// The window is grown as the scroll containers are; other clips, the
+	// card's own and those that do not scroll, are not, and what is
+	// invisible shows nowhere.
+	var window, clipped, invisible, hidden, shrunk bool
+	tt := coreNewTester(func(c *context) {
+		window = coreBox(c).Key("window").Absolute().Left(0).Top(230).Size(100, 50).InViewMargin(40)
+		coreBox(c).Absolute().Left(0).Top(0).Size(100, 100).Clip().Children(func() {
+			clipped = coreBox(c).Key("clipped").Absolute().Left(0).Top(120).Size(100, 50).InViewMargin(40)
+		})
+		coreBox(c).Absolute().Left(100).Top(0).Size(100, 100).Children(func() {
+			invisible = coreBox(c).Key("invisible").Size(50, 50).Invisible().InViewMargin(40)
+			hidden = coreBox(c).Key("hidden").Size(50, 50).Hidden(true).InViewMargin(40)
+		})
+		// At the window's left edge, a box is out of the window shrunk by 30
+		// at its sides.
+		shrunk = coreBox(c).Key("edge").Absolute().Left(0).Top(150).Size(20, 20).InViewMargin(0, -30)
+	}, 200, 200)
+	tt.Frame()
+	if !window || clipped || invisible || hidden || shrunk {
+		t.Fatalf("within 40 of the window %v, of a clip %v, invisible %v, hidden %v; at the edge of a window shrunk by 30 %v",
+			window, clipped, invisible, hidden, shrunk)
 	}
 }
 
@@ -396,6 +534,28 @@ func TestAnimateColor(t *testing.T) {
 	tt.Frame()
 	if shown != target || !settled {
 		t.Errorf("over, the color is %+v", shown)
+	}
+}
+
+func TestAnimateColorInOklab(t *testing.T) {
+	target := RGB(255, 255, 0)
+	var lab, srgb Color
+	tt, now := motionTester(func(c *context) {
+		e := coreBox(c)
+		a := Animation{Duration: 100 * time.Millisecond, Ease: Linear}
+		srgb = e.AnimateColor("srgb", target, a)
+		a.Oklab = true
+		lab = e.AnimateColor("lab", target, a)
+	})
+	target = RGB(0, 0, 255)
+	tt.Frame()
+	*now = now.Add(50 * time.Millisecond)
+	tt.Frame()
+	if want := RGB(255, 255, 0).MixOklab(target, 0.5); lab != want {
+		t.Errorf("halfway in Oklab, the color is %+v, want %+v", lab, want)
+	}
+	if want := RGB(255, 255, 0).Mix(target, 0.5); srgb != want {
+		t.Errorf("halfway in sRGB, the color is %+v, want %+v", srgb, want)
 	}
 }
 
@@ -525,5 +685,15 @@ func TestScrollToGlides(t *testing.T) {
 	tt.Frame()
 	if feed.Y != y {
 		t.Errorf("stopped, it went on from %v to %v", y, feed.Y)
+	}
+}
+
+func TestKeyframesHoldWhileDelayed(t *testing.T) {
+	// An easing need not start at zero, as one that jumps at once: a
+	// delayed sequence holds the value it starts from all the same.
+	jump := func(float32) float32 { return 1 }
+	s := sequence{frames: []Keyframe{{Value: 0}, {At: time.Second, Value: 100, Ease: jump}}, start: time.Unix(10, 0), from: 5}
+	if v, done := s.sample(time.Unix(9, 0)); v != 5 || done {
+		t.Fatalf("a delayed sequence showed %v, done %v; want 5, not done", v, done)
 	}
 }

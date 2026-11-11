@@ -53,8 +53,17 @@ type DragOptions struct {
 // Result reports the destination's final effect. None means no drop.
 type Result struct {
 	Operation Operation
-	Canceled  bool
-	Err       error
+	// Canceled reports that the drag ended without a drop: let go over
+	// no target, or canceled.
+	Canceled bool
+	// Escaped reports that a canceled drag was given up (Escape,
+	// Window.CancelDataDrag, or the source window closing), rather than
+	// let go over no target.
+	Escaped bool
+	// Point is where the drag ended, in screen coordinates, as
+	// Screen.CursorScreenPoint reports them.
+	Point image.Point
+	Err   error
 }
 
 // Offer describes a drag during hover, without reading its bytes.

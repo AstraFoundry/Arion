@@ -70,6 +70,16 @@ func (r *renderer) transformed(op *scene.Op, px scene.EffectPixels, b *scene.Bac
 	if !ok || !inset && op.Rect.Empty() || inset && op.Cast.Empty() {
 		return
 	}
+	// An image whose owner dropped its pixels (Bitmap.ReleasePixels) has
+	// them made again here, once for the whole operation, as the op reads
+	// them directly; without them it draws nothing.
+	var image *scene.Image
+	if op.Kind == scene.OpImage {
+		if op.Image == nil || op.Image.W == 0 || op.Image.H == 0 || unflipped(op.Src).Empty() || op.Image.Pixels() == nil {
+			return
+		}
+		image = op.Image
+	}
 	radii := scene.Corners(op.Rect, op.Radii, op.Continuous)
 	outer := newShape(op.Rect, radii)
 	inner := outer
@@ -81,7 +91,7 @@ func (r *renderer) transformed(op *scene.Op, px scene.EffectPixels, b *scene.Bac
 	if hasBorder {
 		inner = newShape(scene.InnerRadii(op.Rect, radii, bw))
 	}
-	pt := newPainter(op, opacityOf(op.Opacity))
+	pt, bp := borderPainter(op, opacityOf(op.Opacity), r.s.Stops)
 	border := op.BorderColor.Premul(opacityOf(op.Opacity))
 	box := op.Rect
 	if inset {
@@ -136,29 +146,34 @@ func (r *renderer) transformed(op *scene.Op, px scene.EffectPixels, b *scene.Bac
 			}
 			switch op.Kind {
 			case scene.OpFill:
+				var fc [4]float32
 				if pt.visible() {
-					blend(p, pt.at(lx, ly), cov*clip)
+					fc = pt.at(lx, ly)
 				}
-				if hasBorder {
-					ic := float32(0)
-					if !inner.r.Empty() {
-						ic = transformedCoverage(&inner, op.Transform, inv, wx, wy)
-					}
-					bc := max(cov-ic, 0)
-					if op.Dashed {
-						bc *= dash(op.Rect, bw, lx, ly)
-					}
-					blend(p, border, bc*clip)
-				}
-			case scene.OpImage:
-				if op.Image == nil || op.Image.W == 0 || op.Image.H == 0 || op.Src.Empty() {
+				if !hasBorder {
+					blend(p, fc, cov*clip)
 					continue
 				}
-				c := sample(op.Image, op.Src.X+(lx-op.Rect.X)*op.Src.W/op.Rect.W, op.Src.Y+(ly-op.Rect.Y)*op.Src.H/op.Rect.H, op.Src)
-				if op.Grayscale {
-					l := 0.2126*c[0] + 0.7152*c[1] + 0.0722*c[2]
-					c[0], c[1], c[2] = l, l, l
+				ic := float32(0)
+				if !inner.r.Empty() {
+					ic = transformedCoverage(&inner, op.Transform, inv, wx, wy)
 				}
+				bc := max(cov-ic, 0)
+				if op.Dashed {
+					bc *= dash(op.Rect, bw, lx, ly)
+				}
+				blendFilled(p, fc, cov, borderAt(bp, border, op.BorderColor, lx, ly), bc, clip)
+			case scene.OpImage:
+				if image == nil {
+					continue
+				}
+				// How far a pixel of the frame reaches in the image's,
+				// as the GPU's fwidth.
+				sx, sy := op.Src.W/op.Rect.W, op.Src.H/op.Rect.H
+				ax, ay := inv.VectorAt(wx, wy, 1, 0)
+				bx, by := inv.VectorAt(wx, wy, 0, 1)
+				c := sampleOp(op, op.Src.X+(lx-op.Rect.X)*sx, op.Src.Y+(ly-op.Rect.Y)*sy,
+					(abs32(ax)+abs32(bx))*abs32(sx), (abs32(ay)+abs32(by))*abs32(sy))
 				blend(p, c, cov*clip*opacityOf(op.Opacity))
 			case scene.OpEffect:
 				if px != nil {
@@ -208,8 +223,8 @@ func transformedShadowAt(op *scene.Op, box *shape, x, y float32) float32 {
 
 func (r *renderer) transformedGlyphs(op *scene.Op) {
 	var pt *painter
-	if op.Paint == scene.PaintLinear || op.Paint == scene.PaintOklab {
-		p := newPainter(op, opacityOf(op.Opacity))
+	if op.Paint == scene.PaintLinear || op.Paint == scene.PaintOklab || op.Paint.HasStops() {
+		p := newPainter(op, opacityOf(op.Opacity), r.s.Stops)
 		pt = &p
 	}
 	for _, g := range r.s.Glyphs[op.Start:op.End] {

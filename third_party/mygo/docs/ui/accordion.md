@@ -33,6 +33,37 @@ for i, s := range sections {
 
 Tab goes from a header into the content of its section while it is open.
 
+## Without a look
+
+`ui.AccordionBase` is an accordion without a look, for headers and panels
+of your own layout: a `Root` column holding the sections, each made by
+`Item`, a [`CollapsibleBase`](collapsible.md#without-a-look) open while
+its `*bool` is true, whose `Trigger` is the header and whose `Panel`
+builds the content. The headers have the keys of `Accordion`'s: Up and
+Down move the focus between them, as do Home and End, and Enter and Space
+open and close them.
+
+```go
+acc := ui.AccordionBase(c)
+acc.Root.Gap(4).Children(func() {
+	for i := range app.sections {
+		s := &app.sections[i]
+		item := acc.Item(&s.open)
+		item.Trigger.Gap(8).Padding(8, 12).Radius(8).Children(func() {
+			ui.Icon(c, s.icon)
+			ui.Text(c, s.title).Grow(1)
+			ui.Text(c, s.summary).TextColor(t.TextMuted)
+			ui.Icon(c, chevron).Rotate(180 * item.Progress())
+		})
+		item.Panel(func() { s.build(c) })
+	}
+})
+```
+
+`Accordion` is `AccordionBase` with the theme's look: its headers ring
+the focus inside them (`FocusRingOffset`), as the box clips what goes
+past it. See [custom widgets](custom-widgets.md).
+
 ## Accessibility
 
 Assistive technology sees each header as a disclosure, expanded or

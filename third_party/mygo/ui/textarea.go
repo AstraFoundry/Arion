@@ -65,7 +65,7 @@ func (a *area) wrappedHeight(e *node, ed *editor, cw float32) float32 {
 					at := runeOffset(part.Text, ed.caret-ed.buf.start(p))
 					part.Text = part.Text[:at] + ed.compose + part.Text[at:]
 				}
-				part.Spans, _ = ed.rangeSpans(ed.buf.start(p), ed.buf.end(p))
+				part.Spans = ed.rangeKey(ed.buf.start(p), ed.buf.end(p))
 				height += textSystem().Shape(part).Height
 			}
 			a.wrapped, a.wrappedParams, a.wrappedVersion = height, params, ed.buf.version
@@ -76,7 +76,7 @@ func (a *area) wrappedHeight(e *node, ed *editor, cw float32) float32 {
 	params.Text = ed.displayText()
 	params.KeepSpaces, params.MaxLines = true, 0
 	// Bold runs take more room, so the text may wrap sooner.
-	params.Spans, _ = ed.rangeSpans(0, ed.buf.n)
+	params.Spans = ed.rangeKey(0, ed.buf.n)
 	if params != a.wrappedParams {
 		a.wrappedParams = params
 		a.wrapped = textSystem().Layout(params).Height
@@ -157,7 +157,7 @@ func (a *area) paraLayout(ed *editor, p int) *text.Layout {
 	if ed.compose != "" && p == b.para(ed.caret) {
 		compose = ed.compose
 	}
-	spans, _ := ed.rangeSpans(b.start(p), b.end(p))
+	spans := ed.rangeKey(b.start(p), b.end(p))
 	if pr.layout != nil && pr.compose == compose && pr.spans == spans {
 		return pr.layout
 	}
@@ -386,7 +386,7 @@ func (a *area) forget(b *buffer) {
 func (a *area) paint(e *node, p *Painter, ox, oy float32) {
 	ed := e.st.editor
 	b := &ed.buf
-	t := e.c.theme
+	t := p.Theme()
 	ts := e.resolvedText()
 	focused := e.Focused()
 	last := len(b.paras) - 1
@@ -418,13 +418,14 @@ func (a *area) paint(e *node, p *Painter, ox, oy float32) {
 	}
 	if focused && !ed.readOnly {
 		rt := e.c.rt
-		phase := time.Since(rt.blinkStart)
+		phase := e.c.now.Sub(rt.blinkStart)
 		const blink = 530 * time.Millisecond
-		if (phase/blink)%2 == 0 {
+		if (phase/blink)%2 == 0 && ed.caretWidth > 0 {
 			x, y, h := a.caretAt(ed, ed.caret, ed.composeCaret)
-			p.add(scene.Op{Kind: scene.OpFill, Rect: p.snap(Rect{ox + x, oy + float32(y-a.scroll), 0, h}), Color: t.Accent.scene(), Wide: p.wide(t.Accent, Color{}, Color{}), Opacity: p.opacity})
+			caret := ts.caretColor(t)
+			p.add(scene.Op{Kind: scene.OpFill, Rect: p.snap(Rect{ox + x, oy + float32(y-a.scroll), 0, h}), Color: caret.scene(), Wide: p.wide(caret, Color{}, Color{}), Opacity: p.opacity})
 			op := &p.s.Ops[len(p.s.Ops)-1]
-			op.Rect.W = max(round(p.scale), 1)
+			op.Rect.W = max(round(ed.caretWidth*p.scale), 1)
 		}
 		if phase < 30*time.Second {
 			e.c.After(blink - phase%blink)

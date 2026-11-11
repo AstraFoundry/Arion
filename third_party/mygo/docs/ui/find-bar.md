@@ -32,4 +32,6 @@ While closed, it returns an element that shows nothing.
 ## Accessibility
 
 Assistive technology sees a toolbar named "Find", holding a search field,
-and hears the count of matches as it changes.
+and hears the count of matches as it changes. Its names, its count ("3 of
+12", "No matches") and Done are in the window's language
+([MyGo's own strings](../i18n.md#mygos-own-strings)).

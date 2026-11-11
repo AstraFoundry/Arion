@@ -359,3 +359,43 @@ func TestListTypeRightAfterAClick(t *testing.T) {
 		t.Errorf("a click on Apple, then c, chose %d", sel)
 	}
 }
+
+// TestListKeepOffset sorts a keyed list again under its place, which
+// stays, as the choice and the row Shift chooses from follow their items.
+func TestListKeepOffset(t *testing.T) {
+	ids := make([]int, 200)
+	for i := range ids {
+		ids[i] = 1000 + i
+	}
+	var sel Selection[int]
+	s := ListState{Selection: &sel, KeepOffset: true, Key: func(i int) any { return ids[i] }}
+	tt := coreNewTester(func(c *context) {
+		coreList(c, &s, len(ids), func(i int) { coreTextf(c, "Item %d", ids[i]).Height(30) }).Grow(1)
+	}, 300, 400)
+	s.ScrollTo(100, Start)
+	tt.Frame()
+	tt.Click("Item 1102")
+	expectChosen(t, &sel, 1102)
+	// Sorted the other way: the list stays at row 100, not with item 1100.
+	slices.Reverse(ids)
+	tt.Frame()
+	if first, _ := s.Visible(); first != 100 {
+		t.Errorf("sorted again, the first row in view is %d", first)
+	}
+	if _, ok := tt.Find("Item 1099"); !ok {
+		t.Fatalf("row 100 shows no item 1099: %q", tt.Texts())
+	}
+	// Shift chooses from item 1102, now at row 97, to item 1099.
+	tt.ClickWith(Shift, "Item 1099")
+	expectChosen(t, &sel, 1099, 1100, 1101, 1102)
+
+	// Without KeepOffset, the list goes along with the item at its top.
+	s.KeepOffset = false
+	tt.Frame()
+	first, _ := s.Visible()
+	slices.Reverse(ids)
+	tt.Frame()
+	if f, _ := s.Visible(); f != len(ids)-1-first {
+		t.Errorf("without KeepOffset, sorted again, the first row in view is %d, not %d", f, len(ids)-1-first)
+	}
+}

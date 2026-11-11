@@ -4,8 +4,8 @@ package linux
 
 import (
 	"errors"
+	"fmt"
 	"os"
-	"strings"
 	"sync"
 	"sync/atomic"
 	"syscall"
@@ -36,17 +36,24 @@ type Backend struct {
 	// window.frameExtents).
 	frames [2]extents
 
-	appMenu    *platform.Menu
-	schemes    map[string]bool
-	signaled   atomic.Bool
-	quitLoops  []ptr
-	popups     []ptr // context menus being shown
-	modals     []modal
-	trays      map[int]*tray
-	nextTray   int
-	grabs      map[int]grab    // global shortcuts on X11
-	portal     portalShortcuts // global shortcuts elsewhere
-	themeHooks bool
+	appMenu *platform.Menu
+	// stores are the web contexts of sessions (session.go); schemes,
+	// below, the custom schemes registered on the default web context.
+	stores []*dataStore
+	// languages are those SetLanguages told, which the web context
+	// takes as the first web view is made (webLanguages).
+	languages    []string
+	webLanguages bool
+	schemes      map[string]bool
+	signaled     atomic.Bool
+	quitLoops    []ptr
+	popups       []ptr // context menus being shown
+	modals       []modal
+	trays        map[int]*tray
+	nextTray     int
+	grabs        map[int]grab    // global shortcuts on X11
+	portal       portalShortcuts // global shortcuts elsewhere
+	themeHooks   bool
 	// onX11 reports an X11 display, where windows have positions, and
 	// wmName names its window manager.
 	onX11  bool
@@ -57,6 +64,9 @@ type Backend struct {
 	// announceCSD tells a Wayland compositor that a window decorates
 	// itself, so that it draws no title bar (gdk_wayland_window_announce_csd).
 	announceCSD func(window ptr)
+	// waylandSurface returns a GdkWindow's wl_surface on Wayland
+	// (gdk_wayland_window_get_wl_surface; see damageGLPaint).
+	waylandSurface func(window ptr) ptr
 
 	// What the launcher entry shows (Window.SetProgressBar, badges).
 	launcher struct {
@@ -102,14 +112,15 @@ func (b *Backend) Init(h platform.AppHandler, opts platform.AppOptions) error {
 	if err := load(); err != nil {
 		return err
 	}
-	if os.Getenv("WEBKIT_DISABLE_DMABUF_RENDERER") == "" {
-		// Avoid blank windows on setups where WebKitGTK's DMA-BUF renderer
-		// fails (NVIDIA, VMs, containers).
+	if disableDMABUF(opts.DMABUFRenderer, os.Getenv, "/") {
 		_ = os.Setenv("WEBKIT_DISABLE_DMABUF_RENDERER", "1")
 	}
 	if !gtkInitCheck(0, 0) {
 		return errors.New("mygo: cannot open display (is DISPLAY or WAYLAND_DISPLAY set?)")
 	}
+	// Before any page loads, so that the first already has the desktop's
+	// prefers-color-scheme; Run then applies a source the app set.
+	followSystemScheme(gtkSettingsGetDefault())
 	var x11Type func() uintptr
 	b.onX11 = bind(libGDK, &x11Type, "gdk_x11_display_get_type") && gTypeCheckInstanceIsA(gdkDisplayGetDefault(), x11Type()) &&
 		bind(libGDK, &b.wmName, "gdk_x11_screen_get_window_manager_name")
@@ -123,6 +134,7 @@ func (b *Backend) Init(h platform.AppHandler, opts platform.AppOptions) error {
 		bind(libGDK, &prefersSSD, "gdk_wayland_display_prefers_ssd") && prefersSSD(gdkDisplayGetDefault())
 	if onWayland {
 		bind(libGDK, &b.announceCSD, "gdk_wayland_window_announce_csd")
+		bind(libGDK, &b.waylandSurface, "gdk_wayland_window_get_wl_surface")
 	}
 	initCallbacks()
 	return nil
@@ -191,10 +203,11 @@ func (b *Backend) Dialogs() platform.Dialogs   { return dialogs{b} }
 func (b *Backend) Clipboard() platform.Clipboard {
 	return clipboard{}
 }
-func (b *Backend) Shell() platform.Shell   { return shell{} }
-func (b *Backend) Screen() platform.Screen { return screen{} }
-func (b *Backend) Theme() platform.Theme   { return theme{b} }
-func (b *Backend) Power() platform.Power   { return power{b} }
+func (b *Backend) Shell() platform.Shell     { return shell{} }
+func (b *Backend) Screen() platform.Screen   { return screen{} }
+func (b *Backend) Theme() platform.Theme     { return theme{b} }
+func (b *Backend) Power() platform.Power     { return power{b} }
+func (b *Backend) Secrets() platform.Secrets { return secrets{} }
 
 // Callbacks are created once; purego callbacks are never freed.
 var (
@@ -218,6 +231,8 @@ func initCallbacks() {
 		initFlyoutCallbacks()
 		initSurfaceCallbacks()
 		initDownloadCallbacks()
+		initAuthCallbacks()
+		initContextMenuCallbacks()
 		initMenuCallbacks()
 		initSystemCallbacks()
 		initClipboardCallbacks()
@@ -227,6 +242,10 @@ func initCallbacks() {
 type appController struct{ b *Backend }
 
 func (a appController) SetActivationPolicy(string) {}
+
+func (a appController) AllowForeground() {}
+
+func (a appController) WithActivationToken(token string, fn func()) { withActivationToken(token, fn) }
 
 func (a appController) Activate() {
 	for _, w := range a.b.windows {
@@ -250,6 +269,17 @@ func (a appController) Unhide() {
 }
 
 func (a appController) IsHidden() bool { return false }
+
+// IsActive reports whether a window of the app has the keyboard.
+func (a appController) IsActive() bool {
+	for _, w := range a.b.windows {
+		if !w.closed && gtkWindowIsActive(w.win) {
+			return true
+		}
+	}
+	return false
+}
+
 func (a appController) SetBadge(label string) {
 	a.b.launcher.badge = label
 	a.b.updateLauncherEntry()
@@ -297,31 +327,60 @@ func (a appController) ShowAboutPanel(o platform.AboutPanelOptions) {
 	gtkWidgetDestroy(d)
 }
 
-func (a appController) Locale() string {
-	for _, env := range []string{"LC_ALL", "LC_MESSAGES", "LANG"} {
-		if v := os.Getenv(env); v != "" && v != "C" && v != "POSIX" {
-			v, _, _ = strings.Cut(v, ".")
-			return strings.ReplaceAll(v, "_", "-")
-		}
-	}
-	return "en-US"
-}
-
 func (a appController) Package() (platform.PackageInfo, bool) { return platform.PackageInfo{}, false }
 
-func (a appController) ClearBrowsingData(done func(error)) {
+func (a appController) ClearBrowsingData(store platform.DataStore, types platform.SiteData, done func(error)) {
 	// Web views of earlier runs kept their data on disk: WebKitGTK clears
 	// it, loaded for that when no window has shown a web page yet.
 	if webKit() != nil {
 		done(nil) // no web view kept any data
 		return
 	}
-	const all = 1<<14 - 1 // WEBKIT_WEBSITE_DATA_ALL
-	manager := webkitWebContextGetWebsiteDataManager(webkitWebContextGetDefault())
+	manager := webkitWebContextGetWebsiteDataManager(webContext(store))
 	id := pending.add(func(source, res ptr) {
 		var gerr ptr
 		webkitWebsiteDataManagerClearFinish(source, res, &gerr)
 		done(gErr(gerr))
 	})
-	webkitWebsiteDataManagerClear(manager, all, 0, 0, cbAsyncReady, id)
+	webkitWebsiteDataManagerClear(manager, websiteDataTypes(types), 0, 0, cbAsyncReady, id)
 }
+
+func (a appController) AddRecentDocument(path string) error {
+	uri := fileURI(path)
+	if uri == "" {
+		return fmt.Errorf("mygo: cannot record %q as a recent document", path)
+	}
+	// GTK records the item asynchronously, under the application name, so
+	// a failure to write the list is not reported here.
+	if !gtkRecentManagerAddItem(gtkRecentManagerGetDefault(), cs(uri)) {
+		return fmt.Errorf("mygo: the recent files list refused %q", path)
+	}
+	return nil
+}
+
+// ClearRecentDocuments removes the items of the shared list that this
+// application registered, including those of earlier runs, and leaves the
+// other applications' items alone.
+func (a appController) ClearRecentDocuments() error {
+	m := gtkRecentManagerGetDefault()
+	name := gGetApplicationName()
+	if name == 0 {
+		return nil
+	}
+	var uris []string
+	list := gtkRecentManagerGetItems(m)
+	for node := list; node != 0; node = field[ptr](node, 8) {
+		info := field[ptr](node, 0)
+		if gtkRecentInfoHasApplication(info, name) {
+			uris = append(uris, goStr(gtkRecentInfoGetURI(info)))
+		}
+		gtkRecentInfoUnref(info)
+	}
+	gListFree(list)
+	for _, uri := range uris {
+		gtkRecentManagerRemoveItem(m, cs(uri), 0)
+	}
+	return nil
+}
+
+func (appController) SetJumpList(platform.JumpList) error { return nil }

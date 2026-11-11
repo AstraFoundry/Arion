@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/egoist/mygo/internal/platform"
@@ -197,5 +198,25 @@ func TestPhysicalKeyReleaseAfterInterruptedPress(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// TestPasteAndMatchStyleFallsBack checks that a handler of edit commands
+// that knows only Paste gets Paste and Match Style as Paste, as before it
+// was a command of its own.
+func TestPasteAndMatchStyleFallsBack(t *testing.T) {
+	var got []string
+	tt := coreNewTester(func(c *context) {
+		coreBox(c).Size(100, 100).Focusable().Label("Terminal").AutoFocus().HandleInput(func(ev InputEvent) bool {
+			if ev.Kind == InputCommand {
+				got = append(got, ev.Text)
+				return ev.Text == "paste"
+			}
+			return false
+		})
+	}, 200, 200)
+	tt.Command("pasteAndMatchStyle")
+	if strings.Join(got, ",") != "pasteAndMatchStyle,paste" {
+		t.Fatalf("commands %q", got)
 	}
 }

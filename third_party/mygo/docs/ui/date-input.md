@@ -2,7 +2,9 @@
 
 <!-- preview date-input 320 -->
 
-`ui.DateInput` creates a field showing a `*time.Time` as 2006-01-02, which a
+`ui.DateInput` creates a field showing a `*time.Time` as the user's
+regional formats write a date in numbers, as 1/5/2026 in the United States,
+05/01/2026 in the United Kingdom or 2026/1/5 in China, which a
 [calendar](calendar.md) below it changes. A click, Enter or Space opens the
 calendar, where a click chooses a day, as do the arrows and Enter; Page Up
 and Page Down, or its buttons, move by months, and Escape closes it.

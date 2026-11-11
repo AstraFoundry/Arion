@@ -14,7 +14,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"runtime"
 	"strings"
 	"text/template"
@@ -278,16 +277,6 @@ func writeTemplateDir(dir, tmpl string, data templateData) error {
 		}
 		return os.WriteFile(target, content, 0o644)
 	})
-}
-
-var slugRe = regexp.MustCompile(`[^a-z0-9]+`)
-
-func slugify(s string) string {
-	s = strings.Trim(slugRe.ReplaceAllString(strings.ToLower(s), "-"), "-")
-	if s == "" {
-		return "app"
-	}
-	return s
 }
 
 func goVersion() string {

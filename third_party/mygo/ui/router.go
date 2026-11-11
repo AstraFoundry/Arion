@@ -64,7 +64,8 @@ type Router struct {
 
 	// Transition is how pages replace each other, and Animation, if set,
 	// how they move then: as a spring (Snappy, …) or a curve, rather than
-	// easing out over 250 ms as they slide, 150 ms as they fade.
+	// easing out over 250 ms as they slide, 150 ms as they fade, and 300
+	// ms as they fade into each other (TransitionMatch).
 	Transition Transition
 	Animation  *Animation
 
@@ -125,6 +126,12 @@ const (
 	TransitionFade
 	// TransitionNone shows pages at once.
 	TransitionNone
+	// TransitionMatch fades the page going out as the page coming fades
+	// in, while the elements of a Transition's Match in both move from
+	// the one to the other, as Keynote's Magic Move: a photo's thumbnail
+	// opening into its page, its title growing into the page's heading.
+	// Where the desktop asks for less motion, nothing moves.
+	TransitionMatch
 )
 
 const (
@@ -134,6 +141,7 @@ const (
 	keptPages  = 10
 	slideTime  = 250 * time.Millisecond
 	fadeTime   = 150 * time.Millisecond
+	matchTime  = 300 * time.Millisecond
 )
 
 // NewRouter returns a router showing the page at path.
@@ -318,6 +326,10 @@ func (r *Router) changed() {
 
 // isPath reports whether a link's target is a path within the app, as
 // "/notes/42", "edit" or "?tab=info", rather than a URL with a scheme.
+// Router returns the router whose page is being built, which a Link to a
+// path without a scheme goes through, or nil outside one.
+func (c *context) Router() *Router { return c.router }
+
 func isPath(target string) bool {
 	u, err := url.Parse(target)
 	return err == nil && u.Scheme == "" && u.Host == "" && u.Opaque == ""
@@ -542,6 +554,12 @@ func (r *Router) build(c *context, box *node, v *routeView, parent *Route, fn fu
 		switch {
 		case v.leaving == nil:
 			page = r.page(c, parent, cur, fn, false)
+		case r.Transition == TransitionMatch:
+			// The page going away fades out under the one coming, whose
+			// elements of a Match come from its own (match.go).
+			r.page(c, parent, v.leaving, fn, true).Opacity(1 - progress)
+			page = r.page(c, parent, cur, fn, false)
+			page.Absolute().Top(0).Fill().Opacity(progress)
 		case v.dir == 0:
 			// Across, the page fades in in place of the other, which goes
 			// at once: the two would blur into each other.
@@ -557,8 +575,9 @@ func (r *Router) build(c *context, box *node, v *routeView, parent *Route, fn fu
 			if v.dir > 0 {
 				upper, lower, shown = page, old, progress
 			}
-			upper.Absolute().Top(0).Fill().Background(bg).LeftPercent(100*(1-shown)).Shadow(0, 0, 16, 0, RGBA(0, 0, 0, 0.15))
-			lower.LeftPercent(-30 * shown).Background(bg).DrawOver(func(p *Painter, rc Rect) {
+			// From the end: the left right to left.
+			upper.Absolute().Top(0).Fill().Background(bg).StartPercent(100*(1-shown)).Shadow(0, 0, 16, 0, RGBA(0, 0, 0, 0.15))
+			lower.StartPercent(-30 * shown).Background(bg).DrawOver(func(p *Painter, rc Rect) {
 				p.Fill(rc, RGBA(0, 0, 0, 0.06*shown), 0)
 			})
 		}
@@ -579,7 +598,10 @@ func (r *Router) build(c *context, box *node, v *routeView, parent *Route, fn fu
 func (r *Router) keys(c *context, box *node) {
 	first := c.routers == 0
 	c.routers++
-	back, forward := [2]shortcut{{0, KeyBack}, {Alt, KeyLeft}}, [2]shortcut{{0, KeyForward}, {Alt, KeyRight}}
+	// Alt and the arrow pointing back, as the Back button's arrow does:
+	// Right right to left, as in browsers.
+	left, right := box.arrows()
+	back, forward := [2]shortcut{{0, KeyBack}, {Alt, left}}, [2]shortcut{{0, KeyForward}, {Alt, right}}
 	if runtime.GOOS == "darwin" {
 		back[1], forward[1] = shortcut{Super, KeyBracketLeft}, shortcut{Super, KeyBracketRight}
 	}
@@ -622,6 +644,11 @@ func (r *Router) show(c *context, box *node, v *routeView, parent *Route, cur *r
 		v.focusing, v.announcing = false, true
 	}
 	v.leaving, v.dir, v.start = nil, 0, c.now
+	// The colors of the page that comes show at once: the state of an
+	// element that comes back may have been painted for the element that
+	// took its place while it was away, and easing from that element's
+	// color is not its own.
+	rt.forgetColors()
 	if r.Transition == TransitionNone || rt.instant() {
 		return
 	}
@@ -646,6 +673,9 @@ func (r *Router) show(c *context, box *node, v *routeView, parent *Route, cur *r
 func (r *Router) animation(dir int) Animation {
 	if r.Animation != nil {
 		return *r.Animation
+	}
+	if r.Transition == TransitionMatch {
+		return Animation{Duration: matchTime, Ease: EaseOut}
 	}
 	if dir == 0 {
 		return Animation{Duration: fadeTime, Ease: EaseOut}
@@ -725,7 +755,7 @@ func (r *Router) focusPage(c *context, page *node, cur *routeEntry) {
 	}
 	if s := rt.states[cur.focus]; cur.focus != 0 && s != nil && s.seen == rt.frame && s.pass == rt.pass {
 		rt.focused = cur.focus
-		rt.blinkStart = time.Now()
+		rt.blinkStart = rt.now()
 		return
 	}
 	page.Focus()
@@ -779,9 +809,15 @@ func historyButton(c *context, r *Router, d int) *node {
 		if !can {
 			color = t.TextMuted
 		}
-		coreBox(c).Size(t.Space(4), t.Space(4)).Shrink(0).Role(RoleNone).Draw(func(p *Painter, rc Rect) {
+		arrow := coreBox(c).Size(t.Space(4), t.Space(4)).Shrink(0).Role(RoleNone)
+		// Back points the way pages came from: right right to left.
+		dir := float32(d)
+		if arrow.rtl() {
+			dir = -dir
+		}
+		arrow.Draw(func(p *Painter, rc Rect) {
 			cx, cy, s := rc.X+rc.W/2, rc.Y+rc.H/2, rc.W*0.22
-			dx := s * float32(d)
+			dx := s * dir
 			var path Path
 			path.MoveTo(cx-dx/2, cy-s*1.6).LineTo(cx+dx, cy).LineTo(cx-dx/2, cy+s*1.6)
 			p.StrokePath(&path, 1.6, color)

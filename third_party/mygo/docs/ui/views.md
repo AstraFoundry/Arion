@@ -68,9 +68,8 @@ if ui.Button(c, "Save").Clicked() {
 }
 ```
 
-Click and shortcut queries apply pending bound input to controls built so
-far before returning, so an inline save sees the latest edits. Configure
-those controls before asking for an action response.
+A control takes the user's input as its constructor returns, so an inline
+save sees the latest edits of the controls built before it.
 
 `OnClick` schedules the action after the view finishes building and bound
 input has been applied:
@@ -99,10 +98,10 @@ that input. MyGo rebuilds changed state before painting the frame.
 
 Widgets that change a value take a pointer to it, so they need no handler:
 `ui.Checkbox(c, &app.settings.Sync, "Sync")` binds the field to the control.
-`Changed` and `Submitted` apply pending input to the controls built so far
-before returning. Their bound values are available immediately in the same
-build pass. Set `Disabled`, `ReadOnly` and other input options before querying
-responses; configuration after a query cannot undo input already applied.
+As in Dear ImGui and egui, the control writes the user's edit through the
+pointer before its constructor returns, so the next statement reads the new
+value. `Changed` reports that it changed in this build pass, and `Submitted`
+that Enter was pressed in a single-line text input.
 
 ```go
 if ui.TextInput(c, &app.query).Placeholder("Search").Changed() {
@@ -110,14 +109,31 @@ if ui.TextInput(c, &app.query).Placeholder("Search").Changed() {
 }
 ```
 
-Local copies work too, including values read from a map:
+Local copies work too, including values read from a map, compared with the
+value they came from or through `Changed`:
 
 ```go
 viewed := app.viewed[file.ID]
 if ui.Checkbox(c, &viewed, "Viewed").Changed() {
     app.viewed[file.ID] = viewed
 }
+
+chosen := app.language
+ui.RadioGroup(c, func() {
+    for _, tag := range app.languages {
+        ui.Radio(c, &chosen, tag, i18n.Autonym(tag))
+    }
+})
+if chosen != app.language {
+    app.setLanguage(chosen)
+}
 ```
+
+A container takes its input with its children, as the call that built it
+returns: a radio group's arrow keys move among all of its radios. Input
+follows the options of the frame the user acted on: an input shown
+read-only takes no typing, and `Disabled`, `ReadOnly` or `Step` set in
+this build govern the input of the frames after it, as they show.
 
 `OnChange` and `OnSubmit` run after construction and bound input, before the
 rebuild. Use callbacks when an action should wait until the view has finished
@@ -141,9 +157,28 @@ ui.Checkbox(c.Key(todo.ID), &todo.Done, todo.Title)
 ui.TextInput(c.Key("search"), &app.query)
 ```
 
-Keys are unique among siblings. `Element.Key` can key a container before
-its children or local state are built. Use `Context.Key` for stateful
-controls and custom base widgets.
+Keys are unique among siblings, and compare as Go compares a map's keys: a
+pointer keys the object it points to, whatever the object holds, so an
+item's pointer serves as its key as well as an ID does. A key Go cannot
+compare, as a slice, or not equal to itself, as a NaN, compares by its
+value printed. `Element.Key` can
+key a container before its children or local state are built. Use
+`Context.Key` for stateful controls and custom base widgets.
+
+`Context.Key` sets one pending key for the next control; calling it again
+replaces that key. `c.Key("account").Key("secret")` uses only `"secret"`.
+Create a keyed parent to give its children a separate identity scope:
+
+```go
+ui.Column(c.Key(app.accountID)).Children(func() {
+	ui.TextInput(c.Key("secret"), &app.secret).Password()
+})
+```
+
+Changing the account ID gives the input a new identity, even though its
+own key stays `"secret"`. Within the same account, that input keeps its
+state from build to build. The new editor starts with `app.secret`; clear
+or load that model value separately when switching accounts.
 
 ## Change the state from other goroutines
 
@@ -163,10 +198,30 @@ go func() {
 Within the view, `c.Invalidate()` asks for another frame and `c.After(d)` for
 one after a delay, such as a clock's next second.
 
+`Update` builds the view again after every call, whether the function
+changed the state or not. A goroutine that polls data that rarely
+changes, as a connection count or a status, compares it on the main thread
+with `mygo.RunOnMain`, which draws nothing, and calls `Invalidate` only
+when it changed:
+
+```go
+for n := range counts {
+	mygo.RunOnMain(func() {
+		if n != app.connections {
+			app.connections = n
+			win.Invalidate()
+		}
+	})
+}
+```
+
 ## State of an element
 
 An element keeps state of its own from frame to frame with `ui.Local`, for
-widgets you build yourself; see [custom widgets](custom-widgets.md).
+widgets you build yourself; see [custom widgets](custom-widgets.md). A
+value of it that is an `io.Closer` closes when the element is no longer
+built, which stops the work the widget started
+([stopping what a widget started](custom-widgets.md#stopping-what-a-widget-started)).
 
 ## Check build lifetimes
 

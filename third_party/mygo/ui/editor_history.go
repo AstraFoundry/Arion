@@ -68,7 +68,7 @@ func (ed *editor) setText(s string) {
 // record starts a step of undo before an edit; typing in a row makes one
 // step.
 func (ed *editor) record(typing bool) {
-	now := time.Now()
+	now := ed.now()
 	if typing && ed.coalesce && now.Sub(ed.lastEdit) < time.Second && len(ed.undo) > 0 {
 		ed.lastEdit = now
 		return
@@ -95,6 +95,7 @@ func (ed *editor) replace(start, end int, s string) {
 			return r
 		}, s)
 	}
+	s = ed.fit(start, end, s)
 	if n := len(ed.undo); n > 0 {
 		step := &ed.undo[n-1]
 		removed := ed.buf.slice(start, end)
@@ -125,6 +126,17 @@ func (ed *editor) replace(start, end int, s string) {
 		ed.undo[n-1].caretAfter, ed.undo[n-1].anchorAfter = ed.caret, ed.anchor
 		ed.undo[n-1].selectionAfter = ed.editorSelection.clone()
 	}
+}
+
+// fit returns what of s the user may put in place of the runes from start
+// to end under MaxLength: as much as fits, in UTF-16 units, without
+// splitting a surrogate pair, as a browser cuts a paste.
+func (ed *editor) fit(start, end int, s string) string {
+	if ed.maxLength <= 0 {
+		return s
+	}
+	room := ed.maxLength - ed.buf.units + ed.buf.utf16At(end) - ed.buf.utf16At(start)
+	return s[:UTF16ByteOffset(s, room)]
 }
 
 // takeBack undoes the last step of undo, or redoes the last undone with

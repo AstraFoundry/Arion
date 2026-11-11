@@ -8,6 +8,7 @@ import (
 	"errors"
 	"image"
 	"image/png"
+	"math"
 	"slices"
 	"strings"
 
@@ -32,6 +33,10 @@ type macDataSource struct {
 	obj, session id
 	providers    []id
 	err          error
+	// escaped is set when the drag was given up (Escape, or
+	// CancelDataDrag), not let go over no target.
+	escaped bool
+	end     platform.Point
 }
 type macDataProvider struct {
 	src  *macDataSource
@@ -50,6 +55,12 @@ func registerDataDragClasses() {
 		}),
 		method("draggingSession:endedAtPoint:operation:", func(self id, _ objc.SEL, session id, point NSPoint, operation uint) {
 			if src := macDragSources[self]; src != nil {
+				// AppKit's tracking loop takes Escape itself; the event
+				// that ended the session tells it from letting go.
+				if ev := send(src.s.w.b.app, "currentEvent"); ev != 0 && sendInt(ev, "type") == 10 && uint16(send(ev, "keyCode")) == 53 {
+					src.escaped = true
+				}
+				src.end = platform.Point{X: int(math.Round(point.X)), Y: int(math.Round(primaryScreenHeight() - point.Y))}
 				src.finish(operation)
 			}
 		}),
@@ -211,6 +222,7 @@ func (s *surface) StartDataDrag(r platform.DragRequest) {
 		src.session = retain(send(s.view, "beginDraggingSessionWithItems:event:source:", uintptr(nsArray(dragging...)), uintptr(s.w.lastMouseDown), uintptr(src.obj)))
 		if src.session == 0 {
 			src.err = errors.New("mygo: AppKit failed to start drag")
+			src.end = screen{}.CursorPoint()
 			src.finish(0)
 			return
 		}
@@ -257,13 +269,16 @@ func (src *macDataSource) finish(operation uint) {
 	}
 	done := src.r.Done
 	src.r = platform.DragRequest{}
-	done(transfer.Result{Operation: op, Canceled: op == transfer.None && src.err == nil, Err: src.err})
+	canceled := op == transfer.None && src.err == nil
+	done(transfer.Result{Operation: op, Canceled: canceled, Escaped: canceled && src.escaped,
+		Point: image.Point{X: src.end.X, Y: src.end.Y}, Err: src.err})
 }
 
 func (s *surface) CancelDataDrag() {
 	if s.dataDrag == nil {
 		return
 	}
+	s.dataDrag.escaped = true
 	// NSDraggingSession has no public cancel method. Posting Escape to
 	// AppKit's tracking loop cancels through its normal keyboard path.
 	withPool(func() {

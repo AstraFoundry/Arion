@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 	"unsafe"
 
 	"github.com/ebitengine/purego"
@@ -70,12 +71,12 @@ func appName() string {
 	return "mygo"
 }
 
-func openDevice() (device, int, error) {
-	d, perr := openPulse()
+func openDevice(ahead time.Duration) (device, int, error) {
+	d, perr := openPulse(ahead)
 	if perr == nil {
 		return d, linuxFrames, nil
 	}
-	d, aerr := openALSA()
+	d, aerr := openALSA(ahead)
 	if aerr == nil {
 		return d, linuxFrames, nil
 	}
@@ -84,7 +85,7 @@ func openDevice() (device, int, error) {
 
 type pulseDevice struct{ s uintptr }
 
-func openPulse() (device, error) {
+func openPulse(ahead time.Duration) (device, error) {
 	pulseLoad.Do(func() {
 		lib, err := purego.Dlopen("libpulse-simple.so.0", purego.RTLD_NOW|purego.RTLD_GLOBAL)
 		if err != nil {
@@ -100,11 +101,11 @@ func openPulse() (device, error) {
 		return nil, pulseErr
 	}
 	spec := paSampleSpec{format: paSampleFloat32LE, rate: sampleRate, channels: channels}
-	// About 40 ms ahead, asking for more every 10 ms.
+	// ahead, asking for more every 10 ms.
 	const frame = channels * 4
 	attr := paBufferAttr{
 		maxLength: ^uint32(0),
-		tLength:   sampleRate / 25 * frame,
+		tLength:   uint32(int64(ahead) * sampleRate / int64(time.Second) * frame),
 		preBuf:    ^uint32(0),
 		minReq:    linuxFrames * frame,
 		fragSize:  ^uint32(0),
@@ -130,7 +131,7 @@ func (d *pulseDevice) close() { paSimpleFree(d.s) }
 
 type alsaDevice struct{ pcm uintptr }
 
-func openALSA() (device, error) {
+func openALSA(ahead time.Duration) (device, error) {
 	alsaLoad.Do(func() {
 		lib, err := purego.Dlopen("libasound.so.2", purego.RTLD_NOW|purego.RTLD_GLOBAL)
 		if err != nil {
@@ -151,7 +152,7 @@ func openALSA() (device, error) {
 	if e := sndPcmOpen(&pcm, cstr("default"), sndPcmStreamPlayback, 0); e < 0 {
 		return nil, fmt.Errorf("audio: ALSA: %s", sndStrerror(e))
 	}
-	if e := sndPcmSetParams(pcm, sndPcmFormatFloatLE, sndPcmAccessRWInterleaved, channels, sampleRate, 1, 40000); e < 0 {
+	if e := sndPcmSetParams(pcm, sndPcmFormatFloatLE, sndPcmAccessRWInterleaved, channels, sampleRate, 1, uint32(ahead.Microseconds())); e < 0 {
 		sndPcmClose(pcm)
 		return nil, fmt.Errorf("audio: ALSA: %s", sndStrerror(e))
 	}

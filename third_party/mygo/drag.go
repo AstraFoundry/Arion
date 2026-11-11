@@ -27,6 +27,7 @@ type dataSource struct {
 	local      any
 	done       func(transfer.Result)
 	finished   bool
+	escaped    bool // canceled by the core: CancelDataDrag or destruction
 	operations transfer.Operation
 }
 
@@ -82,7 +83,7 @@ func (w *Window) startDataDragPrepared(data transfer.Data, local any, options Dr
 			return
 		}
 		if w.native == nil {
-			src.finish(transfer.Result{Canceled: true})
+			src.finish(transfer.Result{Canceled: true, Escaped: true, Point: cursorPoint()})
 			return
 		}
 		w.conn.Surface.StartDataDrag(req)
@@ -113,7 +114,7 @@ func (s *dataSource) finish(result transfer.Result) {
 	}
 	s.finished = true
 	if op := result.Operation; op != transfer.None && ((op != transfer.Copy && op != transfer.Move) || op&s.operations == 0) {
-		result = transfer.Result{Err: errors.New("mygo: destination returned a disallowed drag operation")}
+		result = transfer.Result{Point: result.Point, Err: errors.New("mygo: destination returned a disallowed drag operation")}
 	}
 	if result.Err != nil || result.Canceled {
 		result.Operation = transfer.None
@@ -121,6 +122,7 @@ func (s *dataSource) finish(result transfer.Result) {
 	if result.Operation == transfer.None && result.Err == nil {
 		result.Canceled = true
 	}
+	result.Escaped = result.Canceled && (result.Escaped || s.escaped)
 	if activeDataDrag == s {
 		activeDataDrag = nil
 	}
@@ -136,11 +138,18 @@ func (w *Window) cancelDataDrag() {
 		// Invalidate the registry before callbacks or a native cancel can
 		// reenter. The backend may report completion later; finish is once.
 		activeDataDrag = nil
+		s.escaped = true
 		if w.conn != nil {
 			w.conn.Surface.CancelDataDrag()
 		}
-		s.finish(transfer.Result{Canceled: true})
+		s.finish(transfer.Result{Canceled: true, Escaped: true, Point: cursorPoint()})
 	}
+}
+
+// cursorPoint is where a drag the core ends itself ended.
+func cursorPoint() image.Point {
+	p := backend().Screen().CursorPoint()
+	return image.Point{X: p.X, Y: p.Y}
 }
 
 func resolveDataDrag(d *platform.DataDragEvent) {

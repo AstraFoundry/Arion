@@ -14,7 +14,8 @@ func TestBasesHaveNoLook(t *testing.T) {
 	var radio, tab int
 	var value = 50.0
 	var size, text = "M", "hello"
-	open := true
+	open, menu, section := true, true, true
+	mixed := CheckMixed
 	tt := coreNewTester(func(c *context) {
 		th := *c.Theme()
 		th.Background = RGB(255, 255, 255)
@@ -22,6 +23,7 @@ func TestBasesHaveNoLook(t *testing.T) {
 		coreColumn(c).Fill().Padding(10).Gap(10).AlignItems(Start).Children(func() {
 			coreButtonBase(c).Size(60, 20)
 			coreCheckboxBase(c, &check).Size(60, 20)
+			coreCheckboxStateBase(c, &mixed).Size(60, 20)
 			coreSwitchBase(c, &on).Size(60, 20)
 			coreRadioBase(c, &radio, 1).Size(60, 20)
 			coreSliderBase(c, &value, 0, 100).Size(60, 20)
@@ -38,6 +40,20 @@ func TestBasesHaveNoLook(t *testing.T) {
 			})
 			coreTextInputBase(c, &text).Width(60).TextColor(RGB(255, 255, 255))
 			corePopoverBase(c, sel.Trigger, &open, func(panel *node) { coreBox(c).Size(30, 30) })
+			acc := coreAccordionBase(c)
+			acc.Root.Children(func() {
+				item := acc.Item(&section)
+				item.Trigger.Size(60, 20)
+				item.Panel(func() { coreBox(c).Size(60, 20) })
+			})
+			m := coreMenuBase(c, &menu)
+			m.Trigger.Size(60, 20)
+			m.Popup(func(panel *node) {
+				m.Item().Size(60, 20)
+				m.CheckItem(true).Size(60, 20)
+				sub := m.SubmenuItem().Size(60, 20)
+				m.Submenu(sub, func(panel *node) { m.RadioItem(true).Size(60, 20) })
+			})
 		})
 	}, 300, 400)
 	img := tt.Image()
@@ -47,6 +63,42 @@ func TestBasesHaveNoLook(t *testing.T) {
 			if c := img.RGBAAt(x, y); c != white {
 				t.Fatalf("a base drew %v at (%d, %d)", c, x, y)
 			}
+		}
+	}
+}
+
+// TestDimDisabled: a disabled element shows at half its opacity, bases
+// and the themed widgets alike, unless DimDisabled(false) leaves its look
+// to the view, as a card that keeps the reason it is unavailable.
+func TestDimDisabled(t *testing.T) {
+	plan := "pro"
+	var para *node
+	img := coreRender(func(c *context) {
+		th := *c.Theme()
+		th.Background = RGB(255, 255, 255)
+		c.SetTheme(&th)
+		coreColumn(c).Fill().AlignItems(Start).Children(func() {
+			coreRadioBase(c, &plan, "team").Size(20, 20).Background(RGB(0, 0, 0)).Disabled(true)
+			coreRadioBase(c, &plan, "team").Size(20, 20).Background(RGB(0, 0, 0)).Disabled(true).DimDisabled(false)
+			coreBox(c).Disabled(true).DimDisabled(false).DimDisabled(true).Children(func() {
+				coreBox(c).Size(20, 20).Background(RGB(0, 0, 0))
+			})
+			para = coreRichText(c).Children(func() {
+				coreText(c, "dim").TextColor(RGB(0, 0, 0)).Disabled(true)
+				coreText(c, "kept").TextColor(RGB(0, 0, 0)).Disabled(true).DimDisabled(false)
+			})
+		})
+	}, 100, 100, 1)
+	for _, tc := range []struct {
+		y, want int
+	}{{10, 128}, {30, 0}, {50, 128}} {
+		if got := int(img.RGBAAt(10, tc.y).R); got < tc.want-2 || got > tc.want+2 {
+			t.Errorf("at y %d: %d, want %d", tc.y, got, tc.want)
+		}
+	}
+	for _, s := range para.inlineSpans() {
+		if dim := s.Color.A < 255; dim != (s.Text == "dim") {
+			t.Errorf("the span %q has alpha %d", s.Text, s.Color.A)
 		}
 	}
 }
@@ -152,6 +204,91 @@ func TestTabsBase(t *testing.T) {
 	}
 }
 
+// TestTabsBaseDisabledTabs checks that a disabled tab is out of the keys'
+// way and of the pointer's, as Radix's disabled tab triggers, and that
+// assistive technology sees it disabled.
+func TestTabsBaseDisabledTabs(t *testing.T) {
+	tab, changes := 0, 0
+	off := map[int]bool{1: true, 3: true}
+	names := []string{"One", "Two", "Three", "Four"}
+	tt := coreNewTester(func(c *context) {
+		tabs := coreTabsBase(c, &tab, len(names))
+		tabs.List.Children(func() {
+			for i, name := range names {
+				tabs.Tab(i).Padding(4).Disabled(off[i]).Children(func() { coreText(c, name) })
+			}
+		})
+		if tabs.List.Changed() {
+			changes++
+		}
+	}, 300, 100)
+	tt.send(platform.SurfaceEvent{Kind: platform.AccessibilityOn})
+	tt.Click("One")
+	tt.Key(0, KeyRight)
+	if tab != 2 || !tt.Focused("Three") {
+		t.Errorf("Right from One chooses %d, not Three past the disabled Two", tab)
+	}
+	tt.Key(0, KeyRight)
+	if tab != 0 || !tt.Focused("One") {
+		t.Errorf("Right from Three chooses %d, not One round past the disabled Four", tab)
+	}
+	tt.Key(0, KeyLeft)
+	if tab != 2 || !tt.Focused("Three") {
+		t.Errorf("Left from One chooses %d, not Three round past the disabled Four", tab)
+	}
+	tt.Key(0, KeyEnd)
+	if tab != 2 {
+		t.Errorf("End chooses %d, not Three before the disabled Four", tab)
+	}
+	tt.Key(0, KeyHome)
+	if tab != 0 || !tt.Focused("One") {
+		t.Errorf("Home chooses %d", tab)
+	}
+	tt.Click("Two")
+	if tab != 0 || changes != 4 {
+		t.Errorf("a click on the disabled Two chooses %d, %d changes", tab, changes)
+	}
+	if n := accessNode(t, tt.h.access, platform.RoleTab, "Two"); n.States&platform.AccessDisabled == 0 {
+		t.Errorf("the disabled tab: %+v", n)
+	}
+	if n := accessNode(t, tt.h.access, platform.RoleTab, "One"); n.States&platform.AccessDisabled != 0 || n.States&platform.AccessChecked == 0 {
+		t.Errorf("the tab chosen: %+v", n)
+	}
+	// With the others disabled, the keys stay on the tab chosen.
+	off = map[int]bool{1: true, 2: true, 3: true}
+	tt.Click("One")
+	tt.Key(0, KeyRight)
+	tt.Key(0, KeyEnd)
+	if tab != 0 || !tt.Focused("One") {
+		t.Errorf("with the others disabled, the keys choose %d", tab)
+	}
+}
+
+// TestTabsBaseDisabledTabPublic is the same through the public API, the
+// tabs disabled after their constructor returned.
+func TestTabsBaseDisabledTabPublic(t *testing.T) {
+	tab := 0
+	tt := NewTester(func(c *Context) {
+		tabs := TabsBase(c, &tab, 3)
+		tabs.List.Children(func() {
+			for i, name := range []string{"One", "Two", "Three"} {
+				tb := tabs.Tab(i).Padding(4)
+				if i == 1 {
+					tb.Disabled(true)
+				}
+				tb.Children(func() { Text(c, name) })
+			}
+		})
+	}, 300, 100)
+	if err := tt.Click("One"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Key(0, KeyRight)
+	if tab != 2 {
+		t.Errorf("Right from One chooses %d, not Three past the disabled Two", tab)
+	}
+}
+
 func TestSelectBase(t *testing.T) {
 	size := "M"
 	sizes := []string{"S", "M", "L", "XL"}
@@ -213,6 +350,117 @@ func TestSelectBase(t *testing.T) {
 	tt.Click("item XL")
 	if size != "XL" || tt.HasText("item S") {
 		t.Errorf("a click chooses %q", size)
+	}
+}
+
+// TestSelectBaseDisabledItems checks that a disabled option is out of the
+// keys' way and of the pointer's, as a listbox's aria-disabled options.
+func TestSelectBaseDisabledItems(t *testing.T) {
+	sel := "a"
+	off := map[string]bool{"b": true, "d": true}
+	var highlighted, jump string
+	tt := coreNewTester(func(c *context) {
+		s := coreSelectBase(c, &sel)
+		s.Trigger.Label("trigger").Padding(4).Children(func() { coreText(c, "Choice: "+sel) })
+		if jump != "" {
+			s.Highlight(jump)
+			jump = ""
+		}
+		highlighted = ""
+		s.Popup(func(panel *node) {
+			for _, v := range []string{"a", "b", "c", "d"} {
+				it := s.Item(v).Padding(4).Label("opt-" + v)
+				it.Disabled(off[v])
+				if it.Highlighted() {
+					highlighted = v
+				}
+				it.Children(func() { coreText(c, v) })
+			}
+		})
+	}, 300, 300)
+	tt.Click("trigger")
+	tt.Key(0, KeyDown)
+	if highlighted != "c" {
+		t.Errorf("Down from a highlights %q, not c past the disabled b", highlighted)
+	}
+	tt.Key(0, KeyDown)
+	tt.Key(0, KeyEnd)
+	if highlighted != "c" {
+		t.Errorf("Down and End onto the disabled d highlight %q", highlighted)
+	}
+	tt.Key(0, KeyUp)
+	if highlighted != "a" {
+		t.Errorf("Up from c highlights %q, not a past the disabled b", highlighted)
+	}
+	tt.Key(0, KeyEnd)
+	tt.Key(0, KeyHome)
+	if highlighted != "a" {
+		t.Errorf("Home highlights %q", highlighted)
+	}
+	jump = "d"
+	tt.Frame()
+	if highlighted != "a" {
+		t.Errorf("Highlight of the disabled d highlights %q", highlighted)
+	}
+	tt.Key(0, KeyDown)
+	tt.Key(0, KeyEnter)
+	if sel != "c" {
+		t.Errorf("Down and Enter choose %q, not c", sel)
+	}
+	// The pointer neither highlights nor chooses a disabled option.
+	tt.Click("trigger")
+	r, _ := tt.Find("opt-b")
+	tt.Move(r.X+r.W/2, r.Y+r.H/2)
+	if highlighted != "c" {
+		t.Errorf("the pointer on the disabled b highlights %q", highlighted)
+	}
+	tt.Click("opt-b")
+	if sel != "c" || !tt.HasText("d") {
+		t.Errorf("a click on the disabled b chooses %q, popup open %v", sel, tt.HasText("d"))
+	}
+	tt.Key(0, KeyEscape)
+	// A disabled choice leaves the highlight on the first option that
+	// can be chosen.
+	sel = "b"
+	tt.Click("trigger")
+	if highlighted != "a" {
+		t.Errorf("the popup of the disabled choice b highlights %q, not a", highlighted)
+	}
+	tt.Key(0, KeyEscape)
+	// With every option disabled, nothing is highlighted or chosen.
+	off = map[string]bool{"a": true, "b": true, "c": true, "d": true}
+	tt.Click("trigger")
+	tt.Key(0, KeyDown)
+	tt.Key(0, KeyEnter)
+	if highlighted != "" || sel != "b" {
+		t.Errorf("with every option disabled, %q is highlighted and %q chosen", highlighted, sel)
+	}
+}
+
+// TestSelectBaseDisabledItemPublic is the same through the public API,
+// where the item is disabled after its constructor returned.
+func TestSelectBaseDisabledItemPublic(t *testing.T) {
+	sel := "a"
+	tt := NewTester(func(c *Context) {
+		s := SelectBase(c, &sel)
+		s.Trigger.Label("trigger").Children(func() { Text(c, sel) })
+		s.Popup(func(panel Element) {
+			for _, v := range []string{"a", "b", "c"} {
+				it := s.Item(v).Label("opt-" + v)
+				if v == "b" {
+					it.Disabled(true)
+				}
+				it.Children(func() { Text(c, v) })
+			}
+		})
+	}, 300, 300)
+	if err := tt.Click("trigger"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Key(0, KeyDown)
+	tt.Key(0, KeyEnter)
+	if sel != "c" {
+		t.Errorf("Down and Enter choose %q, not c past the disabled b", sel)
 	}
 }
 
@@ -420,5 +668,68 @@ func TestEnterWithWindowShortcut(t *testing.T) {
 	tt.Key(0, KeySpace)
 	if window != 2 || !checked {
 		t.Fatalf("Space on a focused check box: window %d, checked %v", window, checked)
+	}
+}
+
+// A focused link takes Enter alone, as in a web page (WAI-ARIA's link
+// pattern): Space scrolls the container around it, as elsewhere, and a
+// button still takes both.
+func TestLinkTakesEnterAlone(t *testing.T) {
+	links, roleLinks, buttons := 0, 0, 0
+	var scroll ScrollState
+	tt := coreNewTester(func(c *context) {
+		coreScroll(c).Size(300, 100).TrackScroll(&scroll).Children(func() {
+			if coreLink(c, "Docs", "").AutoFocus().Clicked() {
+				links++
+			}
+			b := coreText(c, "Next").Focusable().Role(RoleLink)
+			b.flags |= flagClickable
+			if b.Clicked() {
+				roleLinks++
+			}
+			if coreButton(c, "Save").Clicked() {
+				buttons++
+			}
+			coreBox(c).Size(300, 1000)
+		})
+	}, 300, 100)
+	tt.Frame()
+	if !tt.Focused("Docs") {
+		t.Fatal("the link is not focused")
+	}
+	tt.Key(0, KeySpace)
+	tt.Frame()
+	tt.Frame()
+	if links != 0 {
+		t.Fatalf("Space on a focused link made %d clicks", links)
+	}
+	if scroll.Y == 0 {
+		t.Error("Space on a focused link does not scroll its container")
+	}
+	tt.Key(0, KeyEnter)
+	tt.Frame()
+	if links != 1 {
+		t.Fatalf("Enter on a focused link made %d clicks, want 1", links)
+	}
+
+	// The same for an element with the role of a link.
+	tt.Key(0, KeyTab)
+	if !tt.Focused("Next") {
+		t.Fatal("Tab does not focus the element with the role of a link")
+	}
+	tt.Key(0, KeySpace)
+	tt.Key(0, KeyEnter)
+	if roleLinks != 1 {
+		t.Fatalf("Space and Enter on a focused element with the role of a link made %d clicks, want 1", roleLinks)
+	}
+
+	tt.Key(0, KeyTab)
+	if !tt.Focused("Save") {
+		t.Fatal("Tab does not focus the button")
+	}
+	tt.Key(0, KeySpace)
+	tt.Key(0, KeyEnter)
+	if buttons != 2 {
+		t.Fatalf("Space and Enter on a focused button made %d clicks, want 2", buttons)
 	}
 }

@@ -16,14 +16,14 @@ export interface GoCall {
 export type Handler = (call: GoCall) => unknown;
 
 /** Methods whose argument 1 is a channel, as those of the plugins. */
-const streaming = new Set(["plugin:fetch.Fetch", "plugin:websocket.Connect"]);
+const streaming = new Set(["plugin:fetch.Fetch", "plugin:websocket.Connect", "plugin:watch.Watch"]);
 
 /** Installs window.mygo with handlers for methods; returns what was called. */
 export function fakeGo(handlers: Record<string, Handler>): { calls: [string, unknown[]][]; uninstall(): void } {
   const calls: [string, unknown[]][] = [];
   const aborts = new Map<number, AbortController>();
   const { runtime, internal } = createRuntime(
-    { platform: "darwin", windowId: 1, version: "0.0.0-test", secret: "s" },
+    { platform: "darwin", windowId: 1, version: "0.0.0-test", secret: "s", locale: "en", dir: "ltr" },
     (raw) => {
       const m = JSON.parse(raw) as Outgoing;
       if (m.t === "chan-close") aborts.get(m.c)?.abort();

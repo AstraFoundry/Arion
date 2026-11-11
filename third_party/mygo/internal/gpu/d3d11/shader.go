@@ -22,6 +22,45 @@ var shaderSource string
 //go:embed effect.hlsl
 var effectSource string
 
+//go:embed classes.hlsl
+var classSource string
+
+// sourceSum is the SHA-256 of the source of the shaders of shaders.go.
+func sourceSum() string { return gpu.SourceSum(shaderSource + classSource) }
+
+// classShader is what batches of some classes draw with, compiled ahead of
+// time: the vertex and pixel shaders of classes.hlsl with CLASSES defined.
+type classShader struct {
+	classes uint32
+	vs, ps  []byte
+}
+
+// classDefines returns what classes.hlsl needs defined for the classes cl (a
+// bit, 1 << gpu.Class, for each), as gen.go compiles it.
+func classDefines(cl uint32) string {
+	s := fmt.Sprintf("#define CLASSES %d\n", cl)
+	for _, c := range []struct {
+		name  string
+		class gpu.Class
+	}{{"PLAIN", gpu.ClassPlain}, {"FILL", gpu.ClassFill}, {"SHADOW", gpu.ClassShadow}, {"GLYPH", gpu.ClassGlyph}, {"SUBPIXEL", gpu.ClassSubpixel}, {"IMAGE", gpu.ClassImage}} {
+		s += fmt.Sprintf("#define %s %d\n", c.name, cl>>c.class&1)
+	}
+	return s
+}
+
+// compileClass compiles the shaders of the classes cl from their sources, for
+// shaders.go older than them.
+func compileClass(cl uint32) (vs, ps []byte, err error) {
+	src := classDefines(cl) + shaderSource + "\n" + classSource
+	if vs, err = compile(src, "classvs", "vs_4_0"); err != nil {
+		return nil, nil, err
+	}
+	if ps, err = compile(src, "classps", "ps_4_0"); err != nil {
+		return nil, nil, err
+	}
+	return vs, ps, nil
+}
+
 // EffectSource returns the source of an effect's pixel shader: shader.hlsl
 // with EFFECT defined, the head of effect.hlsl, the effect's shader (see
 // scene.Effect), and the tail, which draws its instances with it
@@ -49,11 +88,11 @@ type shaders struct {
 }
 
 // shaderCode returns the bytecode of the shaders: that compiled ahead of
-// time into shaders.go, or, when shader.hlsl changed since (go generate
+// time into shaders.go, or, when shader.hlsl or classes.hlsl changed since (go generate
 // ./internal/gpu/d3d11 was not run), that compiled now from shader.hlsl,
 // with the compiler Windows has.
 func shaderCode() (code shaders, err error) {
-	if gpu.SourceSum(shaderSource) == shaderSum && !compileShaders {
+	if sourceSum() == shaderSum && !compileShaders {
 		return shaders{vertexShader, pixelShader, passVertexShader, downShader, blurShader}, nil
 	}
 	for _, f := range []struct {

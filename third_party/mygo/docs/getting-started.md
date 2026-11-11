@@ -191,8 +191,8 @@ it when there is one, and packages it for the machine's platform in
 
 | Platform | Output |
 |---|---|
-| macOS | `My App.app`, and a disk image `My App 0.1.0 arm64.dmg` |
-| Windows | `My App.exe`, and an installer `My App Setup 0.1.0 amd64.exe` |
+| macOS | `My App.app`, and a disk image `my-app-0.1.0-arm64.dmg` |
+| Windows | `My App.exe`, and an installer `my-app-setup-0.1.0-amd64.exe` |
 | Linux | the executable `my-app` with its desktop entry and icon, their archive with `install.sh`, which installs it for the user, and a `.deb` package |
 
 MyGo needs no cgo, so any machine builds for every platform:
@@ -223,7 +223,17 @@ The apps run where they are, but to ship them to users, sign them: see
     bar, its material picked in it), `examples/effort-slider` (a web
     demo's animated slider redrawn: letters blurring in, a burst of
     pixels, a shaking card), `examples/confetti` (canvas-confetti's
-    demos, every piece flying on poses that only paint) and
+    demos, every piece flying on poses that only paint), `examples/wind`
+    (the glyph texture behind the Claude app's Code tab: characters lit by
+    a passing wind, ripples from clicks, drawn by two shaders written in
+    Go), `examples/blackhole` (a black hole whose light a shader traces
+    through its gravity: the lensed accretion disk, Doppler beaming and an
+    Einstein ring of stars, in three passes with bloom), `examples/chat-glow`
+    (an assistant lit as Apple Intelligence: the window's edges glowing
+    while it thinks, borders of conic gradients blurred, and a glowing
+    field, shimmering text and an orb, shaders), `examples/timeline`
+    (an intro on one playhead: a card sliding in, its title and rows
+    following it, with play, pause, reverse and restart) and
     `examples/gallery` (a tour of the
     toolkit: layout, widgets, text editing, a list of ten thousand rows,
     drawing and overlays).

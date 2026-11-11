@@ -50,6 +50,13 @@ if ui.Modal(c, &app.editing, app.editor).Dismissed() && app.unsaved {
 To ask about something important, with buttons and no closing by a click
 outside, use an [alert dialog](alert-dialog.md).
 
+## Beyond the window
+
+A dialog draws in its window, cut to its edges: one a flyout asks for, as
+a tray's flyout, is no wider than the flyout. Open a window modal to the
+flyout instead, which shows over it and closes with it (see
+[a dialog over a flyout](../windows.md#a-dialog-over-a-flyout)).
+
 ## Without a look
 
 `ui.DialogBase` is a dialog without a look: its function styles the

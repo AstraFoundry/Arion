@@ -138,9 +138,9 @@ func containersSplit() {
 					ui.Icon(c, containersTerm).TextColor(t.TextMuted)
 					ui.Text(c, "go run .").Font("monospace").FontSize(12)
 				})
-			}).Fill()
-		}).AlignSelf(ui.Stretch).Height(200).Border(1, t.Border).Radius(8).Clip()
-		status(c, fmt.Sprintf("Sidebar %.0f DIPs wide, editor %.0f DIPs high", sidebar, editor))
+			}).SplitReset(120).Fill()
+		}).SplitReset(180).AlignSelf(ui.Stretch).Height(200).Border(1, t.Border).Radius(8).Clip()
+		status(c, fmt.Sprintf("Sidebar %.0f DIPs wide, editor %.0f DIPs high · double-click to reset", sidebar, editor))
 	})
 }
 

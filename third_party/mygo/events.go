@@ -35,7 +35,9 @@ type NavigateEvent struct {
 	Preventable
 	URL string
 	// UserInitiated is true when the navigation was triggered by a user
-	// gesture such as clicking a link.
+	// gesture such as clicking a link, or a click whose handler sets
+	// location.href. It is false for a page's script navigating on its
+	// own, as from a timer.
 	UserInitiated bool
 }
 

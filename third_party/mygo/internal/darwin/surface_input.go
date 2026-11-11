@@ -3,6 +3,7 @@
 package darwin
 
 import (
+	"strings"
 	"unicode/utf16"
 
 	"github.com/egoist/mygo/internal/platform"
@@ -135,7 +136,22 @@ func (s *surface) setMarkedText(text string, selected, replacement nsRange) {
 		ev.From, ev.To = s.textRange(replacement)
 	}
 	s.marked, s.markedSel = text, selected
-	s.send(ev)
+	if !s.send(ev) && text != "" {
+		// The content left it, as a terminal does the dead key of a key
+		// it sent as Alt (Option as Alt): given up, rather than composed
+		// with the next key.
+		if s.keyDown {
+			s.refused = true
+		} else {
+			s.discardComposition()
+		}
+	}
+}
+
+// discardComposition has the input method give up its composition.
+func (s *surface) discardComposition() {
+	s.marked = ""
+	send(send(s.view, "inputContext"), "discardMarkedText")
 }
 
 func (s *surface) insertText(text string, replacement nsRange) {
@@ -182,4 +198,24 @@ func (s *surface) unmarkText() {
 		s.marked = ""
 		s.send(platform.SurfaceEvent{Kind: platform.TextComposition})
 	}
+}
+
+// interpretKeys has the input method interpret a key the surface's view
+// got; it answers with the view's NSTextInputClient methods. The GUI tests
+// stand in for an input method here (TestKeyComposing).
+var interpretKeys = func(view, ev id) {
+	send(view, "interpretKeyEvents:", uintptr(nsArray(ev)))
+}
+
+// typedChars returns the text of a key's characters, without the control
+// characters of Return, Tab, Escape and Delete, nor the private-use ones
+// AppKit gives the arrows and function keys (NSUpArrowFunctionKey…),
+// which come as keys.
+func typedChars(chars string) string {
+	return strings.Map(func(r rune) rune {
+		if r < 0x20 || r == 0x7F || r >= 0xF700 && r <= 0xF8FF {
+			return -1
+		}
+		return r
+	}, chars)
 }

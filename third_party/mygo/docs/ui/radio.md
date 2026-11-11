@@ -33,7 +33,8 @@ For a choice among many, use a [select](select.md) or a
 ## Without a look
 
 `ui.RadioBase` is a radio button without a look: a row that selects its
-value when clicked: see [custom widgets](custom-widgets.md).
+value when clicked: see [custom widgets](custom-widgets.md), which has a
+card that stays readable while disabled (`DimDisabled(false)`).
 
 ## Accessibility
 

@@ -153,6 +153,7 @@ func (r Handle) FocusWithin(c *Context) bool {
 	if b == nil || b.closed || b.id == 0 {
 		return false
 	}
+	rt.withinRead = true
 	for s := rt.states[rt.focused]; s != nil; s = rt.states[s.parent] {
 		if s.id == b.id {
 			return true

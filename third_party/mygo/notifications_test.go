@@ -3,13 +3,69 @@
 package mygo
 
 import (
+	"context"
 	"errors"
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/egoist/mygo/internal/platform"
 )
+
+func TestNotificationShowContextCanceled(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	n := NewNotification(NotificationOptions{ID: "canceled-before-delivery"})
+	if err := n.ShowContext(ctx); !errors.Is(err, context.Canceled) {
+		t.Fatalf("ShowContext = %v, want cancellation", err)
+	}
+	if fb.Notification(n.ID()) != nil {
+		t.Fatal("a canceled request was delivered")
+	}
+}
+
+func TestNotificationShowContextCancelsPendingAuthorization(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	started := make(chan struct{})
+	var pending func(error)
+	var delivered *platform.Notification
+	onMain(func() {
+		fb.OnNotification = func(note *platform.Notification, done func(error)) {
+			delivered, pending = note, done
+			close(started)
+		}
+	})
+	t.Cleanup(func() { onMain(func() { fb.OnNotification = nil }) })
+	n := NewNotification(NotificationOptions{ID: "pending-authorization"})
+	result := make(chan error, 1)
+	go func() { result <- n.ShowContext(ctx) }()
+	select {
+	case <-started:
+	case <-time.After(time.Second):
+		t.Fatal("notification did not request authorization")
+	}
+	cancel()
+	select {
+	case err := <-result:
+		if !errors.Is(err, context.Canceled) {
+			t.Fatalf("ShowContext = %v", err)
+		}
+	case <-time.After(time.Second):
+		t.Fatal("cancellation left the notification worker waiting")
+	}
+	// A late positive authorization answer must not display a canceled note.
+	onMain(func() {
+		fb.OnNotification = nil
+		fb.Delivered(delivered)
+		pending(nil)
+	})
+	onMain(func() {})
+	if fb.Notification(n.ID()) != nil {
+		t.Fatal("late authorization left the canceled notification showing")
+	}
+}
 
 // showNotification shows a notification for a test. The fake backend
 // records it by its id, which is how a test sees what the platform would
@@ -115,6 +171,51 @@ func TestNotificationOptionsReachTheBackend(t *testing.T) {
 	}
 	if got.Group != "chat:ada" {
 		t.Errorf("Group = %q, want chat:ada", got.Group)
+	}
+}
+
+func TestNotificationSenderSnapshot(t *testing.T) {
+	sender := &NotificationSender{ID: "ada@example.com", Name: "Ada", Avatar: []byte{1, 2, 3}}
+	n := NewNotification(NotificationOptions{ID: "mail:7", Group: "thread:3", Title: "Ada", Body: "Hello", Sender: sender})
+	t.Cleanup(n.Close)
+	// An app may reuse its sender and image buffer after construction.
+	sender.Name, sender.Avatar[0] = "Changed", 9
+	if err := n.Show(); err != nil {
+		t.Fatal(err)
+	}
+	got := fb.Notification("mail:7")
+	if got == nil || got.Sender == nil || got.Sender.ID != "ada@example.com" || got.Sender.Name != "Ada" || !slices.Equal(got.Sender.Avatar, []byte{1, 2, 3}) {
+		t.Fatalf("sender snapshot: %+v", got)
+	}
+	clicks := 0
+	n.OnClick(func() { clicks++; n.Close() })
+	clickNotification(t, n)
+	if clicks != 1 || fb.Notification("mail:7") != nil {
+		t.Fatal("sender notification did not use the normal click/close lifecycle")
+	}
+	fallback := showNotification(t, NotificationOptions{Title: "Ada", Sender: &NotificationSender{ID: "ada"}})
+	if got := fb.Notification(fallback.ID()); got.Sender.Name != "Ada" {
+		t.Fatal("an unnamed sender did not use the notification title")
+	}
+}
+
+// TestNotificationImage: the image reaches the backend as it was when the
+// notification was made, as the app may reuse its buffer, and a
+// notification without one gives the backend none.
+func TestNotificationImage(t *testing.T) {
+	cover := []byte{0xff, 0xd8, 0xff, 0xe0}
+	n := NewNotification(NotificationOptions{ID: "now-playing", Title: "Spring", Image: cover})
+	t.Cleanup(n.Close)
+	cover[0] = 0
+	if err := n.Show(); err != nil {
+		t.Fatal(err)
+	}
+	if got := fb.Notification("now-playing"); got == nil || !slices.Equal(got.Image, []byte{0xff, 0xd8, 0xff, 0xe0}) {
+		t.Fatalf("image: %+v", got)
+	}
+	plain := showNotification(t, NotificationOptions{Title: "plain"})
+	if got := fb.Notification(plain.ID()); got.Image != nil {
+		t.Errorf("a notification without an image gave the backend %v", got.Image)
 	}
 }
 

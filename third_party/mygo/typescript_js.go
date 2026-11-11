@@ -14,3 +14,6 @@ func GenerateTypeScript() ([]byte, error) { return nil, platform.ErrUnsupported 
 // WriteTypeScript writes the TypeScript client to path. Bind binds nothing
 // in browsers, so there is no client and path is not written.
 func WriteTypeScript(path string) error { return nil }
+
+// writeClient writes nothing: there is no client in browsers.
+func writeClient(path string) error { return nil }

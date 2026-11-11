@@ -19,9 +19,9 @@ import (
 	"slices"
 	"sync/atomic"
 	"testing"
-	"time"
 
 	"github.com/egoist/mygo"
+	"github.com/egoist/mygo/internal/wait"
 	"github.com/egoist/mygo/transfer"
 	"github.com/egoist/mygo/ui"
 )
@@ -100,7 +100,7 @@ func clipboardPeer(mode string) {
 
 func readClipboardPeer(t *testing.T, formats ...transfer.Format) clipboardPeerResult {
 	t.Helper()
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), wait.Guard)
 	defer cancel()
 	b, _ := json.Marshal(formats)
 	cmd := exec.CommandContext(ctx, os.Args[0], "-test.run=^$")
@@ -222,7 +222,7 @@ func TestUnifiedClipboardNativeFilesAndFailures(t *testing.T) {
 	// External readers receive a failed native representation, while the
 	// source retains its cached error and usable plain-text alternative.
 	for range 2 {
-		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), wait.Guard)
 		cmd := exec.CommandContext(ctx, os.Args[0], "-test.run=^$")
 		formats, _ := json.Marshal([]transfer.Format{clipboardCustom})
 		cmd.Env = append(os.Environ(), "MYGO_E2E_CLIPBOARD_PEER=read", "MYGO_CLIPBOARD_FORMATS="+string(formats))
@@ -243,7 +243,7 @@ func TestUnifiedClipboardForeignOwnershipAndShutdown(t *testing.T) {
 	if err := mygo.Clipboard.Write(transfer.TextData("old"), mygo.ClipboardOptions{OnRelease: func() { releases.Add(1) }}); err != nil {
 		t.Fatal(err)
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), wait.Guard)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, os.Args[0], "-test.run=^$")
 	cmd.Env = append(os.Environ(), "MYGO_E2E_CLIPBOARD_PEER=own")
@@ -310,7 +310,7 @@ func TestUnifiedClipboardNativePersistence(t *testing.T) {
 	} else if err != nil {
 		t.Fatal(err)
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), wait.Guard)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, os.Args[0], "-test.run=^$")
 	cmd.Env = append(os.Environ(), "MYGO_E2E_CLIPBOARD_PEER=persist-text")

@@ -42,6 +42,19 @@ if task, ok := ui.Drop[*Task](done); ok {
 `Dragging` reports that an element is dragging its value, to dim it where
 it was.
 
+`DragMissed` reports, in the frame after, that the value was let go over
+no element taking it, and where, in the window's coordinates: outside the
+window when it was let go past its edge, as to tear a tab out into a
+window of its own. A drag given up with Escape is not missed.
+
+```go
+tab := ui.Row(c).Drag(t.id)
+w, h := c.Size()
+if at, ok := tab.DragMissed(); ok && (at.X < 0 || at.Y < 0 || at.X > w || at.Y > h) {
+	app.tearOut(t, at)
+}
+```
+
 ## Reordering
 
 Lists, tables and grid views reorder their rows by dragging with
@@ -56,6 +69,10 @@ app.list.Reorder = func(rows []int, to int) {
 ```
 
 See [List](list.md#reordering) and [Grid view](grid-view.md).
+
+A list's rows can also leave it, as files dragged into a folder: with
+`ListState.DragRows` they drag a value of the app's, for `ui.Drop` to take
+anywhere. See [List](list.md#dragging-rows-out).
 
 Files dragged from other apps are [dropped files](input.md#dropped-files).
 
@@ -155,7 +172,12 @@ starts a transfer directly from a current native pointer gesture; UI
 elements normally use `DragData` so the movement threshold is applied.
 
 `Result.Operation` is the destination's final effect. `Canceled` means no
-drop occurred; `Err` reports a native/provider failure. MyGo never deletes
+drop occurred; `Escaped` tells a drag the user gave up (Escape,
+`CancelDataDrag` or the window closing) from one let go over no target, and
+`Point` is where the drag ended, in the screen coordinates of
+`Screen.CursorScreenPoint`. A tab let go outside every window, for example,
+is `Canceled && !Escaped` at `Point`. `Err` reports a native/provider
+failure. MyGo never deletes
 files. Remove application records only after a successful move, and account
 for file managers that move a file themselves. Existing `DroppedFiles` and
 `OnFileDrop` listeners keep accepting files with copy semantics.

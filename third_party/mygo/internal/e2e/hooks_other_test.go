@@ -12,13 +12,19 @@ import (
 // Platforms without a backend run no GUI tests.
 func activateMenu(*mygo.Window, ...string) error { return errors.New("unsupported") }
 
+func menuItemEnabled(*mygo.Window, ...string) (bool, error) { return false, errors.ErrUnsupported }
+
 func pressShortcut(string, bool) (bool, bool) { return false, false }
 
 func endSheet(*mygo.Window) (bool, bool) { return false, false }
 
+func recentDocumentRecorded(string) (recorded, supported bool) { return false, false }
+
 func click(*mygo.Window, float64, float64) bool { return false }
 
 func appClick(*mygo.Window, float64, float64) bool { return false }
+
+func clickPage(*mygo.Window, float64, float64) bool { return false }
 
 func heldAppClick(*mygo.Window, float64, float64) bool { return false }
 
@@ -26,7 +32,20 @@ func drag(*mygo.Window, [][2]float64) bool { return false }
 
 func sideButton(*mygo.Window, bool) bool { return false }
 
+func pinch(*mygo.Window, float64, float64, float64) (float64, bool) { return 0, false }
+
+func wheel(*mygo.Window, float64, float64) bool { return false }
+
 func webViewAttached(*mygo.Window) (bool, bool) { return false, false }
+
+// Collection behaviors and deactivating the app are macOS's.
+func collectionBehavior(*mygo.Window) (uint, bool)               { return 0, false }
+func deactivateApp() bool                                        { return false }
+func material(*mygo.Window) (string, int, float64, bool, bool)   { return "", 0, 0, false, false }
+func materialState(*mygo.Window) (int, bool)                     { return 0, false }
+func roundedBacking(*mygo.Window) (bool, float64, float64, bool) { return false, 0, 0, false }
+func windowBacking(*mygo.Window) (bool, float64, bool)           { return false, 0, false }
+func appActive() (bool, bool)                                    { return false, false }
 
 func dockDevTools(*mygo.Window) bool { return false }
 
@@ -73,15 +92,20 @@ func pressTitleButton(*mygo.Window, string) bool { return false }
 
 func topNonClient(*mygo.Window) (int32, int32, bool) { return 0, 0, false }
 
+func menuBarColors(*mygo.Window) (uint32, uint32, bool) { return 0, 0, false }
+
 func titleButtonColor(*mygo.Window, string) (uint8, uint8, uint8, bool) { return 0, 0, 0, false }
 
 func composition(*mygo.Window) (bool, bool, bool) { return false, false, false }
+func canCompose() bool                            { return false }
 func loseComposition(bool) bool                   { return false }
 
 func failWebViews(int) bool { return false }
 
 // A Control-click is a secondary click on macOS only.
 func controlClick(*mygo.Window, float64, float64) bool { return false }
+
+func secondaryClickAsPrimary(*mygo.Window, float64, float64) bool { return false }
 
 // Input methods, file drops and assistive technology are only automated
 // on macOS.
@@ -117,12 +141,15 @@ func observe(*mygo.Window) (func(), bool) { return nil, false }
 func rightClick(*mygo.Window, float64, float64) bool { return false }
 func popupMenus() ([][]string, bool)                 { return nil, false }
 func choosePopupItem(string) bool                    { return false }
+func popupItemEnabled(string) (bool, bool)           { return false, false }
 
 // Input methods keep the keys typed while they compose from the content
 // themselves here (GTK's filtering, IMM32's VK_PROCESSKEY), which a
 // composition the test makes up does not show.
 func pressKey(*mygo.Window, uint16, string) bool { return false }
 func pressTab(*mygo.Window, bool) bool           { return false }
+
+func pressKeyComposing(*mygo.Window, uint16, string, string, string) bool { return false }
 
 func dragFiles(*mygo.Window, float64, float64, []string) (bool, bool) { return false, false }
 
@@ -132,3 +159,47 @@ func axAttribute(*mygo.Window, string, string) (string, bool, bool, bool) {
 }
 
 func pressEscape(*mygo.Window) bool { return false }
+
+func documentChrome(*mygo.Window) (string, string, bool, bool, bool) {
+	return "", "", false, false, false
+}
+func sheet(*mygo.Window) ([]string, []string, bool, bool) { return nil, nil, false, false }
+func endSheetButton(*mygo.Window, int) bool               { return false }
+
+// Panels' window styles are Windows'.
+func panelStyles(*mygo.Window) (bool, bool, bool, bool) { return false, false, false, false }
+
+func throttlingOff(*mygo.Window, bool) (bool, int)                   { return false, 0 }
+func mockCapture(*mygo.Window) bool                                  { return false }
+func pageGestures(*mygo.Window, int) (bool, bool, bool)              { return false, false, false }
+func pinchPage(*mygo.Window, int, float64, float64, ...float64) bool { return false }
+
+// Right-clicking a page and reading the menu it opens are not hooked here.
+const pageMenusHooked = false
+
+func rightClickPage(*mygo.Window, float64, float64) bool { return false }
+func pageMenu() ([]string, bool)                         { return nil, false }
+func choosePageMenuItem(string) bool                     { return false }
+func dismissPageMenu()                                   {}
+
+func takeForeground(*mygo.Window) {}
+
+func pressLetter(*mygo.Window, byte, bool) bool { return false }
+
+func glassTint(*mygo.Window) (red, green, blue, alpha float64, ok bool) { return 0, 0, 0, 0, false }
+
+func nativeGlassSupported() bool { return false }
+
+func nativeGlass(*mygo.Window) (class string, frame [4]float64, style int, ok bool) {
+	return "", frame, 0, false
+}
+
+func nativeGlassTint(*mygo.Window) (red, green, blue, alpha float64) { return 0, 0, 0, 0 }
+
+func activateApp() {}
+
+func hitView(*mygo.Window, float64, float64) string { return "" }
+
+// Only X servers keep a keyboard's state for the tests after a test: see
+// left_behind_linux_test.go.
+func keyboardState() (state string, restore func()) { return "", func() {} }

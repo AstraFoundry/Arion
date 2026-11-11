@@ -12,13 +12,16 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/egoist/mygo"
+	"github.com/egoist/mygo/internal/wait"
 	"github.com/egoist/mygo/plugins/fetch"
 	"github.com/egoist/mygo/plugins/sqlite"
+	"github.com/egoist/mygo/plugins/watch"
 	"github.com/egoist/mygo/plugins/websocket"
 )
 
@@ -29,13 +32,15 @@ const pluginsPage = `<!doctype html><html><head>
   "mygo-runtime": "/js/runtime.js",
   "@mygo-plugins/fetch": "/js/fetch.js",
   "@mygo-plugins/sqlite": "/js/sqlite.js",
-  "@mygo-plugins/websocket": "/js/websocket.js"
+  "@mygo-plugins/websocket": "/js/websocket.js",
+  "@mygo-plugins/watch": "/js/watch.js"
 }}</script>
 <script type="module">
 import { fetch } from "@mygo-plugins/fetch";
 import { open } from "@mygo-plugins/sqlite";
 import { WebSocket } from "@mygo-plugins/websocket";
-window.plugins = { fetch, WebSocket, open };
+import { watch } from "@mygo-plugins/watch";
+window.plugins = { fetch, WebSocket, open, watch };
 </script></head><body>plugins</body></html>`
 
 // A request of the page that the page aborted.
@@ -44,9 +49,21 @@ var aborted = make(chan struct{}, 1)
 // Requests to /hold that were not canceled within a second.
 var held = make(chan struct{}, 1)
 
+var watchPluginRoot string
+
 // usePlugins adds the plugins and serves their test page.
 func usePlugins(mux *http.ServeMux) {
 	mygo.Use(fetch.Plugin, websocket.Plugin, sqlite.Plugin)
+	dir, err := os.MkdirTemp("", "mygo-watch-e2e-")
+	if err != nil {
+		panic(err)
+	}
+	watchPluginRoot, err = filepath.EvalSymlinks(dir)
+	if err != nil {
+		panic(err)
+	}
+	mygo.Use(watch.New(watch.Options{Roots: map[string]watch.Root{"project": {Path: watchPluginRoot}}, MaxWatchesPerPage: 1}))
+	mygo.App.OnQuit(func() { _ = os.Remove(watchPluginRoot) })
 	mux.HandleFunc("/plugins.html", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		io.WriteString(w, pluginsPage)
@@ -56,6 +73,7 @@ func usePlugins(mux *http.ServeMux) {
 		"fetch":     "../../plugins/fetch/dist/index.js",
 		"sqlite":    "../../plugins/sqlite/dist/index.js",
 		"websocket": "../../plugins/websocket/dist/index.js",
+		"watch":     "../../plugins/watch/dist/index.js",
 	} {
 		mux.HandleFunc("/js/"+name+".js", func(w http.ResponseWriter, r *http.Request) {
 			b, err := os.ReadFile(path)
@@ -183,7 +201,7 @@ func TestPlugins(t *testing.T) {
 	}
 	select {
 	case <-aborted:
-	case <-time.After(5 * time.Second):
+	case <-time.After(wait.Guard):
 		t.Error("the server's request was not canceled")
 	}
 

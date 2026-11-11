@@ -8,8 +8,6 @@ import (
 	"encoding/json/v2"
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -18,6 +16,7 @@ import (
 	"time"
 
 	"github.com/egoist/mygo"
+	"github.com/egoist/mygo/internal/download"
 )
 
 //go:generate go run ./internal/libbuild
@@ -111,56 +110,15 @@ func LibraryPath() (string, error) {
 	return path, nil
 }
 
-func checkFile(path, digest string) bool {
-	f, err := os.Open(path)
-	if err != nil {
-		return false
-	}
-	defer f.Close()
-	h := sha256.New()
-	_, err = io.Copy(h, f)
-	return err == nil && hex.EncodeToString(h.Sum(nil)) == digest
-}
+func checkFile(path, digest string) bool { return download.Check(path, digest) }
 
+// downloadLibrary downloads file to path, checking its SHA-256, once among
+// the processes that need it at the same time.
 func downloadLibrary(file nativeFile, path string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, file.URL, nil)
-	if err != nil {
-		return err
-	}
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
+	if err := download.Cached(ctx, download.File{URL: file.URL, SHA256: file.SHA256}, path); err != nil {
 		return fmt.Errorf("sqlite: downloading %s: %w", file.Name, err)
-	}
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("sqlite: downloading %s: %s", file.URL, res.Status)
-	}
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		return err
-	}
-	f, err := os.CreateTemp(filepath.Dir(path), ".download-*")
-	if err != nil {
-		return err
-	}
-	defer os.Remove(f.Name())
-	h := sha256.New()
-	_, err = io.Copy(io.MultiWriter(f, h), io.LimitReader(res.Body, 64<<20))
-	if cerr := f.Close(); err == nil {
-		err = cerr
-	}
-	if err != nil {
-		return err
-	}
-	if hex.EncodeToString(h.Sum(nil)) != file.SHA256 {
-		return fmt.Errorf("sqlite: %s: SHA-256 mismatch", file.URL)
-	}
-	if err := os.Chmod(f.Name(), 0o755); err != nil {
-		return err
-	}
-	if err := os.Rename(f.Name(), path); err != nil && !checkFile(path, file.SHA256) {
-		return err
 	}
 	return nil
 }

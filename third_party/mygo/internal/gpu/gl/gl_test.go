@@ -73,6 +73,62 @@ func TestDrawsAsTheCPURenderer(t *testing.T) {
 				}
 				gputest.Compare(t, "gl-perspective", read(), s.Width*4, s)
 			}
+			s = gputest.BehindOriginScene()
+			for range 2 {
+				if err := r.Render(s); err != nil {
+					t.Fatal(err)
+				}
+				pix := read()
+				gputest.Compare(t, "gl-behind-origin", pix, s.Width*4, s)
+				if p := pix[370*s.Width*4+160*4:][:4]; p[1] > 100 {
+					t.Errorf("the card turned far from its origin does not show: %v at its center", p)
+				}
+			}
+			for i, s := range gputest.TranslatedScenes() {
+				if err := r.Render(s); err != nil {
+					t.Fatal(err)
+				}
+				gputest.Compare(t, "gl-translated"+[]string{"", "-between-pixels"}[i], read(), s.Width*4, s)
+			}
+			s = gputest.MaskedClipScene()
+			// Twice: the second frame finds the clips' masks it made.
+			for range 2 {
+				if err := r.Render(s); err != nil {
+					t.Fatal(err)
+				}
+				gputest.Compare(t, "gl-masked-clips", read(), s.Width*4, s)
+			}
+			s = gputest.CornerClipScene()
+			for range 2 {
+				if err := r.Render(s); err != nil {
+					t.Fatal(err)
+				}
+				gputest.Compare(t, "gl-corner-clips", read(), s.Width*4, s)
+			}
+		})
+	}
+}
+
+// TestBorderedCardDrawsAsTheCPURenderer draws the card of #531 (a large
+// opaque card with a border of 2 pixels at scale 2, and a small button like
+// it) with round corners, as OpenGL draws continuous ones, and requires the
+// CPU renderer's pixels along their straight edges, exactly.
+func TestBorderedCardDrawsAsTheCPURenderer(t *testing.T) {
+	for _, api := range apis {
+		t.Run(api.name, func(t *testing.T) {
+			s := gputest.BorderedCardScene(false)
+			read := offscreen(t, api.es, s.Width, s.Height)
+			r, err := New()
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer r.Release()
+			for range 2 {
+				if err := r.Render(s); err != nil {
+					t.Fatal(err)
+				}
+				gputest.CompareStraightEdges(t, "gl-bordered-card", read(), s.Width*4, s)
+			}
 		})
 	}
 }

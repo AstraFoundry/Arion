@@ -27,7 +27,7 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 
 | Area | Choice | Status |
 | --- | --- | --- |
-| Desktop UI | MyGo v0.4.6 native, Go 1.27.1; Sunbeam design system with coss anatomy in Go ([ADR 007](../decisions/007-sunbeam-design-system.md)) | Implemented: menu bar panel, overlay pill, settings, onboarding |
+| Desktop UI | MyGo v0.8.3 native, Go 1.27.3; Sunbeam design system with coss anatomy in Go ([ADR 007](../decisions/007-sunbeam-design-system.md)) | Implemented: menu bar panel, overlay pill, settings, onboarding |
 | Shared domain/application | Portable Go module | Implemented: session aggregate, coordinator, correction rules, model selection |
 | macOS | miniaudio/CoreAudio capture; AX target and insertion; offline Pinyin/voice InputMethodKit host | Native arm64 and Rosetta x86_64 runs each pass 36 engine/AppKit cases; Intel macOS is unsupported; clean-machine IMK acceptance remains open |
 | Windows | miniaudio/WASAPI capture; Ctrl-V insertion; DPAPI; native x64 TSF voice and offline Pinyin service | Native speech/package checks and TSF RichEdit/ACP ownership primitives pass on one development host; global TSF setup/editor acceptance remains open ([limits](../quality/windows-validation.md), [TSF setup](../operations/windows-input-method.md)) |

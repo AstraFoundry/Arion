@@ -29,7 +29,7 @@
 | `services/sync` | Go DDD relay; account-unaware core, `AccountGate` port with `noop` and `oidc` adapters ([ADR 015](../decisions/015-hosted-relay-account-authorization.md)) |
 | `deploy` | Relay images, self-host compose and the hosted relay's compose stack with its own PostgreSQL |
 | `models` | Go module embedding the reviewed catalog: provenance, digests, licenses, bundles, evaluation summaries; no weights |
-| `third_party/mygo` | Maintained MyGo v0.4.6 snapshot with prerelease/URL-channel and staged-update, Windows rollback, signing-metadata, native-notification and Windows native-transparency patches ([third_party](../../third_party/README.md)); original hashes and licence retained |
+| `third_party/mygo` | Maintained MyGo v0.8.3 snapshot with prerelease/URL-channel and staged-update, Windows rollback, signing-metadata, native-notification and Windows native-transparency patches ([third_party](../../third_party/README.md)); original hashes and licence retained |
 | `scripts` | Dependency-free repository checks and platform-neutral workflow entry points |
 | `tools/driver` | Public JSONL product-driver transport, artifact verification and owned scenario execution; no private corpus or scoring dependency |
 | `Arion-evaluation/tools/evaluation` | Private study orchestration, metrics, report replay and development inference adapters |

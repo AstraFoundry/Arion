@@ -146,7 +146,8 @@ func (a *textInputAdapter) BoundsForRange(r platform.TextRange) (platform.RectF,
 	if c, s := a.client(); c != nil {
 		b, actual, ok := c.BoundsForRange(r)
 		b = transformRect(s.world, Rect{X: s.x + b.X, Y: s.y + b.Y, W: b.W, H: b.H})
-		return platform.RectF{X: float64(b.X), Y: float64(b.Y), W: float64(b.W), H: float64(b.H)}, actual, ok
+		// In the window's DIPs, as input methods take it.
+		return a.rt.toWindow(platform.RectF{X: float64(b.X), Y: float64(b.Y), W: float64(b.W), H: float64(b.H)}), actual, ok
 	}
 	return platform.RectF{}, platform.TextRange{}, false
 }
@@ -155,7 +156,8 @@ func (a *textInputAdapter) IndexForPoint(x, y float64) (int, bool) {
 		if _, ok := s.world.Inverse(); !ok {
 			return 0, false
 		}
-		lx, ly := s.local(float32(x), float32(y))
+		z := a.rt.zoomFactor()
+		lx, ly := s.local(float32(x)/z, float32(y)/z)
 		return c.IndexForPoint(Point{lx, ly})
 	}
 	return 0, false

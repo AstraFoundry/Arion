@@ -152,7 +152,11 @@ func glContext(win ptr) (ctx, gerr ptr) {
 
 // probeGL makes an OpenGL context as a GtkGLArea would and returns the name
 // of its renderer, or why there is none.
-func probeGL() (renderer, failure string) {
+func probeGL() (renderer, failure string) { return probeGLWith(nil) }
+
+// probeGLWith is probeGL, which passes the window it makes to made, when
+// set, for tests to watch.
+func probeGLWith(made func(win ptr)) (renderer, failure string) {
 	var (
 		windowNew     func(parent ptr, attr *gdkWindowAttr, mask int32) ptr
 		windowDestroy func(w ptr)
@@ -186,10 +190,16 @@ func probeGL() (renderer, failure string) {
 	if win == 0 {
 		return "", "cannot make a window"
 	}
-	defer func() {
-		windowDestroy(win)
-		gObjectUnref(win) // with the GL context GDK made for painting it
-	}()
+	if made != nil {
+		made(win)
+	}
+	// gdk_window_destroy drops the reference gdk_window_new gave, and the
+	// GL context GDK made for painting the window. GDK keeps one of its
+	// own until the window system says the window is gone, X11 with a
+	// DestroyNotify GDK handles later in the main loop: dropping that one
+	// too would free the window before, and have GDK handle the event on
+	// freed memory.
+	defer windowDestroy(win)
 	ctx, gerr := glContext(win)
 	if ctx == 0 {
 		return "", failed(gerr)
@@ -198,7 +208,13 @@ func probeGL() (renderer, failure string) {
 	makeCurrent(ctx)
 	defer clearCurrent()
 	const glRenderer = 0x1F01
-	return goStr(getString(glRenderer)), ""
+	// GDK realizes contexts it cannot make current on some machines
+	// without a GPU: OpenGL then tells nothing, and libepoxy aborts the
+	// first call of most of its functions.
+	if renderer = goStr(getString(glRenderer)); renderer == "" {
+		return "", "OpenGL has no current context"
+	}
+	return renderer, ""
 }
 
 // failed describes a GError of GDK's OpenGL.

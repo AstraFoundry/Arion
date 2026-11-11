@@ -23,9 +23,10 @@ c.ToastAction("Note deleted", "Undo", func() { app.restore(note) })
 
 A message already showing shows anew; others stack above it, the newest
 three showing, while older ones wait hidden, their time running. The time
-of the toasts stops while the pointer rests on them, the keyboard focus is
-in them, or the window is in the background. Escape closes the toast the
-focus is in. Toasts fade in and out.
+of the toasts stops while the pointer rests on them or the keyboard focus is
+in them, and runs on while the window is in the background (see
+[below](#in-the-background)). Escape closes the toast the focus is in.
+Toasts fade in and out.
 
 A toast takes the theme's `Inverse` and `InverseText` colors, its text and
 background turned over unless the theme sets them (see
@@ -58,6 +59,17 @@ c.CloseToast(id)
 | `Data` | what else the look needs |
 
 `c.CloseToast("")` closes every toast.
+
+## In the background
+
+A toast's time runs on while the window is in the background or hidden,
+since a toast tells news that goes stale, as a tray app's whose main window
+stays hidden while a download or a restart finishes. A toast whose time is
+over by the time the window shows again closes on that frame, running its
+`OnClose`, without showing. The pointer resting on the toasts still stops
+their time, and so does the keyboard focus in them while the window has it.
+A message the user must see shows until it is closed (a negative
+`Timeout`).
 
 ## Without a look
 

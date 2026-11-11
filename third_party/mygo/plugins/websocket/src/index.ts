@@ -112,6 +112,12 @@ export class WebSocket extends EventTarget {
     if (new Set(list).size !== list.length) {
       throw new DOMException("The subprotocols contain duplicates", "SyntaxError");
     }
+    for (const protocol of list) {
+      // RFC 6455 subprotocols are nonempty HTTP tokens.
+      if (!protocol || /[^!#$%&'*+\-.^_`|~0-9A-Za-z]/.test(protocol)) {
+        throw new DOMException(`Invalid subprotocol: ${protocol}`, "SyntaxError");
+      }
+    }
     this.url = u.href;
     this.#id = globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2) + Date.now().toString(36);
     this.#events = new Channel<GoEvent>((e) => this.#receive(e));

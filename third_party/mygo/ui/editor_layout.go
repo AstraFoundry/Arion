@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"sort"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -52,7 +53,7 @@ func (e *node) inputParams(width float32) text.Params {
 	ed := e.st.editor
 	p.Text = ed.displayText()
 	if !ed.password {
-		p.Spans, _ = ed.rangeSpans(0, ed.buf.n)
+		p.Spans = ed.rangeKey(0, ed.buf.n)
 	}
 	p.KeepSpaces = true
 	p.MaxLines = 0
@@ -111,19 +112,26 @@ func (e *node) layoutInput(cw, ch float32) {
 	if len(l.Lines) > 0 {
 		ed.originY += max((ch-l.Lines[0].Height)/2, 0)
 	}
-	// Text narrower than the box goes where TextAlign puts it.
+	// Text narrower than the box goes where TextAlign puts it: Start is
+	// the right of an input laid out right to left, whatever its text, as
+	// that of Text.
+	rtl := e.rtl()
 	if room := cw - l.Width; room > 0 {
-		switch e.resolvedText().align {
-		case End:
-			ed.originX += room
-		case Center:
+		switch align := e.resolvedText().align; {
+		case align == Center:
 			ed.originX += room / 2
+		case (align == End) != rtl:
+			ed.originX += room
 		}
 	}
 	// Keep the caret in view while the input has the focus. Without it, the
-	// input shows the start of its text, as fields do on macOS and the web.
+	// input shows the start of its text, as fields do on macOS and the web:
+	// its right right to left.
 	if e.c.rt.focused != e.id {
 		ed.scrollX = 0
+		if rtl {
+			ed.scrollX = max(l.Width-cw+1, 0)
+		}
 	} else if x, _, _ := l.Caret(ed.displayIndex(ed.caret) + ed.composeCaret); x-ed.scrollX < 0 {
 		ed.scrollX = x
 	} else if x-ed.scrollX > cw-1 {
@@ -146,7 +154,7 @@ func (e *node) placeholderParams(width float32) text.Params {
 func (e *node) paintInput(p *Painter) {
 	ed := e.st.editor
 	l := ed.layout
-	t := e.c.theme
+	t := p.Theme()
 	if l == nil && ed.area == nil {
 		return
 	}
@@ -159,8 +167,12 @@ func (e *node) paintInput(p *Painter) {
 	ts := e.resolvedText()
 	if ed.buf.n == 0 && ed.compose == "" && ed.placeholder != "" {
 		pl := textSystem().Layout(e.placeholderParams(box.W))
+		color := t.TextMuted
+		if ed.placeholderColorSet {
+			color = ed.placeholderColor
+		}
 		// The placeholder aligns itself in the content box, as its layout has the box's width.
-		p.textLayout(pl, e.x+e.contentX(), oy, t.TextMuted, ts, nil)
+		p.textLayout(pl, e.x+e.contentX(), oy, color, ts, nil)
 	}
 	if ed.area != nil {
 		ed.area.paint(e, p, e.x+ed.originX, e.y+ed.originY)
@@ -190,13 +202,14 @@ func (e *node) paintInput(p *Painter) {
 	}
 	if focused && !ed.readOnly {
 		rt := e.c.rt
-		phase := time.Since(rt.blinkStart)
+		phase := e.c.now.Sub(rt.blinkStart)
 		const blink = 530 * time.Millisecond
-		if (phase/blink)%2 == 0 {
+		if (phase/blink)%2 == 0 && ed.caretWidth > 0 {
 			x, y, h := l.CaretAt(text.CaretPosition{Index: ed.displayIndex(ed.caret) + ed.composeCaret, Affinity: ed.caretAffinity})
-			p.add(scene.Op{Kind: scene.OpFill, Rect: p.snap(Rect{ox + x, oy + y, 0, h}), Color: t.Accent.scene(), Wide: p.wide(t.Accent, Color{}, Color{}), Opacity: p.opacity})
+			caret := ts.caretColor(t)
+			p.add(scene.Op{Kind: scene.OpFill, Rect: p.snap(Rect{ox + x, oy + y, 0, h}), Color: caret.scene(), Wide: p.wide(caret, Color{}, Color{}), Opacity: p.opacity})
 			op := &p.s.Ops[len(p.s.Ops)-1]
-			op.Rect.W = max(round(p.scale), 1)
+			op.Rect.W = max(round(ed.caretWidth*p.scale), 1)
 		}
 		if phase < 30*time.Second {
 			e.c.After(blink - phase%blink)
@@ -210,10 +223,57 @@ func (e *node) paintInput(p *Painter) {
 // from start: the spans of their weights for the layout ("" when none
 // sets one), and how to paint their colors (nil when none sets one). An
 // input method's composition at the caret, between start and end, sits
-// unstyled between the runs, and those after it move past it.
+// unstyled between the runs, and those after it move past it. What it
+// returns to paint is the editor's, good until the next call.
 func (ed *editor) rangeSpans(start, end int) (string, *spanPaint) {
-	if len(ed.ranges) == 0 {
-		return "", nil
+	return ed.spansOf(ed.inReach(start), start, end)
+}
+
+// rangeKey returns the spans of the weights of the TextRanges in runes
+// start up to end, as rangeSpans does, without how to paint them: a
+// layout needs no more, and a text without weights costs nothing.
+func (ed *editor) rangeKey(start, end int) string {
+	key, _ := ed.styleRanges(ed.inReach(start), start, end, false)
+	return key
+}
+
+// inReach returns the ranges from the first that can reach rune start.
+func (ed *editor) inReach(start int) []TextRange {
+	if !ed.apart {
+		ed.sortRanges()
+	}
+	// The ranges are sorted and apart: of those starting before start, only
+	// the last can reach in. A paragraph of a long text skips the others
+	// rather than walking them all.
+	first := sort.Search(len(ed.ranges), func(i int) bool { return ed.ranges[i].Start >= start })
+	if first > 0 && ed.ranges[first-1].End > start {
+		first--
+	}
+	return ed.ranges[first:]
+}
+
+// spansOf is rangeSpans of ranges, sorted and apart: those from the first
+// starting at end or later are out of reach.
+func (ed *editor) spansOf(ranges []TextRange, start, end int) (string, *spanPaint) {
+	return ed.styleRanges(ranges, start, end, true)
+}
+
+// styleRanges is spansOf, building how to paint the ranges only if paint
+// is set. Without it, it builds nothing unless a range sets a weight.
+func (ed *editor) styleRanges(ranges []TextRange, start, end int, paint bool) (string, *spanPaint) {
+	reach := len(ranges)
+	if !paint {
+		weighted := false
+		for i, r := range ranges {
+			if r.Start >= end {
+				reach = i
+				break
+			}
+			weighted = weighted || r.Weight > 0 && max(r.Start, start) < min(r.End, end)
+		}
+		if !weighted {
+			return "", nil
+		}
 	}
 	caret, n := -1, 0
 	if ed.compose != "" && start <= ed.caret && ed.caret <= end {
@@ -227,23 +287,37 @@ func (ed *editor) rangeSpans(start, end int) (string, *spanPaint) {
 		}
 		return i - start
 	}
+	// Each range adds a run, a gap before it, and one more where the caret
+	// splits it. To paint, the editor's buffers, which the painter holds
+	// only while it paints the text.
 	var styles []text.Span
 	var spans []Span
-	weighted, colored := false, false
+	if paint {
+		styles, spans = ed.paintStyles[:0], ed.paintSpans[:0]
+	} else {
+		styles = make([]text.Span, 0, 2*reach+1)
+	}
 	at := 0
 	add := func(from, to int, r TextRange) {
 		if from > at {
 			styles = append(styles, text.Span{End: from})
-			spans = append(spans, Span{})
+			if paint {
+				spans = append(spans, Span{})
+			}
 		}
 		styles = append(styles, text.Span{End: to, Weight: r.Weight})
-		spans = append(spans, Span{Color: r.Color, Weight: r.Weight})
+		if paint {
+			spans = append(spans, Span{Color: r.Color, Weight: r.Weight})
+		}
 		at = to
 	}
-	last := start
-	for _, r := range ed.ranges {
+	weighted, colored := false, false
+	for _, r := range ranges[:reach] {
+		if r.Start >= end {
+			break
+		}
 		from, to := max(r.Start, start), min(r.End, end)
-		if from >= to || from < last {
+		if from >= to {
 			continue
 		}
 		if from < caret && caret < to {
@@ -254,15 +328,18 @@ func (ed *editor) rangeSpans(start, end int) (string, *spanPaint) {
 		}
 		weighted = weighted || r.Weight > 0
 		colored = colored || r.Color.A > 0
-		last = to
 	}
 	key := ""
 	if weighted {
 		key = text.EncodeSpans(styles)
 	}
 	var sp *spanPaint
-	if colored {
-		sp = &spanPaint{spans: spans, styles: styles}
+	if paint {
+		ed.paintStyles, ed.paintSpans = styles, spans
+		if colored {
+			ed.painted = spanPaint{spans: spans, styles: styles}
+			sp = &ed.painted
+		}
 	}
 	return key, sp
 }

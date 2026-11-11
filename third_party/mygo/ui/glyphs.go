@@ -17,6 +17,14 @@ type Font struct {
 	Weight   int
 	Italic   bool
 	Features string
+	// Lang is the language of the text, as for Element.Lang; "" is the
+	// language the app shows.
+	Lang string
+	// LineHeight is the height of a line of text ShapeText and
+	// ShapeRichText lay out, as a multiple of Size, as Element.LineHeight
+	// takes it: 1.8 gives CJK prose its usual leading. 0 takes the font's
+	// own. Metrics and Shape ignore it.
+	LineHeight float32
 	// Thicken draws the glyphs with a thicker stroke, as Ghostty's
 	// font-thicken: on macOS, with Core Text's font smoothing at its
 	// strongest, whatever the color and the user's setting. It changes
@@ -30,7 +38,7 @@ type Font struct {
 }
 
 func (f Font) style() text.Style {
-	return text.Style{Family: f.Family, Size: f.Size, Weight: f.Weight, Italic: f.Italic, Features: f.Features}
+	return text.Style{Family: f.Family, Size: f.Size, Weight: f.Weight, Italic: f.Italic, Features: f.Features, Lang: f.Lang, LineHeight: f.LineHeight}
 }
 
 // FontMetrics are the vertical metrics of a font, in DIPs: how far its
@@ -42,7 +50,9 @@ type FontMetrics struct {
 
 // Metrics returns the font's metrics.
 func (f Font) Metrics() FontMetrics {
-	a, d, h := text.Shared().Metrics(f.style())
+	style := f.style()
+	style.LineHeight = 0
+	a, d, h := text.Shared().Metrics(style)
 	return FontMetrics{Ascent: a, Descent: d, LineGap: max(h-a-d, 0)}
 }
 
@@ -57,11 +67,15 @@ type Glyph struct {
 	// and Advance its width. Move X to draw the glyph elsewhere, as in the
 	// cell of a grid.
 	X, Advance float32
+	// RTL marks a glyph of a right-to-left run, as of Hebrew or Arabic,
+	// whose clusters go from right to left: its cluster's first rune is
+	// at the right of its advance.
+	RTL bool
 
-	font  *text.Font
-	id    uint32
-	thick bool
-	flat  bool
+	// After RTL, so that a Glyph takes no more room with it.
+	thick, flat bool
+	id          uint32
+	font        *text.Font
 }
 
 // Shape shapes s in font f, on one line, for Painter.Glyphs: the
@@ -69,12 +83,18 @@ type Glyph struct {
 // lacks, and applies ligatures and kerning. Unlike the text of elements,
 // which ui caches by content, it caches nothing: keep the glyphs of text
 // drawn in several frames.
+//
+// The glyphs are in visual order, on every platform, as they show from
+// left to right: X ascends, and through a right-to-left run Cluster
+// descends, with RTL set. Find the glyphs of a range of runes by their
+// Cluster and Runes, not by their place in the slice; the glyphs of a
+// cluster are next to each other.
 func Shape(s string, f Font) []Glyph {
 	l := text.Shared().Shape(text.Params{Text: s, Style: f.style(), NoWrap: true, KeepSpaces: true})
 	var out []Glyph
 	for _, line := range l.Lines {
 		for _, g := range line.Glyphs {
-			out = append(out, Glyph{Cluster: g.Cluster, Runes: g.Runes, X: line.X + g.X, Advance: g.Advance, font: g.Font, id: g.ID, thick: f.Thicken, flat: f.Antialiased})
+			out = append(out, Glyph{Cluster: g.Cluster, Runes: g.Runes, X: line.X + g.X, Advance: g.Advance, RTL: g.RTL, font: g.Font, id: g.ID, thick: f.Thicken, flat: f.Antialiased})
 		}
 	}
 	return out
@@ -131,6 +151,74 @@ func (p *Painter) Glyphs(glyphs []Glyph, x, y float32, c Color) {
 	if end := int32(len(p.s.Glyphs)); end > start {
 		p.add(scene.Op{Kind: scene.OpGlyphs, Start: start, End: end})
 	}
+}
+
+// TextLine paints the glyphs of the first line of l, a layout of this
+// module's text system that only its packages make, as package ui/editor
+// does, from x, on the baseline at y, each in the color color returns for
+// the rune its cluster starts at. Glyphs outside the painter's clip are
+// left out.
+func (p *Painter) TextLine(l *text.Layout, x, y float32, color func(cluster int) Color) {
+	if l == nil || len(l.Lines) == 0 {
+		return
+	}
+	sys := p.rt.text
+	s := p.scale
+	baseline := sys.Baseline(y * s)
+	left, right := p.clip.X*s, (p.clip.X+p.clip.W)*s
+	start := int32(len(p.s.Glyphs))
+	var run *glyphRun
+	if sys.JoinsGlyphs() {
+		run = &p.rt.glyphRun
+		run.ids, run.pens, run.glyphs = run.ids[:0], run.pens[:0], run.glyphs[:0]
+	}
+	for _, g := range l.Lines[0].Glyphs {
+		pen := (x + g.X) * s
+		if !p.transform.Set && (pen > right || pen+(g.Advance+g.Size)*s < left) {
+			continue
+		}
+		c := color(g.Cluster)
+		shade := text.ShadeOf(c.R, c.G, c.B)
+		gi := sys.Glyph(g.Font, g.ID, s, pen, shade, p.opaque)
+		if !gi.OK {
+			continue
+		}
+		c = c.Alpha(p.opacity)
+		sg := scene.Glyph{
+			X: float32(math.Floor(float64(pen))) + gi.Left, Y: baseline + gi.Top, W: float32(gi.W), H: float32(gi.H),
+			U: gi.X, V: gi.Y, UW: gi.W, VH: gi.H,
+			Color: c.scene(), Wide: p.glyphWide(c), Colored: gi.Colored, Subpixel: gi.Subpixel, Thin: gi.Thin,
+		}
+		if run != nil {
+			run.add(p, text.Glyph{Font: g.Font, ID: g.ID}, gi, pen, sg, shade, baseline)
+			continue
+		}
+		p.s.Glyphs = append(p.s.Glyphs, sg)
+	}
+	if run != nil {
+		run.flush(p, baseline)
+	}
+	if end := int32(len(p.s.Glyphs)); end > start {
+		p.add(scene.Op{Kind: scene.OpGlyphs, Start: start, End: end})
+	}
+}
+
+// Visible returns what the painter's clip leaves of the window, in DIPs:
+// the part of an element's box that shows inside the scroll containers
+// and clips around it, as an element taller than the window, showing a
+// long document, paints only what falls in it. It is in the coordinates
+// the painter draws in: under a transform, an element's or the
+// painter's, the clip taken back through it, so an element scaled up
+// sees as much less of itself as shows.
+func (p *Painter) Visible() Rect {
+	if !p.transform.Set {
+		return p.clip
+	}
+	inv, ok := p.transform.Inverse()
+	if !ok {
+		return p.clip
+	}
+	return transformRect(inv, p.clip)
 }
 
 // Scale returns how many device pixels a DIP is, for drawing that lines

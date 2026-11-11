@@ -1,8 +1,11 @@
 package vt
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
 	"runtime"
+	"slices"
 	"strings"
 	"sync"
 	"unsafe"
@@ -16,6 +19,45 @@ type Terminal struct {
 	// Effects are called during Write, on its goroutine; they must not
 	// call Write.
 	effects Effects
+	// silent is set while a clipboard read is refused: the refusal the
+	// library writes for it, a Kitty protocol EPERM, is dropped, as the
+	// read of a terminal that is not the one to answer.
+	silent bool
+	// deferred is the clipboard read the embedder answers later: the
+	// library's refusal, which follows the read's effect, is held back
+	// and captured in it.
+	deferred *DeferredClipboardRead
+	// reply gathers what the library writes while it answers a clipboard
+	// read, which WritePTY then gets at once.
+	reply *[]byte
+}
+
+// ClipboardRead is a program's request to read the clipboard.
+type ClipboardRead struct {
+	// Mimes are the types asked for, in order of preference; List asks
+	// for the types available.
+	Mimes []string
+	List  bool
+	// Primary is the selection clipboard of X11.
+	Primary bool
+	// Granted tells that the program holds the terminal's permission, as
+	// when it reads what a paste offered it.
+	Granted bool
+	// CanRemember tells that the program asked with a password (the one
+	// a paste event gave it, with its name): a terminal that pasted
+	// knows it — Granted says so — and one that does not never can, and
+	// leaves the read to the one it is for.
+	CanRemember bool
+}
+
+// ClipboardReply answers a ClipboardRead: Contents by MIME type, of the
+// types asked for, and Available when the list was asked for. Without
+// contents the read is refused. A deferred read carries Deferred instead.
+type ClipboardReply struct {
+	Contents  map[string][]byte
+	Available []string
+	// Deferred is the read to answer later, with ClipboardDeferred.
+	Deferred *DeferredClipboardRead
 }
 
 // Effects are what a terminal asks of its embedder while it processes
@@ -35,6 +77,17 @@ type Effects struct {
 	// Clipboard writes text to the clipboard (OSC 52), and reports
 	// whether it did. primary is the selection clipboard of X11.
 	Clipboard func(text string, primary bool) bool
+	// ClipboardRead answers a program's read of the clipboard (OSC 52
+	// with "?", the Kitty clipboard protocol's OSC 5522): the contents of
+	// the MIME types asked for, and the types available when the program
+	// asks for the list. ClipboardAnswered writes the reply, encoded, to
+	// WritePTY in one call as ClipboardRead returns; ClipboardRefused
+	// refuses it (an empty OSC 52 reply, EPERM for OSC 5522), and the
+	// EPERM is dropped, so that a terminal that is not the one to answer
+	// stays silent; ClipboardDeferred holds the refusal back and answers
+	// later through Terminal.AnswerClipboard, for a terminal that must
+	// ask the user first.
+	ClipboardRead func(req ClipboardRead) (reply ClipboardReply, answer ClipboardAnswer)
 	// Size reports the size of the screen in cells and of a cell in
 	// pixels, for size reports.
 	Size func() (cols, rows, cellWidth, cellHeight int)
@@ -79,6 +132,7 @@ const (
 	optDefaultCursorBlink  = 23
 	optPwdChanged          = 25
 	optClipboardWrite      = 26
+	optClipboardRead       = 38
 	optScrollbackMaxBytes  = 27
 	optDesktopNotification = 29
 	optProgressReport      = 30
@@ -97,6 +151,8 @@ const (
 	dataMouseTracking  = 11
 	dataTitle          = 12
 	dataPwd            = 13
+	dataColorFg        = 18 // then the background, the cursor and the palette
+	dataColorFgDefault = 22 // the same, defaults alone
 	dataViewportActive = 32
 	dataMode           = 37
 	dataMouseShape     = 41
@@ -126,15 +182,15 @@ func NewTerminal(cols, rows int, effects Effects) (*Terminal, error) {
 	t.setValue(optPwdChanged, cbPwdChanged)
 	t.setValue(optRenderHold, cbRenderHold)
 	t.setValue(optClipboardWrite, cbClipboardWrite)
+	t.setValue(optClipboardRead, cbClipboardRead)
 	t.setValue(optSize, cbSize)
 	t.setValue(optColorScheme, cbColorScheme)
 	t.setValue(optDeviceAttributes, cbDeviceAttributes)
 	t.setValue(optDesktopNotification, cbDesktopNotification)
 	t.setValue(optProgressReport, cbProgressReport)
-	// Images of the Kitty graphics protocol are not drawn: refuse them,
-	// so that programs fall back to something else.
-	var limit uint64
-	t.set(optKittyImageLimit, unsafe.Pointer(&limit))
+	// Images of the Kitty graphics protocol are refused until SetImageLimit
+	// takes them, so that programs fall back to something else.
+	t.SetImageLimit(0)
 	return t, nil
 }
 
@@ -170,7 +226,14 @@ func (t *Terminal) Free() {
 // Write processes output of the program.
 func (t *Terminal) Write(p []byte) {
 	if len(p) > 0 {
+		// A read that was deferred but whose refusal never came, as of a
+		// library of another version, is stale.
+		t.deferred = nil
 		call(fnTerminalVTWrite, t.h, uintptr(unsafe.Pointer(&p[0])), uintptr(len(p)))
+		t.deferred = nil
+		// A read that writes no refusal, as OSC 52's, leaves silent set;
+		// it is for that read alone.
+		t.silent = false
 	}
 }
 
@@ -271,8 +334,14 @@ const (
 	ModeFocusEvent     Mode = 1004
 	ModeAltScroll      Mode = 1007
 	ModeBracketedPaste Mode = 2004
-	ModeSyncOutput     Mode = 2026
-	ModeGraphemes      Mode = 2027
+	// ModePasteEvents has a paste tell the program what the clipboard
+	// holds, which it reads itself (the Kitty clipboard protocol).
+	ModePasteEvents Mode = 5522
+	ModeSyncOutput  Mode = 2026
+	ModeGraphemes   Mode = 2027
+	// ModeColorScheme has the terminal tell the program when its colors
+	// go from light to dark or back (CSI ? 997 ; 1 n for dark, 2 light).
+	ModeColorScheme Mode = 2031
 )
 
 // Mode reports whether a mode is set.
@@ -305,6 +374,29 @@ func (t *Terminal) MouseShape() int {
 	var v int32
 	t.get(dataMouseShape, unsafe.Pointer(&v))
 	return int(v)
+}
+
+// TermColors are a terminal's colors; a color neither a program set nor a
+// default gave is not Has.
+type TermColors struct {
+	Foreground, Background, Cursor          RGB
+	HasForeground, HasBackground, HasCursor bool
+	Palette                                 [256]RGB
+}
+
+// Colors returns the colors programs see: those they set (OSC 4, 10, 11,
+// 12) over the defaults, or with defaults the defaults alone.
+func (t *Terminal) Colors(defaults bool) TermColors {
+	base := dataColorFg
+	if defaults {
+		base = dataColorFgDefault
+	}
+	var c TermColors
+	c.HasForeground = t.get(base, unsafe.Pointer(&c.Foreground)) == nil
+	c.HasBackground = t.get(base+1, unsafe.Pointer(&c.Background)) == nil
+	c.HasCursor = t.get(base+2, unsafe.Pointer(&c.Cursor)) == nil
+	t.get(base+3, unsafe.Pointer(&c.Palette))
+	return c
 }
 
 // AltScreen reports whether the alternate screen shows, as in full-screen
@@ -382,6 +474,36 @@ func (t *Terminal) RowText(y int) (text []rune, cols []int) {
 	return text, cols
 }
 
+// RowPrompt is how a row belongs to a shell's prompt, which the shell
+// marks with OSC 133 (shell integration).
+type RowPrompt int32
+
+const (
+	NoPrompt RowPrompt = iota
+	// PromptStart is the row a prompt starts on (OSC 133;A).
+	PromptStart
+	// PromptContinuation is a row the prompt or its input goes on over:
+	// one a long command wraps onto, or a prompt's next line.
+	PromptContinuation
+)
+
+// Row returns how row y of the viewport belongs to a shell's prompt, and
+// whether it soft-wraps into the next.
+func (t *Terminal) Row(y int) (prompt RowPrompt, wrap bool) {
+	ref, found := t.CellAt(0, y)
+	if !found {
+		return NoPrompt, false
+	}
+	var row uint64
+	if !ok(call(fnGridRefRow, uintptr(unsafe.Pointer(&ref)), uintptr(unsafe.Pointer(&row)))) {
+		return NoPrompt, false
+	}
+	if !ok(call(fnRowData, uintptr(row), rowDataSemanticPrompt, uintptr(unsafe.Pointer(&prompt)))) {
+		prompt = NoPrompt
+	}
+	return prompt, ok(call(fnRowData, uintptr(row), rowDataWrap, uintptr(unsafe.Pointer(&wrap)))) && wrap
+}
+
 // Hyperlink returns the URI of the hyperlink (OSC 8) of a cell, or "".
 func (t *Terminal) Hyperlink(ref GridRef) string {
 	var buf [512]byte
@@ -404,6 +526,18 @@ func (t *Terminal) Hyperlink(ref GridRef) string {
 // SetSelection selects s, or nothing when s is nil.
 func (t *Terminal) SetSelection(s *Selection) {
 	t.set(21, unsafe.Pointer(s))
+}
+
+// ExtendSelection moves the selection's logical end to ref, keeping its
+// original anchor even for a reversed selection. Read a fresh snapshot:
+// grid references cannot be kept across output, scrolling or resizing.
+func (t *Terminal) ExtendSelection(ref GridRef) bool {
+	s := Selection{size: unsafe.Sizeof(Selection{})}
+	if t.get(31, unsafe.Pointer(&s)) != nil {
+		return false
+	}
+	s.end, s.rectangle = ref, false
+	return t.set(21, unsafe.Pointer(&s)) == nil
 }
 
 // SelectAll returns a selection of everything, scrollback included.
@@ -478,7 +612,34 @@ func (t *Terminal) VT() []byte {
 	if p != 0 {
 		call(fnFree, 0, p, n)
 	}
-	return b
+	return t.padRows(b)
+}
+
+// padRows adds the blank rows at the end of the screen, which the
+// formatter leaves out, to the rows of a VT snapshot. Without them, the
+// rows written scroll fewer into the scrollback of the terminal they are
+// replayed in: what was scrollback shows on the screen, as after clear,
+// and the cursor, on a blank row under the last one written, lands on
+// that row, whose text what is written next overwrites. The rows end
+// where the snapshot places the cursor, one "\r\n" after the other.
+func (t *Terminal) padRows(b []byte) []byte {
+	_, rows := t.Size()
+	total := int(t.Scrollbar().Total)
+	if total <= rows || t.AltScreen() {
+		// No scrollback, or a full-screen program's screen, which has
+		// none: the cursor's position alone places it.
+		return b
+	}
+	x, y := t.Cursor()
+	end := bytes.LastIndex(b, fmt.Appendf(nil, "\x1b[%d;%dH", y+1, x+1))
+	if end < 0 {
+		return b
+	}
+	pad := total - (bytes.Count(b[:end], []byte("\r\n")) + 1)
+	if pad <= 0 {
+		return b
+	}
+	return slices.Concat(b[:end], bytes.Repeat([]byte("\r\n"), pad), b[end:])
 }
 
 // Compress compresses some of the scrollback, as when the terminal is
@@ -502,14 +663,95 @@ func clamp16(v int) int { return max(1, min(v, 0xFFFF)) }
 
 // The callbacks of every terminal, made once: purego's are never freed.
 var (
-	cbWritePTY, cbBell, cbTitleChanged, cbPwdChanged, cbRenderHold, cbClipboardWrite, cbSize,
-	cbColorScheme, cbDeviceAttributes, cbDesktopNotification, cbProgressReport uintptr
+	cbWritePTY, cbBell, cbTitleChanged, cbPwdChanged, cbRenderHold, cbClipboardWrite, cbClipboardRead, cbSize,
+	cbColorScheme, cbDeviceAttributes, cbDesktopNotification, cbProgressReport, cbNoRead uintptr
 )
 
 func makeCallbacks() {
+	// A GhosttyMimeReader for PasteEvent, which the library never calls
+	// (it reads nothing for an event); it gives no data if it did.
+	cbNoRead = newCallback(func(_, _, _, _, _ uintptr) uintptr { return 0 })
 	cbWritePTY = newCallback(func(_, id, data, n uintptr) uintptr {
 		if t := terminalOf(id); t != nil && t.effects.WritePTY != nil && n > 0 {
-			t.effects.WritePTY(unsafe.Slice((*byte)(mem(data)), n))
+			p := unsafe.Slice((*byte)(mem(data)), n)
+			if d := t.deferred; d != nil {
+				// A deferred read: what the library writes now is its
+				// refusal, which the read's answer replaces.
+				t.deferred = nil
+				if d.setRefusal(p) {
+					return 0
+				}
+			}
+			if t.silent && bytes.HasPrefix(p, []byte("\x1b]5522;type=read:status=EPERM")) {
+				// The refusal of a read that goes unanswered: the library
+				// writes it as the read's callback returns without a reply.
+				t.silent = false
+				return 0
+			}
+			if t.reply != nil {
+				*t.reply = append(*t.reply, p...)
+				return 0
+			}
+			t.effects.WritePTY(p)
+		}
+		return 0
+	})
+	cbClipboardRead = newCallback(func(_, id, req uintptr) uintptr {
+		r := (*clipboardRead)(mem(req))
+		t := terminalOf(id)
+		if t == nil || t.effects.ClipboardRead == nil {
+			return 0 // refused by the library
+		}
+		var in ClipboardRead
+		in.List, in.Primary, in.Granted, in.CanRemember = r.list, r.location != 0, r.granted, r.canRemember
+		for _, m := range unsafe.Slice((*cString)(mem(r.mimes)), r.mimesLen) {
+			in.Mimes = append(in.Mimes, goString(m.ptr, m.len))
+		}
+		out, answer := t.effects.ClipboardRead(in)
+		switch answer {
+		case ClipboardAnswered:
+			reply := clipboardReadReply{size: unsafe.Sizeof(clipboardReadReply{}), result: 1} // denied
+			var contents []clipboardContent
+			var available []cString
+			var keep [][]byte
+			for _, m := range in.Mimes {
+				if data, ok := out.Contents[m]; ok && len(data) > 0 {
+					contents = append(contents, clipboardContent{mime: cStringOf(m, &keep), data: cBytes(data)})
+				}
+			}
+			for _, m := range out.Available {
+				available = append(available, cStringOf(m, &keep))
+			}
+			if len(contents) > 0 || in.List && len(available) > 0 {
+				reply.result = 0
+				if len(contents) > 0 {
+					reply.contents, reply.contentsLen = uintptr(unsafe.Pointer(&contents[0])), uintptr(len(contents))
+				}
+				if len(available) > 0 {
+					reply.available, reply.availableLen = uintptr(unsafe.Pointer(&available[0])), uintptr(len(available))
+				}
+			}
+			var written []byte
+			t.reply = &written
+			call(r.reply, req, uintptr(unsafe.Pointer(&reply)))
+			t.reply = nil
+			if len(written) > 0 && t.effects.WritePTY != nil {
+				t.effects.WritePTY(written)
+			}
+			runtime.KeepAlive(keep)
+			runtime.KeepAlive(out)
+			runtime.KeepAlive(contents)
+			runtime.KeepAlive(available)
+		case ClipboardDeferred:
+			d := out.Deferred
+			if d != nil {
+				d.mimes, d.list, d.primary = in.Mimes, in.List, in.Primary
+				t.deferred = d
+				return 0
+			}
+			fallthrough
+		default: // ClipboardRefused: the library writes the refusal itself.
+			t.silent = true
 		}
 		return 0
 	})
@@ -604,4 +846,24 @@ func makeCallbacks() {
 		}
 		return 0
 	})
+}
+
+// cStringOf points a GhosttyString at a copy of s, kept in keep for as
+// long as the library may read it.
+func cStringOf(s string, keep *[][]byte) cString {
+	if s == "" {
+		return cString{}
+	}
+	b := []byte(s)
+	*keep = append(*keep, b)
+	return cBytes(b)
+}
+
+// cBytes points a GhosttyString at b, which must stay alive and unchanged
+// while the library reads it.
+func cBytes(b []byte) cString {
+	if len(b) == 0 {
+		return cString{}
+	}
+	return cString{ptr: uintptr(unsafe.Pointer(&b[0])), len: uintptr(len(b))}
 }

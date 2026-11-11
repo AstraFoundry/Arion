@@ -79,14 +79,14 @@ func (up *Update) Prepare(ctx context.Context, progress func(downloaded, total i
 	if err != nil {
 		return nil, err
 	}
-	p, err := prepareUpdate(ctx, up.manifest, up.key, up.current, target, progress)
+	p, err := prepareUpdate(ctx, up.getter(), up.manifest, up.key, up.current, target, progress)
 	if err != nil {
 		return nil, fmt.Errorf("mygo: preparing the update: %w", err)
 	}
 	return p, nil
 }
 
-func prepareUpdate(ctx context.Context, m update.Manifest, key, current, target string, progress func(downloaded, total int64)) (_ *PreparedUpdate, result error) {
+func prepareUpdate(ctx context.Context, get update.Getter, m update.Manifest, key, current, target string, progress func(downloaded, total int64)) (_ *PreparedUpdate, result error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
@@ -114,7 +114,7 @@ func prepareUpdate(ctx context.Context, m update.Manifest, key, current, target 
 	p := &PreparedUpdate{work: work, key: key, record: preparedRecord{Format: 1, Phase: "prepared", Target: target, TargetDigest: digest, Manifest: m, Current: current}}
 	unpacked := filepath.Join(work, "app")
 	if d := m.Delta(current); d != nil {
-		err = applyDelta(ctx, *d, pub, m.Version, target, work, unpacked, progress)
+		err = applyDelta(ctx, get, *d, pub, m.Version, target, work, unpacked, progress)
 		if err == nil {
 			p.record.Delta = true
 		} else {
@@ -135,7 +135,7 @@ func prepareUpdate(ctx context.Context, m update.Manifest, key, current, target 
 			return nil, fmt.Errorf("invalid size %d", m.Size)
 		}
 		artifact := filepath.Join(work, "update.tar.gz")
-		if err := download(ctx, m.URL, m.Size, m.Signature, pub, artifact, progress); err != nil {
+		if err := download(ctx, get, m.URL, m.Size, m.Signature, pub, artifact, progress); err != nil {
 			return nil, err
 		}
 		if err := extractPrepared(p.record, artifact, unpacked); err != nil {

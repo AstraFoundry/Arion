@@ -1,0 +1,40 @@
+package main
+
+// The finish: the scene (image0), its colors parted a little toward the
+// edges as a lens parts them, the glow (image1) spread wide over it,
+// darker corners and a film's grain.
+
+var Time float
+
+func hash12(p vec2) float {
+	p3 := fract(p.xyx * 0.1031)
+	p3 += dot(p3, p3.yzx+33.33)
+	return fract((p3.x + p3.y) * p3.z)
+}
+
+func Fragment(dst vec4, pos vec2) vec4 {
+	size := rectSize()
+	uv := pos / size
+	c := uv - 0.5
+	src := image0Size()
+	split := c * dot(c, c) * 0.018
+	col := vec3(
+		image0Sample((uv-split)*src).r,
+		image0Sample(uv*src).g,
+		image0Sample((uv+split)*src).b)
+
+	glow := image1Size()
+	at := uv * glow
+	bloom := image1Sample(at).rgb * 0.4
+	for i := 0; i < 12; i++ {
+		f := float(i)
+		a := f * 2.39996
+		r := 1.5 + f*0.7
+		bloom += image1Sample(at+r*vec2(cos(a), sin(a))).rgb * 0.1 * exp(-f*0.12)
+	}
+	col = 1 - (1-col)*(1-min(bloom*1.1, 1))
+
+	col *= 0.25 + 0.75*pow(16*uv.x*uv.y*(1-uv.x)*(1-uv.y), 0.22)
+	col += (hash12(dst.xy+fract(Time)*131) - 0.5) / 96
+	return vec4(clamp(col, 0, 1), 1)
+}

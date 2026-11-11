@@ -17,7 +17,7 @@ func TestPreparedUpdateStagesAndRecoversWithoutNetwork(t *testing.T) {
 		t.Run("delta="+delta, func(t *testing.T) {
 			_, key, m, requests := updateServer(t, "1.2.0", "v2", delta)
 			target, main := installedApp(t)
-			p, err := prepareUpdate(context.Background(), m, key, "1.1.9", target, nil)
+			p, err := prepareUpdate(context.Background(), httpGet, m, key, "1.1.9", target, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -70,7 +70,7 @@ func TestPreparedUpdateRejectsChangedState(t *testing.T) {
 		t.Run(change, func(t *testing.T) {
 			_, key, m, _ := updateServer(t, "1.2.0", "v2", "")
 			target, main := installedApp(t)
-			p, err := prepareUpdate(context.Background(), m, key, "1.1.9", target, nil)
+			p, err := prepareUpdate(context.Background(), httpGet, m, key, "1.1.9", target, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -123,7 +123,7 @@ func TestPreparedUpdateCancellationDiscardsStage(t *testing.T) {
 	_, key, m, _ := updateServer(t, "1.2.0", "v2", "")
 	target, main := installedApp(t)
 	ctx, cancel := context.WithCancel(context.Background())
-	_, err := prepareUpdate(ctx, m, key, "1.1.9", target, func(n, total int64) {
+	_, err := prepareUpdate(ctx, httpGet, m, key, "1.1.9", target, func(n, total int64) {
 		if n == total {
 			cancel()
 		}
@@ -149,7 +149,7 @@ func TestPreparedUpdateSwapRollbackAndFailure(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			_, key, m, _ := updateServer(t, "1.2.0", "v2", "")
 			target, main := installedApp(t)
-			p, err := prepareUpdate(context.Background(), m, key, "1.1.9", target, nil)
+			p, err := prepareUpdate(context.Background(), httpGet, m, key, "1.1.9", target, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -200,7 +200,7 @@ func TestPreparedUpdateSwapRollbackAndFailure(t *testing.T) {
 func TestPreparedUpdateSerializesRecoveredHandles(t *testing.T) {
 	_, key, m, _ := updateServer(t, "1.2.0", "v2", "")
 	target, _ := installedApp(t)
-	p, err := prepareUpdate(context.Background(), m, key, "1.1.9", target, nil)
+	p, err := prepareUpdate(context.Background(), httpGet, m, key, "1.1.9", target, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -248,7 +248,7 @@ func TestPreparedFilesRollbackRemovesNewEntries(t *testing.T) {
 	if err := os.Remove(filepath.Join(target, "code")); err != nil {
 		t.Fatal(err)
 	}
-	p, err := prepareUpdate(context.Background(), m, key, "1.1.9", target, nil)
+	p, err := prepareUpdate(context.Background(), httpGet, m, key, "1.1.9", target, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -274,7 +274,7 @@ func TestAppliedReceiptRejectsChangedInstalledBytes(t *testing.T) {
 		t.Run("delta="+delta, func(t *testing.T) {
 			_, key, m, _ := updateServer(t, "1.2.0", "v2", delta)
 			target, main := installedApp(t)
-			prepared, err := prepareUpdate(context.Background(), m, key, "1.1.9", target, nil)
+			prepared, err := prepareUpdate(context.Background(), httpGet, m, key, "1.1.9", target, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -298,7 +298,7 @@ func TestAppliedReceiptRejectsChangedInstalledBytes(t *testing.T) {
 func TestAcknowledgedCleanupClearsRetainedOwnershipJournal(t *testing.T) {
 	_, key, m, _ := updateServer(t, "1.2.0", "v2", "")
 	target, _ := installedApp(t)
-	prepared, err := prepareUpdate(context.Background(), m, key, "1.1.9", target, nil)
+	prepared, err := prepareUpdate(context.Background(), httpGet, m, key, "1.1.9", target, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

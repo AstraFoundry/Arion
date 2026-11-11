@@ -41,8 +41,11 @@ type Backend struct {
 	mu      sync.Mutex
 	windows []*window
 	// clip is the text copied, which pastes read: browsers give the
-	// clipboard's text only to paste events (see surface.paste).
-	clip string
+	// clipboard's text only to paste events (see surface.paste). clipData
+	// is all that was copied or pasted, in its text formats, as HTML and
+	// a rich text's own format.
+	clip     string
+	clipData transfer.Data
 	// source is the appearance the app asked for: "light", "dark" or
 	// "system".
 	source string
@@ -85,9 +88,15 @@ func (b *Backend) Init(h platform.AppHandler, _ platform.AppOptions) error {
 		b.sync(func() { b.h.ThemeChanged() })
 		return nil
 	})
-	for _, q := range []string{"(prefers-color-scheme: dark)", "(prefers-reduced-motion: reduce)", "(prefers-contrast: more)"} {
+	for _, q := range []string{"(prefers-color-scheme: dark)", "(prefers-reduced-motion: reduce)", "(prefers-reduced-transparency: reduce)", "(prefers-contrast: more)",
+		"(pointer: fine)", "(pointer: coarse)", "(any-pointer: fine)", "(any-pointer: coarse)", "(hover: none)", "(any-hover: none)"} {
 		js.Global().Call("matchMedia", q).Call("addEventListener", "change", changed)
 	}
+	// The languages the user reads: the browser's.
+	js.Global().Call("addEventListener", "languagechange", b.funcOf(func(js.Value, []js.Value) any {
+		b.sync(func() { b.h.LocaleChanged() })
+		return nil
+	}))
 	// The page's own choice of appearance (themeAttr), as a page framing
 	// the app sets it, since frames take the media's.
 	js.Global().Get("MutationObserver").New(changed).Call("observe", js.Global().Get("document").Get("documentElement"),
@@ -206,6 +215,7 @@ func (*Backend) NewTray(platform.TrayHandler) (platform.Tray, error) { return ni
 func (*Backend) RegisterHotkey(int, string) error                    { return errUnsupported }
 func (*Backend) UnregisterHotkey(int)                                {}
 func (*Backend) NotificationsSupported() bool                        { return false }
+func (*Backend) WebViewAvailable() bool                              { return false }
 func (*Backend) RemoveNotification(string)                           {}
 func (*Backend) RemoveAllNotifications()                             {}
 
@@ -217,9 +227,12 @@ type app struct{}
 
 func (app) SetActivationPolicy(string)                        {}
 func (app) Activate()                                         {}
+func (app) AllowForeground()                                  {}
+func (app) WithActivationToken(_ string, fn func())           { fn() }
 func (app) Hide()                                             {}
 func (app) Unhide()                                           {}
 func (app) IsHidden() bool                                    { return js.Global().Get("document").Get("hidden").Bool() }
+func (app) IsActive() bool                                    { return js.Global().Get("document").Call("hasFocus").Bool() }
 func (app) SetBadge(string)                                   {}
 func (app) Badge() string                                     { return "" }
 func (app) Bounce(bool) int                                   { return 0 }
@@ -234,13 +247,107 @@ func (app) SetOpenAtLogin(bool, string, string, string) error { return errUnsupp
 func (app) OpenAtLogin(string, string, string) bool           { return false }
 func (app) OpenedAtLogin() bool                               { return false }
 func (app) SetDockMenu(*platform.Menu)                        {}
-func (app) ClearBrowsingData(done func(error))                { done(errUnsupported) }
+func (app) ClearBrowsingData(_ platform.DataStore, _ platform.SiteData, done func(error)) {
+	done(errUnsupported)
+}
+func (app) NewDataStore(platform.DataStoreOptions) (platform.DataStore, error) {
+	return nil, errUnsupported
+}
 
-func (app) Locale() string {
-	if l := js.Global().Get("navigator").Get("language"); l.Type() == js.TypeString {
-		return l.String()
+// PreferredLanguages returns the browser's languages, navigator.languages.
+func (app) PreferredLanguages() []string {
+	nav := js.Global().Get("navigator")
+	var out []string
+	if list := nav.Get("languages"); list.Type() == js.TypeObject {
+		for i := range list.Length() {
+			if l := list.Index(i); l.Type() == js.TypeString {
+				out = append(out, l.String())
+			}
+		}
 	}
-	return "en-US"
+	if len(out) == 0 {
+		if l := nav.Get("language"); l.Type() == js.TypeString {
+			out = append(out, l.String())
+		}
+	}
+	return out
+}
+
+// Region returns the formats of the browser's locale, as Intl resolves
+// it: its first day of the week where the browser tells it
+// (Intl.Locale's getWeekInfo, or weekInfo before), and its hour cycle.
+func (app) Region() platform.Region {
+	r := platform.Region{FirstWeekday: -1}
+	intl := js.Global().Get("Intl")
+	if intl.Type() != js.TypeObject {
+		return r
+	}
+	opts := intl.Get("DateTimeFormat").New(js.Undefined(), map[string]any{"hour": "numeric"}).Call("resolvedOptions")
+	if l := opts.Get("locale"); l.Type() == js.TypeString {
+		r.Locale = l.String()
+	}
+	switch opts.Get("hourCycle").String() {
+	case "h11", "h12":
+		r.HourCycle = 12
+	case "h23", "h24":
+		r.HourCycle = 24
+	}
+	if r.Locale == "" || intl.Get("Locale").Type() != js.TypeFunction {
+		return r
+	}
+	func() {
+		defer func() { recover() }() // a browser that throws on either
+		locale := intl.Get("Locale").New(r.Locale)
+		info := js.Undefined()
+		if locale.Get("getWeekInfo").Type() == js.TypeFunction {
+			info = locale.Call("getWeekInfo")
+		} else {
+			info = locale.Get("weekInfo")
+		}
+		if info.Type() == js.TypeObject && info.Get("firstDay").Type() == js.TypeNumber {
+			r.FirstWeekday = info.Get("firstDay").Int() % 7 // 7 is Sunday
+		}
+	}()
+	return r
+}
+
+// localeKey is the key of localStorage the app's language is kept under.
+const localeKey = "mygo:locale"
+
+// SavedLocale reads the app's language from the page's localStorage.
+func (app) SavedLocale() (tag string, kept bool) {
+	defer func() { recover() }() // storage the page may not use
+	if v := js.Global().Get("localStorage").Call("getItem", localeKey); v.Type() == js.TypeString {
+		tag = v.String()
+	}
+	return tag, true
+}
+
+// SaveLocale keeps the app's language in the page's localStorage.
+func (app) SaveLocale(tag string) bool {
+	defer func() { recover() }()
+	storage := js.Global().Get("localStorage")
+	if tag == "" {
+		storage.Call("removeItem", localeKey)
+	} else {
+		storage.Call("setItem", localeKey, tag)
+	}
+	return true
+}
+
+// SetLanguages makes the app's language the page's (<html lang>), which
+// browsers draw the text of canvases and read the page aloud in, and its
+// direction the page's (<html dir>).
+func (app) SetLanguages(tags []string, rtl bool) {
+	root := js.Global().Get("document").Get("documentElement")
+	if len(tags) > 0 {
+		root.Set("lang", tags[0])
+	}
+	dir := "ltr"
+	if rtl {
+		dir = "rtl"
+	}
+	root.Set("dir", dir)
 }
 
 type dialogs struct{}
@@ -291,6 +398,7 @@ func (c clipboard) ReadText() string {
 func (c clipboard) WriteText(text string) {
 	c.b.mu.Lock()
 	c.b.clip = text
+	c.b.clipData = transfer.TextData(text)
 	c.b.mu.Unlock()
 	if cb := js.Global().Get("navigator").Get("clipboard"); !cb.IsUndefined() {
 		p := cb.Call("writeText", text)
@@ -298,21 +406,79 @@ func (c clipboard) WriteText(text string) {
 	}
 }
 
-func (c clipboard) ReadData(formats []transfer.Format) (transfer.Data, error) {
-	for _, f := range formats {
-		if f == transfer.Text {
-			return transfer.TextData(c.ReadText()), nil
-		}
+// WriteTextThen writes text as WriteText does, and gives done what the
+// browser's clipboard answers: an error where it refuses, as without the
+// user acting, or in a page of no secure context, which has no clipboard
+// API. The text is copied in the page either way, which pastes it.
+func (c clipboard) WriteTextThen(text string, done func(error)) {
+	c.b.mu.Lock()
+	c.b.clip = text
+	c.b.clipData = transfer.TextData(text)
+	c.b.mu.Unlock()
+	var p js.Value
+	if cb := js.Global().Get("navigator").Get("clipboard"); cb.IsUndefined() || cb.IsNull() {
+		p = js.Global().Get("Promise").Call("reject", js.Global().Get("Error").New("no clipboard API outside secure contexts"))
+	} else {
+		p = cb.Call("writeText", text)
 	}
-	return transfer.Data{}, nil
+	var ok, failed js.Func
+	answer := func(err error) {
+		ok.Release()
+		failed.Release()
+		c.b.sync(func() { done(err) })
+	}
+	ok = js.FuncOf(func(js.Value, []js.Value) any {
+		answer(nil)
+		return nil
+	})
+	failed = js.FuncOf(func(_ js.Value, args []js.Value) any {
+		msg := "refused"
+		if len(args) > 0 && args[0].Type() == js.TypeObject {
+			if m := args[0].Get("message"); m.Type() == js.TypeString && m.String() != "" {
+				msg = m.String()
+			}
+		}
+		answer(errors.New("mygo: the browser did not write the clipboard: " + msg))
+		return nil
+	})
+	p.Call("then", ok, failed)
 }
 
+func (c clipboard) ReadData(formats []transfer.Format) (transfer.Data, error) {
+	c.b.mu.Lock()
+	d := c.b.clipData
+	c.b.mu.Unlock()
+	var reps []transfer.Representation
+	for _, f := range formats {
+		if b, err := d.Read(f); err == nil {
+			reps = append(reps, transfer.Bytes(f, b))
+		}
+	}
+	if formats == nil {
+		return d, nil
+	}
+	if len(reps) == 0 {
+		return transfer.Data{}, nil
+	}
+	return transfer.New(transfer.NewItem(reps...)), nil
+}
+
+// WriteData keeps data's text formats, which the copy event under way
+// gives the browser (surface.copy), and writes its plain text to the
+// system's clipboard, which browsers allow while the user acts.
 func (c clipboard) WriteData(d transfer.Data, released func()) error {
 	t, err := d.Read(transfer.Text)
 	if err != nil {
 		return errUnsupported
 	}
+	d, err = d.Materialize(d.Formats())
+	if err != nil {
+		return err
+	}
 	c.WriteText(string(t))
+	c.b.mu.Lock()
+	c.b.clipData = d
+	c.b.mu.Unlock()
 	if released != nil {
 		released()
 	}
@@ -320,10 +486,12 @@ func (c clipboard) WriteData(d transfer.Data, released func()) error {
 }
 
 func (c clipboard) Formats() []transfer.Format {
-	if c.ReadText() == "" {
+	c.b.mu.Lock()
+	defer c.b.mu.Unlock()
+	if c.b.clip == "" && len(c.b.clipData.Items()) == 0 {
 		return nil
 	}
-	return []transfer.Format{transfer.Text}
+	return c.b.clipData.Formats()
 }
 
 func (clipboard) Flush() error                 { return nil }
@@ -341,10 +509,15 @@ func (shell) OpenExternal(url string) error {
 	js.Global().Call("open", url, "_blank", "noopener")
 	return nil
 }
-func (shell) OpenPath(string) error   { return errUnsupported }
-func (shell) ShowItemInFolder(string) {}
-func (shell) TrashItem(string) error  { return errUnsupported }
-func (shell) Beep()                   {}
+func (shell) OpenPath(string) error                { return errUnsupported }
+func (shell) ShowItemInFolder(string)              {}
+func (shell) TrashItem(string) error               { return errUnsupported }
+func (shell) Beep()                                {}
+func (shell) FileIcon(string, int) ([]byte, error) { return nil, errUnsupported }
+func (shell) TypeIcon(string, int) ([]byte, error) { return nil, errUnsupported }
+func (shell) OpenApplication(string) error         { return errUnsupported }
+
+func (*Backend) Applications() ([]platform.Application, error) { return nil, errUnsupported }
 
 type screen struct{}
 
@@ -411,10 +584,29 @@ func (theme) FontRendering() platform.FontRendering { return platform.FontRender
 
 func (theme) Preferences() platform.Preferences {
 	return platform.Preferences{
-		ReduceMotion: matches("(prefers-reduced-motion: reduce)"),
-		HighContrast: matches("(prefers-contrast: more)"),
-		TextScale:    1,
+		ReduceMotion:       matches("(prefers-reduced-motion: reduce)"),
+		ReduceTransparency: matches("(prefers-reduced-transparency: reduce)"),
+		HighContrast:       matches("(prefers-contrast: more)"),
+		TextScale:          1,
+		Pointer:            pointer("pointer"),
+		AnyPointer:         pointer("any-pointer"),
+		NoHover:            matches("(hover: none)"),
+		NoAnyHover:         matches("(any-hover: none)"),
 	}
+}
+
+// pointer returns the accuracy the media feature (pointer or any-pointer)
+// matches: the finest of any-pointer's.
+func pointer(feature string) platform.PointerAccuracy {
+	switch {
+	case matches("(" + feature + ": fine)"):
+		return platform.PointerFine
+	case matches("(" + feature + ": coarse)"):
+		return platform.PointerCoarse
+	case matches("(" + feature + ": none)"):
+		return platform.PointerNone
+	}
+	return platform.PointerFine // a browser without the feature
 }
 
 type power struct{}

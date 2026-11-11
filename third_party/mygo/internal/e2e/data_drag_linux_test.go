@@ -12,6 +12,7 @@ import (
 
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/internal/linux"
+	"github.com/egoist/mygo/internal/wait"
 	"github.com/egoist/mygo/transfer"
 	"github.com/egoist/mygo/ui"
 )
@@ -36,7 +37,7 @@ func gtkDragResult(t *testing.T, result <-chan transfer.Result) transfer.Result 
 	select {
 	case r := <-result:
 		return r
-	case <-time.After(5 * time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("GTK drag did not complete")
 	}
 	return transfer.Result{}
@@ -156,7 +157,7 @@ func TestNativeGTKDragCancellationCleanup(t *testing.T) {
 			}
 			mygo.RunOnMain(func() { linux.TestPressButton(false) })
 			r := gtkDragResult(t, result)
-			if !r.Canceled || r.Operation != transfer.None {
+			if !r.Canceled || !r.Escaped || r.Operation != transfer.None {
 				t.Fatalf("result %+v", r)
 			}
 			eventually(t, "released GTK drag resources", func() bool {

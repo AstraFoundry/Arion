@@ -2,16 +2,18 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
+
+	fetch "github.com/egoist/mygo/internal/download"
 )
 
 // pluginFile is what a Go package that is a plugin of MyGo tells the CLI,
@@ -118,20 +120,6 @@ func (c *Config) natives(goos, goarch string) ([]source, error) {
 	return list, nil
 }
 
-// fileSHA256 returns the SHA-256 of a file, in hex.
-func fileSHA256(path string) (string, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return "", err
-	}
-	defer f.Close()
-	h := sha256.New()
-	if _, err := io.Copy(h, f); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(h.Sum(nil)), nil
-}
-
 // fetchNative returns the path of a native library in the user's cache,
 // downloading it there first when it is missing:
 // <cache>/mygo/natives/<sha256>/<name>, where the packages that load it
@@ -148,37 +136,15 @@ func fetchNative(f nativeFile) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	dir := filepath.Join(cache, "mygo", "natives", f.SHA256)
-	path := filepath.Join(dir, f.Name)
-	if fileExists(path) {
-		// What the app ships must be what the package names.
-		if got, err := fileSHA256(path); err == nil && got == f.SHA256 {
-			return path, nil
-		}
+	path := filepath.Join(cache, "mygo", "natives", f.SHA256, f.Name)
+	// What the app ships must be what the package names.
+	if fetch.Check(path, f.SHA256) {
+		return path, nil
 	}
-	if err := os.MkdirAll(dir, 0o755); err != nil {
-		return "", err
-	}
-	tmp, err := os.CreateTemp(dir, ".download-*")
-	if err != nil {
-		return "", err
-	}
-	tmp.Close()
-	defer os.Remove(tmp.Name())
 	t := con.start("Downloading " + f.Name)
-	if err := t.end(download(t, f.URL, f.SHA256, tmp.Name()), "Downloaded "+f.Name); err != nil {
+	err = fetch.Cached(context.Background(), downloadFile(t, f.URL, f.SHA256), path)
+	if t.end(err, "Downloaded "+f.Name) != nil {
 		return "", fmt.Errorf("downloading %s from %s: %w", f.Name, f.URL, err)
-	}
-	if err := os.Chmod(tmp.Name(), 0o755); err != nil {
-		return "", err
-	}
-	if err := os.Rename(tmp.Name(), path); err != nil {
-		// Another process downloaded it meanwhile, and may have it loaded,
-		// which Windows won't replace.
-		if got, serr := fileSHA256(path); serr == nil && got == f.SHA256 {
-			return path, nil
-		}
-		return "", err
 	}
 	return path, nil
 }

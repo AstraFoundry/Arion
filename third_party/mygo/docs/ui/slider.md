@@ -30,12 +30,19 @@ For a low and a high value at once, as a price range, use a
 `ui.SliderBase` is a slider without a look: dragging across its content
 box, within its padding, sets the value. Draw its track and thumb where
 `(value-lo)/(hi-lo)` puts them, and pad it by half the thumb's width to
-keep the thumb inside it:
+keep the thumb inside it. [Right to left](right-to-left.md), the low
+value is at the right, as a `Slider` draws it, and the arrows move the
+thumb the way they point: draw it mirrored when `c.Direction()` is
+`ui.RightToLeft`:
 
 ```go
 s := ui.SliderBase(c, &app.volume, 0, 100).Height(24).PaddingX(12)
+at := float32(app.volume / 100)
+if c.Direction() == ui.RightToLeft {
+	at = 1 - at
+}
 s.Draw(func(p *ui.Painter, r ui.Rect) {
-	x := r.X + 12 + (r.W-24)*float32(app.volume/100)
+	x := r.X + 12 + (r.W-24)*at
 	p.Fill(ui.Rect{X: r.X + 12, Y: r.Y + 10, W: r.W - 24, H: 4}, gray, 2)
 	p.Fill(ui.Rect{X: x - 12, Y: r.Y, W: 24, H: 24}, blue, 12)
 })

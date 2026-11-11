@@ -19,6 +19,7 @@ var (
 	procInitializeProcThreadAttributeList = kernel32.NewProc("InitializeProcThreadAttributeList")
 	procUpdateProcThreadAttribute         = kernel32.NewProc("UpdateProcThreadAttribute")
 	procDeleteProcThreadAttributeList     = kernel32.NewProc("DeleteProcThreadAttributeList")
+	procRtlGetVersion                     = syscall.NewLazyDLL("ntdll.dll").NewProc("RtlGetVersion") // a KnownDLL
 )
 
 const (
@@ -154,6 +155,52 @@ func (p *PTY) Resize(cols, rows, width, height int) error {
 	}
 	return nil
 }
+
+// ClearScreen tells the console that the terminal cleared its screen, as
+// Windows Terminal's ClearPseudoConsole does: the console clears its
+// buffer and repaints with the cursor's line at the top. Without it, the
+// console keeps the prompt on its old row and, as it redraws with
+// absolute cursor moves (PSReadLine's predictions), takes the cursor back
+// down there. It does nothing before Windows 11 24H2, whose console may
+// shut down on a signal it doesn't know, or once the console is closed.
+func (p *PTY) ClearScreen() error {
+	if windowsBuild() < 26100 {
+		return nil
+	}
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.console == 0 {
+		return nil
+	}
+	// kernel32 doesn't export ClearPseudoConsole. The HPCON points at the
+	// console's handles, first the pipe of its signals, which take a
+	// 16-bit code: PTY_SIGNAL_CLEAR_WINDOW is 2.
+	signals := **(**syscall.Handle)(unsafe.Pointer(&p.console))
+	var n uint32
+	if err := syscall.WriteFile(signals, []byte{2, 0}, &n, nil); err != nil {
+		return fmt.Errorf("pty: clearing the console: %w", err)
+	}
+	return nil
+}
+
+// windowsBuild returns the build of Windows 10 or 11, the maximum on a
+// later major version. RtlGetVersion tells the version whatever the
+// executable's manifest declares.
+var windowsBuild = sync.OnceValue(func() uint32 {
+	var v struct {
+		size, major, minor, build, platform uint32
+		servicePack                         [128]uint16
+	}
+	v.size = uint32(unsafe.Sizeof(v))
+	procRtlGetVersion.Call(uintptr(unsafe.Pointer(&v)))
+	switch {
+	case v.major > 10:
+		return ^uint32(0)
+	case v.major < 10:
+		return 0
+	}
+	return v.build
+})
 
 // Pid returns the process's ID.
 func (p *PTY) Pid() int { return p.pid }

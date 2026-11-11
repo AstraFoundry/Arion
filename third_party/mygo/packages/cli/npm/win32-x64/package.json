@@ -1,6 +1,6 @@
 {
   "name": "@egoist/mygo-cli-win32-x64",
-  "version": "0.4.6",
+  "version": "0.8.3",
   "description": "The Windows x64 binary of mygo-cli",
   "repository": {
     "type": "git",

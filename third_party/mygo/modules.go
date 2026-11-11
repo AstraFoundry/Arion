@@ -2,10 +2,19 @@ package mygo
 
 import (
 	"bytes"
+	"cmp"
+	"context"
+	"encoding/json/v2"
 	"errors"
+	"fmt"
+	"image/color"
 	"image/png"
+	"log"
 	"math"
+	"path/filepath"
 	"runtime"
+	"slices"
+	"strings"
 	"sync"
 	"unicode/utf8"
 
@@ -42,10 +51,113 @@ func (ShellModule) ShowItemInFolder(path string) {
 	onMain(func() { backend().Shell().ShowItemInFolder(path) })
 }
 
-// TrashItem moves a file or directory to the trash.
+// TrashItem moves a file or directory to the trash, the recycle bin on
+// Windows. A relative path is relative to the working directory. It fails,
+// and leaves the item where it is, when the item cannot go to the trash
+// and would be deleted permanently instead: on Windows one too big for the
+// recycle bin, or on a drive without one, as network shares are.
 func (ShellModule) TrashItem(path string) error {
 	needsApp("Shell.TrashItem")
-	return onMainValue(func() error { return backend().Shell().TrashItem(path) })
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		return err
+	}
+	return onMainValue(func() error { return backend().Shell().TrashItem(abs) })
+}
+
+// FileIcon returns the icon the file manager shows for a file, a folder or
+// an application, as a PNG image of size by size pixels: pass the size in
+// DIPs times the display's scale factor for a sharp icon. On Windows path
+// may also name a shell item, such as an app of the Start menu by its
+// shell:AppsFolder\<AppUserModelID> path; on Linux, the icon of a desktop
+// entry (.desktop) is its application's, from the icon theme. It fails
+// in browsers.
+func (ShellModule) FileIcon(path string, size int) ([]byte, error) {
+	needsApp("Shell.FileIcon")
+	if size <= 0 {
+		return nil, errors.New("mygo: Shell.FileIcon: size must be positive")
+	}
+	var png []byte
+	err := onMainValue(func() (err error) {
+		png, err = backend().Shell().FileIcon(path, size)
+		return err
+	})
+	return png, err
+}
+
+// TypeIcon returns the icon the file manager shows for files with the
+// extension ext, such as "pdf" or ".pdf", as a PNG image of size by size
+// pixels, as FileIcon does, though no such file needs to exist: the icon
+// of an attachment not yet downloaded. It fails in browsers.
+func (ShellModule) TypeIcon(ext string, size int) ([]byte, error) {
+	needsApp("Shell.TypeIcon")
+	if size <= 0 {
+		return nil, errors.New("mygo: Shell.TypeIcon: size must be positive")
+	}
+	ext = strings.TrimPrefix(ext, ".")
+	var png []byte
+	err := onMainValue(func() (err error) {
+		png, err = backend().Shell().TypeIcon(ext, size)
+		return err
+	})
+	return png, err
+}
+
+// InstalledApp is an application installed on the computer, which
+// Shell.InstalledApps lists.
+type InstalledApp struct {
+	// Name is the name the system shows for it, in the user's language.
+	Name string
+	// ID identifies it: its bundle identifier on macOS (or its path for a
+	// bundle without one), its AppUserModelID on Windows (for a desktop
+	// app without one, its path under a known folder), and its desktop
+	// file ID on Linux, such as org.gnome.Nautilus.desktop.
+	ID string
+	// Path is where it is: its .app bundle on macOS, its item of the
+	// Applications folder on Windows (shell:AppsFolder\<ID>), and its
+	// desktop entry on Linux. Shell.FileIcon draws its icon.
+	Path string
+}
+
+// InstalledApps lists the applications installed on the computer, sorted
+// by name, as a launcher shows them:
+//
+//   - macOS: the .app bundles in /Applications, /System/Applications,
+//     ~/Applications and CoreServices' Applications, and in their
+//     folders (Utilities), plus Finder.
+//   - Windows: the Start menu's All apps, desktop and packaged apps
+//     alike (the shell's Applications folder).
+//   - Linux: the applications of the desktop entries menus show.
+//
+// It reads the disk: call it from a goroutine of its own, which it does not
+// block the main thread from. Browsers return an error.
+func (ShellModule) InstalledApps() ([]InstalledApp, error) {
+	needsApp("Shell.InstalledApps")
+	if !isMainThread() {
+		App.waitReady()
+	}
+	found, err := backend().Applications()
+	if err != nil {
+		return nil, err
+	}
+	apps := make([]InstalledApp, len(found))
+	for i, a := range found {
+		apps[i] = InstalledApp(a)
+	}
+	slices.SortStableFunc(apps, func(a, b InstalledApp) int {
+		return cmp.Or(strings.Compare(strings.ToLower(a.Name), strings.ToLower(b.Name)), strings.Compare(a.Path, b.Path))
+	})
+	return apps, nil
+}
+
+// LaunchApp starts an application of InstalledApps, or brings it to the
+// front if it runs.
+func (ShellModule) LaunchApp(app InstalledApp) error {
+	needsApp("Shell.LaunchApp")
+	if app.Path == "" {
+		return errors.New("mygo: Shell.LaunchApp: the app has no path")
+	}
+	return onMainValue(func() error { return backend().Shell().OpenApplication(app.Path) })
 }
 
 // Beep plays the system alert sound.
@@ -227,21 +339,153 @@ const (
 	ThemeDark   ThemeSource = "dark"
 )
 
+// ThemePreferences are the accent color and the accessibility settings of
+// the desktop, which an app and its pages should follow. Pages get them
+// as JSON, as mygo-runtime's ThemePreferences, which is also what they
+// encode to: {"accent": "#rrggbb" or null, "reduceMotion": …,
+// "reduceTransparency": …, "highContrast": …, "textScale": …}.
+type ThemePreferences struct {
+	// Accent is the color of the desktop's controls, 8-bit sRGB with
+	// straight alpha, or the zero color (A 0) where the desktop has none,
+	// as Linux desktops whose settings portal has no accent-color and
+	// browsers. Package ui's default theme already follows it; elsewhere
+	// ui.RGB(Accent.R, Accent.G, Accent.B) makes it a ui.Color.
+	Accent color.NRGBA
+	// ReduceMotion reports that the desktop asks for less motion: macOS's
+	// Reduce Motion, Windows's animation effects and GNOME's animations
+	// turned off.
+	ReduceMotion bool
+	// ReduceTransparency reports that the desktop asks for opaque
+	// surfaces in place of translucent ones, such as vibrancy: macOS's
+	// Reduce Transparency, Windows's transparency effects turned off, and
+	// prefers-reduced-transparency in browsers. Linux desktops have no
+	// such setting, so it is false there.
+	ReduceTransparency bool
+	// HighContrast reports that the desktop asks for more contrast:
+	// macOS's Increase Contrast, Windows's contrast themes, the settings
+	// portal's higher contrast or a HighContrast GTK theme on Linux.
+	HighContrast bool
+	// TextScale is how many times larger than usual text should be, as
+	// Windows's and GNOME's text size settings say; 1 is usual, and what
+	// macOS, which has no such setting, reports.
+	TextScale float64
+}
+
 // ThemeModule reads and overrides the light/dark appearance.
 type ThemeModule struct {
 	mu        sync.Mutex
 	source    ThemeSource
 	onUpdated listeners[func()]
+
+	// The preferences read last, until the next change. Main thread only.
+	prefs   ThemePreferences
+	prefsOK bool
 }
 
 // Theme is the system appearance. Pages follow it through the
-// prefers-color-scheme media query.
+// prefers-color-scheme media query, and the accent color and accessibility
+// settings through the --mygo-accent and --mygo-text-scale CSS variables
+// and preferences and onPreferences of mygo-runtime.
 var Theme = &ThemeModule{}
 
 // IsDark reports whether the app currently uses a dark appearance.
 func (t *ThemeModule) IsDark() bool {
 	needsApp("Theme.IsDark")
 	return onMainValue(func() bool { return backend().Theme().IsDark() })
+}
+
+// Preferences returns the accent color and the accessibility settings of
+// the desktop, all read at once. It is safe from any goroutine; like the
+// other calls that need the running app, it panics on the main goroutine
+// before App.Run, and waits for Run elsewhere.
+func (t *ThemeModule) Preferences() ThemePreferences {
+	needsApp("Theme.Preferences")
+	prefs := onMainValue(t.preferences)
+	// After the app has quit, onMain drops the call and the zero value is
+	// left; 0 is not a text scale.
+	if prefs.TextScale <= 0 {
+		prefs.TextScale = 1
+	}
+	return prefs
+}
+
+// preferences returns the desktop's preferences, read once per change. The
+// read can call out to the desktop (the settings portal on Linux), so it is
+// kept until the next change, as package ui keeps it. Main thread only.
+func (t *ThemeModule) preferences() ThemePreferences {
+	if !t.prefsOK {
+		t.prefs = themePreferences(backend().Theme().Preferences())
+		t.prefsOK = true
+	}
+	return t.prefs
+}
+
+// themePreferences is the public view of a backend's preferences. Policy
+// lives here, not in the backends.
+func themePreferences(p platform.Preferences) ThemePreferences {
+	prefs := ThemePreferences{
+		Accent:             color.NRGBA{R: p.Accent.R, G: p.Accent.G, B: p.Accent.B, A: p.Accent.A},
+		ReduceMotion:       p.ReduceMotion,
+		ReduceTransparency: p.ReduceTransparency,
+		HighContrast:       p.HighContrast,
+		TextScale:          p.TextScale,
+	}
+	if prefs.TextScale <= 0 {
+		prefs.TextScale = 1 // the usual size, as package ui normalizes it
+	}
+	return prefs
+}
+
+// themePreferencesJSON is ThemePreferences as pages see it, mygo-runtime's
+// ThemePreferences: the accent as a CSS color, null where there is none.
+type themePreferencesJSON struct {
+	Accent             *string `json:"accent"`
+	ReduceMotion       bool    `json:"reduceMotion"`
+	ReduceTransparency bool    `json:"reduceTransparency"`
+	HighContrast       bool    `json:"highContrast"`
+	TextScale          float64 `json:"textScale"`
+}
+
+// MarshalJSON encodes the preferences as pages get them, mygo-runtime's
+// ThemePreferences, with the accent as "#rrggbb" ("#rrggbbaa" when it is
+// not opaque), or null where the desktop has none.
+func (p ThemePreferences) MarshalJSON() ([]byte, error) {
+	v := themePreferencesJSON{
+		ReduceMotion:       p.ReduceMotion,
+		ReduceTransparency: p.ReduceTransparency,
+		HighContrast:       p.HighContrast,
+		TextScale:          p.TextScale,
+	}
+	if c := p.Accent; c.A != 0 {
+		s := fmt.Sprintf("#%02x%02x%02x", c.R, c.G, c.B)
+		if c.A != 255 {
+			s += fmt.Sprintf("%02x", c.A)
+		}
+		v.Accent = &s
+	}
+	return json.Marshal(v)
+}
+
+// UnmarshalJSON decodes what MarshalJSON encodes.
+func (p *ThemePreferences) UnmarshalJSON(b []byte) error {
+	var v themePreferencesJSON
+	if err := json.Unmarshal(b, &v); err != nil {
+		return err
+	}
+	*p = ThemePreferences{
+		ReduceMotion:       v.ReduceMotion,
+		ReduceTransparency: v.ReduceTransparency,
+		HighContrast:       v.HighContrast,
+		TextScale:          v.TextScale,
+	}
+	if v.Accent != nil {
+		c, err := parseColor(*v.Accent)
+		if err != nil {
+			return err
+		}
+		p.Accent = color.NRGBA{R: c.R, G: c.G, B: c.B, A: c.A}
+	}
+	return nil
 }
 
 // Source returns the appearance override.
@@ -287,10 +531,105 @@ func (t *ThemeModule) apply() {
 	}
 }
 
-// OnUpdated is called when the effective appearance changes.
+// SetGTKCSS styles the widgets GTK draws for the app on Linux with css, a
+// GTK 3 style sheet: the decorations GTK draws around windows, the title
+// buttons of hidden title bars (TitleBarStyle), menus and dialogs, for a
+// frame that matches the rest of the desktop, as GTK 4's flat header bars
+// and round title buttons. Pages and native UI, which MyGo draws, never
+// see it. GTK takes the sheet at the user's priority
+// (GTK_STYLE_PROVIDER_PRIORITY_USER), above the theme's rules and MyGo's
+// own. A later call replaces the sheet, and "" removes it. A sheet that
+// does not parse returns GTK's error, and the sheet set before stays. On
+// other platforms it does nothing and returns nil.
+//
+// It is safe from any goroutine, and may be called before App.Run: other
+// goroutines wait for Run to load the sheet, and the main goroutine keeps
+// it for Run, which logs a parse error, as no call is left to return it.
+func (t *ThemeModule) SetGTKCSS(css string) error {
+	if _, ok := backend().(platform.StyleBackend); !ok {
+		return nil
+	}
+	if isMainThread() && !App.initialized {
+		pendingGTKCSS = func() {
+			if err := setGTKCSS(css); err != nil {
+				log.Print(err)
+			}
+		}
+		return nil
+	}
+	return onMainValue(func() error { return setGTKCSS(css) })
+}
+
+// pendingGTKCSS loads the sheet main gave Theme.SetGTKCSS last before Run,
+// which calls it once it has initialized the backend; nil without one.
+// Main thread only.
+var pendingGTKCSS func()
+
+// setGTKCSS loads a sheet of Theme.SetGTKCSS. Main thread only.
+func setGTKCSS(css string) error {
+	if err := backend().(platform.StyleBackend).SetStyleSheet(css); err != nil {
+		return fmt.Errorf("mygo: Theme.SetGTKCSS: %w", err)
+	}
+	return nil
+}
+
+// WindowButtons are the window controls the desktop puts in title bars, at
+// their start and at their end: "minimize", "maximize" and "close", in the
+// desktop's order. An app that hides the system's (HideWindowButtons) and
+// draws its own can draw these, where the desktop wants them.
+type WindowButtons struct {
+	Start, End []string
+}
+
+// Has reports that the desktop puts button, "minimize", "maximize" or
+// "close", in title bars.
+func (b WindowButtons) Has(button string) bool {
+	return slices.Contains(b.Start, button) || slices.Contains(b.End, button)
+}
+
+// Empty reports that the desktop puts no buttons in title bars.
+func (b WindowButtons) Empty() bool { return len(b.Start) == 0 && len(b.End) == 0 }
+
+// WindowButtons returns the window controls the desktop's title bars have.
+// On macOS they are close, minimize and maximize at the start; on Windows
+// minimize, maximize and close at the end. On Linux the desktop's button
+// layout (gtk-decoration-layout) decides, as it does for the buttons of a
+// hidden title bar (TitleBarStyle): none under a Wayland compositor that
+// decorates windows itself, as tiling ones such as Hyprland and Sway,
+// which draw no buttons, and none where the user emptied the layout, as
+// users of tiling window managers on X11 do. OnUpdated tells when it
+// changes. It is safe from any goroutine; like the other calls that need
+// the running app, it panics on the main goroutine before App.Run.
+func (t *ThemeModule) WindowButtons() WindowButtons {
+	needsApp("Theme.WindowButtons")
+	if wb, ok := backend().(platform.WindowButtonsBackend); ok {
+		return onMainValue(func() WindowButtons {
+			start, end := wb.WindowButtons()
+			return WindowButtons{Start: start, End: end}
+		})
+	}
+	return defaultWindowButtons(runtime.GOOS)
+}
+
+// defaultWindowButtons are the title bars' buttons of a desktop whose
+// backend does not tell them.
+func defaultWindowButtons(goos string) WindowButtons {
+	if goos == "darwin" {
+		return WindowButtons{Start: []string{"close", "minimize", "maximize"}}
+	}
+	return WindowButtons{End: []string{"minimize", "maximize", "close"}}
+}
+
+// OnUpdated is called when the effective appearance, or the desktop's
+// preferences (Preferences), change.
 func (t *ThemeModule) OnUpdated(fn func()) (off func()) { return t.onUpdated.add(fn, false) }
 
-func (t *ThemeModule) changed() { fire(&t.onUpdated) }
+// changed forgets the preferences read before and tells the listeners that
+// the system appearance changed. Main thread only.
+func (t *ThemeModule) changed() {
+	t.prefs, t.prefsOK = ThemePreferences{}, false
+	fire(&t.onUpdated)
+}
 
 // GlobalShortcutModule registers system wide keyboard shortcuts.
 type GlobalShortcutModule struct {
@@ -313,6 +652,11 @@ var GlobalShortcut = &GlobalShortcutModule{}
 // it, lets them pick other keys, and needs the app installed with its
 // desktop entry. The window fn shows or focuses first gets the activation
 // token of the key press, which lets it take the focus.
+//
+// Register claims the accelerator before the desktop binds it, so that
+// calls arriving at once cannot bind it twice: IsRegistered reports it
+// while the desktop binds it, and a second Register of the same
+// accelerator fails.
 func (g *GlobalShortcutModule) Register(acc string, fn func()) error {
 	needsApp("GlobalShortcut.Register")
 	a, err := accelerator.Parse(acc, runtime.GOOS)
@@ -330,12 +674,25 @@ func (g *GlobalShortcutModule) Register(acc string, fn func()) error {
 	}
 	g.next++
 	id := g.next
+	g.byKey[key] = id
 	g.mu.Unlock()
 	if err := onMainValue(func() error { return backend().RegisterHotkey(id, acc) }); err != nil {
+		g.mu.Lock()
+		if g.byKey[key] == id {
+			delete(g.byKey, key)
+		}
+		g.mu.Unlock()
 		return err
 	}
 	g.mu.Lock()
-	g.byKey[key], g.byID[id], g.keyByID[id] = id, fn, key
+	if g.byKey[key] != id {
+		// Unregistered, or registered again, while the desktop bound it:
+		// give the desktop back the shortcut this call made.
+		g.mu.Unlock()
+		onMain(func() { backend().UnregisterHotkey(id) })
+		return errors.New("mygo: shortcut " + key + " was unregistered while it was being registered")
+	}
+	g.byID[id], g.keyByID[id] = fn, key
 	g.mu.Unlock()
 	return nil
 }
@@ -398,10 +755,19 @@ func (g *GlobalShortcutModule) pressed(id int) {
 
 // TrayOptions configures NewTray.
 type TrayOptions struct {
+	// ID names the icon across launches, unique among the app's icons: on
+	// macOS, where the user moves menu bar items by dragging them with ⌘
+	// held, the icon goes back where the user put it, as an app's several
+	// items each keep their place. Empty, a new icon goes left of those
+	// already there. On Windows, which places icons itself, the icon keeps
+	// whether the user shows it on the taskbar or in its overflow, as the
+	// app makes it again or makes its icons in another order. It does
+	// nothing on Linux, whose panels place icons themselves.
+	ID string
 	// Icon is a PNG image, ideally 16x16 points (32x32 pixels for Retina).
 	Icon []byte
 	// IconIsTemplate lets macOS tint a black-and-transparent icon to match
-	// the menu bar.
+	// the menu bar; Windows shows it white on a dark taskbar.
 	IconIsTemplate bool
 	// Title is shown next to the icon (macOS).
 	Title   string
@@ -412,16 +778,18 @@ type TrayOptions struct {
 
 // Tray is an icon in the menu bar (macOS) or notification area.
 type Tray struct {
-	native  platform.Tray
-	menu    *Menu
-	onClick listeners[func()]
-	onRight listeners[func()]
+	native       platform.Tray
+	menu         *Menu
+	onClick      listeners[func()]
+	onRight      listeners[func()]
+	onAppearance listeners[func()]
 }
 
 type trayHandler struct{ t *Tray }
 
-func (h trayHandler) Clicked()      { fire(&h.t.onClick) }
-func (h trayHandler) RightClicked() { fire(&h.t.onRight) }
+func (h trayHandler) Clicked()           { fire(&h.t.onClick) }
+func (h trayHandler) RightClicked()      { fire(&h.t.onRight) }
+func (h trayHandler) AppearanceChanged() { fire(&h.t.onAppearance) }
 
 // NewTray adds an icon to the menu bar or notification area. It must be
 // called after the application is ready.
@@ -437,6 +805,9 @@ func NewTray(opts TrayOptions) (*Tray, error) {
 		t.native, err = backend().NewTray(trayHandler{t})
 		if err != nil {
 			return
+		}
+		if opts.ID != "" {
+			t.native.SetID(opts.ID)
 		}
 		if len(opts.Icon) > 0 {
 			if err = t.native.SetImage(opts.Icon, opts.IconIsTemplate); err != nil {
@@ -477,7 +848,11 @@ func (t *Tray) SetIcon(png []byte, template bool) error {
 	return err
 }
 
-// SetTitle sets the text next to the icon (macOS).
+// SetTitle sets the text next to the icon (macOS). Its digits all have
+// the same width, so a number that changes, such as a rate, keeps the
+// item's width as long as the text keeps its length: pad the value to a
+// fixed number of characters with figure spaces (U+2007), as wide as a
+// digit, rather than ordinary spaces.
 func (t *Tray) SetTitle(title string) { t.do(func(n platform.Tray) { n.SetTitle(title) }) }
 
 // SetToolTip sets the hover text.
@@ -497,7 +872,9 @@ func (t *Tray) PopUpMenu() {
 	t.do(func(n platform.Tray) { n.PopUpMenu(snap) })
 }
 
-// Bounds returns the position of the icon on screen.
+// Bounds returns the position of the icon on screen. macOS shows a menu bar
+// item on each display: Bounds is the one the user last clicked, so a window
+// placed against it, as a flyout, goes on the display the user clicked.
 func (t *Tray) Bounds() Rectangle {
 	return onMainValue(func() Rectangle {
 		if t.native == nil {
@@ -517,10 +894,29 @@ func (t *Tray) Destroy() {
 	})
 }
 
-// OnClick is called when the icon is clicked and it has no menu.
-func (t *Tray) OnClick(fn func()) (off func()) { return t.onClick.add(fn, false) }
+// OnClick is called when the icon is clicked and it has no menu. On Linux
+// it is the panel's activation as well: GNOME's AppIndicator extension
+// sends it for a double click, and opens the menu for a single one after
+// the double click time. While nothing listens the icon answers no
+// activation, so its menu still opens on the first click.
+func (t *Tray) OnClick(fn func()) func() {
+	off := t.onClick.add(fn, false)
+	t.activatable()
+	return func() {
+		off()
+		t.activatable()
+	}
+}
 
-// OnRightClick is called when the icon is right-clicked.
+// activatable tells the native tray whether a click has anywhere to go. It
+// reads the listeners on the main thread, so that the last call wins
+// whichever goroutines add and remove them.
+func (t *Tray) activatable() {
+	t.do(func(n platform.Tray) { n.SetActivatable(t.onClick.len() > 0) })
+}
+
+// OnRightClick is called when the icon is right-clicked, or Control-clicked
+// on macOS.
 func (t *Tray) OnRightClick(fn func()) (off func()) { return t.onRight.add(fn, false) }
 
 // NotificationAuthorization is the current OS authorization for alerts.
@@ -568,6 +964,25 @@ func notificationPermission(request bool) (NotificationAuthorization, error) {
 	return r.status, r.err
 }
 
+// Dark reports whether the bar the icon shows on is dark: the macOS menu
+// bar, as AppKit tints its items (by the system's appearance, or the
+// wallpaper under a translucent menu bar), or the Windows taskbar, in
+// the system's mode, which may differ from the apps'. It is false on
+// Linux, where panels draw their icon themes their own way.
+//
+// A template icon (TrayOptions.IconIsTemplate) follows the bar by itself:
+// Dark is for an icon in color, as one drawing its measures in theirs,
+// which draws its ink light on a dark bar, and dark on a light one. With
+// several displays, it is the bar of the display with the menu bar.
+func (t *Tray) Dark() bool {
+	return onMainValue(func() bool { return t.native != nil && t.native.Dark() })
+}
+
+// OnAppearanceChange is called when the bar the icon shows on turns dark
+// or light (see Dark), on the main thread: set the icon drawn for it
+// again.
+func (t *Tray) OnAppearanceChange(fn func()) (off func()) { return t.onAppearance.add(fn, false) }
+
 // NotificationOptions configures a desktop notification.
 type NotificationOptions struct {
 	// ID identifies the notification: App.OnNotificationClick receives
@@ -583,8 +998,34 @@ type NotificationOptions struct {
 	// Group gathers the notifications that share it in one stack of
 	// Notification Center (macOS), such as the messages of a conversation.
 	// Empty leaves them in the app's.
-	Group   string
+	Group string
+	// Actions are the notification's action buttons.
 	Actions []NotificationAction
+	// Image is an encoded image, PNG or JPEG, that the notification shows
+	// with its text, such as the cover of the track that started playing:
+	// an attachment on macOS, whose thumbnail grows as the notification
+	// expands, the notification's image on Linux, and the balloon's large
+	// icon on Windows. An image the system cannot decode leaves the
+	// notification without one. MyGo does not fetch remote images.
+	// NewNotification copies it.
+	Image []byte
+	// Sender describes the sender of an incoming direct message. macOS 12+
+	// can show its avatar with the app's small icon when the signed app has
+	// the Communication Notifications capability. Otherwise, or if preparing
+	// the communication fails, it shows the ordinary notification.
+	// Other platforms ignore Sender. NewNotification copies it and Avatar.
+	Sender *NotificationSender
+}
+
+// NotificationSender is the sender of an incoming direct message.
+type NotificationSender struct {
+	// ID is a stable identifier for the person in the app.
+	ID string
+	// Name is the display name; empty uses the notification's Title.
+	Name string
+	// Avatar is an encoded image, such as PNG or JPEG. An empty ID or Avatar
+	// leaves the notification ordinary. MyGo does not fetch remote images.
+	Avatar []byte
 }
 
 // Notification is a desktop notification.
@@ -607,6 +1048,33 @@ func NotificationsSupported() bool {
 	return onMainValue(func() bool { return backend().NotificationsSupported() })
 }
 
+// WebViewAvailable reports whether the system webview is there, and so
+// whether a window showing a web page can work: WKWebView on macOS,
+// WebKitGTK on Linux, the WebView2 Runtime on Windows. A window showing
+// native UI (WindowOptions.Content) needs none, so an app whose windows all
+// do runs without one, and this reports false in browsers, which show
+// native UI only.
+//
+// Ask before creating the first window showing a page, as NewWindow panics
+// when the platform has no webview. It may be called from any goroutine,
+// also in main before App.Run:
+//
+//	mygo.App.WhenReady(func() {
+//		if mygo.WebViewAvailable() {
+//			mygo.NewWindow(mygo.WindowOptions{URL: "/"})
+//		} else {
+//			mygo.NewWindow(mygo.WindowOptions{Content: ui.View(offlineView)})
+//		}
+//	})
+//
+// It looks for the runtime without starting it: on Windows for the
+// WebView2 Runtime or a WebView2Loader.dll next to the executable, on
+// Linux by loading WebKitGTK. A runtime that is there but broken still
+// reports true; the window then reports calls that need its page as
+// failed. Once a window showing a page started the runtime, it reports
+// whether that worked.
+func WebViewAvailable() bool { return backend().WebViewAvailable() }
+
 // NewNotification creates a notification; call Show to display it.
 func NewNotification(opts NotificationOptions) *Notification {
 	id := opts.ID
@@ -615,6 +1083,17 @@ func NewNotification(opts NotificationOptions) *Notification {
 		id = "mygo-" + randomText()
 	}
 	opts.Actions = append([]NotificationAction(nil), opts.Actions...)
+	opts.Image = slices.Clone(opts.Image)
+	if len(opts.Image) > 0 {
+		linkNotificationImages()
+	}
+	if opts.Sender != nil {
+		sender := *opts.Sender
+		sender.Name = cmp.Or(sender.Name, opts.Title)
+		sender.Avatar = slices.Clone(sender.Avatar)
+		opts.Sender = &sender
+		enableNotificationSenders()
+	}
 	return &Notification{id: id, opts: opts}
 }
 
@@ -630,7 +1109,17 @@ var ErrNotificationsDenied = platform.ErrNotificationsDenied
 // macOS alert authorization must first be requested explicitly through
 // RequestNotificationPermission. Submission does not prove banner visibility.
 func (n *Notification) Show() error {
+	return n.ShowContext(context.Background())
+}
+
+// ShowContext is Show with a cancellable delivery wait. Cancellation stops
+// waiting for authorization and removes an undelivered notification. The
+// context governs delivery only; a successfully shown notification stays.
+func (n *Notification) ShowContext(ctx context.Context) error {
 	needsApp("Notification.Show")
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	if err := validateNotification(n.id, n.opts.Actions); err != nil {
 		return err
 	}
@@ -638,12 +1127,26 @@ func (n *Notification) Show() error {
 	if notifications.byID == nil {
 		notifications.byID = map[string]*Notification{}
 	}
-	_, shown := notifications.byID[n.id]
+	previous, shown := notifications.byID[n.id]
 	notifications.byID[n.id] = n
 	notifications.Unlock()
 	ch := make(chan error, 1)
-	onMain(func() {
-		backend().ShowNotification(&platform.Notification{
+	var completeOnce sync.Once
+	canceled := false
+	complete := func(err error, fromContext bool) {
+		completeOnce.Do(func() {
+			canceled = fromContext
+			deliver(ch, err)
+		})
+	}
+	stop := context.AfterFunc(ctx, func() { complete(ctx.Err(), true) })
+	defer stop()
+	show := func() {
+		if ctx.Err() != nil {
+			complete(ctx.Err(), true)
+			return
+		}
+		note := &platform.Notification{
 			ID:       n.id,
 			Title:    n.opts.Title,
 			Subtitle: n.opts.Subtitle,
@@ -651,13 +1154,43 @@ func (n *Notification) Show() error {
 			Silent:   n.opts.Silent,
 			Group:    n.opts.Group,
 			Actions:  append([]platform.NotificationAction(nil), n.opts.Actions...),
-		}, func(err error) { deliver(ch, err) })
-	})
+			Image:    n.opts.Image,
+		}
+		if s := n.opts.Sender; s != nil {
+			note.Sender = &platform.NotificationSender{ID: s.ID, Name: s.Name, Avatar: s.Avatar}
+		}
+		backend().ShowNotification(note, func(err error) {
+			complete(err, false)
+			if canceled {
+				// An authorization answer can arrive after cancellation.
+				// Do not remove a newer notification sharing this ID.
+				postMain(func() {
+					notifications.Lock()
+					current := notifications.byID[n.id]
+					notifications.Unlock()
+					if current == nil || current == n || current == previous {
+						backend().RemoveNotification(n.id)
+					}
+				})
+			}
+		})
+	}
+	if isMainThread() {
+		show()
+	} else if !postMain(show) {
+		complete(errLoopStopped, false)
+	}
 	err := await(ch)
-	if err != nil && !shown {
+	if err != nil {
 		// Nothing will be clicked.
 		notifications.Lock()
-		delete(notifications.byID, n.id)
+		if notifications.byID[n.id] == n {
+			if shown {
+				notifications.byID[n.id] = previous
+			} else {
+				delete(notifications.byID, n.id)
+			}
+		}
 		notifications.Unlock()
 	}
 	return err

@@ -53,6 +53,15 @@ func init() {
 		status(c, fmt.Sprintf("%d copies at %d%% opacity", int(copies), int(math.Round(opacity*100))))
 	})
 
+	price, discount := "1234.50", "0.00"
+	demo("decimal-input", func(c *ui.Context) {
+		ui.Form(c, func() {
+			ui.Field(c, "Price", func() { ui.DecimalInput(c, &price, "0", "", "0.01").Label("Price").Width(180) })
+			ui.Field(c, "Discount", func() { ui.DecimalInput(c, &discount, "0", "100", "0.25").Label("Discount").Width(180) })
+		})
+		status(c, "Price "+price+", "+discount+"% off")
+	})
+
 	query := ""
 	demo("search-field", func(c *ui.Context) {
 		ui.SearchField(c, &query).Label("Search fruits").Width(320)

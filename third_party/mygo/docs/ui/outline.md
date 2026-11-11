@@ -34,7 +34,10 @@ Its state, an `OutlineState`, holds the rows' `ListState`, which chooses
 rows as a list's does (`Selected`, `Selection`), and the items `Open`, a
 `Selection` of the items showing their children. The rows' keys are the
 items, so their choice and state follow them as items open and close above
-them. `Rows`, `Item` and `Depth` read the rows shown.
+them. `Rows`, `Item` and `Depth` read the rows shown. `Indent` is the width
+each level adds before a row's arrow, the theme's `Space(4)` when zero; it
+must not be negative. `Prefix` builds the start of the rows instead
+([rows of your own](#rows-of-your-own)).
 
 ## Opening and closing
 
@@ -44,6 +47,33 @@ them. `Rows`, `Item` and `Depth` read the rows shown.
   its first child, and Left closes it or goes to its parent; with Option on
   macOS and Shift elsewhere, as in GTK, they open and close all inside.
 - Closing an item whose child was chosen chooses the item.
+
+## Rows of your own
+
+`Prefix`, a function of the `OutlineState`, builds the start of each row in
+place of the indentation and the arrow, for rows of a look of your own, as
+a JSON viewer's or a file tree's with lines along its levels: its
+`OutlineRow` says how deep the row's item is (`Depth`), whether it has
+children (`Branch`) and whether they show (`Open`), and `Arrow` makes the
+box that opens and closes it, as the outline's arrow does, which you size
+and draw. The rows then have neither padding nor a gap, and center what
+they hold; the keys, the choice and assistive technology are the
+outline's.
+
+```go
+app.files.Prefix = func(r ui.OutlineRow) {
+	ui.Box(c).Width(16 * float32(r.Depth)).Shrink(0)
+	arrow := r.Arrow().Size(20, 28).Center()
+	if r.Branch {
+		arrow.Children(func() {
+			icon := ui.Icon(c, chevron)
+			if r.Open {
+				icon.Rotate(90)
+			}
+		})
+	}
+}
+```
 
 ## In columns
 

@@ -121,7 +121,7 @@ func TestExitTransitionArenaReusesStorageDuringMotion(t *testing.T) {
 }
 
 func editorWithLargeText() (*editor, weak.Pointer[byte]) {
-	ed := newEditor()
+	ed := newEditor(time.Now)
 	ed.multiline = true
 	ed.buf.set(strings.Repeat("a", 64<<10))
 	return ed, weak.Make(unsafe.StringData(ed.buf.s))
@@ -148,7 +148,7 @@ func TestEditorUndoReleasesOldDocument(t *testing.T) {
 }
 
 func editorWithLargeRedo() (*editor, weak.Pointer[byte]) {
-	ed := newEditor()
+	ed := newEditor(time.Now)
 	ed.multiline = true
 	ed.buf.set("small")
 	s := strings.Repeat("x", 64<<10)
@@ -172,7 +172,7 @@ func TestEditorDiscardedRedoReleasesDocument(t *testing.T) {
 }
 
 func editorWithLargeIndexes() (*editor, weak.Pointer[paragraph], weak.Pointer[float64]) {
-	ed := newEditor()
+	ed := newEditor(time.Now)
 	ed.buf.set(strings.Repeat("a\n", 10000))
 	ed.area = &area{}
 	ed.area.hs.reset(ed.buf.paras)
@@ -191,7 +191,7 @@ func TestEditorSmallDocumentReleasesIndexes(t *testing.T) {
 }
 
 func editorWithParagraphLayout() (*editor, weak.Pointer[byte]) {
-	ed := newEditor()
+	ed := newEditor(time.Now)
 	ed.multiline = true
 	ed.buf.set(strings.Repeat("short line\n", 10000))
 	ed.area = &area{params: text.Params{Style: text.Style{Size: 14}}, version: ed.buf.version}
