@@ -3,6 +3,7 @@
 package macos
 
 /*
+#include "native.h"
 #include "selection.h"
 */
 import "C"
