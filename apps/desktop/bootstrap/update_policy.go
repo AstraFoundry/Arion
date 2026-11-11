@@ -95,25 +95,16 @@ func (a *App) scheduleUpdates() {
 						return
 					}
 					if recoverErr != nil {
-						a.record("update_install", recoverErr)
-						a.state.Update.Version = saved.Version
-						a.state.Update.Notes = saved.Notes
-						a.updates.recoveryFailure(recoverErr)
-						p.failed = true
-						a.state.Update.StateError = true
+						a.unusableStage(saved, recoverErr)
 						return
 					}
 					if stage.Version() != saved.Version {
-						a.updates.recoveryFailure(errors.New("staged version identity changed"))
-						p.failed = true
-						a.state.Update.StateError = true
+						a.unusableStage(saved, errors.New("staged version identity changed"))
 						return
 					}
 					if stage.Applied() {
 						if stage.Version() != mygo.App.Version() {
-							a.updates.recoveryFailure(errors.New("completed update does not match the running host"))
-							p.failed = true
-							a.state.Update.StateError = true
+							a.unusableStage(saved, errors.New("completed update does not match the running host"))
 							return
 						}
 						if err := a.updates.acknowledgeApplied(stage, saved.Automatic); err != nil {
@@ -169,6 +160,25 @@ func (a *App) scheduleUpdates() {
 			}
 		}
 	}()
+}
+
+// unusableStage handles a saved stage this host cannot recover. Only an
+// interrupted swap can leave the installation incoherent, so only that keeps
+// input and updates blocked for repair. Any other failure means the
+// installation was replaced or the stage belongs elsewhere, for example after
+// installing a release over a staged update: the running host is coherent,
+// and holding the input lease would silently ignore every dictation request.
+func (a *App) unusableStage(saved updatestate.State, err error) {
+	if errors.Is(err, mygo.ErrUpdateRecoveryRequired) {
+		a.state.Update.Version = saved.Version
+		a.state.Update.Notes = saved.Notes
+		a.updates.recoveryFailure(err)
+		a.updatePolicy.failed = true
+		a.state.Update.StateError = true
+		return
+	}
+	a.record("update_install", err)
+	a.record("update_state", a.updates.persist(nil, false))
 }
 
 func (a *App) updateBusy() bool {
