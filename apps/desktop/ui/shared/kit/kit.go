@@ -9,6 +9,7 @@ import (
 	"arion.local/desktop/ui/shared/assets"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/theme"
+	"github.com/AstraFoundry/design/packages/mygo/sunbeam"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -28,7 +29,8 @@ type Variant int
 const (
 	// Primary is the one main action of a view: the yellow accent.
 	Primary Variant = iota
-	// Outline is a secondary action on a raised white face.
+	// Outline is a secondary action: Sunbeam's control face, a translucent
+	// ink fill in the flat chrome and a raised face in a floating layer.
 	Outline
 	// Ghost is a quiet action with no face until hovered.
 	Ghost
@@ -38,13 +40,13 @@ const (
 	Live
 )
 
-// Button is a text button with coss anatomy over Sunbeam tokens: a 1px
-// edge, a 1px top light and a contact shadow on raised variants, which
-// press flat. A disabled button keeps its layout at 64% opacity.
+// Button is a text button with coss anatomy in Sunbeam's materials: flat
+// in the window's chrome, raised in a floating layer (sunbeam.Layer). A
+// disabled button keeps its layout at 64% opacity.
 func Button(c *ui.Context, tokens theme.Tokens, variant Variant, label string, enabled bool) ui.Element {
 	button := ui.ButtonBase(c).Height(32).Padding(0, 12).Gap(6).Radius(theme.RadiusControl).AlignItems(ui.Center).
 		Disabled(!enabled)
-	Style(button, tokens, variant, enabled)
+	Style(c, button, tokens, variant, enabled)
 	button.Children(func() {
 		ui.Text(c, label).FontSize(theme.Body).FontWeight(500).SingleLine()
 	})
@@ -56,59 +58,36 @@ func Button(c *ui.Context, tokens theme.Tokens, variant Variant, label string, e
 func IconButton(c *ui.Context, tokens theme.Tokens, icon *ui.SVG, label string) ui.Element {
 	button := ui.ButtonBase(c).Size(28, 28).Radius(theme.RadiusMD + 2).Justify(ui.Center).AlignItems(ui.Center).
 		Label(label).Tooltip(label)
-	Style(button, tokens, Ghost, true)
+	Style(c, button, tokens, Ghost, true)
 	button.TextColor(tokens.Muted)
 	button.Children(func() { ui.Icon(c, icon).FontSize(13) })
 	return button
 }
 
-// Style gives a button base the anatomy of a variant in its current
-// state, for buttons with content of their own.
-func Style(button ui.Element, tokens theme.Tokens, variant Variant, enabled bool) {
-	hovered := enabled && button.Hovered()
-	pressed := enabled && button.Pressed()
-	var fill, edge ui.Color
+// Style gives a button base the face of a variant in the current layer's
+// material (sunbeam.Current), as it is now, for buttons with content of
+// their own. Every face has a 1-DIP border, transparent when flat, so a
+// button is the same size in both materials.
+func Style(c *ui.Context, button ui.Element, tokens theme.Tokens, variant Variant, enabled bool) {
 	switch variant {
 	case Primary:
-		fill, edge = tokens.Accent, tokens.Accent.Mix(tokens.Shade, 0.06)
-		if hovered {
-			fill = tokens.Accent.Mix(tokens.Card, 0.1)
-		}
+		sunbeam.PrimaryFace(c, button)
 		button.TextColor(tokens.AccentText)
-		if enabled && !pressed {
-			button.InsetShadow(0, 1, 0, 0, tokens.Highlight).Shadow(0, 1, 2, 0, tokens.Accent.Mix(tokens.Shade, 0.4).Alpha(0.24))
-		}
 	case Live:
-		fill, edge = tokens.Live, tokens.Live.Mix(tokens.Shade, 0.06)
-		if hovered {
-			fill = tokens.Live.Mix(tokens.Card, 0.1)
-		}
-		button.TextColor(tokens.OnFill)
-		if enabled && !pressed {
-			button.InsetShadow(0, 1, 0, 0, tokens.Highlight).Shadow(0, 1, 2, 0, tokens.Live.Mix(tokens.Shade, 0.4).Alpha(0.24))
-		}
+		liveFace(c, button, tokens)
 	case Outline:
-		fill, edge = tokens.Card, tokens.CardBorder
-		if hovered {
-			fill = tokens.AccentSoft.Alpha(0.5).Over(tokens.Card)
-		}
+		sunbeam.Face(c, button)
 		button.TextColor(tokens.Text)
-		if enabled && !pressed {
-			button.InsetShadow(0, 1, 0, 0, tokens.Highlight).Shadow(0, 1, 2, 0, tokens.Shade.Alpha(0.05))
-		}
 	case Ghost:
-		fill, edge = ui.Transparent, ui.Transparent
-		if hovered {
-			fill = tokens.AccentSoft
+		p := sunbeam.Colors(c)
+		button.Border(1, ui.Transparent)
+		switch {
+		case enabled && button.Pressed():
+			button.Background(p.FlatFacePressed)
+		case enabled && button.Hovered():
+			button.Background(p.FlatFaceHover)
 		}
 		button.TextColor(tokens.Text)
-	}
-	if pressed && variant != Ghost {
-		button.InsetShadow(0, 1, 0, 0, tokens.Shade.Alpha(0.08))
-	}
-	button.Background(button.AnimateColor("face", fill, theme.Quick))
-	if edge.A > 0 {
-		button.Border(1, edge)
 	}
 	if !enabled {
 		button.Opacity(0.64)
@@ -116,8 +95,24 @@ func Style(button ui.Element, tokens theme.Tokens, variant Variant, enabled bool
 	Press(button)
 }
 
-// Elevation is how high a surface floats: a tight contact shadow plus an
-// ambient one whose blur tracks the height, in warm ink.
+// liveFace is the primary face in the recording color. The microphone
+// toggle lives in the window's chrome, so the face is flat: one fill that
+// darkens toward the ink as it is hovered and pressed, as Sunbeam's flat
+// primary does.
+func liveFace(c *ui.Context, button ui.Element, tokens theme.Tokens) {
+	ink := sunbeam.Colors(c).Foreground
+	fill := tokens.Live
+	switch {
+	case button.Pressed():
+		fill = fill.Mix(ink, 0.18)
+	case button.Hovered():
+		fill = fill.Mix(ink, 0.12)
+	}
+	button.Border(1, ui.Transparent).Background(fill).TextColor(tokens.OnFill)
+}
+
+// Elevation is how high a surface floats, as Sunbeam's shadow steps: a
+// tight contact shadow plus an ambient one whose blur tracks the height.
 type Elevation int
 
 const (
@@ -127,31 +122,50 @@ const (
 	Overlay
 )
 
-// Raise casts the shadows of an elevation.
+// Raise casts the shadows of an elevation: Sunbeam's shadow-1 to shadow-4.
 func Raise(e ui.Element, tokens theme.Tokens, level Elevation) ui.Element {
-	contact, ambient := float32(0.04), float32(0.08)
-	if tokens.Dark {
-		contact, ambient = 0.2, 0.36
-	}
+	p := palette(tokens)
 	switch level {
 	case Raised:
-		return e.Shadow(0, 1, 0, 0, tokens.Shade.Alpha(contact)).Shadow(0, 1, 2, 0, tokens.Shade.Alpha(ambient*0.75))
+		return shadows(e, p.Shadow1)
 	case Lifted:
-		return e.Shadow(0, 1, 0, 0, tokens.Shade.Alpha(contact)).Shadow(0, 4, 10, -2, tokens.Shade.Alpha(ambient))
+		return shadows(e, p.Shadow2)
 	case Floating:
-		return e.Shadow(0, 2, 0, 0, tokens.Shade.Alpha(contact)).Shadow(0, 10, 24, -4, tokens.Shade.Alpha(ambient*1.25))
+		return shadows(e, p.Shadow3)
 	}
-	return e.Shadow(0, 4, 0, 0, tokens.Shade.Alpha(contact)).Shadow(0, 20, 48, -8, tokens.Shade.Alpha(ambient*1.75))
+	return shadows(e, p.Shadow4)
 }
 
-// Card is a grouped surface: white on the paper canvas, one hairline edge,
-// a contact shadow in the light and a top light in the dark.
-func Card(c *ui.Context, tokens theme.Tokens) ui.Element {
-	card := ui.Column(c).Radius(theme.RadiusCard).Background(tokens.Card).Border(1, tokens.CardBorder).Clip()
+// Popover gives a floating layer (a select's popup, a tooltip, a field's
+// callout) Sunbeam's raised panel surface at Arion's smaller radius. Build
+// its children in sunbeam.Layer(sunbeam.Raised, ...), so any control in it
+// is raised too.
+func Popover(c *ui.Context, e ui.Element, radius float32) ui.Element {
+	return sunbeam.PanelSurface(c, e).Radius(radius)
+}
+
+func palette(tokens theme.Tokens) *sunbeam.Palette {
 	if tokens.Dark {
-		return card.InsetShadow(0, 1, 0, 0, tokens.Highlight)
+		return sunbeam.Dark()
 	}
-	return Raise(card, tokens, Raised)
+	return sunbeam.Light()
+}
+
+func shadows(e ui.Element, list []sunbeam.Shadow) ui.Element {
+	for _, s := range list {
+		if s.Inset {
+			e.InsetShadow(s.X, s.Y, s.Blur, s.Spread, s.Color)
+		} else {
+			e.Shadow(s.X, s.Y, s.Blur, s.Spread, s.Color)
+		}
+	}
+	return e
+}
+
+// Card is a grouped surface in the window's flat chrome: the card face on
+// the paper canvas with one hairline edge and no shadow.
+func Card(c *ui.Context, tokens theme.Tokens) ui.Element {
+	return ui.Column(c).Radius(theme.RadiusCard).Background(tokens.Card).Border(1, tokens.CardBorder).Clip()
 }
 
 // Group is a titled set of cards: the title sits close to what it names,
@@ -318,16 +332,14 @@ func absInt(v int) int {
 	return v
 }
 
-// SelectPopup gives a select's popup coss anatomy over Sunbeam tokens: a
-// card face with a hairline, a 1px top light and lifted elevation, 4 DIPs
-// below the trigger and at least as wide. items builds the options with
-// SelectItem and SelectSeparator.
-func SelectPopup[T comparable](tokens theme.Tokens, sel ui.SelectParts[T], items func()) ui.Element {
+// SelectPopup gives a select's popup coss anatomy in Sunbeam's raised
+// material: the panel surface at the control radius, 4 DIPs below the
+// trigger and at least as wide. items builds the options with SelectItem
+// and SelectSeparator, in a raised layer.
+func SelectPopup[T comparable](c *ui.Context, tokens theme.Tokens, sel ui.SelectParts[T], items func()) ui.Element {
 	return sel.Popup(func(panel ui.Element) {
-		panel.Padding(4).Margin(4, 0, 0, 0).Radius(theme.RadiusControl).Background(tokens.Card).
-			Border(1, tokens.CardBorder).InsetShadow(0, 1, 0, 0, tokens.Highlight).TextColor(tokens.Text)
-		Raise(panel, tokens, Lifted)
-		items()
+		Popover(c, panel.Padding(4).Margin(4, 0, 0, 0), theme.RadiusControl)
+		sunbeam.Layer(sunbeam.Raised, items)
 	})
 }
 
@@ -488,7 +500,7 @@ func Figure(c *ui.Context, rolls *Rolls, key, text string, style FigureStyle, en
 func SelectTrigger[T comparable](c *ui.Context, tokens theme.Tokens, sel ui.SelectParts[T], label, value string) ui.Element {
 	trigger := sel.Trigger.Label(label).Height(28).Padding(0, 8, 0, 10).Gap(6).MinWidth(96).
 		Radius(theme.RadiusControl).AlignItems(ui.Center)
-	Style(trigger, tokens, Outline, true)
+	Style(c, trigger, tokens, Outline, true)
 	trigger.Children(func() {
 		ui.Text(c, value).FontSize(theme.Body).FontWeight(500).SingleLine().Grow(1).ContentTransition(ui.ContentTransition{})
 		ui.Icon(c, icons.ChevronsUpDown).FontSize(13).TextColor(tokens.Muted)

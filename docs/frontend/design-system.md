@@ -1,25 +1,29 @@
 # Design system
 
-Arion's native UI uses Sunbeam, the system it shares with Lyra, rendered with MyGo and the coss ui component anatomy ported to Go ([ADR 007](../decisions/007-sunbeam-design-system.md)). Physical values live only in `ui/shared/theme`; views use the semantic tokens and the `ui/shared/kit` primitives.
+Arion's native UI uses Sunbeam, the system it shares with Lyra and the marketing site, rendered with MyGo and the coss ui component anatomy ported to Go ([ADR 007](../decisions/007-sunbeam-design-system.md)). Its tokens and materials come from the design repository's MyGo package, `github.com/AstraFoundry/design/packages/mygo` (package `sunbeam`), generated from the same `sunbeam.json` as the site's `@astrafoundry/design` ([ADR 048](../decisions/048-sunbeam-package-and-materials.md)). `ui/shared/theme` resolves Arion's semantic tokens from that palette and defines only the colors Sunbeam has no token for; views use the semantic tokens and the `ui/shared/kit` primitives.
 
 ## Color
 
 One accent, warm neutrals, and semantic colors only where state differs.
 
-| Token | Light | Dark | Use |
-| --- | --- | --- | --- |
-| `Canvas` | ink 50 `#faf8f5` | `#090706` | Window background |
-| `Card` | white | ink 800 | Grouped surfaces |
-| `CardBorder` / `Hairline` | ink 200 / ink 100 | `#322d29` / `#2a2622` | Card and control edges / dividers inside a card |
-| `Text` / `Muted` / `Faint` | ink 900 / 500 / 400 | ink 50 / 300 / 400 | Hierarchy, alongside size and weight |
-| `Accent` + `AccentText` | yellow 500 + ink 900 | same | Primary action fill, selection, the mark. Never light text on yellow |
-| `AccentSoft` | yellow 100 | yellow at 14% | Hover wash, selected-state highlight |
-| `RecordingInk` / `RecordingSoft` | blue `#0866ff` / `#f1f5ff` | blue `#8bb5ff` / `#142441` | Focused shortcut recording text and pill surface |
-| `AccentInk` | yellow 700 | yellow 400 | The accent as a line or text on a surface |
-| `Live` / `Success` / `Warning` / `Danger` | Sunbeam 500 steps | 400 steps | Microphone open, outcomes, failures |
-| `OnFill` | white | white | Marks on a saturated semantic fill |
-| `Shade` / `Highlight` / `Scrim` | warm ink | black / white 6% | Shadows, 1px top light, photo scrims |
-| `Pill*` | warm substrate `#161410` | same | The dictation HUD, dark in both appearances |
+Values come from Sunbeam's palette (`sunbeam.Light()` / `sunbeam.Dark()`), named here by palette field.
+
+| Token | Sunbeam source (light / dark) | Use |
+| --- | --- | --- |
+| `Canvas` | `Background`: ink 50 `#faf8f5` / `#090706` | Window background |
+| `Card` | `Card`: white / ink 800 | Grouped surfaces |
+| `CardBorder` / `Hairline` | `Border` / halfway from `Border` to `Card` | Card and control edges / dividers inside a card |
+| `Text` / `Muted` / `Faint` | `Foreground` / `MutedForeground` / `Faint` | Hierarchy, alongside size and weight |
+| `Subtle` | `Muted`: ink 100 / ink 700 | Quiet fills such as keycaps |
+| `Accent` + `AccentText` | `Primary` + `PrimaryForeground`: yellow 500 + ink 900 | Primary action fill, selection, the mark. Never light text on yellow |
+| `AccentSoft` | `Accent`: yellow 100 / `#382d0a` | Hover wash, selected-state highlight |
+| `AccentInk` | `AccentForeground`: yellow 700 `#8a6700` / yellow 300 | The accent as a line or text on a surface |
+| `Live` / `Success` / `Danger` | `Danger` / `Success` / `Danger`, the same in both | Microphone open, outcomes, failures |
+| `Warning` | Arion-only orange `#e6780a` / `#f29233` (Sunbeam has no warning token) | Something waiting on the user |
+| `RecordingInk` / `RecordingSoft` | Arion-only blue `#0866ff` / `#f1f5ff`, dark `#8bb5ff` / `#142441` | Focused shortcut recording text and pill surface |
+| `OnFill` | white | Marks on a saturated semantic fill |
+| `Shade` / `Highlight` / `Scrim` | ink 900 / black, white 16% / 6%, `Scrim` | Shadows, 1px top light, photo scrims |
+| `Pill*` | the substrate scale: `SubstrateSurface`, `SubstrateHi`, `SubstrateLine` (dark `SubstrateEdge`) | The dictation HUD, dark in both appearances |
 
 Rules:
 
@@ -66,18 +70,23 @@ Rules:
   - `GapTight` 4, `GapRelated` 8, `GapGroup` 28, `Gutter` 24.
   - A section title sits `GapRelated` from its card (`kit.Group`); groups stand `GapGroup` apart.
 
-## Elevation
+## Materials and elevation
 
-`kit.Raise` casts a tight contact shadow plus an ambient one whose blur tracks the height, in warm ink, never colored:
+Sunbeam gives every layer one material ([ADR 048](../decisions/048-sunbeam-package-and-materials.md); the design repository's `packages/web/skills/sunbeam/SKILL.md` §4):
 
-| Level | Use |
-| --- | --- |
-| `Raised` | Cards and outline buttons |
-| `Lifted` | Popovers |
-| `Floating` | Mock windows in illustrations |
-| `Overlay` | Reserved for transient overlays |
+- **Flat**: the settings window, the menu-bar panel, onboarding and their cards. A button is one fill with no edge, gradient or shadow: `sunbeam.Face` for `Outline`, `sunbeam.PrimaryFace` for `Primary`, and the same flat anatomy in the recording color for `Live`. `Ghost` has no face until hovered. A card is the `Card` face with a hairline and no shadow.
+- **Raised**: layers that float over the window, which are select popups, tooltips and field-error callouts. `kit.Popover` gives them `sunbeam.PanelSurface`: a faint gradient, a translucent edge, a top highlight and Sunbeam's three-layer panel shadow, at Arion's radius (10 for popups, 6 for tooltips and callouts). Their content is built in `sunbeam.Layer(sunbeam.Raised, …)`, so any control in it takes the raised face.
 
-A surface gets either a hairline with a contact shadow, or real elevation; never a hairline plus a wide diffuse glow.
+Material follows the layer, not the component: the same `kit.Button` is flat in a card and raised in a popover. Never raise text, content, a page card or a whole window.
+
+`kit.Raise` casts Sunbeam's shadow steps for illustrations:
+
+| Level | Sunbeam shadow | Use |
+| --- | --- | --- |
+| `Raised` | `shadow-1` | Small surfaces in illustrations |
+| `Lifted` | `shadow-2` | Mock popovers |
+| `Floating` | `shadow-3` | Mock windows in illustrations |
+| `Overlay` | `shadow-4` | Reserved for transient overlays |
 
 The macOS consent guide is a whole window floating over System Settings: its card fills a flyout whose system shadow is the elevation, so it draws no `kit.Raise` or border of its own. Its app tile nests at `RadiusCard − padding`.
 
@@ -85,9 +94,10 @@ The macOS consent guide is a whole window floating over System Settings: its car
 
 | Primitive | Anatomy |
 | --- | --- |
-| `Button(c, tokens, variant, label, enabled)` | coss `default`/`outline`/`ghost`, plus `Live` (the primary anatomy in the recording color while the microphone is open): 32 DIP, radius 10, 1px edge, 1px top light, contact shadow; flat when pressed; 0.96 press scale; 64% opacity when disabled |
+| `Button(c, tokens, variant, label, enabled)` | coss `default`/`outline`/`ghost`, plus `Live` (the primary anatomy in the recording color while the microphone is open): 32 DIP, radius 10, in its layer's material ([Materials](#materials-and-elevation)): flat fills in the window, raised faces in a popover; 0.96 press scale; 64% opacity when disabled |
 | `IconButton` | 28 DIP ghost square with a tooltip naming it |
-| `Style` | The button anatomy for custom content (the dictation toggle) |
+| `Style(c, …)` | The button anatomy for custom content (the dictation toggle) |
+| `Popover` | Sunbeam's raised panel surface at a given radius, for layers floating over the window |
 | `Card`, `Group`, `Row`, `Divider`, `SectionTitle` | Grouped settings surfaces |
 | `RowFrame` | Settings row geometry shared by `Row`, `TipRow`, `LinkRow` and hand-built card rows: `theme.RowHeight` (52 DIP) with 10 × 16 DIP insets, so a switch row and a button, select or segmented row line up; only content that needs more room is taller. A Select or Segmented control follows the platform text line box and can leave its row up to 2 DIP over that height |
 | `Status` | Colored icon plus a word in text ink |
@@ -95,16 +105,16 @@ The macOS consent guide is a whole window floating over System Settings: its car
 | `Pill` | The dictation HUD surface, shared by the live pill and illustrations |
 | `Mark` | The app icon bitmap; the brand mark is never a glyph in an accent tile |
 | `Kbd`, `KbdGroup`, `LevelBars`, `Press` | coss `Kbd`/`KbdGroup` for keys (20 DIP, radius 4, `Subtle` fill, 12 DIP medium `Muted` text; pill variant on the substrate), live meter, press feedback |
-| `SelectPopup`, `SelectItem`, `SelectSeparator` | coss `Select` popup over `ui.SelectBase`: a card face 4 DIP below the trigger, radius 10, hairline, top light and `Lifted` elevation, 4 DIP padding; 28 DIP options with a 16 DIP check column, washed in `AccentSoft` while highlighted; inset hairline separators. The trigger keeps the look of the control it is (the scene card) |
+| `SelectPopup`, `SelectItem`, `SelectSeparator` | coss `Select` popup over `ui.SelectBase`: the raised `Popover` surface 4 DIP below the trigger, radius 10, 4 DIP padding; 28 DIP options with a 16 DIP check column, washed in `AccentSoft` while highlighted; inset hairline separators. The trigger keeps the look of the control it is (the scene card) |
 
 | `CardHeader` | coss `CardHeader`: a 15 DIP semibold title and an optional action (select, ghost button, figure) on one 44 DIP row |
 | `Stat` | A card stating one measurement: icon and caption label over a `Display` figure (drawn by the caller, usually with `Figure`) and its unit in muted `Body` |
 | `Figure`, `Rolls` | A number on odometer wheels: the text is laid out invisibly for size and assistive technology, and each digit is painted rolling up over it, clipped to the line, the leaving digit fading as the next arrives. Digits roll in from the left 35 ms apart on a 900 ms spring; `enter` starts them from 0. `Rolls` keeps each wheel's turns so a growing value rolls forward through 9 → 0, never back |
-| `Select`, `Swatch` | `ui.Select`'s themed trigger and popup over `ui.SelectBase`, with a preview built before each option's label and before the chosen value, so it sits among plain `ui.Select`s in a settings card (the keyboard highlight color). `Swatch` is that preview for a color: a 12 DIP rounded square with a `CardBorder` hairline, empty when there is no color yet |
+| `Select`, `Swatch` | `ui.Select`'s themed trigger and a raised `Popover` popup over `ui.SelectBase`, with a preview built before each option's label and before the chosen value, so it sits among plain `ui.Select`s in a settings card (the keyboard highlight color). `Swatch` is that preview for a color: a 12 DIP rounded square with a `CardBorder` hairline, empty when there is no color yet |
 | `SelectTrigger` | coss `Select` trigger for a plain value: the `Outline` button anatomy at 28 DIP, the value and an up-down chevron; its popup is `SelectPopup` |
 | `Empty` | coss `Empty`: one muted, centered line filling a card body that has nothing to show yet |
-| `Tooltip`, `Hint` | coss `Tooltip` over `ui.TooltipBase`: Caption text on a card face, hairline, radius 6, `Lifted`, at most 260 DIP; shown on hover or focus and named to assistive technology as the anchor's description. `Hint` is a focusable 13 DIP info glyph in `Faint` (`Muted` when hovered) carrying one |
-| `FieldError` | Why a field's value cannot be saved: the field is marked with MyGo's `Error`, so a text input keeps a `Danger` border while focused and assistive technology reads the message, and a callout attached below the field, aligned to its start or, for a field ending its row, its end (card face, hairline, radius 6, `Lifted`, at most 280 DIP) states it beside a `Danger` alert glyph in `Text` ink. It floats over the layout, so nothing moves |
+| `Tooltip`, `Hint` | coss `Tooltip` over `ui.TooltipBase`: Caption text on the raised `Popover` surface, radius 6, at most 260 DIP; shown on hover or focus and named to assistive technology as the anchor's description. `Hint` is a focusable 13 DIP info glyph in `Faint` (`Muted` when hovered) carrying one |
+| `FieldError` | Why a field's value cannot be saved: the field is marked with MyGo's `Error`, so a text input keeps a `Danger` border while focused and assistive technology reads the message, and a callout attached below the field, aligned to its start or, for a field ending its row, its end (the raised `Popover` surface, radius 6, at most 280 DIP) states it beside a `Danger` alert glyph in `Text` ink. It floats over the layout, so nothing moves |
 | `TipRow` | A setting row whose explanation is a `Hint` after the title instead of a detail line, so dense cards stay one line per setting |
 | `LinkRow` | A row that opens a page: optional leading glyph or mark, title, its current value in `Muted`, and a `Faint` chevron |
 
@@ -132,7 +142,7 @@ The heatmap follows GitHub's contribution graph: a column per week, Monday on to
 
 Entering the overview (opening the window on it, or choosing it) plays one entrance, about a second long:
 
-- Cards rise 8 DIPs and fade in on a 520 ms spring without bounce, 45 ms apart in reading order. The motion is a pose (transform and opacity), which the GPU renderer composites; MyGo's software rasterizer, used by the headless tester, draws transformed cards far slower, so filmstrip timings from `ARION_UI_SNAPSHOTS` are not real frame times.
+- Cards rise 8 DIPs and fade in on a 520 ms spring without bounce, 45 ms apart in reading order. The motion is a pose (transform and opacity), which the GPU renderer composites; MyGo's headless tester runs on its own clock (`Tester.Advance`), so the filmstrip from `ARION_UI_SNAPSHOTS` is named by that clock, 40 ms apart; how fast its software rasterizer draws a frame does not change what the frames show.
 - Each stat's `Figure` rolls up from 0 starting 90 ms after its card.
 - Scene bars grow from 0 after their card, 50 ms apart; later range changes ease them with `Settle`, and their counts change with MyGo's numeric content transition.
 - The heatmap's cells light in a wave from the oldest week once its card has landed (the 1.2 s run starts at −0.18): each grows from 40% and fades in over a quarter of the run.

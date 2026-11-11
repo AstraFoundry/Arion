@@ -1,3 +1,5 @@
+github.com/AstraFoundry/design/packages/mygo v0.0.0-20261111071340-da15d346be1a h1:W4WQ0LsNHvdr34xjBkRVOLLmtN6k2E+Fb6t07NpT23Y=
+github.com/AstraFoundry/design/packages/mygo v0.0.0-20261111071340-da15d346be1a/go.mod h1:PDjx+wBTODorAKmSwbGBsp6r5Mhql0OVluKLkk8Y3Vk=
 github.com/AstraFoundry/republic v0.0.0-20261105155216-01d51f6604f5 h1:1Dh2ZQ/JfD2PwREsff44jl3T4UoI6X1lbL/YpkIrMTU=
 github.com/AstraFoundry/republic v0.0.0-20261105155216-01d51f6604f5/go.mod h1:/AG+R/p0wXlEDXJxxA2houccAJRlQpQTswOKz+zOOw0=
 github.com/dlclark/regexp2 v1.11.0 h1:G/nrcoOa7ZXlpoa/91N3X7mM3r8eIlMBBJZvsz/mxKI=

@@ -6,15 +6,14 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Tooltip is coss Tooltip over Sunbeam tokens: a short line on hover or
-// focus of anchor, on a card face with a hairline, radius 6, Lifted
-// elevation and Caption text, at most 260 DIP wide. It holds no actions;
+// Tooltip is coss Tooltip in Sunbeam's raised material: a short line on
+// hover or focus of anchor, on the panel surface at radius 6, in Caption
+// text, at most 260 DIP wide. It holds no actions;
 // anything interactive belongs in the view.
 func Tooltip(c *ui.Context, tokens theme.Tokens, anchor ui.Element, text string) {
 	anchor.Description(text)
 	ui.TooltipBase(c, anchor, func(tip ui.Element) {
-		tip.Padding(5, 8).Radius(theme.RadiusMD).Background(tokens.Card).Border(1, tokens.CardBorder).MaxWidth(260)
-		Raise(tip, tokens, Lifted)
+		Popover(c, tip.Padding(5, 8).MaxWidth(260), theme.RadiusMD)
 		tip.Children(func() { ui.Text(c, text).FontSize(theme.Caption).TextColor(tokens.Text) })
 	})
 }
@@ -23,8 +22,8 @@ func Tooltip(c *ui.Context, tokens theme.Tokens, anchor ui.Element, text string)
 // attached below the field: the message stays with the field it is about
 // and nothing around it moves. The field is marked invalid, so a text
 // input draws its border in Danger even while focused and assistive
-// technology reads the message with it; in the callout the alert glyph
-// alone carries the color. The callout starts where the field starts, or,
+// technology reads the message with it; in the callout, on Sunbeam's
+// raised panel surface, the alert glyph alone carries the color. The callout starts where the field starts, or,
 // with end, ends where it ends, for a field at the end of its row. Nothing
 // shows for an empty text.
 func FieldError(c *ui.Context, tokens theme.Tokens, field ui.Element, text string, end bool) {
@@ -38,9 +37,8 @@ func FieldError(c *ui.Context, tokens theme.Tokens, field ui.Element, text strin
 	}
 	ui.Overlay(c, func() {
 		callout := ui.Row(c).AttachTo(field, at, self).Margin(6, 0, 0, 0).
-			MaxWidth(280).Padding(6, 10, 6, 8).Gap(6).AlignItems(ui.Start).PassThrough().
-			Radius(theme.RadiusMD).Background(tokens.Card).Border(1, tokens.CardBorder)
-		Raise(callout, tokens, Lifted)
+			MaxWidth(280).Padding(6, 10, 6, 8).Gap(6).AlignItems(ui.Start).PassThrough()
+		Popover(c, callout, theme.RadiusMD)
 		callout.Children(func() {
 			ui.Icon(c, icons.CircleAlert).FontSize(13).TextColor(tokens.Danger).Margin(1, 0, 0, 0)
 			ui.Text(c, text).FontSize(theme.Caption).TextColor(tokens.Text).Shrink(1)

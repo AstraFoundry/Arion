@@ -46,7 +46,7 @@ func methods(c *ui.Context, store runtime.Store, tokens theme.Tokens, accepted, 
 		}{{"google", icons.Google, copy.AccContinueGoogle}, {"github", icons.GitHub, copy.AccContinueGitHub}, {"email", icons.Mail, copy.AccContinueEmail}} {
 			button := ui.ButtonBase(c.Key("sign-in-"+method.key)).Height(36).Padding(0, 14).Gap(10).Radius(theme.RadiusControl).
 				Justify(ui.Center).AlignItems(ui.Center).Disabled(!enabled)
-			kit.Style(button, tokens, kit.Outline, enabled)
+			kit.Style(c, button, tokens, kit.Outline, enabled)
 			button.Children(func() {
 				// An image keeps the Google mark's own colors; an icon would tint it.
 				ui.Image(c, method.icon).Size(15, 15)
