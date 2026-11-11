@@ -38,15 +38,25 @@ export function checkRelease(config, tag, secret) {
   if (!derived.equals(bytes.subarray(32)) || !derived.equals(decodeKey(config.updates.publicKey, 32, 'public key'))) throw new Error('Update private key does not match the built-in public key');
 }
 
+// MyGo names packages by `slug`, or by its slug of an ASCII `name`; CJK and kana
+// romanization is not reproduced here, so such names must set `slug`.
+export function packageSlug(config) {
+  if (config.slug) return config.slug;
+  if (/[^\x20-\x7e]/.test(config.name)) throw new Error('Set "slug" in desktop.json for a non-ASCII app name');
+  return config.name.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).join('-') || 'app';
+}
+
+// MyGo writes these names; the verifier and release staging must match them exactly.
 export function installerName(config, platform) {
   if (!releasePlatforms.includes(platform)) throw new Error(`Unsupported release platform: ${platform}`);
   const arch = platform.split('-')[1];
-  return platform.startsWith('darwin-') ? `${config.name} ${config.version} ${arch}.dmg` : `${config.name} Setup ${config.version} ${arch}.exe`;
+  const slug = packageSlug(config);
+  return platform.startsWith('darwin-') ? `${slug}-${config.version}-${arch}.dmg` : `${slug}-setup-${config.version}-${arch}.exe`;
 }
 
 export function archiveName(config, platform) {
   if (!releasePlatforms.includes(platform)) throw new Error(`Unsupported release platform: ${platform}`);
-  return `${config.name.toLowerCase()}-${config.version}-${platform}.tar.gz`;
+  return `${packageSlug(config)}-${config.version}-${platform}.tar.gz`;
 }
 
 function requireFile(directory, name) {

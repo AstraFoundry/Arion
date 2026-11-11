@@ -1,12 +1,20 @@
-import { mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { signingRunner } from './desktop-signing.mjs';
-import { platformAssets } from './release.mjs';
+import { installerName, platformAssets } from './release.mjs';
+
+// codesign deprecates ':' in paths and reports a missing file only as a failed check.
+function codesign(run, args) {
+  const file = args.at(-1);
+  if (file.includes(':')) throw new Error(`codesign cannot verify a path containing ':': ${file}`);
+  if (!existsSync(file)) throw new Error(`Missing signed package file: ${file}`);
+  return run('codesign', args);
+}
 
 function verifySignedCode(file, identity, run) {
-  run('codesign', ['--verify', '--strict', file]);
-  const signature = run('codesign', ['--display', '--verbose=4', file]);
+  codesign(run, ['--verify', '--strict', file]);
+  const signature = codesign(run, ['--display', '--verbose=4', file]);
   const team = identity.match(/\(([A-Z0-9]{10})\)$/)[1];
   if (!signature.split('\n').includes(`Authority=${identity}`) || !signature.split('\n').includes(`TeamIdentifier=${team}`)) {
     throw new Error(`Unexpected Developer ID signature: ${file}`);
@@ -18,11 +26,10 @@ function verifySignedCode(file, identity, run) {
 
 export function verifyMacOSDistribution({ directory, config, platform, binaries, identity, updates }, run = signingRunner()) {
   const app = path.join(directory, `${config.name}.app`);
-  const arch = platform.split('-')[1];
-  const dmg = path.join(directory, `${config.name} ${config.version} ${arch}.dmg`);
+  const dmg = path.join(directory, installerName(config, platform));
   for (const file of [app, ...binaries]) verifySignedCode(file, identity, run);
-  run('codesign', ['--verify', '--deep', '--strict', app]);
-  run('codesign', ['--verify', '--strict', dmg]);
+  codesign(run, ['--verify', '--deep', '--strict', app]);
+  codesign(run, ['--verify', '--strict', dmg]);
   for (const file of [app, dmg]) run('xcrun', ['stapler', 'validate', file]);
   run('spctl', ['--assess', '--type', 'execute', '--verbose=4', app]);
   if (!updates) return;
@@ -33,7 +40,7 @@ export function verifyMacOSDistribution({ directory, config, platform, binaries,
     run('tar', ['-xzf', path.join(directory, archive), '-C', unpacked]);
     const updated = path.join(unpacked, `${config.name}.app`);
     verifySignedCode(updated, identity, run);
-    run('codesign', ['--verify', '--deep', '--strict', updated]);
+    codesign(run, ['--verify', '--deep', '--strict', updated]);
     run('xcrun', ['stapler', 'validate', updated]);
   } finally {
     rmSync(unpacked, { recursive: true, force: true });

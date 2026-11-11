@@ -25,6 +25,14 @@ test('future releases require supported targets and reject Intel macOS installer
   assert.throws(() => installerName({ name: 'Arion', version: '0.1.0' }, 'darwin-amd64'), /Unsupported release platform/);
 });
 
+test('package names follow the MyGo slug', () => {
+  assert.equal(installerName({ name: 'Arion', version: '0.1.5' }, 'darwin-arm64'), 'arion-0.1.5-arm64.dmg');
+  assert.equal(installerName({ name: 'Arion', version: '0.1.5' }, 'windows-amd64'), 'arion-setup-0.1.5-amd64.exe');
+  assert.equal(installerName({ name: 'My  App!', version: '1.2.0' }, 'darwin-arm64'), 'my-app-1.2.0-arm64.dmg');
+  assert.equal(archiveName({ name: '云音乐', slug: 'yun-yin-le', version: '1.2.0' }, 'darwin-arm64'), 'yun-yin-le-1.2.0-darwin-arm64.tar.gz');
+  assert.throws(() => installerName({ name: '云音乐', version: '1.2.0' }, 'darwin-arm64'), /Set "slug"/);
+});
+
 function signedRelease(platform = 'darwin-arm64') {
   const { publicKey, privateKey } = generateKeyPairSync('ed25519');
   const config = {
@@ -46,24 +54,24 @@ function signedRelease(platform = 'darwin-arm64') {
 test('verified assets are staged under the contract layout', () => {
   const { config, directory, manifest } = signedRelease();
   try {
-    assert.deepEqual(platformAssets(directory, config, 'darwin-arm64'), ['Arion 0.1.0-alpha.6 arm64.dmg', 'arion-0.1.0-alpha.6-darwin-arm64.tar.gz', 'update-darwin-arm64.json']);
+    assert.deepEqual(platformAssets(directory, config, 'darwin-arm64'), ['arion-0.1.0-alpha.6-arm64.dmg', 'arion-0.1.0-alpha.6-darwin-arm64.tar.gz', 'update-darwin-arm64.json']);
     const record = stagedRecord(directory, config, ['darwin-arm64'], { commit: 'abc', createdAt: '2026-10-20T07:00:00.000Z' });
     assert.deepEqual(Object.keys(record).sort(), Object.keys(fixture).sort());
     assert.equal(record.schema, fixture.schema);
     assert.equal(record.prerelease, true);
     assert.equal(record.notes, '- Faster');
-    assert.equal(record.targets['darwin-arm64'].installer.name, 'Arion.0.1.0-alpha.6.arm64.dmg');
+    assert.equal(record.targets['darwin-arm64'].installer.name, 'arion-0.1.0-alpha.6-arm64.dmg');
     assert.equal(record.targets['darwin-arm64'].update.sha256, digest(Buffer.from('archive bytes')).toString('hex'));
     assert.deepEqual(record.targets['darwin-arm64'].manifest, manifest);
     const uploads = stagingUploads(directory, record);
     assert.deepEqual(uploads.map(upload => upload.key), [
-      'files/Arion.0.1.0-alpha.6.arm64.dmg',
+      'files/arion-0.1.0-alpha.6-arm64.dmg',
       'files/arion-0.1.0-alpha.6-darwin-arm64.tar.gz',
       'releases/0.1.0-alpha.6/SHA256SUMS',
       'releases/0.1.0-alpha.6/RELEASE-STATUS.md',
       'releases/0.1.0-alpha.6/release.json',
     ]);
-    assert.equal(uploads[0].path, path.join(directory, 'Arion 0.1.0-alpha.6 arm64.dmg'));
+    assert.equal(uploads[0].path, path.join(directory, 'arion-0.1.0-alpha.6-arm64.dmg'));
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
@@ -74,10 +82,10 @@ test('Windows release assets require a matching signed archive and manifest', ()
   const { config, directory, manifest } = signedRelease(platform);
   const manifestPath = path.join(directory, `update-${platform}.json`);
   try {
-    assert.deepEqual(platformAssets(directory, config, platform), ['Arion Setup 0.1.0-alpha.6 amd64.exe', 'arion-0.1.0-alpha.6-windows-amd64.tar.gz', 'update-windows-amd64.json']);
+    assert.deepEqual(platformAssets(directory, config, platform), ['arion-setup-0.1.0-alpha.6-amd64.exe', 'arion-0.1.0-alpha.6-windows-amd64.tar.gz', 'update-windows-amd64.json']);
     const record = stagedRecord(directory, config, [platform], { commit: 'abc', createdAt: '2026-10-20T07:00:00.000Z' });
-    assert.equal(record.targets[platform].installer.name, 'Arion.Setup.0.1.0-alpha.6.amd64.exe');
-    assert.equal(stagingUploads(directory, record)[0].key, 'files/Arion.Setup.0.1.0-alpha.6.amd64.exe');
+    assert.equal(record.targets[platform].installer.name, 'arion-setup-0.1.0-alpha.6-amd64.exe');
+    assert.equal(stagingUploads(directory, record)[0].key, 'files/arion-setup-0.1.0-alpha.6-amd64.exe');
     assert.equal(record.targets[platform].update.name, 'arion-0.1.0-alpha.6-windows-amd64.tar.gz');
     assert.deepEqual(record.targets[platform].manifest, manifest);
     assert.equal(stagingUploads(directory, record)[1].key, 'files/arion-0.1.0-alpha.6-windows-amd64.tar.gz');
@@ -99,7 +107,7 @@ test('Windows release assets require a matching signed archive and manifest', ()
 test('unsigned Windows previews collect the native installer without update assets', () => {
   const directory = mkdtempSync(path.join(tmpdir(), 'arion-preview-'));
   const config = { name: 'Arion', version: '0.1.0-alpha.18' };
-  const installer = 'Arion Setup 0.1.0-alpha.18 amd64.exe';
+  const installer = 'arion-setup-0.1.0-alpha.18-amd64.exe';
   try {
     writeFileSync(path.join(directory, installer), 'installer bytes');
     assert.deepEqual(platformAssets(directory, config, 'windows-amd64', false), [installer]);
