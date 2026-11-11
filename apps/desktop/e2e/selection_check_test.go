@@ -34,13 +34,11 @@ func assertSelectionCopyHotwordURLAndSwitch(t *testing.T, selected string, readi
 	}); err != nil || wrote != selected {
 		t.Fatalf("copy %q %v", wrote, err)
 	}
-	var payload domain.ClipPayload
-	var readErr error
-	mygo.RunOnMain(func() {
-		payload, readErr = clipboardos.Read(1<<20, false)
-	})
-	if readErr != nil || payload.Text != selected {
-		t.Fatalf("clipboard %q %v", payload.Text, readErr)
+	// clipboardos.Read is history capture, which refuses Arion's own tagged copies.
+	var clipboard string
+	mygo.RunOnMain(func() { clipboard = mygo.Clipboard.ReadText() })
+	if clipboard != selected {
+		t.Fatalf("clipboard %q", clipboard)
 	}
 
 	path := filepath.Join(t.TempDir(), "vocabulary.bin")
