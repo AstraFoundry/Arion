@@ -21,6 +21,10 @@ type otherPlatform struct{}
 
 func newPlatform() Platform { return otherPlatform{} }
 
+// selectionReader is false: no host reads another app's selected text here,
+// so onboarding omits the selection page.
+const selectionReader = false
+
 func configureInputMethodDiagnostics(func(diagnostics.Entry)) {}
 func configureClipboardWindow(*mygo.Window)                   {}
 func configureClipboardAccessWindow(*mygo.Window)             {}
@@ -46,6 +50,15 @@ func (otherPlatform) NewInputMethod(func(), func()) InputMethod { return nil }
 func (otherPlatform) StartHoldKeys([]application.HoldKey, func(application.HoldKey, holdkey.Event)) error {
 	return domain.Fail(domain.CodeTargetUnsupported, "hold key")
 }
+
+func (otherPlatform) ReadSelection() (string, bool, error) {
+	return "", false, domain.Fail(domain.CodeTargetUnsupported, "selection")
+}
+func (otherPlatform) SelectionAnchor() (int, int, int, int, bool) { return 0, 0, 0, 0, false }
+func (otherPlatform) StartSelectionWatch(func()) error {
+	return domain.Fail(domain.CodeTargetUnsupported, "selection")
+}
+func (otherPlatform) StopSelectionWatch() {}
 
 func (otherPlatform) NewTargets(func() application.Delivery, TargetGates) Targets {
 	return otherTargets{}
