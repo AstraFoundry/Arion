@@ -36,7 +36,7 @@ func coreNumberInput(c *context, value *float64, lo, hi, step float64) *node {
 		}
 	}
 	row.Children(func() {
-		in := coreTextInput(c, text).Width(t.Space(20))
+		in := coreTextInput(c, text).Width(t.Space(20)).Shrink(1).MinWidth(0)
 		in.widget = "NumberInput"
 		in.afterInput(func() {
 			if in.Changed() {

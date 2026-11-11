@@ -22,7 +22,10 @@ import (
 // sliders and progress bars, Value text fields and pop-up buttons, which
 // ExpandCollapse opens; ScrollItem scrolls what is in scroll containers
 // into view. Rows say which of all of their list's they are
-// (PositionInSet, SizeOfSet), as a list builds only those in view.
+// (PositionInSet, SizeOfSet), as a list builds only those in view. Tables
+// and grids have the Grid and Table patterns, their cells and column
+// headers GridItem and TableItem, which say where the cells are among all
+// the rows and columns, built or not.
 //
 // Two methods take doubles, which Go callbacks cannot read: thunks in
 // assembly move their bits to integer registers first (uia_*.s).
@@ -76,6 +79,11 @@ const (
 	ifaceSelection
 	ifaceScrollItem
 	ifaceHwndOverride
+	ifaceText
+	ifaceGrid
+	ifaceGridItem
+	ifaceTable
+	ifaceTableItem
 	uiaIfaces
 )
 
@@ -92,11 +100,17 @@ var uiaIIDs = [uiaIfaces]GUID{
 	guid("fb8b03af-3bdf-48d4-bd36-1a65793be168"), // ISelectionProvider
 	guid("2360c714-4bf1-4b26-ba65-9b21316127eb"), // IScrollItemProvider
 	guid("1d5df27c-8947-4425-b8d9-79787bb460b8"), // IRawElementProviderHwndOverride
+	guid("3589c92c-63f3-4367-99bb-ada653b77cf2"), // ITextProvider
+	guid("b17d6187-0907-464b-a168-0ef17a1572b1"), // IGridProvider
+	guid("d02541f1-fb81-4d64-ae32-f520f8a6dbd1"), // IGridItemProvider
+	guid("9c860395-97b3-490a-b52a-858cc22af166"), // ITableProvider
+	guid("b9734fa6-771f-4d78-9c90-2517999349cd"), // ITableItemProvider
 }
 
 // Pattern identifiers of UI Automation, by interface.
 var uiaPatterns = map[uintptr]int{10000: ifaceInvoke, 10001: ifaceSelection, 10002: ifaceValue, 10003: ifaceRangeValue,
-	10005: ifaceExpandCollapse, 10010: ifaceSelectionItem, 10015: ifaceToggle, 10017: ifaceScrollItem}
+	10005: ifaceExpandCollapse, 10006: ifaceGrid, 10007: ifaceGridItem, 10010: ifaceSelectionItem, 10012: ifaceTable,
+	10013: ifaceTableItem, 10014: ifaceText, 10015: ifaceToggle, 10017: ifaceScrollItem}
 
 const (
 	uiaRootObjectID  = -25
@@ -107,6 +121,7 @@ const (
 	uiaControlTypeProperty      = 30003
 	uiaLocalizedControlProperty = 30004
 	uiaNameProperty             = 30005
+	uiaAcceleratorKeyProperty   = 30006
 	uiaHasKeyboardFocusProperty = 30008
 	uiaIsFocusableProperty      = 30009
 	uiaIsEnabledProperty        = 30010
@@ -129,15 +144,25 @@ const (
 	uiaPositionInSetProperty    = 30152
 	uiaSizeOfSetProperty        = 30153
 	uiaLiveSettingProperty      = 30135
+	uiaAriaRoleProperty         = 30101
+	uiaAriaPropertiesProperty   = 30102
+	uiaLandmarkTypeProperty     = 30157
+	uiaLocalizedLandmarkType    = 30158
+	uiaControllerForProperty    = 30104
+	uiaDescribedByProperty      = 30105
 
 	uiaFocusChangedEvent                = 20005
 	uiaElementAddedToSelectionEvent     = 20010
 	uiaElementRemovedFromSelectionEvent = 20011
 	uiaElementSelectedEvent             = 20012
 	uiaLiveRegionChangedEvent           = 20024
+	uiaTextSelectionChangedEvent        = 20014
+	uiaTextChangedEvent                 = 20015
 
-	// announcerID identifies the live region holding announcements.
+	// announcerID identifies the live region holding announcements, and
+	// alerterID the assertive one holding alerts.
 	announcerID = ^uint64(0)
+	alerterID   = ^uint64(1)
 
 	vtEmpty   = 0
 	vtI4      = 3
@@ -145,6 +170,7 @@ const (
 	vtBSTR    = 8
 	vtBool    = 11
 	vtUnknown = 13
+	vtArray   = 0x2000
 
 	uiaElementNotEnabled   = 0x80040200
 	uiaElementNotAvailable = 0x80040201
@@ -164,7 +190,22 @@ var uiaControlTypes = map[platform.AccessRole]int32{
 	platform.RoleToggleButton: 50000, platform.RoleComboBox: 50003, platform.RoleDisclosure: 50000,
 	platform.RoleMeter: 50012, platform.RoleStepper: 50016, platform.RoleColorWell: 50000, platform.RoleAlertDialog: 50033,
 	platform.RoleMenu: 50009, platform.RoleMenuBar: 50010, platform.RoleMenuItem: 50011, platform.RoleMenuItemCheckBox: 50011,
-	platform.RoleMenuItemRadio: 50011, platform.RoleHeading: 50020,
+	platform.RoleMenuItemRadio: 50011, platform.RoleHeading: 50020, platform.RoleNavigation: 50026,
+	platform.RoleRegion: 50026, platform.RoleLog: 50026, platform.RoleTimer: 50026, platform.RoleAlert: 50026,
+	platform.RoleSeparator: 50038, platform.RoleRowHeader: 50035, platform.RoleSearch: 50026,
+	platform.RoleArticle: 50026, platform.RoleGrid: 50028, platform.RoleTreeGrid: 50028, // DataGrid
+	platform.RoleDeletion: 50020, platform.RoleInsertion: 50020,
+}
+
+// ariaRoles are the ARIA roles of nodes whose control type does not say
+// all, as landmarks' and live regions', in AriaRole, with what
+// LocalizedControlType says of them.
+var ariaRoles = map[platform.AccessRole]string{
+	platform.RoleNavigation: "navigation", platform.RoleRegion: "region", platform.RoleLog: "log",
+	platform.RoleTimer: "timer", platform.RoleAlert: "alert", platform.RoleSeparator: "separator",
+	platform.RoleRowHeader: "rowheader", platform.RoleSearch: "search", platform.RoleArticle: "article",
+	platform.RoleGrid: "grid", platform.RoleTreeGrid: "treegrid",
+	platform.RoleDeletion: "deletion", platform.RoleInsertion: "insertion",
 }
 
 // variant is VARIANT, with the value of the types used here.
@@ -187,14 +228,20 @@ type uiaIface struct {
 
 // uiaElement is a node of the tree as UI Automation sees it, or the root.
 type uiaElement struct {
-	ifaces   [uiaIfaces]uiaIface
-	refs     int32
-	tree     *uiaTree
-	root     bool
-	dead     bool
-	n        platform.AccessNode
-	parent   *uiaElement
-	children []*uiaElement
+	ifaces [uiaIfaces]uiaIface
+	refs   int32
+	tree   *uiaTree
+	root   bool
+	dead   bool
+	n      platform.AccessNode
+	// textRunes are the runes of n.Value, runesOf the value they are of.
+	textRunes []rune
+	runesOf   string
+	parent    *uiaElement
+	children  []*uiaElement
+	// oldChildren are the children of the last tree while update builds
+	// the next one, which then reuses it for its children.
+	oldChildren []*uiaElement
 }
 
 // uiaTree is what UI Automation sees of a surface.
@@ -205,8 +252,22 @@ type uiaTree struct {
 	order []*uiaElement // in the order of the content's tree
 	focus uint64
 	quiet bool // building the tree a client asked for
-	// announced is the text of the live region of announcements.
-	announced string
+	// announced is the text of the live region of announcements, and
+	// alerted that of the alerts'.
+	announced, alerted string
+
+	// What update reuses from frame to frame, as the content describes
+	// every frame once a client asked: the map and the order of the last
+	// tree but one, the last tree's nodes and whether the elements are
+	// new, the nodes with the announcer, and the children a parent gained
+	// and lost.
+	spareNodes     map[uint64]*uiaElement
+	spareOrder     []*uiaElement
+	prev           []platform.AccessNode
+	fresh          []bool
+	withAnnouncer  []platform.AccessNode
+	announcerTree  platform.AccessTree
+	added, removed []*uiaElement
 }
 
 func (e *uiaElement) ptr(i int) uintptr { return uintptr(unsafe.Pointer(&e.ifaces[i])) }
@@ -263,24 +324,37 @@ func (e *uiaElement) supports(i int) bool {
 		switch n.Role {
 		case platform.RoleRadio, platform.RoleTab, platform.RoleTreeItem:
 			return true
-		case platform.RoleListItem, platform.RoleRow:
+		case platform.RoleListItem, platform.RoleRow, platform.RoleCell, platform.RoleColumnHeader, platform.RoleRowHeader:
+			// Rows a list chooses, and cells chosen or not, as ARIA's
+			// gridcells with aria-selected.
 			return n.States&platform.AccessSelectable != 0
 		}
 		return false
 	case ifaceSelection:
-		// A list or table choosing its rows.
-		return (n.Role == platform.RoleList || n.Role == platform.RoleTable || n.Role == platform.RoleTree) && n.States&platform.AccessSelectable != 0
+		// A list, table or grid choosing its rows.
+		return (n.Role == platform.RoleList || n.Role == platform.RoleTree || n.Role.Tabular()) && n.States&platform.AccessSelectable != 0
+	case ifaceGrid, ifaceTable:
+		return n.Role.Tabular()
+	case ifaceGridItem, ifaceTableItem:
+		return cellOf(n.Role) && e.grid() != nil
 	case ifaceScrollItem:
 		return n.Actions&platform.ActionScrollIntoView != 0
 	case ifaceRangeValue:
 		return n.Role.Ranged()
 	case ifaceValue:
+		// A range with a text for its value (aria-valuetext) gives it
+		// as the Value pattern's beside RangeValue, as Core-AAM maps it.
 		return n.Role == platform.RoleTextField || n.Role == platform.RolePopUpButton || n.Role == platform.RoleComboBox ||
-			n.Role == platform.RoleColorWell
+			n.Role == platform.RoleColorWell || n.Role.Ranged() && n.Value != ""
+	case ifaceText:
+		// Text fields' text, by characters, formats, words and lines,
+		// with the formats of a rich text's runs; a password's is not.
+		return n.Role == platform.RoleTextField && n.States&platform.AccessPassword == 0
 	case ifaceExpandCollapse:
 		// A menu button expands into its menu, as WinUI's DropDownButton.
+		// What opens a popup (aria-haspopup) expands into it too.
 		return n.Role == platform.RolePopUpButton || n.Role == platform.RoleTreeItem || n.Role == platform.RoleMenuButton ||
-			n.Role == platform.RoleComboBox || n.Role == platform.RoleDisclosure
+			n.Role == platform.RoleComboBox || n.Role == platform.RoleDisclosure || n.HasPopup != platform.PopupNone
 	}
 	return false
 }
@@ -372,6 +446,9 @@ func (s *surface) destroyAccess() {
 	}
 	t.root.disconnect()
 	t.nodes, t.order = nil, nil
+	// Elements COM still holds keep the tree: let go of what update kept.
+	t.spareNodes, t.spareOrder, t.prev, t.fresh, t.withAnnouncer, t.added, t.removed = nil, nil, nil, nil, nil, nil, nil
+	t.announcerTree = platform.AccessTree{}
 }
 
 // disconnect lets go of an element that left the tree.
@@ -383,7 +460,36 @@ func (e *uiaElement) disconnect() {
 	e.release()
 }
 
-func listening() bool {
+// childChanges returns the children of now that were not in old, and
+// those of old no longer in now, appended to added and removed emptied.
+func childChanges(old, now, added, removed []*uiaElement) ([]*uiaElement, []*uiaElement) {
+	added, removed = added[:0], removed[:0]
+	if slices.Equal(old, now) {
+		return added, removed // as on most frames, without comparing each with all
+	}
+	for _, k := range old {
+		if !slices.Contains(now, k) {
+			removed = append(removed, k)
+		}
+	}
+	for _, k := range now {
+		if !slices.Contains(old, k) {
+			added = append(added, k)
+		}
+	}
+	return added, removed
+}
+
+// clearSlice empties s, letting go of what it held, and returns it to
+// fill again.
+func clearSlice[T any](s []T) []T {
+	clear(s)
+	return s[:0]
+}
+
+// listening reports whether clients of UI Automation listen for its
+// events; tests replace it.
+var listening = func() bool {
 	r, _, _ := procUiaClientsAreListening.Call()
 	return r != 0
 }
@@ -394,35 +500,61 @@ func (t *uiaTree) update(tree *platform.AccessTree) {
 	// notification events (UiaRaiseNotificationEvent), which a provider of
 	// another process raises, reached no client in tests, unlike its other
 	// events.
+	// Alerts go into an assertive one beside it, which interrupts.
 	if len(tree.Announcements) > 0 {
 		t.announced = strings.Join(tree.Announcements, " ")
 	}
-	if t.announced != "" {
-		announcer := platform.AccessNode{ID: announcerID, Parent: -1, Role: platform.RoleText, Label: t.announced, Bounds: platform.RectF{W: 1, H: 1}}
-		tree = &platform.AccessTree{Nodes: append(slices.Clip(tree.Nodes), announcer), Focus: tree.Focus, Announcements: tree.Announcements}
+	if len(tree.Alerts) > 0 {
+		t.alerted = strings.Join(tree.Alerts, " ")
+	}
+	if t.announced != "" || t.alerted != "" {
+		t.withAnnouncer = append(t.withAnnouncer[:0], tree.Nodes...)
+		for _, a := range []struct {
+			id   uint64
+			text string
+		}{{announcerID, t.announced}, {alerterID, t.alerted}} {
+			if a.text != "" {
+				t.withAnnouncer = append(t.withAnnouncer, platform.AccessNode{ID: a.id, Parent: -1, Role: platform.RoleText, Label: a.text, Bounds: platform.RectF{W: 1, H: 1}})
+			}
+		}
+		t.announcerTree = platform.AccessTree{Nodes: t.withAnnouncer, Focus: tree.Focus, Announcements: tree.Announcements, Alerts: tree.Alerts}
+		tree = &t.announcerTree
 	}
 	notify := !t.quiet && listening()
+	n := len(tree.Nodes)
 	old := t.nodes
-	t.nodes = make(map[uint64]*uiaElement, len(tree.Nodes))
-	order := make([]*uiaElement, len(tree.Nodes))
-	prev := make([]platform.AccessNode, len(tree.Nodes))
-	fresh := make([]bool, len(tree.Nodes))
-	oldKids := map[*uiaElement][]*uiaElement{t.root: t.root.children}
-	for i, n := range tree.Nodes {
-		e := old[n.ID]
+	t.nodes, t.spareNodes = t.spareNodes, nil
+	if t.nodes == nil {
+		t.nodes = make(map[uint64]*uiaElement, n)
+	}
+	order := slices.Grow(t.spareOrder[:0], n)[:n]
+	var prev []platform.AccessNode
+	var fresh []bool
+	if notify {
+		prev, fresh = slices.Grow(t.prev[:0], n)[:n], slices.Grow(t.fresh[:0], n)[:n]
+		clear(fresh)
+		t.prev, t.fresh = prev, fresh
+	}
+	keepChildren := func(e *uiaElement) { e.oldChildren, e.children = e.children, e.oldChildren[:0] }
+	keepChildren(t.root)
+	for i, node := range tree.Nodes {
+		e := old[node.ID]
 		if e != nil {
-			delete(old, n.ID)
-			oldKids[e] = e.children
-			prev[i] = e.n
+			delete(old, node.ID)
+			keepChildren(e)
+			if notify {
+				prev[i] = e.n
+			}
 		} else {
 			e = newUIAElement(t)
-			fresh[i] = true
+			if notify {
+				fresh[i] = true
+			}
 		}
-		e.n, e.children = n, nil
-		t.nodes[n.ID] = e
+		e.n = node
+		t.nodes[node.ID] = e
 		order[i] = e
 	}
-	t.root.children = nil
 	for _, e := range order {
 		e.parent = t.root
 		if e.n.Parent >= 0 {
@@ -430,20 +562,14 @@ func (t *uiaTree) update(tree *platform.AccessTree) {
 		}
 		e.parent.children = append(e.parent.children, e)
 	}
-	t.order = order
+	t.spareOrder, t.order = t.order, order
+	clear(t.spareOrder) // the elements of the last tree but one
 	if notify {
-		for parent, kids := range oldKids {
-			var added, removed []*uiaElement
-			for _, k := range kids {
-				if !slices.Contains(parent.children, k) {
-					removed = append(removed, k)
-				}
-			}
-			for _, k := range parent.children {
-				if !slices.Contains(kids, k) {
-					added = append(added, k)
-				}
-			}
+		// The children elements gained and lost, of the root and of the
+		// elements the last tree had too.
+		structure := func(parent *uiaElement) {
+			added, removed := childChanges(parent.oldChildren, parent.children, t.added, t.removed)
+			defer func() { t.added, t.removed = clearSlice(added), clearSlice(removed) }()
 			switch {
 			case len(added)+len(removed) > 1:
 				id := parent.runtimeID()
@@ -459,15 +585,30 @@ func (t *uiaTree) update(tree *platform.AccessTree) {
 					uintptr(unsafe.Pointer(&id[0])), uintptr(len(id)))
 			}
 		}
+		structure(t.root)
+		for i, e := range order {
+			if !fresh[i] {
+				structure(e)
+			}
+		}
 		for i, e := range order {
 			if !fresh[i] {
 				e.notifyChanges(prev[i])
 			}
 		}
+		clear(prev) // let go of the last tree's strings
+	}
+	// The children of the last tree are no longer needed, but their
+	// slices are, for the next.
+	t.root.oldChildren = clearSlice(t.root.oldChildren)
+	for _, e := range order {
+		e.oldChildren = clearSlice(e.oldChildren)
 	}
 	for _, e := range old {
 		e.disconnect()
 	}
+	clear(old)
+	t.spareNodes = old
 	if tree.Focus != t.focus {
 		t.focus = tree.Focus
 		if e := t.nodes[t.focus]; e != nil && notify {
@@ -480,6 +621,13 @@ func (t *uiaTree) update(tree *platform.AccessTree) {
 	if e := t.nodes[announcerID]; e != nil && notify && len(tree.Announcements) > 0 {
 		procUiaRaiseAutomationEvent.Call(e.ptr(ifaceSimple), uiaLiveRegionChangedEvent)
 	}
+	if e := t.nodes[alerterID]; e != nil && notify && len(tree.Alerts) > 0 {
+		procUiaRaiseAutomationEvent.Call(e.ptr(ifaceSimple), uiaLiveRegionChangedEvent)
+	}
+	// The elements hold copies of the nodes: let go of the content's
+	// strings and of its announcements, which it reuses.
+	t.withAnnouncer = clearSlice(t.withAnnouncer)
+	t.announcerTree = platform.AccessTree{}
 }
 
 // notifyChanges tells UI Automation's clients how an element changed since
@@ -501,6 +649,14 @@ func (e *uiaElement) notifyChanges(prev platform.AccessNode) {
 	}
 	if prev.States&platform.AccessDisabled != n.States&platform.AccessDisabled {
 		changed(uiaIsEnabledProperty, boolVariant(prev.States&platform.AccessDisabled == 0), boolVariant(n.States&platform.AccessDisabled == 0))
+	}
+	// A field marked invalid as the user leaves it, and what describes
+	// it, as its message showing.
+	if prev.States&platform.AccessInvalid != n.States&platform.AccessInvalid {
+		changed(uiaIsDataValidProperty, boolVariant(prev.States&platform.AccessInvalid == 0), boolVariant(n.States&platform.AccessInvalid == 0))
+	}
+	if prev.Description != n.Description {
+		str(uiaFullDescriptionProperty, prev.Description, n.Description)
 	}
 	switch {
 	case e.supports(ifaceToggle):
@@ -533,6 +689,17 @@ func (e *uiaElement) notifyChanges(prev platform.AccessNode) {
 	}
 	if e.supports(ifaceValue) && prev.Value != n.Value {
 		str(uiaValueProperty, prev.Value, n.Value)
+	}
+	if e.supports(ifaceText) {
+		if prev.Value != n.Value || !slices.Equal(prev.TextRuns, n.TextRuns) {
+			procUiaRaiseAutomationEvent.Call(e.ptr(ifaceSimple), uiaTextChangedEvent)
+		}
+		if prev.SelStart != n.SelStart || prev.SelEnd != n.SelEnd {
+			procUiaRaiseAutomationEvent.Call(e.ptr(ifaceSimple), uiaTextSelectionChangedEvent)
+		}
+	}
+	if before, after := ariaProperties(prev), ariaProperties(n); before != after {
+		str(uiaAriaPropertiesProperty, before, after)
 	}
 	if e.supports(ifaceExpandCollapse) && prev.States&platform.AccessExpanded != n.States&platform.AccessExpanded {
 		changed(uiaExpandStateProperty, variant{VT: vtI4, Val: uint64(expandState(prev))}, variant{VT: vtI4, Val: uint64(expandState(n))})
@@ -582,12 +749,14 @@ func (e *uiaElement) runtimeID() []int32 {
 	return []int32{3, int32(uint32(e.n.ID)), int32(uint32(e.n.ID >> 32))}
 }
 
-// act performs an action of assistive technology on the element.
+// act performs an action of assistive technology on the element. One
+// disabled takes none, but the focus where it keeps it, as one that is
+// only unavailable does (aria-disabled), as Chromium's.
 func (e *uiaElement) act(action platform.AccessActionKind, text string) uintptr {
 	switch {
 	case e.dead:
 		return uiaElementNotAvailable
-	case e.n.States&platform.AccessDisabled != 0:
+	case e.n.States&platform.AccessDisabled != 0 && (action != platform.AccessFocus || e.n.Actions&platform.ActionFocus == 0):
 		return uiaElementNotEnabled
 	}
 	e.tree.s.send(platform.SurfaceEvent{Kind: platform.AccessAction, ID: e.n.ID, Action: action, Text: text})
@@ -654,7 +823,7 @@ func initUIA() {
 			if hr, ok := uiaOf(this).pageCall(uiaGetProviderOptions, p); ok {
 				return hr
 			}
-			*(*int32)(native(p)) = 0x1 | 0x20 // ServerSideProvider, UseComThreading
+			*(*int32)(native(p)) = 0x2 | 0x20 // ServerSideProvider, UseComThreading
 			return sOK
 		}),
 		cb(func(this, pattern, p uintptr) uintptr { // GetPatternProvider
@@ -818,6 +987,9 @@ func initUIA() {
 		}),
 	)
 
+	uiaVtbls[ifaceText] = vtbl(textProviderMethods()...)
+	initTextRanges()
+
 	uiaVtbls[ifaceRoot] = vtbl(
 		fromPoint,
 		cb(func(this, p uintptr) uintptr { // GetFocus
@@ -847,17 +1019,24 @@ func initUIA() {
 	)
 
 	selected := func(e *uiaElement) bool { return e.n.States&platform.AccessChecked != 0 }
-	selectItem := cb(func(this uintptr) uintptr { // Select, AddToSelection
+	selectItem := func(this uintptr, add bool) uintptr {
 		e, hr := live(this)
-		if e == nil || selected(e) {
+		if e == nil {
 			return hr
 		}
+		// What is selected is left as it is, but for Select on an
+		// option of a list box, as a select's popup, whose selected
+		// option is the one highlighted: Select chooses it, as a press
+		// does, as Enter would.
+		if selected(e) && (add || e.n.Role != platform.RoleListItem || e.n.Actions&platform.ActionFocus == 0) {
+			return sOK
+		}
 		return e.act(platform.AccessPress, "")
-	})
+	}
 	uiaVtbls[ifaceSelectionItem] = vtbl(
-		selectItem,
-		selectItem,
-		cb(func(this uintptr) uintptr { return uiaInvalidOperation }), // RemoveFromSelection
+		cb(func(this uintptr) uintptr { return selectItem(this, false) }), // Select
+		cb(func(this uintptr) uintptr { return selectItem(this, true) }),  // AddToSelection
+		cb(func(this uintptr) uintptr { return uiaInvalidOperation }),     // RemoveFromSelection
 		cb(func(this, p uintptr) uintptr { // get_IsSelected
 			setBool(p, selected(uiaOf(this)))
 			return sOK
@@ -878,13 +1057,7 @@ func initUIA() {
 			if e == nil {
 				return hr
 			}
-			chosen := e.chosen()
-			sa, _, _ := procSafeArrayCreateVector.Call(vtUnknown, 0, uintptr(len(chosen)))
-			for i, d := range chosen {
-				index := int32(i)
-				procSafeArrayPutElement.Call(sa, uintptr(unsafe.Pointer(&index)), d.ptr(ifaceSimple))
-			}
-			*(*uintptr)(native(p)) = sa
+			*(*uintptr)(native(p)) = elementArray(e.chosen())
 			return sOK
 		}),
 		cb(func(this, p uintptr) uintptr { // get_CanSelectMultiple
@@ -901,6 +1074,8 @@ func initUIA() {
 			return sOK
 		}),
 	)
+
+	gridVtbls(vtbl, live)
 
 	uiaVtbls[ifaceScrollItem] = vtbl(
 		cb(func(this uintptr) uintptr { // ScrollIntoView
@@ -1007,6 +1182,11 @@ func (e *uiaElement) property(id int, v *variant) {
 	case uiaControlTypeProperty:
 		*v = variant{VT: vtI4, Val: uint64(uiaControlTypes[n.Role])}
 	case uiaLocalizedControlProperty:
+		if n.RoleDescription != "" {
+			// What the app calls its role (aria-roledescription).
+			str(n.RoleDescription)
+			break
+		}
 		switch n.Role {
 		case platform.RoleSwitch:
 			str("toggle switch")
@@ -1022,6 +1202,15 @@ func (e *uiaElement) property(id int, v *variant) {
 			str("popup")
 		case platform.RoleHeading:
 			str("heading")
+		case platform.RoleRegion, platform.RoleLog, platform.RoleTimer, platform.RoleAlert, platform.RoleArticle,
+			platform.RoleDeletion, platform.RoleInsertion:
+			str(ariaRoles[n.Role])
+		case platform.RoleRowHeader:
+			str("row header")
+		case platform.RoleTextField:
+			if n.States&platform.AccessSearch != 0 {
+				str("search box") // as Core-AAM's searchbox
+			}
 		}
 	case uiaNameProperty:
 		str(n.Label)
@@ -1041,6 +1230,10 @@ func (e *uiaElement) property(id int, v *variant) {
 		}
 	case uiaFullDescriptionProperty:
 		str(n.Description)
+	case uiaAcceleratorKeyProperty:
+		// The keys that press or focus it (aria-keyshortcuts), as
+		// Chromium's.
+		str(n.KeyShortcuts)
 	case uiaItemStatusProperty:
 		// The order of the column a table is sorted by, as Chromium says.
 		switch {
@@ -1048,6 +1241,34 @@ func (e *uiaElement) property(id int, v *variant) {
 			str("ascending")
 		case n.States&platform.AccessSortDescending != 0:
 			str("descending")
+		case n.States&platform.AccessSortOther != 0:
+			str("other")
+		}
+	case uiaControllerForProperty, uiaDescribedByProperty:
+		// What the element controls (aria-controls) and, while it is
+		// invalid, the elements holding its error (aria-errormessage), as
+		// Core-AAM maps both; or those describing it (aria-describedby).
+		// Of this tree.
+		ids := n.DescribedBy
+		if id == uiaControllerForProperty {
+			ids = n.Controls
+			if n.States&platform.AccessInvalid != 0 {
+				ids = append(slices.Clip(ids), n.ErrorMessage...)
+			}
+		}
+		var targets []*uiaElement
+		for _, id := range ids {
+			if t := e.tree.nodes[id]; t != nil {
+				targets = append(targets, t)
+			}
+		}
+		if len(targets) > 0 {
+			sa, _, _ := procSafeArrayCreateVector.Call(vtUnknown, 0, uintptr(len(targets)))
+			for i, t := range targets {
+				index := int32(i)
+				procSafeArrayPutElement.Call(sa, uintptr(unsafe.Pointer(&index)), t.ptr(ifaceSimple))
+			}
+			*v = variant{VT: vtArray | vtUnknown, Val: uint64(sa)}
 		}
 	case uiaIsDataValidProperty:
 		*v = boolVariant(n.States&platform.AccessInvalid == 0)
@@ -1060,13 +1281,10 @@ func (e *uiaElement) property(id int, v *variant) {
 	case uiaIsOffscreenProperty:
 		*v = boolVariant(n.States&platform.AccessOffscreen != 0)
 	case uiaOrientationProperty:
-		// OrientationType_Horizontal or Vertical, of a slider.
-		if n.Role == platform.RoleSlider {
-			o := uint64(1)
-			if n.States&platform.AccessVertical != 0 {
-				o = 2
-			}
-			*v = variant{VT: vtI4, Val: o}
+		// OrientationType_Horizontal or Vertical (aria-orientation), a
+		// slider and a rule across unless told.
+		if o := orientation(n); o != 0 {
+			*v = variant{VT: vtI4, Val: uint64(o)}
 		}
 	case uiaHeadingLevelProperty:
 		// HeadingLevel1 to HeadingLevel9, as Chromium's headings.
@@ -1086,11 +1304,93 @@ func (e *uiaElement) property(id int, v *variant) {
 			*v = variant{VT: vtI4, Val: uint64(n.SetSize)}
 		}
 	case uiaLiveSettingProperty:
-		// Statuses, as toasts, and announcements are polite live regions.
-		if n.Role == platform.RoleStatus || n.ID == announcerID {
+		// Statuses, as toasts, logs and announcements are polite live
+		// regions, alerts and the alerts' region assertive ones.
+		live, _ := n.Role.Live()
+		switch {
+		case live == "assertive" || n.ID == alerterID:
+			*v = variant{VT: vtI4, Val: 2} // Assertive
+		case live == "polite" || n.ID == announcerID:
 			*v = variant{VT: vtI4, Val: 1} // Polite
 		}
+	case uiaLandmarkTypeProperty:
+		switch n.Role {
+		case platform.RoleNavigation:
+			*v = variant{VT: vtI4, Val: 80003} // UIA_NavigationLandmarkTypeId
+		case platform.RoleSearch:
+			*v = variant{VT: vtI4, Val: 80004} // UIA_SearchLandmarkTypeId
+		case platform.RoleRegion:
+			*v = variant{VT: vtI4, Val: 80000} // UIA_CustomLandmarkTypeId
+		}
+	case uiaLocalizedLandmarkType:
+		if n.Role == platform.RoleRegion {
+			str("region")
+		}
+	case uiaAriaRoleProperty:
+		if n.Role == platform.RoleTextField && n.States&platform.AccessSearch != 0 {
+			str("searchbox")
+			break
+		}
+		str(ariaRoles[n.Role])
+	case uiaAriaPropertiesProperty:
+		str(ariaProperties(n))
 	}
+}
+
+// orientation returns the OrientationType of a node: Vertical (2) or
+// Horizontal (1) where it says, else Horizontal for a slider or a rule,
+// None (0) for others.
+func orientation(n platform.AccessNode) int32 {
+	switch {
+	case n.States&platform.AccessVertical != 0:
+		return 2
+	case n.States&platform.AccessHorizontal != 0, n.Role == platform.RoleSlider || n.Role == platform.RoleSeparator:
+		return 1
+	}
+	return 0
+}
+
+// ariaProperties returns the ARIA states of a node that UI Automation has
+// no property of, as Chromium gives them in AriaProperties: busy=true for
+// content about to change, current=page for the current item, the kind of
+// popup the element opens (haspopup=menu), and the order a column sorts
+// its table in (sort=ascending); and autocomplete=list for a field whose
+// suggestions show in a popup, which Chromium gives IAccessible2 alone,
+// as an object attribute.
+func ariaProperties(n platform.AccessNode) string {
+	var props []string
+	if n.States&platform.AccessBusy != 0 {
+		props = append(props, "busy=true")
+	}
+	if c := n.Current; c != platform.CurrentNone {
+		props = append(props, "current="+c.String())
+	}
+	if a := n.AutoComplete; a != platform.AutoCompleteNone {
+		props = append(props, "autocomplete="+a.String())
+	}
+	if p := n.HasPopup; p != platform.PopupNone {
+		props = append(props, "haspopup="+p.String())
+	}
+	switch {
+	case n.States&platform.AccessSortAscending != 0:
+		props = append(props, "sort=ascending")
+	case n.States&platform.AccessSortDescending != 0:
+		props = append(props, "sort=descending")
+	case n.States&platform.AccessSortOther != 0:
+		props = append(props, "sort=other")
+	}
+	return strings.Join(props, ";")
+}
+
+// elementArray returns a SAFEARRAY of the providers of elements, as the
+// patterns' methods return several.
+func elementArray(es []*uiaElement) uintptr {
+	sa, _, _ := procSafeArrayCreateVector.Call(vtUnknown, 0, uintptr(len(es)))
+	for i, d := range es {
+		index := int32(i)
+		procSafeArrayPutElement.Call(sa, uintptr(unsafe.Pointer(&index)), d.ptr(ifaceSimple))
+	}
+	return sa
 }
 
 // chosen returns the elements chosen in the element's Selection.

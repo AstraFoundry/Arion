@@ -1,7 +1,17 @@
 // The public types are those of the mygo-runtime package.
-import type { Platform } from "../../runtime/src/types";
+import type { Direction, Platform } from "../../runtime/src/types";
+import type { ContextTarget } from "./context-menu";
+import type { FitLimits } from "./fit-content";
 
-export type { Channel, Platform, Runtime, WindowControls } from "../../runtime/src/types";
+export type {
+  Channel,
+  Direction,
+  LocaleChange,
+  Platform,
+  Runtime,
+  ThemePreferences,
+  WindowControls,
+} from "../../runtime/src/types";
 
 /** Configuration injected by the Go side in front of the bridge. */
 export interface BridgeConfig {
@@ -10,6 +20,12 @@ export interface BridgeConfig {
   version: string;
   /** Prefixes every message, so Go can tell ours from other frames'. */
   secret: string;
+  /** The language the app shows, e.g. "zh-Hans", and its direction. */
+  locale: string;
+  dir: Direction;
+  /** The limits of a window that takes its content's size (FitContent), in
+   * CSS pixels; absent for other windows. */
+  fit?: FitLimits;
 }
 
 /** Messages posted from the page to Go. */
@@ -19,8 +35,16 @@ export type Outgoing =
   | { t: "chan-ack"; c: number; k: string; n: number }
   | { t: "chan-close"; c: number; k: string }
   | { t: "dom-ready" }
+  /** The page's theme color changed: #rrggbbaa, or "" for none. */
+  | { t: "theme-color"; v: string }
+  /** The size of the content of a window that takes it (FitContent), in CSS
+   * pixels, scrollbars included. */
+  | { t: "content-size"; w: number; h: number; sw: number; sh: number }
   | { t: "drag" }
-  | { t: "dblclick" };
+  | { t: "dblclick" }
+  /** A context menu opens at x, y, in CSS pixels of the viewport, on what
+   * the rest tells (ContextTarget). */
+  | ({ t: "context-menu"; x: number; y: number } & ContextTarget);
 
 /** Messages delivered from Go to the page. */
 export type Incoming =

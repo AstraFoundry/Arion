@@ -34,7 +34,7 @@ const webPlatform = "js/wasm"
 // webPage returns the page loading the app from wasm: a spinner while it
 // loads, then its windows, which fill the page. In development, it reloads
 // as the app is rebuilt, and shows why a build failed.
-func webPage(c *Config, wasm, icon string, dev bool) string {
+func webPage(c *Config, wasm, icon string, dev bool, locale string) string {
 	var b strings.Builder
 	b.WriteString(`<!doctype html>
 <html lang="en">
@@ -75,7 +75,12 @@ func webPage(c *Config, wasm, icon string, dev bool) string {
       const go = new Go()
 `)
 	if dev {
-		b.WriteString(`      go.env = { MYGO_ENV: "development" }
+		env := `MYGO_ENV: "development"`
+		if locale != "" {
+			// mygo dev -lang: the language the app runs in.
+			env += `, MYGO_LOCALE: ` + strconv.Quote(locale)
+		}
+		b.WriteString(`      go.env = { ` + env + ` }
       // mygo dev: a new build reloads the page; one that failed shows why.
       const events = new EventSource("` + devEvents + `")
       events.addEventListener("reload", () => location.reload())
@@ -129,6 +134,7 @@ func compileWeb(ctx context.Context, c *Config, t *task, out string, debug bool,
 	if !debug {
 		ldflags += " -X github.com/egoist/mygo.production=1"
 	}
+	ldflags += extraLDFlags()
 	flags := []string{"-trimpath", "-ldflags", ldflags}
 	flags = append(flags, productionTags(debug)...)
 	if overlay != "" {
@@ -170,7 +176,7 @@ func buildWeb(c *Config, opts buildOptions) ([]string, error) {
 		return nil, err
 	}
 	sum := sha256.Sum256(data)
-	name := slugify(c.Name) + "." + hex.EncodeToString(sum[:6]) + ".wasm"
+	name := c.slug() + "." + hex.EncodeToString(sum[:6]) + ".wasm"
 	if err := os.Rename(wasm, filepath.Join(stage, name)); err != nil {
 		return nil, err
 	}
@@ -188,17 +194,14 @@ func buildWeb(c *Config, opts buildOptions) ([]string, error) {
 		iconName = "icon" + filepath.Ext(c.Icon)
 		files[iconName] = icon
 	}
-	files["index.html"] = []byte(webPage(c, name, iconName, false))
+	files["index.html"] = []byte(webPage(c, name, iconName, false, ""))
 	for file, b := range files {
 		if err := os.WriteFile(filepath.Join(stage, file), b, 0o644); err != nil {
 			return nil, err
 		}
 	}
 	dir := filepath.Join(out, "web")
-	if err := os.RemoveAll(dir); err != nil {
-		return nil, err
-	}
-	if err := os.Rename(stage, dir); err != nil {
+	if err := replacePath(stage, dir); err != nil {
 		return nil, err
 	}
 	artifacts := []string{filepath.Join(dir, "index.html"), filepath.Join(dir, name), filepath.Join(dir, "wasm_exec.js")}
@@ -216,40 +219,41 @@ const devEvents = "/__mygo/events"
 // loader and the last build that compiled, with the events that reload
 // pages.
 type webDev struct {
-	c      *Config
 	loader []byte
-	icon   []byte
+	locale string // of -lang, which the app reads as MYGO_LOCALE
 
 	mu      sync.Mutex
+	c       *Config
+	icon    []byte
 	wasm    []byte
 	failure string // why the last build failed, "" after one that compiled
 	clients map[chan [2]string]bool
 }
 
 func (d *webDev) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	d.mu.Lock()
+	c, icon, wasm := d.c, d.icon, d.wasm
+	d.mu.Unlock()
 	w.Header().Set("Cache-Control", "no-store")
 	switch r.URL.Path {
 	case "/", "/index.html":
-		icon := ""
-		if d.icon != nil {
-			icon = "icon" + filepath.Ext(d.c.Icon)
+		iconName := ""
+		if icon != nil {
+			iconName = "icon" + filepath.Ext(c.Icon)
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		_, _ = w.Write([]byte(webPage(d.c, "app.wasm", icon, true)))
+		_, _ = w.Write([]byte(webPage(c, "app.wasm", iconName, true, d.locale)))
 	case "/wasm_exec.js":
 		w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
 		_, _ = w.Write(d.loader)
 	case "/app.wasm":
-		d.mu.Lock()
-		wasm := d.wasm
-		d.mu.Unlock()
 		w.Header().Set("Content-Type", "application/wasm")
 		_, _ = w.Write(wasm)
 	case devEvents:
 		d.events(w, r)
 	default:
-		if d.icon != nil && r.URL.Path == "/icon"+filepath.Ext(d.c.Icon) {
-			_, _ = w.Write(d.icon)
+		if icon != nil && r.URL.Path == "/icon"+filepath.Ext(c.Icon) {
+			_, _ = w.Write(icon)
 			return
 		}
 		http.NotFound(w, r)
@@ -306,10 +310,68 @@ func (d *webDev) broadcast(event, data string) {
 	}
 }
 
+// build recompiles the app and tells open pages of the result.
+// why is what changed, as "main.go changed", or "".
+func (d *webDev) build(ctx context.Context, wasm, why string) bool {
+	d.mu.Lock()
+	c := d.c
+	d.mu.Unlock()
+	title := "Building " + c.Name + " for browsers"
+	if why != "" {
+		title += " (" + why + ")"
+	}
+	t := con.start(title)
+	var err error
+	var icon []byte
+	if c2, cerr := loadConfig(c.root); cerr != nil {
+		err = cerr
+	} else if out, ierr := writeI18n(c2); ierr != nil {
+		err = ierr
+	} else {
+		for _, f := range out.written {
+			t.set("wrote " + f)
+		}
+		c = c2
+		if icon, err = webIcon(c); err == nil {
+			err = compileWeb(ctx, c, t, wasm, true, "")
+		}
+	}
+	var data []byte
+	if err == nil {
+		data, err = os.ReadFile(wasm)
+	}
+	switch {
+	case errors.Is(err, context.Canceled):
+		t.stop()
+		return false
+	case err != nil:
+		t.fail()
+		con.details(err)
+		con.println("  " + dim("The page shows why: save a fix to try again."))
+		b, _ := json.Marshal(err.Error())
+		d.mu.Lock()
+		d.failure = err.Error()
+		d.mu.Unlock()
+		d.broadcast("build-error", string(b))
+		return false
+	}
+	detail := formatSize(int64(len(data)))
+	if why != "" {
+		detail = why + ", " + detail
+	}
+	t.done("Built " + c.Name + " for browsers " + dim("("+detail+")"))
+	d.mu.Lock()
+	d.c, d.icon = c, icon
+	d.wasm, d.failure = data, ""
+	d.mu.Unlock()
+	d.broadcast("reload", "{}")
+	return true
+}
+
 // runWebDev develops the app in browsers: it serves it on port, or the
 // next free one, opens it unless told not to, and rebuilds it as its code
 // changes, which reloads the pages showing it.
-func runWebDev(ctx context.Context, c *Config, port int, open bool) error {
+func runWebDev(ctx context.Context, c *Config, port int, open bool, locale string) error {
 	loader, err := wasmLoader()
 	if err != nil {
 		return err
@@ -318,7 +380,7 @@ func runWebDev(ctx context.Context, c *Config, port int, open bool) error {
 	if err != nil {
 		return err
 	}
-	d := &webDev{c: c, loader: loader, icon: icon, clients: map[chan [2]string]bool{}}
+	d := &webDev{c: c, loader: loader, icon: icon, locale: locale, clients: map[chan [2]string]bool{}}
 	var ln net.Listener
 	for p := port; p < port+20; p++ {
 		if ln, err = net.Listen("tcp", "localhost:"+strconv.Itoa(p)); err == nil {
@@ -339,44 +401,6 @@ func runWebDev(ctx context.Context, c *Config, port int, open bool) error {
 	}
 	defer os.RemoveAll(work)
 	wasm := filepath.Join(work, "app.wasm")
-	// why is what changed, as "main.go changed", or "".
-	build := func(why string) bool {
-		title := "Building " + c.Name + " for browsers"
-		if why != "" {
-			title += " (" + why + ")"
-		}
-		t := con.start(title)
-		err := compileWeb(ctx, c, t, wasm, true, "")
-		var data []byte
-		if err == nil {
-			data, err = os.ReadFile(wasm)
-		}
-		switch {
-		case errors.Is(err, context.Canceled):
-			t.stop()
-			return false
-		case err != nil:
-			t.fail()
-			con.details(err)
-			con.println("  " + dim("The page shows why: save a fix to try again."))
-			b, _ := json.Marshal(err.Error())
-			d.mu.Lock()
-			d.failure = err.Error()
-			d.mu.Unlock()
-			d.broadcast("build-error", string(b))
-			return false
-		}
-		detail := formatSize(int64(len(data)))
-		if why != "" {
-			detail = why + ", " + detail
-		}
-		t.done("Built " + c.Name + " for browsers " + dim("("+detail+")"))
-		d.mu.Lock()
-		d.wasm, d.failure = data, ""
-		d.mu.Unlock()
-		d.broadcast("reload", "{}")
-		return true
-	}
 
 	w := &watcher{}
 	if in, err := listBuildInputs(c); err == nil {
@@ -386,7 +410,10 @@ func runWebDev(ctx context.Context, c *Config, port int, open bool) error {
 	}
 	changes := w.watch(ctx, 250*time.Millisecond)
 	keys := readKeys()
-	build("")
+	if err := generateI18n(c); err != nil {
+		return err
+	}
+	d.build(ctx, wasm, "")
 	con.println("\n  " + cyan(con.sym.arrow) + " Serving at " + bold(url))
 	if open {
 		openBrowser(url)
@@ -401,7 +428,7 @@ func runWebDev(ctx context.Context, c *Config, port int, open bool) error {
 		case <-ctx.Done():
 			return nil
 		case paths := <-changes:
-			build(changeSummary(c.root, paths))
+			d.build(ctx, wasm, changeSummary(c.root, paths))
 			if c2, err := loadConfig(c.root); err == nil {
 				if in, err := listBuildInputs(c2); err == nil {
 					w.set(in)
@@ -412,7 +439,7 @@ func runWebDev(ctx context.Context, c *Config, port int, open bool) error {
 			case !ok:
 				keys = nil
 			case key == "r":
-				build("")
+				d.build(ctx, wasm, "")
 			case key == "o":
 				openBrowser(url)
 			case key == "c":

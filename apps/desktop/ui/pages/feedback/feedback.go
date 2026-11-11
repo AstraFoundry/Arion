@@ -87,7 +87,7 @@ func (p *Page) prompt(c *ui.Context, store runtime.Store, tokens theme.Tokens, m
 				label, icon = messages.Text(copy.Copied), icons.Check
 			}
 			button := ui.ButtonBase(c.Key("copy")).Height(32).Padding(0, 12).Gap(6).Radius(theme.RadiusControl).AlignItems(ui.Center)
-			kit.Style(button, tokens, kit.Primary, true)
+			kit.Style(c, button, tokens, kit.Primary, true)
 			button.Children(func() {
 				ui.Row(c.Key(label)).Gap(6).AlignItems(ui.Center).Transition(ui.ElementTransition{Animation: &theme.Pop, Enter: &ui.Motion{Scale: 0.9}}).Children(func() {
 					ui.Icon(c, icon).FontSize(13)

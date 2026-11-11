@@ -1,9 +1,10 @@
 // Package updater is the update window of MyGo apps, in the manner of
 // Sparkle on macOS. It checks for updates in the background, once a day by
 // default, and when a new version is out it shows its release notes and
-// offers to install it, skip it or remind the user later. Installing
-// downloads the update with a progress bar, then offers to relaunch the
-// app into it.
+// offers to install it, skip it or remind the user later. The first check
+// is soon after launch, so a version that came out since the app last ran
+// shows when it opens again. Installing downloads the update with a
+// progress bar, then offers to relaunch the app into it.
 //
 //	mygo.Use(updater.Plugin)
 //
@@ -168,8 +169,18 @@ func LastCheck() time.Time {
 	return u.state.LastCheck
 }
 
+// AvailableVersion reports the newer version found by the last check, or "".
+// It is empty before checking, after a failed check, and for a skipped version.
+// A downloaded update keeps its version until the app relaunches.
+func AvailableVersion() string {
+	u := used()
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	return u.available
+}
+
 // OnChange calls fn on the main thread after the choices of the user or the
-// time of the last check changed: a check succeeded, the user answered the
+// time of the last check or AvailableVersion changed: a check succeeded, the user answered the
 // update window (its checkbox, Skip This Version), or the app called
 // SetAutomaticChecks or SetAutomaticDownloads. A preferences page that shows
 // AutomaticChecks, AutomaticDownloads or LastCheck reads them again. It
@@ -243,8 +254,10 @@ type updater struct {
 	// open creates the window of a session and shows it.
 	open func(*session)
 
-	textOnce sync.Once
-	txt      *text
+	// txt are the texts of the language txtLang, the last one asked for.
+	textMu  sync.Mutex
+	txt     *text
+	txtLang string
 
 	loadOnce sync.Once
 	mu       sync.Mutex
@@ -259,10 +272,14 @@ type updater struct {
 	// failed is when the last automatic check failed, which retries sooner
 	// than the interval.
 	failed time.Time
+	// launchChecked is set once a check began since launch: until then the
+	// next one is soon, however recent the last check of an earlier launch.
+	launchChecked bool
 	// session is the check in progress; installed the update installed
 	// while the app runs, which runs at the next launch.
 	session   *session
 	installed *release
+	available string
 }
 
 func newUpdater(opts Options, open func(*session)) *updater {
@@ -272,15 +289,19 @@ func newUpdater(opts Options, open func(*session)) *updater {
 	return &updater{opts: opts, open: open}
 }
 
-// text returns the texts of the window, in the language chosen once.
+// text returns the texts of the window in the language the app shows now
+// (Options.Language, else App.Locale): after App.SetLocale, or a change of
+// the user's languages, the next window and menu item take the new one.
 func (u *updater) text() *text {
-	u.textOnce.Do(func() {
-		lang := u.opts.Language
-		if lang == "" {
-			lang = locale()
-		}
-		u.txt = newText(lang, u.opts.Strings)
-	})
+	lang := u.opts.Language
+	if lang == "" {
+		lang = locale()
+	}
+	u.textMu.Lock()
+	defer u.textMu.Unlock()
+	if u.txt == nil || lang != u.txtLang {
+		u.txt, u.txtLang = newText(lang, u.opts.Strings), lang
+	}
 	return u.txt
 }
 
@@ -320,10 +341,11 @@ func (u *updater) update(fn func(*state)) {
 	u.load()
 	u.mu.Lock()
 	before := u.state
+	beforeAvailable := u.available
 	fn(&u.state)
 	u.save()
 	var changes []*func()
-	if !u.state.same(before) {
+	if !u.state.same(before) || u.available != beforeAvailable {
 		changes = slices.Clone(u.changes)
 	}
 	u.mu.Unlock()
@@ -381,7 +403,10 @@ func (u *updater) schedule() {
 	if !u.running || u.session != nil || u.installed != nil || !u.automaticChecks() {
 		return
 	}
-	wait := max(nextCheck(u.state.LastCheck, u.failed, u.opts.Interval, now()).Sub(now()), firstCheckWait)
+	wait := firstCheckWait
+	if u.launchChecked {
+		wait = max(nextCheck(u.state.LastCheck, u.failed, u.opts.Interval, now()).Sub(now()), firstCheckWait)
+	}
 	u.timer = time.AfterFunc(wait, func() { u.begin(false) })
 }
 
@@ -400,23 +425,33 @@ func nextCheck(last, failed time.Time, interval time.Duration, now time.Time) ti
 }
 
 // checked records the outcome of a check.
-func (u *updater) checked(err error) {
+func (u *updater) checked(err error, version string, user bool) {
 	u.mu.Lock()
 	if err != nil {
 		u.failed = now()
 		u.mu.Unlock()
+		u.update(func(*state) { u.available = "" })
 		return
 	}
 	u.failed = time.Time{}
 	u.mu.Unlock()
 	t := now()
-	u.update(func(s *state) { s.LastCheck = t })
+	u.update(func(s *state) {
+		s.LastCheck = t
+		u.available = version
+		if !user && s.SkippedVersion == version {
+			u.available = ""
+		}
+	})
 }
 
 // begin starts a check, or makes the one under way show its window when
 // the user asked for it.
 func (u *updater) begin(user bool) {
 	u.load()
+	// Its window speaks the app's language when the check begins. Out of
+	// u.mu: the first App.Locale asks the main thread.
+	t := u.text()
 	u.mu.Lock()
 	if s := u.session; s != nil {
 		u.mu.Unlock()
@@ -429,8 +464,9 @@ func (u *updater) begin(user bool) {
 		u.mu.Unlock()
 		return
 	}
-	s := newSession(u, user)
+	s := newSession(u, t, user)
 	u.session = s
+	u.launchChecked = true
 	if u.timer != nil {
 		u.timer.Stop()
 		u.timer = nil
@@ -453,8 +489,9 @@ func (u *updater) end(s *session) {
 // run checks for updates and drives the update window.
 func (u *updater) run(s *session) {
 	defer u.end(s)
-	t := u.text()
+	t := s.t
 	if !enabled() {
+		u.update(func(*state) { u.available = "" })
 		s.set(t.unavailableView())
 		s.show()
 		s.wait()
@@ -476,7 +513,11 @@ func (u *updater) run(s *session) {
 	if s.ctx.Err() != nil {
 		return // canceled
 	}
-	u.checked(err)
+	version := ""
+	if err == nil && r != nil {
+		version = r.version
+	}
+	u.checked(err, version, s.User())
 	switch {
 	case err != nil:
 		if s.User() {
@@ -515,6 +556,7 @@ func (u *updater) run(s *session) {
 		st.AutomaticDownloads = resp.automaticDownloads
 		if resp.action == actionSkip {
 			st.SkippedVersion = r.version
+			u.available = ""
 		}
 	})
 	if resp.action == actionInstall {
@@ -525,7 +567,7 @@ func (u *updater) run(s *session) {
 // install downloads and installs r, showing its progress when the window
 // shows, then offers to relaunch.
 func (u *updater) install(s *session, r *release) {
-	t := u.text()
+	t := s.t
 	s.set(t.downloadingView(0, 0))
 	err := r.install(s.ctx, func(downloaded, total int64) {
 		if downloaded < total {
@@ -554,7 +596,7 @@ func (u *updater) install(s *session, r *release) {
 }
 
 func (u *updater) offerRelaunch(s *session, r *release) {
-	s.set(u.text().readyView(r))
+	s.set(s.t.readyView(r))
 	s.show()
 	if s.wait().action == actionRelaunch {
 		relaunch()

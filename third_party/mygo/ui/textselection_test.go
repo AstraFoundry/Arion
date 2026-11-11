@@ -32,7 +32,7 @@ func TestSelectableContainerMultiClick(t *testing.T) {
 	}, 300, 150)
 	for _, unit := range []int{2, 3} {
 		x, y := selectableAt(t, tt, "Alpha beta", 7)
-		tt.rt.lastPress.at = time.Time{}
+		tt.clicks = platform.ClickCounter{}
 		for range unit - 1 {
 			tt.ClickAt(x, y)
 		}
@@ -128,7 +128,7 @@ func selectBetween(t *testing.T, tt *Tester, first string, from int, last string
 	t.Helper()
 	x0, y0 := selectableAt(t, tt, first, from)
 	x1, y1 := selectableAt(t, tt, last, to)
-	tt.rt.lastPress.at = time.Time{} // each drag is a new gesture
+	tt.clicks = platform.ClickCounter{} // each drag is a new gesture
 	tt.Press(x0, y0)
 	tt.Move(x1, y1)
 	tt.Release(x1, y1)
@@ -486,6 +486,37 @@ func TestSelectableTextContextMenu(t *testing.T) {
 	tt.RightClickAt(5, 5)
 	if want := []string{"Bubble"}; !slices.Equal(tt.Menu(), want) {
 		t.Errorf("menu beside the text %q, want %q", tt.Menu(), want)
+	}
+}
+
+// A link's ContextMenu in selectable text opens on that text: EditItems adds its Copy and Select
+// All, and Copy copies the selection, which the right click on the link keeps.
+func TestLinkContextMenuEditItems(t *testing.T) {
+	tt := coreNewTester(func(c *context) {
+		coreColumn(c).Padding(20).Selectable().ContextMenu(func(m *Menu) { m.Item("Quote") }).Children(func() {
+			coreText(c, "Read the ").Children(func() {
+				coreLink(c, "guide", "").ContextMenu(func(m *Menu) {
+					m.Item("Copy Link")
+					m.Separator()
+					m.EditItems()
+				})
+				coreText(c, " first.")
+			})
+		})
+	}, 300, 100)
+	selectBetween(t, tt, "Read the guide first.", 0, "Read the guide first.", 4)
+	if err := tt.RightClick("guide"); err != nil {
+		t.Fatal(err)
+	}
+	if want := []string{"Copy Link", "-", "Copy", "-", "Select All"}; !slices.Equal(tt.Menu(), want) {
+		t.Fatalf("menu %q, want %q", tt.Menu(), want)
+	}
+	if err := tt.ChooseMenuItem("Copy"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if got := tt.Clipboard(); got != "Read" {
+		t.Errorf("Copy copied %q", got)
 	}
 }
 

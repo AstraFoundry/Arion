@@ -17,6 +17,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/egoist/mygo/internal/i18ngen"
 )
 
 // buildInputs is what building the app reads, which is what mygo dev
@@ -30,6 +32,9 @@ type buildInputs struct {
 	// platform directories of other platforms.
 	resources string
 	trees     []string // the listed resources: everything in them
+	// generated are files the build writes itself, from inputs: the Go
+	// accessors of the catalogs.
+	generated []string
 }
 
 // listBuildInputs asks go list for the packages the app is built from,
@@ -50,17 +55,41 @@ func listBuildInputs(c *Config) (*buildInputs, error) {
 		files:     []string{filepath.Join(c.root, jsonConfig), filepath.Join(c.root, tsConfig)},
 		resources: c.path(resourcesDir),
 	}
+	// Workspace selection depends on the app's directory and GOWORK,
+	// so it cannot use the process-wide goEnv cache.
+	var work bytes.Buffer
+	workCmd := goCommand(c.root, nil, "env", "GOWORK")
+	workCmd.Stdout = &work
+	if err := workCmd.Run(); err != nil {
+		return nil, fmt.Errorf("go env GOWORK: %w", err)
+	}
+	if path := strings.TrimSpace(work.String()); path != "" && path != "off" {
+		in.files = append(in.files, path, path+".sum")
+	}
+	if icon := c.devIcon(); icon != "" {
+		in.files = append(in.files, c.path(icon))
+	}
 	if c.Icon != "" {
 		in.files = append(in.files, c.path(c.Icon))
 	}
 	if c.MacOS.Entitlements != "" {
 		in.files = append(in.files, c.path(c.MacOS.Entitlements))
 	}
+	if c.MacOS.ProvisioningProfile != "" {
+		in.files = append(in.files, c.path(c.MacOS.ProvisioningProfile))
+	}
 	for _, f := range c.MacOS.HelperEntitlements {
 		in.files = append(in.files, c.path(f))
 	}
 	for _, p := range c.Resources {
 		in.trees = append(in.trees, c.path(p))
+	}
+	if c.I18n != nil {
+		// The catalogs, which the app embeds once it imports them, and the
+		// TypeScript module is made of; not the accessors written from them.
+		dir := c.path(c.I18n.Dir)
+		in.fileDirs = append(in.fileDirs, dir)
+		in.generated = append(in.generated, filepath.Join(dir, i18ngen.GoFile))
 	}
 	dec := json.NewDecoder(&out)
 	for {
@@ -130,7 +159,8 @@ func (w *watcher) set(in *buildInputs) {
 
 func (in *buildInputs) equal(o *buildInputs) bool {
 	return slices.Equal(in.sourceDirs, o.sourceDirs) && slices.Equal(in.fileDirs, o.fileDirs) &&
-		slices.Equal(in.files, o.files) && in.resources == o.resources && slices.Equal(in.trees, o.trees)
+		slices.Equal(in.files, o.files) && in.resources == o.resources && slices.Equal(in.trees, o.trees) &&
+		slices.Equal(in.generated, o.generated)
 }
 
 // snapshot stamps each input with what tells that it changed: "-" when it
@@ -138,6 +168,9 @@ func (in *buildInputs) equal(o *buildInputs) bool {
 func snapshot(in *buildInputs) map[string]string {
 	s := map[string]string{}
 	add := func(path string, info os.FileInfo) {
+		if slices.Contains(in.generated, path) {
+			return
+		}
 		s[path] = fmt.Sprintf("%v %d %d", info.Mode(), info.Size(), info.ModTime().UnixNano())
 	}
 	list := func(dir string, keep func(name string) bool) {

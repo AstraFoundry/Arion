@@ -16,8 +16,17 @@ import (
 // Numeric rolls the characters of a line of text that change, as a
 // counter's digits, those that stay staying: the new come up from below,
 // or, Down, from above, as SwiftUI's numericText.
+//
+// Morph moves the characters the old and the new text have in common from
+// where they were to where they are, growing or shrinking to their size,
+// those of the old text alone fading out and those of the new fading in,
+// as Keynote's Magic Move by characters: words reflowing, a title
+// rewritten, letters rearranged. Rich text morphs too: its characters go
+// to the colors of their spans, and its lines and highlights fade. A text
+// flying with a Transition's Match (Fly) morphs from the text of the
+// element of its Match.
 type ContentTransition struct {
-	Numeric, Down bool
+	Numeric, Down, Morph bool
 	// Animation is how the content changes: a spring arriving in about
 	// 350 ms without bouncing when nil.
 	Animation *Animation
@@ -35,6 +44,9 @@ var defaultContentAnimation = Animation{Spring: SpringOptions{Duration: 350 * ti
 //	ui.Text(c, strconv.Itoa(app.count)).ContentTransition(ui.ContentTransition{Numeric: true, Down: app.decreased})
 func (e *node) ContentTransition(t ContentTransition) *node {
 	e.content, e.contentSet = t, true
+	if t.Morph {
+		linkMorph()
+	}
 	return e
 }
 
@@ -52,6 +64,9 @@ type contentRec struct {
 	oldColor      Color
 	k             channel
 	still         bool
+	// morph pairs the characters of the old text and the new (Morph): a
+	// *morphPairs, which apps without a Morph do not link.
+	morph any
 }
 
 // contentStep notes what e shows now, from (x, y), in color, and returns
@@ -108,11 +123,21 @@ func (p *Painter) contentStep(e *node, x, y float32, color Color) (*contentRec, 
 // contentText paints the text of e changing, from (ox, oy), and reports
 // whether it does: no transition otherwise.
 func (p *Painter) contentText(e *node, ox, oy float32, ts textStyle, sp *spanPaint) bool {
-	if e.first != nil || sp != nil {
+	morphs := e.content.Morph && morphText != nil && e.first == nil
+	if !morphs && (e.first != nil || sp != nil) {
 		return false // rich text: its spans are its own
 	}
 	r, k, changing := p.contentStep(e, ox, oy, ts.color)
-	if !changing || r.oldTL == nil || e.tl == nil {
+	if morphs && !r.still {
+		// Its spans by value, which the morph does not keep, so that those
+		// of the texts painting do not escape.
+		var spans spanPaint
+		if sp != nil {
+			spans = *sp
+		}
+		return morphText(p, e, r, ox, oy, ts, spans, k, changing)
+	}
+	if !changing || r.oldTL == nil || e.tl == nil || sp != nil {
 		return false
 	}
 	saved := p.opacity
@@ -219,9 +244,9 @@ func (p *Painter) contentImage(e *node) bool {
 	defer func() { p.opacity = saved }()
 	p.opacity = saved * (1 - k)
 	if r.oldSVG != nil {
-		p.drawSVG(r.oldSVG, box, e.fit, e.radius, r.oldColor, e.gray)
+		p.drawSVG(r.oldSVG, box, e.fit, e.objectPos, e.radius, r.oldColor, e.gray)
 	} else if r.oldImg != nil && r.oldImg.w > 0 && r.oldImg.h > 0 {
-		p.drawBitmap(r.oldImg, box, e.fit, e.radius, e.gray)
+		p.drawBitmap(r.oldImg, box, e.fit, e.objectPos, e.radius, e.gray)
 	}
 	p.opacity = saved * k
 	p.image(e)

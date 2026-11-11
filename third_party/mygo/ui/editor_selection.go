@@ -132,6 +132,16 @@ func (ed *editor) visualNext(direction int) text.CaretPosition {
 	return p
 }
 
+// caretParagraphRTL reports whether the paragraph of the caret reads
+// right to left.
+func (ed *editor) caretParagraphRTL() bool {
+	l := ed.layout
+	if a := ed.area; a != nil {
+		l = a.paraLayout(ed, ed.buf.para(ed.caret))
+	}
+	return l != nil && len(l.Lines) > 0 && l.Lines[0].RTL
+}
+
 func (ed *editor) hitPosition(x, y float32) text.CaretPosition {
 	if a := ed.area; a != nil {
 		return a.positionAt(ed, x-ed.originX, float64(y-ed.originY)+a.scroll)

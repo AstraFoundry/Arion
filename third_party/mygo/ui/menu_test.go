@@ -1,6 +1,12 @@
 package ui
 
 import (
+	"bytes"
+	"image"
+	"image/color"
+	"image/png"
+	"maps"
+	"runtime"
 	"slices"
 	"testing"
 
@@ -341,5 +347,266 @@ func TestMenuAndContextMenuOfOneElement(t *testing.T) {
 	tt.ChooseMenuItem("From the context menu")
 	if !slices.Equal(chosen, []string{"menu", "context"}) {
 		t.Errorf("chose %q", chosen)
+	}
+}
+
+// TestMenuButtonInAToolbarsOverflow opens the menu of a menu button that
+// does not fit in its toolbar, from the toolbar's overflow menu, below
+// the overflow button.
+func TestMenuButtonInAToolbarsOverflow(t *testing.T) {
+	chosen := ""
+	tt := coreNewTester(func(c *context) {
+		coreToolbar(c, func() {
+			for _, n := range []string{"Alpha", "Bravo", "Charlie", "Delta"} {
+				coreButton(c, n)
+			}
+			coreMenuButton(c, "Export", func(m *Menu) {
+				for _, as := range []string{"PDF", "PNG"} {
+					if m.Item("As " + as).Chosen() {
+						chosen = as
+					}
+				}
+			})
+		}).Fill()
+	}, 260, 300)
+	if tt.HasText("Export") {
+		t.Fatal("the menu button fits")
+	}
+	tt.Click("More")
+	if err := tt.ChooseMenuItem("Export"); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := tt.Menu(), []string{"As PDF", "As PNG"}; !slices.Equal(got, want) {
+		t.Fatalf("choosing Export shows %q, want %q", got, want)
+	}
+	more, _ := tt.Find("More")
+	if at := tt.h.menuAt; at[0] != more.X || at[1] != more.Y+more.H {
+		t.Errorf("the menu shows at %v, not below the overflow button at %+v", at, more)
+	}
+	if err := tt.ChooseMenuItem("As PNG"); err != nil || chosen != "PNG" {
+		t.Errorf("chose As PNG: %v, chosen %q", err, chosen)
+	}
+}
+
+func TestEditMenuEnabled(t *testing.T) {
+	value, notes, pin := "", "read only", "1234"
+	disabled := false
+	tt := NewTester(func(c *Context) {
+		c.OnShortcut(Cmd, KeyV, func() {})
+		TextInput(c, &value).Label("field").Disabled(disabled)
+		TextInput(c, &notes).Label("notes").ReadOnly(true)
+		TextInput(c, &pin).Label("pin").ReadOnly(true).Password()
+		Box(c).Size(100, 20).Focusable().Label("list").OnShortcut(Cmd, KeyC, func() {})
+		Box(c).Size(100, 20).Focusable().Label("terminal").HandleInput(func(InputEvent) bool { return false })
+	}, 300, 200)
+	mac := runtime.GOOS == "darwin"
+	check := func(where string, want map[string]bool) {
+		t.Helper()
+		got := map[string]bool{}
+		tt.rt.focusRead = false
+		for name := range want {
+			got[name] = tt.rt.event(platform.SurfaceEvent{Kind: platform.SurfaceCommandEnabled, Text: name})
+		}
+		if !maps.Equal(got, want) {
+			t.Errorf("%s: enabled %v, want %v", where, got, want)
+		}
+		if tt.rt.focusRead {
+			t.Errorf("%s: asking read the window's focus, so its next change draws a frame", where)
+		}
+	}
+
+	check("no focus, with the window's Cmd+V", map[string]bool{"copy": false, "paste": mac, "selectAll": false})
+
+	tt.Click("field")
+	check("an empty text input", map[string]bool{"undo": false, "redo": false, "cut": false, "copy": false, "paste": true, "pasteAndMatchStyle": true, "delete": false, "selectAll": false})
+	tt.Type("hi")
+	tt.Key(Cmd, KeyA)
+	check("a text input with its text selected", map[string]bool{"undo": true, "redo": false, "cut": true, "copy": true, "delete": true, "selectAll": true})
+	tt.Command("undo")
+	check("a text input after undo", map[string]bool{"undo": false, "redo": true})
+
+	tt.Click("notes")
+	// A menu asks before the next frame applies the command.
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.SurfaceCommand, Text: "selectAll"})
+	check("a read-only text input with Select All queued", map[string]bool{"copy": true, "cut": false})
+	tt.Click("pin")
+	tt.rt.event(platform.SurfaceEvent{Kind: platform.SurfaceCommand, Text: "selectAll"})
+	check("a read-only password input with Select All queued", map[string]bool{"copy": false, "cut": false})
+	tt.Click("notes")
+	tt.Key(Cmd, KeyA)
+	check("a read-only text input", map[string]bool{"copy": true, "selectAll": true, "cut": false, "paste": mac, "delete": false})
+
+	tt.Click("list")
+	check("a list copying with Cmd+C", map[string]bool{"copy": mac, "paste": mac, "selectAll": false})
+
+	tt.Click("terminal")
+	check("an element taking its input", map[string]bool{"copy": true, "paste": true})
+
+	tt.Click("field")
+	tt.Type("hi")
+	tt.Key(Cmd, KeyA)
+	disabled = true
+	tt.Frame()
+	if !tt.Focused("field") {
+		t.Fatal("the text input lost the focus as it was disabled")
+	}
+	check("a text input disabled with the focus", map[string]bool{"copy": false, "paste": false, "selectAll": false})
+}
+
+func TestEditMenuEnabledSelectable(t *testing.T) {
+	disabled := false
+	tt := NewTester(func(c *Context) {
+		Column(c).Selectable().Gap(8).Children(func() {
+			Text(c, "First").Disabled(disabled)
+			Text(c, "Last")
+			Text(c, "").Width(150).Height(25).Label("empty")
+		})
+		Column(c).Selectable().Children(func() {
+			Text(c, "").Width(150).Height(25).Label("blank")
+			Text(c, "").Width(150).Height(25)
+		})
+		Column(c).Selectable().Children(func() {
+			Text(c, "").Width(150).Height(25).Label("alone")
+		})
+	}, 200, 300)
+	enabled := func() bool {
+		return tt.rt.event(platform.SurfaceEvent{Kind: platform.SurfaceCommandEnabled, Text: "selectAll"})
+	}
+	tt.Click("empty")
+	if !enabled() {
+		t.Error("an empty paragraph: Select All disabled, want enabled for the container's text")
+	}
+	tt.Click("blank")
+	if !enabled() {
+		t.Error("empty paragraphs: Select All disabled, want enabled for the newline between them")
+	}
+	tt.Click("alone")
+	if enabled() {
+		t.Error("a lone empty paragraph: Select All enabled, want disabled as there is nothing to select")
+	}
+	selectBetween(t, tt, "First", 0, "Last", 4)
+	disabled = true
+	tt.Frame()
+	if enabled() {
+		t.Error("the focused paragraph disabled: Select All enabled, want disabled as it takes no command")
+	}
+}
+
+// testMenuIcon is what mygo.NewMenuIcon makes, which this package cannot
+// import.
+type testMenuIcon struct{ p *platform.MenuIcon }
+
+func (i testMenuIcon) PlatformMenuIcon() *platform.MenuIcon { return i.p }
+
+// menuIconPNG returns a PNG image of 32 by 32 pixels in one color.
+func menuIconPNG(t *testing.T, c color.NRGBA) []byte {
+	t.Helper()
+	img := image.NewNRGBA(image.Rect(0, 0, 32, 32))
+	for i := 0; i < len(img.Pix); i += 4 {
+		img.Pix[i], img.Pix[i+1], img.Pix[i+2], img.Pix[i+3] = c.R, c.G, c.B, c.A
+	}
+	var b bytes.Buffer
+	if err := png.Encode(&b, img); err != nil {
+		t.Fatal(err)
+	}
+	return b.Bytes()
+}
+
+// TestContextMenuIcon gives the system's menu the icons of its items, in
+// submenus too, and leaves the choice to Chosen as for other items.
+func TestContextMenuIcon(t *testing.T) {
+	flag, inner := &platform.MenuIcon{}, &platform.MenuIcon{}
+	var chosen string
+	view := func(c *context) {
+		coreColumn(c).Fill().Children(func() {
+			coreText(c, "Row").ContextMenu(func(m *Menu) {
+				if m.Item("Flag").Icon(testMenuIcon{flag}).Chosen() {
+					chosen = "Flag"
+				}
+				m.Item("Plain").Icon(nil)
+				m.Submenu("More", func(m *Menu) { m.Item("Inner").Icon(testMenuIcon{inner}) })
+			})
+		})
+	}
+	tt := coreNewTester(view, 200, 200)
+	if err := tt.RightClick("Row"); err != nil {
+		t.Fatal(err)
+	}
+	items := tt.h.menu.Items
+	if items[0].Icon != flag || items[1].Icon != nil || items[2].Submenu.Items[0].Icon != inner {
+		t.Errorf("the icons of the items are %p, %p and %p, want %p, nil and %p",
+			items[0].Icon, items[1].Icon, items[2].Submenu.Items[0].Icon, flag, inner)
+	}
+	if err := tt.ChooseMenuItem("Flag"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if chosen != "Flag" {
+		t.Errorf("chosen = %q, want Flag", chosen)
+	}
+}
+
+// TestPopoverMenuIcon draws the icon of an item before its label, and
+// lines up the label of the item without one.
+func TestPopoverMenuIcon(t *testing.T) {
+	red := &platform.MenuIcon{PNG: menuIconPNG(t, color.NRGBA{R: 255, A: 255})}
+	view := func(c *context) {
+		coreColumn(c).Fill().Children(func() {
+			coreText(c, "Row").PopoverMenu(func(m *Menu) {
+				m.Item("Flag").Icon(testMenuIcon{red})
+				m.Item("Plain")
+				m.Separator()
+				m.Submenu("More", func(m *Menu) { m.Item("Inner") })
+			})
+		})
+	}
+	tt := coreNewTester(view, 400, 300)
+	if err := tt.RightClick("Row"); err != nil {
+		t.Fatal(err)
+	}
+	// Find gives the item's row, and text the text inside it.
+	text := func(s string) Rect {
+		var r Rect
+		for _, n := range tt.rt.labels {
+			if n.text == s {
+				r = n.r
+			}
+		}
+		return r
+	}
+	if f, p := text("Flag"), text("Plain"); f.X != p.X {
+		t.Errorf("the labels start at %v and %v", f.X, p.X)
+	}
+	// at returns the color at the middle of the box of an item's icon.
+	at := func(s string) (uint32, uint32, uint32) {
+		r := text(s)
+		x := int(r.X) - 8 - platform.MenuIconSize/2
+		cr, cg, cb, _ := tt.Image().At(x, int(r.Y+r.H/2)).RGBA()
+		return cr >> 8, cg >> 8, cb >> 8
+	}
+	if r, g, b := at("Flag"); r < 200 || g > 50 || b > 50 {
+		t.Errorf("the icon is (%d, %d, %d), want red", r, g, b)
+	}
+	if r, g, b := at("Plain"); r > 200 && g < 50 && b < 50 {
+		t.Errorf("the item without an icon shows red: (%d, %d, %d)", r, g, b)
+	}
+	d := tt.rt.menu.drawn
+	tt.Frame()
+	if len(d.icons) != 1 {
+		t.Errorf("%d bitmaps of one icon over two frames", len(d.icons))
+	}
+}
+
+// TestMenuIconBitmapTemplate colors a template image with the text's color
+// and keeps its alpha.
+func TestMenuIconBitmapTemplate(t *testing.T) {
+	ic := &platform.MenuIcon{PNG: menuIconPNG(t, color.NRGBA{A: 128}), Template: true}
+	b := menuIconBitmap(ic, Color{R: 255, A: 255})
+	pix := b.img.Pixels()
+	if pix[0] != 128 || pix[1] != 0 || pix[2] != 0 || pix[3] != 128 {
+		t.Errorf("premultiplied pixel = %v, want [128 0 0 128]", pix[:4])
+	}
+	if menuIconBitmap(&platform.MenuIcon{PNG: []byte("not a png")}, Color{}) != nil {
+		t.Error("a bitmap of what is not an image")
 	}
 }

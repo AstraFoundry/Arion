@@ -115,8 +115,9 @@ says why, as with the browser's.
 
 ## Options
 
-`websocket.Plugin` opens connections with `http.DefaultClient` to any URL.
-`websocket.New` takes options instead:
+`websocket.Plugin` opens connections to any URL through the system's
+proxy settings (see [proxies](../native.md#proxies)). `websocket.New`
+takes options instead:
 
 ```go
 mygo.Use(websocket.New(websocket.Options{

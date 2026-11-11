@@ -62,10 +62,7 @@ p { margin: 0; }
 #detail {
   color: var(--muted);
   font-size: 11px;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
   -webkit-user-select: text;
   user-select: text;
   cursor: text;
@@ -159,7 +156,6 @@ function render(v) {
   $("title").textContent = v.title;
   text($("message"), v.message);
   text($("detail"), v.detail);
-  $("detail").title = v.detail || "";
   $("bar").hidden = !v.bar;
   const known = v.progress >= 0;
   $("bar").classList.toggle("indeterminate", !known);

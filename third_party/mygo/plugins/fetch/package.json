@@ -1,6 +1,6 @@
 {
   "name": "@mygo-plugins/fetch",
-  "version": "0.4.6",
+  "version": "0.8.3",
   "description": "A fetch that makes HTTP requests from Go, for MyGo desktop apps",
   "keywords": [
     "mygo",
@@ -33,9 +33,9 @@
     "test": "bun test"
   },
   "peerDependencies": {
-    "mygo-runtime": "^0.4.6"
+    "mygo-runtime": "^0.8.3"
   },
   "devDependencies": {
-    "mygo-runtime": "^0.4.6"
+    "mygo-runtime": "^0.8.3"
   }
 }

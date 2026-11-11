@@ -92,8 +92,35 @@ func TestDataDragCancellationLifecycle(t *testing.T) {
 					t.Error("session leaked")
 				}
 			})
-			if len(results) != 1 || !results[0].Canceled {
-				t.Fatalf("results %v", results)
+			if len(results) != 1 || !results[0].Canceled || !results[0].Escaped || results[0].Point != (image.Point{X: 10, Y: 20}) {
+				t.Fatalf("results %+v", results)
+			}
+		})
+	}
+}
+
+// A source tells a drag let go over no target from one given up, and
+// learns where it ended (#493).
+func TestDataDragEndReasonAndPoint(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		native transfer.Result
+		want   transfer.Result
+	}{
+		{"no target", transfer.Result{Canceled: true, Point: image.Pt(-40, 900)}, transfer.Result{Canceled: true, Point: image.Pt(-40, 900)}},
+		{"escape", transfer.Result{Canceled: true, Escaped: true, Point: image.Pt(5, 6)}, transfer.Result{Canceled: true, Escaped: true, Point: image.Pt(5, 6)}},
+		{"no effect", transfer.Result{Point: image.Pt(1, 2)}, transfer.Result{Canceled: true, Point: image.Pt(1, 2)}},
+		{"drop", transfer.Result{Operation: transfer.Copy, Escaped: true, Point: image.Pt(7, 8)}, transfer.Result{Operation: transfer.Copy, Point: image.Pt(7, 8)}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			w, _, s := contentWindow(t, func(c *ui.Context) { ui.Text(c, "source") })
+			var results []transfer.Result
+			if err := w.StartDataDrag(transfer.TextData("data"), DragOptions{Done: func(r transfer.Result) { results = append(results, r) }}); err != nil {
+				t.Fatal(err)
+			}
+			onMain(func() { s.FinishDataDrag(tc.native) })
+			if len(results) != 1 || results[0] != tc.want {
+				t.Fatalf("results %+v, want %+v", results, tc.want)
 			}
 		})
 	}

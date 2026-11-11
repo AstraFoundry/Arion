@@ -137,6 +137,57 @@ func TestMotionReducedMidFlightAndInfiniteSequences(t *testing.T) {
 	}
 }
 
+func TestMotionNonMotionAnimatesWithLessMotion(t *testing.T) {
+	// A crossfade the view drives says it moves nothing: with less motion,
+	// it still fades, and still settles, where a move jumps at once.
+	target := float32(0)
+	var fade, move, pulse, still float32
+	var settled, instant bool
+	tt, now := motionTester(func(c *context) {
+		if instant {
+			c.DisableAnimations()
+		}
+		e := coreBox(c)
+		a := Animation{Duration: 100 * time.Millisecond, Ease: Linear}
+		move = e.AnimateTo("move", target, a)
+		a.NonMotion = true
+		fade, settled = e.AnimateTo("fade", target, a), e.Settled("fade")
+		frames := []Keyframe{{Value: 0}, {At: 100 * time.Millisecond, Value: 1}}
+		pulse = e.Keyframes("pulse", frames, KeyframeOptions{NonMotion: true})
+		still = e.Keyframes("still", frames)
+	})
+	tt.SetPreferences(Preferences{ReduceMotion: true})
+	closeFloat(t, still, 1)
+	closeFloat(t, pulse, 0)
+	target = 1
+	tt.Frame()
+	*now = now.Add(50 * time.Millisecond)
+	tt.Frame()
+	closeFloat(t, move, 1)
+	closeFloat(t, fade, 0.5)
+	if pulse <= 0 || pulse >= 1 || settled {
+		t.Fatalf("halfway with less motion, the sequence is at %v and the fade settled: %v", pulse, settled)
+	}
+	if !tt.rt.animating && !tt.h.requested.Load() {
+		t.Fatal("a fade with less motion asks for no frames")
+	}
+	*now = now.Add(time.Second)
+	tt.Frame()
+	closeFloat(t, fade, 1)
+	closeFloat(t, pulse, 1)
+	if !settled {
+		t.Fatal("the fade did not settle")
+	}
+	tt.Frame()
+	if tt.rt.animating || tt.h.requested.Load() {
+		t.Fatal("a settled fade kept asking for frames")
+	}
+	// DisableAnimations still shows it at once.
+	instant, target = true, 0
+	tt.Frame()
+	closeFloat(t, fade, 0)
+}
+
 func TestMotionRejectsInvalidParameters(t *testing.T) {
 	for _, view := range []func(*context){
 		func(c *context) { coreBox(c).Spring("x", 0, SpringOptions{Mass: -1}) },
@@ -170,8 +221,13 @@ func TestSpringSchedulingWhileOccluded(t *testing.T) {
 	if !tt.h.requested.Load() {
 		t.Fatal("shown spring did not resume")
 	}
+	// The frame out of sight did not draw: the spring sets off as the
+	// window shows, and moves on in the frames after.
 	built, more := tt.frame(200 * time.Millisecond)
-	if !built || !more || value <= 0 {
+	if !built || !more {
+		t.Fatal("spring did not set off after becoming visible")
+	}
+	if built, more = tt.frame(100 * time.Millisecond); !built || !more || value <= 0 {
 		t.Fatal("spring did not advance after becoming visible")
 	}
 	_, more = tt.frame(5 * time.Second)

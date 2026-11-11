@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"os"
 	"syscall"
 	"unsafe"
@@ -99,13 +100,48 @@ func descendants(pid int) []int {
 }
 
 // stop ends the app and the processes it ran, as Windows has no signal
-// to ask it to quit.
-func stop(p *os.Process, procs []int) {
-	p.Kill()
-	for _, pid := range procs[1:] {
-		if h, err := syscall.OpenProcess(processTerminate, false, uint32(pid)); err == nil {
-			syscall.TerminateProcess(h, 1)
+// to ask it to quit, and returns once all have exited, with those they
+// started since usage looked. TerminateProcess only starts ending a
+// process, and the next run's WebView2 could otherwise meet this run's
+// browser still exiting, which holds the user data folder they share.
+func stop(_ *os.Process, procs []int) error {
+	// A handle on a process keeps its ID from going to another process,
+	// which descendants would take for one of the app's.
+	held := map[int]syscall.Handle{}
+	defer func() {
+		for _, h := range held {
 			syscall.CloseHandle(h)
 		}
+	}()
+	app := procs[0]
+	for range 10 {
+		var ending []syscall.Handle
+		for _, pid := range procs {
+			if _, ok := held[pid]; ok {
+				continue
+			}
+			h, err := syscall.OpenProcess(processTerminate|syscall.SYNCHRONIZE, false, uint32(pid))
+			if err != nil {
+				continue // gone already
+			}
+			held[pid] = h
+			ending = append(ending, h)
+		}
+		if len(ending) == 0 {
+			return nil
+		}
+		for _, h := range ending {
+			syscall.TerminateProcess(h, 1)
+		}
+		for _, h := range ending {
+			if ev, _ := syscall.WaitForSingleObject(h, 10_000); ev != syscall.WAIT_OBJECT_0 {
+				return errors.New("a process of the app still runs 10s after it was ended")
+			}
+		}
+		if _, ok := held[app]; !ok {
+			return nil // its ID may be another process's now
+		}
+		procs = descendants(app)
 	}
+	return errors.New("the app's processes kept starting others as they were ended")
 }

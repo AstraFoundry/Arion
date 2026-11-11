@@ -31,8 +31,9 @@ type Toast struct {
 	Type string
 	// Timeout is how long the toast shows: 4 seconds when zero, until it
 	// is closed when negative. The time stops while the pointer rests on
-	// the toasts, the keyboard focus is in them, or the window is in the
-	// background.
+	// the toasts or the keyboard focus is in them, and runs on while the
+	// window is in the background or hidden: a toast whose time is over by
+	// the time the window shows again closes before it shows.
 	Timeout time.Duration
 	// Action labels a button that runs OnAction, as Undo after deleting,
 	// and closes the toast.
@@ -160,20 +161,21 @@ func (rt *engine) toastAge(ts *toast, now time.Time) time.Duration {
 	return ts.spent + now.Sub(ts.at)
 }
 
-// pauseToasts stops the time of the toasts, or lets it run again.
-func (rt *engine) pauseToasts(paused bool, now time.Time) {
-	if paused == rt.toastsPaused {
+// pauseToasts stops the time of the toasts, or lets it run again, while
+// held, as the pointer rests on them.
+func (rt *engine) pauseToasts(held bool, now time.Time) {
+	if held == rt.toastsPaused {
 		return
 	}
 	for i := range rt.toasts {
 		ts := &rt.toasts[i]
-		if paused {
+		if held {
 			ts.spent += now.Sub(ts.at)
 		} else {
 			ts.at = now
 		}
 	}
-	rt.toastsPaused = paused
+	rt.toastsPaused = held
 }
 
 // ToastViewportBase builds the window's toasts without a look, in place of
@@ -195,10 +197,10 @@ func (rt *engine) pauseToasts(paused bool, now time.Time) {
 //		}
 //	})
 //
-// The time of the toasts stops while the pointer rests on viewport, the
-// keyboard focus is in it, or the window is in the background. viewport
-// stays while no toast shows, for the last one to go with an exit
-// transition. It returns viewport.
+// The time of the toasts stops while the pointer rests on viewport or the
+// keyboard focus is in it with the window's, and runs on while the window
+// is in the background. viewport stays while no toast shows, for the
+// last one to go with an exit transition. It returns viewport.
 func coreToastViewportBase(c *context, fn func(viewport *node, toasts []Toast)) *node {
 	return toastViewport(c, true, fn)
 }
@@ -251,23 +253,24 @@ func toastViewport(c *context, keep bool, fn func(viewport *node, toasts []Toast
 		// there, and stop the toasts' time as if the pointer rested on
 		// them, until the pointer moved.
 		viewport = coreColumn(c).Key(toastViewportKey).Absolute().Left(0).Top(0).Right(0).Bottom(0).Justify(End).PassThrough()
-		rt.pauseToasts(viewport.Hovered() || viewport.FocusWithin() || !rt.windowFocus(), now)
+		// The keyboard focus in the toasts holds them only while the
+		// window has it: left there as the window goes to the background,
+		// it would hold them until the user came back.
+		rt.pauseToasts(viewport.Hovered() || viewport.FocusWithin() && rt.windowFocus(), now)
 		viewport.Children(func() { fn(viewport, list) })
 	})
 	// A frame closes the toast whose time is over next.
-	if !rt.toastsPaused {
-		var next time.Duration
-		for i := range rt.toasts {
-			ts := &rt.toasts[i]
-			if life := ts.life(); life > 0 {
-				if left := life - rt.toastAge(ts, now); next == 0 || left < next {
-					next = left
-				}
+	var next time.Duration
+	for i := range rt.toasts {
+		ts := &rt.toasts[i]
+		if life := ts.life(); life > 0 && !rt.toastsPaused {
+			if left := life - rt.toastAge(ts, now); next == 0 || left < next {
+				next = left
 			}
 		}
-		if next > 0 {
-			c.After(next)
-		}
+	}
+	if next > 0 {
+		c.After(next)
 	}
 	return viewport
 }
@@ -282,6 +285,8 @@ type toastParts struct {
 	c         *context
 	id        string
 	age, left time.Duration
+	// stopped tells that the time of the toast stops.
+	stopped bool
 }
 
 // ToastBase creates the toast t without a look, in the viewport of
@@ -292,7 +297,7 @@ func coreToastBase(c *context, t Toast) toastParts {
 	var key any = t.ID
 	if i := rt.toastIndex(t.ID); i >= 0 {
 		ts := &rt.toasts[i]
-		key, p.age = ts.key, rt.toastAge(ts, c.now)
+		key, p.age, p.stopped = ts.key, rt.toastAge(ts, c.now), rt.toastsPaused
 		if life := ts.life(); life > 0 {
 			p.left = life - p.age
 		}
@@ -354,7 +359,7 @@ func (rt *engine) buildToasts(c *context) {
 			const fade = 200 * time.Millisecond
 			opacity := float32(1)
 			switch {
-			case rt.toastsPaused:
+			case p.stopped:
 			case p.age < fade:
 				opacity = float32(p.age) / float32(fade)
 				c.AnimationFrame()

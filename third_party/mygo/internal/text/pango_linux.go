@@ -11,6 +11,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"unicode"
@@ -19,6 +20,7 @@ import (
 
 	"github.com/ebitengine/purego"
 	"github.com/egoist/mygo/internal/scene"
+	"github.com/go-text/typesetting/segmenter"
 )
 
 // Pango lays out paragraphs: fontconfig finds the fonts and the fallbacks
@@ -37,6 +39,7 @@ func newEngine() engine {
 
 const (
 	pangoScale       = 1024
+	pangoTabLeft     = 0
 	pangoGlyphEmpty  = 0x0FFFFFFF
 	pangoGlyphUnknow = 0x10000000
 
@@ -60,6 +63,8 @@ const (
 	cairoHintMetricsOn         = 2
 	cairoStatusSuccess         = 0
 	fcResultMatch              = 0
+	fcMatchPattern             = 0
+	fcLangEqual                = 0
 	fcSetApplication           = 1
 	gTrue, gFalse          int = 1, 0
 )
@@ -116,6 +121,11 @@ type (
 var pangoLib struct {
 	gObjectRef   func(obj uintptr) uintptr
 	gObjectUnref func(obj uintptr)
+	gFree        func(p uintptr)
+
+	fontMapListFamilies   func(fontMap uintptr, families **uintptr, n *int32)
+	fontFamilyGetName     func(family uintptr) *byte
+	fontFamilyIsMonospace func(family uintptr) bool
 
 	fontMapNew                func() uintptr
 	fontMapCreateContext      func(fontMap uintptr) uintptr
@@ -151,6 +161,10 @@ var pangoLib struct {
 	layoutSetWidth            func(layout uintptr, width int32)
 	layoutSetWrap             func(layout uintptr, wrap int32)
 	layoutSetAutoDir          func(layout uintptr, auto int32)
+	layoutSetTabs             func(layout, tabs uintptr)
+	tabArrayNew               func(size, pixels int32) uintptr
+	tabArraySetTab            func(tabs uintptr, index, align, location int32)
+	tabArrayFree              func(tabs uintptr)
 	layoutGetLineCount        func(layout uintptr) int32
 	layoutGetLineReadonly     func(layout uintptr, line int32) *pangoLayoutLine
 	layoutSetAttributes       func(layout, attrs uintptr)
@@ -163,6 +177,11 @@ var pangoLib struct {
 	attrSizeAbsoluteNew       func(size int32) uintptr
 	attrWeightNew             func(weight int32) uintptr
 	attrStyleNew              func(style int32) uintptr
+	attrShapeNew              func(ink, logical *pangoRectangle) uintptr
+	attrLanguageNew           func(language uintptr) uintptr
+	attrAllowBreaksNew        func(allow int32) uintptr // Pango 1.44
+	languageFromString        func(tag string) uintptr
+	languageGetDefault        func() uintptr
 	fontMapConfigChanged      func(fontMap uintptr)
 	cairoFontOptionsCreate    func() uintptr
 	cairoFontOptionsDestroy   func(options uintptr)
@@ -187,11 +206,23 @@ var pangoLib struct {
 	cairoSetScaledFont        func(cr, font uintptr)
 	cairoSetSourceRGBA        func(cr uintptr, r, g, b, a float64)
 	cairoShowGlyphs           func(cr uintptr, glyphs *cairoGlyph, n int32)
+	cairoVersion              func() int32
 	fcConfigGetCurrent        func() uintptr
 	fcConfigAppFontAddFile    func(config uintptr, file string) int32
 	fcConfigGetFonts          func(config uintptr, set int32) *fcFontSet
 	fcConfigParseFromMemory   func(config uintptr, xml string, complain int32) int32
 	fcPatternGetString        func(pattern uintptr, object string, n int32, out **byte) int32
+	fcPatternCreate           func() uintptr
+	fcPatternDestroy          func(pattern uintptr)
+	fcPatternAddString        func(pattern uintptr, object, s string) int32
+	fcPatternDuplicate        func(pattern uintptr) uintptr
+	fcPatternDel              func(pattern uintptr, object string) int32
+	fcFontSetAdd              func(set *fcFontSet, pattern uintptr) int32
+	fcPatternGetLangSet       func(pattern uintptr, object string, n int32, out *uintptr) int32
+	fcLangSetHasLang          func(langs uintptr, lang string) int32
+	fcConfigSubstitute        func(config, pattern uintptr, kind int32) int32
+	fcDefaultSubstitute       func(pattern uintptr)
+	fcFontMatch               func(config, pattern uintptr, result *int32) uintptr
 }
 
 func loadPango() error {
@@ -211,6 +242,10 @@ func loadPango() error {
 		return err
 	}
 	pango, err := open("libpango-1.0.so.0")
+	if err != nil {
+		return err
+	}
+	glib, err := open("libglib-2.0.so.0")
 	if err != nil {
 		return err
 	}
@@ -234,6 +269,10 @@ func loadPango() error {
 	l := &pangoLib
 	bind(gobject, &l.gObjectRef, "g_object_ref")
 	bind(gobject, &l.gObjectUnref, "g_object_unref")
+	bind(glib, &l.gFree, "g_free")
+	bind(pango, &l.fontMapListFamilies, "pango_font_map_list_families")
+	bind(pango, &l.fontFamilyGetName, "pango_font_family_get_name")
+	bind(pango, &l.fontFamilyIsMonospace, "pango_font_family_is_monospace")
 	bind(pangocairo, &l.fontMapNew, "pango_cairo_font_map_new")
 	bind(pangocairo, &l.contextSetFontOptions, "pango_cairo_context_set_font_options")
 	bind(pangocairo, &l.fontGetScaledFont, "pango_cairo_font_get_scaled_font")
@@ -263,6 +302,10 @@ func loadPango() error {
 	bind(pango, &l.layoutSetWidth, "pango_layout_set_width")
 	bind(pango, &l.layoutSetWrap, "pango_layout_set_wrap")
 	bind(pango, &l.layoutSetAutoDir, "pango_layout_set_auto_dir")
+	bind(pango, &l.layoutSetTabs, "pango_layout_set_tabs")
+	bind(pango, &l.tabArrayNew, "pango_tab_array_new")
+	bind(pango, &l.tabArraySetTab, "pango_tab_array_set_tab")
+	bind(pango, &l.tabArrayFree, "pango_tab_array_free")
 	bind(pango, &l.layoutGetLineCount, "pango_layout_get_line_count")
 	bind(pango, &l.layoutGetLineReadonly, "pango_layout_get_line_readonly")
 	bind(pango, &l.layoutSetAttributes, "pango_layout_set_attributes")
@@ -274,6 +317,10 @@ func loadPango() error {
 	bind(pango, &l.attrSizeAbsoluteNew, "pango_attr_size_new_absolute")
 	bind(pango, &l.attrWeightNew, "pango_attr_weight_new")
 	bind(pango, &l.attrStyleNew, "pango_attr_style_new")
+	bind(pango, &l.attrShapeNew, "pango_attr_shape_new")
+	bind(pango, &l.attrLanguageNew, "pango_attr_language_new")
+	bind(pango, &l.languageFromString, "pango_language_from_string")
+	bind(pango, &l.languageGetDefault, "pango_language_get_default")
 	bind(cairo, &l.cairoFontOptionsCreate, "cairo_font_options_create")
 	bind(cairo, &l.cairoFontOptionsDestroy, "cairo_font_options_destroy")
 	bind(cairo, &l.cairoFontOptionsAntialias, "cairo_font_options_set_antialias")
@@ -297,6 +344,7 @@ func loadPango() error {
 	bind(cairo, &l.cairoSetScaledFont, "cairo_set_scaled_font")
 	bind(cairo, &l.cairoSetSourceRGBA, "cairo_set_source_rgba")
 	bind(cairo, &l.cairoShowGlyphs, "cairo_show_glyphs")
+	bind(cairo, &l.cairoVersion, "cairo_version")
 	if len(missing) > 0 {
 		return fmt.Errorf("Pango or cairo lacks %s", strings.Join(missing, ", "))
 	}
@@ -304,6 +352,7 @@ func loadPango() error {
 	missing = nil
 	bind(pango, &l.contextSetRoundPositions, "pango_context_set_round_glyph_positions")
 	bind(pango, &l.attrFontFeaturesNew, "pango_attr_font_features_new")
+	bind(pango, &l.attrAllowBreaksNew, "pango_attr_allow_breaks_new")
 	bind(pango, &l.metricsGetHeight, "pango_font_metrics_get_height")
 	bind(pango, &l.fontGetHBFont, "pango_font_get_hb_font")
 	if hb, err := open("libharfbuzz.so.0"); err == nil {
@@ -319,26 +368,62 @@ func loadPango() error {
 		bind(fc, &l.fcConfigGetFonts, "FcConfigGetFonts")
 		bind(fc, &l.fcConfigParseFromMemory, "FcConfigParseAndLoadFromMemory")
 		bind(fc, &l.fcPatternGetString, "FcPatternGetString")
+		bind(fc, &l.fcPatternCreate, "FcPatternCreate")
+		bind(fc, &l.fcPatternDestroy, "FcPatternDestroy")
+		bind(fc, &l.fcPatternAddString, "FcPatternAddString")
+		bind(fc, &l.fcPatternDuplicate, "FcPatternDuplicate")
+		bind(fc, &l.fcPatternDel, "FcPatternDel")
+		bind(fc, &l.fcFontSetAdd, "FcFontSetAdd")
+		bind(fc, &l.fcPatternGetLangSet, "FcPatternGetLangSet")
+		bind(fc, &l.fcLangSetHasLang, "FcLangSetHasLang")
+		bind(fc, &l.fcConfigSubstitute, "FcConfigSubstitute")
+		bind(fc, &l.fcDefaultSubstitute, "FcDefaultSubstitute")
+		bind(fc, &l.fcFontMatch, "FcFontMatch")
 	}
 	return nil
 }
 
 type pangoEngine struct {
 	shapeScratch
+	nativeFonts
 	fontMap uintptr
 	context uintptr
 
-	descs  map[Style]uintptr // font descriptions, by style
-	fonts  map[uintptr]*Font // by PangoFont
+	descs map[Style]uintptr // font descriptions, by style
+	// fonts finds Fonts by their PangoFont, which they hold a reference
+	// to until they are unreachable (nativeFonts).
+	fonts  map[uintptr]*Font
 	scaled map[scaledKey]uintptr
 
 	registered map[string]bool // files of registered fonts
+	// names are the names the app's fonts are listed under: the one the
+	// app gave, or their own; appFamily the own family of each, by
+	// lowercased name.
+	names     []string
+	appFamily map[string]string
+	// files are the own families of each file of the app's fonts; given
+	// the families the app gave each file, their own when it gave none;
+	// ownOf the own families of each face that a family the app gives
+	// other files is taken from (takeFamilies).
+	files map[string][]string
+	given map[string][]string
+	ownOf map[uintptr][]string
 	// uiFamily is the desktop's interface font, which system-ui stands for
 	// before fontconfig's default.
 	uiFamily string
 	// The cairo antialiasing, hint style and subpixel order of the
 	// desktop's settings (setFontRendering), as GTK has its labels draw.
 	antialias, hintStyle, subpixels int32
+	// languages are the PangoLanguages of tags.
+	languages map[string]uintptr
+	// hanFamilies are the families fontconfig picks for the languages
+	// writing Han, by language and generic family (hanFamily).
+	hanFamilies map[[2]string]string
+	// seg and breaks find where lines may break (lineBreaks), and kept
+	// where they may not (keptWords).
+	seg    segmenter.Segmenter
+	breaks []bool
+	kept   []bool
 }
 
 // setFontRendering takes the desktop's settings (platform.FontRendering)
@@ -394,10 +479,16 @@ func newPango() (*pangoEngine, error) {
 	}
 	l := &pangoLib
 	e := &pangoEngine{
-		descs:      map[Style]uintptr{},
-		fonts:      map[uintptr]*Font{},
-		scaled:     map[scaledKey]uintptr{},
-		registered: map[string]bool{},
+		descs:       map[Style]uintptr{},
+		fonts:       map[uintptr]*Font{},
+		scaled:      map[scaledKey]uintptr{},
+		registered:  map[string]bool{},
+		appFamily:   map[string]string{},
+		files:       map[string][]string{},
+		given:       map[string][]string{},
+		ownOf:       map[uintptr][]string{},
+		languages:   map[string]uintptr{},
+		hanFamilies: map[[2]string]string{},
 	}
 	// A font map of our own: the default one belongs to the thread that
 	// asks for it, and goroutines move between threads.
@@ -406,6 +497,7 @@ func newPango() (*pangoEngine, error) {
 		return nil, errors.New("pango_cairo_font_map_new failed")
 	}
 	e.context = l.fontMapCreateContext(e.fontMap)
+	pinLCDFilter()
 	// Until the app has the desktop's settings, GDK's defaults on X11
 	// without a settings daemon: grayscale antialiasing, medium hinting.
 	e.antialias, e.hintStyle = cairoAntialiasGray, cairoHintStyleMedium
@@ -413,29 +505,135 @@ func newPango() (*pangoEngine, error) {
 	return e, nil
 }
 
+// lcdFilterRule gives fonts whose fontconfig settings name no LCD filter
+// FreeType's (FIR5), which cairo 1.17 and later use for those by default.
+// A filter fontconfig names is kept: a test of every value of an element
+// holds where the element is missing, and no filter is above 3.
+const lcdFilterRule = `<?xml version="1.0"?><!DOCTYPE fontconfig SYSTEM "fonts.dtd"><fontconfig><match target="font">` +
+	`<test qual="all" name="lcdfilter" compare="more"><int>3</int></test>` +
+	`<edit name="lcdfilter" mode="assign"><const>lcddefault</const></edit></match></fontconfig>`
+
+// pinLCDFilter has subpixel glyphs drawn with FreeType's LCD filter on
+// cairo before 1.17 (as on Ubuntu 18.04) where fontconfig names none
+// (#1025). Font options there have no public setter for the filter, and
+// their default is FreeType's legacy filter, which leaves thin strokes
+// pale with colored fringes; cairo takes the filter of a font's pattern
+// over that default.
+func pinLCDFilter() {
+	l := &pangoLib
+	if l.cairoVersion() >= 11700 || l.fcConfigGetCurrent == nil || l.fcConfigParseFromMemory == nil {
+		return
+	}
+	l.fcConfigParseFromMemory(l.fcConfigGetCurrent(), lcdFilterRule, int32(gTrue))
+}
+
 // pangoFamily returns the family list of a style for Pango, where
 // fontconfig knows the generic families, and system-ui is the desktop's
-// interface font, ui, when the app knows it.
-func pangoFamily(list, ui string) string {
+// interface font, ui, when the app knows it. The family before returns
+// for the first generic family, if any, goes before it, or after the
+// list without one.
+func pangoFamily(list, ui string, before func(generic string) string) string {
 	var out []string
 	systemUI := []string{"system-ui", "sans-serif"}
 	if ui != "" {
 		systemUI = []string{ui, "system-ui", "sans-serif"}
 	}
+	insert := func(generic string) {
+		if before != nil {
+			if f := before(generic); f != "" {
+				out = append(out, f)
+			}
+			before = nil
+		}
+	}
 	for _, f := range familyList(list) {
-		switch generic(f) {
+		switch g := generic(f); g {
 		case "system-ui":
+			insert(g)
 			out = append(out, systemUI...)
 		case "":
 			out = append(out, f)
 		default:
-			out = append(out, generic(f))
+			insert(g)
+			out = append(out, g)
 		}
 	}
 	if len(out) == 0 {
-		out = systemUI
+		insert("system-ui")
+		out = append(out, systemUI...)
 	}
+	insert("system-ui")
 	return strings.Join(out, ",")
+}
+
+// hanFamily returns the family fontconfig picks for a generic family in
+// a language that writes Han, as fc-match does, when that family's font
+// supports the language; "" otherwise.
+func (e *pangoEngine) hanFamily(lang, generic string) string {
+	lang = fcHanLang(lang)
+	if generic == "system-ui" {
+		generic = "sans-serif"
+	}
+	key := [2]string{lang, generic}
+	if f, ok := e.hanFamilies[key]; ok {
+		return f
+	}
+	l := &pangoLib
+	family := ""
+	if l.fcFontMatch != nil && l.fcLangSetHasLang != nil && l.fcPatternGetString != nil {
+		p := l.fcPatternCreate()
+		l.fcPatternAddString(p, "family", generic)
+		l.fcPatternAddString(p, "lang", lang)
+		l.fcConfigSubstitute(0, p, fcMatchPattern)
+		l.fcDefaultSubstitute(p)
+		var result int32
+		if m := l.fcFontMatch(0, p, &result); m != 0 {
+			var name *byte
+			var langs uintptr
+			if l.fcPatternGetString(m, "family", 0, &name) == fcResultMatch &&
+				l.fcPatternGetLangSet(m, "lang", 0, &langs) == fcResultMatch && l.fcLangSetHasLang(langs, lang) == fcLangEqual {
+				family = cString(name)
+			}
+			l.fcPatternDestroy(m)
+		}
+		l.fcPatternDestroy(p)
+	}
+	e.hanFamilies[key] = family
+	return family
+}
+
+// fcHanLang returns fontconfig's language for a language that writes
+// Han: ja, ko, or zh-cn, zh-tw, zh-hk, zh-mo or zh-sg for Chinese, by
+// script and region.
+func fcHanLang(tag string) string {
+	parts := strings.FieldsFunc(strings.ToLower(tag), func(r rune) bool { return r == '-' || r == '_' })
+	if len(parts) == 0 {
+		return "zh-cn"
+	}
+	switch parts[0] {
+	case "ja", "ko":
+		return parts[0]
+	}
+	script, region := "", ""
+	for _, p := range parts[1:] {
+		switch {
+		case len(p) == 4 && script == "":
+			script = p
+		case len(p) == 2 && region == "":
+			region = p
+		}
+	}
+	switch {
+	case (region == "tw" || region == "hk" || region == "mo") && script != "hans":
+		return "zh-" + region
+	case region == "sg" && script != "hant":
+		return "zh-sg"
+	case script == "hant":
+		return "zh-tw"
+	case script == "" && parts[0] == "yue":
+		return "zh-hk"
+	}
+	return "zh-cn"
 }
 
 func (e *pangoEngine) desc(style Style) uintptr {
@@ -451,7 +649,7 @@ func (e *pangoEngine) desc(style Style) uintptr {
 		clear(e.descs)
 	}
 	d := l.descNew()
-	l.descSetFamily(d, pangoFamily(key.Family, e.uiFamily))
+	l.descSetFamily(d, pangoFamily(key.Family, e.uiFamily, nil))
 	l.descSetWeight(d, int32(key.Weight))
 	if key.Italic {
 		l.descSetStyle(d, pangoStyleItalic)
@@ -481,6 +679,7 @@ func (e *pangoEngine) fontOf(font uintptr) *Font {
 	l := &pangoLib
 	l.gObjectRef(font)
 	f := &Font{native: font}
+	e.own(f)
 	if d := l.fontDescribeAbsolute(font); d != 0 {
 		f.Size = float32(l.descGetSize(d)) / pangoScale
 		l.descFree(d)
@@ -506,6 +705,95 @@ func (e *pangoEngine) shape(text []rune, style Style, spans []Span, width float3
 	if len(text) == 0 {
 		return nil
 	}
+	kept := e.keptWords(text, style, spans, width)
+	if kept == nil {
+		return e.layoutLines(text, style, spans, width, rtl, wholeWords, nil)
+	}
+	// Pango does not break a kept word even when it is longer than a line,
+	// which breaks where Pango would unless the text keeps words whole
+	// anyway: the lines are laid out again from the one it overflows,
+	// without the words of that line kept.
+	var out []shapedLine
+	for pos := 0; pos < len(text); {
+		lines := e.layoutLines(text[pos:], style, spansIn(spans, pos, len(text)), width, rtl, wholeWords, keptFrom(kept, pos))
+		if len(lines) == 0 {
+			break
+		}
+		offsetLines(lines, pos)
+		over := -1
+		for i := 0; i < len(lines) && !wholeWords; i++ {
+			l := lines[i]
+			if w, _ := paddedWidth(l, text, nil); w > width+max(style.LetterSpacing, 0)+1e-2 && dropKept(kept, l.start, l.end) {
+				over = i
+				break
+			}
+		}
+		if over < 0 {
+			out = append(out, lines...)
+			break
+		}
+		out = append(out, lines[:over]...)
+		pos = lines[over].start
+	}
+	return out
+}
+
+// keptWords returns the runs of text, from start to end, within which
+// lines may not break as Pango breaks them, and as text in a language that
+// keeps words whole does not (keepWordsWhole), or nil when there are none
+// or Pango cannot keep them.
+func (e *pangoEngine) keptWords(text []rune, style Style, spans []Span, width float32) [][2]int {
+	if width <= 0 || pangoLib.attrAllowBreaksNew == nil || !keepsAnyWords(style.Lang, spans) {
+		return nil
+	}
+	e.breaks = lineBreaks(&e.seg, e.breaks, text)
+	e.kept = append(e.kept[:0], e.breaks...)
+	if !keepWordsWhole(e.kept, text, style.Lang, spans) {
+		return nil
+	}
+	// Pango keeps the breaks at the ends of a run of its attribute.
+	var out [][2]int
+	for i := 1; i < len(text); i++ {
+		if !e.breaks[i] || e.kept[i] {
+			continue
+		}
+		if n := len(out); n > 0 && out[n-1][1] == i {
+			out[n-1][1] = i + 1
+		} else {
+			out = append(out, [2]int{i - 1, i + 1})
+		}
+	}
+	return out
+}
+
+// keptFrom returns the runs of kept from rune pos on, from it, but those
+// left out (dropKept).
+func keptFrom(kept [][2]int, pos int) [][2]int {
+	var out [][2]int
+	for _, k := range kept {
+		if k[1] > pos+1 && k[1] > k[0] {
+			out = append(out, [2]int{max(k[0], pos) - pos, k[1] - pos})
+		}
+	}
+	return out
+}
+
+// dropKept leaves out the runs of kept that meet the runes from start to
+// end, and reports whether there were any.
+func dropKept(kept [][2]int, start, end int) bool {
+	dropped := false
+	for i, k := range kept {
+		if k[1] > k[0] && k[0] < end && k[1] > start {
+			kept[i] = [2]int{}
+			dropped = true
+		}
+	}
+	return dropped
+}
+
+// layoutLines has Pango shape text and break it into lines, not within the
+// runs of kept.
+func (e *pangoEngine) layoutLines(text []rune, style Style, spans []Span, width float32, rtl, wholeWords bool, kept [][2]int) []shapedLine {
 	l := &pangoLib
 	utf8, index := utf8Text(text)
 	dir := int32(pangoDirLTR)
@@ -521,9 +809,16 @@ func (e *pangoEngine) shape(text []rune, style Style, spans []Span, width float3
 	l.layoutSetAutoDir(layout, int32(gFalse))
 	l.layoutSetFontDescription(layout, e.desc(style))
 	l.layoutSetText(layout, &utf8[0], int32(len(utf8)))
-	if attrs := e.attributes(style, spans, text); attrs != 0 {
+	if attrs := e.attributes(style, spans, text, kept); attrs != 0 {
 		l.layoutSetAttributes(layout, attrs)
 		l.attrListUnref(attrs)
+	}
+	if style.tabStop > 0 {
+		// One stop, which Pango repeats at multiples of its position.
+		tabs := l.tabArrayNew(1, int32(gFalse))
+		l.tabArraySetTab(tabs, 0, pangoTabLeft, int32(min(math.Round(float64(style.tabStop)*pangoScale), math.MaxInt32)))
+		l.layoutSetTabs(layout, tabs)
+		l.tabArrayFree(tabs)
 	}
 	if width > 0 {
 		// Round up to whole Pango units: truncating can make the box a
@@ -566,9 +861,13 @@ func (e *pangoEngine) shape(text []rune, style Style, spans []Span, width float3
 				for j, g := range infos {
 					cluster := at(item.offset + clusters[j])
 					// Pango empties the space ending a wrapped line; the
-					// other engines keep it, as editors need.
+					// other engines keep it, as editors need. A tab, which
+					// fonts have no glyph of, keeps the advance to its
+					// stop.
 					if g.glyph == pangoGlyphEmpty && cluster < len(text) && unicode.IsSpace(text[cluster]) {
-						g.glyph, g.width = e.space(item.font, text[cluster])
+						if id, w := e.space(item.font, text[cluster]); id != pangoGlyphEmpty {
+							g.glyph, g.width = id, w
+						}
 					}
 					sr.glyphs[j] = Glyph{
 						Font: f, ID: g.glyph,
@@ -586,10 +885,25 @@ func (e *pangoEngine) shape(text []rune, style Style, spans []Span, width float3
 	return lines
 }
 
-// attributes returns Pango's attributes of a style's letter spacing and
-// OpenType features, over the whole text, and of its spans' styles, over
-// their runes; 0 without any.
-func (e *pangoEngine) attributes(style Style, spans []Span, text []rune) uintptr {
+// language returns the PangoLanguage of a tag, Pango's default one, of
+// the user's locale, for "". Pango keeps them for good.
+func (e *pangoEngine) language(tag string) uintptr {
+	if tag == "" {
+		return pangoLib.languageGetDefault()
+	}
+	if p, ok := e.languages[tag]; ok {
+		return p
+	}
+	p := pangoLib.languageFromString(tag)
+	e.languages[tag] = p
+	return p
+}
+
+// attributes returns Pango's attributes of a style's letter spacing,
+// OpenType features and language, over the whole text, of its spans'
+// styles, over their runes, and that lines do not break within the runs
+// of kept; 0 without any.
+func (e *pangoEngine) attributes(style Style, spans []Span, text []rune, kept [][2]int) uintptr {
 	l := &pangoLib
 	var list uintptr
 	// add inserts an attribute over bytes from to to, or the whole text
@@ -626,15 +940,20 @@ func (e *pangoEngine) attributes(style Style, spans []Span, text []rune) uintptr
 		}
 		return l.attrFontFeaturesNew(b.String())
 	}
-	spacing := func(v float32) uintptr {
-		if v == 0 {
+	spacing := func(v float32, set bool) uintptr {
+		if v == 0 && !set {
 			return 0
 		}
 		return l.attrLetterSpacingNew(int32(math.Round(float64(v) * pangoScale)))
 	}
-	add(spacing(style.LetterSpacing), 0, 0)
+	add(spacing(style.LetterSpacing, false), 0, 0)
 	add(features(style.Features), 0, 0)
-	if len(spans) == 0 {
+	if style.Lang != "" {
+		add(l.attrLanguageNew(e.language(style.Lang)), 0, 0)
+	}
+	runs := langRuns(text, style.Lang, spans)
+	han := hanPunctRuns(text, style, spans)
+	if len(spans) == 0 && len(runs) == 0 && len(han) == 0 && len(kept) == 0 {
 		return list
 	}
 	// The byte each rune starts at.
@@ -646,12 +965,13 @@ func (e *pangoEngine) attributes(style Style, spans []Span, text []rune) uintptr
 	for _, sp := range spans {
 		to := max(from, min(sp.End, len(text)))
 		b0, b1 := at[from], at[to]
+		start := from
 		from = to
 		if b1 == b0 {
 			continue
 		}
 		if sp.Family != "" {
-			add(l.attrFamilyNew(pangoFamily(sp.Family, e.uiFamily)), b0, b1)
+			add(l.attrFamilyNew(pangoFamily(sp.Family, e.uiFamily, nil)), b0, b1)
 		}
 		if sp.Size > 0 {
 			add(l.attrSizeAbsoluteNew(int32(math.Round(float64(sp.Size)*pangoScale))), b0, b1)
@@ -662,10 +982,89 @@ func (e *pangoEngine) attributes(style Style, spans []Span, text []rune) uintptr
 		if sp.Italic {
 			add(l.attrStyleNew(pangoStyleItalic), b0, b1)
 		}
-		add(spacing(sp.LetterSpacing), b0, b1)
+		add(spacing(sp.LetterSpacing, sp.SpacingSet), b0, b1)
 		add(features(sp.Features), b0, b1)
+		if sp.ObjectWidth > 0 {
+			// Each rune an inline object: a shape of its size standing on
+			// the baseline, its descent below it, in its own attribute.
+			box := pangoRectangle{y: -int32(math.Round(float64(sp.ObjectHeight) * pangoScale)),
+				width: int32(math.Round(float64(sp.ObjectWidth) * pangoScale)), height: int32(math.Round(float64(sp.ObjectHeight+sp.ObjectDescent) * pangoScale))}
+			for k := start; k < to; k++ {
+				add(l.attrShapeNew(&box, &box), at[k], at[k+1])
+			}
+		}
+	}
+	// The runs in other languages, over the whole text's: an attribute
+	// added later over a range wins.
+	for _, r := range runs {
+		add(l.attrLanguageNew(e.language(r.lang)), at[r.start], at[r.end])
+	}
+	// Pango gives punctuation the script of its neighbours, and so the
+	// first font for Latin that has it, as Noto Sans Mongolian's
+	// ideographic comma between Latin words, whatever the language: the
+	// font the language picks goes before the generic families.
+	for _, r := range han {
+		before := func(generic string) string { return e.hanFamily(r.lang, generic) }
+		add(l.attrFamilyNew(pangoFamily(r.family, e.uiFamily, before)), at[r.start], at[r.end])
+	}
+	for _, k := range kept {
+		add(l.attrAllowBreaksNew(int32(gFalse)), at[k[0]], at[k[1]])
 	}
 	return list
+}
+
+// hanRun is a run of runes of a text, from start to end, of punctuation
+// or full-width forms in a language that writes Han, in one family.
+type hanRun struct {
+	start, end   int
+	lang, family string
+}
+
+// hanPunctRuns returns the runs of a text's punctuation and full-width
+// forms in the languages writing Han, given the text's style and spans;
+// nil when none of its languages writes Han.
+func hanPunctRuns(text []rune, style Style, spans []Span) []hanRun {
+	if !writesHan(style.Lang) && !spansWriteHan(spans) {
+		return nil
+	}
+	var out []hanRun
+	span, from := 0, 0
+	for i, r := range text {
+		if (r < 0x3000 || r > 0x303F) && (r < 0xFF00 || r > 0xFFEF) {
+			continue
+		}
+		for span < len(spans) && max(spans[span].End, from) <= i {
+			from = max(spans[span].End, from)
+			span++
+		}
+		lang, family := style.Lang, style.Family
+		if span < len(spans) {
+			if spans[span].Lang != "" {
+				lang = spans[span].Lang
+			}
+			if spans[span].Family != "" {
+				family = spans[span].Family
+			}
+		}
+		if !writesHan(lang) {
+			continue
+		}
+		if n := len(out); n > 0 && out[n-1].end == i && out[n-1].lang == lang && out[n-1].family == family {
+			out[n-1].end = i + 1
+			continue
+		}
+		out = append(out, hanRun{i, i + 1, lang, family})
+	}
+	return out
+}
+
+func spansWriteHan(spans []Span) bool {
+	for _, sp := range spans {
+		if writesHan(sp.Lang) {
+			return true
+		}
+	}
+	return false
 }
 
 // space returns the glyph and advance, in Pango units, of a whitespace
@@ -895,11 +1294,104 @@ func (e *pangoEngine) draw(f *Font, id uint32, scale, dx float32, subpixel bool)
 	return b
 }
 
+// fontMapFamilies lists the font map's families as fontconfig knows
+// them, with the app's under their own names, without the generic families
+// Pango adds (Sans, Serif, Monospace, System-ui), which are aliases rather
+// than fonts.
+func (e *pangoEngine) fontMapFamilies() []FontFamily {
+	l := &pangoLib
+	var arr *uintptr
+	var n int32
+	l.fontMapListFamilies(e.fontMap, &arr, &n)
+	if arr != nil {
+		defer l.gFree(uintptr(unsafe.Pointer(arr)))
+	}
+	var out []FontFamily
+	for _, fam := range unsafe.Slice(arr, int(n)) {
+		name := cString(l.fontFamilyGetName(fam))
+		switch strings.ToLower(name) {
+		case "", "sans", "serif", "monospace", "system-ui":
+			continue
+		}
+		out = append(out, FontFamily{Name: name, Monospaced: l.fontFamilyIsMonospace(fam)})
+	}
+	return out
+}
+
+// appFamilies lists the families of the app's fonts, monospaced as
+// fontconfig says their own families are.
+func (e *pangoEngine) appFamilies() []FontFamily {
+	if len(e.names) == 0 {
+		return nil
+	}
+	mono := map[string]bool{} // by lowercased name
+	for _, f := range e.fontMapFamilies() {
+		mono[strings.ToLower(f.Name)] = f.Monospaced
+	}
+	out := make([]FontFamily, len(e.names))
+	for i, name := range e.names {
+		out[i] = FontFamily{Name: name, Monospaced: mono[strings.ToLower(e.appFamily[strings.ToLower(name)])]}
+	}
+	return out
+}
+
+// systemFamilies lists the font map's families without the app's, which it
+// holds under their own names and the ones the app gave, as it is: a
+// Pango font map is not thread-safe, so it lists them under the lock, as
+// quickly as fontconfig does.
+func (e *pangoEngine) systemFamilies() func() []FontFamily {
+	app := map[string]bool{}
+	for name, own := range e.appFamily {
+		app[name] = true
+		app[strings.ToLower(own)] = true
+	}
+	var out []FontFamily
+	for _, f := range e.fontMapFamilies() {
+		if !app[strings.ToLower(f.Name)] {
+			out = append(out, f)
+		}
+	}
+	return func() []FontFamily { return out }
+}
+
+// writeCacheFile writes data to path in dir unless path is there, through
+// a temporary file of its own renamed into place, so that processes that
+// write the same file at once neither break each other's rename nor leave
+// a file cut short (#682). A rename that fails while another process put
+// path there leaves that file, as its bytes are the same.
+func writeCacheFile(dir, path string, data []byte) error {
+	if _, err := os.Stat(path); err == nil {
+		return nil
+	}
+	f, err := os.CreateTemp(dir, filepath.Base(path)+".*.tmp")
+	if err != nil {
+		return err
+	}
+	tmp := f.Name()
+	_, err = f.Write(data)
+	if cerr := f.Close(); err == nil {
+		err = cerr
+	}
+	if err == nil {
+		err = os.Chmod(tmp, 0o644)
+	}
+	if err == nil {
+		err = os.Rename(tmp, path)
+	}
+	if err != nil {
+		os.Remove(tmp)
+		if _, serr := os.Stat(path); serr == nil {
+			return nil
+		}
+	}
+	return err
+}
+
 // register adds a font file to fontconfig's fonts for the app, from the
-// user's cache directory, and an alias for family.
+// user's cache directory, and its faces again under family.
 func (e *pangoEngine) register(data []byte, family string) error {
 	l := &pangoLib
-	if l.fcConfigAppFontAddFile == nil || l.fontMapConfigChanged == nil {
+	if l.fcConfigAppFontAddFile == nil || l.fcFontSetAdd == nil || l.fontMapConfigChanged == nil {
 		return errors.New("mygo: adding fonts needs fontconfig and PangoFT2")
 	}
 	sum := sha256.Sum256(data)
@@ -912,14 +1404,8 @@ func (e *pangoEngine) register(data []byte, family string) error {
 		return fmt.Errorf("mygo: cannot add font: %w", err)
 	}
 	path := filepath.Join(dir, hex.EncodeToString(sum[:16])+".font")
-	if _, err := os.Stat(path); err != nil {
-		tmp := path + ".tmp"
-		if err := os.WriteFile(tmp, data, 0o644); err != nil {
-			return fmt.Errorf("mygo: cannot add font: %w", err)
-		}
-		if err := os.Rename(tmp, path); err != nil {
-			return fmt.Errorf("mygo: cannot add font: %w", err)
-		}
+	if err := writeCacheFile(dir, path, data); err != nil {
+		return fmt.Errorf("mygo: cannot add font: %w", err)
 	}
 	config := l.fcConfigGetCurrent()
 	if !e.registered[path] {
@@ -928,17 +1414,29 @@ func (e *pangoEngine) register(data []byte, family string) error {
 		}
 		e.registered[path] = true
 	}
+	names, ok := e.files[path]
+	if !ok {
+		names = fontFamilies(config, path)
+		e.files[path] = names
+	}
 	if family != "" {
-		names := fontFamilies(config, path)
 		if len(names) == 0 {
 			return errors.New("mygo: cannot add font: no family name")
 		}
-		if !strings.EqualFold(names[0], family) {
-			xml := `<?xml version="1.0"?><!DOCTYPE fontconfig SYSTEM "fonts.dtd"><fontconfig><alias binding="same"><family>` +
-				xmlEscape(family) + `</family><prefer><family>` + xmlEscape(names[0]) + `</family></prefer></alias></fontconfig>`
-			if l.fcConfigParseFromMemory == nil || l.fcConfigParseFromMemory(config, xml, int32(gTrue)) == 0 {
-				return errors.New("mygo: cannot add font under another family name")
-			}
+		if !strings.EqualFold(names[0], family) && !addFamily(config, path, family) ||
+			!e.giveFamilies(config, path, []string{family}) {
+			return errors.New("mygo: cannot add font under another family name")
+		}
+		// Listed under the name the app gave it, which is the one it uses.
+		e.appFamily[strings.ToLower(family)] = names[0]
+		e.names = append(e.names, family)
+	} else {
+		if !e.giveFamilies(config, path, names) {
+			return errors.New("mygo: cannot add font")
+		}
+		for _, name := range names {
+			e.appFamily[strings.ToLower(name)] = name
+			e.names = append(e.names, name)
 		}
 	}
 	l.fontMapConfigChanged(e.fontMap)
@@ -947,10 +1445,124 @@ func (e *pangoEngine) register(data []byte, family string) error {
 		l.descFree(d)
 	}
 	clear(e.descs)
+	clear(e.hanFamilies)
 	return nil
 }
 
-// fontFamilies returns the families of the app's fonts from a file.
+// givenFamily marks the faces addFamily adds, with the family they are
+// added under.
+const givenFamily = "mygogivenfamily"
+
+// addFamily adds the faces of a file of the app's fonts again, under a
+// family the app gives them alone, rather than as an alias of their own
+// family: so the family holds only the files registered under it, matched
+// by weight and style among them, as on macOS (#1224). Their own family
+// keeps them as before.
+func addFamily(config uintptr, path, family string) bool {
+	l := &pangoLib
+	set := l.fcConfigGetFonts(config, fcSetApplication)
+	if set == nil || set.nfont <= 0 {
+		return false
+	}
+	var faces []uintptr
+	for _, p := range unsafe.Slice(set.fonts, set.nfont) {
+		var file, given *byte
+		if l.fcPatternGetString(p, "file", 0, &file) != fcResultMatch || cString(file) != path {
+			continue
+		}
+		if l.fcPatternGetString(p, givenFamily, 0, &given) != fcResultMatch {
+			faces = append(faces, p)
+		} else if strings.EqualFold(cString(given), family) {
+			return true // added before
+		}
+	}
+	for _, p := range faces {
+		q := l.fcPatternDuplicate(p)
+		if q == 0 {
+			return false
+		}
+		l.fcPatternDel(q, "family")
+		l.fcPatternDel(q, "familylang")
+		if l.fcPatternAddString(q, "family", family) == 0 || l.fcPatternAddString(q, "familylang", "en") == 0 ||
+			l.fcPatternAddString(q, givenFamily, family) == 0 || l.fcFontSetAdd(set, q) == 0 {
+			l.fcPatternDestroy(q)
+			return false
+		}
+	}
+	return len(faces) > 0
+}
+
+// giveFamilies notes families the app gives a file of its fonts, and takes
+// them from the own families of the files it gave others (takeFamilies).
+func (e *pangoEngine) giveFamilies(config uintptr, path string, families []string) bool {
+	for _, f := range families {
+		if !slices.ContainsFunc(e.given[path], func(g string) bool { return strings.EqualFold(g, f) }) {
+			e.given[path] = append(e.given[path], f)
+		}
+	}
+	return e.takeFamilies(config)
+}
+
+// takeFamilies leaves a family the app gives to the files it gave it: the
+// faces of other files, of their own family, are no longer found under it,
+// but under the families the app gave them, so the faces of a family
+// that declare the same weight, as Selawik's Light and Semilight, are
+// told apart whichever the app registers first (#1224).
+func (e *pangoEngine) takeFamilies(config uintptr) bool {
+	l := &pangoLib
+	set := l.fcConfigGetFonts(config, fcSetApplication)
+	if set == nil || set.nfont <= 0 || l.fcPatternDel == nil {
+		return false
+	}
+	taken := map[string]bool{}
+	for _, families := range e.given {
+		for _, f := range families {
+			taken[strings.ToLower(f)] = true
+		}
+	}
+	for _, p := range unsafe.Slice(set.fonts, set.nfont) {
+		var file, given *byte
+		if l.fcPatternGetString(p, "file", 0, &file) != fcResultMatch ||
+			l.fcPatternGetString(p, givenFamily, 0, &given) == fcResultMatch {
+			continue
+		}
+		gave := e.given[cString(file)]
+		if len(gave) == 0 {
+			continue
+		}
+		own, edited := e.ownOf[p]
+		if !edited {
+			for n := int32(0); ; n++ {
+				var family *byte
+				if l.fcPatternGetString(p, "family", n, &family) != fcResultMatch {
+					break
+				}
+				own = append(own, cString(family))
+			}
+		}
+		keep := slices.DeleteFunc(slices.Clone(own), func(f string) bool {
+			return taken[strings.ToLower(f)] && !slices.ContainsFunc(gave, func(g string) bool { return strings.EqualFold(g, f) })
+		})
+		if len(keep) == len(own) && !edited {
+			continue
+		}
+		e.ownOf[p] = own
+		if len(keep) == 0 {
+			// Found under a family the app gave it, as its faces are.
+			keep = gave[:1]
+		}
+		l.fcPatternDel(p, "family")
+		l.fcPatternDel(p, "familylang")
+		for _, f := range keep {
+			if l.fcPatternAddString(p, "family", f) == 0 || l.fcPatternAddString(p, "familylang", "en") == 0 {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+// fontFamilies returns the own families of the app's fonts from a file.
 func fontFamilies(config uintptr, path string) []string {
 	l := &pangoLib
 	if l.fcConfigGetFonts == nil || l.fcPatternGetString == nil {
@@ -962,8 +1574,9 @@ func fontFamilies(config uintptr, path string) []string {
 	}
 	var names []string
 	for _, p := range unsafe.Slice(set.fonts, set.nfont) {
-		var file, family *byte
-		if l.fcPatternGetString(p, "file", 0, &file) != fcResultMatch || cString(file) != path {
+		var file, family, given *byte
+		if l.fcPatternGetString(p, "file", 0, &file) != fcResultMatch || cString(file) != path ||
+			l.fcPatternGetString(p, givenFamily, 0, &given) == fcResultMatch {
 			continue
 		}
 		if l.fcPatternGetString(p, "family", 0, &family) == fcResultMatch {
@@ -984,22 +1597,19 @@ func cString(p *byte) string {
 	return string(unsafe.Slice(p, n))
 }
 
-func xmlEscape(s string) string {
-	return strings.NewReplacer("&", "&amp;", "<", "&lt;", ">", "&gt;", `"`, "&quot;").Replace(s)
-}
-
 func (e *pangoEngine) fontCount() int { return len(e.fonts) }
 
-// forgetFonts lets go of the Pango and cairo fonts of the Fonts made so
-// far.
+// forgetFonts lets go of the Fonts made so far, and of their cairo
+// fonts, which a Font drawing on makes anew. Their Pango fonts go with
+// them, once nothing refers to them (releaseFonts).
 func (e *pangoEngine) forgetFonts() {
-	l := &pangoLib
 	for _, sf := range e.scaled {
-		l.cairoScaledFontDestroy(sf)
+		pangoLib.cairoScaledFontDestroy(sf)
 	}
 	clear(e.scaled)
-	for _, f := range e.fonts {
-		l.gObjectUnref(f.native)
-	}
 	clear(e.fonts)
+	e.dropScratch()
 }
+
+// releaseFonts releases the Pango fonts of the Fonts nothing refers to.
+func (e *pangoEngine) releaseFonts() { e.releaseDead(pangoLib.gObjectUnref) }

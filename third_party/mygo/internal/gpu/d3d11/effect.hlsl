@@ -1,7 +1,8 @@
 // The head and the tail of an effect's pixel shader (scene.Effect): after
 // shader.hlsl with EFFECT defined, the head declares what an effect reads,
 // the effect's source follows, then the tail, after the line "// effect",
-// draws its instances with it (effectps).
+// draws its instances with it (effectps): the rounded rectangle, or, with
+// 1 in params.y, a mask glyph a shader's effect fills.
 
 Texture2D backdropTex : register(t3);
 
@@ -17,7 +18,7 @@ struct Effect {
 
 float2 framePoint(Effect e, float2 q) {
 	float3 h = float3(dot(e.transform0.xyz, float3(q, 1.0)), dot(e.transform1.xyz, float3(q, 1.0)),
-					  dot(float3(e.transform2.xy, 1.0), float3(q, 1.0)));
+					  dot(float3(e.transform2.xy, 1.0 - 2.0 * e.transform2.z), float3(q, 1.0)));
 	return h.xy / h.z;
 }
 
@@ -55,8 +56,19 @@ PSOut effectps(VSOut i) {
 	e.transform0 = i.transform0;
 	e.transform1 = i.transform1;
 	e.transform2 = i.transform2;
-	float4 res =
-		effect(i.pt.xy, e) * (localCoverage(i.pt.xy, i.rect, i.radii, i.transform0.w, fr) * clipCoverage(i) * i.params.w);
+	float4 res;
+	if (i.params.y > 0.5) {
+		// A mask glyph a shader fills (scene.EffectOp.Glyphs), as ps
+		// draws one, its paint the shader's color.
+		float4 c = effect(i.pt.xy, e);
+		float glyphCov = i.transform0.w > 0.5 ? localCoverage(i.pt.xy, i.rect, float4(0, 0, 0, 0), 1, fr) : 1;
+		res = c * (textCoverage(sampleLocal(maskTex, i.pt.zw, i.widths, i.transform0.w).r, unpremul(c), i.inner.x,
+								i.inner.y, i.radii) *
+				   glyphCov * clipCoverage(i) * i.params.w);
+	} else {
+		res = effect(i.pt.xy, e) *
+			  (localCoverage(i.pt.xy, i.rect, i.radii, i.transform0.w, fr) * clipCoverage(i) * i.params.w);
+	}
 	PSOut o;
 	o.color = res;
 	o.alpha = res.aaaa;

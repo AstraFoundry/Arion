@@ -12,6 +12,13 @@ tool and your exact model.
 
 <!-- The commands you ran (see AGENTS.md) and the platforms you tried it on. -->
 
+Tested on:
+- [ ] macOS
+- [ ] Windows
+- [ ] Linux
+- [ ] Web
+- [ ] Other: (specify here)
+
 ## AI disclosure
 
 <!-- Required. Write "None" when no AI was used. -->

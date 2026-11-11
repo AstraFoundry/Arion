@@ -110,6 +110,60 @@ func TestUnhandledEscape(t *testing.T) {
 	}
 }
 
+// TestEscapeBeforeTheFrame presses Escape as the view changes, before a
+// frame built since: the shortcut the frame handling the key registers
+// takes it, though the last frame had none, and the window gets the
+// Escape that a shortcut the view no longer asks for leaves.
+func TestEscapeBeforeTheFrame(t *testing.T) {
+	handles, took := false, 0
+	tt := coreNewTester(func(c *context) {
+		if handles && c.Shortcut(0, KeyEscape) {
+			took++
+		}
+	}, 200, 100)
+
+	handles = true // no frame shows it yet
+	tt.Key(0, KeyEscape)
+	if took != 1 || tt.h.escapes != 0 {
+		t.Fatalf("Escape as the view took a shortcut for it: the view took %d, the window %d", took, tt.h.escapes)
+	}
+	tt.Key(0, KeyEscape)
+	if took != 2 || tt.h.escapes != 0 {
+		t.Fatalf("Escape with the shortcut shown: the view took %d, the window %d", took, tt.h.escapes)
+	}
+
+	handles = false
+	tt.Key(0, KeyEscape)
+	if took != 2 || tt.h.escapes != 1 {
+		t.Fatalf("Escape as the view dropped its shortcut: the view took %d, the window %d", took, tt.h.escapes)
+	}
+}
+
+// TestKeyRetriedOnce gives a key that the frame it came to found no
+// shortcut for one more frame, not more, though the view keeps
+// registering it for an element it then leaves out.
+func TestKeyRetriedOnce(t *testing.T) {
+	frames := 0
+	tt := coreNewTester(func(c *context) {
+		frames++
+		// A shortcut of the window every other frame: the frame routing a
+		// retried key never builds it.
+		if frames%2 == 0 {
+			c.Shortcut(0, KeyEscape)
+		}
+	}, 200, 100)
+	before := frames
+	tt.Key(0, KeyEscape)
+	if n := frames - before; n > 4 {
+		t.Fatalf("one Escape built %d frames", n)
+	}
+	// The frame it was retried in, which had no shortcut for it, left it
+	// to the window.
+	if tt.h.escapes != 1 {
+		t.Fatalf("the window got %d Escapes, not 1", tt.h.escapes)
+	}
+}
+
 func TestOverlayGivesTheFocusBack(t *testing.T) {
 	d := &dialogView{size: "Small"}
 	tt := coreNewTester(d.view, 500, 400)
@@ -122,6 +176,39 @@ func TestOverlayGivesTheFocusBack(t *testing.T) {
 	tt.Click("OK")
 	if d.open || !tt.Focused("Open") {
 		t.Errorf("closed by OK: the focus is not back on Open")
+	}
+}
+
+// An input focused in the frame that first builds it is within its
+// panel once the frame settles, as a popover's search field taking the
+// focus as the popover opens, with no frame to come.
+func TestFocusWithinAnElementFocusedAsItIsBuilt(t *testing.T) {
+	for _, popover := range []bool{false, true} {
+		open, text := false, ""
+		var ref Ref
+		var focused, within, refWithin bool
+		tt := NewTester(func(c *Context) {
+			anchor := ButtonBase(c).Size(40, 20).Label("anchor")
+			if anchor.Clicked() {
+				open = true
+			}
+			body := func(panel Element) {
+				panel.Ref(&ref).Children(func() {
+					focused = TextInputBase(c, &text).Size(100, 20).AutoFocus().Focused()
+				})
+				within = panel.FocusWithin()
+			}
+			if popover {
+				PopoverBase(c, anchor, &open, body)
+			} else if open {
+				body(Column(c))
+			}
+			refWithin = ref.FocusWithin(c)
+		}, 400, 300)
+		tt.Click("anchor")
+		if !focused || !within || !refWithin {
+			t.Errorf("popover %v: focused %v, within the panel %v, within its ref %v", popover, focused, within, refWithin)
+		}
 	}
 }
 

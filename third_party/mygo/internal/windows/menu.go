@@ -20,12 +20,33 @@ type menuEntry struct {
 	menu  uintptr // the HMENU holding the item
 	radio bool
 	accel string
+	// native is the number of an item of WebView2's own in a page's
+	// context menu (context_menu.go), 0 for the app's.
+	native int
+	// disabled keeps the app's choice when enableEditItems changes the native
+	// item's state.
+	disabled bool
+	// look is how MyGo draws the item, nil where Windows does.
+	look *menuLook
+	// icon is the item's icon, and bmp the bitmap Windows draws of it
+	// where it draws the item.
+	icon *platform.MenuIcon
+	bmp  uintptr
+	// dpi is that of the menu's bitmaps, 0 for an item of the menu bar,
+	// which shows no icon.
+	dpi int
 }
 
 type menuTable struct {
 	entries   map[uint16]*menuEntry
 	next      uint16
 	nextOwner int
+	// looks are the items MyGo draws (menudraw.go), by their data.
+	looks    map[uintptr]*menuLook
+	nextLook uintptr
+	// bitmaps are the bitmaps of the icons of Windows 10's menus, by the
+	// owner of their items, which frees them (menuicon.go).
+	bitmaps map[uintptr]int
 }
 
 func newMenuTable() menuTable { return menuTable{entries: map[uint16]*menuEntry{}} }
@@ -58,15 +79,62 @@ func (t *menuTable) drop(owner int) {
 			delete(t.entries, id)
 		}
 	}
+	for key, l := range t.looks {
+		if l.owner == owner {
+			delete(t.looks, key)
+		}
+	}
+	for bmp, o := range t.bitmaps {
+		if o == owner {
+			t.freeBitmap(bmp)
+		}
+	}
 }
 
-// buildMenu creates a native menu bar or popup menu.
-func (b *Backend) buildMenu(m *platform.Menu, bar bool, owner int, accels map[accelKey]uint16) uintptr {
+// buildMenu creates a native menu bar or popup menu, for a window at dpi.
+func (b *Backend) buildMenu(m *platform.Menu, bar bool, owner int, accels map[accelKey]uint16, dpi int) uintptr {
 	var h uintptr
 	if bar {
 		h, _, _ = procCreateMenu.Call()
 	} else {
 		h, _, _ = procCreatePopupMenu.Call()
+	}
+	// MyGo draws the items of popup menus (menudraw.go), which leave room
+	// for checks when any item has one.
+	drawn := !bar && fluentMenus()
+	column, icons := false, false
+	for _, it := range m.Items {
+		column = column || it.Visible && (it.Type == platform.MenuItemCheckbox || it.Type == platform.MenuItemRadio || it.Checked)
+		icons = icons || it.Visible && it.Icon != nil && it.Type != platform.MenuItemSeparator
+	}
+	// The items of a menu bar show no icons; Windows 10 draws those of its
+	// menus' as bitmaps.
+	icons = icons && !bar
+	var tint uint32
+	if icons && !drawn {
+		tint = b.menuTextColor()
+	}
+	bitmap := func(it *platform.MenuItem, item uint32, byPosition bool) uintptr {
+		if !icons || drawn || it.Icon == nil {
+			return 0
+		}
+		bmp := b.menus.addBitmap(owner, it.Icon, dpi, tint)
+		if bmp != 0 {
+			setItemBitmap(h, item, byPosition, bmp)
+		}
+		return bmp
+	}
+	pos := 0
+	var looks []*menuLook
+	look := func(l *menuLook) *menuLook {
+		defer func() { pos++ }()
+		if !drawn {
+			return nil
+		}
+		l.owner, l.column, l.icons, l.menu, l.pos = owner, column, icons, h, pos
+		looks = append(looks, l)
+		ownerDraw(h, pos, l.ftype(), b.menus.addLook(l))
+		return l
 	}
 	for _, it := range m.Items {
 		if !it.Visible {
@@ -74,6 +142,7 @@ func (b *Backend) buildMenu(m *platform.Menu, bar bool, owner int, accels map[ac
 		}
 		if it.Type == platform.MenuItemSeparator {
 			procAppendMenuW.Call(h, mfSeparator, 0, 0)
+			look(&menuLook{separator: true})
 			continue
 		}
 		flags := uintptr(mfString)
@@ -81,17 +150,29 @@ func (b *Backend) buildMenu(m *platform.Menu, bar bool, owner int, accels map[ac
 			flags |= mfGrayed
 		}
 		if it.Submenu != nil {
-			sub := b.buildMenu(it.Submenu, false, owner, accels)
-			procAppendMenuW.Call(h, flags|mfPopup, sub, uintptr(unsafe.Pointer(u16(it.Label))))
+			sub := b.buildMenu(it.Submenu, false, owner, accels, dpi)
+			procAppendMenuW.Call(h, flags|mfPopup, sub, uintptr(unsafe.Pointer(u16(menuLabel(it)))))
+			bitmap(it, uint32(pos), true)
+			look(&menuLook{label: menuLabel(it), submenu: true, icon: it.Icon})
 			continue
 		}
 		if it.Checked {
 			flags |= mfChecked
 		}
-		e := &menuEntry{uid: it.ID, role: it.Role, owner: owner, menu: h, radio: it.Type == platform.MenuItemRadio}
+		e := &menuEntry{uid: it.ID, role: it.Role, owner: owner, menu: h, radio: it.Type == platform.MenuItemRadio, disabled: !it.Enabled, icon: it.Icon, native: it.Native}
+		if !bar {
+			e.dpi = dpi
+		}
 		cmd := b.menus.add(e)
-		label := it.Label
-		if a, err := accelerator.Parse(it.Accelerator, "windows"); err == nil && it.Accelerator != "" {
+		label := menuLabel(it)
+		if it.Native != 0 {
+			// WebView2's item shows its shortcut as WebView2 words it, and
+			// WebView2 hears its key.
+			if it.Accelerator != "" {
+				e.accel = it.Accelerator
+				label += "\t" + e.accel
+			}
+		} else if a, err := accelerator.Parse(it.Accelerator, "windows"); err == nil && it.Accelerator != "" {
 			e.accel = acceleratorText(a)
 			label += "\t" + e.accel
 			if vk, ok := virtualKey(a.Key); ok && accels != nil {
@@ -99,32 +180,26 @@ func (b *Backend) buildMenu(m *platform.Menu, bar bool, owner int, accels map[ac
 			}
 		}
 		procAppendMenuW.Call(h, flags, uintptr(cmd), uintptr(unsafe.Pointer(u16(label))))
-		if e.radio {
-			setItemInfo(h, cmd, label, it.Enabled, it.Checked, true)
+		e.bmp = bitmap(it, uint32(cmd), false)
+		e.look = look(&menuLook{label: menuLabel(it), accel: e.accel, radio: e.radio, icon: it.Icon})
+		if e.radio && e.look == nil {
+			setItemInfo(h, cmd, label, it.Enabled, it.Checked, true, false)
 		}
+	}
+	if len(looks) > 0 {
+		looks[0].first, looks[len(looks)-1].last = true, true
 	}
 	return h
 }
 
-func setItemInfo(menu uintptr, cmd uint16, label string, enabled, checked, radio bool) {
-	type menuItemInfo struct {
-		Size         uint32
-		Mask         uint32
-		Type         uint32
-		State        uint32
-		ID           uint32
-		SubMenu      uintptr
-		BmpChecked   uintptr
-		BmpUnchecked uintptr
-		ItemData     uintptr
-		TypeData     *uint16
-		Cch          uint32
-		BmpItem      uintptr
-	}
+func setItemInfo(menu uintptr, cmd uint16, label string, enabled, checked, radio, drawn bool) {
 	mi := menuItemInfo{Mask: miimState | miimFType | miimString, TypeData: u16(label)}
 	mi.Size = uint32(unsafe.Sizeof(mi))
 	if radio {
 		mi.Type = mftRadioCheck
+	}
+	if drawn {
+		mi.Type |= mftOwnerDraw
 	}
 	if checked {
 		mi.State |= mfsChecked
@@ -142,7 +217,7 @@ func (w *window) installMenu(m *platform.Menu) {
 	w.menu, w.hmenu, w.owner, w.accels = m, 0, 0, map[accelKey]uint16{}
 	if m != nil && len(m.Items) > 0 {
 		w.owner = w.b.menus.newOwner()
-		w.hmenu = w.b.buildMenu(m, true, w.owner, w.accels)
+		w.hmenu = w.b.buildMenu(m, true, w.owner, w.accels, dpiOf(w.hwnd))
 	}
 	w.attachMenu()
 	if old != 0 {
@@ -199,6 +274,8 @@ func (w *window) popupMenuBar(key uintptr) {
 		return
 	}
 	popup, _, _ := procCreatePopupMenu.Call()
+	owner := w.b.menus.newOwner()
+	defer w.b.menus.drop(owner)
 	for i := range count {
 		buf := make([]uint16, 256)
 		procGetMenuStringW.Call(w.hmenu, uintptr(i), uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)), mfByPosition)
@@ -211,6 +288,10 @@ func (w *window) popupMenuBar(key uintptr) {
 			item, _, _ = procGetMenuItemID.Call(w.hmenu, uintptr(i))
 		}
 		procAppendMenuW.Call(popup, flags, item, uintptr(unsafe.Pointer(&buf[0])))
+		if fluentMenus() {
+			l := &menuLook{owner: owner, label: string(utf16Decode(buf)), submenu: flags&mfPopup != 0, first: i == 0, last: i == count-1, menu: popup}
+			ownerDraw(popup, i, 0, w.b.menus.addLook(l))
+		}
 	}
 	pt := point{Y: toPx(w.TitleBar().Height, dpiOf(w.hwnd))}
 	procClientToScreen.Call(w.hwnd, uintptr(unsafe.Pointer(&pt)))
@@ -219,7 +300,7 @@ func (w *window) popupMenuBar(key uintptr) {
 		w.menuKey = menuKey{popup: popup, key: key}
 		postMessage(w.hwnd, wmChar, key, 0)
 	}
-	cmd := w.b.trackPopup(popup, w.hwnd, pt)
+	cmd := w.b.trackPopup(popup, w.hwnd, pt, 0, nil)
 	w.menuKey = menuKey{}
 	for i := count - 1; i >= 0; i-- {
 		procRemoveMenu.Call(popup, uintptr(i), mfByPosition)
@@ -248,22 +329,47 @@ func (w *window) menuChar(wp, lp uintptr) (uintptr, bool) {
 func (b *Backend) SetApplicationMenu(m *platform.Menu) {
 	b.appMenu = m
 	for _, w := range b.windows {
-		if !w.ownMenu {
+		if !w.ownMenu && w.hasAppMenu() {
 			w.installMenu(m)
 		}
 	}
 }
 
 func (b *Backend) UpdateMenuItem(it *platform.MenuItem) {
+	// The menus built later, of trays and of new windows, from the
+	// snapshots kept, show the item as it is now.
+	b.appMenu.Apply(it)
+	for _, w := range b.windows {
+		if w.menu != b.appMenu {
+			w.menu.Apply(it)
+		}
+	}
+	for _, t := range b.trays {
+		t.menu.Apply(it)
+	}
 	for cmd, e := range b.menus.entries {
 		if e.uid != it.ID {
 			continue
 		}
-		label := it.Label
+		label := menuLabel(it)
 		if e.accel != "" {
 			label += "\t" + e.accel
 		}
-		setItemInfo(e.menu, cmd, label, it.Enabled, it.Checked, e.radio)
+		if e.look != nil {
+			e.look.label, e.look.icon = menuLabel(it), it.Icon
+			if it.Icon != nil && !e.look.icons {
+				b.menus.iconColumn(e.menu)
+			}
+		} else if it.Icon != e.icon && e.dpi != 0 {
+			b.menus.freeBitmap(e.bmp)
+			e.bmp = 0
+			if it.Icon != nil {
+				e.bmp = b.menus.addBitmap(e.owner, it.Icon, e.dpi, b.menuTextColor())
+			}
+			setItemBitmap(e.menu, uint32(cmd), false, e.bmp)
+		}
+		e.icon, e.disabled = it.Icon, !it.Enabled
+		setItemInfo(e.menu, cmd, label, it.Enabled, it.Checked, e.radio, e.look != nil)
 	}
 	for _, w := range b.windows {
 		if w.menuShown() {
@@ -296,9 +402,8 @@ func (b *Backend) focusedWindow() *window {
 	return b.windows[fg]
 }
 
-// editRole performs the edit roles in the page. The page needs a user
-// gesture for them, which DevTools evaluation provides; paste types the
-// clipboard's text, since pages may not read the clipboard.
+// editRole performs the edit roles in the page, or sends them to native UI.
+// DevTools evaluation gives document.execCommand a user gesture.
 func editRole(w *window, role string) bool {
 	commands := map[string]string{
 		"undo": "undo", "redo": "redo", "cut": "cut", "copy": "copy",
@@ -309,17 +414,30 @@ func editRole(w *window, role string) bool {
 		return editRole(v, role)
 	}
 	if w.surface != nil {
-		if role == "pasteAndMatchStyle" {
-			role = "paste"
-		}
-		if _, ok := commands[role]; !ok && role != "paste" {
+		if !platform.EditCommands[role] {
 			return false
 		}
 		w.h.SurfaceEvent(platform.SurfaceEvent{Kind: platform.SurfaceCommand, Text: role})
 		return true
 	}
 	switch role {
-	case "paste", "pasteAndMatchStyle":
+	case "paste":
+		// Run Chromium's paste command with every clipboard format. The
+		// page sees keydown and keyup, but an Unidentified key without
+		// modifiers avoids invoking its Ctrl+V handlers too.
+		w.withWebView(func() {
+			w.focusWebView() // the menu has closed
+			w.devtools("Input.dispatchKeyEvent", `{"type":"rawKeyDown","key":"Unidentified","commands":["paste"]}`, func(_ string, err error) {
+				if err != nil {
+					return
+				}
+				w.withWebView(func() {
+					w.devtools("Input.dispatchKeyEvent", `{"type":"keyUp","key":"Unidentified"}`, nil)
+				})
+			})
+		})
+		return true
+	case "pasteAndMatchStyle":
 		text := clipboard{w.b}.ReadText()
 		params, _ := json.Marshal(map[string]string{"text": text})
 		w.withWebView(func() { w.devtools("Input.insertText", string(params), nil) })
@@ -327,11 +445,44 @@ func editRole(w *window, role string) bool {
 	}
 	cmd, ok := commands[role]
 	if !ok {
+		// The Format menu's, in the page with the keyboard.
+		cmd, ok = formatCommands[role]
+	}
+	if !ok {
 		return false
 	}
 	params, _ := json.Marshal(map[string]any{"expression": "document.execCommand(" + jsString(cmd) + ")", "userGesture": true})
 	w.withWebView(func() { w.devtools("Runtime.evaluate", string(params), nil) })
 	return true
+}
+
+// enableEditItems enables the items of the edit roles in menu, of the
+// window's menu bar or a popup over it, as the native UI the window shows
+// can act on them. Those of a page keep the app's state: what a page would
+// do is not known before.
+func (w *window) enableEditItems(menu uintptr) {
+	native := w.surface != nil && w.focusedWebView() == nil
+	for cmd, e := range w.b.menus.entries {
+		if e.menu != menu || !platform.EditCommands[e.role] {
+			continue
+		}
+		on := !e.disabled
+		if on && native {
+			on = w.h.SurfaceEvent(platform.SurfaceEvent{Kind: platform.SurfaceCommandEnabled, Text: e.role})
+		}
+		flags := uintptr(mfByCommand)
+		if !on {
+			flags |= mfGrayed
+		}
+		procEnableMenuItem.Call(e.menu, uintptr(cmd), flags)
+	}
+}
+
+// formatCommands are the page's commands of the Format menu's roles; in
+// native UI, they go to the content as the other roles.
+var formatCommands = map[string]string{
+	"bold": "bold", "italic": "italic", "underline": "underline", "strikethrough": "strikeThrough",
+	"alignLeft": "justifyLeft", "alignCenter": "justifyCenter", "alignRight": "justifyRight",
 }
 
 func jsString(s string) string {
@@ -349,9 +500,6 @@ func (b *Backend) PopupMenu(m *platform.Menu, pw platform.Window, pos *platform.
 	}
 	id := b.menus.newOwner()
 	defer b.menus.drop(id)
-	menu := b.buildMenu(m, false, id, nil)
-	defer procDestroyMenu.Call(menu)
-
 	var pt point
 	if pos != nil && w != nil {
 		dpi := dpiOf(w.hwnd)
@@ -360,18 +508,39 @@ func (b *Backend) PopupMenu(m *platform.Menu, pw platform.Window, pos *platform.
 	} else {
 		procGetCursorPos.Call(uintptr(unsafe.Pointer(&pt)))
 	}
-	cmd := b.trackPopup(menu, owner, pt)
+	menu := b.buildMenu(m, false, id, nil, monitorDPI(monitorAt(int(pt.X), int(pt.Y))))
+	defer procDestroyMenu.Call(menu)
+	var flags uintptr
+	if m.RightToLeft {
+		// Its right edge at the point, laid out from the right.
+		flags = tpmRightAlign | tpmLayoutRTL
+	}
+	cmd := b.trackPopup(menu, owner, pt, flags, nil)
 	if cmd != 0 {
 		b.menuCommand(cmd, w)
 	}
 }
 
-// trackPopup shows a popup menu and returns the chosen command, or 0.
-func (b *Backend) trackPopup(menu, owner uintptr, pt point) uint16 {
+// trackPopup shows a popup menu, with TrackPopupMenuEx's flags besides
+// those it always gives, out of the rectangle exclude unless it is nil,
+// and returns the chosen command, or 0.
+func (b *Backend) trackPopup(menu, owner uintptr, pt point, flags uintptr, exclude *rect) uint16 {
 	// The owner must be in the foreground, or the menu does not close
 	// when the user clicks elsewhere.
 	procSetForegroundWindow.Call(owner)
-	cmd, _, _ := procTrackPopupMenuEx.Call(menu, tpmReturnCmd|tpmRightButton, uintptr(pt.X), uintptr(pt.Y), owner, 0)
+	// Windows creates the menu's window before WM_ENTERMENULOOP.
+	b.hookMenus(true)
+	defer b.hookMenus(false)
+	// The windows the loop creates meanwhile are a popup's, which stays
+	// open on Alt (menuProc).
+	b.popups++
+	defer func() { b.popups-- }()
+	var params *tpmParams
+	if exclude != nil {
+		params = &tpmParams{Exclude: *exclude}
+		params.Size = uint32(unsafe.Sizeof(*params))
+	}
+	cmd, _, _ := procTrackPopupMenuEx.Call(menu, tpmReturnCmd|tpmRightButton|flags, uintptr(pt.X), uintptr(pt.Y), owner, uintptr(unsafe.Pointer(params)))
 	postMessage(owner, 0, 0, 0) // WM_NULL, as the documentation asks
 	return uint16(cmd)
 }
@@ -475,4 +644,14 @@ func atoi(s string) int {
 		n = n*10 + int(c-'0')
 	}
 	return n
+}
+
+// menuLabel is the text of an item's menu entry: its label, in which an
+// ampersand marks the mnemonic, and its subtitle after it, in which it is
+// an ampersand.
+func menuLabel(it *platform.MenuItem) string {
+	if it.Subtitle == "" {
+		return it.Label
+	}
+	return it.Label + " — " + strings.ReplaceAll(it.Subtitle, "&", "&&")
 }

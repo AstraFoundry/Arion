@@ -20,6 +20,10 @@ func coreTabs(c *context, selected *int, labels ...string) *node {
 		for i, label := range labels {
 			tab := tabs.Tab(i).Padding(t.Space(2), t.Space(3)).FocusRing(false)
 			on := i == *selected
+			var line Color
+			if on {
+				line = c.accent(t)
+			}
 			tab.TextColor(t.TextMuted)
 			if on {
 				tab.TextColor(t.Text).FontWeight(600)
@@ -32,10 +36,10 @@ func coreTabs(c *context, selected *int, labels ...string) *node {
 			tab.DrawOver(func(p *Painter, r Rect) {
 				if on {
 					in, h := t.Space(1.5), t.Space(0.5)
-					p.Fill(Rect{r.X + in, r.Y + r.H - h, r.W - 2*in, h}, t.Accent, h/2)
+					p.Fill(Rect{r.X + in, r.Y + r.H - h, r.W - 2*in, h}, line, h/2)
 				}
 				if tab.FocusVisible() {
-					p.FocusRing(r, [4]float32{t.Radius, t.Radius, t.Radius, t.Radius})
+					p.focusRingOf(tab, r, [4]float32{t.Radius, t.Radius, t.Radius, t.Radius})
 				}
 			})
 			tab.Children(func() { coreText(c, label).SingleLine() })

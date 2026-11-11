@@ -4,13 +4,16 @@
 
 `ui.SearchField` creates a field for searching, editing a `*string`: a
 magnifying glass, the text, and a button clearing it while it holds any,
-as Escape does then. It shows "Search" while empty. `Changed` reports a
-change, and `Submitted` Enter.
+as Escape does then. It shows "Search" while empty, or what `Placeholder`
+sets to say what it searches. `Changed` reports a change, and `Submitted`
+Enter.
 
 ```go
 if ui.SearchField(c, &app.query).Label("Search mail").Changed() {
 	app.filter()
 }
+
+ui.SearchField(c, &app.pageQuery).Placeholder("Search pages, or #tag to filter")
 ```
 
 To search as the user types, filter on `Changed`; for searches that take
@@ -18,5 +21,15 @@ time, search on `Submitted`, or after a pause with `c.After`.
 
 ## Accessibility
 
-Assistive technology sees a search field (`AXSearchField` on macOS), named
-by its `Label`.
+Assistive technology sees a search field (`AXSearchField` on macOS, an
+entry with `xml-roles:searchbox` on Linux, an Edit "search box" on
+Windows), named by its `Label`. A text input of your own, drawn with its
+own icon and clear button, asks to be one with `Search`, as ARIA's
+`searchbox`:
+
+```go
+ui.TextInput(c, &app.query).Placeholder("Search").Label("Search mail").Search()
+```
+ Put it, with the button that searches if there is one, in
+an element of `Role(ui.RoleSearch)`, a search landmark that screen
+readers list and jump to ([Accessibility](accessibility.md#landmarks-live-regions-and-rules)).

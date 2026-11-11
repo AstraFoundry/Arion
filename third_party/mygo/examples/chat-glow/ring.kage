@@ -1,0 +1,24 @@
+// The composer's ring: a thin line around the field, inset Pad DIPs in
+// the box with corners of Radius, glowing outward, its colors flowing
+// around it; faint at rest, bright as the assistant works.
+
+var Time float
+var Strength float
+var Pad float
+var Radius float
+
+func Fragment(dst vec4, pos vec2) vec4 {
+	size := rectSize()
+	p := pos - 0.5*size
+	d := roundRect(p, 0.5*size-Pad, Radius) - 0.6
+	a := around(p, size)
+	flow := a + Time*0.12
+	line := exp(-abs(d) / 0.9)
+	glow := 0.0
+	if d > 0 {
+		glow = (exp(-d/6)*0.55 + exp(-d/16)*0.25) * smoothstep(Pad, Pad*0.3, d)
+	}
+	alpha := clamp(line*(0.5+0.5*Strength)+glow*Strength, 0, 1)
+	col := mix(palette(flow), palette(flow+0.2), glow/(line+glow+0.0001))
+	return vec4(col*alpha, alpha)
+}

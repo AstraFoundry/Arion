@@ -6,7 +6,8 @@
 between two bounds, which Up and Down, and the buttons beside it, change by
 a step. What is typed applies as soon as it is a number in range, and shows
 rounded to the decimals of the step once the input loses the focus.
-`Changed` reports a new value.
+`Changed` reports a new value. A `Width` sizes the whole input, its
+buttons included: the field narrows to keep them within it.
 
 ```go
 ui.NumberInput(c, &app.copies, 1, 99, 1).Label("Copies")
@@ -14,7 +15,8 @@ ui.NumberInput(c, &app.opacity, 0, 1, 0.05).Label("Opacity")
 ```
 
 For a value the user only steps, use a [stepper](stepper.md); for one
-chosen roughly, a [slider](slider.md).
+chosen roughly, a [slider](slider.md); for an amount of money, which a
+`float64` cannot hold exactly, a [decimal input](decimal-input.md).
 
 ## Accessibility
 

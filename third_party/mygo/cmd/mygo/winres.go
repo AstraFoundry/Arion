@@ -33,10 +33,15 @@ func winresSyso(c *Config, goarch string) ([]byte, error) {
 		rtGroupIcon = 14
 		rtVersion   = 16
 		rtManifest  = 24
-		langEnUS    = 0x0409
 	)
+	appLangs, err := c.languages()
+	if err != nil {
+		return nil, err
+	}
+	// The resources are in the app's own language, the first.
+	langs := windowsLanguages(c, appLangs)
 	res := map[uint16]map[uint16][]byte{
-		rtVersion:  {1: versionInfo(c)},
+		rtVersion:  {1: versionInfo(c, langs)},
 		rtManifest: {1: []byte(windowsManifest(c))},
 	}
 	if c.Icon != "" {
@@ -104,7 +109,7 @@ func winresSyso(c *Config, goarch string) ([]byte, error) {
 			le.PutUint32(raw[idDir+16+8*j:], uint32(id))
 			le.PutUint32(raw[idDir+16+8*j+4:], uint32(next)|0x80000000)
 			dir(next, 1)
-			le.PutUint32(raw[next+16:], langEnUS)
+			le.PutUint32(raw[next+16:], uint32(langs[0].id))
 			le.PutUint32(raw[next+20:], uint32(entry))
 			next += dirSize(1)
 
@@ -208,8 +213,11 @@ func windowsManifest(c *Config) string {
 `, name, v[0], v[1], v[2], v[3])
 }
 
-// versionInfo encodes a VS_VERSIONINFO resource.
-func versionInfo(c *Config) []byte {
+// versionInfo encodes a VS_VERSIONINFO resource, which holds the strings of
+// the app in each of its languages, keyed by the language and the Unicode
+// code page: Windows shows those of the system's language, else the first
+// language's, the app's own.
+func versionInfo(c *Config, langs []windowsLanguage) []byte {
 	v := windowsVersion(c.Version)
 	fixed := make([]byte, 52)
 	le := binary.LittleEndian
@@ -223,31 +231,38 @@ func versionInfo(c *Config) []byte {
 	le.PutUint32(fixed[36:], 1)          // dwFileType: VFT_APP
 
 	exe := c.executableName() + ".exe"
-	strs := [][2]string{
-		{"FileDescription", c.Name},
-		{"FileVersion", c.Version},
-		{"InternalName", exe},
-		{"LegalCopyright", c.Copyright},
-		{"OriginalFilename", exe},
-		{"ProductName", c.Name},
-		{"ProductVersion", c.Version},
-		{"MyGoIdentifier", c.Identifier},
-	}
-	var table []verNode
-	for _, s := range strs {
-		if s[1] == "" {
-			continue
+	var tables []verNode
+	var translation []byte
+	for _, l := range langs {
+		var table []verNode
+		for _, s := range [][2]string{
+			{"CompanyName", c.publisher()},
+			{"FileDescription", l.name},
+			{"FileVersion", c.Version},
+			{"InternalName", exe},
+			{"LegalCopyright", c.Copyright},
+			{"OriginalFilename", exe},
+			{"ProductName", l.name},
+			{"ProductVersion", c.Version},
+			{"MyGoIdentifier", c.Identifier},
+		} {
+			if s[1] == "" {
+				continue
+			}
+			text := utf16.Encode([]rune(s[1] + "\x00"))
+			value := make([]byte, 2*len(text))
+			for i, u := range text {
+				le.PutUint16(value[2*i:], u)
+			}
+			table = append(table, verNode{key: s[0], text: true, value: value, valueLen: len(text)})
 		}
-		text := utf16.Encode([]rune(s[1] + "\x00"))
-		value := make([]byte, 2*len(text))
-		for i, u := range text {
-			le.PutUint16(value[2*i:], u)
-		}
-		table = append(table, verNode{key: s[0], text: true, value: value, valueLen: len(text)})
+		// A table's key is its language and code page, 1200 for Unicode,
+		// as 040904b0 for en-US.
+		tables = append(tables, verNode{key: fmt.Sprintf("%04x%04x", l.id, 1200), text: true, children: table})
+		translation = append(translation, byte(l.id), byte(l.id>>8), 0xB0, 0x04)
 	}
-	translation := []byte{0x09, 0x04, 0xB0, 0x04} // en-US, Unicode
 	root := verNode{key: "VS_VERSION_INFO", value: fixed, valueLen: len(fixed), children: []verNode{
-		{key: "StringFileInfo", text: true, children: []verNode{{key: "040904b0", text: true, children: table}}},
+		{key: "StringFileInfo", text: true, children: tables},
 		{key: "VarFileInfo", text: true, children: []verNode{{key: "Translation", value: translation, valueLen: len(translation)}}},
 	}}
 	return root.encode()

@@ -10,6 +10,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/egoist/mygo/internal/wait"
 )
 
 func testDB(t *testing.T, path string) *DB {
@@ -216,7 +218,7 @@ func TestCloseAndQueuedCancellation(t *testing.T) {
 		if !errors.Is(err, ErrClosed) {
 			t.Fatal(err)
 		}
-	case <-time.After(time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("close did not interrupt query")
 	}
 	if _, err := db.Query(context.Background(), "SELECT 1"); !errors.Is(err, ErrClosed) {

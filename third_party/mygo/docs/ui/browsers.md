@@ -75,7 +75,9 @@ the title of the window opened last is the page's.
   keys; input methods, which compose in a text area out of sight at the
   caret; and the clipboard's text, through the browser's copy, cut and
   paste. On a Mac, ⌘ is Control for the view's shortcuts, which take a
-  browser for a system other than macOS.
+  browser for a system other than macOS. A Mac's browsers tell of no key
+  let go of while ⌘ is held: it goes up with ⌘
+  ([`c.KeyDown`](input.md#keys-held)).
 - **Routers.** The first [router](navigation.md) a window shows follows
   the tab's history, in the URL's fragment, as `#/notes/42`: the browser's
   back and forward buttons go through its pages, and a link to a page, or

@@ -91,13 +91,13 @@ export function Search() {
         variant="outline"
         onClick={() => setOpen(true)}
         onPointerEnter={() => void loadIndex().catch(() => {})}
-        className="hidden h-8 w-56 justify-start gap-2 bg-muted/40 px-2.5 font-normal text-muted-foreground shadow-none hover:bg-muted md:flex dark:bg-muted/30"
+        className="hidden h-8 w-56 justify-start gap-2 bg-muted/40 px-2.5 font-normal text-muted-foreground shadow-none hover:bg-muted lg:flex dark:bg-muted/30"
       >
         <SearchIcon />
         Search docs…
         <Kbd className="ml-auto border bg-background">{mac ? "⌘K" : "Ctrl K"}</Kbd>
       </Button>
-      <Button variant="ghost" size="icon" onClick={() => setOpen(true)} className="md:hidden" aria-label="Search docs">
+      <Button variant="ghost" size="icon" onClick={() => setOpen(true)} className="lg:hidden" aria-label="Search docs">
         <SearchIcon />
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -116,6 +116,7 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = React.useState("")
   const [entries, setEntries] = React.useState<SearchEntry[]>()
   const [failed, setFailed] = React.useState(false)
+  const listRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
     loadIndex().then(setEntries, () => setFailed(true))
@@ -130,6 +131,12 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
     return [...bySlug.values()]
   }, [entries, terms])
 
+  // cmdk keeps the list's scroll position when its items change, so new
+  // results would show from wherever the previous ones were scrolled to.
+  React.useLayoutEffect(() => {
+    listRef.current?.scrollTo({ top: 0 })
+  }, [groups])
+
   function go(entry: SearchEntry) {
     onClose()
     void navigate({ href: docHref(entry.slug, entry.id) })
@@ -140,7 +147,7 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
       <div className="border-b p-1.5">
         <CommandInput value={query} onValueChange={setQuery} placeholder="Search the docs…" className="h-9" />
       </div>
-      <CommandList className="max-h-[min(60vh,26rem)] p-1.5">
+      <CommandList ref={listRef} className="max-h-[min(60vh,26rem)] p-1.5">
         {failed ? (
           <p className="py-10 text-center text-sm text-muted-foreground">The search index could not be loaded.</p>
         ) : !entries ? (

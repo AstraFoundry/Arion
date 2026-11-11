@@ -14,9 +14,12 @@ change.
 ui.TokenField(c, &app.tags, allTags).Label("Tags")
 ```
 
-Chips wrap onto more lines as they fill the field.
+Chips wrap onto more lines as they fill the field. `Placeholder` shows a
+text in its input while it is empty, as "Add a tag…"; it shows none
+without one.
 
 ## Accessibility
 
 Assistive technology sees the field named by its `Label`, its input as a
-text field, and each chip's button, named "Remove" and its token.
+combo box whose suggestions complete what was typed
+(`aria-autocomplete="list"`), or a text field when it has none, and each chip's button, named "Remove" and its token.

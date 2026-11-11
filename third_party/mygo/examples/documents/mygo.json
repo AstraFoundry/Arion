@@ -1,0 +1,9 @@
+{
+  "name": "MyGo Notes",
+  "identifier": "dev.mygo.examples.documents",
+  "out": "build",
+  "fileAssociations": [
+    { "ext": ["md", "markdown"], "name": "Markdown Document", "mimeType": "text/markdown" },
+    { "ext": ["txt"], "name": "Plain Text", "mimeType": "text/plain" }
+  ]
+}

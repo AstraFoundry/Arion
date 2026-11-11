@@ -11,25 +11,126 @@ import (
 
 // Span is a run of a RichText with a style of its own. What it leaves
 // zero takes the style of the text around it, and Italic, Underline,
-// WavyUnderline and Strikethrough only turn those on.
+// WavyUnderline, DottedUnderline and Strikethrough only turn those on.
 type Span struct {
-	Text          string
-	Font          string // a family, as for Element.Font
-	Size          float32
-	Weight        int
-	Italic        bool
-	Color         Color
-	Underline     bool
-	WavyUnderline bool
-	Strikethrough bool
+	Text            string
+	Font            string // a family, as for Element.Font
+	Size            float32
+	Weight          int
+	Italic          bool
+	Color           Color
+	Underline       bool
+	WavyUnderline   bool
+	DottedUnderline bool
+	Strikethrough   bool
 	// DecorationColor and DecorationThickness are those of the span's
 	// underline and strikethrough, as for Element.DecorationColor.
 	DecorationColor     Color
 	DecorationThickness float32
+	// UnderlineOffset puts the span's underline that many DIPs below the
+	// baseline, or above it when negative, as for Element.UnderlineOffset;
+	// zero leaves it where the text around it has it.
+	UnderlineOffset float32
 	// Background highlights the span, as search results are.
-	Background    Color
-	LetterSpacing float32
-	Features      string // as for Element.FontFeatures, comma separated
+	Background Color
+	// Radius rounds the corners of the Background, which then hugs the
+	// span's glyphs, a little wider than them, rather than filling the
+	// line, as code within text shows.
+	Radius float32
+	// PaddingX and PaddingY pad the Background, which then hugs the
+	// span's glyphs, as CSS pads an inline box: a key cap, a mention chip.
+	// PaddingX, which replaces the little that Radius widens it by, also
+	// takes room in the line, moving the span's glyphs in and the text
+	// after them on; PaddingY only paints, over the lines above and below,
+	// as the background of an inline box does on the web. Each
+	// line's piece of a span that wraps gets both, and its corners, as
+	// with CSS's box-decoration-break: clone.
+	PaddingX, PaddingY float32
+	LetterSpacing      float32
+	// NoLetterSpacing makes a zero LetterSpacing the span's own, rather
+	// than the text's around it, as CSS's letter-spacing: 0 on an inline
+	// box: digits or code within tracked capitals.
+	NoLetterSpacing bool
+	Features        string // as for Element.FontFeatures, comma separated
+	Lang            string // the language, as for Element.Lang
+	// ObjectWidth and ObjectHeight, when ObjectWidth is set, make each
+	// rune of the span, an object replacement character (U+FFFC), an
+	// inline object: a box of that size in DIPs standing on the baseline,
+	// which lines break around and which draws nothing, where a rich text
+	// editor draws an image (TextLayout.Objects) and a text what
+	// Element.DrawObjects draws. ObjectDescent extends the box that far
+	// below the baseline, as math's subscripts and fractions go: the line
+	// makes room for it.
+	ObjectWidth, ObjectHeight, ObjectDescent float32
+	// BaselineShift raises the span's text, or its objects, that many
+	// DIPs above the baseline, or lowers it when negative, as superscripts
+	// and subscripts with a smaller Size: footnote references, exponents,
+	// chemical formulas. The line makes room for it, and its underline
+	// and strikethrough go with it.
+	BaselineShift float32
+	// Shadow is the shadow the span's text casts (NewTextShadow), as
+	// Element.TextShadow casts one: zero casts that of the text around it.
+	Shadow TextShadow
+
+	// solid draws Underline through descenders, as a link's hover.
+	solid bool
+	// offsetSet marks an UnderlineOffset set, zero included, by the
+	// style of an inline element.
+	offsetSet bool
+	// strokeWidth and strokeColor are the stroke of the text of an inline
+	// element (TextStroke), if strokeSet.
+	strokeWidth float32
+	strokeColor Color
+	strokeSet   bool
+	// shadowSet marks a Shadow set, though transparent, by the style of
+	// an inline element (TextShadow).
+	shadowSet bool
+	// colorSet and decoColorSet mark a Color and a DecorationColor
+	// set though transparent, by the style of an inline element: its
+	// TextColor, or its Opacity or Invisible, which fade its text.
+	colorSet, decoColorSet bool
+}
+
+// TextShadow is a shadow that text casts, as CSS's text-shadow, which
+// NewTextShadow makes. The zero TextShadow casts none.
+type TextShadow struct {
+	x, y, blur float32
+	color      Color
+}
+
+// NewTextShadow returns the shadow of the shapes of glyphs, offset by x
+// and y DIPs and blurred by blur, in c, for a Span's Shadow:
+//
+//	ui.Span{Text: "Sale", Shadow: ui.NewTextShadow(0, 2, 3, t.Accent)}
+//
+// Text casts the shadows that are made, so that apps that make none do
+// not link their painting.
+func NewTextShadow(x, y, blur float32, c Color) TextShadow {
+	linkTextShadows()
+	return TextShadow{x: x, y: y, blur: max(blur, 0), color: c}
+}
+
+// shadow returns the span's Shadow, and whether it sets one.
+func (s *Span) shadow() (TextShadow, bool) { return s.Shadow, s.shadowSet || s.Shadow.color.A > 0 }
+
+// color returns the span's Color, and whether it sets one.
+func (s *Span) color() (Color, bool) { return s.Color, s.colorSet || s.Color.A > 0 }
+
+// decorationColor returns the span's DecorationColor, and whether it sets
+// one.
+func (s *Span) decorationColor() (Color, bool) {
+	return s.DecorationColor, s.decoColorSet || s.DecorationColor.A > 0
+}
+
+// underlineOffset returns the span's UnderlineOffset, and whether it sets
+// one.
+func (s *Span) underlineOffset() (float32, bool) {
+	return s.UnderlineOffset, s.offsetSet || s.UnderlineOffset != 0
+}
+
+// letterSpacing returns the span's LetterSpacing, and whether it sets one.
+func (s *Span) letterSpacing() (float32, bool) {
+	return s.LetterSpacing, s.NoLetterSpacing || s.LetterSpacing != 0
 }
 
 // RichText creates a text whose spans differ in style, over the style of
@@ -95,6 +196,9 @@ type spanCache struct {
 	styles []text.Span
 	key    string
 	paints bool
+	// inline holds the spans of a paragraph with elements inside it, its
+	// own and theirs, made again each frame (inlineSpans).
+	inline []Span
 }
 
 // spanCache returns the element's spanCache, making it the first time.
@@ -135,7 +239,7 @@ func (sc *spanCache) update(spans []Span) {
 	paints := false
 	for i, s := range spans {
 		end += utf8.RuneCountInString(s.Text)
-		paints = paints || s.Color.A > 0 || s.Underline || s.WavyUnderline || s.Strikethrough || s.Background.A > 0
+		paints = paints || s.Color.A > 0 || s.colorSet || s.Underline || s.WavyUnderline || s.DottedUnderline || s.Strikethrough || s.Background.A > 0 || s.strokeSet || s.shadowSet || s.Shadow.color.A > 0
 		same = same && sc.styles[i] == spanStyle(s, end)
 	}
 	sc.paints = paints
@@ -154,7 +258,8 @@ func (sc *spanCache) update(spans []Span) {
 // spanStyle returns the style of a span ending at rune end, for its
 // layout.
 func spanStyle(s Span, end int) text.Span {
-	return text.Span{End: end, Family: s.Font, Size: s.Size, Weight: s.Weight, Italic: s.Italic, LetterSpacing: s.LetterSpacing, Features: s.Features}
+	return text.Span{End: end, Family: s.Font, Size: s.Size, Weight: s.Weight, Italic: s.Italic, LetterSpacing: s.LetterSpacing, SpacingSet: s.NoLetterSpacing, Features: s.Features, Lang: s.Lang,
+		ObjectWidth: s.ObjectWidth, ObjectHeight: s.ObjectHeight, ObjectDescent: s.ObjectDescent, BaselineShift: s.BaselineShift, PaddingX: s.PaddingX}
 }
 
 // encodeSpans encodes the styles of spans for a layout.
@@ -168,11 +273,10 @@ func encodeSpans(spans []Span) string {
 	return text.EncodeSpans(ts)
 }
 
-// richParams returns how to lay out spans over the theme's text style,
+// richParams returns how to lay out spans over the text style of theme t,
 // wrapping lines at width (none for 0).
-func (rt *engine) richParams(width float32, spans []Span) text.Params {
-	t := rt.c.theme
-	style := text.Style{Family: t.Font, Size: t.FontSize}
+func (rt *engine) richParams(t *Theme, width float32, spans []Span) text.Params {
+	style := text.Style{Family: t.Font, Size: t.FontSize, Lang: rt.lang}
 	// Views measure the same spans frame after frame.
 	for i := range rt.measured {
 		m := &rt.measured[i]
@@ -210,8 +314,8 @@ type measuredSpans struct {
 //	w, _ := p.MeasureText(0, label)
 //	p.RichText(r.X+(r.W-w)/2, r.Y, 0, label)
 func (p *Painter) RichText(x, y, width float32, spans ...Span) (w, h float32) {
-	l := p.rt.text.Layout(p.rt.richParams(width, spans))
-	t := p.rt.c.theme
+	t := p.Theme()
+	l := p.rt.text.Layout(p.rt.richParams(t, width, spans))
 	p.textLayout(l, x, y, t.Text, textStyle{size: t.FontSize}, newSpanPaint(spans))
 	return l.Width, l.Height
 }
@@ -219,7 +323,7 @@ func (p *Painter) RichText(x, y, width float32, spans ...Span) (w, h float32) {
 // MeasureText returns the size spans of text take as Painter.RichText draws
 // them, wrapping lines at width DIPs (none for 0).
 func (p *Painter) MeasureText(width float32, spans ...Span) (w, h float32) {
-	l := p.rt.text.Layout(p.rt.richParams(width, spans))
+	l := p.rt.text.Layout(p.rt.richParams(p.Theme(), width, spans))
 	return l.Width, l.Height
 }
 
@@ -227,7 +331,7 @@ func (p *Painter) MeasureText(width float32, spans ...Span) (w, h float32) {
 // them, wrapping lines at width DIPs (none for 0), to lay out what depends
 // on it while building.
 func (c *context) MeasureText(width float32, spans ...Span) (w, h float32) {
-	l := c.rt.text.Layout(c.rt.richParams(width, spans))
+	l := c.rt.text.Layout(c.rt.richParams(c.theme, width, spans))
 	return l.Width, l.Height
 }
 
@@ -285,10 +389,50 @@ func (sp *spanPaint) at(r int) int {
 
 // color returns the color of span i, or c.
 func (sp *spanPaint) color(i int, c Color) Color {
-	if i >= 0 && sp.spans[i].Color.A > 0 {
-		return sp.spans[i].Color
+	if i >= 0 {
+		if sc, ok := sp.spans[i].color(); ok {
+			return sc
+		}
 	}
 	return c
+}
+
+// stroke returns the width and color of the stroke of span i, or w and c.
+func (sp *spanPaint) stroke(i int, w float32, c Color) (float32, Color) {
+	if i >= 0 && sp.spans[i].strokeSet {
+		return sp.spans[i].strokeWidth, sp.spans[i].strokeColor
+	}
+	return w, c
+}
+
+// shadow returns the shadow of span i, or sh.
+func (sp *spanPaint) shadow(i int, sh TextShadow) TextShadow {
+	if i >= 0 {
+		if s, ok := sp.spans[i].shadow(); ok {
+			return s
+		}
+	}
+	return sh
+}
+
+// shadows reports whether a span casts a shadow.
+func (sp *spanPaint) shadows() bool {
+	for i := range sp.spans {
+		if sp.spans[i].Shadow.color.A > 0 {
+			return true
+		}
+	}
+	return false
+}
+
+// strokes reports whether a span strokes its glyphs.
+func (sp *spanPaint) strokes() bool {
+	for i := range sp.spans {
+		if s := &sp.spans[i]; s.strokeSet && s.strokeWidth > 0 && s.strokeColor.A > 0 {
+			return true
+		}
+	}
+	return false
 }
 
 // runs calls fn with each run of the glyphs of a line in one span: the
@@ -315,9 +459,21 @@ func (sp *spanPaint) backgrounds(p *Painter, line *text.Line, x, y float32) {
 		saved := p.transform
 		p.transform = saved.Mul(p.inlineTransform(line.Glyphs[i].Cluster))
 		defer func() { p.transform = saved }()
-		if k >= 0 && sp.spans[k].Background.A > 0 {
-			p.Fill(Rect{x + x0, y + line.Y, x1 - x0, line.Height}, sp.spans[k].Background, 0)
+		if k < 0 || sp.spans[k].Background.A == 0 {
+			return
 		}
+		if s := &sp.spans[k]; s.Radius > 0 || s.PaddingX > 0 || s.PaddingY > 0 {
+			size := line.Glyphs[i].Size
+			px := min(size*0.22, s.Radius)
+			if s.PaddingX > 0 || s.PaddingY > 0 {
+				px = max(s.PaddingX, 0) // the room the layout left
+			}
+			py := max(s.PaddingY, 0)
+			base := line.Baseline - s.BaselineShift
+			p.Fill(Rect{x + x0 - px, y + base - size*0.98 - py, x1 - x0 + 2*px, size*1.32 + 2*py}, s.Background, s.Radius)
+			return
+		}
+		p.Fill(Rect{x + x0, y + line.Y, x1 - x0, line.Height}, sp.spans[k].Background, 0)
 	})
 }
 
@@ -330,19 +486,27 @@ func (sp *spanPaint) lines(p *Painter, l *text.Layout, li int, x, y float32, col
 			return
 		}
 		span := &sp.spans[k]
-		d := decoration{underline: span.Underline || span.WavyUnderline, wavy: span.WavyUnderline, strike: span.Strikethrough, color: base.color, thick: base.thick}
+		d := decoration{underline: span.Underline || span.WavyUnderline || span.DottedUnderline, wavy: span.WavyUnderline, dotted: span.DottedUnderline, strike: span.Strikethrough, solid: span.solid, color: base.color, thick: base.thick,
+			offset: base.offset, hasOffset: base.hasOffset}
 		if !d.underline && !d.strike {
 			return
 		}
-		if span.DecorationColor.A > 0 {
-			d.color = span.DecorationColor
+		if c, ok := span.decorationColor(); ok {
+			d.color = c
 		}
 		if span.DecorationThickness > 0 {
 			d.thick = span.DecorationThickness
 		}
+		if v, ok := span.underlineOffset(); ok {
+			d.offset, d.hasOffset = v, true
+		}
+		c := sp.color(k, color)
+		if d.color.A == 0 && (span.decoColorSet || c.A == 0) {
+			return // transparent, or faded out
+		}
 		saved := p.transform
 		p.transform = saved.Mul(p.inlineTransform(l.Lines[li].Glyphs[i].Cluster))
-		p.decorationRun(l, li, i, j, x, y, d, sp.color(k, color))
+		p.decorationRun(l, li, i, j, x, y, d, c)
 		p.transform = saved
 	})
 }

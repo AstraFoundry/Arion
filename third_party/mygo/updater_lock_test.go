@@ -32,7 +32,7 @@ func TestUpdateOwnershipSubprocess(t *testing.T) {
 func TestAppliedReceiptRecoversAfterOwnershipProcessCrash(t *testing.T) {
 	_, key, m, _ := updateServer(t, "1.2.0", "v2", "")
 	target, _ := installedApp(t)
-	prepared, err := prepareUpdate(context.Background(), m, key, "1.1.9", target, nil)
+	prepared, err := prepareUpdate(context.Background(), httpGet, m, key, "1.1.9", target, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

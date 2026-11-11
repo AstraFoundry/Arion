@@ -7,6 +7,7 @@ import (
 
 	"github.com/egoist/mygo/internal/platform"
 	"github.com/egoist/mygo/internal/scene"
+	"github.com/egoist/mygo/internal/wait"
 )
 
 var wideGreen = Oklch(0.85, 0.3, 145)
@@ -58,7 +59,7 @@ func TestOklchOddInput(t *testing.T) {
 		if !c.wide.ok() {
 			t.Errorf("infinite chroma = %+v, want a wide color", c)
 		}
-	case <-time.After(5 * time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("Oklch with an infinite chroma does not return")
 	}
 	if c := Oklch(0.5, 0.2, inf); c.A != 255 {
@@ -89,11 +90,11 @@ func TestMixWide(t *testing.T) {
 	if RGB(1, 2, 3).Mix(RGB(4, 5, 6), 0.5).wide.ok() {
 		t.Error("Mix of sRGB colors has a wide color")
 	}
-	p := mixPremultiplied(Transparent, wideGreen, 0.5)
+	p := mixPremultiplied(Transparent, wideGreen, 0.5, false)
 	if !p.wide.ok() || p.A != 128 || p.SRGB() != wideGreen.SRGB().Alpha(0.5) {
 		t.Errorf("fading in from transparent = %+v, want %+v", p, wideGreen.Alpha(0.5))
 	}
-	if got := mixPremultiplied(wideGreen, wideGreen, 0.3); got != wideGreen {
+	if got := mixPremultiplied(wideGreen, wideGreen, 0.3, false); got != wideGreen {
 		t.Errorf("a color mixed with itself = %+v", got)
 	}
 }
@@ -344,5 +345,68 @@ func TestEffectColor(t *testing.T) {
 	}
 	if len(tt.h.last.Wide) != 1 {
 		t.Errorf("%d wide colors", len(tt.h.last.Wide))
+	}
+}
+
+func TestMixOklab(t *testing.T) {
+	red, blue, yellow := RGB(255, 0, 0), RGB(0, 0, 255), RGB(255, 255, 0)
+	d := func(a, b uint8) int { return max(int(a)-int(b), int(b)-int(a)) }
+	is := func(c Color, r, g, b uint8) bool { return d(c.R, r) <= 1 && d(c.G, g) <= 1 && d(c.B, b) <= 1 }
+	// CSS's color-mix(in oklab, red, blue), not sRGB's darker purple.
+	if m := red.MixOklab(blue, 0.5); !is(m, 140, 83, 162) || m.A != 255 || m.wide.ok() {
+		t.Errorf("red and blue = %+v, want 140 83 162", m)
+	}
+	// Yellow and blue meet in a blue, not in sRGB's gray.
+	if m := yellow.MixOklab(blue, 0.5); !is(m, 108, 171, 199) {
+		t.Errorf("yellow and blue = %+v, want 108 171 199", m)
+	}
+	if m := yellow.Mix(blue, 0.5); !is(m, 128, 128, 128) {
+		t.Errorf("in sRGB, yellow and blue = %+v", m)
+	}
+	// The ends are the colors mixed; alpha mixes as Mix's.
+	if m := red.MixOklab(blue, 0); m != red {
+		t.Errorf("MixOklab(o, 0) = %+v", m)
+	}
+	if m := red.MixOklab(blue, 1); m != blue {
+		t.Errorf("MixOklab(o, 1) = %+v", m)
+	}
+	if m := red.Alpha(0).MixOklab(red, 0.5); m.A != 128 {
+		t.Errorf("alpha halfway = %v", m.A)
+	}
+	// Premultiplied, as CSS's color-mix(in oklab, red 50%, transparent):
+	// rgb(255 0 0 / 0.5), not darkened by Transparent's black.
+	if m := red.MixOklab(Transparent, 0.5); m != (Color{R: 255, A: 128}) {
+		t.Errorf("red and transparent = %+v, want 255 0 0 / 128", m)
+	}
+	if m := Transparent.MixOklab(blue, 0.25); m != (Color{B: 255, A: 64}) {
+		t.Errorf("transparent and blue = %+v, want 0 0 255 / 64", m)
+	}
+	if m := Transparent.MixOklab(Transparent, 0.5); m != Transparent {
+		t.Errorf("transparent and transparent = %+v", m)
+	}
+	// Between translucent colors, the one more opaque weighs more.
+	if m := red.Alpha(0.25).MixOklab(blue, 0.5); m.A != 160 || m.B <= m.R {
+		t.Errorf("translucent red and blue = %+v", m)
+	}
+	if m := wideGreen.MixOklab(wideGreen, 0.3); m != wideGreen {
+		t.Errorf("a wide color mixed with itself = %+v", m)
+	}
+	if !wideGreen.MixOklab(RGB(0, 0, 0), 0.1).wide.ok() {
+		t.Error("a mix outside sRGB drops the wide color")
+	}
+	// Premultiplied, from transparent, the hue holds; opaque, it is
+	// MixOklab's.
+	if m := mixPremultiplied(Transparent, blue, 0.5, true); m.SRGB() != blue.Alpha(0.5) {
+		t.Errorf("fading in from transparent in Oklab = %+v", m)
+	}
+	if m := mixPremultiplied(red, blue, 0.5, true); m != red.MixOklab(blue, 0.5) {
+		t.Errorf("premultiplied, opaque = %+v, want %+v", m, red.MixOklab(blue, 0.5))
+	}
+	// The text of an element of a Match mixes as its Animation says.
+	look := func(lab bool) Color {
+		return mixLook(matchLook{text: red}, matchLook{text: blue}, 0.5, lab).text
+	}
+	if look(true) != red.MixOklab(blue, 0.5) || look(false) != mixPremultiplied(red, blue, 0.5, false) {
+		t.Errorf("a Match's text halfway = %+v in Oklab, %+v in sRGB", look(true), look(false))
 	}
 }

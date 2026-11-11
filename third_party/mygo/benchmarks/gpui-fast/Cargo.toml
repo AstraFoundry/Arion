@@ -1,0 +1,18 @@
+[package]
+name = "bench-gpui-fast"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[workspace]
+
+[dependencies]
+gpui = { package = "gpui-fast", version = "0.1.13" }
+# Without font-kit, macOS draws no text at all.
+gpui_platform = { package = "gpui-fast-platform", version = "0.1.13", features = ["font-kit"] }
+
+# The smallest and fastest build Cargo makes.
+[profile.release]
+lto = "fat"
+codegen-units = 1
+strip = true

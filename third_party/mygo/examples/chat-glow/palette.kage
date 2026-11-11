@@ -1,0 +1,36 @@
+
+// The glow's colors, around a loop from 0 to 1: violet, pink, periwinkle,
+// purple, coral and peach, as Apple Intelligence's.
+func palette(x float) vec3 {
+	x = fract(x) * 6
+	if x < 1 {
+		return mix(vec3(0.74, 0.51, 0.95), vec3(0.96, 0.73, 0.92), x)
+	}
+	if x < 2 {
+		return mix(vec3(0.96, 0.73, 0.92), vec3(0.55, 0.62, 1), x-1)
+	}
+	if x < 3 {
+		return mix(vec3(0.55, 0.62, 1), vec3(0.67, 0.43, 0.93), x-2)
+	}
+	if x < 4 {
+		return mix(vec3(0.67, 0.43, 0.93), vec3(1, 0.4, 0.47), x-3)
+	}
+	if x < 5 {
+		return mix(vec3(1, 0.4, 0.47), vec3(1, 0.73, 0.44), x-4)
+	}
+	return mix(vec3(1, 0.73, 0.44), vec3(0.74, 0.51, 0.95), x-5)
+}
+
+// roundRect returns the distance from p, from the rectangle's middle, to
+// a rectangle of half size half with corners of radius r: below zero
+// inside.
+func roundRect(p, half vec2, r float) float {
+	q := abs(p) - half + r
+	return length(max(q, 0)) + min(max(q.x, q.y), 0) - r
+}
+
+// around returns where p, from the middle of a box of size, lies around
+// its outline, from 0 to 1.
+func around(p, size vec2) float {
+	return atan2(p.y/size.y, p.x/size.x)/6.2831853 + 0.5
+}

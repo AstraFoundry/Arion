@@ -1,6 +1,6 @@
 {
   "name": "@mygo-plugins/sqlite",
-  "version": "0.4.6",
+  "version": "0.8.3",
   "description": "Parameterized SQLite queries and transactions for MyGo desktop apps",
   "keywords": [
     "mygo",
@@ -34,9 +34,9 @@
     "test": "bun test"
   },
   "peerDependencies": {
-    "mygo-runtime": "^0.4.6"
+    "mygo-runtime": "^0.8.3"
   },
   "devDependencies": {
-    "mygo-runtime": "^0.4.6"
+    "mygo-runtime": "^0.8.3"
   }
 }

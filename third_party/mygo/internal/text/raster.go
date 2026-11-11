@@ -70,6 +70,12 @@ type glyphKey struct {
 	subX     uint8  // the position within a pixel, of placement.n
 	shade    Shade
 	subpixel bool
+	// stroke is the width of a stroke of the glyph's outline in 1/16
+	// pixels (StrokeGlyph), 0 for the glyph itself; shadow is 1 + the
+	// standard deviation of the blur of its shadow in 1/16 pixels
+	// (ShadowGlyph), 0 for none.
+	stroke uint16
+	shadow uint16
 }
 
 // placement is how the system's text stack places glyphs of a font at a
@@ -120,9 +126,28 @@ func (s *System) BeginFrame() {
 	defer s.mu.Unlock()
 	s.MaskAtlas.ResetTransient()
 	clear(s.transient)
+	s.forgetLeftOut()
+	s.rooms = 0
+}
+
+// forgetLeftOut forgets what the atlases left out, for a new frame or as they
+// have room.
+func (s *System) forgetLeftOut() {
 	s.full, s.want = [2]bool{}, [2]int{}
 	s.wantSize = [2]image.Point{}
-	s.rooms = 0
+	clear(s.outGlyphs)
+	clear(s.outRuns)
+	clear(s.outMasks)
+}
+
+// TransientUses returns how many times Mask returned a mask drawn for the
+// frame being painted alone, since the system started: a scene drawing one
+// must not be drawn again after the next frame of any window begins
+// (BeginFrame), which draws over it.
+func (s *System) TransientUses() uint64 {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.transientUses
 }
 
 // Full reports whether an atlas filled up during the frame being painted
@@ -147,8 +172,7 @@ func (s *System) MakeRoom() {
 			s.makeRoom(color, s.want[i], s.wantSize[i], s.rooms > 1)
 		}
 	}
-	s.full, s.want = [2]bool{}, [2]int{}
-	s.wantSize = [2]image.Point{}
+	s.forgetLeftOut()
 }
 
 func (s *System) makeRoom(color bool, want int, size image.Point, grow bool) {
@@ -233,6 +257,35 @@ func (s *System) makeRoom(color bool, want int, size image.Point, grow bool) {
 // opaque backgrounds may be subpixel ones, when the system's settings
 // (TextParams) ask for subpixel antialiasing.
 func (s *System) Glyph(f *Font, id uint32, scale, x float32, shade Shade, opaque bool) GlyphImage {
+	return s.glyph(f, id, scale, x, shade, opaque, 0, 0, nil)
+}
+
+// StrokeGlyph returns the coverage mask of a stroke width device pixels
+// wide along the outline of the glyph Glyph returns for the same
+// arguments, centered on it and round at its corners, placed as that
+// glyph is: a mask glyph, for color glyphs too, which strokes the edge of
+// their pixels. Text stroked under its fill (CSS's paint-order: stroke
+// fill) shows the half outside the glyph.
+func (s *System) StrokeGlyph(f *Font, id uint32, scale, x float32, shade Shade, opaque bool, width float32) GlyphImage {
+	w := min(max(width*16+0.5, 1), 128*16) // at most 128 pixels
+	return s.glyph(f, id, scale, x, shade, opaque, uint16(w), 0, (*System).rasterizeStroke)
+}
+
+// ShadowGlyph returns the coverage mask of the glyph Glyph returns for the
+// same arguments blurred by a Gaussian of standard deviation sigma device
+// pixels, placed as that glyph is, wider by the blur: a mask glyph, for
+// color glyphs too, of their pixels' alpha, which a text's shadow (CSS's
+// text-shadow) paints in its color.
+func (s *System) ShadowGlyph(f *Font, id uint32, scale, x float32, shade Shade, opaque bool, sigma float32) GlyphImage {
+	b := min(max(sigma*16+0.5, 0), 64*16) // at most 64 pixels
+	return s.glyph(f, id, scale, x, shade, opaque, 0, 1+uint16(b), (*System).rasterizeShadow)
+}
+
+// glyph returns the glyph of Glyph, or with stroke the mask of a stroke
+// stroke/16 pixels wide along it, or with shadow the mask of it blurred
+// by (shadow-1)/16 pixels, which derive rasterizes (StrokeGlyph,
+// ShadowGlyph): apps that stroke and shadow no text do not link it.
+func (s *System) glyph(f *Font, id uint32, scale, x float32, shade Shade, opaque bool, stroke, shadow uint16, derive func(s *System, f *Font, id uint32, scale, dx float32, shade Shade, amount float32) GlyphImage) GlyphImage {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if f == nil {
@@ -241,20 +294,49 @@ func (s *System) Glyph(f *Font, id uint32, scale, x float32, shade Shade, opaque
 	shade = f.shadeFor(shade)
 	subpixel := opaque && s.subpixel
 	q, n, carry := s.place(f, scale, subpixel, x)
-	key := glyphKey{font: f, id: id, scale: uint32(scale*256 + 0.5), subX: uint8(q), shade: shade, subpixel: subpixel}
+	key := glyphKey{font: f, id: id, scale: uint32(scale*256 + 0.5), subX: uint8(q), shade: shade, subpixel: subpixel, stroke: stroke, shadow: shadow}
 	e, ok := s.glyphs[key]
 	if !ok {
+		if _, out := s.outGlyphs[key]; out {
+			return GlyphImage{}
+		}
 		failed := s.failed
-		g := s.rasterize(f, id, scale, float32(q)/float32(n), key.shade, key.subpixel)
+		var g GlyphImage
+		switch {
+		case stroke > 0:
+			g = derive(s, f, id, scale, float32(q)/float32(n), key.shade, float32(stroke)/16)
+		case shadow > 0:
+			g = derive(s, f, id, scale, float32(q)/float32(n), key.shade, float32(shadow-1)/16)
+		default:
+			g = s.rasterize(f, id, scale, float32(q)/float32(n), key.shade, key.subpixel)
+		}
 		e = &atlasEntry{g, s.frame}
 		if s.failed == failed { // not left out of a full atlas
 			s.glyphs[key] = e
+		} else {
+			if s.outGlyphs == nil {
+				s.outGlyphs = map[glyphKey]struct{}{}
+			}
+			s.outGlyphs[key] = struct{}{}
 		}
 	}
 	e.used = s.frame
 	g := e.GlyphImage
 	g.Left += carry
 	return g
+}
+
+// Origin returns where Glyph puts the origin of a glyph of f whose pen is
+// x device pixels from the left: at the position within a pixel the
+// system's text stack draws it at.
+func (s *System) Origin(f *Font, scale, x float32, opaque bool) float32 {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if f == nil {
+		return x
+	}
+	q, n, carry := s.place(f, scale, opaque && s.subpixel, x)
+	return float32(math.Floor(float64(x))) + carry + float32(q)/float32(n)
 }
 
 // place returns where the system's text stack draws a glyph of f whose pen
@@ -303,6 +385,44 @@ func (s *System) rasterize(f *Font, id uint32, scale, dx float32, shade Shade, s
 	}
 	return GlyphImage{OK: true, Colored: b.color, Subpixel: b.subpixel, Thin: f.thin && !b.color,
 		X: uint16(x), Y: uint16(y), W: uint16(b.w), H: uint16(b.h), Left: float32(b.left), Top: float32(b.top)}
+}
+
+// rasterizeStroke puts the mask of a stroke width pixels wide along the
+// outline of a glyph into the mask atlas (StrokeGlyph).
+func (s *System) rasterizeStroke(f *Font, id uint32, scale, dx float32, shade Shade, width float32) GlyphImage {
+	b := s.engine().glyph(f, id, scale, dx, shade, false)
+	if b.w <= 0 || b.h <= 0 || b.w > 2048 || b.h > 2048 {
+		return GlyphImage{}
+	}
+	b = strokeBitmap(b, width/2)
+	if b.w > 2048 || b.h > 2048 {
+		return GlyphImage{}
+	}
+	x, y, ok := s.alloc(false, b.w, b.h)
+	if !ok {
+		return GlyphImage{}
+	}
+	s.MaskAtlas.Put(x, y, b.w, b.h, b.pix, b.w)
+	return GlyphImage{OK: true, X: uint16(x), Y: uint16(y), W: uint16(b.w), H: uint16(b.h), Left: float32(b.left), Top: float32(b.top)}
+}
+
+// rasterizeShadow puts the mask of a glyph blurred by sigma pixels into
+// the mask atlas (ShadowGlyph).
+func (s *System) rasterizeShadow(f *Font, id uint32, scale, dx float32, shade Shade, sigma float32) GlyphImage {
+	b := s.engine().glyph(f, id, scale, dx, shade, false)
+	if b.w <= 0 || b.h <= 0 || b.w > 2048 || b.h > 2048 {
+		return GlyphImage{}
+	}
+	b = blurBitmap(b, sigma)
+	if b.w > 2048 || b.h > 2048 {
+		return GlyphImage{}
+	}
+	x, y, ok := s.alloc(false, b.w, b.h)
+	if !ok {
+		return GlyphImage{}
+	}
+	s.MaskAtlas.Put(x, y, b.w, b.h, b.pix, b.w)
+	return GlyphImage{OK: true, X: uint16(x), Y: uint16(y), W: uint16(b.w), H: uint16(b.h), Left: float32(b.left), Top: float32(b.top)}
 }
 
 // TextParams returns how renderers correct the coverage of glyphs, as
@@ -363,7 +483,11 @@ func (s *System) Mask(key uint64, draw func() (w, h int, pix []byte)) GlyphImage
 		return e.GlyphImage
 	}
 	if g, ok := s.transient[key]; ok {
+		s.transientUses++
 		return g
+	}
+	if _, out := s.outMasks[key]; out {
+		return GlyphImage{}
 	}
 	last, seen := s.recent[key]
 	lasting := seen && last != s.frame
@@ -380,6 +504,10 @@ func (s *System) Mask(key uint64, draw func() (w, h int, pix []byte)) GlyphImage
 	}
 	if !ok {
 		s.leftOut(false, w, h)
+		if s.outMasks == nil {
+			s.outMasks = map[uint64]struct{}{}
+		}
+		s.outMasks[key] = struct{}{}
 		return GlyphImage{}
 	}
 	s.MaskAtlas.Put(x, y, w, h, pix, w)
@@ -390,6 +518,21 @@ func (s *System) Mask(key uint64, draw func() (w, h int, pix []byte)) GlyphImage
 	} else {
 		s.transient[key] = g
 		s.recent[key] = s.frame
+		s.transientUses++
 	}
 	return g
+}
+
+// Unkeep lets the masks cached under keys go as the atlas makes room for
+// the frame being painted (MakeRoom), unless it draws them again first:
+// masks it drew that the frame painted again draws otherwise, which the
+// room made would keep but no paint draws.
+func (s *System) Unkeep(keys []uint64) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for _, k := range keys {
+		if e, ok := s.masks[k]; ok && e.used == s.frame {
+			e.used = s.frame - 1
+		}
+	}
 }

@@ -9,25 +9,15 @@ import (
 	"testing"
 	"unsafe"
 	"weak"
+
+	"github.com/egoist/mygo/internal/rope"
 )
 
-func checkTextTree(t *testing.T, n *textNode) textSummary {
+func checkTextTree(t *testing.T, n *rope.Node) {
 	t.Helper()
-	if n == nil {
-		return textSummary{}
+	if err := rope.Check(n); err != nil {
+		t.Fatal(err)
 	}
-	if n.left == nil {
-		if len(n.text) > textChunkBytes+3 || n.sum != summarizeText(n.text) || n.height != 1 {
-			t.Fatalf("invalid leaf %+v", n)
-		}
-		return n.sum
-	}
-	a, b := checkTextTree(t, n.left), checkTextTree(t, n.right)
-	difference := n.left.height - n.right.height
-	if difference < -1 || difference > 1 || n.height != 1+max(n.left.height, n.right.height) || n.sum != addText(a, b) {
-		t.Fatalf("invalid AVL node %+v", n)
-	}
-	return n.sum
 }
 
 func TestTextBufferRandomEditsAndSnapshots(t *testing.T) {

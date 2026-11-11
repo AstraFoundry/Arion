@@ -163,9 +163,22 @@ func runs(n int, ok func(i int) bool, fn func(from, to int)) {
 //		p.StrokePath(chart.Line(r, xs, ys, chart.CurveMonotone), 2, t.Accent)
 //	})
 func Line(r ui.Rect, xs, ys []float32, k Curve) *ui.Path {
-	path := &ui.Path{}
+	return LineInto(&ui.Path{}, r, xs, ys, k)
+}
+
+// LineInto replaces path with Line's geometry, reusing its storage. It also
+// clears any Trim. Keep one path per series when drawing live waveforms.
+func LineInto(path *ui.Path, r ui.Rect, xs, ys []float32, k Curve) *ui.Path {
+	path.Reset()
 	n := min(len(xs), len(ys))
 	runs(n, func(i int) bool { return defined(xs[i], ys[i]) }, func(from, to int) {
+		if k == CurveLinear {
+			path.MoveTo(X(r, xs[from]), Y(r, ys[from]))
+			for i := from + 1; i < to; i++ {
+				path.LineTo(X(r, xs[i]), Y(r, ys[i]))
+			}
+			return
+		}
 		pts := make([][2]float32, 0, to-from)
 		for i := from; i < to; i++ {
 			pts = append(pts, [2]float32{X(r, xs[i]), Y(r, ys[i])})

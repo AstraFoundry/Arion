@@ -41,3 +41,9 @@ nothing.
 MyGo draws a frame only when something changes: input, `Invalidate`,
 `After`, or an animation that moves. An idle window draws nothing, and two
 seconds after its last frame it frees the frame it drew in memory.
+
+A window animating on macOS keeps three frames for the display, one
+more than the two its frames take turns in: with two, a 120 Hz display
+holds both often enough that frames wait for one, and some go undrawn.
+The third costs about 4 bytes a pixel of the window (8 with colors
+outside sRGB) until the window idles.

@@ -134,6 +134,183 @@ func TestGrid(t *testing.T) {
 	})
 }
 
+// Tracks with a minimum, as CSS's minmax(120px, 1fr) and minmax(auto, 1fr)
+// (#1240): an Fr track whose share would be less than its minimum keeps
+// its minimum, the other Fr tracks share the rest, and the grid overflows.
+func TestGridTrackMinimums(t *testing.T) {
+	check := func(t *testing.T, b, want map[string]Rect) {
+		t.Helper()
+		for k, w := range want {
+			if !nearRect(b[k], w) {
+				t.Errorf("%s at %v, want %v", k, b[k], w)
+			}
+		}
+	}
+	t.Run("a floor on an fr", func(t *testing.T) {
+		b := boxes(t, func(c *context) {
+			coreGrid(c).ColumnTracks(Fr(1).Min(120), Fixed(150)).Width(200).Label("g").Children(func() {
+				coreBox(c).Height(10).Label("a")
+				coreBox(c).Height(10).Label("b")
+			})
+			coreGrid(c).ColumnTracks(Fr(1).Min(120), Fixed(150)).Width(400).Children(func() {
+				coreBox(c).Height(10).Label("c")
+				coreBox(c).Height(10).Label("d")
+			})
+		}, 500, 100, "g", "a", "b", "c", "d")
+		// The grid keeps its width, and its tracks overflow it.
+		check(t, b, map[string]Rect{"g": {0, 0, 200, 10}, "a": {0, 0, 120, 10}, "b": {120, 0, 150, 10}, "c": {0, 10, 250, 10}, "d": {250, 10, 150, 10}})
+	})
+	t.Run("the rest redistributed", func(t *testing.T) {
+		b := boxes(t, func(c *context) {
+			coreGrid(c).ColumnTracks(Fr(1).Min(150), Fr(1), Fr(2)).Width(300).Children(func() {
+				coreBox(c).Height(10).Label("a")
+				coreBox(c).Height(10).Label("b")
+				coreBox(c).Height(10).Label("c")
+			})
+			// 80 each, then 70 once the first is set aside, which sets
+			// the second aside too: 60 for the last.
+			coreGrid(c).ColumnTracks(Fr(1).Min(100), Fr(1).Min(80), Fr(1)).Width(240).Children(func() {
+				coreBox(c).Height(10).Label("d")
+				coreBox(c).Height(10).Label("e")
+				coreBox(c).Height(10).Label("f")
+			})
+		}, 500, 100, "a", "b", "c", "d", "e", "f")
+		check(t, b, map[string]Rect{
+			"a": {0, 0, 150, 10}, "b": {150, 0, 50, 10}, "c": {200, 0, 100, 10},
+			"d": {0, 10, 100, 10}, "e": {100, 10, 80, 10}, "f": {180, 10, 60, 10},
+		})
+	})
+	t.Run("the automatic minimum", func(t *testing.T) {
+		b := boxes(t, func(c *context) {
+			coreGrid(c).ColumnTracks(Fr(1).MinContent(), Fr(1).MinContent()).Width(200).Children(func() {
+				coreBox(c).MinWidth(160).Height(10).Label("a")
+				coreBox(c).Height(10).Label("b")
+			})
+			// Fr keeps its minimum of 0.
+			coreGrid(c).ColumnTracks(Fr(1), Fr(1)).Width(200).Children(func() {
+				coreBox(c).MinWidth(160).Height(10).Label("c")
+				coreBox(c).Height(10).Label("d")
+			})
+		}, 500, 100, "a", "b", "c", "d")
+		check(t, b, map[string]Rect{"a": {0, 0, 160, 10}, "b": {160, 0, 40, 10}, "c": {0, 10, 160, 10}, "d": {100, 10, 100, 10}})
+	})
+	t.Run("items spanning tracks", func(t *testing.T) {
+		b := boxes(t, func(c *context) {
+			coreGrid(c).ColumnTracks(Fr(1).MinContent(), Fr(3).MinContent()).GapX(20).Width(100).Children(func() {
+				coreBox(c).MinWidth(220).Height(10).ColumnSpan(2)
+				coreBox(c).Height(10).Label("a")
+				coreBox(c).Height(10).Label("b")
+			})
+		}, 500, 100, "a", "b")
+		// 200 beside the gap, shared 1 to 3.
+		check(t, b, map[string]Rect{"a": {0, 10, 50, 10}, "b": {70, 10, 150, 10}})
+	})
+	t.Run("rows", func(t *testing.T) {
+		b := boxes(t, func(c *context) {
+			coreRow(c).AlignItems(Start).Children(func() {
+				coreGrid(c).Columns(1).RowTracks(Fr(1).Min(70), Fr(1)).Height(100).Width(50).Children(func() {
+					coreBox(c).Label("a")
+					coreBox(c).Label("b")
+				})
+				coreGrid(c).Columns(1).RowTracks(Fr(1).MinContent(), Fr(1).MinContent()).Height(100).Width(50).AlignItems(Start).Children(func() {
+					coreBox(c).Height(80).Label("c")
+					coreBox(c).Height(10).Label("d")
+				})
+			})
+		}, 500, 200, "a", "b", "c", "d")
+		check(t, b, map[string]Rect{"a": {0, 0, 50, 70}, "b": {0, 70, 50, 30}, "c": {50, 0, 50, 80}, "d": {50, 80, 50, 10}})
+	})
+	t.Run("as large as the content asks", func(t *testing.T) {
+		b := boxes(t, func(c *context) {
+			coreRow(c).Children(func() {
+				// An fr is at least the floor of a track over its factor.
+				coreGrid(c).ColumnTracks(Fr(1).Min(100), Fr(1)).Label("g").Children(func() {
+					coreBox(c).Size(30, 10)
+					coreBox(c).Size(30, 10)
+				})
+			})
+			// Too narrow for its content, a grid shrinks to its
+			// min-content width, its floors.
+			coreRow(c).Width(100).Children(func() {
+				coreGrid(c).ColumnTracks(Fr(1).Min(120), Fr(1)).Label("h").Children(func() {
+					coreBox(c).Size(30, 10)
+					coreBox(c).Size(30, 10)
+				})
+			})
+		}, 500, 100, "g", "h")
+		if !near(b["g"].W, 200) || !near(b["h"].W, 120) {
+			t.Errorf("grid sized by its content %v, want 200 wide; in a narrow row %v, want 120 wide", b["g"], b["h"])
+		}
+	})
+}
+
+// Percentages of a grid's children are of their cells, and count as
+// automatic sizes while the tracks are sized (#906).
+func TestGridPercentages(t *testing.T) {
+	check := func(t *testing.T, b, want map[string]Rect) {
+		t.Helper()
+		for k, w := range want {
+			if !nearRect(b[k], w) {
+				t.Errorf("%s at %v, want %v", k, b[k], w)
+			}
+		}
+	}
+	t.Run("fill width", func(t *testing.T) {
+		b := boxes(t, func(c *context) {
+			coreGrid(c).Columns(2).Gap(12).Children(func() {
+				coreButtonBase(c).FillWidth().Padding(12).Label("a").Children(func() { coreText(c, "card-a") })
+				coreButtonBase(c).Padding(12).Label("b").Children(func() { coreText(c, "card-b") })
+			})
+		}, 600, 400, "a", "b")
+		// Two columns of 294 and a gap of 12.
+		if a, bb := b["a"], b["b"]; !near(a.X, 0) || !near(a.W, 294) || !near(bb.X, 306) || !near(bb.W, 294) {
+			t.Errorf("a at %v and b at %v, want both 294 wide, b at 306", a, bb)
+		}
+	})
+	t.Run("fill height in definite rows", func(t *testing.T) {
+		b := boxes(t, func(c *context) {
+			coreGrid(c).Columns(2).RowTracks(Fixed(100), Fixed(100)).GapY(10).Height(300).AlignItems(Start).Children(func() {
+				coreBox(c).FillHeight().Label("a")
+				coreBox(c).HeightPercent(50).Label("b")
+				coreBox(c).Height(10).Label("c")
+			})
+		}, 400, 400, "a", "b", "c")
+		check(t, b, map[string]Rect{"a": {0, 0, 200, 100}, "b": {200, 0, 200, 50}, "c": {0, 110, 200, 10}})
+	})
+	t.Run("fill height in rows fitting their content", func(t *testing.T) {
+		b := boxes(t, func(c *context) {
+			coreGrid(c).Columns(1).Height(300).Children(func() {
+				coreBox(c).FillHeight().Label("a").Children(func() { coreBox(c).Height(40) })
+				coreBox(c).Height(20).Label("b")
+			})
+		}, 400, 400, "a", "b")
+		// Rows of 40 and 20 share the 240 DIPs left: a fills its row, not
+		// the grid.
+		check(t, b, map[string]Rect{"a": {0, 0, 400, 160}, "b": {0, 160, 400, 20}})
+	})
+	t.Run("in columns fitting their content", func(t *testing.T) {
+		b := boxes(t, func(c *context) {
+			coreGrid(c).ColumnTracks(FitContent(), FitContent(), Fr(1)).Width(400).Children(func() {
+				coreBox(c).FillWidth().Height(10).Label("a").Children(func() { coreBox(c).Width(80) })
+				coreBox(c).WidthPercent(50).Height(10).Label("b").Children(func() { coreBox(c).Width(60) })
+				coreBox(c).Height(10).Label("c")
+			})
+		}, 500, 100, "a", "b", "c")
+		// The columns fit the content, 80 and 60; the percentages are of
+		// them.
+		check(t, b, map[string]Rect{"a": {0, 0, 80, 10}, "b": {80, 0, 30, 10}, "c": {140, 0, 260, 10}})
+	})
+	t.Run("min and max sizes and insets", func(t *testing.T) {
+		b := boxes(t, func(c *context) {
+			coreGrid(c).Columns(2).RowTracks(Fixed(100)).Width(600).Height(300).Children(func() {
+				coreBox(c).MaxWidthPercent(50).MaxHeightPercent(50).Label("a")
+				coreBox(c).Size(10, 10).MinWidthPercent(100).MinHeightPercent(100).LeftPercent(10).TopPercent(10).Label("b")
+			})
+		}, 700, 400, "a", "b")
+		check(t, b, map[string]Rect{"a": {0, 0, 150, 50}, "b": {330, 10, 300, 100}})
+	})
+}
+
 func TestFlexOptions(t *testing.T) {
 	t.Run("gaps and align content", func(t *testing.T) {
 		b := boxes(t, func(c *context) {
@@ -217,6 +394,72 @@ func TestFlexOptions(t *testing.T) {
 		for k, w := range map[string]Rect{"moved": {3, 5, 20, 20}, "next": {20, 0, 20, 20}, "quarter": {40, 0, 50, 20}, "tenth": {90, 0, 20, 20}, "half": {100, 100, 10, 10}} {
 			if !nearRect(b[k], w) {
 				t.Errorf("%s at %v, want %v", k, b[k], w)
+			}
+		}
+	})
+	t.Run("percentage limits on the main axis", func(t *testing.T) {
+		// A maximum that is a percentage of the parent resolves against the
+		// parent's definite main size, but the automatic minimum of a child
+		// is measured against an unknown block, where that percentage does
+		// not resolve: the maximum has to bind all the same, as it does when
+		// the limit is in DIPs.
+		row := boxes(t, func(c *context) {
+			coreRow(c).Size(400, 100).Children(func() {
+				coreText(c, "supercalifragilisticexpialidocious").MaxWidthPercent(10).Shrink(0).Label("pct")
+				coreText(c, "supercalifragilisticexpialidocious").MaxWidth(40).Shrink(0).Label("px")
+			})
+		}, 400, 400, "pct", "px")
+		if row["pct"].W > 40.5 {
+			t.Errorf("a text limited to 10%% of a 400-wide row is %g wide, want 40 (MaxWidth(40) gives %g)", row["pct"].W, row["px"].W)
+		}
+		column := boxes(t, func(c *context) {
+			coreColumn(c).Size(200, 400).Children(func() {
+				coreBox(c).Height(300).MaxHeightPercent(50).Shrink(0).Label("pct")
+			})
+		}, 200, 400, "pct")
+		pixels := boxes(t, func(c *context) {
+			coreColumn(c).Size(200, 400).Children(func() {
+				coreBox(c).Height(300).MaxHeight(200).Shrink(0).Label("px")
+			})
+		}, 200, 400, "px")
+		if column["pct"].H > 200.5 {
+			t.Errorf("a box limited to 50%% of a 400-high column is %g high, want 200, as MaxHeight(200) gives %g", column["pct"].H, pixels["px"].H)
+		}
+	})
+	t.Run("bounds in DIPs and percentages together", func(t *testing.T) {
+		// As CSS's max-width: min(78%, 340px) and min-width: max(50%,
+		// 100px), in either order, across the parent's main axis and its
+		// cross axis: the smaller maximum and the larger minimum apply.
+		view := func(w float32) func(c *context) {
+			return func(c *context) {
+				coreColumn(c).Width(w).Height(400).AlignItems(Start).Children(func() {
+					coreBox(c).Width(1000).Height(10).MaxWidthPercent(78).MaxWidth(340).Label("max")
+					coreBox(c).Width(1000).Height(10).MaxWidth(340).MaxWidthPercent(78).Label("max2")
+					coreBox(c).Size(10, 10).MinWidthPercent(50).MinWidth(100).Label("min")
+					coreBox(c).Size(10, 300).Shrink(0).MaxHeightPercent(50).MaxHeight(150).Label("maxh")
+				})
+				coreRow(c).Width(w).Height(50).Children(func() {
+					coreBox(c).Size(1000, 10).Shrink(0).MaxWidthPercent(78).MaxWidth(340).Label("row")
+					coreBox(c).Size(10, 10).MinWidth(100).MinWidthPercent(50).Label("rowmin")
+				})
+			}
+		}
+		labels := []string{"max", "max2", "min", "maxh", "row", "rowmin"}
+		wide := boxes(t, view(600), 700, 500, labels...)
+		// 78% of 600 is 468, past 340; half of 400 is 200, past 150.
+		for k, w := range map[string]float32{"max": 340, "max2": 340, "min": 300, "row": 340, "rowmin": 300} {
+			if math.Abs(float64(wide[k].W-w)) > 0.5 {
+				t.Errorf("in 600: %s is %g wide, want %g", k, wide[k].W, w)
+			}
+		}
+		if math.Abs(float64(wide["maxh"].H-150)) > 0.5 {
+			t.Errorf("maxh is %g high, want 150", wide["maxh"].H)
+		}
+		narrow := boxes(t, view(150), 700, 500, labels...)
+		// 78% of 150 is 117, within 340; half of 150 is 75, under 100.
+		for k, w := range map[string]float32{"max": 117, "max2": 117, "min": 100, "row": 117, "rowmin": 100} {
+			if math.Abs(float64(narrow[k].W-w)) > 0.5 {
+				t.Errorf("in 150: %s is %g wide, want %g", k, narrow[k].W, w)
 			}
 		}
 	})
@@ -359,6 +602,91 @@ func TestTextDecorations(t *testing.T) {
 	}
 }
 
+// TestUnderlineOffset checks text-underline-offset: the top of the
+// underline that many DIPs below the baseline, set on the text or above
+// it, of an inline element and of a span, as thick as without it.
+func TestUnderlineOffset(t *testing.T) {
+	red := RGB(255, 0, 0)
+	// rows returns the rows of red pixels, from the baseline of the first
+	// line of the text view returns.
+	rows := func(view func(c *context) *node) []int {
+		t.Helper()
+		var text *node
+		tt := coreNewTester(func(c *context) {
+			coreColumn(c).Padding(10).AlignItems(Start).Children(func() { text = view(c) })
+		}, 300, 80)
+		if text == nil || text.tl == nil {
+			t.Fatal("no text laid out")
+		}
+		base := int(math.Round(float64(text.y + text.contentY() + text.tl.Lines[0].Baseline)))
+		img := tt.Image()
+		var out []int
+		for y := 0; y < img.Bounds().Dy(); y++ {
+			for x := 0; x < img.Bounds().Dx(); x++ {
+				if c := img.RGBAAt(x, y); c.R > 200 && c.G < 60 && c.B < 60 {
+					out = append(out, y-base)
+					break
+				}
+			}
+		}
+		return out
+	}
+	plain := rows(func(c *context) *node { return coreText(c, "Hello").Underline().DecorationColor(red) })
+	if len(plain) == 0 {
+		t.Fatal("no underline")
+	}
+	for _, off := range []float32{0, 3, 6, -2} {
+		// Above the baseline, an underline skipping ink (macOS) skips all of
+		// Hello; quotes have no ink there.
+		word := "Hello"
+		if off < 0 {
+			word = `""`
+		}
+		for _, v := range []struct {
+			name string
+			view func(c *context) *node
+		}{
+			{"text", func(c *context) *node {
+				return coreText(c, word).Underline().DecorationColor(red).UnderlineOffset(off)
+			}},
+			{"inherited", func(c *context) *node {
+				var e *node
+				coreBox(c).UnderlineOffset(off).Children(func() { e = coreText(c, word).Underline().DecorationColor(red) })
+				return e
+			}},
+			{"inline", func(c *context) *node {
+				return coreText(c, "").Children(func() {
+					coreText(c, word).Underline().DecorationColor(red).UnderlineOffset(off)
+				})
+			}},
+		} {
+			if got := rows(v.view); len(got) != len(plain) || got[0] != int(off) {
+				t.Errorf("%s, offset %v: red rows %v from the baseline, %v without an offset", v.name, off, got, plain)
+			}
+		}
+	}
+	// A span's offset, and that of the text around it.
+	for _, v := range []struct {
+		name string
+		view func(c *context) *node
+		want int
+	}{
+		{"span", func(c *context) *node {
+			return coreRichText(c, Span{Text: "Hello", Underline: true, DecorationColor: red, UnderlineOffset: 5})
+		}, 5},
+		{"around a span", func(c *context) *node {
+			return coreRichText(c, Span{Text: "Hello", Underline: true, DecorationColor: red}).UnderlineOffset(4)
+		}, 4},
+		{"span over the text's", func(c *context) *node {
+			return coreRichText(c, Span{Text: "Hello", Underline: true, DecorationColor: red, UnderlineOffset: 2}).UnderlineOffset(6)
+		}, 2},
+	} {
+		if got := rows(v.view); len(got) != len(plain) || got[0] != v.want {
+			t.Errorf("%s: red rows %v from the baseline, want from %d", v.name, got, v.want)
+		}
+	}
+}
+
 func TestTextOptions(t *testing.T) {
 	b := boxes(t, func(c *context) {
 		coreColumn(c).Width(60).AlignItems(Start).Children(func() {
@@ -476,7 +804,7 @@ func TestScrollBoth(t *testing.T) {
 	// Drag the horizontal thumb to the end.
 	tt.Move(50, 50)
 	st := sc.st
-	g := scrollBars(Rect{st.x, st.y, st.w, st.h}, st.barInset, float32(st.contentW), float32(st.contentH), float32(st.scrollX), float32(st.scrollY), st.flags, 6)
+	g := scrollBars(Rect{st.x, st.y, st.w, st.h}, st.barInset, float32(st.contentW), float32(st.contentH), float32(st.scrollX), float32(st.scrollY), st.flags, 6, false)
 	if !g.horizontal || !g.vertical {
 		t.Fatalf("scroll bars %+v", g)
 	}
@@ -499,7 +827,7 @@ func TestScrollbarInsets(t *testing.T) {
 	}, 200, 200)
 	tt.Move(50, 100)
 	st := sc.st
-	g := scrollBars(Rect{st.x, st.y, st.w, st.h}, st.barInset, float32(st.contentW), float32(st.contentH), float32(st.scrollX), float32(st.scrollY), st.flags, 6)
+	g := scrollBars(Rect{st.x, st.y, st.w, st.h}, st.barInset, float32(st.contentW), float32(st.contentH), float32(st.scrollX), float32(st.scrollY), st.flags, 6, false)
 	// The track runs from 50 below the top to 10 above the bottom, 4 in
 	// from the right; the thumb shows a quarter of it, the content's
 	// share in view.
@@ -522,6 +850,59 @@ func TestScrollbarInsets(t *testing.T) {
 	tt.Release(x, y+200)
 	if content.Y != -600 {
 		t.Errorf("dragging the thumb scrolled to %v", content.Y)
+	}
+}
+
+func TestScrollbarCursor(t *testing.T) {
+	var sc *node
+	var content Rect
+	tt := coreNewTester(func(c *context) {
+		coreRow(c).Children(func() {
+			sc = coreScroll(c).Size(100, 200).Children(func() {
+				coreBox(c).Size(100, 800).Cursor(CursorText).Draw(func(p *Painter, r Rect) { content = r })
+			})
+			coreBox(c).Size(100, 200).Cursor(CursorPointer)
+		})
+	}, 200, 200)
+	tt.Move(50, 100)
+	if tt.Cursor() != CursorText {
+		t.Fatalf("the pointer is %v over the text", tt.Cursor())
+	}
+	st := sc.st
+	g := scrollBars(Rect{st.x, st.y, st.w, st.h}, st.barInset, float32(st.contentW), float32(st.contentH), float32(st.scrollX), float32(st.scrollY), st.flags, 6, false)
+	// Over the track, under the thumb and over it, the bar's arrow, not
+	// the text's I-beam.
+	if tt.Move(g.vTrack.X+1, g.vTrack.Y+g.vTrack.H-5); tt.Cursor() != CursorDefault {
+		t.Errorf("the pointer is %v over the track", tt.Cursor())
+	}
+	x, y := g.v.X+g.v.W/2, g.v.Y+g.v.H/2
+	if tt.Move(x, y); tt.Cursor() != CursorDefault {
+		t.Errorf("the pointer is %v over the thumb", tt.Cursor())
+	}
+	// Dragging the thumb keeps the arrow, off the track over the text and
+	// out of the scroll container over what sets another.
+	tt.Press(x, y)
+	if tt.Cursor() != CursorDefault {
+		t.Errorf("the pointer is %v pressing the thumb", tt.Cursor())
+	}
+	tt.Move(50, y+20)
+	if tt.Cursor() != CursorDefault {
+		t.Errorf("the pointer is %v dragging the thumb over the text", tt.Cursor())
+	}
+	tt.Move(150, y+40)
+	if tt.Cursor() != CursorDefault {
+		t.Errorf("the pointer is %v dragging the thumb out of the container", tt.Cursor())
+	}
+	if content.Y >= 0 {
+		t.Errorf("dragging the thumb scrolled to %v", content.Y)
+	}
+	// Let go, the pointer shows what it is over again.
+	tt.Release(150, y+40)
+	if tt.Cursor() != CursorPointer {
+		t.Errorf("the pointer is %v after the drag, over a box setting the pointer", tt.Cursor())
+	}
+	if tt.Move(50, 100); tt.Cursor() != CursorText {
+		t.Errorf("the pointer is %v back over the text", tt.Cursor())
 	}
 }
 
@@ -573,8 +954,7 @@ func TestEasingAndLoop(t *testing.T) {
 		e := coreBox(c)
 		values = append(values, e.Loop("spin", 50*time.Millisecond, Linear))
 	}, 50, 50)
-	time.Sleep(20 * time.Millisecond)
-	tt.Frame()
+	tt.Advance(20 * time.Millisecond)
 	moved := false
 	for _, v := range values {
 		if v < 0 || v >= 1 {

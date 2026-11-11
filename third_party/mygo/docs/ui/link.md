@@ -4,8 +4,10 @@
 
 `ui.Link` creates a text that opens a URL in the browser, or the app
 registered for its scheme, when clicked, or with Enter while it has the
-keyboard focus. It shows in the accent color, underlined while the pointer
-is over it:
+keyboard focus; Space scrolls the container around it, as in a web page.
+It shows in the accent color, underlined while the pointer is over it, by a
+line kept whole through descenders and slashes, where other underlines skip
+their ink on macOS:
 
 ```go
 ui.Link(c, "Privacy policy", "https://example.com/privacy")

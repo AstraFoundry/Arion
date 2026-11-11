@@ -54,6 +54,13 @@ func (l *mainLoop) drain() {
 	}
 }
 
+// stopped reports whether the loop has shut down.
+func (l *mainLoop) stopped() bool {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.closed
+}
+
 // shutdown runs whatever is still queued and rejects later posts. The
 // queue is closed in the same critical section that finds it empty, so no
 // post is accepted without running.
@@ -73,7 +80,9 @@ func (l *mainLoop) shutdown() {
 func isMainThread() bool { return backend().IsMainThread() }
 
 // RunOnMain runs fn on the main (UI) thread and waits for it to return.
-// Use it to call native APIs directly, e.g. through Window.NativeHandle.
+// Use it to call native APIs directly, e.g. through Window.NativeHandle,
+// or to read and change the state a window's Content shows without
+// the redraw that Window.Update makes.
 // It runs fn right away when called on the main thread, and drops it after
 // the application has quit.
 func RunOnMain(fn func()) { onMain(fn) }

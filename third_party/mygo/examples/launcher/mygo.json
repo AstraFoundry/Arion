@@ -1,0 +1,8 @@
+{
+  "name": "Launcher",
+  "identifier": "dev.mygo.examples.launcher",
+  "out": "build",
+  "macos": {
+    "infoPlist": { "LSUIElement": true }
+  }
+}

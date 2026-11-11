@@ -110,7 +110,7 @@ func TestLocalPolishDownloadChoice(t *testing.T) {
 			}
 			state.Polish.State, state.Polish.Phase = runtime.PolishProvisioning, runtime.PhaseDownloading
 			state.Polish.Done, state.Polish.Total = 4<<20, state.Polish.SizeBytes
-			settle(tt)
+			rest(tt, 500*time.Millisecond)
 			assertLocalStatus := func(label string) {
 				t.Helper()
 				progress, ok := tt.Find(label)
@@ -198,7 +198,7 @@ func TestMatchAppRow(t *testing.T) {
 		if hasText(tt, en.Text(copy.MatchAppDetail)) {
 			break
 		}
-		time.Sleep(25 * time.Millisecond)
+		tt.Advance(25 * time.Millisecond)
 	}
 	if !hasText(tt, en.Text(copy.MatchAppDetail)) {
 		t.Fatalf("tooltip not shown: %q", tt.Texts())

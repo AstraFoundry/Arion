@@ -60,8 +60,20 @@ func main() {
 // it with the processes it runs.
 func measure(bin string, idle time.Duration) (app, total uint64, err error) {
 	s := before()
+	// The app's standard error tells why it exited, should it exit by
+	// itself: a Go program that panics, or crashes in native code, prints
+	// what it was doing there and exits with status 2. A file, not a pipe:
+	// the webview's processes inherit it, and Wait would wait for them to
+	// close a pipe.
+	stderr, err := os.CreateTemp("", "idlemem-*.log")
+	if err != nil {
+		return 0, 0, err
+	}
+	defer os.Remove(stderr.Name())
+	defer stderr.Close()
 	cmd := exec.Command(bin)
 	cmd.Env = append(os.Environ(), "MYGO_ENV=production")
+	cmd.Stderr = stderr
 	if err := cmd.Start(); err != nil {
 		return 0, 0, err
 	}
@@ -69,18 +81,34 @@ func measure(bin string, idle time.Duration) (app, total uint64, err error) {
 	go func() { exited <- cmd.Wait() }()
 	select {
 	case err := <-exited:
-		return 0, 0, fmt.Errorf("exited after starting: %v", err)
+		return 0, 0, fmt.Errorf("exited after starting: %v%s", err, output(stderr.Name()))
 	case <-time.After(idle):
 	}
 	app, total, procs, err := usage(cmd.Process.Pid, s)
-	stop(cmd.Process, procs)
+	if len(procs) == 0 {
+		procs = []int{cmd.Process.Pid}
+	}
+	stopErr := stop(cmd.Process, procs)
 	select {
 	case <-exited:
 	case <-time.After(10 * time.Second):
 		cmd.Process.Kill()
 		<-exited
 	}
+	if err == nil {
+		err = stopErr
+	}
 	return app, total, err
+}
+
+// output returns what the app wrote to its standard error, in the file at
+// path, to follow an error, or "" for nothing.
+func output(path string) string {
+	b, _ := os.ReadFile(path)
+	if s := strings.TrimSpace(string(b)); s != "" {
+		return "; its standard error:\n" + s
+	}
+	return ""
 }
 
 func median(v []uint64) uint64 {

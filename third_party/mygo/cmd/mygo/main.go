@@ -25,7 +25,9 @@ Commands:
 	install-skills [dir] install or update the bundled MyGo agent skills
 	vet [dir]           run Go vet and check native UI build lifetimes
 	migrate-ui [dir]     preview or apply the checked UI value API migration
-	generate             write the typed TypeScript client for bound Go services
+	generate             write the typed TypeScript client for bound Go services,
+	                     and the accessors of the app's catalogs of messages
+	i18n check [dir]     check the app's catalogs of messages
 	dev                  run a development build with live reload
 	build                build production apps (a .app and a .dmg on macOS)
 	keygen               create the key pair that signs updates
@@ -35,7 +37,7 @@ Commands:
 Run "mygo <command> -h" for the flags of a command.
 `
 
-const version = "0.4.6"
+const version = "0.8.3"
 
 func main() {
 	if len(os.Args) < 2 {
@@ -72,6 +74,8 @@ func main() {
 		err = runGenerate(args)
 	case "dev":
 		err = runDev(args)
+	case "i18n":
+		err = runI18n(args)
 	case "build":
 		err = runBuild(args)
 	case "doctor":

@@ -307,6 +307,10 @@ and create and publish the release with `--latest=false`, so the
 repository's latest release stays the other releases' (see
 [build and publish](updates.md#build-and-publish)).
 
+Publish the tag of a prerelease, such as `v1.3.0-beta.1`, with
+`--prerelease` too, so that only the apps whose users chose prereleases
+update to it ([prereleases](updates.md#prereleases)).
+
 ## Publishing to S3
 
 With `updates.s3`, `mygo build -upload` uploads to the bucket instead (see
@@ -338,7 +342,7 @@ to check that the apps build:
           name: ${{ matrix.name }}
           path: |
             build/*/*.dmg
-            build/*/*Setup*.exe
+            build/*/*-setup-*.exe
             build/*/*.deb
             build/*/*.tar.gz
 ```

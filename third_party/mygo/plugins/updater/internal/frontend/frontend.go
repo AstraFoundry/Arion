@@ -5,6 +5,7 @@ package frontend
 
 import (
 	"runtime"
+	"sync"
 
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/plugins/updater/internal/markdown"
@@ -47,13 +48,78 @@ type Open func(s Session)
 // windows open creates. Package updater sets it.
 var Plugin func(opts any, open Open) mygo.Plugin
 
-// Show shows win, in front when the user asked for the check.
-func Show(win *mygo.Window, user bool) {
-	if user {
-		win.Show()
-		win.Focus()
-	} else {
+// Show shows win as Sparkle shows its update alert: in front, with the
+// keyboard, when the user asked for the check or the app is active. A check
+// in the background takes the keyboard from no other app: on macOS win
+// waits until the app becomes active, unless the app has no Dock icon and
+// so may never be, which comes to the front; elsewhere it shows without
+// the keyboard.
+func Show(win *mygo.Window, user bool) { show(win, user) }
+
+// The app as Show sees it, which tests swap.
+var (
+	goos             = runtime.GOOS
+	appActive        = mygo.App.IsActive
+	activationPolicy = mygo.App.ActivationPolicy
+	focusApp         = mygo.App.Focus
+	onAppActive      = mygo.App.OnDidBecomeActive
+)
+
+// window is what Show does with a *mygo.Window.
+type window interface {
+	Show()
+	ShowInactive()
+	Focus()
+	IsVisible() bool
+	OnClosed(fn func()) (off func())
+}
+
+func show(win window, user bool) {
+	switch {
+	case user || appActive():
+	case goos != "darwin":
 		win.ShowInactive()
+		return
+	case activationPolicy() != mygo.ActivationPolicyRegular:
+		focusApp()
+	default:
+		showWhenActive(win)
+		return
+	}
+	win.Show()
+	win.Focus()
+}
+
+// showWhenActive shows win in front once the app becomes active, unless
+// it closed first or the user had it shown already.
+func showWhenActive(win window) {
+	var mu sync.Mutex
+	var offs []func()
+	done := false
+	// end stops waiting, and shows win when front is set. Only its first
+	// call counts.
+	end := func(front bool) {
+		mu.Lock()
+		if done {
+			mu.Unlock()
+			return
+		}
+		done = true
+		for _, off := range offs {
+			off()
+		}
+		mu.Unlock()
+		if front && !win.IsVisible() {
+			win.Show()
+			win.Focus()
+		}
+	}
+	mu.Lock()
+	offs = append(offs, onAppActive(func() { end(true) }), win.OnClosed(func() { end(false) }))
+	mu.Unlock()
+	// The app may have become active before it was watched.
+	if appActive() {
+		end(true)
 	}
 }
 

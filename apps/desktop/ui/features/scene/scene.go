@@ -95,7 +95,7 @@ func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		})
 		ui.Icon(c, icons.ChevronsUpDown).FontSize(14).TextColor(tokens.Muted)
 	})
-	kit.SelectPopup(tokens, sel, func() {
+	kit.SelectPopup(c, tokens, sel, func() {
 		bounds := button.Bounds()
 		room := max(bounds.Y-4, c.Root().Bounds().H-bounds.Y-bounds.H-4)
 		ui.Scroll(c).MaxHeight(min(kit.PopupHeight, max(56, room-10))).Children(func() {

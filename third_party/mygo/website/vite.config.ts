@@ -33,7 +33,9 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart({
       // A static site: every page is rendered to HTML at build time.
-      prerender: { enabled: true, crawlLinks: true, filter: ({ path }) => !path.includes("#") },
+      // /docs-demo is not a page but files of docs-demo.ts, which previews
+      // link to.
+      prerender: { enabled: true, crawlLinks: true, filter: ({ path }) => !path.includes("#") && !path.startsWith("/docs-demo") },
       pages: [
         ...docs.map((path) => ({ path })),
         { path: "/docs/search.json" },

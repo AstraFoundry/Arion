@@ -12,6 +12,8 @@ JavaScript package whose functions call them. The app uses the Go half with
   makes, with headers on the handshake.
 - [SQLite](plugins/sqlite.md): local databases, parameterized queries and
   atomic transactions, using SQLite's C engine compiled with Zig, without cgo.
+- [Watch](plugins/watch.md): changes to files, in the directories the app
+  lets pages watch.
 - [Updater](plugins/updater.md): an update window in the manner of
   Sparkle, which checks for updates and offers to install them. It is all
   Go, and its window is a web page or, for apps of native UI, native UI.
@@ -21,6 +23,22 @@ JavaScript package whose functions call them. The app uses the Go half with
 - [Glass](plugins/glass.md): Liquid Glass for native UI, as macOS draws
   it, on every platform, with macOS's scroll edges and backdrop blurs. It
   is all Go, with shaders of its own.
+- [Game](plugins/game.md): what games need beyond what apps do, opt-in:
+  a game loop in fixed steps with its input, a camera, and gamepads in
+  one standard layout. It is all Go.
+- [Loading](plugins/loading.md): loading.dev's 29 loading indicators for
+  native UI, as they look and move in browsers. It is all Go.
+- [SF Symbols](plugins/sfsymbols.md): Apple's SF Symbols for native UI on
+  macOS, drawn by the system. It is all Go.
+- [Automation](plugins/automation.md): a socket through which another
+  process, an end-to-end test runner or an agent, drives the running app:
+  its windows, the elements of their native UI, input, menus, scripts in
+  pages and screenshots. It is all Go, opt-in, and left out of release
+  builds; `mygo-automation` is its command line client for agents.
+- [PermissionFlow](plugins/permissionflow.md): the permissions the system
+  keeps for the user to give, such as Accessibility, Screen Recording and
+  the microphone: checked, asked for, and a guide to System Settings with
+  the app to drag into its list, after PermissionFlow. It is all Go.
 
 ## Using plugins
 

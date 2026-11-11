@@ -1,0 +1,163 @@
+package main
+
+// The glyphs of the texture's cells, lit by the wind: image0 is the wind's
+// field (wind.kage), two samples a cell, and image1 the atlas of the
+// characters' coverage, sixteen to a row. The shader fills the grid, from
+// its first cell's corner.
+
+// The visit's seed and the wind's time; the cells' size in pixels, and
+// how many there are (Grid); and the first cell's middle and the cells'
+// size in DIPs of the pane (Cells), where the clicks' blows are.
+var Seed uint
+var Time float
+var Grid vec4
+var Cells vec4
+
+// The characters a cell steps through, as indexes of the atlas, with the
+// box of each one's ink in its cell (left, top, right, bottom, in pixels).
+var Seq [64]int
+var SeqLen int
+var Boxes [64]vec4
+
+// The hand's clock and the clicks' blows.
+var Now float
+var TapCount int
+var Taps [6]vec4
+
+// The colors: the plain ink's and its alpha, and the ripples'; and the
+// opacity of the whole.
+var Ink vec3
+var InkAlpha float
+var Glow vec3
+var Opacity float
+
+const (
+	flick      = 1.2
+	rest       = 0.03
+	friction   = 0.6
+	headroom   = 3.0
+	glowAmount = 1.0
+	tau        = 6.2831853
+)
+
+func pcg(v uint) uint {
+	s := v*747796405 + 2891336453
+	w := ((s >> ((s >> 28) + 4)) ^ s) * 277803737
+	return (w >> 22) ^ w
+}
+
+func unit(h uint) float {
+	return float(h>>8) * (1.0 / 16777216.0)
+}
+
+func heart(u vec2) float {
+	k := -u.x * u.x * u.y * u.y * u.y
+	c := sign(k) * pow(abs(k), 1.0/3)
+	r := 1.0
+	for i := 0; i < 6; i++ {
+		r = sqrt(max(0.05, 1+c*pow(r, 5.0/3)))
+	}
+	return r
+}
+
+// taps returns how roused the air is at p, in DIPs of the pane, by the
+// clicks' blows, and the ripples' color there (x) with their afterlight
+// (y).
+func taps(p vec2) (float, vec2) {
+	roused := 0.0
+	glow := vec2(0)
+	for i := 0; i < TapCount; i++ {
+		tap := Taps[i]
+		age := Now - tap.z
+		away := p - tap.xy
+		d := length(away)
+		reach := d
+		if tap.w < 0 {
+			reach = d / heart(away/max(d, 1))
+		}
+		behind := 620*(1-exp(-age/1.3)) - reach
+		width := 85 + 60*age
+		front := smoothstep(-16, 10, behind) * exp(-behind*behind/(width*width))
+		roused += abs(tap.w) * exp(-age/1.5) * front
+		trail := smoothstep(0, 70, behind) * exp(-max(behind, 0)/260)
+		glow.x += abs(tap.w) * (exp(-age)*front + 0.7*exp(-age/1.3)*trail)
+		glow.y += abs(tap.w) * (1 - exp(-age/0.2)) * exp(-age/1.2) * trail
+	}
+	return roused, glow
+}
+
+// inkAt returns the coverage of the glyph at home in the atlas, at a
+// pixel of its cell, clamped to the cell.
+func inkAt(home, at vec2) float {
+	return image1At(home + clamp(at, vec2(0), Grid.xy-1) + 0.5).a
+}
+
+func Fragment(dst vec4, pos vec2) vec4 {
+	px := floor(pos * pixelScale())
+	cell := floor(px / Grid.xy)
+	at := px - cell*Grid.xy
+	cx, cy := int(cell.x), int(cell.y)
+	if cx >= int(Grid.z) || cy >= int(Grid.w) {
+		return vec4(0)
+	}
+
+	// Each cell steps through the characters at its own pace, from its own
+	// place among them, and a roused one runs on, and back as it settles.
+	h := pcg(uint(cx)*0x9E3779B9 ^ pcg(uint(cy)^Seed))
+	pace := pcg(h)
+	steps := int(floor(Time*flick*(0.6+0.8*unit(pace)) + unit(pcg(pace))))
+	glow := vec2(0)
+	if TapCount > 0 {
+		roused, g := taps(Cells.xy + cell*Cells.zw)
+		steps += int(floor(6*roused + unit(pcg(pace^0x33))))
+		glow = g * (0.65 + 0.35*unit(pcg(pace^0x51)))
+	}
+	if glow.x < 0.04 && glow.y < 0.015 {
+		// Without wind at the cell's samples or those around them, only its
+		// resting light would be left, which cannot be seen.
+		most := 0.0
+		for y := -1; y <= 2; y++ {
+			for x := -1; x <= 1; x++ {
+				t := clamp(vec2(float(cx+x), float(2*cy+y)), vec2(0), image0Size()-1)
+				most = max(most, image0At(t+0.5).r)
+			}
+		}
+		if most == 0 {
+			return vec4(0)
+		}
+	}
+	i := (int(h>>8) + steps) % SeqLen
+	box := Boxes[i]
+	if at.x < box.x || at.y < box.y || at.x > box.z || at.y > box.w {
+		return vec4(0)
+	}
+	g := Seq[i]
+	home := vec2(float(g%16), float(g/16)) * Grid.xy
+	ink := inkAt(home, at)
+	if ink <= 0 {
+		return vec4(0)
+	}
+
+	// The wind, as a texture's linear filtering reads it, and which way the
+	// stroke's edge faces: into the ink from the side the wind comes from
+	// is a face to the wind.
+	wind := image0Sample(vec2((px.x+0.5)/Grid.x, (px.y+0.5)/(Grid.y/2)))
+	blows := wind.gb*2 - 1
+	rise := vec2(inkAt(home, at+vec2(1, 0))-inkAt(home, at-vec2(1, 0)), inkAt(home, at+vec2(0, 1))-inkAt(home, at-vec2(0, 1)))
+	steep := length(rise)
+	facing := 0.35
+	if steep > 0.02 {
+		facing = max(0, dot(rise/steep, blows))
+	}
+	caught := mix(1, 0.45+1.1*facing, friction)
+	light := min(1, wind.r*caught) + rest*wind.a
+	// The color comes in whole and goes out quickly; the light is drawn
+	// headroom times weaker than the canvas shows, which leaves room for
+	// the ripples' color above it.
+	tint := smoothstep(0.04, 0.3, glowAmount*glow.x)
+	bright := min(1, light) * mix(InkAlpha, headroom, tint)
+	left := glowAmount * 0.3 * glow.y * wind.a
+	a := ink * min(1, (bright+left)/headroom)
+	c := (mix(Ink, Glow, tint)*bright + Glow*left) / (bright + left + 0.0001) * a
+	return vec4(c, a) * Opacity
+}

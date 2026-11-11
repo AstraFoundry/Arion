@@ -134,3 +134,31 @@ test("validates", () => {
   expect(() => ws.close(1001)).toThrow("Invalid close code");
   expect(() => ws.close(1000, "x".repeat(124))).toThrow("123 bytes");
 });
+
+test("rejects invalid subprotocols before contacting Go", () => {
+  go = fakeGo({});
+  for (const protocol of ["", "chat room", "chat,other", "chat/1", "chat;v=1", "chat\n", "\tchat", "chát", "chat\u007f"]) {
+    for (const protocols of [protocol, ["valid", protocol]]) {
+      let thrown: unknown;
+      try {
+        new WebSocket("ws://example.com", protocols);
+      } catch (error) {
+        thrown = error;
+      }
+      expect(thrown).toBeInstanceOf(DOMException);
+      expect(thrown).toHaveProperty("name", "SyntaxError");
+    }
+  }
+  expect(go.calls).toHaveLength(0);
+});
+
+test("accepts HTTP token punctuation in subprotocols", async () => {
+  const { server } = echoServer();
+  const protocols = ["chat.v2", "!#$%&'*+-.^_`|~0123456789AZaz"];
+  const ws = new WebSocket("ws://example.com", protocols);
+  await next(ws, "open");
+  expect((server().args[0] as { protocols: string[] }).protocols).toEqual(protocols);
+  const closed = next(ws, "close");
+  ws.close();
+  await closed;
+});

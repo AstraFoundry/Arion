@@ -3,21 +3,27 @@ package ui
 import "github.com/egoist/mygo/internal/scene"
 
 // Pose is where an element shows, from its place in the layout, which
-// AnimatePose moves it to: moved by X and Y DIPs, scaled by Scale around
-// its TransformOrigin (0 keeps its size, as 1 does), turned by Rotate
-// degrees clockwise, and faded by Fade, from 0, opaque, to 1, gone.
+// AnimatePose moves it to: moved by X and Y DIPs, and by XPercent and
+// YPercent percent of its own width and height, as TranslatePercent
+// moves it, scaled by Scale around its TransformOrigin (0 keeps its size,
+// as 1 does), turned by Rotate degrees clockwise, and faded by Fade, from
+// 0, opaque, to 1, gone.
 type Pose struct {
 	X, Y, Scale, Rotate, Fade float32
+	XPercent, YPercent        float32
 }
 
 // vals returns the components of p, in the order of a pose's channels.
-func (p Pose) vals() [5]float32 {
+func (p Pose) vals() [7]float32 {
 	s := p.Scale
 	if s == 0 {
 		s = 1
 	}
-	return [5]float32{p.X, p.Y, s, p.Rotate, max(0, min(p.Fade, 1))}
+	return [7]float32{p.X, p.Y, s, p.Rotate, max(0, min(p.Fade, 1)), p.XPercent, p.YPercent}
 }
+
+// poseFadeCh is the channel of a pose's Fade, the one that moves nothing.
+const poseFadeCh = 4
 
 // AnimatePose moves the element to p as a says, after its own transform
 // (Transform), and fades it, and returns the element. The element keeps
@@ -25,10 +31,28 @@ func (p Pose) vals() [5]float32 {
 // Animation and the Web Animations API run transforms and opacity: the
 // cheapest motion there is, which a view large or slow to build keeps
 // smooth. The pointer, carets and overlays follow it as they follow
-// transforms. It starts at the first pose. While the desktop asks for less
-// motion, it moves at once, and only fades smoothly.
+// transforms. While the desktop asks for less motion, it moves at once,
+// and only fades smoothly.
 //
 //	card.AnimatePose(ui.Pose{Y: lift, Scale: 1.02}, ui.Snappy)
+//
+// It starts at the first pose: an element that the frame before did not
+// pose, as one built for the first time, shows at p at once, and moves
+// only when a later frame poses it elsewhere. To come in from a pose, as
+// a flyout's panel rising as it shows, pose the element there in one
+// build, ask for another frame (Context.Invalidate), and pose it at its
+// place in the next:
+//
+//	entered := ui.Local(panel, "entered", func() bool { return false })
+//	p := ui.Pose{}
+//	if !*entered {
+//		p, *entered = ui.Pose{Y: 8, Fade: 1}, true
+//		c.Invalidate()
+//	}
+//	panel.AnimatePose(p, ui.Snappy)
+//
+// An element appearing in a parent that the frame before showed comes in
+// with the Enter of its Transition too.
 func (e *node) AnimatePose(p Pose, a Animation) *node {
 	for _, v := range p.vals() {
 		finiteTransform(v)
@@ -40,13 +64,16 @@ func (e *node) AnimatePose(p Pose, a Animation) *node {
 		a.Spring.physics()
 	}
 	e.pose, e.poseAnim, e.poseSet = p, a, true
+	linkGroups() // its Fade fades a group
+
+	scene.FoldTranslations() // renderers draw poses that only move as untransformed content
 	return e
 }
 
 // poseRec is what an element's AnimatePose keeps from frame to frame: the
 // channels of its pose, and the last frame that posed it.
 type poseRec struct {
-	ch    [5]channel
+	ch    [7]channel
 	frame uint64
 }
 
@@ -78,7 +105,7 @@ func (rt *engine) samplePose(e *node) {
 	still, instant := rt.preferences().ReduceMotion, rt.instant()
 	for i := range r.ch {
 		ch := &r.ch[i]
-		if instant || still && i < 4 {
+		if instant || still && i != poseFadeCh {
 			*ch = channel{value: float64(to[i]), target: float64(to[i]), at: now}
 			continue
 		}
@@ -92,7 +119,7 @@ func (rt *engine) samplePose(e *node) {
 // for frames that paint while they move.
 func (rt *engine) showPose(e *node, r *poseRec) {
 	now := rt.c.now
-	var v [5]float32
+	var v [7]float32
 	for i := range r.ch {
 		// A channel at rest stays where it is until headFor moves it on,
 		// which advances it first.
@@ -101,6 +128,9 @@ func (rt *engine) showPose(e *node, r *poseRec) {
 		}
 		v[i] = float32(r.ch[i].value)
 	}
+	// Percent of its size, as it is now.
+	v[0] += v[5] / 100 * e.w
+	v[1] += v[6] / 100 * e.h
 	// Draggable moves it along with its pose.
 	d := e.st.dragRec
 	if d.current(rt) {
@@ -119,9 +149,10 @@ func (rt *engine) showPose(e *node, r *poseRec) {
 	if v[0] != 0 || v[1] != 0 || v[2] != 1 || v[3] != 0 {
 		e.poseM = scene.Translation(v[0], v[1]).Mul(scene.Rotation(v[3])).Mul(scene.Scaling(v[2], v[2]))
 	}
-	e.poseFade = max(0, min(v[4], 1))
+	e.poseFade = max(0, min(v[poseFadeCh], 1))
 	if r.moving() || d.current(rt) && d.moving() {
-		rt.repainting = true
+		rt.repainting, rt.repaintFull = true, true
+		rt.untracked = true // moving what is inside it
 	}
 }
 
@@ -137,6 +168,7 @@ func (rt *engine) repose() {
 		if r := e.st.pose; r != nil && (r.moving() || d.current(rt) && d.moving()) {
 			rt.showPose(e, r)
 			e.reposed = true
+			rt.inkStale = true
 		}
 	}
 	for _, e := range rt.posed {

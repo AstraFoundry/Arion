@@ -7,6 +7,8 @@ import (
 	"sync"
 	"syscall"
 	"unsafe"
+
+	"github.com/ebitengine/purego"
 )
 
 // comCall calls method i of the COM interface obj. Pointers converted to
@@ -21,6 +23,37 @@ func comCall(obj uintptr, i int, args ...uintptr) uintptr {
 	n := copy(a[1:], args)
 	r, _, _ := syscall.SyscallN(fn, a[:n+1]...)
 	return r
+}
+
+var floatMethods sync.Map // method entry → func(uintptr, float64) uintptr
+
+// comCallFloat calls method i of obj, which takes a double. syscall does
+// not pass floating point arguments on ARM64, purego does, as for
+// DirectWrite in internal/text.
+func comCallFloat(obj uintptr, i int, f float64) uintptr {
+	fn := *(*uintptr)(unsafe.Add(native(*(*uintptr)(native(obj))), i*int(unsafe.Sizeof(uintptr(0)))))
+	m, ok := floatMethods.Load(fn)
+	if !ok {
+		var call func(uintptr, float64) uintptr
+		purego.RegisterFunc(&call, fn)
+		m, _ = floatMethods.LoadOrStore(fn, call)
+	}
+	return m.(func(uintptr, float64) uintptr)(obj, f)
+}
+
+var float32Methods sync.Map // method entry → func(uintptr, float32) uintptr
+
+// comCallFloat32 calls method i of obj, which takes a float, as
+// comCallFloat does.
+func comCallFloat32(obj uintptr, i int, f float32) uintptr {
+	fn := *(*uintptr)(unsafe.Add(native(*(*uintptr)(native(obj))), i*int(unsafe.Sizeof(uintptr(0)))))
+	m, ok := float32Methods.Load(fn)
+	if !ok {
+		var call func(uintptr, float32) uintptr
+		purego.RegisterFunc(&call, fn)
+		m, _ = float32Methods.LoadOrStore(fn, call)
+	}
+	return m.(func(uintptr, float32) uintptr)(obj, f)
 }
 
 func failed(hr uintptr) bool { return int32(uint32(hr)) < 0 }

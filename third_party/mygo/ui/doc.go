@@ -31,13 +31,15 @@
 // Views receive a stable *Context for their window, with its parent scope
 // changing inside Children callbacks. Capture Services for persistent
 // clipboard/URL callbacks and background redraws instead of storing Context.
-// Changed and Submitted apply pending input to controls built so far before
-// returning, so local bound values can be committed in the same build pass.
-// Click and shortcut queries also apply pending bound input before returning,
-// so inline actions see the latest edits on controls already built.
-// Configure input options before querying responses. Remaining bound input
-// applies after construction. OnClick, OnShortcut, OnChange and OnSubmit run
-// after construction and bound input, before the rebuild.
+// A control takes the user's input as its constructor returns, as Dear
+// ImGui's and egui's widgets do: what it binds, a local copy too, holds
+// the edit when the next statement reads it, and inline actions see the
+// edits of the controls built before them. A container takes its input
+// with its children, as the call that built it returns. Input follows the
+// options of the frame the user acted on: Disabled, ReadOnly or Step set
+// in a build govern the input of the frames after it. Changed and
+// Submitted report input; OnClick, OnShortcut, OnChange and OnSubmit run
+// after construction, before the rebuild.
 // Input queries such as Clicked remain available.
 //
 // Widgets take the theme's look, whose Spacing sizes them all. Each is

@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/egoist/mygo/internal/wait"
 	"github.com/egoist/mygo/plugins/updater/internal/markdown"
 )
 
@@ -74,7 +75,7 @@ func (h *harness) shown() *session {
 	select {
 	case s := <-h.presented:
 		return s
-	case <-time.After(5 * time.Second):
+	case <-time.After(wait.Guard):
 		h.t.Fatal("no window was shown")
 		return nil
 	}
@@ -93,7 +94,7 @@ func (h *harness) noWindow() {
 // waitView waits for s to show a view whose title starts with title.
 func waitView(t *testing.T, s *session, title string) view {
 	t.Helper()
-	deadline := time.After(5 * time.Second)
+	deadline := time.After(wait.Guard)
 	for {
 		v, changed := s.Current()
 		if strings.HasPrefix(v.Title, title) {
@@ -111,7 +112,7 @@ func waitDone(t *testing.T, done chan struct{}) {
 	t.Helper()
 	select {
 	case <-done:
-	case <-time.After(5 * time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("the check did not end")
 	}
 }
@@ -137,6 +138,9 @@ func newRelease(version string, install func(ctx context.Context, progress func(
 }
 
 func TestUpToDate(t *testing.T) {
+	checked := time.Date(2026, 10, 16, 9, 30, 0, 0, time.UTC)
+	t.Cleanup(func(n func() time.Time) func() { return func() { now = n } }(now))
+	now = func() time.Time { return checked }
 	h := newHarness(t, Options{})
 	done := h.begin(true)
 	s := h.shown()
@@ -149,8 +153,8 @@ func TestUpToDate(t *testing.T) {
 	if h.u.session != nil {
 		t.Error("the session was not cleared")
 	}
-	if st := h.saved(); time.Since(st.LastCheck) > time.Minute {
-		t.Errorf("last check %v", st.LastCheck)
+	if st := h.saved(); !st.LastCheck.Equal(checked) {
+		t.Errorf("last check %v, want %v", st.LastCheck, checked)
 	}
 }
 
@@ -216,6 +220,44 @@ func TestInstallAndRelaunch(t *testing.T) {
 	}
 	if h.relaunches.Load() != 1 {
 		t.Error("Later relaunched")
+	}
+}
+
+// A window keeps the language it opened in; after the app's language
+// changes, the next window and the menu item take the new one.
+func TestLanguageChange(t *testing.T) {
+	h := newHarness(t, Options{})
+	proceed := make(chan struct{})
+	h.result = func(context.Context) (*release, error) {
+		return newRelease("2.0.0", func(ctx context.Context, progress func(int64, int64)) error {
+			<-proceed
+			return nil
+		}), nil
+	}
+	done := h.begin(true)
+	s := h.shown()
+	v := waitView(t, s, "A new version of")
+	s.Respond(v.Prompt, actionInstall, false)
+	waitView(t, s, "Downloading update…")
+	locale = func() string { return "zh-Hans" }
+	close(proceed)
+	v = waitView(t, s, "Ready to Relaunch")
+	if got := s.Texts(); got.Title != "Software Update" {
+		t.Errorf("texts of the open window: %+v", got)
+	}
+	s.Respond(v.Prompt, actionLater, false)
+	waitDone(t, done)
+
+	done = h.begin(true)
+	s = h.shown()
+	v = waitView(t, s, "可以重新启动了")
+	if got := s.Texts(); got.Title != "软件更新" {
+		t.Errorf("texts of the next window: %+v", got)
+	}
+	s.Respond(v.Prompt, actionLater, false)
+	waitDone(t, done)
+	if got := h.u.text().MenuItem; got != "检查更新…" {
+		t.Errorf("menu item %q", got)
 	}
 }
 
@@ -491,6 +533,30 @@ func TestSchedule(t *testing.T) {
 	h.u.schedule()
 	if h.u.timer != nil {
 		t.Error("scheduled with automatic checks off")
+	}
+}
+
+func TestCheckAtLaunch(t *testing.T) {
+	h := newHarness(t, Options{})
+	defer func(w time.Duration) { firstCheckWait = w }(firstCheckWait)
+	firstCheckWait = time.Millisecond
+	// The last launch checked an hour ago; a version came out since.
+	h.u.update(func(s *state) { s.LastCheck = now().Add(-time.Hour) })
+	h.result = func(context.Context) (*release, error) { return newRelease("2.0.0", nil), nil }
+	h.u.running = true
+	h.u.schedule()
+	s := h.shown()
+	v := waitView(t, s, "A new version of")
+	s.Respond(v.Prompt, actionLater, false)
+	wait.Until(t, "the next check scheduled", func() bool {
+		h.u.mu.Lock()
+		defer h.u.mu.Unlock()
+		return h.u.session == nil && h.u.timer != nil
+	})
+	// Then an interval after it, not at once again.
+	time.Sleep(20 * time.Millisecond)
+	if n := h.checks.Load(); n != 1 {
+		t.Errorf("%d checks, want 1", n)
 	}
 }
 

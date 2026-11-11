@@ -2,7 +2,6 @@ package ui
 
 import (
 	"strings"
-	"time"
 	"unicode/utf8"
 
 	"github.com/egoist/mygo/internal/platform"
@@ -45,7 +44,7 @@ func (w *widgetTextInput) publish() {
 				ed.bufferDirty = true
 			}
 		}
-		w.rt.blinkStart = time.Now()
+		w.rt.blinkStart = w.rt.now()
 		return
 	}
 	if ed.value != nil && *ed.value != ed.buf.s {
@@ -54,7 +53,7 @@ func (w *widgetTextInput) publish() {
 		}
 		ed.nativeDirty = true
 	}
-	w.rt.blinkStart = time.Now()
+	w.rt.blinkStart = w.rt.now()
 }
 
 // A navigation key may precede another native callback without a frame.
@@ -181,7 +180,10 @@ func (w *widgetTextInput) ReplaceText(r *TextInputRange, s string) {
 		return
 	}
 	if r == nil || ed.password {
-		if ed.compose != "" {
+		// The input method may clear the preedit before its commit delivers
+		// the text, as GTK's fcitx module does: the composition's undo step
+		// takes it then, rather than a step of its own that changes nothing.
+		if ed.compose != "" || ed.compositionActive && len(ed.undo) > 0 {
 			ed.compose = ""
 			ed.replace(ed.caret, ed.caret, s)
 		} else {
@@ -212,6 +214,11 @@ func (w *widgetTextInput) SetMarkedText(r *TextInputRange, s string, selected Te
 	if ed.readOnly {
 		return
 	}
+	if s == "" && r == nil && ed.compose == "" {
+		// A preedit that is already gone, as GTK clears it after a commit
+		// delivered the text: nothing to mark, and no undo step to start.
+		return
+	}
 	if ed.compose == "" || r != nil {
 		a, z := ed.selection()
 		ranges := ed.selectedRanges()
@@ -238,6 +245,7 @@ func (w *widgetTextInput) SetMarkedText(r *TextInputRange, s string, selected Te
 	selected.Start, selected.End = min(selected.Start, n), min(selected.End, n)
 	selected.Start = countUnits(s[:UTF16ByteOffset(s, selected.Start)])
 	selected.End = countUnits(s[:UTF16ByteOffset(s, selected.End)])
+	ed.dragging = false // as an edit does
 	ed.compose, ed.composeSelected = s, selected
 	ed.composeCaret = utf8.RuneCountInString(s[:UTF16ByteOffset(s, selected.End)])
 	if ed.area != nil {
@@ -264,7 +272,7 @@ func (w *widgetTextInput) layout() *text.Layout {
 		params.Text = ed.displayText()
 		params.Spans = ""
 		if !ed.password {
-			params.Spans, _ = ed.rangeSpans(0, ed.buf.n)
+			params.Spans = ed.rangeKey(0, ed.buf.n)
 		}
 		ed.shapeInput(params)
 	}

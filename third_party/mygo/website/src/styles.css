@@ -63,6 +63,11 @@
      colors, always next to an arrow. */
   --better: oklch(0.52 0.14 150);
   --worse: oklch(0.55 0.2 27);
+  /* The frameworks /benchmarks compares. */
+  --bench-mygo: #00abd7;
+  --bench-gpui: #e78b30;
+  --bench-gpui-fast: #6d5bd0;
+  --bench-egui: #b84a8c;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -85,6 +90,10 @@
 }
 
 .dark {
+  --bench-mygo: #1391b8;
+  --bench-gpui: #c8751d;
+  --bench-gpui-fast: #7d62c9;
+  --bench-egui: #c8588f;
   --gopher: oklch(0.76 0.12 222);
   --gopher-ink: oklch(0.8 0.11 222);
   --bang-1: oklch(0.76 0.084 231);
@@ -333,6 +342,19 @@
   color: var(--preview-title);
 }
 
+/* Opens the frame's page in a tab of its own, at the right of the title
+   bar. */
+.ui-preview-open {
+  @apply absolute top-1/2 right-2 flex size-6 -translate-y-1/2 items-center justify-center rounded-md opacity-60 transition-opacity;
+  color: var(--preview-title);
+
+  &:hover,
+  &:focus-visible {
+    @apply opacity-100;
+    background: rgb(127 127 127 / 0.15);
+  }
+}
+
 .ui-preview-frame {
   @apply block w-full border-0;
   color-scheme: light;
@@ -375,4 +397,9 @@
 }
 .doc-card-description {
   @apply text-sm leading-6 font-normal text-muted-foreground;
+}
+
+/* The hero's gopher: the scene fades out at its edges. */
+.gopher-rocket {
+  mask-image: radial-gradient(closest-side, black 70%, transparent);
 }

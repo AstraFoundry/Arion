@@ -98,6 +98,12 @@ func paintBlur(p *ui.Painter, box ui.Rect, radii [4]float32, b Blur) {
 	if box.W <= 0 || box.H <= 0 {
 		return
 	}
+	if p.Preferences().ReduceTransparency {
+		// What a blur is for, the content under a bar reading through it,
+		// is transparency: the desktop asks for an opaque bar instead.
+		p.FillRadii(box, radii, p.Theme().Background)
+		return
+	}
 	// The rectangle of the element, in pixels, as the painter snaps it.
 	px := scene.Rect{X: round(box.X * s), Y: round(box.Y * s)}
 	px.W, px.H = round((box.X+box.W)*s)-px.X, round((box.Y+box.H)*s)-px.Y

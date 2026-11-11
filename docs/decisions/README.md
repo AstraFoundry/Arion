@@ -18,7 +18,7 @@ Write an ADR when the decision:
 - [004: The default model is chosen by measured evaluation](004-automatic-model-selection.md).
 - [005: Local encryption of approved vocabulary](005-local-encryption.md).
 - [006: macOS input-method host and local IPC](006-macos-input-method-host.md).
-- [007: Sunbeam design system and coss anatomy in Go](007-sunbeam-design-system.md).
+- [007: Sunbeam design system and coss anatomy in Go](007-sunbeam-design-system.md); token ownership and button/card anatomy superseded by [049](049-sunbeam-package-and-materials.md).
 - [008: Contextual rewrite evaluation](008-contextual-rewrite-evaluation.md) — evaluation boundary; its review-before-insert rule is superseded by ADR 011.
 - [009: AGPL-3.0 license](009-agpl-license.md) — open source with a commercial hosted edition kept possible.
 - [010: In-app updates from GitHub releases](010-in-app-updates.md) — signed MyGo updates, automatic checks on by default; the update source is superseded by ADR 019.
@@ -60,6 +60,7 @@ Write an ADR when the decision:
 - [046: Clipboard file access](046-clipboard-file-access.md) — encrypted file-bound grants and scoped native publication.
 - [047: Clipboard file access guidance](047-clipboard-file-access-guidance.md) — explicit capture explanations, system purpose strings and suppressible recovery guidance.
 - [048: Selection action URLs](048-selection-action-urls.md) — fixed Claude and ChatGPT templates, allowlisted schemes, and no shell or keystroke handoff.
+- [049: Sunbeam from its MyGo package, with flat and raised materials](049-sunbeam-package-and-materials.md) — tokens from `github.com/AstraFoundry/design/packages/mygo`; flat window chrome, raised popovers and tooltips.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

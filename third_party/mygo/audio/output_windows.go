@@ -129,7 +129,7 @@ func defaultID(enumerator uintptr) (string, error) {
 	return syscall.UTF16ToString(unsafe.Slice(p, n)), nil
 }
 
-func openDevice() (device, int, error) {
+func openDevice(ahead time.Duration) (device, int, error) {
 	if !comInitialized {
 		// S_FALSE, already initialized, succeeds as well.
 		if hr, _, _ := procCoInitializeEx.Call(0, coinitMultithreaded); failed(hr) {
@@ -138,14 +138,14 @@ func openDevice() (device, int, error) {
 		comInitialized = true
 	}
 	d := &wasapiDevice{}
-	if err := d.open(); err != nil {
+	if err := d.open(ahead); err != nil {
 		d.close()
 		return nil, 0, err
 	}
 	return d, windowsFrames, nil
 }
 
-func (d *wasapiDevice) open() error {
+func (d *wasapiDevice) open(ahead time.Duration) error {
 	if hr, _, _ := procCoCreateInstance.Call(uintptr(unsafe.Pointer(&clsidMMDeviceEnumerator)), 0, clsctxAll,
 		uintptr(unsafe.Pointer(&iidIMMDeviceEnumerator)), uintptr(unsafe.Pointer(&d.enumerator))); failed(hr) {
 		return hresult("CoCreateInstance(MMDeviceEnumerator)", hr)
@@ -178,8 +178,8 @@ func (d *wasapiDevice) open() error {
 		channelMask:    speakerFrontLeft | speakerFrontRight,
 		subFormat:      ksDataFormatSubtypeFloat,
 	}
-	// 40 ms, converted to the device's format by WASAPI's resampler.
-	const duration = 40 * 10000 // in 100 ns
+	// ahead, converted to the device's format by WASAPI's resampler.
+	duration := uintptr(ahead / 100) // in 100 ns
 	flags := uintptr(audclntStreamFlagsEventCB | audclntStreamFlagsNoPersist | audclntStreamFlagsAutoConvert | audclntStreamFlagsSRCQuality)
 	if hr := comCall(d.client, 3, audclntShareModeShared, flags, duration, 0, uintptr(unsafe.Pointer(&f)), 0); failed(hr) {
 		return hresult("IAudioClient.Initialize", hr)

@@ -27,6 +27,9 @@ type Flyout struct {
 	// background and an arrow pointing at the middle of Anchor, and places
 	// it (macOS); Align and Gap do not apply. Elsewhere it is ignored.
 	Popover bool
+	// Radius rounds the flyout's corners, in DIPs, its content, material
+	// and shadow with them (macOS).
+	Radius int
 }
 
 // Side is the side of the anchor a flyout goes to.

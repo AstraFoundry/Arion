@@ -1,6 +1,17 @@
 /** The operating system, using Node.js' `process.platform` names. */
 export type Platform = "darwin" | "linux" | "win32";
 
+/** The direction a language is written in: left to right, or right to left. */
+export type Direction = "ltr" | "rtl";
+
+/** The payload of the `mygo:locale` event. */
+export interface LocaleChange {
+  /** The language the app shows now, e.g. "zh-Hans". */
+  locale: string;
+  /** The direction it is written in. */
+  dir: Direction;
+}
+
 /** Controls for the window hosting the page, handy for custom title bars. */
 export interface WindowControls {
   minimize(): Promise<void>;
@@ -35,6 +46,27 @@ export interface Channel<T = unknown> extends AsyncIterable<T> {
   close(): void;
 }
 
+/**
+ * The accent color and the accessibility settings of the desktop, as
+ * `mygo.ThemePreferences` encodes them.
+ */
+export interface ThemePreferences {
+  /** The accent color of the desktop's controls as "#rrggbb", or null where the desktop has none. */
+  accent: string | null;
+  /** Whether the desktop asks for less motion; `prefers-reduced-motion` tells it too. */
+  reduceMotion: boolean;
+  /**
+   * Whether the desktop asks for opaque surfaces in place of translucent
+   * ones: macOS's Reduce Transparency, Windows's transparency effects
+   * turned off. Linux desktops have no such setting.
+   */
+  reduceTransparency: boolean;
+  /** Whether the desktop asks for more contrast; `prefers-contrast` tells it too. */
+  highContrast: boolean;
+  /** How many times larger than usual text should be; 1 is usual. */
+  textScale: number;
+}
+
 /** The runtime MyGo injects into every page as `window.mygo`. */
 export interface Runtime {
   /** Calls a bound Go method, e.g. `call("Greeter.Greet", "Ada")`. */
@@ -54,6 +86,28 @@ export interface Runtime {
   readonly windowId: number;
   /** MyGo version. */
   readonly version: string;
+  /**
+   * The desktop's preferences, current from document start on; the
+   * `mygo:preferences` event tells their changes.
+   */
+  readonly preferences: ThemePreferences;
+  /**
+   * The language the app shows, a BCP 47 tag such as "en" or "zh-Hans"
+   * (`App.Locale`): of the languages the app is written in, the one the
+   * user reads best, or the one `App.SetLocale` chose. A page has it from
+   * document start, and the `mygo:locale` event tells of changes.
+   */
+  readonly locale: string;
+  /** The direction `locale` is written in, for `<html dir>`. */
+  readonly dir: Direction;
+  /**
+   * Whether the window is drawn as active: the window the user's input
+   * goes to, while it or one of its flyouts has the keyboard, as native
+   * apps tell which of their windows has it. The `mygo:window-active`
+   * event tells its changes, and `<html data-mygo-window-inactive>` marks
+   * a page whose window is not, for CSS.
+   */
+  readonly windowActive: boolean;
   /** The window hosting this page. */
   readonly window: WindowControls;
 }

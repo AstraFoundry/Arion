@@ -12,6 +12,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/egoist/mygo/internal/gamut"
 	"github.com/egoist/mygo/internal/platform"
 )
 
@@ -100,6 +101,28 @@ type inspector struct {
 	query   string
 	match   int
 	matches []int32
+	// edits are what the Styles tab changed, by element, until the
+	// inspector closes (inspector_edit.go), and editing the value being
+	// typed.
+	edits   map[uint64][]inspEdit
+	editing inspEditing
+	// sources are where the app builds the elements chosen that have
+	// edits, as changesAsGo tells.
+	sources map[uint64]string
+	// forced are the states forced on elements, by element, until the
+	// inspector closes, and statesOpen shows the Styles tab's bar of them.
+	forced     map[uint64]uint8
+	statesOpen bool
+	// openable notes whether the file of the element's source can open.
+	openable openableSource
+	// layoutOn holds the containers whose layout shows over the content,
+	// tracks what their grids noted as they laid out, and overlays what
+	// the walk of this frame's elements found of them. uncached tells that
+	// they turned the layout cache off, which cacheWasOff says it was.
+	layoutOn              map[uint64]bool
+	tracks                map[uint64]inspTracks
+	overlays              []inspOverlay
+	uncached, cacheWasOff bool
 	// Scroll offsets of the breadcrumbs, the sidebar and the issues.
 	crumbs       ScrollState
 	sideScroll   ScrollState
@@ -131,6 +154,7 @@ type inspNode struct {
 	parent   int32
 	kids     bool
 	name     string
+	layout   uint8 // what its badge shows
 	keyText  string
 	label    string
 	text     string
@@ -200,6 +224,11 @@ func (rt *engine) toggleInspector() {
 	in.picking, in.hovered = false, 0
 	if !in.open {
 		in.nodes, in.rows, in.sel = nil, nil, inspDetails{}
+		// What the Styles tab changed goes with the panel: the window shows
+		// what the view builds again.
+		in.edits, in.editing, in.sources, in.forced = nil, inspEditing{}, nil, nil
+		in.layoutOn, in.tracks, in.overlays = nil, nil, nil
+		in.keepLaidOut(rt, false)
 	} else if in.keys == nil {
 		in.keys = map[uint64]any{}
 	}
@@ -235,6 +264,46 @@ func (rt *engine) inspectKey(mods Modifiers, key Key) bool {
 	return false
 }
 
+// isForced reports whether the inspector forces one of the states on the
+// element id.
+func (in *inspector) isForced(id uint64, states uint8) bool {
+	return in.forced != nil && in.forced[id]&states != 0
+}
+
+// toggleForced forces a state on the element id, or stops forcing it.
+func (in *inspector) toggleForced(id uint64, state uint8) {
+	if in.forced == nil {
+		in.forced = map[uint64]uint8{}
+	}
+	if in.forced[id] ^= state; in.forced[id] == 0 {
+		delete(in.forced, id)
+	}
+	in.changed = true
+}
+
+// forcedNames lists the states forced on the element id, as CSS names them.
+func (in *inspector) forcedNames(id uint64) string {
+	var names []string
+	for _, s := range inspStates {
+		if in.isForced(id, s.state) {
+			names = append(names, s.name)
+		}
+	}
+	return strings.Join(names, " ")
+}
+
+// inspStates are the states the inspector can force, as CSS names them.
+var inspStates = [...]struct {
+	name  string
+	state uint8
+}{
+	{":hover", forceHover},
+	{":active", forceActive},
+	{":focus", forceFocus},
+	{":focus-visible", forceFocusVisible},
+	{":focus-within", forceFocusWithin},
+}
+
 // noteSource notes where the app builds the element chosen.
 func (in *inspector) noteSource() { in.source = callSite() }
 
@@ -245,12 +314,17 @@ func (in *inspector) noteKey(id uint64, k any) {
 	}
 }
 
+// holds reports whether the element id is in the panel while it shows.
+func (in *inspector) holds(rt *engine, id uint64) bool {
+	return in.open && in.panel != 0 && rt.within(id, in.panel)
+}
+
 // pointer takes the pointer over the content while picking: moving
 // outlines the element under it, and a press chooses it. It reports
 // whether it took ev.
 func (in *inspector) pointer(rt *engine, ev platform.SurfaceEvent, x, y float32) bool {
 	switch {
-	case in.swallow && ev.Kind == platform.PointerUp:
+	case in.swallow && (ev.Kind == platform.PointerUp || ev.Kind == platform.PointerCancel):
 		in.swallow = false
 		return true
 	case !in.picking || x >= in.appW:
@@ -275,7 +349,7 @@ func (in *inspector) pointer(rt *engine, ev platform.SurfaceEvent, x, y float32)
 		in.picking, in.hovered, in.swallow = false, 0, true
 		rt.requestFrame()
 		return true
-	case platform.PointerUp:
+	case platform.PointerUp, platform.PointerCancel:
 		return true
 	}
 	return false
@@ -284,6 +358,7 @@ func (in *inspector) pointer(rt *engine, ev platform.SurfaceEvent, x, y float32)
 // choose chooses the element id.
 func (in *inspector) choose(id uint64) {
 	if id != in.selected {
+		in.finishEdit(true)
 		in.selected, in.source = id, ""
 		// The breadcrumbs show the element chosen, at their end.
 		in.crumbs.X = math.MaxFloat32
@@ -296,16 +371,24 @@ func (in *inspector) choose(id uint64) {
 func (in *inspector) snapshot(rt *engine, root *node) {
 	in.nodes = in.nodes[:0]
 	in.selElem, in.hoverElem = nil, nil
+	in.overlays = in.overlays[:0]
 	if in.seen == nil {
 		in.seen = map[uint64]bool{}
 	}
 	clear(in.seen)
 	var sum uint64
 	in.walk(rt, root, 0, -1, &sum)
+	in.measureLayouts()
 	in.elements = len(in.nodes)
 	in.sel = inspDetails{}
 	if e := in.selElem; e != nil {
 		in.sel = describe(rt, e)
+		if in.source != "" && len(in.edits[e.id]) > 0 {
+			if in.sources == nil {
+				in.sources = map[uint64]string{}
+			}
+			in.sources[e.id] = in.source
+		}
 	}
 	sum = mix(sum, in.sel.hash())
 	sum = mix(sum, uint64(len(rt.warnings)))
@@ -326,7 +409,7 @@ func (in *inspector) walk(rt *engine, e *node, depth, parent int32, sum *uint64)
 	}
 	in.seen[key] = true
 	n := inspNode{id: e.id, key: key, depth: depth, parent: parent, name: elementName(e), label: e.label,
-		w: e.w, h: e.h, leaving: e.leaving != 0}
+		w: e.w, h: e.h, leaving: e.leaving != 0, layout: layoutKind(e)}
 	if k, ok := in.keys[e.id]; ok {
 		n.keyText = fmt.Sprint(k)
 	}
@@ -337,7 +420,7 @@ func (in *inspector) walk(rt *engine, e *node, depth, parent int32, sum *uint64)
 		n.hasTrans = true
 	}
 	in.nodes = append(in.nodes, n)
-	*sum = mix(*sum, e.id^uint64(depth)<<56)
+	*sum = mix(*sum, e.id^uint64(depth)<<56^uint64(n.layout)<<48)
 	*sum = mix(*sum, uint64(math.Float32bits(e.x))<<32|uint64(math.Float32bits(e.y)))
 	*sum = mix(*sum, uint64(math.Float32bits(e.w))<<32|uint64(math.Float32bits(e.h)))
 	if n.text != "" || n.label != "" || n.keyText != "" {
@@ -348,6 +431,9 @@ func (in *inspector) walk(rt *engine, e *node, depth, parent int32, sum *uint64)
 	}
 	if e.id == in.hovered {
 		in.hoverElem = e
+	}
+	if n.layout != inspNoLayout && !e.hidden && in.layoutOn[e.id] {
+		in.overlays = append(in.overlays, inspOverlay{e: e})
 	}
 	for c := e.first; c != nil; c = c.next {
 		in.walk(rt, c, depth+1, int32(i), sum)
@@ -528,8 +614,38 @@ func roleName(r Role) string {
 		return "MenuItemCheckbox"
 	case RoleMenuItemRadio:
 		return "MenuItemRadio"
+	case RoleRegion:
+		return "Region"
+	case RoleLog:
+		return "Log"
+	case RoleTimer:
+		return "Timer"
+	case RoleAlert:
+		return "Alert"
+	case RoleSeparator:
+		return "Separator"
+	case RoleRowHeader:
+		return "RowHeader"
+	case RoleSearch:
+		return "Search"
+	case RoleArticle:
+		return "Article"
 	case RoleHeading:
 		return "Heading"
+	case RoleNavigation:
+		return "Navigation"
+	case RoleGrid:
+		return "Grid"
+	case RoleTreeGrid:
+		return "TreeGrid"
+	case RoleListBox:
+		return "ListBox"
+	case RoleOption:
+		return "Option"
+	case RoleDeletion:
+		return "Deletion"
+	case RoleInsertion:
+		return "Insertion"
 	}
 	return ""
 }
@@ -540,6 +656,16 @@ func accessibleRole(e *node) (string, bool) {
 	r, ok := e.accessRole()
 	if !ok {
 		return "none", false
+	}
+	switch e.role {
+	case RoleListBox:
+		return "listbox", true
+	case RoleOption:
+		return "option", true
+	case RoleDeletion:
+		return "deletion", true
+	case RoleInsertion:
+		return "insertion", true
 	}
 	switch role := Role(r) + RoleGroup; role {
 	case RoleGroup:
@@ -587,9 +713,30 @@ func pxText(v float32) string {
 	return num(v) + "px"
 }
 
+// dec formats v with at most n decimals, without trailing zeros.
+func dec(v float64, n int) string {
+	s := strconv.FormatFloat(v, 'f', n, 64)
+	if strings.Contains(s, ".") {
+		s = strings.TrimRight(strings.TrimRight(s, "0"), ".")
+	}
+	return s
+}
+
 func ms(d time.Duration) string { return strconv.FormatFloat(float64(d)/1e6, 'f', 1, 64) }
 
+// colorText formats a color as CSS writes it: hex, or oklch() for one
+// outside the sRGB gamut, whose hex would be its nearest sRGB color and not
+// the wide color a window drawing a wide gamut shows.
 func colorText(c Color) string {
+	if c.wide.ok() {
+		r, g, b := c.wide.rgb()
+		l, ch, h := gamut.Oklch(gamut.Oklab(gamut.Decode(float64(r)), gamut.Decode(float64(g)), gamut.Decode(float64(b))))
+		s := "oklch(" + dec(l, 3) + " " + dec(ch, 3) + " " + dec(h, 1)
+		if c.A != 255 {
+			s += " / " + dec(float64(c.A)/255, 2)
+		}
+		return s + ")"
+	}
 	if c.A == 255 {
 		return fmt.Sprintf("#%02x%02x%02x", c.R, c.G, c.B)
 	}

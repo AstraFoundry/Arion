@@ -50,6 +50,10 @@ func (e *stubEngine) join() bool { return false }
 
 func (e *stubEngine) baseline(y float32) float32 { return float32(math.Round(float64(y))) }
 
+func (e *stubEngine) appFamilies() []FontFamily { return nil }
+
+func (e *stubEngine) systemFamilies() func() []FontFamily { return nil }
+
 func (e *stubEngine) register(data []byte, family string) error {
 	return errors.New("mygo: this system has no text engine to add fonts to")
 }

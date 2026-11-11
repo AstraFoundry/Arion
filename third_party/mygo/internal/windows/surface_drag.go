@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"image"
 	"image/png"
 	"slices"
 	"strings"
@@ -59,6 +60,7 @@ type oleDragSource struct {
 	vtbl     *[5]uintptr
 	refs     int32
 	canceled bool
+	escaped  bool // Escape or CancelDataDrag ended the drag
 }
 type formatEnum struct {
 	vtbl    *[7]uintptr
@@ -214,6 +216,7 @@ func initDataSource() {
 		}),
 		syscall.NewCallback(func(this, escape, keys uintptr) uintptr {
 			if escape != 0 || dragSources[this].canceled {
+				dragSources[this].escaped = true
 				return dragDropCancel
 			}
 			if keys&1 == 0 {
@@ -393,16 +396,18 @@ func (s *surface) StartDataDrag(r platform.DragRequest) {
 	procReleaseCapture.Call()
 	var effect uint32
 	hr, _, _ := procDoDragDrop.Call(data, p, uintptr(r.Operations), uintptr(unsafe.Pointer(&effect)))
-	result := transfer.Result{Operation: transfer.Operation(effect) & (transfer.Copy | transfer.Move)}
+	end := screen{}.CursorPoint()
+	result := transfer.Result{Operation: transfer.Operation(effect) & (transfer.Copy | transfer.Move), Point: image.Point{X: end.X, Y: end.Y}}
 	if hr != dragDropDrop {
 		result.Operation = transfer.None
 		result.Canceled = hr == dragDropCancel || hr == sOK
+		result.Escaped = result.Canceled && source.escaped
 	}
 	if failed(hr) {
 		result.Err = hresultError("DoDragDrop", hr)
 	}
 	if err := dragObjects[data].err; err != nil {
-		result.Operation, result.Canceled, result.Err = transfer.None, false, err
+		result.Operation, result.Canceled, result.Escaped, result.Err = transfer.None, false, false, err
 	}
 	r.Done(result)
 }
@@ -525,8 +530,12 @@ func oleFormat(f uint16) transfer.Format {
 		return transfer.PNG
 	}
 	name := oleRegisteredFormatName(f)
-	if name == "UniformResourceLocatorW" {
+	switch name {
+	case "UniformResourceLocatorW":
 		return transfer.URIList
+	case "Rich Text Format":
+		// RichEdit's, which WordPad and Word copy.
+		return "text/rtf"
 	}
 	return transfer.Format(name)
 }

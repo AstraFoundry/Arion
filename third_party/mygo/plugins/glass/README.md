@@ -12,6 +12,23 @@ ui.Row(c).Padding(8, 16).Radius(22).Material(glass.Glass{}).Children(func() {
 })
 ```
 
+`glass.Group` merges panes of glass that nearly touch into one surface,
+as AppKit's `NSGlassEffectContainerView` does:
+
+```go
+g := glass.NewGroup(c)
+g.Radius = 22
+g.Gap(6).Children(func() {
+	g.Pane(ui.Box(c).Padding(8, 16).Center().Children(func() { ui.Text(c, "Cut") }))
+	g.Pane(ui.Box(c).Padding(8, 16).Center().Children(func() { ui.Text(c, "Copy") }))
+})
+```
+
+On macOS 26 and later, `glass.Glass{Native: true}` draws a toolbar over a
+`ui.WebView` with the system's `NSGlassEffectView`, which samples the page;
+elsewhere it falls back to the shader. With Reduce Transparency, the
+materials draw opaque surfaces.
+
 `glass.ScrollEdge` is macOS's scroll edge effect, which content scrolling
 under a bar fades (soft) or frosts (hard) under, and `glass.Blur` blurs
 what is under an element without the glass, evenly or, with a mask,

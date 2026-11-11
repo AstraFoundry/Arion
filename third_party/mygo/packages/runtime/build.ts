@@ -7,7 +7,7 @@ import { join } from "node:path";
 const dir = import.meta.dir;
 await rm(join(dir, "dist"), { recursive: true, force: true });
 const result = await Bun.build({
-  entrypoints: [join(dir, "src/index.ts")],
+  entrypoints: [join(dir, "src/index.ts"), join(dir, "src/i18n.ts")],
   outdir: join(dir, "dist"),
   format: "esm",
   target: "browser",

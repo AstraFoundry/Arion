@@ -65,6 +65,30 @@ test("takes a Request", async () => {
   expect(res.body).toBeNull();
 });
 
+test("inherits a Request body when init.body is null or omitted", async () => {
+  let got: Req | undefined;
+  go = fakeGo({
+    "plugin:fetch.Fetch": (c) => {
+      got = c.args[0] as Req;
+      c.send(1, head(204));
+    },
+  });
+  for (const body of [undefined, null, "replacement", ""]) {
+    const req = new Request("https://example.com/x", { method: "POST", body: "original" });
+    await fetch(req, { body });
+    expect(got?.body).toBe(b64(body ?? "original"));
+  }
+});
+
+test("an explicit null signal stops inheriting the Request signal", async () => {
+  go = fakeGo({ "plugin:fetch.Fetch": (c) => c.send(1, head(204)) });
+  const signal = AbortSignal.abort(new Error("original request aborted"));
+  const req = new Request("https://example.com/x", { signal });
+  expect(await fetch(req, { signal: undefined }).catch((err) => err)).toBe(signal.reason);
+  expect((await fetch(req, { signal: null })).status).toBe(204);
+  expect(go.calls).toHaveLength(1);
+});
+
 test("rejects when Go fails", async () => {
   go = fakeGo({
     "plugin:fetch.Fetch": () => {
@@ -153,3 +177,48 @@ test("refuses a GET body", async () => {
   go = fakeGo({});
   expect(fetch("https://example.com", { body: "x" })).rejects.toThrow(TypeError);
 });
+
+test("does not send a JSON POST aborted before its body is ready", async () => {
+  go = fakeGo({
+    "plugin:fetch.Fetch": (c) => {
+      c.send(1, head());
+    },
+  });
+  const ctrl = new AbortController();
+  const pending = fetch("https://example.com/items", {
+    method: "POST",
+    body: JSON.stringify({ name: "Ada" }),
+    signal: ctrl.signal,
+  });
+  ctrl.abort();
+  const result = await pending.then(() => "sent", (error: unknown) => error);
+  expect(result).toBe(ctrl.signal.reason);
+  expect(go.calls).toEqual([]);
+});
+
+for (const source of ["init", "Request"] as const) {
+  test(`does not send a request aborted while reading its ${source} body`, async () => {
+    go = fakeGo({
+      "plugin:fetch.Fetch": (c) => {
+        c.send(1, head());
+      },
+    });
+    let finish!: () => void;
+    const body = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode("upload"));
+        finish = () => controller.close();
+      },
+    });
+    const ctrl = new AbortController();
+    const reason = new Error("Upload canceled");
+    const pending = source === "init"
+      ? fetch("https://example.com/upload", { method: "POST", body, signal: ctrl.signal })
+      : fetch(new Request("https://example.com/upload", { method: "POST", body, signal: ctrl.signal }));
+    ctrl.abort(reason);
+    finish();
+    const result = await pending.then(() => "sent", (error: unknown) => error);
+    expect(result).toBe(reason);
+    expect(go.calls).toEqual([]);
+  });
+}

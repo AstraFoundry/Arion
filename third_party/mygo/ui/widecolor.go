@@ -100,6 +100,20 @@ func mixWide(c, o Color, t float32) Color {
 	return fromWide(m(cr, or), m(cg, og), m(cb, ob))
 }
 
+// mixLab returns the opaque color t of the way from c to o, mixed in
+// Oklab, with its wide color if the mix is outside the sRGB gamut.
+func mixLab(c, o Color, t float32) Color {
+	lab := func(c Color) (float64, float64, float64) {
+		r, g, b := c.extended()
+		return gamut.Oklab(gamut.Decode(float64(r)), gamut.Decode(float64(g)), gamut.Decode(float64(b)))
+	}
+	l1, a1, b1 := lab(c)
+	l2, a2, b2 := lab(o)
+	k := float64(t)
+	r, g, b := gamut.LinearSRGB(l1+(l2-l1)*k, a1+(a2-a1)*k, b1+(b2-b1)*k)
+	return fromWide(float32(gamut.Encode(r)), float32(gamut.Encode(g)), float32(gamut.Encode(b)))
+}
+
 // wideSet returns the wide colors of an op with the colors c, c2 and
 // border, those that have one.
 func wideSet(c, c2, border Color) (w scene.WideColors) {

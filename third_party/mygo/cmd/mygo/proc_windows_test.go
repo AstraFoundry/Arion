@@ -11,6 +11,8 @@ import (
 	"testing"
 	"time"
 	"unsafe"
+
+	"github.com/egoist/mygo/internal/wait"
 )
 
 // TestKillSparesWebView2 has kill end a build and the processes it started
@@ -58,7 +60,7 @@ func TestKillSparesWebView2(t *testing.T) {
 	build := uint32(cmd.Process.Pid)
 	var helper, browser, renderer syscall.Handle
 	var browserPID uint32
-	for deadline := time.Now().Add(10 * time.Second); helper == 0 || renderer == 0; time.Sleep(50 * time.Millisecond) {
+	for deadline := time.Now().Add(wait.Guard); helper == 0 || renderer == 0; time.Sleep(50 * time.Millisecond) {
 		if time.Now().After(deadline) {
 			kill(cmd)
 			_ = cmd.Wait()

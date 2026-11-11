@@ -1,5 +1,5 @@
 // Runs MyGo's benchmarks and keeps their history, which the website's
-// /benchmarks page shows. .github/workflows/bench.yml runs them on every
+// /measures page shows. .github/workflows/bench.yml runs them on every
 // push to main, on macOS, Linux and Windows:
 //
 //   bun scripts/bench.ts run [--e2e] [--count 6] [--benchtime 500ms] [--out file] [packages...]
@@ -19,7 +19,7 @@
 import { existsSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 
 const module = "github.com/egoist/mygo";
 
@@ -119,17 +119,35 @@ async function run(args: string[]): Promise<void> {
   if (test.code !== 0 || measured.failed) process.exit(1);
 }
 
-/** Returns the directories of the packages that have benchmarks. */
+/**
+ * Returns the directories of the packages that have benchmarks on this
+ * platform: those of internal/gpu/metal, say, only build on macOS.
+ */
 async function benchmarkPackages(e2e: boolean): Promise<string[]> {
   const dirs = new Set<string>();
   // Untracked files too, as the benchmarks being written.
   for (const file of output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "*_test.go"]).split("\n")) {
     if (!file) continue;
     const dir = file.includes("/") ? file.slice(0, file.lastIndexOf("/")) : ".";
-    if (dirs.has(dir) || (!e2e && dir === "internal/e2e")) continue;
-    if (/^func Benchmark/m.test(await readFile(file, "utf8"))) dirs.add(dir);
+    if (!e2e && dir === "internal/e2e") continue;
+    dirs.add(dir);
   }
-  return [...dirs].sort().map((dir) => (dir === "." ? "." : "./" + dir));
+  const pkgs = [...dirs].sort().map((dir) => (dir === "." ? "." : "./" + dir));
+  // The test files that build here, by package; go list rather than ./...,
+  // which skips testdata directories.
+  const listed = output(["go", "list", "-e", "-f", '{{.Dir}}|{{join .TestGoFiles ","}},{{join .XTestGoFiles ","}}', ...pkgs]);
+  const benchmarked: string[] = [];
+  for (const line of listed.split("\n")) {
+    const [dir, files] = line.split("|");
+    for (const file of files!.split(",")) {
+      if (file && /^func Benchmark/m.test(await readFile(join(dir!, file), "utf8"))) {
+        const rel = relative(process.cwd(), dir!);
+        benchmarked.push(rel ? "./" + rel : ".");
+        break;
+      }
+    }
+  }
+  return benchmarked.sort();
 }
 
 /** Runs go test, showing its output as it comes. */
@@ -353,7 +371,7 @@ const readme = `# MyGo's benchmarks
 
 The results of MyGo's benchmarks, which .github/workflows/bench.yml of the
 main branch measures on every push, written by scripts/bench.ts and shown at
-https://mygo.egoist.dev/benchmarks.
+https://mygo.egoist.dev/measures.
 
 - history/<yyyy-mm-dd>.json: every commit measured that day (UTC), with each OS's runner and results.
 - latest.json: the last ${latestCommits} commits, by series, which the website fetches.

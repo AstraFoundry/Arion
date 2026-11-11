@@ -1,0 +1,24 @@
+package main
+
+// The glow of the brightest light: the scene (image0) sampled around each
+// pixel of a canvas a quarter its size, where it is brighter than a
+// threshold, weighted toward the middle.
+
+func Fragment(dst vec4, pos vec2) vec4 {
+	src := image0Size()
+	at := pos / rectSize() * src
+	radius := src.y * 0.018
+	sum := vec3(0)
+	weight := 0.0
+	for i := 0; i < 32; i++ {
+		f := float(i)
+		r := sqrt((f + 0.5) / 32)
+		a := f * 2.39996
+		w := exp(-r * r * 2.5)
+		c := image0Sample(at + radius*r*vec2(cos(a), sin(a))).rgb
+		bright := max(c-0.5, 0) / 0.5
+		sum += bright * bright * w
+		weight += w
+	}
+	return vec4(sum/weight, 1)
+}

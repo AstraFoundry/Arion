@@ -12,9 +12,8 @@ import (
 // level, and eases to that level when let go; the arrow keys step.
 func TestSlider(t *testing.T) {
 	s := newSlider()
-	now := time.Unix(1000, 0)
-	s.clock = func() time.Time { return now }
 	tt := ui.NewTester(s.view, windowW, windowH)
+	now := tt.Now()
 	ox, oy := float32(126), float32(cardY)
 	at := func(pos float32) (float32, float32) { return ox + stopX + stopGap*pos, oy + brainY }
 
@@ -49,23 +48,19 @@ func TestSlider(t *testing.T) {
 // End goes Galaxy, whose effects come in and go when the slider leaves it.
 func TestGalaxy(t *testing.T) {
 	s := newSlider()
-	now := time.Unix(1000, 0)
-	s.clock = func() time.Time { return now }
 	tt := ui.NewTester(s.view, windowW, windowH)
 	tt.ClickAt(126+stopX, cardY+brainY)
 	tt.Key(0, ui.KeyEnd)
-	if s.level != galaxy || s.galaxyLevel(now) != 0 {
-		t.Fatalf("End went to level %d, Galaxy %.2f in", s.level, s.galaxyLevel(now))
+	if g := s.galaxyLevel(tt.Now()); s.level != galaxy || g != 0 {
+		t.Fatalf("End went to level %d, Galaxy %.2f in", s.level, g)
 	}
-	now = now.Add(time.Second)
-	tt.Frame()
-	if g := s.galaxyLevel(now); g != 1 {
+	tt.Advance(time.Second)
+	if g := s.galaxyLevel(tt.Now()); g != 1 {
 		t.Errorf("a second into Galaxy, it is %.2f in", g)
 	}
 	tt.Key(0, ui.KeyLeft)
-	now = now.Add(galaxyOut)
-	tt.Frame()
-	if g := s.galaxyLevel(now); s.level != 4 || g != 0 {
+	tt.Advance(galaxyOut)
+	if g := s.galaxyLevel(tt.Now()); s.level != 4 || g != 0 {
 		t.Errorf("after leaving Galaxy, level %d and Galaxy %.2f in", s.level, g)
 	}
 }

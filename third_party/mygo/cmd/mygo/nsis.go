@@ -1,9 +1,7 @@
 package main
 
 import (
-	"archive/zip"
-	"crypto/sha256"
-	"encoding/hex"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,6 +14,9 @@ import (
 	"runtime"
 	"strings"
 	"time"
+
+	fetch "github.com/egoist/mygo/internal/download"
+	"github.com/egoist/mygo/internal/nsis"
 )
 
 // The Windows installer is built with NSIS: a per-user install in
@@ -24,25 +25,6 @@ import (
 // uninstaller that Settings > Apps lists. Windows rarely has NSIS
 // installed, so there mygo build downloads it when it needs it, as Tauri
 // and electron-builder do; elsewhere makensis must be installed.
-
-// nsisRelease is the NSIS that mygo build downloads: the official zip,
-// checked against its SHA-256 and unpacked into the user's cache
-// directory, where makensis runs as it does from an installation. The
-// urls are copies of that zip, tried in order: the asset of the
-// nsis-<version> release of MyGo's repository first, since SourceForge,
-// where NSIS publishes it, has been down for hours at a time, its mirrors
-// redirecting to it.
-var nsisRelease = struct {
-	version, sha256 string
-	urls            []string
-}{
-	version: "3.13",
-	sha256:  "ba63dffc4410ee89193e1cb5a41989991bd77c61068da17e3156d136b7b0b3d8",
-	urls: []string{
-		"https://github.com/egoist/mygo/releases/download/nsis-3.13/nsis-3.13.zip",
-		"https://downloads.sourceforge.net/project/nsis/NSIS%203/3.13/nsis-3.13.zip",
-	},
-}
 
 // makensis finds the NSIS compiler: an installed one or, on Windows, the
 // one an earlier build downloaded.
@@ -56,8 +38,8 @@ func makensis() string {
 				return p
 			}
 		}
-		if dir := nsisDir(); dir != "" {
-			return nsisExecutable(dir)
+		if dir := nsis.Dir(); dir != "" {
+			return nsis.Executable(dir)
 		}
 	}
 	return ""
@@ -69,202 +51,65 @@ func nsisCompiler() (string, error) {
 	if p := makensis(); p != "" || runtime.GOOS != "windows" {
 		return p, nil
 	}
-	dir := nsisDir()
+	dir := nsis.Dir()
 	if dir == "" {
-		return "", errors.New("no cache directory to download NSIS into: install NSIS (makensis)")
+		return "", errors.New("no cache directory to download NSIS into: install NSIS (makensis), or build with -skip-installer")
 	}
 	return downloadNSIS(dir)
 }
 
-// nsisDir is where mygo build keeps the NSIS it downloads.
-func nsisDir() string {
-	cache, err := os.UserCacheDir()
-	if err != nil {
-		return ""
-	}
-	return filepath.Join(cache, "mygo", "nsis-"+nsisRelease.version)
-}
-
-// nsisExecutable returns makensis in the NSIS directory dir, or "".
-func nsisExecutable(dir string) string {
-	for _, p := range []string{filepath.Join(dir, "Bin", "makensis.exe"), filepath.Join(dir, "makensis.exe")} {
-		if fileExists(p) {
-			return p
-		}
-	}
-	return ""
-}
-
-// downloadNSIS downloads nsisRelease into dir, unless it is there already,
-// and returns its makensis. The archive is unpacked next to dir and renamed
-// into place, so dir is complete whenever it exists.
+// downloadNSIS downloads nsis.Release into dir, unless it is there
+// already, and returns its makensis.
 func downloadNSIS(dir string) (string, error) {
-	if p := nsisExecutable(dir); p != "" {
+	if p := nsis.Executable(dir); p != "" {
 		return p, nil
 	}
-	parent := filepath.Dir(dir)
-	if err := os.MkdirAll(parent, 0o755); err != nil {
-		return "", err
+	v := nsis.Release.Version
+	t := con.start("Downloading NSIS " + v + " for the Windows installer")
+	p, err := nsis.Download(context.Background(), dir, func(url string) fetch.File { return downloadFile(t, url, "") })
+	if t.end(err, "Downloaded NSIS "+v) != nil {
+		return "", fmt.Errorf("downloading NSIS %s (install it, https://nsis.sourceforge.io, or build with -skip-installer):\n%w", v, err)
 	}
-	work, err := os.MkdirTemp(parent, ".nsis-")
-	if err != nil {
-		return "", err
-	}
-	defer os.RemoveAll(work)
-	t := con.start("Downloading NSIS " + nsisRelease.version + " for the Windows installer")
-	archive := filepath.Join(work, "nsis.zip")
-	err = downloadAny(t, nsisRelease.urls, nsisRelease.sha256, archive)
-	if t.end(err, "Downloaded NSIS "+nsisRelease.version) != nil {
-		return "", fmt.Errorf("downloading NSIS %s (or install it: https://nsis.sourceforge.io):\n%w", nsisRelease.version, err)
-	}
-	unpacked := filepath.Join(work, "nsis")
-	if err := unzipTop(archive, unpacked); err != nil {
-		return "", fmt.Errorf("unpacking NSIS: %w", err)
-	}
-	if nsisExecutable(unpacked) == "" {
-		return "", errors.New("unpacking NSIS: the archive holds no makensis.exe")
-	}
-	if err := os.Rename(unpacked, dir); err != nil {
-		// Another build may have downloaded it meanwhile; anything else
-		// there is broken.
-		if p := nsisExecutable(dir); p != "" {
-			return p, nil
-		}
-		if err := os.RemoveAll(dir); err != nil {
-			return "", err
-		}
-		if err := os.Rename(unpacked, dir); err != nil {
-			return "", err
-		}
-	}
-	return nsisExecutable(dir), nil
+	return p, nil
 }
 
-// downloadAny fetches the first of urls, copies of one file, that answers
-// with a file whose SHA-256 is sum into the file path.
-func downloadAny(t *task, urls []string, sum, path string) error {
-	var errs []error
-	for _, url := range urls {
-		err := download(t, url, sum, path)
-		if err == nil {
-			return nil
-		}
-		errs = append(errs, err)
-	}
-	return errors.Join(errs...)
-}
-
-// downloadHeaderTimeout is how long download waits for a host to answer,
-// so that one that takes connections and never answers gives way to the
-// next copy.
+// downloadHeaderTimeout is how long the CLI's downloads wait for a host to
+// answer, so that one that takes connections and never answers gives way
+// to the next copy.
 var downloadHeaderTimeout = 30 * time.Second
 
-// download fetches url into the file path, showing its progress on t, and
-// checks that its SHA-256 is sum.
-func download(t *task, url, sum, path string) error {
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("User-Agent", "mygo/"+version)
+// downloadFile is a download by the CLI of url, whose SHA-256 is sum: its
+// progress shows on t, and a host that does not answer within
+// downloadHeaderTimeout fails it.
+func downloadFile(t *task, url, sum string) fetch.File {
 	transport := http.DefaultTransport.(*http.Transport).Clone()
 	transport.ResponseHeaderTimeout = downloadHeaderTimeout
-	defer transport.CloseIdleConnections()
-	resp, err := (&http.Client{Transport: transport, Timeout: 10 * time.Minute}).Do(req)
-	if err != nil {
-		return err
+	return fetch.File{
+		URL:    url,
+		SHA256: sum,
+		Client: &http.Client{Transport: transport, Timeout: 10 * time.Minute},
+		Header: http.Header{"User-Agent": {"mygo/" + version}},
+		Progress: func(total int64) io.Writer {
+			return &downloadProgress{t: t, total: total}
+		},
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("GET %s: %s", url, resp.Status)
-	}
-	f, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	h := sha256.New()
-	progress := &downloadProgress{t: t, total: resp.ContentLength}
-	_, err = io.Copy(io.MultiWriter(f, h, progress), io.LimitReader(resp.Body, 64<<20))
-	if cerr := f.Close(); err == nil {
-		err = cerr
-	}
-	if err != nil {
-		return err
-	}
-	if got := hex.EncodeToString(h.Sum(nil)); got != sum {
-		return fmt.Errorf("%s has the SHA-256 %s, not %s", url, got, sum)
-	}
-	return nil
 }
 
-// unzipTop unpacks the zip archive at path, whose entries are all in one
-// top directory, into dir without that directory.
-func unzipTop(path, dir string) error {
-	r, err := zip.OpenReader(path)
-	if err != nil {
-		return err
-	}
-	defer r.Close()
-	top := ""
-	for _, f := range r.File {
-		first, rest, ok := strings.Cut(f.Name, "/")
-		if top == "" {
-			top = first
-		}
-		if !ok || first != top {
-			return fmt.Errorf("%q is not in the top directory %q", f.Name, top)
-		}
-		if rest == "" {
-			continue // the top directory
-		}
-		name := strings.TrimSuffix(rest, "/")
-		if !fs.ValidPath(name) || !filepath.IsLocal(filepath.FromSlash(name)) || strings.Contains(name, `\`) {
-			return fmt.Errorf("invalid path %q", f.Name)
-		}
-		target := filepath.Join(dir, filepath.FromSlash(name))
-		switch mode := f.Mode(); {
-		case mode.IsDir():
-			if err := os.MkdirAll(target, 0o755); err != nil {
-				return err
-			}
-		case mode.IsRegular():
-			if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
-				return err
-			}
-			if err := unzipFile(f, target); err != nil {
-				return err
-			}
-		default:
-			return fmt.Errorf("%q is neither a file nor a directory", f.Name)
-		}
-	}
-	return nil
-}
-
-func unzipFile(f *zip.File, target string) error {
-	src, err := f.Open()
-	if err != nil {
-		return err
-	}
-	defer src.Close()
-	dst, err := os.Create(target)
-	if err != nil {
-		return err
-	}
-	// The zip reader checks the CRC-32 of the file once it is read.
-	_, err = io.Copy(dst, src)
-	if cerr := dst.Close(); err == nil {
-		err = cerr
-	}
-	return err
-}
-
-// installerFileName is "<Name> Setup <version> <arch>.exe", as "My App
-// Setup 1.2.0 amd64.exe": each architecture's installer is named apart, so
-// that the builds of two, uploaded to one release or bucket, keep both.
+// installerFileName is "<slug>-setup-<version>-<arch>.exe", as
+// "my-app-setup-1.2.0-amd64.exe": each architecture's installer is named
+// apart, so that the builds of two, uploaded to one release or bucket,
+// keep both. install.ps1 finds it by installerPrefix.
 func installerFileName(c *Config, goarch string) string {
-	return fsName(c.Name) + " Setup " + fsName(c.Version) + " " + goarch + ".exe"
+	return installerPrefix(c) + fsName(c.Version) + "-" + goarch + ".exe"
 }
+
+// installerPrefix is what the names of the app's installers start with,
+// before their version.
+func installerPrefix(c *Config) string { return c.slug() + installerMark }
+
+// installerMark follows the slug in the names of installers, which
+// uploads publishes.
+const installerMark = "-setup-"
 
 // writeInstaller builds installerFileName in stage from the app files
 // installed, built for goarch, the executable exe among them, and returns
@@ -275,7 +120,7 @@ func writeInstaller(c *Config, stage, work, exe, goarch string, installed []stri
 		return "", err
 	}
 	if tool == "" {
-		warnf("Skipping the Windows installer: install NSIS (makensis)")
+		warnf("Skipping the Windows installer: install NSIS (makensis), or build with -skip-installer")
 		return "", nil
 	}
 	out := filepath.Join(stage, installerFileName(c, goarch))
@@ -308,8 +153,34 @@ func writeInstaller(c *Config, stage, work, exe, goarch string, installed []stri
 	if err != nil {
 		return "", err
 	}
+	script, err := installerScript(c, stage, out, exe, files.String(), icon, signing, installed)
+	if err != nil {
+		return "", err
+	}
+	nsi := filepath.Join(work, "installer.nsi")
+	if err := writeNSIS(nsi, script); err != nil {
+		return "", err
+	}
+	t := con.start("Creating " + filepath.Base(out))
+	if signing != "" {
+		t.set("signing Uninstall.exe")
+	}
+	cmd := exec.Command(tool, "-V2", nsi)
+	cmd.Env = append(os.Environ(), env...)
+	if out, err := cmd.CombinedOutput(); err != nil {
+		t.fail()
+		return "", fmt.Errorf("makensis: %v\n%s", err, out)
+	}
+	t.done("Created " + filepath.Base(out))
+	return out, nil
+}
+
+// installerScript returns the NSIS script of the installer out, which
+// installs the files that the File commands files list, the executable exe
+// among them, with the icon and signing commands of writeInstaller.
+func installerScript(c *Config, stage, out, exe, files, icon, signing string, installed []string) (string, error) {
 	uninstallKey := `Software\Microsoft\Windows\CurrentVersion\Uninstall\` + c.Identifier
-	shortcut := nsisEscape(fsName(c.Name)) + ".lnk"
+	shortcut := nsisEscape(c.shortcutName()) + ".lnk"
 	register, unregister := nsisAssociations(c, exe)
 	notificationInstall, notificationUninstall := nsisNotifications(c, exe)
 	shortcutInstall := `  CreateShortCut "$SMPROGRAMS\` + shortcut + `" "$INSTDIR\` + nsisEscape(exe) + `"` + "\n"
@@ -321,17 +192,38 @@ func writeInstaller(c *Config, stage, work, exe, goarch string, installed []stri
 	if err != nil {
 		return "", err
 	}
-	script := `Unicode true
+	langs, err := c.languages()
+	if err != nil {
+		return "", err
+	}
+	languages, err := nsisLanguageMacros(langs)
+	if err != nil {
+		return "", err
+	}
+	include, install, uninstall, err := nsisHooks(c)
+	if err != nil {
+		return "", err
+	}
+	// .onInit takes the installer's mutex, then runs the app's customInit.
+	initHook := ""
+	if include != "" {
+		initHook = "  !ifmacrodef customInit\n    !insertmacro customInit\n  !endif\n"
+	}
+	return `Unicode true
 ManifestDPIAware true
 SetCompressor /SOLID lzma
-Name ` + nsisString(c.Name) + `
+` + nsisName(c.windowsName()) + `
 OutFile ` + nsisString(out) + `
-` + signing + `InstallDir "$LOCALAPPDATA\Programs\` + nsisEscape(fsName(c.Name)) + `"
+` + signing + `InstallDir "$LOCALAPPDATA\Programs\` + nsisEscape(c.installDirName()) + `"
+; An installed app is updated in its folder, the one the user chose or the
+; one of a version with another windows.installDirName, as install.ps1 and
+; the app's own updates do.
+InstallDirRegKey HKCU ` + nsisString(uninstallKey) + ` "InstallLocation"
 RequestExecutionLevel user
 BrandingText " "
 ` + icon + `!define MUI_FINISHPAGE_RUN "$INSTDIR\` + nsisEscape(exe) + `"
 !define MUI_FINISHPAGE_SHOWREADME
-!define MUI_FINISHPAGE_SHOWREADME_TEXT "Create a desktop shortcut"
+!define MUI_FINISHPAGE_SHOWREADME_TEXT "$(MYGO_DESKTOP_SHORTCUT)"
 !define MUI_FINISHPAGE_SHOWREADME_FUNCTION CreateDesktopShortcut
 !include "MUI2.nsh"
 !insertmacro MUI_PAGE_DIRECTORY
@@ -339,7 +231,8 @@ BrandingText " "
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
-!insertmacro MUI_LANGUAGE "English"
+` + languages + include + `
+` + nsisCloseApp(c) + `
 Var PayloadStage
 Var PayloadMoved
 Var PayloadExecutable
@@ -352,26 +245,19 @@ Function .onInit
   StrCpy $PayloadMutex $0
   StrCmp $PayloadMutex 0 installer_busy
   IntCmp $1 183 installer_busy
-  Return
+` + initHook + `  Return
 installer_busy:
   MessageBox MB_OK|MB_ICONEXCLAMATION "Another installer is running." /SD IDOK
   SetErrorLevel 1
   Abort
 FunctionEnd
-
 Section
-` + prepare + files.String() + `  IfErrors payload_extract_failed
+  Push "$INSTDIR"
+  Call CloseApp
+` + prepare + files + `  IfErrors payload_extract_failed
   WriteUninstaller "$PayloadStage\payload\Uninstall.exe"
   IfErrors payload_extract_failed
-` + commit + shortcutInstall + notificationInstall + `  WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "DisplayName" ` + nsisString(c.Name) + `
-  WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "DisplayVersion" ` + nsisString(c.Version) + `
-  WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "DisplayIcon" "$INSTDIR\` + nsisEscape(exe) + `"
-  WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "InstallLocation" "$INSTDIR"
-  WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "UninstallString" '"$INSTDIR\Uninstall.exe"'
-  WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "QuietUninstallString" '"$INSTDIR\Uninstall.exe" /S'
-  WriteRegDWORD HKCU ` + nsisString(uninstallKey) + ` "NoModify" 1
-  WriteRegDWORD HKCU ` + nsisString(uninstallKey) + ` "NoRepair" 1
-` + register + `SectionEnd
+` + commit + nsisRenamedShortcuts(c) + shortcutInstall + notificationInstall + nsisUninstallEntry(c, uninstallKey, exe) + register + install + `SectionEnd
 
 ; The finish page offers it, so silent installs (/S) make none.
 Function CreateDesktopShortcut
@@ -401,31 +287,200 @@ Function un.DeleteShortcut
 FunctionEnd
 
 Section "Uninstall"
+  Push "$INSTDIR"
+  Call un.CloseApp
 ` + notificationUninstall + `  Push "$SMPROGRAMS\` + shortcut + `"
   Call un.DeleteShortcut
   Push "$DESKTOP\` + shortcut + `"
   Call un.DeleteShortcut
   DeleteRegKey HKCU ` + nsisString(uninstallKey) + `
-` + unregister + removePayload + `  Delete "$INSTDIR\Uninstall.exe"
+` + unregister + uninstall + removePayload + `  Delete "$INSTDIR\Uninstall.exe"
   RMDir "$INSTDIR"
 SectionEnd
+`, nil
+}
+
+// nsisHooks returns the commands that let windows.installerInclude, a
+// script of the app's own, add to the installer, as electron-builder's
+// include does: include includes it, after MUI2.nsh and the languages, so
+// that its macros can use them, and runs its customInit macro in
+// .onInit; install runs its customInstall macro at the end of the install,
+// once the files are in $INSTDIR, and uninstall its customUnInstall macro
+// before the uninstaller removes $INSTDIR. Each macro runs only when the
+// script defines it, and silent installs (/S) run them too. They are all
+// "" without windows.installerInclude, which leaves the script as it was.
+func nsisHooks(c *Config) (include, install, uninstall string, err error) {
+	if c.Windows.InstallerInclude == "" {
+		return "", "", "", nil
+	}
+	path := c.path(c.Windows.InstallerInclude)
+	if info, err := os.Stat(path); err != nil || info.IsDir() {
+		return "", "", "", fmt.Errorf("windows.installerInclude: %s is not a file (the path is relative to the project's directory)", path)
+	}
+	// The installer's .onInit runs customInit after taking its mutex.
+	include = `!include ` + nsisString(path) + `
 `
-	nsi := filepath.Join(work, "installer.nsi")
-	if err := os.WriteFile(nsi, []byte(script), 0o644); err != nil {
-		return "", err
+	install = `  !ifmacrodef customInstall
+    !insertmacro customInstall
+  !endif
+`
+	uninstall = `  !ifmacrodef customUnInstall
+    !insertmacro customUnInstall
+  !endif
+`
+	return include, install, uninstall, nil
+}
+
+// nsisName returns the Name command of the installer, which titles its
+// pages: name, and the same with doubled ampersands where it has any, which
+// the texts of buttons and labels need lest "&" underline the next letter.
+func nsisName(name string) string {
+	if !strings.Contains(name, "&") {
+		return "Name " + nsisString(name)
 	}
-	t := con.start("Creating " + filepath.Base(out))
-	if signing != "" {
-		t.set("signing Uninstall.exe")
+	return "Name " + nsisString(name) + " " + nsisString(strings.ReplaceAll(name, "&", "&&"))
+}
+
+// nsisRenamedShortcuts returns the installer commands that remove the
+// shortcuts an earlier version made under the name when windows.displayName
+// names them otherwise: the Start menu's goes, and a desktop one is made
+// again under the new name, as the user chose to have one.
+func nsisRenamedShortcuts(c *Config) string {
+	old := c.executableName()
+	if strings.EqualFold(old, c.shortcutName()) {
+		return ""
 	}
-	cmd := exec.Command(tool, "-V2", nsi)
-	cmd.Env = append(os.Environ(), env...)
-	if out, err := cmd.CombinedOutput(); err != nil {
-		t.fail()
-		return "", fmt.Errorf("makensis: %v\n%s", err, out)
+	old = nsisEscape(old) + ".lnk"
+	return `  Delete "$SMPROGRAMS\` + old + `"
+  IfFileExists "$DESKTOP\` + old + `" 0 +3
+  Delete "$DESKTOP\` + old + `"
+  Call CreateDesktopShortcut
+`
+}
+
+// nsisUninstallEntry returns the installer commands that write the entry
+// of the app in Settings > Apps, under uninstallKey.
+func nsisUninstallEntry(c *Config, uninstallKey, exe string) string {
+	var b strings.Builder
+	str := func(name, value string) {
+		fmt.Fprintf(&b, "  WriteRegStr HKCU %s %s %s\n", nsisString(uninstallKey), nsisString(name), value)
 	}
-	t.done("Created " + filepath.Base(out))
-	return out, nil
+	str("DisplayName", nsisString(c.windowsName()))
+	str("DisplayVersion", nsisString(c.Version))
+	str("DisplayIcon", `"$INSTDIR\`+nsisEscape(exe)+`"`)
+	if p := c.publisher(); p != "" {
+		str("Publisher", nsisString(p))
+	}
+	str("InstallLocation", `"$INSTDIR"`)
+	str("UninstallString", `'"$INSTDIR\Uninstall.exe"'`)
+	str("QuietUninstallString", `'"$INSTDIR\Uninstall.exe" /S'`)
+	fmt.Fprintf(&b, "  WriteRegDWORD HKCU %s \"NoModify\" 1\n", nsisString(uninstallKey))
+	fmt.Fprintf(&b, "  WriteRegDWORD HKCU %s \"NoRepair\" 1\n", nsisString(uninstallKey))
+	return b.String()
+}
+
+// closeAppPS1 is the PowerShell that quits the processes of the app,
+// those whose executables are in the folder $env:MYGO_APP_DIR: it asks
+// their windows to close and, after 10 s, stops those still running, as an
+// app in the tray or menu bar keeps running without windows. With
+// $env:MYGO_APP_CHECK=1, it only tells whether any runs: exit code 2 when
+// one does. Exit code 1 is for processes that did not stop. It finds the
+// processes with CIM, which sees the paths of 64-bit processes from a
+// 32-bit PowerShell too.
+const closeAppPS1 = `$ErrorActionPreference = 'SilentlyContinue'
+$dir = $env:MYGO_APP_DIR.TrimEnd('\') + '\'
+# Not the installer, which starts this.
+$installer = (Get-CimInstance Win32_Process -Filter "ProcessId=$PID").ParentProcessId
+function Get-AppProcess {
+	@(Get-CimInstance Win32_Process | Where-Object {
+		$_.ExecutablePath -and $_.ProcessId -ne $PID -and $_.ProcessId -ne $installer -and $_.ExecutablePath.StartsWith($dir, [StringComparison]::OrdinalIgnoreCase)
+	} | ForEach-Object { Get-Process -Id $_.ProcessId })
+}
+$running = Get-AppProcess
+if ($running.Count -eq 0) { exit 0 }
+if ($env:MYGO_APP_CHECK -eq '1') { exit 2 }
+foreach ($p in $running) { [void]$p.CloseMainWindow() }
+$deadline = (Get-Date).AddSeconds(10)
+foreach ($p in $running) {
+	$left = [int]($deadline - (Get-Date)).TotalMilliseconds
+	if ($left -lt 0) { $left = 0 }
+	[void]$p.WaitForExit($left)
+}
+$running = @(Get-AppProcess)
+if ($running.Count -eq 0) { exit 0 }
+$running | Stop-Process -Force
+$deadline = (Get-Date).AddSeconds(10)
+foreach ($p in $running) {
+	$left = [int]($deadline - (Get-Date)).TotalMilliseconds
+	if ($left -lt 0) { $left = 0 }
+	[void]$p.WaitForExit($left)
+}
+if (@(Get-AppProcess).Count -gt 0) { exit 1 }
+exit 0
+`
+
+// nsisCloseApp returns the installer and uninstaller functions CloseApp,
+// which quit the app running from the folder on the stack before its
+// files are replaced or deleted (closeAppPS1). A silent install or
+// uninstall (/S), as an update runs, quits it without asking; the others
+// ask first and stop when the user cancels. Windows without PowerShell go
+// on as before.
+func nsisCloseApp(c *Config) string {
+	// NSIS strings hold 1024 characters, too few for the script on the
+	// command line: the installer writes it to a file, line by line, which
+	// PowerShell reads, named by the environment, as quotes would not do
+	// for every path. Execution policies do not apply to a command.
+	var write strings.Builder
+	for _, line := range strings.SplitAfter(closeAppPS1, "\n") {
+		if line != "" {
+			write.WriteString("  FileWrite $2 " + nsisString(strings.TrimSuffix(line, "\n")+"\r\n") + "\n")
+		}
+	}
+	command := `'"$1" -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create([IO.File]::ReadAllText($$env:MYGO_APP_SCRIPT)))"'`
+	running := nsisString(c.windowsName() + " is running. Close it to continue?")
+	stuck := nsisString(c.windowsName() + " is still running. Quit it, then try again.")
+	var out strings.Builder
+	for _, prefix := range []string{"", "un."} {
+		out.WriteString(`; Quits the app running from the folder on the stack.
+Function ` + prefix + `CloseApp
+  Exch $0
+  Push $1
+  Push $2
+  ; The PowerShell of the system's own architecture, not the 32-bit one
+  ; that a 32-bit installer would otherwise start.
+  StrCpy $1 "$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe"
+  IfFileExists $1 +2
+  StrCpy $1 "$SYSDIR\WindowsPowerShell\v1.0\powershell.exe"
+  IfFileExists $1 0 done
+  InitPluginsDir
+  FileOpen $2 "$PLUGINSDIR\close-app.ps1" w
+` + write.String() + `  FileClose $2
+  System::Call 'Kernel32::SetEnvironmentVariable(t "MYGO_APP_SCRIPT", t "$PLUGINSDIR\close-app.ps1")'
+  System::Call 'Kernel32::SetEnvironmentVariable(t "MYGO_APP_DIR", t r0)'
+  IfSilent close
+  System::Call 'Kernel32::SetEnvironmentVariable(t "MYGO_APP_CHECK", t "1")'
+  nsExec::Exec ` + command + `
+  Pop $2
+  System::Call 'Kernel32::SetEnvironmentVariable(t "MYGO_APP_CHECK", t "")'
+  StrCmp $2 "2" 0 done
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION ` + running + ` IDOK close
+  Abort
+  close:
+  nsExec::Exec ` + command + `
+  Pop $2
+  StrCmp $2 "1" 0 done
+  MessageBox MB_OK|MB_ICONSTOP ` + stuck + ` /SD IDOK
+  SetErrorLevel 2
+  Quit
+  done:
+  Pop $2
+  Pop $1
+  Pop $0
+FunctionEnd
+
+`)
+	}
+	return out.String()
 }
 
 // Stage the entire payload before touching installed files. Each successful
@@ -628,7 +683,7 @@ func nsisAssociations(c *Config, exe string) (register, unregister string) {
 	}
 	for _, scheme := range c.URLSchemes {
 		key := `Software\Classes\` + scheme
-		fmt.Fprintf(&r, "  WriteRegStr HKCU %s \"\" %s\n", nsisString(key), nsisString("URL:"+c.Name))
+		fmt.Fprintf(&r, "  WriteRegStr HKCU %s \"\" %s\n", nsisString(key), nsisString("URL:"+c.windowsName()))
 		fmt.Fprintf(&r, "  WriteRegStr HKCU %s \"URL Protocol\" \"\"\n", nsisString(key))
 		fmt.Fprintf(&r, "  WriteRegStr HKCU %s \"\" %s\n", nsisString(key+`\shell\open\command`), open)
 		fmt.Fprintf(&u, "  DeleteRegKey HKCU %s\n", nsisString(key))
@@ -640,6 +695,16 @@ func nsisAssociations(c *Config, exe string) (register, unregister string) {
 		u.WriteString(notify)
 	}
 	return r.String(), u.String()
+}
+
+// writeNSIS writes the installer's script to path as UTF-8 with a byte order
+// mark. The script starts with `Unicode true`, and NSIS reads a script
+// without a BOM as ANSI, in the machine's code page, so a name or a path with
+// a non-ASCII character, such as 望言字幕导出 or a folder named 中文, would
+// not match the files it installs: makensis reports "no files found".
+func writeNSIS(path, script string) error {
+	b := append([]byte{0xEF, 0xBB, 0xBF}, script...)
+	return os.WriteFile(path, b, 0o644)
 }
 
 // nsisEscape escapes text for an NSIS string in double quotes.

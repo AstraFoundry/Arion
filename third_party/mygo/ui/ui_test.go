@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strings"
 	"testing"
 
@@ -440,6 +441,8 @@ func TestRecycledStateIsFresh(t *testing.T) {
 	if !gone[a] {
 		t.Fatal("a's state is not free")
 	}
+	// Away from where b shows, which would hover, building it again.
+	tt.Move(150, 150)
 	key = "b"
 	tt.Frame()
 	if !gone[st] {
@@ -549,5 +552,48 @@ func TestHoverWhilePressed(t *testing.T) {
 	tt.Frame()
 	if removes != 1 {
 		t.Errorf("%d clicks of the button, released away from it", removes)
+	}
+}
+
+// TestHoverFollowsLayout checks that what the frame moves under a pointer
+// standing still hovers, with no event from the pointer: a row removed,
+// the one taking its place hovers (#585).
+func TestHoverFollowsLayout(t *testing.T) {
+	items := []int{1, 2, 3}
+	hovered := map[int]bool{}
+	tt := coreNewTester(func(c *context) {
+		remove := -1
+		clear(hovered)
+		coreColumn(c).Children(func() {
+			for i, id := range items {
+				row := coreRow(c).Key(id).Size(200, 40)
+				hovered[id] = row.Hovered()
+				row.Children(func() {
+					coreText(c, fmt.Sprint("Item ", id)).Grow(1)
+					if hovered[id] && coreButton(c, fmt.Sprint("Delete ", id)).Cursor(CursorPointer).Clicked() {
+						remove = i
+					}
+				})
+			}
+		})
+		if remove >= 0 {
+			items = slices.Delete(items, remove, remove+1)
+			c.Invalidate()
+		}
+	}, 300, 200)
+	tt.Move(150, 20)
+	r, ok := tt.Find("Delete 1")
+	if !ok {
+		t.Fatalf("no button on the hovered row; texts %q", tt.Texts())
+	}
+	tt.ClickAt(r.X+r.W/2, r.Y+r.H/2)
+	if len(items) != 2 || items[0] != 2 {
+		t.Fatalf("items %v after the click", items)
+	}
+	if !hovered[2] || !tt.HasText("Delete 2") {
+		t.Error("the row moved under the pointer does not hover")
+	}
+	if tt.Cursor() != CursorPointer {
+		t.Errorf("cursor %v over the button moved under the pointer", tt.Cursor())
 	}
 }

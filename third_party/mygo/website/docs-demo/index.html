@@ -38,7 +38,8 @@
         <line y1="-5.5" y2="-10" opacity="0.2" transform="rotate(-330)" />
       </g>
     </svg>
-    <!-- The page of a demo of the docs (website/docs-demo): /docs-demo?demo=button.
+    <!-- The page of a demo of the docs (website/docs-demo), /docs-demo?demo=button,
+         or of an example app, /docs-demo?app=mayoi.
          The scripts come after the spinner, which shows while they load. -->
     <script>
       // The docs' theme, which a frame's prefers-color-scheme does not
@@ -54,10 +55,12 @@
     </script>
     <script src="/docs-demo/wasm_exec.js"></script>
     <script>
-      const demo = new URLSearchParams(location.search).get("demo") || ""
+      const params = new URLSearchParams(location.search)
+      const files = __WASM__
+      const app = Object.hasOwn(files, params.get("app")) ? params.get("app") : ""
       const go = new Go()
-      go.argv = ["docs-demo", demo]
-      WebAssembly.instantiateStreaming(fetch("/docs-demo/__WASM__"), go.importObject)
+      go.argv = app ? [app] : ["docs-demo", params.get("demo") || ""]
+      WebAssembly.instantiateStreaming(fetch("/docs-demo/" + files[app]), go.importObject)
         .then((r) => go.run(r.instance))
         .catch((e) => {
           const p = document.createElement("p")

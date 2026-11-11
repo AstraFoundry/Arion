@@ -92,6 +92,9 @@ func (s *System) GlyphRun(f *Font, ids []uint32, xs []float32, scale float32, sh
 		e.used = s.frame
 		return e.GlyphImage
 	}
+	if _, out := s.outRuns[rk]; out {
+		return GlyphImage{}
+	}
 	b := s.addGlyphs(gs, xs, origin)
 	if b.w <= 0 || b.h <= 0 || b.w > 4096 || b.h > 2048 {
 		return GlyphImage{}
@@ -99,6 +102,10 @@ func (s *System) GlyphRun(f *Font, ids []uint32, xs []float32, scale float32, sh
 	inColor := b.subpixel
 	x, y, ok := s.alloc(inColor, b.w, b.h)
 	if !ok {
+		if s.outRuns == nil {
+			s.outRuns = map[runKey]struct{}{}
+		}
+		s.outRuns[rk] = struct{}{}
 		return GlyphImage{}
 	}
 	if inColor {

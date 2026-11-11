@@ -78,14 +78,15 @@ type pickerState struct {
 	hex  string
 }
 
-// swatches are the colors a picker offers, by name.
+// swatches are the colors a picker offers, by name: the case of the
+// message colorName of MyGo's strings.
 var swatches = []struct {
 	name  string
 	color Color
 }{
-	{"Red", Hex("#ef4444")}, {"Orange", Hex("#f97316")}, {"Yellow", Hex("#eab308")}, {"Green", Hex("#22c55e")},
-	{"Teal", Hex("#14b8a6")}, {"Blue", Hex("#3b82f6")}, {"Indigo", Hex("#6366f1")}, {"Purple", Hex("#a855f7")},
-	{"Pink", Hex("#ec4899")}, {"Brown", Hex("#92400e")}, {"Gray", Hex("#71717a")}, {"Black", Hex("#000000")},
+	{"red", Hex("#ef4444")}, {"orange", Hex("#f97316")}, {"yellow", Hex("#eab308")}, {"green", Hex("#22c55e")},
+	{"teal", Hex("#14b8a6")}, {"blue", Hex("#3b82f6")}, {"indigo", Hex("#6366f1")}, {"purple", Hex("#a855f7")},
+	{"pink", Hex("#ec4899")}, {"brown", Hex("#92400e")}, {"gray", Hex("#71717a")}, {"black", Hex("#000000")},
 }
 
 // ColorPicker creates a picker of *color, as AppKit's color panel: a
@@ -119,12 +120,12 @@ func coreColorPicker(c *context, color *Color) *node {
 	x := st.hsv
 	panel.Children(func() {
 		// The square of saturation and brightness.
-		sq := coreBox(c).Height(t.Space(40)).Radius(t.Radius).Focusable().FocusRing(false).Role(RoleSlider).Label("Saturation and brightness")
+		sq := coreBox(c).Height(t.Space(40)).Radius(t.Radius).Focusable().FocusRing(false).Role(RoleSlider).Label(c.texts().Saturation())
 		sq.flags |= flagDraggable | flagHover | flagOwnRing
 		sq.Cursor(CursorCrosshair)
 		sq.afterInput(func() {
-			if s := sq.st; s.pressed && s.w > 0 && s.h > 0 {
-				px, py := s.local(c.rt.pointerX, c.rt.pointerY)
+			if s := sq.st; s.pressedPrimary() && s.w > 0 && s.h > 0 {
+				px, py := s.local(s.pointer(c.rt))
 				set(hsva{x.h, float64(px / s.w), 1 - float64(py/s.h), x.a})
 			}
 			switch {
@@ -141,7 +142,10 @@ func coreColorPicker(c *context, color *Color) *node {
 		})
 		x = st.hsv
 		sq.hasRange, sq.accRange, sq.accStep = true, [3]float64{0, 100, math.Round(x.s * 100)}, 1
-		sq.accValue = fmt.Sprintf("%.0f%% saturation, %.0f%% brightness", x.s*100, x.v*100)
+		sat, bri := math.Round(x.s*100), math.Round(x.v*100)
+		sq.accValue = c.formatted(fmtKey{c.rt.lang, fmtColorValue, int64(sat)*1000 + int64(bri)}, func() string {
+			return c.texts().ColorValue(sat/100, bri/100)
+		})
 		hue := hsva{x.h, 1, 1, 1}.color()
 		sq.Draw(func(p *Painter, r Rect) {
 			p.FillGradient(r, LinearGradient{From: RGB(255, 255, 255), To: hue, Angle: 90}, t.Radius)
@@ -152,7 +156,7 @@ func coreColorPicker(c *context, color *Color) *node {
 			p.Stroke(Rect{cx - d/2, cy - d/2, d, d}, RGB(255, 255, 255), d/2, 2)
 			p.Stroke(Rect{cx - d/2 - 1, cy - d/2 - 1, d + 2, d + 2}, RGBA(0, 0, 0, 0.3), d/2+1, 1)
 			if sq.FocusVisible() {
-				p.FocusRing(r, [4]float32{t.Radius, t.Radius, t.Radius, t.Radius})
+				p.focusRingOf(sq, r, [4]float32{t.Radius, t.Radius, t.Radius, t.Radius})
 			}
 		})
 		// The hue, and the opacity.
@@ -188,7 +192,7 @@ func coreColorPicker(c *context, color *Color) *node {
 				checkers(p, r, t.Space(1.5))
 				p.Fill(r, now, 0)
 			})
-			in := coreTextInput(c, &st.hex).Label("Hex").Grow(1).FontFeatures("tnum")
+			in := coreTextInput(c, &st.hex).Label(c.texts().Hex()).Grow(1).FontFeatures("tnum")
 			in.afterInput(func() {
 				if v, err := parseHex(st.hex); err == nil && in.Changed() {
 					hex := st.hex
@@ -203,8 +207,9 @@ func coreColorPicker(c *context, color *Color) *node {
 		})
 		// Swatches.
 		coreGrid(c).ColumnTracks(Fr(1), Fr(1), Fr(1), Fr(1), Fr(1), Fr(1)).Gap(t.Space(1.5)).Children(func() {
-			for _, sw := range swatches {
-				b := coreButtonBase(c).Height(t.Space(5)).Radius(t.Radius).Background(sw.color).Label(sw.name).Tooltip(sw.name)
+			for i, sw := range swatches {
+				name := c.formatted(fmtKey{c.rt.lang, fmtColorName, int64(i)}, func() string { return c.texts().ColorName(sw.name) })
+				b := coreButtonBase(c).Height(t.Space(5)).Radius(t.Radius).Background(sw.color).Label(name).Tooltip(name)
 				if *color == sw.color {
 					b.Border(2, t.Text)
 				}
@@ -227,7 +232,7 @@ func channelSlider(c *context, v *float64, max float64, name string, track func(
 	kw := t.Space(3)
 	s := sliderBase(c, v, 0, max, 0).Height(t.Space(4)).PaddingX(kw / 2).FocusRing(false).Label(name)
 	frac := fraction(*v, 0, max)
-	held := s.Animate("held", b2f(s.st.pressed), 150*time.Millisecond)
+	held := s.Animate("held", b2f(s.st.pressedPrimary()), 150*time.Millisecond)
 	s.Draw(func(p *Painter, r Rect) {
 		bar := Rect{r.X, r.Y + t.Space(0.5), r.W, r.H - t.Space(1)}
 		p.Clip(bar, bar.H/2, func() { track(p, bar) })
@@ -238,7 +243,7 @@ func channelSlider(c *context, v *float64, max float64, name string, track func(
 		p.Shadow(k, k.W/2, 0, 1, 3, 0, RGBA(0, 0, 0, 0.3))
 		p.Fill(k, RGB(255, 255, 255), k.W/2)
 		if s.FocusVisible() {
-			p.FocusRing(k, [4]float32{k.W / 2, k.W / 2, k.W / 2, k.W / 2})
+			p.focusRingOf(s, k, [4]float32{k.W / 2, k.W / 2, k.W / 2, k.W / 2})
 		}
 	})
 	return s

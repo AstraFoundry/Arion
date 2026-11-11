@@ -6,6 +6,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/egoist/mygo/internal/platform"
 )
@@ -469,6 +470,96 @@ func TestListKeysKeepTheChoice(t *testing.T) {
 	}
 }
 
+// The app choosing a row of rows it changed, at the index the choice had,
+// is not rows moving: with a Selection, the choice follows its item only
+// while the Selection still holds it.
+func TestListKeysAppChoiceAtTheSameIndex(t *testing.T) {
+	ids := []string{"notes", "plan"}
+	sel := 0
+	var chosen Selection[string]
+	chosen.Add("notes")
+	s := ListState{Selected: &sel, Selection: &chosen, Key: func(i int) any { return ids[i] }}
+	tt := coreNewTester(func(c *context) {
+		coreList(c, &s, len(ids), func(i int) { coreText(c, ids[i]).Height(20) }).Grow(1)
+	}, 300, 400)
+	// A paste brings "icon", which sorts first: the app chooses it, at the
+	// row "notes" had.
+	ids = []string{"icon", "notes", "plan"}
+	chosen.Clear()
+	chosen.Add("icon")
+	sel = 0
+	tt.Frame()
+	if sel != 0 || !chosen.Has("icon") || chosen.Len() != 1 {
+		t.Errorf("chose the pasted row 0: cursor %d, chosen %v", sel, slices.Collect(chosen.All()))
+	}
+	// "notes", chosen, renamed in its place: the app chooses it by its
+	// new name.
+	chosen.Clear()
+	chosen.Add("notes")
+	sel = 1
+	tt.Frame()
+	ids = []string{"icon", "minutes", "plan"}
+	chosen.Clear()
+	chosen.Add("minutes")
+	tt.Frame()
+	if sel != 1 {
+		t.Errorf("the renamed row, chosen by the app, lost the cursor: %d", sel)
+	}
+	// Rows coming above a choice the app keeps still move the cursor
+	// with it.
+	ids = []string{"a", "b", "icon", "minutes", "plan"}
+	tt.Frame()
+	if sel != 3 || ids[sel] != "minutes" {
+		t.Errorf("two rows added above: cursor %d", sel)
+	}
+}
+
+// Without Selected, the cursor is the list's own, which the user moves:
+// it follows its item as rows come above it, though the item is not
+// chosen, and is gone with it.
+func TestListCursorFollowsItsItemNotChosen(t *testing.T) {
+	ids := []string{"a", "b", "c", "d", "e"}
+	var chosen Selection[string]
+	s := ListState{Selection: &chosen, Key: func(i int) any { return ids[i] }}
+	tt := coreNewTester(func(c *context) {
+		coreList(c, &s, len(ids), func(i int) { coreText(c, "Row "+ids[i]).Height(20) }).Grow(1)
+	}, 300, 400)
+	// The cursor on "c", which a Cmd-click took out of the choice.
+	if err := tt.Click("Row c"); err != nil {
+		t.Fatal(err)
+	}
+	if err := tt.ClickWith(Cmd, "Row c"); err != nil {
+		t.Fatal(err)
+	}
+	if chosen.Len() != 0 || s.lead != 2 {
+		t.Fatalf("Cmd-click on chosen Row c: cursor %d, chosen %v", s.lead, slices.Collect(chosen.All()))
+	}
+	ids = []string{"x", "y", "a", "b", "c", "d", "e"}
+	tt.Frame()
+	if s.lead != 4 {
+		t.Errorf("two rows added above: cursor %d, want 4 (c)", s.lead)
+	}
+	tt.Key(0, KeyDown)
+	if got := slices.Collect(chosen.All()); !slices.Equal(got, []string{"d"}) {
+		t.Errorf("Down from c chose %v", got)
+	}
+	// The app deletes the rows chosen at the end, and the choice: the
+	// cursor goes with them, and Down starts from the first row again.
+	if err := tt.Click("Row e"); err != nil {
+		t.Fatal(err)
+	}
+	ids = ids[:3]
+	chosen.Clear()
+	tt.Frame()
+	if s.lead != -1 {
+		t.Errorf("its row deleted: cursor %d, want -1", s.lead)
+	}
+	tt.Key(0, KeyDown)
+	if got := slices.Collect(chosen.All()); !slices.Equal(got, []string{"x"}) {
+		t.Errorf("Down after the rows were deleted chose %v, want [x]", got)
+	}
+}
+
 func TestListKeepsTheFocusedRow(t *testing.T) {
 	texts := make([]string, 300)
 	var s ListState
@@ -618,7 +709,7 @@ func TestListScrollBarDragReachesTheEnd(t *testing.T) {
 	}, 300, 400)
 	tt.Move(150, 200)
 	st := listStateOf(&s)
-	g := scrollBars(Rect{st.x, st.y, st.w, st.h}, st.barInset, float32(st.contentH), float32(st.contentH), 0, float32(st.scrollY), st.flags, 6)
+	g := scrollBars(Rect{st.x, st.y, st.w, st.h}, st.barInset, float32(st.contentH), float32(st.contentH), 0, float32(st.scrollY), st.flags, 6, false)
 	x, y := g.v.X+g.v.W/2, g.v.Y+g.v.H/2
 	tt.Move(x, y)
 	tt.Press(x, y)
@@ -649,7 +740,7 @@ func TestListScrollBarDragFollowsThePointerAsEstimatesChange(t *testing.T) {
 	}, 300, 400)
 	tt.Move(150, 200)
 	st := listStateOf(&s)
-	g := scrollBars(Rect{st.x, st.y, st.w, st.h}, st.barInset, float32(st.contentH), float32(st.contentH), 0, float32(st.scrollY), st.flags, 6)
+	g := scrollBars(Rect{st.x, st.y, st.w, st.h}, st.barInset, float32(st.contentH), float32(st.contentH), 0, float32(st.scrollY), st.flags, 6, false)
 	x, y := g.v.X+g.v.W/2, g.v.Y+g.v.H/2
 	travel := g.vTrack.H - 4 - g.v.H
 	tt.Move(x, y)
@@ -1131,4 +1222,302 @@ func BenchmarkListScroll(b *testing.B) {
 	for b.Loop() {
 		tt.Scroll(400, 300, 0, 97)
 	}
+}
+
+// TestListFollowAnimation checks that a list following its end with a
+// FollowAnimation glides to the end as its last row grows and rows come,
+// and that the user scrolling stops it.
+func TestListFollowAnimation(t *testing.T) {
+	n, last := 30, 40
+	s := ListState{FollowEnd: true, FollowAnimation: &Smooth}
+	now := time.Unix(1000, 0)
+	tt := coreNewTester(func(c *context) {
+		coreList(c, &s, n, func(i int) {
+			h := float32(40)
+			if i == n-1 {
+				h = float32(last)
+			}
+			coreBox(c).Height(h).Children(func() { coreTextf(c, "Message %d", i) })
+		}).Grow(1)
+	}, 300, 400)
+	tt.rt.clock = func() time.Time { return now }
+	tt.Frame()
+	if r, _ := rowBox(tt, &s, n-1); r.Y+r.H != 400 {
+		t.Fatalf("at first, the last row ends at %v", r.Y+r.H)
+	}
+	// The last row grows by 60: its end shows below the list, then comes
+	// up.
+	last += 60
+	tt.Frame()
+	r0, _ := rowBox(tt, &s, n-1)
+	if r0.Y+r0.H <= 400+50 || !s.AtEnd() {
+		t.Fatalf("grown: the last row ends at %v, at the end %v", r0.Y+r0.H, s.AtEnd())
+	}
+	now = now.Add(80 * time.Millisecond)
+	tt.Frame()
+	r1, _ := rowBox(tt, &s, n-1)
+	if !(r1.Y+r1.H < r0.Y+r0.H && r1.Y+r1.H > 400) {
+		t.Errorf("on the way: the last row ends at %v, after %v", r1.Y+r1.H, r0.Y+r0.H)
+	}
+	now = now.Add(2 * time.Second)
+	tt.Frame()
+	if r, _ := rowBox(tt, &s, n-1); r.Y+r.H != 400 || !s.AtEnd() {
+		t.Errorf("done: the last row ends at %v", r.Y+r.H)
+	}
+	// A row comes, and the user scrolls up on the way: the list stays.
+	n++
+	tt.Frame()
+	now = now.Add(30 * time.Millisecond)
+	tt.Move(100, 100)
+	tt.Scroll(100, 100, 0, -150)
+	r2, _ := rowBox(tt, &s, n-5)
+	now = now.Add(time.Second)
+	tt.Frame()
+	if r, _ := rowBox(tt, &s, n-5); r != r2 || s.AtEnd() {
+		t.Errorf("scrolled up on the way: the row moved from %v to %v, at the end %v", r2, r, s.AtEnd())
+	}
+	// Without motion, it shows the end at once.
+	tt.SetPreferences(Preferences{ReduceMotion: true})
+	s.ScrollToEnd()
+	tt.Frame()
+	last += 60
+	tt.Frame()
+	if r, _ := rowBox(tt, &s, n-1); r.Y+r.H != 400 {
+		t.Errorf("reduced motion: the last row ends at %v", r.Y+r.H)
+	}
+}
+
+// A List built inside another constructor, as a Split's pane, reports
+// its changes and submits in the pass they come, as one built alone does.
+func TestListInsideConstructorReportsChanged(t *testing.T) {
+	for _, rows := range []bool{false, true} {
+		sel := -1
+		s := ListState{Selected: &sel}
+		size := float32(150)
+		changed, submitted := 0, 0
+		tt := NewTester(func(c *Context) {
+			Split(c, &size, func() {
+				var list Element
+				if rows {
+					list = List(c, &s, 5).Rows(func(r ListRow) { Textf(r.Context, "Row %d", r.Index) })
+				} else {
+					list = List(c, &s, 5, func(i int) { Textf(c, "Row %d", i) })
+				}
+				if list.Grow(1).Changed() {
+					changed++
+				}
+				if list.Submitted() {
+					submitted++
+				}
+			}, func() {})
+		}, 400, 300)
+		tt.Frame()
+		if err := tt.Click("Row 2"); err != nil {
+			t.Fatal(err)
+		}
+		tt.Key(0, KeyDown)
+		tt.Key(0, KeyEnter)
+		if sel != 3 || changed != 2 || submitted != 1 {
+			t.Errorf("rows %v: chose %d, changed %d times, submitted %d times; want 3, 2, 1", rows, sel, changed, submitted)
+		}
+	}
+}
+
+func chosenRows(sel *Selection[int]) []int { return slices.Sorted(sel.All()) }
+
+// ExtendTo chooses from the row Shift extends from, as Shift-click does.
+func TestExtendToFromPivot(t *testing.T) {
+	var s ListState
+	var sel Selection[int]
+	s.Selection = &sel
+	extend := -1
+	tt := NewTester(func(c *Context) {
+		List(c, &s, 10, func(i int) { Textf(c, "Row %d", i) }).Grow(1)
+		if extend >= 0 {
+			s.ExtendTo(extend)
+			extend = -1
+		}
+	}, 300, 400)
+	tt.Frame()
+	tt.Click("Row 2")
+	extend = 6
+	tt.Frame()
+	if got := chosenRows(&sel); !slices.Equal(got, []int{2, 3, 4, 5, 6}) {
+		t.Fatalf("ExtendTo(6) from row 2: chose %v", got)
+	}
+	tt.Key(Shift, KeyUp)
+	if got := chosenRows(&sel); !slices.Equal(got, []int{2, 3, 4, 5}) {
+		t.Fatalf("then Shift+Up: chose %v", got)
+	}
+}
+
+// A right-click on a row outside the choice chooses it before its menu
+// opens, as Finder does; one on a chosen row keeps the choice.
+func TestRightClickChoosesRowOutsideSelection(t *testing.T) {
+	var s ListState
+	var sel Selection[int]
+	s.Selection = &sel
+	menuRow := -1
+	tt := NewTester(func(c *Context) {
+		List(c, &s, 6, func(i int) {
+			Text(c, "Row "+string(rune('0'+i))).ContextMenu(func(m *Menu) {
+				menuRow = i
+				m.Item("Delete")
+			})
+		}).Grow(1)
+	}, 300, 300)
+	tt.Frame()
+	tt.Click("Row 1")
+	if err := tt.RightClick("Row 4"); err != nil {
+		t.Fatal(err)
+	}
+	if got := chosenRows(&sel); !slices.Equal(got, []int{4}) || menuRow != 4 {
+		t.Fatalf("right-click Row 4 with Row 1 chosen: chose %v, menu of row %d", got, menuRow)
+	}
+	tt.CloseMenu()
+	tt.Click("Row 1")
+	tt.ClickWith(Shift, "Row 3")
+	if err := tt.RightClick("Row 2"); err != nil {
+		t.Fatal(err)
+	}
+	if got := chosenRows(&sel); !slices.Equal(got, []int{1, 2, 3}) {
+		t.Fatalf("right-click a chosen row: chose %v, want [1 2 3] kept", got)
+	}
+	tt.CloseMenu()
+}
+
+// A list with Selected alone leaves its choice as it is on a right-click:
+// only lists with Selection choose the row first.
+func TestRightClickSingleChoiceKeepsChoice(t *testing.T) {
+	sel := 1
+	s := ListState{Selected: &sel}
+	menuRow := -1
+	tt := NewTester(func(c *Context) {
+		List(c, &s, 6, func(i int) {
+			Text(c, "Row "+string(rune('0'+i))).ContextMenu(func(m *Menu) {
+				menuRow = i
+				m.Item("Delete")
+			})
+		}).Grow(1)
+	}, 300, 300)
+	tt.Frame()
+	if err := tt.RightClick("Row 4"); err != nil {
+		t.Fatal(err)
+	}
+	if sel != 1 || menuRow != 4 {
+		t.Fatalf("right-click Row 4 with Row 1 chosen: chose %d, menu of row %d", sel, menuRow)
+	}
+	tt.CloseMenu()
+}
+
+// MenuKeepsSelection leaves the rows chosen as they are on a right-click,
+// and the menu still opens on the row clicked.
+func TestMenuKeepsSelection(t *testing.T) {
+	var sel Selection[int]
+	s := ListState{Selection: &sel, MenuKeepsSelection: true}
+	menuRow := -1
+	tt := NewTester(func(c *Context) {
+		List(c, &s, 6, func(i int) {
+			Text(c, "Row "+string(rune('0'+i))).ContextMenu(func(m *Menu) {
+				menuRow = i
+				m.Item("Delete")
+			})
+		}).Grow(1)
+	}, 300, 300)
+	tt.Frame()
+	tt.Click("Row 1")
+	if err := tt.RightClick("Row 4"); err != nil {
+		t.Fatal(err)
+	}
+	if got := chosenRows(&sel); !slices.Equal(got, []int{1}) || menuRow != 4 {
+		t.Fatalf("right-click Row 4 with Row 1 chosen: chose %v, menu of row %d", got, menuRow)
+	}
+	tt.CloseMenu()
+}
+
+// Shift extends from the row clicked last though the view builds the frame
+// again, as one reading the list's Changed does: a rebuild does not take
+// the row Shift extends from back to where the last frame had it.
+func TestPivotKeptAcrossRebuilds(t *testing.T) {
+	var s ListState
+	var sel Selection[int]
+	s.Selection = &sel
+	s.Key = func(i int) any { return i }
+	rebuilt := 0
+	tt := NewTester(func(c *Context) {
+		if List(c, &s, 6, func(i int) { Textf(c, "Row %d", i) }).Grow(1).Changed() {
+			rebuilt++
+			c.Invalidate()
+		}
+	}, 300, 300)
+	tt.Frame()
+	tt.Click("Row 1")
+	tt.Key(0, KeyDown)
+	tt.Click("Row 0")
+	tt.Key(Shift, KeyDown)
+	if got := chosenRows(&sel); !slices.Equal(got, []int{0, 1}) {
+		t.Fatalf("click Row 1, Down, click Row 0, Shift+Down: chose %v (rebuilt %d times)", got, rebuilt)
+	}
+}
+
+// A right-click between frames chooses its row in the next frame's
+// build, by the rows the app has then: rows gone since the last frame are
+// not asked for their keys, and a row whose item moved is chosen where it
+// went, with its menu.
+func TestRightClickAfterRowsChanged(t *testing.T) {
+	ids := []string{"a", "b", "c", "d", "e"}
+	var chosen Selection[string]
+	s := ListState{Selection: &chosen, Key: func(i int) any { return ids[i] }}
+	menuRow := ""
+	tt := coreNewTester(func(c *context) {
+		coreList(c, &s, len(ids), func(i int) {
+			id := ids[i]
+			coreText(c, "Row "+id).Height(20).ContextMenu(func(m *Menu) {
+				menuRow = id
+				m.Item("Delete")
+			})
+		}).Grow(1)
+	}, 300, 400)
+	e, _ := tt.Find("Row e")
+	// The app removes the last rows before the next frame.
+	ids = ids[:2]
+	tt.RightClickAt(e.X+5, e.Y+5)
+	if chosen.Len() != 0 || tt.Menu() != nil {
+		t.Errorf("right-click on a row gone: chose %v, menu %v", slices.Collect(chosen.All()), tt.Menu())
+	}
+	tt.CloseMenu()
+	// Rows come above "b" before the next frame: the right-click where
+	// "b" showed chooses it at its new row.
+	ids = []string{"a", "b", "c", "d"}
+	tt.Frame()
+	b, _ := tt.Find("Row b")
+	ids = []string{"x", "y", "a", "b", "c", "d"}
+	tt.RightClickAt(b.X+5, b.Y+5)
+	if got := slices.Collect(chosen.All()); !slices.Equal(got, []string{"b"}) || menuRow != "b" {
+		t.Errorf("right-click on b with rows added above: chose %v, menu of %q", got, menuRow)
+	}
+	tt.CloseMenu()
+}
+
+// A right-click that chooses a row reports the new choice through the
+// list's Changed, as a click does.
+func TestRightClickChoiceIsChanged(t *testing.T) {
+	var sel Selection[int]
+	s := ListState{Selection: &sel}
+	changed := 0
+	tt := NewTester(func(c *Context) {
+		if List(c, &s, 5, func(i int) {
+			Textf(c, "Row %d", i).ContextMenu(func(m *Menu) { m.Item("Open") })
+		}).Grow(1).Changed() {
+			changed++
+		}
+	}, 300, 300)
+	tt.Frame()
+	if err := tt.RightClick("Row 3"); err != nil {
+		t.Fatal(err)
+	}
+	if got := chosenRows(&sel); !slices.Equal(got, []int{3}) || changed != 1 {
+		t.Fatalf("right-click Row 3: chose %v, changed %d times", got, changed)
+	}
+	tt.CloseMenu()
 }

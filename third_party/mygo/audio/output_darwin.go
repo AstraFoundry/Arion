@@ -38,8 +38,7 @@ type audioQueueBuffer struct {
 const (
 	kAudioFormatLinearPCM   = 0x6C70636D // 'lpcm'
 	kAudioFormatFlagIsFloat = 1
-	aqBuffers               = 4
-	aqFrames                = 512 // per buffer: 10.7 ms
+	aqFrames                = 512 // per buffer: 10.7 ms, as many as hold ahead
 )
 
 var (
@@ -88,11 +87,12 @@ func loadAudioToolbox() error {
 type aqDevice struct {
 	q       uintptr
 	free    chan *audioQueueBuffer
+	buffers int
 	queued  int // buffers enqueued before the queue started
 	started bool
 }
 
-func openDevice() (device, int, error) {
+func openDevice(ahead time.Duration) (device, int, error) {
 	if err := loadAudioToolbox(); err != nil {
 		return nil, 0, err
 	}
@@ -106,11 +106,12 @@ func openDevice() (device, int, error) {
 		channelsPerFrame: channels,
 		bitsPerChannel:   32,
 	}
-	d := &aqDevice{free: make(chan *audioQueueBuffer, aqBuffers)}
+	n := max(2, int((int64(ahead)*sampleRate/int64(time.Second)+aqFrames-1)/aqFrames))
+	d := &aqDevice{free: make(chan *audioQueueBuffer, n), buffers: n}
 	if st := audioQueueNewOutput(&desc, aqCallback, 0, 0, 0, 0, &d.q); st != 0 {
 		return nil, 0, fmt.Errorf("audio: AudioQueueNewOutput failed (OSStatus %d)", st)
 	}
-	for range aqBuffers {
+	for range n {
 		var b *audioQueueBuffer
 		if st := audioQueueAllocateBuffer(d.q, aqFrames*channels*4, &b); st != 0 {
 			audioQueueDispose(d.q, true)
@@ -138,7 +139,7 @@ func (d *aqDevice) write(samples []float32) error {
 	if !d.started {
 		// Start once every buffer holds something, not to begin with an
 		// underrun.
-		if d.queued++; d.queued == aqBuffers {
+		if d.queued++; d.queued == d.buffers {
 			if st := audioQueueStart(d.q, 0); st != 0 {
 				return fmt.Errorf("audio: AudioQueueStart failed (OSStatus %d)", st)
 			}

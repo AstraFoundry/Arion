@@ -60,11 +60,11 @@ before it initializes its state.
 
 ## Input and actions
 
-`Changed` and `Submitted` apply pending input to controls built so far before
-returning, so the bound values can be read immediately. Set `Disabled`,
-`ReadOnly` and slider settings before querying responses. Controls whose
-responses are not queried apply input after construction. Configuration
-after a response query cannot undo input already applied.
+A control writes the user's input through the pointer it binds before its
+constructor returns, so bound values, local copies too, can be read
+immediately; `Changed` and `Submitted` report it. Input follows the options
+of the frame the user acted on: `Disabled`, `ReadOnly` and slider settings
+set in a build govern the input of the frames after it.
 
 ```go
 ui.Button(c, "Save").Disabled(a.saving).OnClick(a.save)

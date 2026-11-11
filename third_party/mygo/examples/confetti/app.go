@@ -22,8 +22,6 @@ type app struct {
 	pressX, pressY float32
 	// The stage's options, as its sliders set them.
 	count, angle, spread, velocity, decay, gravity, drift, scalar float64
-	// clock replaces the frame's time in tests.
-	clock func() time.Time
 }
 
 func newApp() *app {
@@ -38,13 +36,6 @@ func (s *app) resetOptions() {
 	d := Defaults()
 	s.count, s.angle, s.spread, s.velocity = 150, d.Angle, 360, 30
 	s.decay, s.gravity, s.drift, s.scalar = d.Decay, d.Gravity, d.Drift, d.Scalar
-}
-
-func (s *app) now(c *ui.Context) time.Time {
-	if s.clock != nil {
-		return s.clock()
-	}
-	return c.Now()
 }
 
 // maxPieces is how many pieces can be in the air: every piece costs each
@@ -209,7 +200,7 @@ var presets = []preset{
 
 func (s *app) view(c *ui.Context) {
 	t := c.Theme()
-	now := s.now(c)
+	now := c.Now()
 	s.w, s.h = c.Size()
 	s.dark = t.Dark
 	// While the desktop asks for less motion, nothing flies: the pieces

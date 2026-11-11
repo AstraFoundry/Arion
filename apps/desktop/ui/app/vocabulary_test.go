@@ -74,7 +74,7 @@ func TestVocabularyTermsGroupTheirForms(t *testing.T) {
 			for range "CLOUD" {
 				tt.Key(0, ui.KeyBackspace)
 			}
-			settle(tt)
+			rest(tt, 500*time.Millisecond)
 			if err := tt.Click(store.Copy().RemoveVocab("Arion")); err != nil {
 				t.Fatal(err)
 			}

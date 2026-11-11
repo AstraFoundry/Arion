@@ -116,6 +116,17 @@ func (c Color) Mix(o Color, t float32) Color {
 	return Color{R: m(c.R, o.R), G: m(c.G, o.G), B: m(c.B, o.B), A: m(c.A, o.A)}
 }
 
+// MixOklab returns the color t of the way from c to o, mixed in the Oklab
+// color space, as a gradient's Oklab mixes and CSS's color-mix(in oklab)
+// does: between two saturated colors, the mix keeps their lightness and
+// saturation, where Mix's, in sRGB, is duller and darker. A mix outside
+// the sRGB gamut holds its wide color, as a color from Oklch does. As in
+// CSS, the colors mix with premultiplied alpha: a color mixed with
+// Transparent keeps its hue and fades, rather than darkening.
+func (c Color) MixOklab(o Color, t float32) Color {
+	return mixPremultiplied(c, o, max(0, min(t, 1)), true)
+}
+
 // Over returns c composited over the opaque color base.
 func (c Color) Over(base Color) Color {
 	a := float32(c.A) / 255

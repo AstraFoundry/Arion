@@ -180,15 +180,22 @@ func (ed *editor) key(c *context, st *state, k editEvent) {
 	switch k.key {
 	case KeyLeft, KeyRight:
 		left := k.key == KeyLeft
+		// Words and line ends go the way the arrow points, as AppKit's
+		// moveWordLeft: and moveToLeftEndOfLine: do: back in the text of
+		// a left-to-right paragraph, forward in a right-to-left one.
+		forward := !left
+		if (word || mac && m == Super) && ed.caretParagraphRTL() {
+			forward = left
+		}
 		switch {
 		case mac && m == Super:
 			s, e := ed.lineEdges(ed.caret)
-			if left {
+			if !forward {
 				ed.move(s, shift)
 			} else {
 				ed.move(e, shift)
 			}
-		case word && left:
+		case word && !forward:
 			ed.move(b.prevWord(ed.caret), shift)
 		case word:
 			ed.move(b.nextWord(ed.caret), shift)
@@ -339,7 +346,7 @@ func (ed *editor) command(c *context, name string) {
 			h.writeClipboard(ed.selectedText())
 			ed.insert("")
 		}
-	case "paste":
+	case "paste", "pasteAndMatchStyle":
 		s := h.readClipboard()
 		if ed.onPaste != nil {
 			// The frame builds again, showing what fn changed in the
@@ -441,4 +448,31 @@ func (ed *editor) drag(x, y float32) {
 	if ed.area != nil {
 		ed.area.reveal = true
 	}
+}
+
+// textKey asks onTextKey whether it takes k as it comes, with the input
+// queued before it applied, so that fn reads the text typed before k.
+func (ed *editor) textKey(k keyEvent) bool {
+	if w := ed.client; w != nil {
+		w.prepare()
+	}
+	ed.keySeq++
+	ed.keying = true
+	defer func() { ed.keying = false }()
+	return ed.onTextKey(TextKey{Key: k.key, Mods: k.mods, ed: ed, seq: ed.keySeq})
+}
+
+// typesText reports whether k may type text rather than act: a character
+// key with no modifier but Shift and Alt, which type characters, or a key
+// the platform does not name.
+func typesText(k keyEvent) bool {
+	if k.mods&^(Shift|Alt) != 0 {
+		return false
+	}
+	switch k.key {
+	case KeyUnknown, KeySpace, KeyMinus, KeyEqual, KeyComma, KeyPeriod, KeySlash, KeySemicolon, KeyQuote,
+		KeyBracketLeft, KeyBracketRight, KeyBackslash, KeyBackquote:
+		return true
+	}
+	return k.key >= Key0 && k.key <= Key9 || k.key >= KeyA && k.key <= KeyZ
 }

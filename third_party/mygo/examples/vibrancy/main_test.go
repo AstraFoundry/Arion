@@ -36,7 +36,7 @@ func TestVibrancy(t *testing.T) {
 	if err := tt.Click("Show Sidebar"); err != nil {
 		t.Fatal(err)
 	}
-	time.Sleep(300 * time.Millisecond) // as it slides back in
+	tt.Advance(300 * time.Millisecond) // as it slides back in
 	tt.SetVibrancy(false)
 	if alpha(100, 600) != 255 || !tt.HasText("This window shows no material here, so the sidebar draws a background of its own: materials show on macOS, and on Windows 11 22H2 and later.") {
 		t.Errorf("without a material, the sidebar's alpha is %d, texts %q", alpha(100, 600), tt.Texts())

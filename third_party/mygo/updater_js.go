@@ -5,6 +5,7 @@ package mygo
 import (
 	"context"
 	"errors"
+	"io"
 	"time"
 )
 
@@ -48,6 +49,24 @@ var ErrNoPublishedUpdates = errors.New("no release is published")
 func (u *UpdaterModule) CheckWithOptions(ctx context.Context, options UpdateCheckOptions) (*Update, error) {
 	return nil, ErrUpdatesDisabled
 }
+
+// UpdateSource is where Updater gets updates from instead of the feed that
+// mygo.config.ts configures. Browsers do not update apps.
+type UpdateSource interface {
+	// Manifest returns the manifest of the running platform.
+	Manifest(ctx context.Context, prereleases bool) (io.ReadCloser, error)
+	// Open returns the file at url, which the manifest names.
+	Open(ctx context.Context, url string) (io.ReadCloser, error)
+}
+
+// SetSource does nothing: browsers do not update apps.
+func (u *UpdaterModule) SetSource(s UpdateSource) {}
+
+// SetPrereleases does nothing: browsers do not update apps.
+func (u *UpdaterModule) SetPrereleases(on bool) {}
+
+// Prereleases reports false.
+func (u *UpdaterModule) Prereleases() bool { return false }
 
 // Install returns ErrUpdatesDisabled.
 func (up *Update) Install(ctx context.Context, progress func(downloaded, total int64)) error {

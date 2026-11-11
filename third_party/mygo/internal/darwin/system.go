@@ -201,6 +201,7 @@ func (t theme) Preferences() platform.Preferences {
 	withPool(func() {
 		ws := workspace()
 		p.ReduceMotion = sendBool(ws, "accessibilityDisplayShouldReduceMotion")
+		p.ReduceTransparency = sendBool(ws, "accessibilityDisplayShouldReduceTransparency")
 		p.HighContrast = sendBool(ws, "accessibilityDisplayShouldIncreaseContrast")
 		// The accent, as the app's appearance draws it.
 		var c id

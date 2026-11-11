@@ -1,0 +1,187 @@
+package main
+
+// A black hole, its accretion disk and the sky behind, as light from them
+// reaches the camera: each pixel's ray is traced backward, bent by the
+// hole's gravity (Schwarzschild's, in units of its radius), through the
+// disk, which it may cross several times, above and below, to the stars
+// or into the hole.
+
+// The disk's time, in seconds.
+var Time float
+
+// The camera: where it is, its axes (unit vectors, y up) and its focal
+// length, in heights of the view.
+var Eye vec3
+var Right vec3
+var Up vec3
+var Forward vec3
+var Focal float
+
+const (
+	diskIn  = 2.6
+	diskOut = 13.0
+	escape  = 42.0
+	tau     = 6.2831853
+)
+
+func pcg(v uint) uint {
+	s := v*747796405 + 2891336453
+	w := ((s >> ((s >> 28) + 4)) ^ s) * 277803737
+	return (w >> 22) ^ w
+}
+
+// hash13 returns a number from 0 to 1 for a point of the integer lattice.
+func hash13(p vec3) float {
+	h := pcg(uint(int(p.x)) ^ pcg(uint(int(p.y))^pcg(uint(int(p.z)))))
+	return float(h>>8) * (1.0 / 16777216.0)
+}
+
+// noise is value noise from 0 to 1.
+func noise(p vec3) float {
+	i := floor(p)
+	f := p - i
+	f = f * f * (3 - 2*f)
+	return mix(
+		mix(mix(hash13(i), hash13(i+vec3(1, 0, 0)), f.x), mix(hash13(i+vec3(0, 1, 0)), hash13(i+vec3(1, 1, 0)), f.x), f.y),
+		mix(mix(hash13(i+vec3(0, 0, 1)), hash13(i+vec3(1, 0, 1)), f.x), mix(hash13(i+vec3(0, 1, 1)), hash13(i+vec3(1, 1, 1)), f.x), f.y),
+		f.z)
+}
+
+func fbm(p vec3) float {
+	s, a := 0.0, 0.5
+	for i := 0; i < 5; i++ {
+		s += a * noise(p)
+		p = p*2.03 + 17.1
+		a *= 0.5
+	}
+	return s
+}
+
+// blackbody returns the color of gas at a temperature from 0 (cool, deep
+// red) to 1 (hot, blue white).
+func blackbody(t float) vec3 {
+	c := mix(vec3(1, 0.16, 0.02), vec3(1, 0.5, 0.15), smoothstep(0, 0.3, t))
+	c = mix(c, vec3(1, 0.84, 0.62), smoothstep(0.25, 0.65, t))
+	return mix(c, vec3(0.78, 0.86, 1), smoothstep(0.7, 1, t))
+}
+
+// disk returns the light of the disk where a ray along d crosses it at p,
+// and how dense the gas is there.
+func disk(p, d vec3) vec4 {
+	r := length(p.xz)
+	if r < diskIn || r > diskOut {
+		return vec4(0)
+	}
+	// The gas orbits, faster inside, and its streaks shear along.
+	a := -Time * 1.6 * pow(r, -1.5)
+	c, s := cos(a), sin(a)
+	q := vec2(c*p.x-s*p.z, s*p.x+c*p.z)
+	ang := atan2(q.y, q.x)
+	streaks := fbm(vec3(1.3*cos(ang), 1.3*sin(ang), r*3.2))
+	clumps := fbm(vec3(q*0.8, r*0.5+3))
+	dens := smoothstep(diskIn, diskIn+0.4, r) * pow(smoothstep(diskOut, diskIn, r), 1.6)
+	dens *= clamp(0.15+1.6*streaks*streaks*(0.4+clumps), 0, 1.4)
+
+	t := clamp(pow(diskIn/r, 1.05), 0, 1)
+	col := blackbody(t) * (0.12 + 4.5*t*t*t)
+	// Doppler beaming: the side coming toward the camera is brighter and
+	// bluer, the side going away dimmer and redder; light climbing out of
+	// the well loses some too.
+	v := min(sqrt(0.5/(r-1)), 0.62)
+	toward := dot(normalize(vec3(-p.z, 0, p.x)), -d)
+	doppler := sqrt(1-v*v) / (1 - v*toward)
+	shift := doppler * sqrt(1-1/r)
+	col *= pow(shift, 2.4)
+	col = mix(col*vec3(1.15, 0.75, 0.55), col*vec3(0.8, 0.92, 1.25), smoothstep(0.7, 1.3, shift))
+	return vec4(col, dens)
+}
+
+// sky returns the light coming from far away along d: a galaxy's band of
+// dust and glow, and stars.
+func sky(d vec3) vec3 {
+	col := vec3(0.002, 0.0025, 0.005)
+	b := dot(d, normalize(vec3(0.25, 1, 0.35)))
+	neb := fbm(d*3.2 + 10)
+	dust := fbm(d*8 - 3)
+	band := exp(-b*b*10) * (0.3 + neb)
+	col += band * mix(vec3(0.07, 0.05, 0.12), vec3(0.2, 0.13, 0.08), dust) * 0.55
+	col *= 1 - 0.75*exp(-b*b*60)*smoothstep(0.42, 0.65, dust)
+	for layer := 0; layer < 2; layer++ {
+		scale := 110.0 + 160*float(layer)
+		g := d * scale
+		cell := floor(g)
+		h := hash13(cell + vec3(float(layer)*1000))
+		th := 0.94 - 0.03*band
+		if h > th {
+			off := 0.25 + 0.5*vec3(hash13(cell+vec3(7, 0, 0)), hash13(cell+vec3(0, 3, 0)), hash13(cell+vec3(0, 0, 11)))
+			e := g - cell - off
+			k := (h - th) / (1 - th)
+			tint := mix(vec3(1, 0.75, 0.55), vec3(0.7, 0.82, 1), hash13(cell+vec3(5, 5, 0)))
+			col += tint * k * k * k * 7 * exp(-dot(e, e)*260)
+		}
+	}
+	return col
+}
+
+// ray returns the direction of the camera's ray through pos.
+func ray(pos vec2) vec3 {
+	size := rectSize()
+	uv := (pos - 0.5*size) / size.y
+	return normalize(Forward*Focal + Right*uv.x - Up*uv.y)
+}
+
+func aces(x vec3) vec3 {
+	return clamp((x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14), 0, 1)
+}
+
+func Fragment(dst vec4, pos vec2) vec4 {
+	p := Eye
+	v := ray(pos)
+	l := cross(p, v)
+	h2 := dot(l, l)
+	col := vec3(0)
+	alpha := 0.0
+	glow := 0.0
+	escaped := false
+	for i := 0; i < 360; i++ {
+		r2 := dot(p, p)
+		r := sqrt(r2)
+		if r < 1 {
+			break
+		}
+		dt := clamp(0.06*r, 0.015, 1.5)
+		// Near the disk's plane, smaller steps find its edge sharp.
+		if abs(p.y) < 0.6 && r < diskOut+1 {
+			dt = min(dt, max(0.05, abs(p.y)))
+		}
+		v += -1.5 * h2 * p / (r2 * r2 * r) * dt
+		np := p + v*dt
+		if p.y*np.y <= 0 && p.y != np.y {
+			hit := mix(p, np, p.y/(p.y-np.y))
+			e := disk(hit, normalize(v))
+			a := clamp(e.a, 0, 1)
+			col += (1 - alpha) * e.rgb * a
+			alpha += (1 - alpha) * a * 0.92
+		}
+		// Light circling near the photon sphere, a faint halo.
+		x := r - 1.5
+		glow += exp(-x*x*6) * dt
+		p = np
+		if r > escape && dot(p, v) > 0 {
+			escaped = true
+			break
+		}
+		if alpha > 0.995 {
+			break
+		}
+	}
+	// A ray still circling when its steps run out is as good as caught.
+	if escaped {
+		col += (1 - alpha) * sky(normalize(v))
+	}
+	if escaped {
+		col += vec3(1, 0.62, 0.32) * glow * 0.03 * (1 - alpha)
+	}
+	col = aces(col * 1.1)
+	return vec4(pow(col, vec3(1/2.2)), 1)
+}

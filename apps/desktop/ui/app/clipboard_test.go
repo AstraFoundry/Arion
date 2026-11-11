@@ -192,7 +192,7 @@ func TestClipboardCompactSearchHoverPinAndPaste(t *testing.T) {
 				t.Fatal("search Enter did not paste its matching item")
 			}
 			rec.calls = nil
-			if err := tt.Click(a.Text); err != nil {
+			if err := clickRow(tt, a.Text); err != nil {
 				t.Fatal(err)
 			}
 			if !rec.called("clipboard-paste:" + a.ID()) {
@@ -258,7 +258,7 @@ func TestClipboardInlineImageAndFileRows(t *testing.T) {
 			}
 			tt.Move(0, 0)
 			settle(tt)
-			if err := tt.Click("Plan.pdf"); err != nil {
+			if err := clickRow(tt, "Plan.pdf"); err != nil {
 				t.Fatal(err)
 			}
 			if !rec.called("clipboard-paste:" + filePayload.ID()) {
@@ -320,7 +320,7 @@ func TestClipboardFourRowsAndHoverPreview(t *testing.T) {
 	long, _ := tt.Find(texts[1])
 	rec.calls = nil
 	tt.Move(long.X+12, long.Y+long.H/2)
-	settle(tt)
+	tt.Frame()
 	if rec.called("clipboard-hover:" + state.Clipboard.Items[1].ID) {
 		t.Fatal("preview opened without dwell")
 	}
@@ -480,7 +480,7 @@ func TestClipboardUnlocatedTargetCopiesInsteadOfPasting(t *testing.T) {
 	panel := &clipboardfeature.Panel{}
 	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, clipboardfeature.Width, clipboardfeature.Height(state.Clipboard.Items))
 	settle(tt)
-	if err := tt.Click(p.Text); err != nil {
+	if err := clickRow(tt, p.Text); err != nil {
 		t.Fatal(err)
 	}
 	if !rec.called("clipboard-copy:"+p.ID()) || rec.called("clipboard-paste:"+p.ID()) {
@@ -519,7 +519,7 @@ func TestClipboardActivationFollowsTarget(t *testing.T) {
 						t.Fatal(err)
 					}
 				case "row":
-					if err := tt.Click(p.Text); err != nil {
+					if err := clickRow(tt, p.Text); err != nil {
 						t.Fatal(err)
 					}
 				}
@@ -616,7 +616,7 @@ func TestClipboardImageFileThumbnailAndHoverPreview(t *testing.T) {
 			if !rec.called("clipboard-hover:" + item.ID) {
 				t.Fatal("image file did not request hover preview")
 			}
-			if err := tt.Click("Photo.png"); err != nil {
+			if err := clickRow(tt, "Photo.png"); err != nil {
 				t.Fatal(err)
 			}
 			if !rec.called("clipboard-paste:"+item.ID) || item.Payload.Kind != runtime.ClipFiles {
@@ -628,4 +628,17 @@ func TestClipboardImageFileThumbnailAndHoverPreview(t *testing.T) {
 			snapshot(t, preview, "clipboard-image-file-hover-"+string(locale))
 		})
 	}
+}
+
+// clickRow clicks the middle of a history row's text. The list row and the
+// paste button inside it both carry the item's name, so Tester.Click, which
+// resolves the name to the row, sees the button as another target; the
+// pointer lands on that button either way.
+func clickRow(tt *ui.Tester, text string) error {
+	r, ok := tt.Find(text)
+	if !ok {
+		return fmt.Errorf("no row shows %q", text)
+	}
+	tt.ClickAt(r.X+r.W/2, r.Y+r.H/2)
+	return nil
 }

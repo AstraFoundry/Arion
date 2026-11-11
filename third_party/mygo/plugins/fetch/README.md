@@ -32,8 +32,8 @@ const items = await res.json();
   `Location`, instead of an opaque response.
 - `mode`, `credentials`, `cache` and the like do not apply; cookies are those
   of the Go side's `http.Client` (give it a `Jar` to keep them).
-- Every response header is readable but `Set-Cookie`, which a `Response`
-  cannot hold.
+- Every response header is readable but `Set-Cookie` and `Set-Cookie2`,
+  which are filtered before the response reaches the page.
 - URLs that are not http or https (the app's own pages, `data:`, `blob:`) go
   to the webview's `fetch`.
 

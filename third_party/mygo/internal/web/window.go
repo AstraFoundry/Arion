@@ -79,6 +79,9 @@ func (w *window) SetTitle(t string) {
 
 func (w *window) Title() string { return w.title }
 
+func (w *window) SetRepresentedFile(string) {}
+func (w *window) SetDocumentEdited(bool)    {}
+
 // bounds returns the window's element's rectangle in the page.
 func (w *window) bounds() platform.Rect {
 	r := w.el.Call("getBoundingClientRect")
@@ -119,6 +122,9 @@ func (w *window) HasShadow() bool                            { return false }
 func (w *window) SetIgnoreMouseEvents(bool)                  {}
 func (w *window) SetContentProtection(bool)                  {}
 func (w *window) SetVibrancy(string)                         {}
+func (w *window) SetVibrancyTint(*platform.Color)            {}
+func (w *window) SetActiveAppearance(bool)                   {}
+func (w *window) SetWindowButtonsTheme(string)               {}
 func (w *window) SetProgressBar(string, float64)             {}
 func (w *window) FlashFrame(bool)                            {}
 func (w *window) SetSkipTaskbar(bool)                        {}
@@ -216,6 +222,8 @@ func (w *window) CanGoForward() bool                                       { ret
 func (w *window) URL() string                                              { return "" }
 func (w *window) IsLoading() bool                                          { return false }
 func (w *window) Eval(string)                                              {}
+func (w *window) SetUserScripts([]platform.UserScript)                     {}
+func (w *window) SetContentRules([]any)                                    {}
 func (w *window) SetZoom(float64)                                          {}
 func (w *window) Zoom() float64                                            { return 1 }
 func (w *window) SetUserAgent(string)                                      {}
@@ -223,6 +231,15 @@ func (w *window) UserAgent() string                                        { ret
 func (w *window) OpenDevTools()                                            {}
 func (w *window) CloseDevTools()                                           {}
 func (w *window) IsDevToolsOpened() bool                                   { return false }
+func (w *window) ProcessID() int                                           { return 0 }
+func (w *window) GPUProcessID() int                                        { return 0 }
+func (w *window) IsAudible() bool                                          { return false }
+func (w *window) SetAudioMuted(bool)                                       {}
+func (w *window) IsAudioMuted() bool                                       { return false }
+func (w *window) TogglePictureInPicture()                                  {}
+func (w *window) PictureInPictureActive(cb func(bool))                     { cb(false) }
+func (w *window) SessionState() []byte                                     { return nil }
+func (w *window) RestoreSessionState([]byte) bool                          { return false }
 func (w *window) DroppedFiles() []string                                   { return nil }
 func (w *window) Print()                                                   {}
 func (w *window) CapturePage(cb func([]byte, error))                       { cb(nil, errUnsupported) }
@@ -231,3 +248,8 @@ func (w *window) PrintToPDF(_ platform.PDFOptions, cb func([]byte, error)) { cb(
 func (w *window) CallAsyncFunction(_ string, cb func(string, error)) {
 	cb("", errUnsupported)
 }
+
+func (w *window) CaptureState(platform.CaptureKind) platform.CaptureState {
+	return platform.CaptureNone
+}
+func (w *window) SetCaptureState(platform.CaptureKind, platform.CaptureState) {}

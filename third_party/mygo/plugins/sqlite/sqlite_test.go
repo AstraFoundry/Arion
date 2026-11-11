@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/egoist/mygo"
+	"github.com/egoist/mygo/internal/wait"
 )
 
 func TestPluginBindings(t *testing.T) {
@@ -58,7 +59,7 @@ func TestPageOwnershipAndCleanup(t *testing.T) {
 	}
 	select {
 	case <-db.life.Done():
-	case <-time.After(time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("page navigation did not close connection")
 	}
 	if _, err := db.Query(context.Background(), "SELECT 1"); !errors.Is(err, ErrClosed) {

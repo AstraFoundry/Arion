@@ -51,6 +51,10 @@ var sections = []struct {
 		{mygo.VibrancyAcrylic, "VibrancyAcrylic", "Acrylic", "Blurs what is behind the window. HUD on macOS."},
 		{mygo.VibrancyTabbed, "VibrancyTabbed", "Tabbed", "Mica for windows with tabs in the title bar. Under window on macOS."},
 	}},
+	{"Liquid Glass", glassIcon, []material{
+		{mygo.VibrancyGlass, "VibrancyGlass", "Glass", "macOS 26's Liquid Glass, frosted. Popover before; Acrylic on Windows 11."},
+		{mygo.VibrancyGlassClear, "VibrancyGlassClear", "Clear glass", "Liquid Glass, barely frosted, for photos and video. HUD before; Acrylic on Windows 11."},
+	}},
 }
 
 func icon(shapes string) *ui.SVG {
@@ -60,6 +64,7 @@ func icon(shapes string) *ui.SVG {
 var (
 	windowIcon    = icon(`<rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M1.5 5.5h13"/>`)
 	transientIcon = icon(`<path d="M3 2.5h10A1.5 1.5 0 0 1 14.5 4v6a1.5 1.5 0 0 1-1.5 1.5H7.5L4.5 14v-2.5H3A1.5 1.5 0 0 1 1.5 10V4A1.5 1.5 0 0 1 3 2.5z"/>`)
+	glassIcon     = icon(`<rect x="2.5" y="3.5" width="11" height="9" rx="4.5"/><path d="M5 6.5a2 2 0 0 1 2-1.5"/>`)
 	backdropIcon  = icon(`<path d="M8 1.5l1.7 4.8 4.8 1.7-4.8 1.7L8 14.5l-1.7-4.8L1.5 8l4.8-1.7z"/>`)
 	sidebarIcon   = icon(`<rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M6 2.5v11"/>`)
 )

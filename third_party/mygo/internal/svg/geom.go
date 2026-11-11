@@ -1,6 +1,7 @@
 package svg
 
 import (
+	"fmt"
 	"math"
 	"strconv"
 )
@@ -422,6 +423,47 @@ func isCommand(c byte) bool {
 
 // parsePath parses path data up to its first error, as SVG asks.
 func parsePath(d string) path {
+	pa, _ := parsePathAt(d)
+	return pa
+}
+
+// PathOp is what a segment of path data ParsePath parsed does.
+type PathOp = pathOp
+
+// The segments of path data: a move to a point, a line to one, a cubic
+// Bézier curve through two control points to its end, and a close.
+const (
+	PathMove  = opMove
+	PathLine  = opLine
+	PathCubic = opCubic
+	PathClose = opClose
+)
+
+// ParsePath parses SVG path data, as a path element's d attribute holds
+// it, into its segments, in user units: ops, each taking its points from
+// pts in turn, a move and a line one, a cubic curve three, a close none;
+// quadratic curves and arcs become cubic ones. At an error it stops, as
+// SVG draws a path up to its first error, and returns the error, with the
+// segments before it.
+func ParsePath(d string) (ops []PathOp, pts [][2]float64, err error) {
+	pa, at := parsePathAt(d)
+	pts = make([][2]float64, len(pa.pts))
+	for i, p := range pa.pts {
+		pts[i] = [2]float64{p.x, p.y}
+	}
+	if at >= 0 {
+		if at < len(d) {
+			err = fmt.Errorf("svg: path data: unexpected %q at offset %d", d[at], at)
+		} else {
+			err = fmt.Errorf("svg: path data: unexpected end at offset %d", at)
+		}
+	}
+	return pa.ops, pts, err
+}
+
+// parsePathAt parses path data up to its first error, and returns where
+// in d the error is, or -1 for none.
+func parsePathAt(d string) (path, int) {
 	var pa path
 	p := scanner{s: d}
 	var cmd, last byte // the command, and the last one in upper case
@@ -450,16 +492,17 @@ func parsePath(d string) path {
 	for {
 		p.skipSpace()
 		if p.done() {
-			break
+			return pa, -1
 		}
+		at := p.i
 		if c := p.peek(); isCommand(c) {
 			cmd = c
 			p.i++
 		} else if cmd == 0 || cmd == 'Z' || cmd == 'z' {
-			break // numbers without a command
+			return pa, at // numbers without a command
 		}
 		if len(pa.ops) == 0 && cmd != 'M' && cmd != 'm' {
-			break // a path starts with a move
+			return pa, at // a path starts with a move
 		}
 		var base point
 		if cmd >= 'a' {
@@ -550,11 +593,10 @@ func parsePath(d string) path {
 			pa.close()
 		}
 		if !ok {
-			break
+			return pa, p.i
 		}
 		last = up
 	}
-	return pa
 }
 
 // bounds returns the box around the path's geometry, in user units.

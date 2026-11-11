@@ -89,3 +89,34 @@ func TestButtonClickStillWaitsForRelease(t *testing.T) {
 		t.Fatal("releasing outside the button activated it")
 	}
 }
+
+// PressedInside tells a press on an element or inside it without the
+// element taking the pointer: a table's row still chooses on a click on
+// a cell asking it, and a press elsewhere is not one.
+func TestPressedInsideLeavesThePress(t *testing.T) {
+	sel := -1
+	s := ListState{Selected: &sel}
+	pressed := map[int]int{}
+	tt := coreNewTester(func(c *context) {
+		coreColumn(c).Fill().Padding(10).Children(func() {
+			coreTable(c, &s, []TableColumn{{Title: "Name"}}, 3, func(row, col int) {
+				cell := coreBox(c).Children(func() { coreTextf(c, "row %d", row) })
+				if cell.PressedInside() {
+					pressed[row]++
+				}
+			}).Grow(1)
+			coreText(c, "elsewhere")
+		})
+	}, 400, 300)
+	r, _ := tt.Find("row 1")
+	tt.ClickAt(r.X+5, r.Y+r.H/2) // on the cell's text, inside it
+	tt.Frame()
+	if pressed[1] != 1 || sel != 1 {
+		t.Fatalf("pressed %v, chosen %d", pressed, sel)
+	}
+	tt.Click("elsewhere")
+	tt.Frame()
+	if len(pressed) != 1 || pressed[1] != 1 {
+		t.Fatalf("a press elsewhere counted: %v", pressed)
+	}
+}

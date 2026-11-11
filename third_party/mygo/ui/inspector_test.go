@@ -350,3 +350,81 @@ func TestInspectorInsetShadow(t *testing.T) {
 		t.Errorf("box-shadow: %q", got)
 	}
 }
+
+func TestInspectorTransition(t *testing.T) {
+	var tr ElementTransition
+	tt := coreNewTester(func(c *context) {
+		coreBox(c).Key("box").Size(40, 40).Transition(tr)
+	}, 100, 100)
+	for _, tc := range []struct {
+		tr   ElementTransition
+		want string
+	}{
+		{ElementTransition{}, "position size colors shadows 200ms"},
+		{ElementTransition{Size: true}, "size 200ms"},
+		{ElementTransition{Width: true, Height: true}, "size 200ms"},
+		{ElementTransition{Position: true, Height: true}, "position height 200ms"},
+		{ElementTransition{Width: true, Colors: true}, "width colors 200ms"},
+	} {
+		tr = tc.tr
+		tt.Frame()
+		got := ""
+		for _, d := range ownStyles(tt.rt, tt.rt.c.root.first) {
+			if d.name == "transition" {
+				got = d.value
+			}
+		}
+		if got != tc.want {
+			t.Errorf("%+v: transition %q, want %q", tc.tr, got, tc.want)
+		}
+	}
+}
+
+func TestInspectorColorText(t *testing.T) {
+	for _, tc := range []struct {
+		c    Color
+		want string
+	}{
+		{RGB(0xfa, 0xfa, 0xfa), "#fafafa"},
+		{RGBA(0x11, 0x22, 0x33, 0.5), "#11223380"},
+		{Oklch(0.985, 0, 0), "#fafafa"},
+		{Oklch(0.7, 0.25, 145), "oklch(0.7 0.25 145)"},
+		{Oklch(0.623, 0.214, 259.815), "oklch(0.623 0.214 259.8)"},
+		{Oklch(0.7, 0.25, 145).Alpha(0.5), "oklch(0.7 0.25 145 / 0.5)"},
+	} {
+		if got := colorText(tc.c); got != tc.want {
+			t.Errorf("colorText(%+v) = %q, want %q", tc.c, got, tc.want)
+		}
+	}
+}
+
+// The Properties tab tells an element inside one hidden from assistive
+// technology as ignored, as it does an element it never reads.
+func TestInspectorAccessHidden(t *testing.T) {
+	hide := false
+	var inner *node
+	tt, _ := inspected(func(c *context) {
+		coreColumn(c).AccessHidden(hide).Children(func() {
+			coreBox(c).Children(func() { inner = coreButton(c, "Open") })
+		})
+	})
+	ignored := func() string {
+		for _, s := range properties(tt.rt, inner) {
+			for _, d := range s.rows {
+				if s.title == "Accessibility" && d.name == "ignored" {
+					return d.value
+				}
+			}
+		}
+		t.Fatal("no ignored row in the Properties tab")
+		return ""
+	}
+	if v := ignored(); v != "false" {
+		t.Errorf("the button shown to assistive technology is ignored: %s", v)
+	}
+	hide = true
+	tt.Frame()
+	if v := ignored(); v != "true" {
+		t.Errorf("the button inside one hidden from assistive technology is ignored: %s", v)
+	}
+}

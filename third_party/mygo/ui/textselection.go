@@ -70,17 +70,24 @@ func (e *node) prepareSelectable() {
 	}
 	ed := e.st.editor
 	if ed == nil {
-		ed = newEditor()
+		ed = newEditor(e.c.rt.now)
 		ed.readOnly, ed.multiline = true, true
 		e.st.editor = ed
 	}
 	if ed.source != e.text || len(ed.buf.paras) == 0 {
-		if scope != 0 && e.c.rt.selection.scope == scope && e.c.rt.textSelectionIncludes(e.id) {
+		// Text only added at the end, as a reply being written, keeps
+		// the selection and its offsets.
+		grew := len(ed.buf.paras) > 0 && strings.HasPrefix(e.text, ed.source)
+		if !grew && scope != 0 && e.c.rt.selection.scope == scope && e.c.rt.textSelectionIncludes(e.id) {
 			e.c.rt.selection = textSelection{}
 		}
+		caret, anchor := ed.caret, ed.anchor
 		ed.source = e.text
 		ed.setText(e.text)
 		ed.caret, ed.anchor = 0, 0
+		if grew {
+			ed.caret, ed.anchor = caret, anchor
+		}
 	}
 	if e.c.rt.focused == e.id || len(ed.queue) > 0 {
 		ed.process(e.c, e)
@@ -91,7 +98,7 @@ func (e *node) prepareSelectable() {
 // (absolute children paint last). Inline children are already in their
 // paragraph's text, and must not be copied a second time.
 func (rt *engine) collectSelectable(e *node, hidden bool) {
-	hidden = hidden || e.flags&(flagInvisible|flagInert) != 0
+	hidden = hidden || e.flags&(flagInvisible|flagInert) != 0 || e.hidden || e.ignoreInput
 	if !hidden && e.kind == kindText && !e.isInline() && e.st.flags&flagDisabled == 0 && e.flags&flagSelectable != 0 {
 		rt.texts = append(rt.texts, e.st)
 	}
@@ -306,7 +313,7 @@ func (rt *engine) pressTextSelection(s *state, x, y float32, mods Modifiers, cli
 	s = rt.states[p.id]
 	rt.focused, rt.focusVisible = s.id, false
 	rt.pressed = s
-	s.pressed, s.pressMods = true, mods
+	s.pressed, s.pressButton, s.pressMods = true, 0, mods
 	s.editor.dragging = false
 	return true
 }
@@ -358,6 +365,10 @@ func (rt *engine) textSelectionCommand(s *state, name string) bool {
 		if !selected || rt.selection.scope != s.textScope {
 			break
 		}
+		if sc := rt.states[s.textScope]; sc != nil && sc.copyData != nil {
+			rt.host.writeClipboardData(sc.copyData(rt.selectedTexts(s.textScope)))
+			break
+		}
 		var out strings.Builder
 		first, last := rt.textPointIndex(a), rt.textPointIndex(b)
 		wrote := false
@@ -382,6 +393,32 @@ func (rt *engine) textSelectionCommand(s *state, name string) bool {
 		rt.host.writeClipboard(out.String())
 	}
 	return true // other editing commands cannot change selectable text
+}
+
+// selectedTexts returns the parts of paragraphs the selection of
+// container scope holds.
+func (rt *engine) selectedTexts(scope uint64) []SelectedText {
+	a, b, selected := rt.textSelectionBounds()
+	if !selected || rt.selection.scope != scope {
+		return nil
+	}
+	var parts []SelectedText
+	first, last := rt.textPointIndex(a), rt.textPointIndex(b)
+	for i := first; i <= last; i++ {
+		p := rt.texts[i]
+		if p.textScope != scope || p.editor == nil {
+			continue
+		}
+		from, to := 0, p.editor.buf.n
+		if i == first {
+			from = min(a.at, to)
+		}
+		if i == last {
+			to = min(b.at, to)
+		}
+		parts = append(parts, SelectedText{ID: p.id, Text: p.editor.source, Start: from, End: to})
+	}
+	return parts
 }
 
 func (rt *engine) neighboringText(p textPoint, direction int) *state {

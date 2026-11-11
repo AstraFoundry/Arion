@@ -18,6 +18,7 @@ import (
 var parts = map[string]string{
 	"TabsParts": "tabsParts", "SelectParts": "selectParts", "ComboboxParts": "comboboxParts",
 	"CollapsibleParts": "collapsibleParts", "SegmentedParts": "segmentedParts", "ToastParts": "toastParts",
+	"AccordionParts": "accordionParts", "MenuParts": "menuParts", "TreeParts": "treeParts", "TreeItemParts": "treeItemParts",
 }
 
 func main() {
@@ -460,6 +461,9 @@ func generate(out *bytes.Buffer, fs *token.FileSet, fn *ast.FuncDecl) {
 		fmt.Fprintln(out, "_parts := _handle.resolve(); if _parts == nil {", zeroReturn(fs, fn.Type.Results), "}; _ctx := _parts.c; _ = _ctx")
 		rawRecv = "_parts."
 	}
+	// A constructor, which builds controls in the frame of its context:
+	// their input applies as it returns (see ui/value_input.go).
+	constructor := false
 	if r == "" || r == "Router" || r == "Route" || r == "ListState" {
 		frameParam := ""
 		if fn.Type.Params != nil {
@@ -471,6 +475,7 @@ func generate(out *bytes.Buffer, fs *token.FileSet, fn *ast.FuncDecl) {
 			}
 		}
 		if frameParam != "" {
+			constructor = true
 			fmt.Fprintf(out, "_ctx := %s.build(); if _ctx == nil { %s };\n", frameParam, zeroReturn(fs, fn.Type.Results))
 		} else if mentions(fn.Type, "node") {
 			if name == "Local" || name == "Drop" || name == "DragOver" || name == "DropData" || name == "DataDragOver" {
@@ -493,12 +498,26 @@ func generate(out *bytes.Buffer, fs *token.FileSet, fn *ast.FuncDecl) {
 	}
 	call := rawRecv + fn.Name.Name + genericArgs(fs, fn.Type.TypeParams) + "(" + strings.Join(args, ",") + ")"
 	count := fieldsCount(fn.Type.Results)
+	// A part's method that builds an element, as a select's Item or a
+	// tab list's Tab, or parts, as an accordion's Item, is a constructor
+	// too.
+	if publicPart(r) != "" && count == 1 && (mentions(fn.Type.Results, "node") || publicPart(baseName(fn.Type.Results.List[0].Type)) != "") {
+		constructor = true
+	}
 	if count == 1 && mentions(fn.Type.Results, "node") {
-		fmt.Fprintf(out, "return wrapElement(%s)\n", call)
+		if constructor {
+			fmt.Fprintf(out, "_ctx.rt.beginBuild(); _e := %s; _ctx.rt.endBuild()\nreturn wrapElement(_e)\n", call)
+		} else {
+			fmt.Fprintf(out, "return wrapElement(%s)\n", call)
+		}
 	} else if count == 1 && publicPart(baseName(fn.Type.Results.List[0].Type)) != "" {
 		part := publicPart(baseName(fn.Type.Results.List[0].Type))
 		arg := genericTypeArguments(fs, fn.Type.Results.List[0].Type)
-		fmt.Fprintf(out, "return wrap%s%s(%s)\n", part, arg, call)
+		if constructor {
+			fmt.Fprintf(out, "_ctx.rt.beginBuild(); _p := %s; _ctx.rt.endBuild()\nreturn wrap%s%s(_p)\n", call, part, arg)
+		} else {
+			fmt.Fprintf(out, "return wrap%s%s(%s)\n", part, arg, call)
+		}
 	} else if count > 0 {
 		fmt.Fprintf(out, "return %s\n", call)
 	} else {
@@ -545,7 +564,7 @@ func generatePart(out *bytes.Buffer, fs *token.FileSet, t *ast.TypeSpec) {
 	}
 	fmt.Fprintln(out, "part uint32\n}")
 	ptr := ""
-	if pub == "SelectParts" || pub == "ComboboxParts" {
+	if pub == "SelectParts" || pub == "ComboboxParts" || pub == "MenuParts" {
 		ptr = "*"
 	}
 	fmt.Fprintf(out, "func wrap%s%s(p %s%s%s) %s%s {\n", pub, tp, ptr, t.Name.Name, args, pub, args)

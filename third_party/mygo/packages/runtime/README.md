@@ -40,3 +40,16 @@ await done;
 A Go method returning an error rejects with a `CallError` (see
 `isCallError`). Outside a MyGo window, e.g. when the dev server is opened in a
 browser, calls reject and `isMyGo()` is false.
+
+`mygo-runtime/i18n` formats the messages of the app's catalogs in its pages,
+as package `i18n` does in Go: messages of ICU MessageFormat, with the plural
+rules, numbers and dates of `Intl`. `mygo generate` writes a typed module of
+the catalogs next to the client (`locales.ts`) on top of it:
+
+```ts
+import { messages } from "./locales"; // generated
+
+status.textContent = messages.filesSelected(3); // "3 files selected"
+```
+
+`formatMessage(locale, message, args)` formats a message of your own.

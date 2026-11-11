@@ -30,7 +30,7 @@ func Toggle(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	if live {
 		variant = kit.Live
 	}
-	kit.Style(button, tokens, variant, enabled)
+	kit.Style(c, button, tokens, variant, enabled)
 	button.Children(func() {
 		if live {
 			kit.LevelBars(c, d.Levels, 5, 3, 16, 2, tokens.OnFill)

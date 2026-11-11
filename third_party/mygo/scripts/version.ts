@@ -17,7 +17,7 @@ const goFiles = [
 ];
 
 /** The official plugins' JavaScript packages, whose peer mygo-runtime is. */
-export const pluginPackages = ["plugins/fetch", "plugins/websocket", "plugins/sqlite"];
+export const pluginPackages = ["plugins/fetch", "plugins/websocket", "plugins/sqlite", "plugins/watch"];
 
 /** package.json files of the npm packages. */
 const packages = [

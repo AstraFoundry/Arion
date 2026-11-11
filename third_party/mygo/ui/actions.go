@@ -47,13 +47,28 @@ func (e Element) OnShortcut(mods Modifiers, key Key, fn func()) Element {
 	return e.on(actionShortcut, mods, key, fn)
 }
 
-// OnShortcut declares a handler in the current context's parent scope.
+// OnShortcut declares a handler in the current context's parent scope:
+// the window's, as OnWindowShortcut, at the root, else the parent
+// element's focus subtree, as Element.OnShortcut.
 func (c *Context) OnShortcut(mods Modifiers, key Key, fn func()) {
 	if raw := c.build(); raw != nil && fn != nil {
 		if raw.parent != raw.root {
 			wrapElement(raw.parent).OnShortcut(mods, key, fn)
 			return
 		}
+		c.OnWindowShortcut(mods, key, fn)
+	}
+}
+
+// OnWindowShortcut declares a handler of the window's shortcut mods+key,
+// which runs when c.Shortcut would report it, wherever c is in the tree:
+// a component built deep in the view hears its keys while the focus is
+// anywhere else, or nowhere, as one built at the root does. Elements
+// around the focus that take the key, and overlays, still come first;
+// one built in a dialog fires while the dialog shows, and one built
+// behind it waits, as Shortcut does.
+func (c *Context) OnWindowShortcut(mods Modifiers, key Key, fn func()) {
+	if raw := c.build(); raw != nil && fn != nil && raw.insideModal() && !raw.inert {
 		raw.rt.actions = append(raw.rt.actions, action{window: c, kind: actionWindowShortcut, mods: mods, key: key, fn: fn})
 	}
 }
@@ -117,7 +132,9 @@ func (rt *engine) runActions() {
 		}
 		handled := false
 		if a.kind == actionWindowShortcut {
-			handled = rt.c.Shortcut(a.mods, a.key)
+			// Whether the dialog on top lets it through was decided as it
+			// was declared, where it was built (OnWindowShortcut).
+			handled = rt.shortcut(0, a.mods, a.key)
 		} else if n := rt.actionNode(a); n != nil && !n.disabled() {
 			switch a.kind {
 			case actionClick:

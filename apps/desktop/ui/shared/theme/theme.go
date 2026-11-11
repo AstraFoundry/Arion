@@ -1,15 +1,19 @@
 // Package theme holds Arion's semantic design tokens and motion presets.
 //
-// Colors follow Sunbeam, the design system Arion shares with Lyra: one
-// yellow accent (#FFCC00) that always carries dark ink text, and warm
-// low-chroma "ink" neutrals that read as paper in the light appearance and
-// as ink in the dark one. The physical scales live only in this file;
-// views use the semantic Tokens. See docs/frontend/design-system.md.
+// Colors follow Sunbeam, the design system Arion shares with Lyra, and come
+// from its MyGo package (github.com/AstraFoundry/design/packages/mygo):
+// one yellow accent that always carries dark ink text, and warm low-chroma
+// "ink" neutrals that read as paper in the light appearance and as ink in
+// the dark one. This file resolves Arion's semantic Tokens from that
+// palette. The only physical colors it defines are those Sunbeam has no
+// token for: the warning hue and the shortcut recording blue. Type, row
+// geometry and motion stay Arion's. See docs/frontend/design-system.md.
 package theme
 
 import (
 	"time"
 
+	"github.com/AstraFoundry/design/packages/mygo/sunbeam"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -26,12 +30,12 @@ const (
 // Radius scale, as Lyra's: restrained, with nested corners computed from
 // it (inner = outer − padding) rather than repeated.
 const (
-	RadiusXS      = 2
-	RadiusSM      = 4
-	RadiusMD      = 6
-	RadiusLG      = 10
-	RadiusXL      = 14
-	RadiusPill    = 999
+	RadiusXS      = sunbeam.RadiusXS
+	RadiusSM      = sunbeam.RadiusSM
+	RadiusMD      = sunbeam.RadiusMD
+	RadiusLG      = sunbeam.RadiusLG
+	RadiusXL      = sunbeam.RadiusXL
+	RadiusPill    = sunbeam.RadiusFull
 	RadiusControl = RadiusLG
 	RadiusCard    = RadiusXL
 )
@@ -49,38 +53,18 @@ const (
 // card line up. Only content that needs more room makes a row taller.
 const RowHeight = 52
 
-// Sunbeam scales. Yellow is anchored at 500; ink rotates hue 40 → 22 from
-// paper to ink. Kept unexported: views reach them through Tokens.
+// Colors Sunbeam has no token for. Warning is Sunbeam's orange step,
+// which the web package does not publish yet; the recording blue marks a
+// shortcut field while it listens for keys.
 var (
-	yellow100 = ui.Hex("#fff3c2")
-	yellow400 = ui.Hex("#ffd21f")
-	yellow500 = ui.Hex("#ffcc00")
-	yellow600 = ui.Hex("#e6b800")
-	yellow700 = ui.Hex("#a87e00")
-
-	ink50  = ui.Hex("#faf8f5")
-	ink100 = ui.Hex("#efece6")
-	ink200 = ui.Hex("#dfdad3")
-	ink300 = ui.Hex("#c0b9af")
-	ink400 = ui.Hex("#988f86")
-	ink500 = ui.Hex("#726b65")
-	ink700 = ui.Hex("#38322e")
-	ink800 = ui.Hex("#221e1b")
-	ink900 = ui.Hex("#14110f")
-
-	white = ui.Hex("#ffffff")
-
-	success500 = ui.Hex("#1f9e5e")
-	success400 = ui.Hex("#31c47a")
-	danger500  = ui.Hex("#e03f1f")
-	danger400  = ui.Hex("#eb6347")
-	warning500 = ui.Hex("#e6780a")
-	warning400 = ui.Hex("#f29233")
-
-	// The substrate is one warm near-black in both appearances, as Lyra's
-	// ontology surface: the dictation pill floats over any app on it.
-	substrate     = ui.Hex("#161410")
-	substrateLine = ui.Hex("#2d2820")
+	warningLight       = ui.Hex("#e6780a")
+	warningDark        = ui.Hex("#f29233")
+	recordingInkLight  = ui.Hex("#0866ff")
+	recordingSoftLight = ui.Hex("#f1f5ff")
+	recordingInkDark   = ui.Hex("#8bb5ff")
+	recordingSoftDark  = ui.Hex("#142441")
+	white              = ui.RGB(255, 255, 255)
+	black              = ui.RGB(0, 0, 0)
 )
 
 // Tokens are semantic colors resolved for the current appearance.
@@ -123,85 +107,75 @@ type Tokens struct {
 	PillBorder  ui.Color
 }
 
-// Resolve returns the tokens for an appearance.
+// Resolve returns the tokens for an appearance, from Sunbeam's palette.
 func Resolve(dark bool) Tokens {
+	p := sunbeam.Light()
+	if dark {
+		p = sunbeam.Dark()
+	}
 	t := Tokens{
-		Dark:          false,
-		Canvas:        ink50,
-		Card:          white,
-		CardBorder:    ink200,
-		Hairline:      ink100,
-		Text:          ink900,
-		Muted:         ink500,
-		Subtle:        ink100,
-		Faint:         ink400,
-		Accent:        yellow500,
-		AccentText:    ink900,
-		AccentSoft:    yellow100,
-		AccentInk:     yellow700,
-		RecordingInk:  ui.Hex("#0866ff"),
-		RecordingSoft: ui.Hex("#f1f5ff"),
+		Dark:       dark,
+		Canvas:     p.Background,
+		Card:       p.Card,
+		CardBorder: p.Border,
+		// Dividers inside a card sit halfway between its edge and its face.
+		Hairline:      p.Border.Mix(p.Card, 0.5),
+		Text:          p.Foreground,
+		Muted:         p.MutedForeground,
+		Subtle:        p.Muted,
+		Faint:         p.Faint,
+		Accent:        p.Primary,
+		AccentText:    p.PrimaryForeground,
+		AccentSoft:    p.Accent,
+		AccentInk:     p.AccentForeground,
+		RecordingInk:  recordingInkLight,
+		RecordingSoft: recordingSoftLight,
 		OnFill:        white,
-		Live:          danger500,
-		LiveSoft:      danger500.Alpha(0.14),
-		Success:       success500,
-		Warning:       warning500,
-		Danger:        danger500,
-		Shade:         ink900,
+		Live:          p.Danger,
+		LiveSoft:      p.Danger.Alpha(0.14),
+		Success:       p.Success,
+		Warning:       warningLight,
+		Danger:        p.Danger,
+		Shade:         sunbeam.Ink900,
 		Highlight:     white.Alpha(0.16),
-		Scrim:         ink900,
-		PillSurface:   substrate.Alpha(0.94),
-		PillText:      ink50,
-		PillMuted:     ink50.Alpha(0.62),
-		PillBorder:    substrateLine,
+		Scrim:         p.Scrim,
+		// The pill stands on the substrate in both appearances.
+		PillSurface: sunbeam.SubstrateSurface.Alpha(0.94),
+		PillText:    sunbeam.SubstrateHi,
+		PillMuted:   sunbeam.SubstrateHi.Alpha(0.62),
+		PillBorder:  sunbeam.SubstrateLine,
 	}
 	if dark {
-		t.Dark = true
-		t.Canvas = ui.Hex("#090706")
-		t.Card = ink800
-		t.CardBorder = ui.Hex("#322d29")
-		t.Hairline = ui.Hex("#2a2622")
-		t.Text = ink50
-		t.Muted = ink300
-		t.Subtle = ink700
-		t.Faint = ink400
-		t.AccentSoft = yellow500.Alpha(0.14)
-		t.AccentInk = yellow400
-		t.RecordingInk = ui.Hex("#8bb5ff")
-		t.RecordingSoft = ui.Hex("#142441")
-		t.Live = danger400
-		t.LiveSoft = danger400.Alpha(0.16)
-		t.Success = success400
-		t.Warning = warning400
-		t.Danger = danger400
-		t.Shade = ui.Hex("#000000")
+		t.RecordingInk, t.RecordingSoft = recordingInkDark, recordingSoftDark
+		t.LiveSoft = p.Danger.Alpha(0.16)
+		t.Warning = warningDark
+		t.Shade = black
 		t.Highlight = white.Alpha(0.06)
-		t.PillSurface = substrate.Alpha(0.96)
-		t.PillBorder = ui.Hex("#3a342a")
+		t.PillSurface = sunbeam.SubstrateSurface.Alpha(0.96)
+		t.PillBorder = sunbeam.SubstrateEdge
 	}
 	return t
 }
 
 // Apply installs the Sunbeam theme for the window's appearance, so MyGo's
 // own controls (switches, radios, fields, the sidebar) wear it too, and
-// returns the tokens for Arion's views.
+// returns the tokens for Arion's views. It takes Sunbeam's colors and keeps
+// the window theme's other settings, such as its font.
 func Apply(c *ui.Context) Tokens {
 	base := c.Theme()
 	tokens := Resolve(base.Dark)
+	s := sunbeam.Theme(base.Dark)
 	t := *base
-	t.Background, t.Text, t.TextMuted, t.Border = tokens.Canvas, tokens.Text, tokens.Muted, tokens.CardBorder
-	t.Accent, t.AccentHover, t.AccentPressed, t.AccentText = yellow500, yellow400, yellow600, ink900
-	t.Danger, t.Warning, t.Success = tokens.Danger, tokens.Warning, tokens.Success
+	t.Background, t.Text, t.TextMuted, t.Border = s.Background, s.Text, s.TextMuted, s.Border
+	t.Surface, t.SurfaceHover, t.SurfacePressed = s.Surface, s.SurfaceHover, s.SurfacePressed
+	t.Accent, t.AccentHover, t.AccentPressed, t.AccentText = s.Accent, s.AccentHover, s.AccentPressed, s.AccentText
+	t.Danger, t.Warning, t.Success = s.Danger, tokens.Warning, s.Success
+	t.Selection, t.Focus = s.Selection, s.Focus
+	t.Inverse, t.InverseText = tokens.Text, tokens.Canvas
+	t.Scrollbar = tokens.Text.Alpha(0.28)
 	if base.Dark {
-		t.Surface, t.SurfaceHover, t.SurfacePressed = ink800, ink700, ui.Hex("#423b36")
-		t.Selection, t.Focus = yellow500.Alpha(0.3), yellow500.Alpha(0.6)
-		t.Scrollbar = white.Alpha(0.3)
-		t.Inverse, t.InverseText = ink50, ink900
-	} else {
-		t.Surface, t.SurfaceHover, t.SurfacePressed = white, ink100, ink200
-		t.Selection, t.Focus = yellow500.Alpha(0.4), yellow600.Alpha(0.8)
-		t.Scrollbar = ink900.Alpha(0.28)
-		t.Inverse, t.InverseText = ink900, ink50
+		t.Selection = tokens.Accent.Alpha(0.3)
+		t.Scrollbar = tokens.Text.Alpha(0.3)
 	}
 	// The desktop's Increase Contrast keeps its effect under our palette.
 	if c.Preferences().HighContrast {

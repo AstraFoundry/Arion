@@ -1,0 +1,16 @@
+[package]
+name = "bench-gpui"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[workspace]
+
+[dependencies]
+gpui = "0.2.2"
+
+# The smallest and fastest build Cargo makes.
+[profile.release]
+lto = "fat"
+codegen-units = 1
+strip = true

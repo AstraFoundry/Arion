@@ -4,6 +4,7 @@
 package surface
 
 import (
+	"github.com/egoist/mygo/i18n"
 	"github.com/egoist/mygo/internal/platform"
 	"github.com/egoist/mygo/transfer"
 )
@@ -33,6 +34,16 @@ type Conn struct {
 	// tells changes of as well.
 	IsDark      func() bool
 	Preferences func() platform.Preferences
+	// Locale returns the language the app shows (App.Locale), and Region
+	// the user's regional formats, which LocaleChanged tells changes of.
+	// They cost nothing: the content may read them every frame.
+	Locale func() string
+	Region func() i18n.Region
+	// RightToLeft reports whether the content is laid out right to left,
+	// as the app's language reads (i18n.Direction of App.Locale), unless
+	// the window says otherwise; nil is left to right. The content reads
+	// it as it builds each frame: call Changed after it changes.
+	RightToLeft func() bool
 	// UIFont returns the family of the desktop's interface font where the
 	// system's text stack does not know it (Linux), else "".
 	UIFont func() string
@@ -42,6 +53,10 @@ type Conn struct {
 	// TitleBar returns the room the window controls take in a window with
 	// a hidden title bar, zero in other windows.
 	TitleBar func() platform.TitleBar
+	// Active reports whether the window is drawn as active, as the window
+	// the user's input goes to (see ui.Context.WindowActive), which
+	// ActiveChanged tells changes of; nil is active. It costs nothing.
+	Active func() bool
 	// OpenURL opens a link in the default browser, and gives done, unless
 	// nil, what came of it on the main thread.
 	OpenURL func(url string, done func(error))
@@ -67,6 +82,22 @@ type Conn struct {
 	// PlaceWebViews shows the window's web views where the content's last
 	// frame shows them (Surface.PlaceWebViews).
 	PlaceWebViews func(views []platform.WebViewPlacement)
+	// ContentSize, set by a window that takes its content's size
+	// (mygo.FlyoutOptions.FitContent), nil in others, hears the size
+	// the content takes, in DIPs, as a frame laid out at the window's
+	// size measures it and when it changed: its max-content width within
+	// the bounds FitWidth returns (0 for none), and its height at that
+	// width. It is called while the frame builds: the window resizes
+	// after it, and the frame that follows lays the content out at the
+	// size it took.
+	ContentSize func(width, height float64)
+	FitWidth    func() (min, max float64)
+	// Fit, set by the content where ContentSize is, builds and lays out
+	// at once the frame the content waits to draw, if one waits, as in a
+	// hidden window, which tells ContentSize the size it takes if that
+	// changed, and reports whether it did build one. The window calls
+	// it before it shows, to show at that size.
+	Fit func() bool
 
 	// Event receives the surface's events, and Focus and Blur of the
 	// window. It reports whether the content takes dragged files, as
@@ -76,6 +107,11 @@ type Conn struct {
 	// TitleBarChanged when TitleBar does.
 	ThemeChanged    func()
 	TitleBarChanged func()
+	// ActiveChanged is called when Active changed.
+	ActiveChanged func()
+	// LocaleChanged is called when Locale or Region changed, for the
+	// content to build its frame anew.
+	LocaleChanged func()
 	// Capture renders the content as it is now into premultiplied RGBA.
 	Capture func() (width, height int, rgba []byte)
 	// ToggleDevTools opens or closes the content's inspector, for the

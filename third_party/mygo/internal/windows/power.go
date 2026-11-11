@@ -32,7 +32,8 @@ const (
 	wtsSessionUnlock      = 0x8
 )
 
-func (b *Backend) Power() platform.Power { return power{b} }
+func (b *Backend) Power() platform.Power     { return power{b} }
+func (b *Backend) Secrets() platform.Secrets { return secrets{} }
 
 type power struct{ b *Backend }
 

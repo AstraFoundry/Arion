@@ -1,9 +1,34 @@
 package audio
 
-import "math"
+import (
+	"math"
+	"slices"
+)
 
 // voices are the voices playing, or fading out, under mu.
 var voices []*voice
+
+// The output's clock, under mu: the frames mixed so far, how many of the
+// latest the device holds, not heard yet, and how many it holds at most.
+var (
+	mixed   int64
+	unheard int64
+	held    int64
+)
+
+// setHeld tells the mixer that a device opened which holds n frames ahead
+// of what is heard, and none of what was mixed before.
+func setHeld(n int64) {
+	mu.Lock()
+	defer mu.Unlock()
+	if !testMode {
+		held, unheard = n, 0
+	}
+}
+
+// heard returns the output's frame heard now: the frames mixed before it
+// are.
+func heard() int64 { return mixed - unheard }
 
 // rampFrames is how long volume changes, fades in and fades out take: 5 ms.
 const rampFrames = sampleRate / 200
@@ -17,7 +42,9 @@ type source interface {
 	// looping.
 	read(dst []float32) (n int, ended bool)
 	seek(frame int64)
-	setLoop(loop bool)
+	// setLoop sets whether the source loops, from frame start to end
+	// (0 for its end).
+	setLoop(loop bool, start, end int64)
 	close()
 }
 
@@ -35,9 +62,15 @@ type voice struct {
 	fadeIn  bool // resumes in the middle: fades in from silence
 	closed  bool
 	orphan  bool // its Player is gone: close at the end
+	atEnd   bool // played to its end, for mix to tell the OnEnd listeners
+
+	onEnd   []endListener
+	nextEnd uint64
 
 	volume, pan, speed float64
+	pitch              bool // preserves pitch at its speed: stretched by st
 	loop               bool
+	loopStart, loopEnd int64 // frames, loopEnd 0 for the end
 
 	// The four source frames the output is interpolated between, the
 	// second at idx, and how far the output is past it.
@@ -50,10 +83,26 @@ type voice struct {
 	inPos int
 	inLen int
 
+	// Time-stretches the source once its player preserved pitch, which
+	// counts where hist is in the source: nil for every other voice.
+	st *stretcher
+
 	// The gains applied, a 2×2 matrix from the source's channels to the
 	// output's (ll, rl, lr, rr), ramping to target.
 	gain, target, step [4]float32
 	rampLeft           int
+
+	// Where the voice was in its source as the output mixed its frames,
+	// oldest first, for Position to say where it is heard.
+	marks []mark
+}
+
+// A mark is the voice at output frame out: at frame pos of its source,
+// counted on past its loop's end. Between two marks the voice moved
+// evenly, or stood still where they are at the same pos.
+type mark struct {
+	out int64
+	pos float64
 }
 
 // reset starts the voice over at frame f of its source, which the caller
@@ -65,22 +114,93 @@ func (v *voice) reset(f int64) {
 	v.phase = 3
 	v.end = -1
 	v.inPos, v.inLen = 0, 0
+	if v.st != nil {
+		v.st.reset(f, v.pitch)
+	}
+	// What it mixed before is not where it is any more, even while heard.
+	v.marks = v.marks[:0]
 }
 
 // ended reports whether the voice played to the end of its source.
 func (v *voice) ended() bool { return v.end >= 0 && v.idx >= v.end }
 
-// position returns the source frame the voice is at.
-func (v *voice) position() float64 {
-	p := max(float64(v.idx)+v.phase, 0)
-	if v.length > 0 {
-		if v.loop {
-			p = math.Mod(p, float64(v.length))
-		} else {
-			p = min(p, float64(v.length))
+// at returns the source frame the voice mixes next, counted on past its
+// loop's end.
+func (v *voice) at() float64 {
+	if st := v.st; st != nil {
+		return st.tags[1] + v.phase*(st.tags[2]-st.tags[1])
+	}
+	return float64(v.idx) + v.phase
+}
+
+// stretch gives the voice a stretcher, which goes on from the frames it
+// holds, as its player starts to preserve pitch.
+func (v *voice) stretch() {
+	ch := 2
+	if v.mono {
+		ch = 1
+	}
+	st := newStretcher(int(v.rate), ch)
+	// The frame coming in next is at idx+3, and the second of hist at idx.
+	st.reset(v.idx+3, true)
+	for k := range st.tags {
+		st.tags[k] = float64(v.idx - 1 + int64(k))
+	}
+	st.n = copy(st.buf, v.in[v.inPos:v.inLen]) / ch
+	st.rd += int64(st.n)
+	v.inPos = v.inLen
+	v.st = st
+}
+
+// mark notes that the output mixes frame out with the voice where it is,
+// and forgets the marks before the frame heard.
+func (v *voice) mark(out, heard int64) {
+	m := mark{out, v.at()}
+	if n := len(v.marks); n > 0 && v.marks[n-1] == m {
+		return
+	}
+	k := 0
+	for k+1 < len(v.marks) && v.marks[k+1].out <= heard {
+		k++
+	}
+	v.marks = append(v.marks[:copy(v.marks, v.marks[k:])], m)
+}
+
+// heardAt returns the source frame the voice was at when the output mixed
+// what is heard now, counted on past its loop's end. Until the output plays
+// what it mixed since a seek, that is where it seeked to.
+func (v *voice) heardAt() float64 {
+	h := heard()
+	k := slices.IndexFunc(v.marks, func(m mark) bool { return m.out > h })
+	switch k {
+	case -1:
+		return v.at()
+	case 0:
+		return v.marks[0].pos
+	}
+	a, b := v.marks[k-1], v.marks[k]
+	return a.pos + (b.pos-a.pos)*float64(h-a.out)/float64(b.out-a.out)
+}
+
+// position returns source frame p, counted on past the loop's end, as a
+// frame of the source.
+func (v *voice) position(p float64) float64 {
+	p = max(p, 0)
+	if v.length == 0 {
+		return 0
+	}
+	if v.loop {
+		end := float64(v.loopEnd)
+		if end <= 0 {
+			end = float64(v.length)
 		}
-	} else if v.length == 0 {
-		p = 0
+		if start := float64(v.loopStart); end > start && p >= end {
+			p = start + math.Mod(p-start, end-start)
+		}
+		return p
+	}
+	if v.length > 0 {
+		p = min(p, float64(v.length))
 	}
 	return p
 }
@@ -105,12 +225,21 @@ func (v *voice) next() bool {
 		if v.end >= 0 {
 			// Past the end, silence.
 			v.shift(0, 0)
+			if v.st != nil {
+				v.st.push(v.st.next)
+			}
 			return true
 		}
-		if v.in == nil {
-			v.in = make([]float32, 256*ch)
+		var n int
+		var ended bool
+		if v.st != nil {
+			n, ended = v.readStretched()
+		} else {
+			if v.in == nil {
+				v.in = make([]float32, 256*ch)
+			}
+			n, ended = v.src.read(v.in)
 		}
-		n, ended := v.src.read(v.in)
 		v.inPos, v.inLen = 0, n*ch
 		if n == 0 {
 			if !ended {
@@ -119,6 +248,9 @@ func (v *voice) next() bool {
 			// The frame coming in would be at idx+3.
 			v.end = v.idx + 3
 			v.shift(0, 0)
+			if v.st != nil {
+				v.st.push(v.st.next)
+			}
 			return true
 		}
 	}
@@ -126,6 +258,9 @@ func (v *voice) next() bool {
 	r := l
 	if !v.mono {
 		r = v.in[v.inPos+1]
+	}
+	if st := v.st; st != nil {
+		st.push(st.tag0 + float64(v.inPos/ch)*st.tagStep)
 	}
 	v.inPos += ch
 	v.shift(l, r)
@@ -179,22 +314,37 @@ func (v *voice) retarget(t [4]float32) {
 	v.rampLeft = rampFrames
 }
 
-// mix adds the voice's next frames to out and reports whether it is still
-// active: false once at its end, or faded out.
-func (v *voice) mix(out []float32, master float64) bool {
+// mix adds the voice's next frames to out, which the output mixes from
+// its frame at, and reports whether it is still active: false once at its
+// end, or faded out.
+func (v *voice) mix(out []float32, master float64, at, heard int64) bool {
+	v.mark(at, heard)
+	n, ok := v.play(out, master)
+	v.mark(at+int64(n), heard)
+	return ok
+}
+
+// play adds the voice's next frames to out and returns how many it moved
+// through its source for, and whether it is still active.
+func (v *voice) play(out []float32, master float64) (int, bool) {
 	v.retarget(v.gains(master))
 	step := v.rate / sampleRate * v.speed
+	if v.st != nil && v.st.on {
+		// Stretched to the speed already.
+		step = v.rate / sampleRate
+	}
 	for i := 0; i < len(out); i += 2 {
 		for v.phase >= 1 {
 			if !v.next() {
 				// The stream is late: silence until it catches up.
-				return true
+				return i / 2, true
 			}
 			v.phase--
 		}
 		if v.ended() {
+			v.atEnd = v.atEnd || v.playing
 			v.playing = false
-			return false
+			return i / 2, false
 		}
 		if v.rampLeft > 0 {
 			for k := range v.gain {
@@ -206,14 +356,14 @@ func (v *voice) mix(out []float32, master float64) bool {
 			}
 		} else if !v.playing {
 			// Faded out.
-			return false
+			return i / 2, false
 		}
 		l, r := v.sample()
 		out[i] += l*v.gain[0] + r*v.gain[2]
 		out[i+1] += l*v.gain[1] + r*v.gain[3]
 		v.phase += step
 	}
-	return true
+	return len(out) / 2, true
 }
 
 // sample interpolates between the second and third frames with a
@@ -230,12 +380,24 @@ func (v *voice) sample() (l, r float32) {
 // mix fills out, interleaved stereo, with the voices playing, and reports
 // whether any is.
 func mix(out []float32) bool {
-	clear(out)
 	mu.Lock()
 	defer mu.Unlock()
+	return mixLocked(out)
+}
+
+// mixLocked is mix, under mu.
+func mixLocked(out []float32) bool {
+	clear(out)
+	at, h := mixed, heard()
 	n := 0
 	for _, v := range voices {
-		if v.closed || !v.mix(out, volume) {
+		if v.closed || !v.mix(out, volume, at, h) {
+			if v.atEnd {
+				v.atEnd = false
+				for _, l := range v.onEnd {
+					go l.fn()
+				}
+			}
 			v.active = false
 			if v.orphan {
 				v.close()
@@ -247,6 +409,9 @@ func mix(out []float32) bool {
 	}
 	clear(voices[n:])
 	voices = voices[:n]
+	f := int64(len(out) / channels)
+	mixed += f
+	unheard = min(unheard+f, held)
 	for i, s := range out {
 		out[i] = min(max(s, -1), 1)
 	}

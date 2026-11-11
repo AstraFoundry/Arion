@@ -36,6 +36,12 @@ func (e ScrollEdge) PaintMaterial(p *ui.Painter, box ui.Rect, radii [4]float32) 
 	if bg.A == 0 {
 		bg = p.Theme().Background
 	}
+	if p.Preferences().ReduceTransparency {
+		// An opaque bar, in place of what would show through the edge.
+		bg.A = 255
+		p.FillRadii(box, radii, bg)
+		return
+	}
 	if !e.Hard {
 		// The background, its alpha 0.85 at the bar's edge, falling
 		// linearly to 0 at the other, as AppKit's soft pocket replays the

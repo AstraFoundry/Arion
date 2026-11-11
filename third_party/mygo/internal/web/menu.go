@@ -20,6 +20,7 @@ user-select:none;-webkit-user-select:none;cursor:default;outline:none}
 .mygo-menu-item[data-checked]::before{content:"✓";position:absolute;left:7px;font-size:11px}
 .mygo-menu-item>.label{flex:1}
 .mygo-menu-item>.accel{opacity:.5}
+.mygo-menu-item .subtitle{display:block;margin-bottom:3px;font-size:11px;opacity:.6}
 .mygo-menu-item.on{background:#0a64d6;color:#fff}
 .mygo-menu-item.on>.accel{opacity:.8}
 .mygo-menu-item[aria-disabled=true]{opacity:.35}
@@ -39,6 +40,8 @@ type popup struct {
 	// removers remove the listeners of the page's events.
 	removers []func()
 	done     bool
+	// rtl lays the menus out right to left (Menu.RightToLeft).
+	rtl bool
 }
 
 // PopupMenu shows m at pos in w's content, or where the pointer last
@@ -71,7 +74,7 @@ func (b *Backend) PopupMenu(m *platform.Menu, pw platform.Window, pos *platform.
 	x += r.Get("left").Float()
 	y += r.Get("top").Float()
 
-	p := &popup{b: b, w: w}
+	p := &popup{b: b, w: w, rtl: m.RightToLeft}
 	chosen := 0
 	p.open(m, x, y, 0, func(id int) { chosen = id })
 	// Dismissed by a press elsewhere, Escape, or the page losing focus.
@@ -146,6 +149,9 @@ func (p *popup) open(m *platform.Menu, x, y float64, level int, choose func(int)
 	el := doc.Call("createElement", "div")
 	el.Set("className", "mygo-menu")
 	el.Call("setAttribute", "role", "menu")
+	if p.rtl {
+		el.Call("setAttribute", "dir", "rtl")
+	}
 	for _, it := range m.Items {
 		if !it.Visible {
 			continue
@@ -167,11 +173,22 @@ func (p *popup) open(m *platform.Menu, x, y float64, level int, choose func(int)
 		label := doc.Call("createElement", "span")
 		label.Set("className", "label")
 		label.Set("textContent", strings.ReplaceAll(it.Label, "&", ""))
+		if it.Subtitle != "" {
+			row.Get("style").Set("height", "auto")
+			sub := doc.Call("createElement", "span")
+			sub.Set("className", "subtitle")
+			sub.Set("textContent", it.Subtitle)
+			label.Call("appendChild", sub)
+		}
 		row.Call("appendChild", label)
 		accel := doc.Call("createElement", "span")
 		accel.Set("className", "accel")
 		if it.Type == platform.MenuItemSubmenu {
-			accel.Set("textContent", "›")
+			if p.rtl {
+				accel.Set("textContent", "‹")
+			} else {
+				accel.Set("textContent", "›")
+			}
 		} else {
 			accel.Set("textContent", accelText(it.Accelerator, p.b.mac))
 		}
@@ -187,7 +204,11 @@ func (p *popup) open(m *platform.Menu, x, y float64, level int, choose func(int)
 			row.Get("classList").Call("add", "on")
 			if it.Type == platform.MenuItemSubmenu && it.Submenu != nil {
 				r := row.Call("getBoundingClientRect")
-				p.open(it.Submenu, r.Get("right").Float()+2, r.Get("top").Float()-5, level+1, choose)
+				x := r.Get("right").Float() + 2
+				if p.rtl {
+					x = r.Get("left").Float() - 2
+				}
+				p.open(it.Submenu, x, r.Get("top").Float()-5, level+1, choose)
 			} else {
 				p.open(&platform.Menu{}, 0, 0, level+1, choose)
 			}
@@ -206,6 +227,10 @@ func (p *popup) open(m *platform.Menu, x, y float64, level int, choose func(int)
 	// Kept on the page.
 	vw, vh := js.Global().Get("innerWidth").Float(), js.Global().Get("innerHeight").Float()
 	r := el.Call("getBoundingClientRect")
+	if p.rtl {
+		// Its top right corner at x.
+		x = max(x-r.Get("width").Float(), 4)
+	}
 	if x+r.Get("width").Float() > vw {
 		x = max(vw-r.Get("width").Float()-4, 0)
 	}

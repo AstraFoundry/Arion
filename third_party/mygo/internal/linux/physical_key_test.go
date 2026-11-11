@@ -48,3 +48,12 @@ func TestEventPhysicalKey(t *testing.T) {
 		runtime.KeepAlive(&event)
 	}
 }
+
+func TestCursorNames(t *testing.T) {
+	// Every cursor has its CSS name, which cursor themes name theirs by.
+	for c := platform.CursorDefault; c <= platform.CursorNoDrop; c++ {
+		if cursorNames[c] == "" {
+			t.Errorf("cursor %d has no name", c)
+		}
+	}
+}

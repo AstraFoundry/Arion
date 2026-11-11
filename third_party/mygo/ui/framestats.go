@@ -141,8 +141,10 @@ func (f *frameStats) end(rt *engine) {
 		other -= t
 	}
 	path := "not shown"
-	if p, ok := rt.host.(interface{ framePath() string }); ok && p.framePath() != "" {
-		path = p.framePath()
+	if p, ok := rt.host.(interface{ framePath() string }); ok {
+		if fp := p.framePath(); fp != "" {
+			path = fp
+		}
 	}
 	passes := ""
 	switch {

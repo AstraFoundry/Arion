@@ -72,6 +72,36 @@ func TestWidgetCompositionHasOneUndoTransaction(t *testing.T) {
 	}
 }
 
+func TestWidgetCompositionCancel(t *testing.T) {
+	for _, multiline := range []bool{false, true} {
+		s := "さくら"
+		tt := inputTester(&s, multiline)
+		c := tt.h.ime.Client
+		var order platform.InputComposition
+		c.SetMarkedText(nil, "にほｎ", TextInputRange{Start: 3, End: 3})
+		tt.Frame()
+		// IMM32's Microsoft Japanese IME on Esc: WM_IME_COMPOSITION with
+		// neither string, then WM_IME_ENDCOMPOSITION.
+		order.Cancel(c)
+		order.End(c)
+		tt.Frame()
+		if got, _ := c.TextForRange(TextInputRange{End: 100}); s != "さくら" || got != s {
+			t.Fatalf("multiline %v: cancelled composition committed: value %q, document %q", multiline, s, got)
+		}
+		if _, ok := c.MarkedRange(); ok || c.Selection().Caret() != 3 {
+			t.Fatalf("multiline %v: marked text or caret left: %+v", multiline, c.Selection())
+		}
+		c.SetMarkedText(nil, "にほん", TextInputRange{Start: 3, End: 3})
+		order.Replace(c, nil, "日本")
+		order.End(c)
+		tt.Frame()
+		if s != "さくら日本" {
+			t.Fatalf("multiline %v: commit after a cancel: %q", multiline, s)
+		}
+		tt.rt.close()
+	}
+}
+
 func TestWidgetInputPrivacyAndReadonly(t *testing.T) {
 	s := "secret😀"
 	readonly := false

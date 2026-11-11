@@ -164,7 +164,7 @@ func variantChip(c *ui.Context, store runtime.Store, tokens theme.Tokens, varian
 		ui.Text(c, variant.From).FontSize(theme.Body).TextColor(tokens.Muted).Strikethrough().DecorationColor(tokens.Faint).SingleLine().Shrink(1)
 		remove := ui.ButtonBase(c.Key("remove")).Size(18, 18).Radius(9).Justify(ui.Center).AlignItems(ui.Center).
 			Label(messages.RemoveVocab(variant.From)).Tooltip(messages.RemoveVocab(variant.From))
-		kit.Style(remove, tokens, kit.Ghost, true)
+		kit.Style(c, remove, tokens, kit.Ghost, true)
 		remove.TextColor(tokens.Faint).Children(func() { ui.Icon(c, icons.X).FontSize(10) }).
 			OnClick(func() { store.Actions.RemoveReplacement(id) })
 	})
@@ -178,7 +178,7 @@ func variantAdder(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft
 	if draft.Term != term {
 		add := ui.ButtonBase(c.Key("variant-add")).Height(chipHeight).Padding(0, 10, 0, 8).Gap(4).AlignItems(ui.Center).
 			Radius(theme.RadiusPill).Border(1, tokens.CardBorder).BorderStyle(ui.BorderDashed).Label(messages.VocabVariantAction(term))
-		kit.Style(add, tokens, kit.Ghost, true)
+		kit.Style(c, add, tokens, kit.Ghost, true)
 		add.TextColor(tokens.Muted).Children(func() {
 			ui.Icon(c, icons.Plus).FontSize(11)
 			ui.Text(c, label).FontSize(theme.Caption).SingleLine()
@@ -222,7 +222,7 @@ func readingChip(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft 
 	}
 	chip := ui.ButtonBase(c).Height(chipHeight).MinWidth(chipHeight).Padding(0, 6).Gap(6).
 		Justify(ui.Center).AlignItems(ui.Center).Radius(theme.RadiusMD).Label(name).Tooltip(name)
-	kit.Style(chip, tokens, kit.Ghost, true)
+	kit.Style(c, chip, tokens, kit.Ghost, true)
 	chip.TextColor(tokens.Muted).Children(func() {
 		ui.Icon(c, icons.Keyboard).FontSize(13)
 		if record.KeyboardPinyin != "" {

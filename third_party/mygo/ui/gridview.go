@@ -154,8 +154,6 @@ type itemDrag struct {
 	items []int
 }
 
-func (d *itemDrag) dragCount() int { return len(d.items) }
-
 // dragged returns the items a drag from item i moves: those chosen when it
 // is one of them, else item i.
 func (s *GridState) dragged(i, n int) []int {
@@ -211,7 +209,7 @@ func (s *GridState) reorder(e *node, n int, gap float32) {
 			return
 		}
 		x := cell.x - gap/2
-		if after {
+		if after != cell.rtl {
 			x = cell.x + cell.w + gap/2
 		}
 		p.Fill(Rect{x - 1, cell.y + 4, 2, cell.h - 8}, t.Accent, 1)
@@ -243,7 +241,8 @@ func (s *GridState) dropAt(x, y float32, n int) (to int, cell uint64, after bool
 		return n, 0, false
 	}
 	st := s.cellState(cell)
-	if x >= st.x+st.w/2 {
+	// After a cell is past its middle: to its left right to left.
+	if (x >= st.x+st.w/2) != st.rtl {
 		return best + 1, cell, true
 	}
 	return best, cell, false
@@ -267,7 +266,10 @@ func (s *GridState) cell(c *context, grid *node, i, n int, height float32, item 
 	}
 	s.built[cell.id], s.rt = i, c.rt
 	if s.Reorder != nil {
-		cell.dragFrom(func() any { return &itemDrag{s: s, items: s.dragged(i, n)} })
+		cell.dragFrom(func() any {
+			items := s.dragged(i, n)
+			return countedDrag{&itemDrag{s: s, items: items}, len(items)}
+		})
 		if cell.Dragging() {
 			cell.Opacity(0.4)
 		}
@@ -302,7 +304,7 @@ func (s *GridState) cell(c *context, grid *node, i, n int, height float32, item 
 			// Where the keys moved without choosing.
 			cell.DrawOver(func(p *Painter, r Rect) {
 				if grid.FocusVisible() {
-					p.FocusRing(Rect{r.X + 3, r.Y + 3, r.W - 6, r.H - 6}, cell.radius)
+					p.focusRingOf(grid, Rect{r.X + 3, r.Y + 3, r.W - 6, r.H - 6}, cell.radius)
 				}
 			})
 		}
@@ -375,10 +377,12 @@ func (s *GridState) keys(grid *node, n int) {
 	cols := max(s.cols, 1)
 	at := *s.Selected
 	in := at >= 0 && at < n
+	// The items of a row go from the right right to left.
+	back, forth := grid.arrows()
 	moves := []struct {
 		key Key
 		d   int
-	}{{KeyRight, 1}, {KeyLeft, -1}, {KeyDown, cols}, {KeyUp, -cols}}
+	}{{forth, 1}, {back, -1}, {KeyDown, cols}, {KeyUp, -cols}}
 	to, extend := -1, false
 	for _, m := range moves {
 		plain, shift := grid.Shortcut(0, m.key), s.Selection != nil && grid.Shortcut(Shift, m.key)

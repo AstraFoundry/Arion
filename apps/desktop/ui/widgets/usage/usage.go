@@ -224,7 +224,7 @@ func rangeSelect(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, peri
 	chosen := *period
 	sel := ui.SelectBase(c.Key("range"), period)
 	kit.SelectTrigger(c, tokens, sel, messages.Text(copy.UsageRange), messages.Text(period.label()))
-	kit.SelectPopup(tokens, sel, func() {
+	kit.SelectPopup(c, tokens, sel, func() {
 		for _, r := range ranges {
 			kit.SelectItem(c, tokens, sel, r, messages.Text(r.label()), r == chosen)
 		}

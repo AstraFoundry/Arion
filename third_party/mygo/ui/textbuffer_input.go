@@ -73,7 +73,7 @@ func bufferInputBase(c *context, value *TextBuffer, multiline bool) *node {
 	}
 	st := e.st
 	if st.editor == nil || st.editor.document != value {
-		st.editor = newEditor()
+		st.editor = newEditor(c.rt.now)
 		st.editor.document = value
 		st.editor.loadBuffer(value.Snapshot())
 		st.editor.caret, st.editor.anchor = st.editor.buf.n, st.editor.buf.n
@@ -88,7 +88,7 @@ func bufferInputBase(c *context, value *TextBuffer, multiline bool) *node {
 		ed.client = &widgetTextInput{ed: ed, rt: c.rt, id: e.id}
 	}
 	e.textClient = ed.client
-	ed.readOnly, ed.password, ed.lines, ed.onPaste = false, false, [2]int{}, nil
+	ed.rebuild()
 	ed.ranges = ed.ranges[:0]
 	e.onValueInput(bufferInput)
 

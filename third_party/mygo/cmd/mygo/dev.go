@@ -33,9 +33,9 @@ that mygo build embeds.
 Use -out to place development builds outside the project, such as in a
 local cache when file-provider synchronization would alter signed bundles.
 
-Changes to the Go code, mygo.json or mygo.config.ts, the icon or the
-resources rebuild the app, regenerate the TypeScript client and relaunch
-it. A build that fails to compile keeps the previous one running; the next
+Changes to the Go code, mygo.json or mygo.config.ts, the icon, the
+resources or the catalogs of messages rebuild the app, regenerate the
+TypeScript client and the accessors of the catalogs, and relaunch it. A build that fails to compile keeps the previous one running; the next
 change tries again. Frontend changes are left to the dev server. Quitting the app ends mygo dev.
 
 On a terminal, type r and Enter to rebuild and restart the app, c to clear
@@ -44,7 +44,12 @@ the console, q to quit, h for help.
 With -web, it develops an app of native UI in browsers instead: it builds
 the app for them (GOOS=js GOARCH=wasm), serves it at http://localhost:<port>,
 opens it, and rebuilds it as its code changes, which reloads the page; the
-page shows why a build failed.`)
+page shows why a build failed.
+
+With -lang, the app runs in that language, a BCP 47 tag such as de or
+zh-Hant, or a pseudo locale: en-XA (accented and longer text) or ar-XB
+(right to left), which test layouts without translations. It does not
+keep it: the app's own setting is left as it is.`)
 	buildOnly := flags.Bool("build-only", false, "build and sign once without launching or watching")
 	skipDevCommand := flags.Bool("skip-dev-command", false, "do not run devCommand")
 	sign := flags.String("sign", "-", "macOS signing identity for the development app")
@@ -52,10 +57,15 @@ page shows why a build failed.`)
 	web := flags.Bool("web", false, "develop the app in browsers")
 	port := flags.Int("port", 5174, "with -web, the port to serve the app at, or the next free one")
 	openPage := flags.Bool("open", true, "with -web, open the app in the browser")
+	lang := flags.String("lang", "", "run the app in this language (as de, or the pseudo locales en-XA and ar-XB), without keeping it")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
 	c, err := loadConfig(dirArg(flags.Args()))
+	if err != nil {
+		return err
+	}
+	locale, err := devLocale(*lang)
 	if err != nil {
 		return err
 	}
@@ -66,12 +76,16 @@ page shows why a build failed.`)
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 		defer stop()
 		con.startBanner("dev")
-		return runWebDev(ctx, c, *port, *openPage)
+		return runWebDev(ctx, c, *port, *openPage, locale)
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	s := &devSession{root: c.root, output: *output, sign: *sign, buildOnly: *buildOnly, name: devConfig(c).Name, env: []string{"MYGO_ENV=development"}}
+	if locale != "" {
+		// The app reads it as it starts, over the language it keeps.
+		s.env = append(s.env, "MYGO_LOCALE="+locale)
+	}
 	var server atomic.Pointer[exec.Cmd] // the dev command
 	go func() {
 		// Ctrl+C again does not wait for the app to quit.
@@ -86,7 +100,11 @@ page shows why a build failed.`)
 	}()
 
 	con.startBanner("dev")
-	// The TypeScript client comes first: the frontend imports it.
+	// The accessors of the catalogs and the TypeScript client come first:
+	// the app and the frontend import them.
+	if err := generateI18n(c); err != nil {
+		return err
+	}
 	if err := writeClient(ctx, c, false); err != nil {
 		if ctx.Err() != nil {
 			return nil
@@ -186,10 +204,11 @@ type devSession struct {
 	env       []string // for the app
 
 	// Used by one build at a time.
-	iconKey string
-	icns    []byte
-	mainFor string // the Main that mainDir is the package directory of
-	mainDir string
+	i18nWarnings string // the warnings of the catalogs last shown
+	iconKey      string
+	icns         []byte
+	mainFor      string // the Main that mainDir is the package directory of
+	mainDir      string
 
 	// Used by the run loop only.
 	app *devProcess // the running build
@@ -258,7 +277,8 @@ func (s *devSession) run(ctx context.Context, c *Config) error {
 	results := make(chan result, 1)
 	builds, cancel := context.WithCancel(ctx)
 	building, pending, restart := false, false, false
-	launched := false    // a build has started
+	launched := false // a build has started
+	importChecked := false
 	var changed []string // the inputs that changed since the last build started
 	start := func() {
 		running := s.sum
@@ -380,6 +400,10 @@ func (s *devSession) run(ctx context.Context, c *Config) error {
 			building = false
 			if r.inputs != nil {
 				w.set(r.inputs)
+				if !importChecked && r.err == nil {
+					importChecked = true
+					checkCatalogImported(c, r.inputs.sourceDirs)
+				}
 			}
 			if r.err == nil {
 				prev := s.app
@@ -499,11 +523,18 @@ func devHelp() string {
 
 // devConfig configures the development app: "<Name> Dev" with the
 // identifier "<identifier>.dev", so that its data, preferences and single
-// instance lock stay apart from the production app's.
+// instance lock stay apart from the production app's, and the icon's -dev
+// sibling for its icon, when there is one, to tell it from the app's.
 func devConfig(c *Config) *Config {
 	d := *c
 	d.Name += " Dev"
 	d.Identifier += ".dev"
+	if d.Slug != "" {
+		d.Slug += "-dev"
+	}
+	if icon := c.devIcon(); icon != "" {
+		d.Icon = icon
+	}
 	return &d
 }
 
@@ -532,7 +563,7 @@ func (s *devSession) buildAndLaunch(ctx context.Context, t *task, running [32]by
 	case "windows":
 		name += ".exe"
 	default:
-		name = slugify(dc.Name)
+		name = dc.slug()
 	}
 	bin := filepath.Join(stage, name)
 	cleanup := func() {}
@@ -540,6 +571,10 @@ func (s *devSession) buildAndLaunch(ctx context.Context, t *task, running [32]by
 		if cleanup, err = s.windowsResources(c, dc); err != nil {
 			return nil, sum, err
 		}
+	}
+	if err := s.updateI18n(c); err != nil {
+		cleanup()
+		return nil, sum, err
 	}
 	err = goBuild(ctx, c, t, bin, nil, "-ldflags", strings.TrimSpace(packageFlags(dc)))
 	cleanup()
@@ -569,7 +604,7 @@ func (s *devSession) buildAndLaunch(ctx context.Context, t *task, running [32]by
 	}
 	var icns []byte
 	if runtime.GOOS == "darwin" {
-		if icns, err = s.icon(c); err != nil {
+		if icns, err = s.icon(dc); err != nil {
 			return nil, sum, err
 		}
 		iconFile := ""
@@ -587,13 +622,15 @@ func (s *devSession) buildAndLaunch(ctx context.Context, t *task, running [32]by
 		return nil, sum, errUnchanged
 	}
 
-	t.set("generating the TypeScript client")
-	changed, err := generateBindings(c, bin)
-	if err != nil {
-		return nil, sum, err
-	}
-	if changed {
-		logf("Wrote %s", cyan(relPathTo(c.root, c.path(c.Bindings))))
+	if c.Bindings != "" {
+		t.set("generating the TypeScript client")
+		changed, err := generateBindings(c, bin)
+		if err != nil {
+			return nil, sum, err
+		}
+		if changed {
+			logf("Wrote %s", cyan(relPathTo(c.root, c.path(c.Bindings))))
+		}
 	}
 	exe := filepath.Join(dir, name)
 	if runtime.GOOS == "darwin" {
@@ -623,11 +660,36 @@ func (s *devSession) buildAndLaunch(ctx context.Context, t *task, running [32]by
 	return p, sum, nil
 }
 
-// hashEntitlements writes the entitlements that sign the app and code among
-// its resources to w, to tell whether they changed.
+// updateI18n writes the accessors of the catalogs where they changed, and
+// shows their warnings when they changed too.
+func (s *devSession) updateI18n(c *Config) error {
+	out, err := writeI18n(c)
+	if err != nil {
+		return err
+	}
+	for _, f := range out.written {
+		logf("Wrote %s", cyan(f))
+	}
+	var b strings.Builder
+	for _, d := range out.warnings {
+		b.WriteString(d.String() + "\n")
+	}
+	if w := b.String(); w != s.i18nWarnings {
+		s.i18nWarnings = w
+		for _, d := range out.warnings {
+			warnf("%s", d)
+		}
+	}
+	return nil
+}
+
+// hashEntitlements fingerprints the app's profile and the entitlements
+// that sign it and code among its resources.
 func hashEntitlements(w io.Writer, c *Config) error {
-	files := map[string]string{"": c.MacOS.Entitlements} // "": the app
-	maps.Copy(files, c.MacOS.HelperEntitlements)
+	files := map[string]string{"app": c.MacOS.Entitlements, "profile": c.MacOS.ProvisioningProfile}
+	for name, file := range c.MacOS.HelperEntitlements {
+		files["helper:"+name] = file
+	}
 	for _, name := range slices.Sorted(maps.Keys(files)) {
 		if files[name] == "" {
 			continue
@@ -735,10 +797,12 @@ func (s *devSession) launch(exe string) (*devProcess, error) {
 		// What the app printed last, as a panic, comes before what mygo
 		// says of its exit, unless processes it started hold its output.
 		timeout := time.After(250 * time.Millisecond)
+	drain:
 		for _, copied := range []<-chan struct{}{outDone, errDone} {
 			select {
 			case <-copied:
 			case <-timeout:
+				break drain
 			}
 		}
 		close(p.done)

@@ -1,6 +1,10 @@
 package kit
 
-import "github.com/egoist/mygo/ui"
+import (
+	"arion.local/desktop/ui/shared/theme"
+	"github.com/AstraFoundry/design/packages/mygo/sunbeam"
+	"github.com/egoist/mygo/ui"
+)
 
 // PopupHeight caps a Select's popup: eight options show at once.
 const PopupHeight = 256
@@ -32,25 +36,27 @@ func Select[T comparable](c *ui.Context, selected *T, options []T, label func(T)
 		chevron(c, t)
 	})
 	sel.Popup(func(panel ui.Element) {
-		panel.Margin(t.Space(1), 0, 0, 0).Padding(t.Space(1)).Radius(t.Radius+2).Background(t.Background).Border(1, t.Border).
-			Shadow(0, 6, 20, 0, ui.RGBA(0, 0, 0, 0.18))
-		ui.Scroll(c).MaxHeight(PopupHeight).Children(func() {
-			for _, option := range options {
-				item := sel.Item(option).Padding(t.Space(1.5), t.Space(2.5)).Gap(t.Space(1.5)).AlignItems(ui.Center).
-					Radius(t.Radius).Label(label(option))
-				switch {
-				case item.Highlighted():
-					item.Background(t.Accent).TextColor(t.AccentText)
-				case option == current:
-					item.Background(t.Surface)
-				}
-				item.Children(func() {
-					if lead != nil {
-						lead(option)
+		// The popup floats over the window: Sunbeam's raised panel surface.
+		Popover(c, panel.Margin(t.Space(1), 0, 0, 0).Padding(t.Space(1)), theme.RadiusControl+2)
+		sunbeam.Layer(sunbeam.Raised, func() {
+			ui.Scroll(c).MaxHeight(PopupHeight).Children(func() {
+				for _, option := range options {
+					item := sel.Item(option).Padding(t.Space(1.5), t.Space(2.5)).Gap(t.Space(1.5)).AlignItems(ui.Center).
+						Radius(t.Radius).Label(label(option))
+					switch {
+					case item.Highlighted():
+						item.Background(t.Accent).TextColor(t.AccentText)
+					case option == current:
+						item.Background(t.Surface)
 					}
-					ui.Text(c, label(option)).SingleLine()
-				})
-			}
+					item.Children(func() {
+						if lead != nil {
+							lead(option)
+						}
+						ui.Text(c, label(option)).SingleLine()
+					})
+				}
+			})
 		})
 	})
 	return trigger

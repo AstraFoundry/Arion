@@ -52,6 +52,11 @@ type app struct {
 }
 
 func (a *app) view(c *ui.Context) {
+	if len(a.tabs) == 0 {
+		// The window can draw before its web views are made: an
+		// accessibility client asking for its tree draws a frame.
+		return
+	}
 	t := c.Theme()
 	shown := a.tabs[0]
 	for _, tb := range a.tabs {

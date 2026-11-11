@@ -74,8 +74,8 @@ UI as they read other apps (see [Accessibility](accessibility.md)).
   and fonts.
 - [Styling and themes](styling.md): backgrounds, borders, shadows and
   gradients, and the theme that follows the desktop.
-- [Input](input.md): the pointer, the keyboard focus, shortcuts, input
-  methods, dropped files, and widgets that take every key.
+- [Input](input.md): the pointer, the keyboard focus, shortcuts, the keys
+  held, input methods, dropped files, and widgets that take every key.
 - [Drag and drop](drag-and-drop.md): values dragged within the window, and
   rows reordered by dragging.
 - [Pages and navigation](navigation.md): a router of pages with a history,
@@ -84,18 +84,26 @@ UI as they read other apps (see [Accessibility](accessibility.md)).
   window share: the focus, Escape, and what is behind them.
 - [Accessibility](accessibility.md): what screen readers see, naming
   elements, roles, descriptions and announcements.
+- [Right to left](right-to-left.md): interfaces laid out from the right
+  for Arabic and Hebrew, logical edges, and what mirrors.
+- [Languages](../i18n.md#native-ui): the window's language and regional
+  formats, numbers and dates written in them, and the controls' own
+  strings.
 - [Drawing and animation](drawing.md): painting on elements, shaping text,
   and values that ease to their targets.
-- [Transitions](transitions.md): elements that move, resize and recolor
-  smoothly as the layout changes, and come and go.
+- [Shaders](shaders.md): pixels computed on the GPU by shaders written in
+  Go's syntax, with values and images the app passes them.
+- [Transitions](transitions.md): elements that move, resize, recolor and
+  shade smoothly as the layout changes, and come and go.
 - [Motion](motion.md): springs that keep their velocity, curves, delays,
-  values thrown by the pointer, keyframes, and knowing when they are done.
+  values thrown by the pointer, keyframes, timelines that play several
+  tweens on one playhead, and knowing when they are done.
 - [Transforms](transforms.md): visual translation, scaling and rotation of
   any element, which the pointer, text input and accessibility follow.
 - [Custom widgets](custom-widgets.md): the widgets without a look that every
   widget is built on, and widgets of your own.
 - [Windows with native UI](windows.md): window options, title bars drawn by
-  the view, and vibrancy.
+  the view, zooming the content, and vibrancy.
 - [Testing](testing.md): running a view without a window, as fast as a unit
   test.
 - [Inspector](inspector.md): the elements of a window, their boxes and
@@ -111,9 +119,12 @@ UI as they read other apps (see [Accessibility](accessibility.md)).
 
 - [Button](button.md): a push button, plain or in the accent color.
 - [Link](link.md): text that opens a URL, or a page of a router.
-- [Menu button](menu-button.md): a button opening a menu below it.
+- [Menu button](menu-button.md): a button opening a menu below it, the
+  system's or one MyGo draws in the window with the theme's look.
 - [Context menu](context-menu.md): a menu of the system's for any element,
-  on a right click.
+  on a right click, or one MyGo draws in the window with the theme's look;
+  [every menu of a window](context-menu.md#every-menu-of-a-window) drawn so,
+  text inputs' and tables' too.
 - [Toggle](toggle.md): a button that stays pressed, and toggles joined in a
   group.
 - [Segmented control](segmented.md): segments choosing one of a few views.
@@ -140,6 +151,8 @@ UI as they read other apps (see [Accessibility](accessibility.md)).
 - [Text-input primitives](text-input-client.md): application-owned text,
   native composition and queries, and retained geometry for custom controls.
 - [Number input](number-input.md): a number in a range, typed or stepped.
+- [Decimal input](decimal-input.md): an exact decimal, as an amount of money,
+  typed or stepped, never rounded.
 - [Search field](search-field.md): a field for searching, which Escape
   clears.
 - [Combobox](combobox.md): a field choosing one of a list, which typing
@@ -151,6 +164,23 @@ UI as they read other apps (see [Accessibility](accessibility.md)).
   name in Finder.
 - [Find bar](find-bar.md): a bar for finding text, with the count of
   matches and the next and previous ones.
+- [Rich text editor](rich-text-editor.md): attributed text with formats,
+  links, headings, lists, tasks and images, the shortcuts and Format menu
+  of word processors, rich copy and paste, and Markdown.
+
+## Code
+
+- [Code editor](code-editor.md): an editor of code as Zed's, with
+  highlighting, several carets, folding, completions and diagnostics, for
+  files of any size.
+- [Diff viewer](diff-viewer.md): the changes between two texts, side by
+  side or unified, with the new text editable and changes to review.
+
+## Documents
+
+- [Markdown](markdown.md): CommonMark and GitHub's Markdown, as finished
+  documents or a language model's replies streaming in, selectable and
+  copied as text or Markdown.
 
 ## Dates and colors
 
@@ -219,5 +249,7 @@ UI as they read other apps (see [Accessibility](accessibility.md)).
 ## Images
 
 - [Image](image.md): bitmaps and SVGs in their own colors.
+- [Video](video.md): clips that play, as animated GIFs, behind the content
+  or as previews.
 - [Icon](icon.md): SVG icons in the color of the text.
 - [Avatar](avatar.md): a picture of a person, or their initials.

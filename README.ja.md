@@ -14,8 +14,8 @@
 </p>
 
 <p align="center">
-  <a href="go.work"><img src="https://img.shields.io/badge/Go-1.27.1-00ADD8?logo=go&logoColor=white" alt="Go 1.27.1" style="display: inline-block; margin: 2px;" /></a>
-  <a href="apps/desktop/go.mod"><img src="https://img.shields.io/badge/MyGo-v0.4.6-4B5563" alt="MyGo v0.4.6" style="display: inline-block; margin: 2px;" /></a>
+  <a href="go.work"><img src="https://img.shields.io/badge/Go-1.27.3-00ADD8?logo=go&logoColor=white" alt="Go 1.27.3" style="display: inline-block; margin: 2px;" /></a>
+  <a href="apps/desktop/go.mod"><img src="https://img.shields.io/badge/MyGo-v0.8.3-4B5563" alt="MyGo v0.8.3" style="display: inline-block; margin: 2px;" /></a>
   <a href="docs/decisions/020-native-qwen-asr.md"><img src="https://img.shields.io/badge/ASR-Qwen3_1.7B-0F766E" alt="Native Qwen3-ASR" style="display: inline-block; margin: 2px;" /></a>
   <a href=".nvmrc"><img src="https://img.shields.io/badge/Node-24-339933?logo=nodedotjs&logoColor=white" alt="Node 24" style="display: inline-block; margin: 2px;" /></a>
   <a href="package.json"><img src="https://img.shields.io/badge/pnpm-10.33.0-F69220?logo=pnpm&logoColor=white" alt="pnpm 10.33.0" style="display: inline-block; margin: 2px;" /></a>
@@ -37,7 +37,7 @@
 - **オンデバイスのネイティブ音声認識** — `speech.cpp` と Q8_0 GGUF ウェイトで Qwen3-ASR 1.7B をローカル実行し、Apple silicon では Metal、Windows x64 では CPU/Vulkan を使用します（[ADR 020](docs/decisions/020-native-qwen-asr.md)）。モデルのダウンロードと SHA-256 検証が完了した後は完全にオフラインで動作します。マイク音声はセッション中のみメモリに保持され、パスワード欄は自動的にスキップされ、小声入力向けの段階的ソフトウェア入力ゲイン（`−6 dB`〜`+12 dB`）も備えています。
 - **編集学習とドラフト分離** — 発話中のストリーミングドラフトはフローティングピル内に留まり、キーを離した時点で確定文のみが一度で挿入されます。決定論的ルールと承認済み語彙をローカルで適用し、macOS のネイティブエディタでは挿入後の手動修正を自動学習してワンクリックで元に戻すことができます（[ADR 014](docs/decisions/014-edit-learning.md)）。
 - **2段階の文脈推敲** — キーを離した後にオプションの2段階推敲を実行し（[ADR 023](docs/decisions/023-final-only-polishing.md)）、フィラーの除去、文中の言い直しの反映、アクティブウィンドウやカーソル周辺の用語を参照した固有名詞の曖昧性解消（[ADR 013](docs/decisions/013-rewrite-context-on-device.md)）、およびアプリケーションに応じた整形（**アプリに合わせる**、[ADR 012](docs/decisions/012-context-scene-selection.md)）を行います。オプションの翻訳ショートカットで、話した内容を12の対象言語へ翻訳して挿入することもできます。macOS Apple silicon と Windows x64 上で `llama.cpp` により Qwen3.5-2B（`Q4_K_M` GGUF）をローカル実行できるほか（[ADR 018](docs/decisions/018-staged-gguf-rewriting.md)、[ADR 025](docs/decisions/025-windows-local-polishing.md)）、生の音声をデバイス内に保ったまま明示的オプトインのクラウドモデル（ChatGPT サインイン、OpenAI、Anthropic、Gemini、DeepSeek、OpenRouter の API キー、または OpenAI 互換 / Anthropic 互換エンドポイントのベース URL と API キー）に接続することも可能です（[ADR 022](docs/decisions/022-cloud-polishing.md)）。
-- **ネイティブ Go デスクトップシェル** — Electron や WebView を使わず、[MyGo](https://github.com/egoist/mygo)（`v0.4.6`）と Go における Feature-Sliced Design で構築されています（[ADR 001](docs/decisions/001-desktop-native-boundaries.md)、[ADR 007](docs/decisions/007-sunbeam-design-system.md)）。メニューバー/システムトレイに常駐し、フルスクリーン Space に追従するクリックスルー可能なピルがエディタのフォーカスを奪わずに動作します。英語 / 簡体字中国語 UI のリアルタイム切り替えに対応しています（[i18n](docs/frontend/i18n.md)）。
+- **ネイティブ Go デスクトップシェル** — Electron や WebView を使わず、[MyGo](https://github.com/egoist/mygo)（`v0.8.3`）と Go における Feature-Sliced Design で構築されています（[ADR 001](docs/decisions/001-desktop-native-boundaries.md)、[ADR 007](docs/decisions/007-sunbeam-design-system.md)）。メニューバー/システムトレイに常駐し、フルスクリーン Space に追従するクリックスルー可能なピルがエディタのフォーカスを奪わずに動作します。英語 / 簡体字中国語 UI のリアルタイム切り替えに対応しています（[i18n](docs/frontend/i18n.md)）。
 - **ゼロ知識同期と署名付きアップデート** — 個人語彙は macOS キーチェーンまたは Windows DPAPI に保存された鍵を用いて AES-256-GCM でローカル暗号化されます（[ADR 005](docs/decisions/005-local-encryption.md)）。Docker でセルフホスト可能かつ復号鍵を保持しない Go 暗号文リレー `services/sync`（[ADR 015](docs/decisions/015-hosted-relay-account-authorization.md)）と、Ed25519 署名付きの `stable`/`beta` チャネルを配信する `services/updates`（[ADR 019](docs/decisions/019-center-update-channels.md)）を提供します。
 
 - **更新と製品通知の制御** — 自動確認と検証済みダウンロードは個別に設定します。ダウンロードした更新は、ユーザーが安全な再起動を選ぶまで待機します。システムの通知設定に従い、更新通知とサインイン済みアカウント向け通知をアプリの実行中と次回起動時に取得します。[更新ライフサイクル](docs/project/update-lifecycle.md)と[製品通知](docs/project/product-notifications.md)を参照してください。
@@ -55,7 +55,7 @@
 
 ### 前提条件
 
-- `cgo` が有効化された **Go 1.27.1**（`go.work` は自動ツールチェーン選択を使用）。
+- `cgo` が有効化された **Go 1.27.3**（`go.work` は自動ツールチェーン選択を使用）。
 - **macOS（`arm64`）**：macOS 14 SDK を含む Apple Command Line Tools、CMake、Apple silicon ホスト。`speech.cpp` の Metal バックエンドはローカルでビルドされます。
 - **Windows（`amd64`）**：ネイティブ C/C++ ツールチェーン、CMake、MinGW-w64 GCC（`CC=x86_64-w64-mingw32-gcc`）、および NSIS。
 - **Linux**：`make desktop-check` 専用の GCC、Pango、Cairo と、ラテン文字および CJK 文字をカバーするフォント。これはテスト手順であり、パッケージ配布ではありません。入力メソッドの登録やホールドキーの追加は行いません。

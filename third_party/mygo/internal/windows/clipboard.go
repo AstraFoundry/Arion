@@ -61,7 +61,7 @@ func (clipboard) WriteData(data transfer.Data, released func()) error {
 	// One OLE initialization/vtable per process, shared with native drags.
 	dropOnce.Do(initDropTarget)
 	if len(data.Formats()) == 0 {
-		hr, _, _ := procOleSetClipboard.Call(0)
+		hr := oleClipboard(func() uintptr { hr, _, _ := procOleSetClipboard.Call(0); return hr })
 		if failed(hr) {
 			return hresultError("OleSetClipboard", hr)
 		}
@@ -80,7 +80,7 @@ func (clipboard) WriteData(data transfer.Data, released func()) error {
 	}
 	object := newTransferData(data, "", true)
 	defer release(object)
-	hr, _, _ := procOleSetClipboard.Call(object)
+	hr := oleClipboard(func() uintptr { hr, _, _ := procOleSetClipboard.Call(object); return hr })
 	if failed(hr) {
 		return hresultError("OleSetClipboard", hr)
 	}
@@ -106,7 +106,11 @@ func clipboardFormats() ([]transfer.Format, map[transfer.Format]uint16) {
 		if !slices.Contains(offered, f) {
 			offered = append(offered, f)
 		}
-		if nativeFormats[f] == 0 || oleRegisteredFormatName(id) == string(f) {
+		// The registered "PNG" format, as browsers and Office copy it,
+		// comes before bitmaps, whose alpha a DIB may lose, as ReadImage
+		// reads it.
+		if nativeFormats[f] == 0 || oleRegisteredFormatName(id) == string(f) ||
+			id == uint16(cfPNG) && oleRegisteredFormatName(nativeFormats[f]) != string(f) {
 			nativeFormats[f] = id
 		}
 		if f == transfer.FileList {
@@ -164,6 +168,7 @@ func clipboardBytes(format uint16) ([]byte, error) {
 }
 
 func (c clipboard) ReadData(formats []transfer.Format) (transfer.Data, error) {
+	requested := formats
 	if s := currentWinClipboard(); s != nil {
 		if len(formats) == 0 {
 			formats = s.data.Formats()
@@ -189,69 +194,20 @@ func (c clipboard) ReadData(formats []transfer.Format) (transfer.Data, error) {
 		}
 	}
 	var reps []transfer.Representation
+	// Reading all that is offered, a representation that can't be read,
+	// as the EnterpriseDataProtectionId Notepad offers with no data, is
+	// left out rather than costing the others, its text.
+	all := len(requested) == 0
 	for n, f := range formats {
 		id := nativeFormats[f]
 		if id == 0 || slices.Contains(formats[:n], f) {
 			continue
 		}
-		var b []byte
-		var err error
-		if id == cfHDrop {
-			h, _, _ := procGetClipboardData.Call(uintptr(id))
-			if h == 0 {
-				return transfer.Data{}, transfer.ErrFormat
-			}
-			files, e := transfer.FileData(droppedHDropPaths(h)...)
-			if e != nil {
-				return transfer.Data{}, e
-			}
-			b, err = files.Read(f)
-		} else {
-			b, err = clipboardBytes(id)
-			if err != nil {
-				return transfer.Data{}, err
-			}
-			switch id {
-			case cfUnicodeText:
-				b = []byte(oleText(b))
-			case uint16(cfHTML):
-				s := string(b)
-				start, end := htmlOffset(s, "StartFragment:"), htmlOffset(s, "EndFragment:")
-				if start < 0 || end < start || end > len(b) {
-					return transfer.Data{}, errors.New("mygo: invalid CF_HTML clipboard data")
-				}
-				b = b[start:end]
-			case cfDIB, cfDIBV5:
-				img := dibToImage(b)
-				if img == nil {
-					return transfer.Data{}, errors.New("mygo: cannot convert clipboard bitmap")
-				}
-				var encoded bytes.Buffer
-				if err = png.Encode(&encoded, img); err != nil {
-					return transfer.Data{}, err
-				}
-				b = encoded.Bytes()
-			default:
-				if oleRegisteredFormatName(id) == "UniformResourceLocatorW" {
-					b = []byte(oleText(b))
-				}
-			}
-			// Plain registered payloads stay interoperable. The optional
-			// length hint restores empty/trailing-NUL custom bytes exactly.
-			if oleRegisteredFormatName(id) == string(f) {
-				lengthID := uint16(registerClipboardFormat(clipboardLengthPrefix + string(f)))
-				if available, _, _ := procIsClipboardFormatAvailable.Call(uintptr(lengthID)); available != 0 {
-					length, e := clipboardBytes(lengthID)
-					if e == nil && len(length) >= 8 {
-						n := binary.LittleEndian.Uint64(length)
-						if n <= uint64(len(b)) {
-							b = b[:n]
-						}
-					}
-				}
-			}
-		}
+		b, err := readClipboardRep(f, id)
 		if err != nil {
+			if all {
+				continue
+			}
 			return transfer.Data{}, err
 		}
 		reps = append(reps, transfer.Bytes(f, b))
@@ -287,7 +243,7 @@ func (clipboard) Flush() error {
 	}
 	setTransferProviders(object, d, "")
 	s.data = d
-	hr, _, _ := procOleFlushClipboard.Call()
+	hr := oleClipboard(func() uintptr { hr, _, _ := procOleFlushClipboard.Call(); return hr })
 	if failed(hr) {
 		return hresultError("OleFlushClipboard", hr)
 	}
@@ -311,4 +267,67 @@ func (c clipboard) Close() {
 			}
 		}
 	}
+}
+
+// readClipboardRep reads representation f of the open clipboard, held in
+// native format id, as ReadData returns it.
+func readClipboardRep(f transfer.Format, id uint16) ([]byte, error) {
+	var b []byte
+	var err error
+	if id == cfHDrop {
+		h, _, _ := procGetClipboardData.Call(uintptr(id))
+		if h == 0 {
+			return nil, transfer.ErrFormat
+		}
+		files, e := transfer.FileData(droppedHDropPaths(h)...)
+		if e != nil {
+			return nil, e
+		}
+		b, err = files.Read(f)
+	} else {
+		b, err = clipboardBytes(id)
+		if err != nil {
+			return nil, err
+		}
+		switch id {
+		case cfUnicodeText:
+			b = []byte(oleText(b))
+		case uint16(cfHTML):
+			s := string(b)
+			start, end := htmlOffset(s, "StartFragment:"), htmlOffset(s, "EndFragment:")
+			if start < 0 || end < start || end > len(b) {
+				return nil, errors.New("mygo: invalid CF_HTML clipboard data")
+			}
+			b = b[start:end]
+		case cfDIB, cfDIBV5:
+			img := dibToImage(b)
+			if img == nil {
+				return nil, errors.New("mygo: cannot convert clipboard bitmap")
+			}
+			var encoded bytes.Buffer
+			if err = png.Encode(&encoded, img); err != nil {
+				return nil, err
+			}
+			b = encoded.Bytes()
+		default:
+			if oleRegisteredFormatName(id) == "UniformResourceLocatorW" {
+				b = []byte(oleText(b))
+			}
+		}
+		// Plain registered payloads stay interoperable. The optional
+		// length hint restores empty/trailing-NUL custom bytes exactly.
+		if oleRegisteredFormatName(id) == string(f) {
+			lengthID := uint16(registerClipboardFormat(clipboardLengthPrefix + string(f)))
+			if available, _, _ := procIsClipboardFormatAvailable.Call(uintptr(lengthID)); available != 0 {
+				length, e := clipboardBytes(lengthID)
+				if e == nil && len(length) >= 8 {
+					n := binary.LittleEndian.Uint64(length)
+					if n <= uint64(len(b)) {
+						b = b[:n]
+					}
+				}
+			}
+		}
+	}
+	return b, err
 }

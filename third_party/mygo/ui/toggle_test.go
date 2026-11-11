@@ -66,6 +66,102 @@ func TestFocusGroupIsOneTabStop(t *testing.T) {
 	}
 }
 
+// TestTabStopFalse checks that an element of TabStop(false) takes the
+// focus from a click and from Focus while Tab passes over it, as HTML's
+// tabindex="-1" (#1308).
+func TestTabStopFalse(t *testing.T) {
+	var card *node
+	focus := false
+	labels := []string{"Before", "Inside", "After"}
+	tt := coreNewTester(func(c *context) {
+		coreColumn(c).Padding(10).Gap(8).Children(func() {
+			coreButton(c, "Before")
+			card = coreColumn(c).Padding(20).TabStop(false).Label("Card")
+			card.Children(func() { coreButton(c, "Inside") })
+			if focus {
+				card.Focus()
+			}
+			coreButton(c, "After")
+		})
+	}, 400, 300)
+	if got := tabs(tt, 0, 4, labels...); !slices.Equal(got, []string{"Before", "Inside", "After", "Before"}) {
+		t.Fatalf("Tab went %q", got)
+	}
+	if got := tabs(tt, Shift, 3, labels...); !slices.Equal(got, []string{"After", "Inside", "Before"}) {
+		t.Fatalf("Shift+Tab went %q", got)
+	}
+	// A press on it gives it the focus, and Tab goes on into it.
+	r, ok := tt.Find("Card")
+	if !ok {
+		t.Fatal("no card")
+	}
+	tt.ClickAt(r.X+5, r.Y+5)
+	if tt.rt.focused != card.id {
+		t.Fatal("a click did not focus the card")
+	}
+	if got := tabs(tt, 0, 1, labels...); got[0] != "Inside" {
+		t.Errorf("Tab from the card went to %q", got[0])
+	}
+	focus = true
+	tt.Frame()
+	focus = false
+	if tt.rt.focused != card.id {
+		t.Fatal("Focus did not focus the card")
+	}
+	if got := tabs(tt, Shift, 1, labels...); got[0] != "Before" {
+		t.Errorf("Shift+Tab from the card went to %q", got[0])
+	}
+	tt.send(platform.SurfaceEvent{Kind: platform.AccessibilityOn})
+	if n := accessNode(t, tt.h.access, platform.RoleGroup, "Card"); n.States&platform.AccessFocusable == 0 {
+		t.Errorf("the card is not focusable to assistive technology: %+v", n)
+	}
+	// TabStop(true) is a tab stop again.
+	tt = coreNewTester(func(c *context) {
+		coreColumn(c).Children(func() {
+			coreButton(c, "Before")
+			card = coreColumn(c).Padding(20).TabStop(false).TabStop(true).Label("Card")
+			card.Children(func() { coreButton(c, "Inside") })
+		})
+	}, 400, 300)
+	tabs(tt, 0, 2)
+	if tt.rt.focused != card.id {
+		t.Error("Tab did not stop at TabStop(true)")
+	}
+}
+
+// TestFocusGroupEntersPastTabStopFalse checks that Tab enters a focus
+// group at a member it stops at, not at one of TabStop(false).
+func TestFocusGroupEntersPastTabStopFalse(t *testing.T) {
+	labels := []string{"Before", "Cut", "Copy", "Paste", "After"}
+	tt := coreNewTester(func(c *context) {
+		coreColumn(c).Padding(10).Gap(8).Children(func() {
+			coreButton(c, "Before")
+			coreToolbar(c, func() {
+				coreButton(c, "Cut").TabStop(false)
+				coreButton(c, "Copy")
+				coreButton(c, "Paste")
+			}).Label("Edit")
+			coreButton(c, "After")
+		})
+	}, 500, 300)
+	if got := tabs(tt, 0, 3, labels...); !slices.Equal(got, []string{"Before", "Copy", "After"}) {
+		t.Fatalf("Tab went %q", got)
+	}
+	// The arrows still reach it, and Tab comes back into the group where
+	// it stops.
+	if got := tabs(tt, Shift, 1, labels...); got[0] != "Copy" {
+		t.Fatalf("Shift+Tab went to %q", got[0])
+	}
+	tt.Key(0, KeyLeft)
+	if !tt.Focused("Cut") {
+		t.Fatal("Left did not go to Cut")
+	}
+	tabs(tt, 0, 1)
+	if got := tabs(tt, Shift, 1, labels...); got[0] != "Copy" {
+		t.Errorf("Shift+Tab back into the toolbar went to %q", got[0])
+	}
+}
+
 func TestFocusGroupLeavesKeysToWhatTakesThem(t *testing.T) {
 	name, volume := "abc", 0.5
 	tt := coreNewTester(func(c *context) {
@@ -137,6 +233,30 @@ func TestRadioGroupArrowsChoose(t *testing.T) {
 	}
 }
 
+func TestRadioGroupEntersAtTheOneChosen(t *testing.T) {
+	value := ""
+	labels := []string{"a", "b", "c", "After"}
+	tt := coreNewTester(func(c *context) {
+		coreColumn(c).Padding(10).Gap(8).Children(func() {
+			coreRadioGroup(c, func() {
+				for _, v := range []string{"a", "b", "c"} {
+					coreRadioBase(c, &value, v).Children(func() { coreText(c, v) })
+				}
+			}).Label("Letters")
+			coreButton(c, "After")
+		})
+	}, 400, 300)
+	tt.Click("a")
+	if got := tabs(tt, 0, 1, labels...); value != "a" || got[0] != "After" {
+		t.Fatalf("chose %q, then Tab went to %q", value, got[0])
+	}
+	value = "c" // as another control would
+	tt.Frame()
+	if got := tabs(tt, Shift, 1, labels...); got[0] != "c" {
+		t.Errorf("Shift+Tab back into the group went to %q, not to the one chosen", got[0])
+	}
+}
+
 func TestToggle(t *testing.T) {
 	bold, changes := false, 0
 	tt := coreNewTester(func(c *context) {
@@ -193,6 +313,11 @@ func TestTabsAreOneTabStop(t *testing.T) {
 	}, 400, 200)
 	if got := tabs(tt, 0, 3, labels...); !slices.Equal(got, []string{"Before", "Two", "After"}) {
 		t.Errorf("Tab went %q", got)
+	}
+	tab = 2 // as another control would
+	tt.Frame()
+	if got := tabs(tt, Shift, 1, labels...); got[0] != "Three" {
+		t.Errorf("Shift+Tab back into the tabs went to %q, not to the one chosen", got[0])
 	}
 }
 
@@ -289,5 +414,28 @@ func TestToolbarEntersAtItsFirst(t *testing.T) {
 	tt.Key(0, KeyTab)
 	if !tt.Focused("Cut") {
 		t.Error("Tab went to the toggle that is on, not to the first control")
+	}
+}
+
+func TestToolbarEntersWhereItWasLeft(t *testing.T) {
+	view := 0
+	labels := []string{"Cut", "List", "Grid", "After"}
+	tt := coreNewTester(func(c *context) {
+		coreColumn(c).Gap(8).Children(func() {
+			coreToolbar(c, func() {
+				coreButton(c, "Cut")
+				coreSegmented(c, &view, "List", "Grid").Label("View")
+			})
+			coreButton(c, "After")
+		})
+	}, 400, 200)
+	tt.Click("Cut")
+	tabs(tt, 0, 1, labels...)
+	view = 1
+	tt.Frame()
+	// A radio group inside a toolbar is part of it: the toolbar keeps
+	// where it was left.
+	if got := tabs(tt, Shift, 1, labels...); got[0] != "Cut" {
+		t.Errorf("Shift+Tab back into the toolbar went to %q", got[0])
 	}
 }

@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 	"unsafe"
 
 	"github.com/ebitengine/purego"
@@ -23,6 +24,7 @@ var (
 	cbMonitorsChanged ptr
 	cbNotification    ptr
 	cbPowerSignal     ptr
+	cbNetworkChanged  ptr
 )
 
 func initSystemCallbacks() {
@@ -56,6 +58,10 @@ func initSystemCallbacks() {
 			theBackend.h.NotificationAction(id, action)
 		}
 	})
+	// The network-changed signal of GNetworkMonitor (network.go).
+	cbNetworkChanged = purego.NewCallback(func(monitor, available, data ptr) {
+		theBackend.h.NetworkChanged(theBackend.Network().Status())
+	})
 
 	settings := gtkSettingsGetDefault()
 	connect(settings, "notify::gtk-theme-name", cbThemeChanged, 0)
@@ -67,6 +73,11 @@ func initSystemCallbacks() {
 	if d := gdkDisplayGetDefault(); d != 0 {
 		connect(d, "monitor-added", cbMonitorsChanged, 0)
 		connect(d, "monitor-removed", cbMonitorsChanged, 0)
+		// The pointing devices (Theme.Preferences).
+		if seat := gdkDisplayGetDefaultSeat(d); seat != 0 {
+			connect(seat, "device-added", cbThemeChanged, 0)
+			connect(seat, "device-removed", cbThemeChanged, 0)
+		}
 	}
 }
 
@@ -354,10 +365,23 @@ func portalColorScheme() (uint32, bool) {
 	return gVariantGetUint32(inner), true
 }
 
-// Preferences reads GTK's animations setting, and the accent, contrast
-// and text size the desktop portal gives, as GNOME's and KDE's do.
+// doubleClick reads the double click as GTK's settings have it from the
+// desktop.
+func doubleClick() platform.DoubleClick {
+	ms, distance := int32(400), int32(5) // GTK's defaults
+	if settings := gtkSettingsGetDefault(); settings != 0 {
+		gObjectGetPtr(settings, cs("gtk-double-click-time"), unsafe.Pointer(&ms), 0)
+		gObjectGetPtr(settings, cs("gtk-double-click-distance"), unsafe.Pointer(&distance), 0)
+	}
+	return platform.DoubleClick{Time: time.Duration(ms) * time.Millisecond, DX: float64(distance), DY: float64(distance)}
+}
+
+// Preferences reads GTK's animations setting, the accent, contrast and
+// text size the desktop portal gives, as GNOME's and KDE's do, and the
+// seat's pointing devices.
 func (t theme) Preferences() platform.Preferences {
 	var p platform.Preferences
+	p.Pointer, p.AnyPointer, p.NoHover, p.NoAnyHover = pointingDevices()
 	settings := gtkSettingsGetDefault()
 	animations := int32(1)
 	gObjectGetPtr(settings, cs("gtk-enable-animations"), unsafe.Pointer(&animations), 0)
@@ -399,7 +423,64 @@ func (t theme) Preferences() platform.Preferences {
 	return p
 }
 
+// GdkInputSource's sources of pointing devices, and GdkSeatCapabilities'
+// of pointing.
+const (
+	sourceMouse       = 0
+	sourcePen         = 1
+	sourceEraser      = 2
+	sourceCursor      = 3
+	sourceTouchscreen = 5
+	sourceTouchpad    = 6
+	sourceTrackpoint  = 7
+	seatAllPointing   = 7 // GDK_SEAT_CAPABILITY_ALL_POINTING
+)
+
+// pointingDevices returns how accurate the primary pointing device is and
+// the most accurate of all, and whether they cannot hover, from the
+// seat's devices as Chromium tells them: mice, touchpads, trackpoints and
+// pens point finely and hover, touch screens coarsely, without hovering;
+// the primary device is the finest. A seat that lists none, as a display
+// GDK does not know, has a mouse's.
+func pointingDevices() (primary, finest platform.PointerAccuracy, noHover, noneHover bool) {
+	d := gdkDisplayGetDefault()
+	if d == 0 {
+		return
+	}
+	seat := gdkDisplayGetDefaultSeat(d)
+	if seat == 0 {
+		return
+	}
+	list := gdkSeatGetSlaves(seat, seatAllPointing)
+	if list == 0 {
+		return
+	}
+	defer gListFree(list)
+	fine, touch := false, false
+	for node := list; node != 0; node = field[ptr](node, 8) {
+		switch gdkDeviceGetSource(field[ptr](node, 0)) {
+		case sourceMouse, sourcePen, sourceEraser, sourceCursor, sourceTouchpad, sourceTrackpoint:
+			fine = true
+		case sourceTouchscreen:
+			touch = true
+		}
+	}
+	switch {
+	case fine:
+		return platform.PointerFine, platform.PointerFine, false, false
+	case touch:
+		return platform.PointerCoarse, platform.PointerCoarse, true, true
+	}
+	return platform.PointerNone, platform.PointerNone, true, true
+}
+
 func (t theme) IsDark() bool {
+	switch themeSource {
+	case "light":
+		return false
+	case "dark":
+		return true
+	}
 	settings := gtkSettingsGetDefault()
 	var prefer int32
 	gObjectGetPtr(settings, cs("gtk-application-prefer-dark-theme"), unsafe.Pointer(&prefer), 0)
@@ -409,18 +490,85 @@ func (t theme) IsDark() bool {
 	if scheme, ok := portalColorScheme(); ok && scheme != 0 {
 		return scheme == 1
 	}
-	var name ptr
-	gObjectGetPtr(settings, cs("gtk-theme-name"), unsafe.Pointer(&name), 0)
-	return strings.Contains(strings.ToLower(takeStr(name)), "dark")
+	return strings.Contains(strings.ToLower(gtkThemeName(settings)), "dark")
 }
 
+var (
+	// themeSource is the appearance SetSource was given last.
+	themeSource string
+	// lightTheme is true while SetSource("light") has put the light
+	// variant in place of the desktop's dark theme.
+	lightTheme bool
+	// preferDarkSet is true while MyGo has put its own value in
+	// gtk-application-prefer-dark-theme in place of the desktop's.
+	preferDarkSet bool
+)
+
 func (t theme) SetSource(source string) {
-	dark := source == "dark"
-	if source == "system" {
-		scheme, _ := portalColorScheme()
-		dark = scheme == 1
+	themeSource = source
+	settings := gtkSettingsGetDefault()
+	// A theme named for its dark variant, as Ubuntu's Yaru-dark in dark
+	// mode, keeps GTK and WebKitGTK's prefers-color-scheme dark whatever
+	// gtk-application-prefer-dark-theme says: the light appearance takes
+	// the theme of the name without the suffix (Yaru, or GTK's Adwaita
+	// where there is none), and the others the desktop's theme again.
+	if source != "light" && lightTheme {
+		lightTheme = false
+		gtkSettingsResetProperty(settings, cs("gtk-theme-name"))
 	}
-	gObjectSetBool(gtkSettingsGetDefault(), cs("gtk-application-prefer-dark-theme"), dark, 0)
+	if name := gtkThemeName(settings); source == "light" && !lightTheme && len(name) > 5 && strings.EqualFold(name[len(name)-5:], "-dark") {
+		lightTheme = true
+		gObjectSetStr(settings, cs("gtk-theme-name"), cs(name[:len(name)-5]), 0)
+	}
+	if source == "light" || source == "dark" {
+		setPreferDark(settings, source == "dark")
+	} else {
+		followSystemScheme(settings)
+	}
+}
+
+// followsSystem reports whether the app has not chosen an appearance, and
+// so follows the desktop's.
+func followsSystem() bool { return themeSource == "" || themeSource == "system" }
+
+// followSystemScheme brings the desktop's color scheme to GTK: GTK 3 does
+// not read the settings portal's, where GNOME and KDE keep their dark
+// style, but gtk-application-prefer-dark-theme, from which WebKitGTK takes
+// pages' prefers-color-scheme too (#1120). Where the portal prefers dark,
+// so does GTK; elsewhere GTK keeps the desktop's own settings, which may
+// prefer dark or name a dark theme, as without the portal. It reports
+// whether it changed GTK's setting, which then tells ThemeChanged.
+func followSystemScheme(settings ptr) bool {
+	if scheme, ok := portalColorScheme(); ok && scheme == 1 {
+		return setPreferDark(settings, true)
+	}
+	if !preferDarkSet {
+		return false
+	}
+	preferDarkSet = false
+	gtkSettingsResetProperty(settings, cs("gtk-application-prefer-dark-theme"))
+	return true
+}
+
+// setPreferDark sets gtk-application-prefer-dark-theme, only when it
+// changes: GTK tells ThemeChanged at every write, and apps may set the
+// source again from Theme.OnUpdated. It reports whether it wrote.
+func setPreferDark(settings ptr, dark bool) bool {
+	var prefer int32
+	gObjectGetPtr(settings, cs("gtk-application-prefer-dark-theme"), unsafe.Pointer(&prefer), 0)
+	if (prefer != 0) == dark {
+		return false
+	}
+	preferDarkSet = true
+	gObjectSetBool(settings, cs("gtk-application-prefer-dark-theme"), dark, 0)
+	return true
+}
+
+// gtkThemeName returns the name of GTK's theme.
+func gtkThemeName(settings ptr) string {
+	var name ptr
+	gObjectGetPtr(settings, cs("gtk-theme-name"), unsafe.Pointer(&name), 0)
+	return takeStr(name)
 }
 
 // D-Bus helpers.
@@ -518,6 +666,13 @@ func (b *Backend) NotificationsSupported() bool {
 	return err == nil
 }
 
+// WebViewAvailable reports whether a window showing a web page can have
+// one: WebKitGTK, JavaScriptCore and libsoup, which it needs. Windows
+// showing native UI need GTK alone, so an app whose windows all do runs
+// without them. Loading the libraries is as much as can be known before a
+// page loads.
+func (b *Backend) WebViewAvailable() bool { return webKit() == nil }
+
 func (b *Backend) ShowNotification(n *platform.Notification, done func(error)) {
 	done(b.showNotification(n))
 }
@@ -539,6 +694,11 @@ func (b *Backend) showNotification(n *platform.Notification) error {
 	var hints []ptr
 	if n.Silent {
 		hints = append(hints, gVariantNewDictEntry(gVariantNewString(cs("suppress-sound")), gVariantNewVariant(gVariantNewBoolean(true))))
+	}
+	if len(n.Image) > 0 && notificationImageHint != nil {
+		if hint := notificationImageHint(n.Image); hint != 0 {
+			hints = append(hints, hint)
+		}
 	}
 	hintArray := gVariantNewArray(gVariantTypeNew(cs("{sv}")), nil, 0)
 	if len(hints) > 0 {

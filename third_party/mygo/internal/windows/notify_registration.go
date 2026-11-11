@@ -15,7 +15,6 @@ import (
 )
 
 var (
-	procCoUninitialize       = ole32.NewProc("CoUninitialize")
 	procSHGetKnownFolderPath = shell32.NewProc("SHGetKnownFolderPath")
 	procMoveFileExW          = kernel32.NewProc("MoveFileExW")
 )

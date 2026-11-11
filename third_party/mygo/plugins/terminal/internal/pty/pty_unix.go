@@ -84,6 +84,10 @@ func (p *PTY) Resize(cols, rows, width, height int) error {
 	return setSize(p.master, cols, rows, width, height)
 }
 
+// ClearScreen does nothing: the terminal has no screen of its own to
+// clear, unlike ConPTY's console.
+func (p *PTY) ClearScreen() error { return nil }
+
 // Pid returns the process's ID.
 func (p *PTY) Pid() int { return p.cmd.Process.Pid }
 

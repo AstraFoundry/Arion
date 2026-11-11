@@ -118,12 +118,18 @@ func TestListReorder(t *testing.T) {
 	if len(moves) != 1 || !slices.Equal(moves[0], []int{1, 4}) || !slices.Equal(items, []string{"a", "c", "d", "b", "e", "f"}) {
 		t.Fatalf("moves %v, items %q", moves, items)
 	}
-	// The rows chosen move together.
+	// The rows chosen move together, the badge counting them.
 	tt.Click("c")
 	tt.ClickWith(Cmd, "e")
 	e, _ := tt.Find("e")
 	a, _ := tt.Find("a")
-	drag(tt, e.X, e.Y+e.H/2, a.X, a.Y+2)
+	tt.Press(e.X, e.Y+e.H/2)
+	tt.Move(e.X, e.Y)
+	tt.Move(a.X, a.Y+2)
+	if d := tt.rt.drag; d == nil || d.count != 2 {
+		t.Errorf("the drag of two rows is %+v", d)
+	}
+	tt.Release(a.X, a.Y+2)
 	if len(moves) != 2 || !slices.Equal(moves[1], []int{1, 4, 0}) || !slices.Equal(items, []string{"c", "e", "a", "d", "b", "f"}) {
 		t.Errorf("moves %v, items %q", moves, items)
 	}
@@ -146,6 +152,118 @@ func TestListReorder(t *testing.T) {
 	if len(moves) != 3 || !slices.Equal(moves[2], []int{5, 0}) {
 		t.Errorf("moves %v, items %q", moves, items)
 	}
+}
+
+// A list's rows dragged out with DragRows drag the value it makes of them,
+// for targets inside the list or around it to take: the list takes none
+// of it, so it neither reorders nor shows a place between its rows.
+func TestListDragRows(t *testing.T) {
+	items := []string{"a", "b", "c", "d", "e", "f"}
+	sel := -1
+	var chosen Selection[string]
+	var asked [][]int
+	s := ListState{
+		Selected:  &sel,
+		Selection: &chosen,
+		Key:       func(i int) any { return items[i] },
+		DragRows: func(rows []int) any {
+			asked = append(asked, slices.Clone(rows))
+			var names []string
+			for _, r := range rows {
+				if items[r] == "f" {
+					return nil // f stays
+				}
+				names = append(names, items[r])
+			}
+			return names
+		},
+	}
+	var intoD, around, trash [][]string
+	overAround := false
+	tt := coreNewTester(func(c *context) {
+		coreColumn(c).Fill().Children(func() {
+			wrap := coreColumn(c).Height(300).Children(func() {
+				coreList(c, &s, len(items), func(i int) {
+					row := coreRow(c).Padding(8).Children(func() { coreText(c, items[i]) })
+					if items[i] == "d" {
+						if v, ok := coreDrop[[]string](row); ok {
+							intoD = append(intoD, v)
+						}
+					}
+				}).Grow(1)
+			})
+			if v, ok := coreDrop[[]string](wrap); ok {
+				around = append(around, v)
+			}
+			_, overAround = coreDragOver[[]string](wrap)
+			bin := coreBox(c).Size(200, 60).Label("Trash")
+			if v, ok := coreDrop[[]string](bin); ok {
+				trash = append(trash, v)
+			}
+		})
+	}, 300, 400)
+	find := func(label string) Rect {
+		r, ok := tt.Find(label)
+		if !ok {
+			t.Fatalf("no %q", label)
+		}
+		return Rect{float32(r.X), float32(r.Y), float32(r.W), float32(r.H)}
+	}
+	b, d, bin := find("b"), find("d"), find("Trash")
+	drag(tt, b.X, b.Y+b.H/2, bin.X+20, bin.Y+20)
+	if len(trash) != 1 || !slices.Equal(trash[0], []string{"b"}) {
+		t.Fatalf("dropped on the trash: %q", trash)
+	}
+	// On a row taking them, inside the list.
+	drag(tt, b.X, b.Y+b.H/2, d.X, d.Y+d.H/2)
+	if len(intoD) != 1 || !slices.Equal(intoD[0], []string{"b"}) {
+		t.Fatalf("dropped on d: %q", intoD)
+	}
+	// Past the rows, the list takes nothing: the element around it does,
+	// and the rows stay as they are.
+	f := find("f")
+	tt.Press(b.X, b.Y+b.H/2)
+	tt.Move(b.X, b.Y+b.H/2+10)
+	tt.Move(f.X, f.Y+f.H+40)
+	if !overAround {
+		t.Error("the list took rows dragged past its own")
+	}
+	tt.Release(f.X, f.Y+f.H+40)
+	if len(around) != 1 || !slices.Equal(items, []string{"a", "b", "c", "d", "e", "f"}) {
+		t.Fatalf("around %q, items %q", around, items)
+	}
+	// The rows chosen drag together, the badge counting them.
+	tt.Click("c")
+	tt.ClickWith(Cmd, "e")
+	e := find("e")
+	tt.Press(e.X, e.Y+e.H/2)
+	tt.Move(e.X, e.Y+e.H/2+10)
+	tt.Move(bin.X+20, bin.Y+20)
+	if d := tt.rt.drag; d == nil || d.count != 2 {
+		t.Errorf("the drag of two rows is %+v", d)
+	}
+	tt.Release(bin.X+20, bin.Y+20)
+	if len(trash) != 2 || !slices.Equal(trash[1], []string{"c", "e"}) {
+		t.Fatalf("dropped on the trash: %q, rows asked for %v", trash, asked)
+	}
+	// Rows DragRows makes nothing of do not drag.
+	drag(tt, f.X, f.Y+f.H/2, bin.X+20, bin.Y+20)
+	if len(trash) != 2 {
+		t.Errorf("f dragged: %q", trash)
+	}
+}
+
+func TestListDragRowsAndReorder(t *testing.T) {
+	s := ListState{Reorder: func([]int, int) {}, DragRows: func([]int) any { return nil }}
+	defer func() {
+		if recover() == nil {
+			t.Error("a list both reordered and dragged its rows out")
+		}
+	}()
+	tt := coreNewTester(func(c *context) {
+		coreList(c, &s, 1, func(int) { coreText(c, "a") })
+	}, 100, 100)
+	tt.Frame()
 }
 
 // A press on a control taking clicks alone, inside an element that drags
@@ -242,5 +360,38 @@ func TestGridReorder(t *testing.T) {
 	tt.settle()
 	if len(moves) != 3 || !slices.Equal(moves[2], []int{0, 3}) {
 		t.Errorf("moves %v", fmt.Sprint(moves))
+	}
+}
+
+// A value let go over no element taking it, as past the window's edge,
+// tells its source where, once; one given up with Escape does not.
+func TestDragMissed(t *testing.T) {
+	var missed []Point
+	tt := coreNewTester(func(c *context) {
+		coreColumn(c).Gap(20).Padding(20).Children(func() {
+			src := coreBox(c).Size(100, 40).Label("Source").Drag("hello")
+			if at, ok := src.DragMissed(); ok {
+				missed = append(missed, at)
+			}
+			if _, ok := coreDrop[string](coreBox(c).Size(200, 100).Label("Target")); ok {
+				t.Error("the target took a value let go elsewhere")
+			}
+		})
+	}, 400, 400)
+	src, _ := tt.Find("Source")
+	drag(tt, src.X+10, src.Y+10, 450, -30)
+	tt.Frame()
+	if !slices.Equal(missed, []Point{{450, -30}}) {
+		t.Fatalf("let go past the edge: missed %v", missed)
+	}
+	missed = nil
+	tt.Press(src.X+10, src.Y+10)
+	tt.Move(src.X+40, src.Y+40)
+	tt.Move(450, 200)
+	tt.Key(0, KeyEscape)
+	tt.Release(450, 200)
+	tt.Frame()
+	if len(missed) != 0 {
+		t.Fatalf("given up with Escape: missed %v", missed)
 	}
 }

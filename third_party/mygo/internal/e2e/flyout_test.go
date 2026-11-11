@@ -124,6 +124,42 @@ func TestFocusableFlyout(t *testing.T) {
 	eventually(t, "the parent focused", parent.IsFocused)
 }
 
+// TestFlyoutModalWindow opens a window modal to a focusable flyout, which
+// takes the keyboard and keeps the flyout open, over it; the flyout gets
+// the keyboard back as it closes, and closes it as it closes.
+func TestFlyoutModalWindow(t *testing.T) {
+	parent := newWindow(t, mygo.WindowOptions{Width: 300, Height: 200})
+	parent.Focus()
+	eventually(t, "the parent focused", parent.IsFocused)
+	fl := mygo.NewFlyout(mygo.FlyoutOptions{Parent: parent, Anchor: mygo.Rectangle{X: 10, Y: 10}, Width: 160, Height: 100, Focusable: true, Content: ui.View(func(c *ui.Context) {})})
+	defer fl.Destroy()
+	eventually(t, "the flyout focused", fl.IsFocused)
+	var closes atomic.Int32
+	fl.OnClose(func(*mygo.CloseEvent) { closes.Add(1) })
+
+	open := func() *mygo.Window {
+		t.Helper()
+		dialog := mygo.NewWindow(mygo.WindowOptions{Parent: fl, Modal: true, Width: 360, Height: 160, Content: ui.View(func(c *ui.Context) {})})
+		eventually(t, "the modal window focused", dialog.IsFocused)
+		return dialog
+	}
+	dialog := open()
+	if b, f := dialog.Bounds(), fl.Bounds(); b.X > f.X || b.X+b.Width < f.X+f.Width {
+		t.Errorf("the modal window at %+v does not cover the flyout at %+v", b, f)
+	}
+	dialog.Close()
+	eventually(t, "the modal window closed", dialog.IsDestroyed)
+	eventually(t, "the flyout focused again", fl.IsFocused)
+	if fl.IsDestroyed() || closes.Load() != 0 {
+		t.Fatalf("the flyout closed (%d times asked) for its modal window", closes.Load())
+	}
+
+	dialog = open()
+	fl.Close()
+	eventually(t, "the modal window closed with the flyout", dialog.IsDestroyed)
+	eventually(t, "the flyout closed", fl.IsDestroyed)
+}
+
 // TestPopoverFlyout shows a flyout in a popover of the system where there
 // is one (macOS), which closes as the user clicks elsewhere when it is
 // focusable, and is a plain flyout elsewhere.
@@ -173,12 +209,17 @@ func TestPopoverFlyout(t *testing.T) {
 // and closes it with a second click on the button, which the closing
 // does not turn into opening it again: quick, or held as a user clicks,
 // whose press closes the flyout before the release would click the button
-// where the press goes on (macOS) but for the flyout's anchor.
+// where the press goes on (macOS) but for the flyout's anchor. The click
+// hooks return once the app handled the click: a frame the parent builds
+// after that reports a click the button got.
 func TestFlyoutToggle(t *testing.T) {
 	var parent, fl *mygo.Window // main thread only
+	var shown atomic.Pointer[mygo.Window]
+	var builds atomic.Int64
 	opened := make(chan struct{}, 4)
 	closed := make(chan struct{}, 4)
 	view := func(c *ui.Context) {
+		builds.Add(1)
 		if !ui.Button(c.Key("toggle"), "Toggle").Width(120).Height(30).Clicked() {
 			return
 		}
@@ -187,6 +228,7 @@ func TestFlyoutToggle(t *testing.T) {
 			return
 		}
 		fl = mygo.NewFlyout(mygo.FlyoutOptions{Parent: parent, Anchor: mygo.Rectangle{Width: 120, Height: 30}, Width: 150, Height: 100, Focusable: true, Content: ui.View(func(c *ui.Context) {})})
+		shown.Store(fl)
 		fl.OnClosed(func() {
 			fl = nil
 			closed <- struct{}{}
@@ -208,6 +250,14 @@ func TestFlyoutToggle(t *testing.T) {
 			t.Fatalf("timed out waiting for %s", what)
 		}
 	}
+	// built waits for the parent to build a frame after the clicks the
+	// hooks handled, which reports a click of the button.
+	built := func() {
+		t.Helper()
+		n := builds.Load()
+		parent.Invalidate()
+		eventually(t, "a frame of the parent built", func() bool { return builds.Load() > n })
+	}
 	wait(drawn, "the parent drawn")
 	parent.Focus()
 	eventually(t, "the parent focused", parent.IsFocused)
@@ -217,7 +267,8 @@ func TestFlyoutToggle(t *testing.T) {
 			t.Skip("clicks not available on this platform")
 		}
 		wait(opened, "the flyout opened")
-		time.Sleep(300 * time.Millisecond)
+		// A user clicks again once the flyout shows, with the keyboard.
+		eventually(t, "the flyout focused", func() bool { return shown.Load().IsFocused() || len(closed) > 0 })
 		select {
 		case <-closed:
 			// It closes as another app takes the keyboard.
@@ -226,7 +277,7 @@ func TestFlyoutToggle(t *testing.T) {
 		}
 		closing(parent, 60, 15)
 		wait(closed, "the flyout closed")
-		time.Sleep(500 * time.Millisecond)
+		built()
 		select {
 		case <-opened:
 			t.Fatalf("the click that closed the flyout opened it again (held %v)", i == 0)
@@ -242,27 +293,27 @@ func TestFlyoutEscape(t *testing.T) {
 	parent := newWindow(t, mygo.WindowOptions{Width: 300, Height: 200})
 	parent.Focus()
 	eventually(t, "the parent focused", parent.IsFocused)
-	var handled atomic.Bool
+	var handled, received atomic.Bool
 	native := mygo.NewFlyout(mygo.FlyoutOptions{Parent: parent, Width: 150, Height: 100, Focusable: true, Content: ui.View(func(c *ui.Context) {
-		if handled.Load() {
-			c.Shortcut(0, ui.KeyEscape)
+		if handled.Load() && c.Shortcut(0, ui.KeyEscape) {
+			received.Store(true)
 		}
 	})})
 	defer native.Destroy()
 	eventually(t, "the flyout focused", native.IsFocused)
+	// The view asks for Escape from the frame that handles the key on,
+	// whether or not a frame built since showed it.
 	handled.Store(true)
-	native.Invalidate() // its shortcut registers in a frame
-	time.Sleep(200 * time.Millisecond)
 	if !pressEscape(native) {
 		t.Skip("keys not available on this platform")
 	}
-	time.Sleep(500 * time.Millisecond)
+	// Posting the native key does not wait for the content to receive it.
+	eventually(t, "the content handling Escape", func() bool { return received.Load() || native.IsDestroyed() })
 	if native.IsDestroyed() {
 		t.Fatal("an Escape the content handled closed the flyout")
 	}
+	// It no longer does, from the frame that handles the key on.
 	handled.Store(false)
-	native.Invalidate()
-	time.Sleep(200 * time.Millisecond)
 	pressEscape(native)
 	eventually(t, "the flyout of native UI closed", native.IsDestroyed)
 
@@ -276,13 +327,42 @@ func TestFlyoutEscape(t *testing.T) {
 	pressEscape(page)
 	eventually(t, "the page's flyout closed", page.IsDestroyed)
 
+	// A flyout of native UI showing a web view whose page has the
+	// keyboard closes on an Escape the page leaves.
+	parent.Focus()
+	eventually(t, "the parent focused", parent.IsFocused)
+	var view *mygo.WebView
+	var shown atomic.Int32
+	reader := mygo.NewFlyout(mygo.FlyoutOptions{Parent: parent, Width: 150, Height: 100, Focusable: true, Content: ui.View(func(c *ui.Context) {
+		if view != nil {
+			ui.WebView(c, view).Fill()
+			shown.Add(1)
+		}
+	})})
+	defer reader.Destroy()
+	v, err := reader.NewWebView(mygo.WebViewOptions{Page: mygo.PageOptions{Untrusted: true}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	reader.Update(func() { view = v })
+	v.Page().LoadHTML(`<p>Text to read.</p><script>window.ready = true</script>`, "")
+	waitForPage(t, v.Page(), "window.ready")
+	eventually(t, "two frames showing the web view", func() bool {
+		reader.Invalidate()
+		return shown.Load() >= 2
+	})
+	eventually(t, "the reader focused", reader.IsFocused)
+	v.Focus()
+	waitForPage(t, v.Page(), "document.hasFocus()")
+	pressEscape(reader)
+	eventually(t, "the reader closed", reader.IsDestroyed)
+
 	// A popover of the system's (macOS) closes so too.
 	parent.Focus()
 	eventually(t, "the parent focused", parent.IsFocused)
 	popover := mygo.NewFlyout(mygo.FlyoutOptions{Parent: parent, Width: 150, Height: 100, Focusable: true, Popover: true, Content: ui.View(func(c *ui.Context) {})})
 	defer popover.Destroy()
 	eventually(t, "the popover focused", popover.IsFocused)
-	time.Sleep(300 * time.Millisecond)
 	pressEscape(popover)
 	eventually(t, "the popover closed", popover.IsDestroyed)
 }
@@ -290,35 +370,14 @@ func TestFlyoutEscape(t *testing.T) {
 // TestTrayFlyout places a flyout next to a tray icon, below the macOS menu
 // bar's or above an icon of a taskbar at the bottom, and in the middle of
 // the primary display's work area where the icon has no bounds. (Clicks
-// on the icon, which toggle it, are checked by hand: synthesized ones do
-// not reach a status item.)
+// on the icon, which toggle it, are TestTrayPopoverToggle's on macOS.)
 func TestTrayFlyout(t *testing.T) {
 	tray, err := mygo.NewTray(mygo.TrayOptions{Icon: squarePNG(), ToolTip: "flyout"})
 	if err != nil {
 		t.Skip("no tray: ", err)
 	}
 	defer tray.Destroy()
-	// The menu bar lays the icon out after it was made, off the screen
-	// until then: wait for it, as a click on it would find it.
-	onScreen := func() bool {
-		r := tray.Bounds()
-		for _, d := range mygo.Screen.Displays() {
-			b := d.Bounds
-			if r.Width > 0 && r.Height > 0 && r.X >= b.X && r.X+r.Width <= b.X+b.Width && r.Y >= b.Y-2 && r.Y+r.Height <= b.Y+b.Height {
-				return true
-			}
-		}
-		return false
-	}
-	last, still := tray.Bounds(), 0
-	for deadline := time.Now().Add(3 * time.Second); still < 10 && time.Now().Before(deadline); {
-		time.Sleep(30 * time.Millisecond)
-		if b := tray.Bounds(); b == last && onScreen() {
-			still++
-		} else {
-			last, still = b, 0
-		}
-	}
+	waitTrayLaidOut(tray)
 	for _, popover := range []bool{false, true} {
 		fl := mygo.NewFlyout(mygo.FlyoutOptions{Tray: tray, Placement: mygo.PlacementBottom, Gap: 4, Width: 200, Height: 120, Focusable: true, Popover: popover,
 			Content: ui.View(func(c *ui.Context) {})})
@@ -340,6 +399,31 @@ func TestTrayFlyout(t *testing.T) {
 			eventuallyAt(t, "the flyout in the middle of the work area", fl, func() mygo.Rectangle { return want })
 		}
 		fl.Destroy()
+	}
+}
+
+// waitTrayLaidOut waits for the menu bar to lay a tray icon out, which it
+// does after the icon was made, off the screen until then, as a click on
+// it would find it.
+func waitTrayLaidOut(tray *mygo.Tray) {
+	onScreen := func() bool {
+		r := tray.Bounds()
+		for _, d := range mygo.Screen.Displays() {
+			b := d.Bounds
+			if r.Width > 0 && r.Height > 0 && r.X >= b.X && r.X+r.Width <= b.X+b.Width && r.Y >= b.Y-2 && r.Y+r.Height <= b.Y+b.Height {
+				return true
+			}
+		}
+		return false
+	}
+	last, still := tray.Bounds(), 0
+	for deadline := time.Now().Add(3 * time.Second); still < 10 && time.Now().Before(deadline); {
+		time.Sleep(30 * time.Millisecond)
+		if b := tray.Bounds(); b == last && onScreen() {
+			still++
+		} else {
+			last, still = b, 0
+		}
 	}
 }
 

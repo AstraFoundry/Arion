@@ -65,6 +65,12 @@ func (e *deltaEntry) isFile() bool { return !e.Dir && e.Link == "" }
 // are included whole.
 const maxDiff = 256 << 20
 
+// stapledTicket is where stapling writes the notarization ticket of an app
+// bundle. The archive's app has it, but the app installed from the disk
+// image does not (dmg.go staples the app after copying it into the image),
+// so deltas include it whole, never as a copy or patch of the old app's.
+const stapledTicket = "Contents/CodeResources"
+
 // WriteDelta writes the delta that turns the app in oldDir, of version from,
 // into the app in newDir, of version to: the entries of newDir, or all of
 // it when entries is nil.
@@ -79,6 +85,11 @@ func WriteDelta(w io.Writer, from, to, oldDir, newDir string, entries []string) 
 	err := filepath.WalkDir(oldDir, func(p string, d fs.DirEntry, err error) error {
 		if err != nil || !d.Type().IsRegular() {
 			return err
+		}
+		// The FileList too is included whole: the updater rewrites the
+		// installed app's, which may then differ from the archive's.
+		if rel := relPath(oldDir, p); rel == stapledTicket || rel == FileList {
+			return nil
 		}
 		f, err := os.Open(p)
 		if err != nil {
@@ -314,6 +325,9 @@ func applyFile(e deltaEntry, data *io.SectionReader, oldRoot, newRoot *os.Root) 
 	if err == errDamagedPatch || err == errTooLong || err == nil && (out.n != 0 || hex.EncodeToString(h.Sum(nil)) != e.SHA256) {
 		// Most likely, the app is not the one the delta was made from.
 		return fmt.Errorf("the delta update made %s wrong", e.Path)
+	}
+	if err == nil {
+		err = newRoot.Chmod(filepath.FromSlash(e.Path), fs.FileMode(e.Mode).Perm())
 	}
 	return err
 }

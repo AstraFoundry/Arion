@@ -11,6 +11,33 @@
 #include <metal_stdlib>
 using namespace metal;
 
+// Function constants specialize the fragment function for the instances a
+// batch holds (gpu.Class), so that the code of paths it never takes, and the
+// registers they would need, are not in its pipeline: the general function
+// holds them all, and a plain fill, most of what a window draws, runs several
+// times faster without them. A constant left undefined (effect pipelines,
+// libraries compiled before they existed) is true: the general function.
+// Indices 0 to 7 are reserved for these constants in every library that includes this
+// file (effects do): an effect's own function constants must start at 8.
+constant bool kTransformed_ [[function_constant(0)]]; // instances under a transform
+constant bool kContinuous_ [[function_constant(1)]];  // continuous corners
+constant bool kPlain_ [[function_constant(2)]];       // plain fills: solid, no border
+constant bool kFill_ [[function_constant(3)]];        // other fills: gradients, borders, stripes
+constant bool kShadow_ [[function_constant(4)]];      // shadows
+constant bool kGlyph_ [[function_constant(5)]];       // mask glyphs
+constant bool kSubpixel_ [[function_constant(6)]];    // subpixel glyphs
+constant bool kImage_ [[function_constant(7)]];       // images and color glyphs
+constant bool kTransformed = is_function_constant_defined(kTransformed_) ? kTransformed_ : true;
+constant bool kContinuous = is_function_constant_defined(kContinuous_) ? kContinuous_ : true;
+constant bool kPlain = is_function_constant_defined(kPlain_) ? kPlain_ : true;
+constant bool kFill = is_function_constant_defined(kFill_) ? kFill_ : true;
+constant bool kShadow = is_function_constant_defined(kShadow_) ? kShadow_ : true;
+constant bool kGlyph = is_function_constant_defined(kGlyph_) ? kGlyph_ : true;
+constant bool kSubpixel = is_function_constant_defined(kSubpixel_) ? kSubpixel_ : true;
+constant bool kImage = is_function_constant_defined(kImage_) ? kImage_ : true;
+// kGeneral: the function takes more than the plain fill's path.
+constant bool kGeneral = kTransformed || kFill || kShadow || kGlyph || kSubpixel || kImage;
+
 // One instance per op, as internal/gpu builds them.
 struct Inst {
 	float4 rect;      // x, y, width, height in pixels
@@ -25,7 +52,7 @@ struct Inst {
 	float4 clipRadii;
 	float4 params;				   // kind, dashed or grayscale, sigma or paint, opacity
 	float4 transform0, transform1; // local-to-frame rows, AA and clip-mask flags
-	float4 transform2;             // the projective row's g and h
+	float4 transform2;             // the projective row's g and h, and 1 where its constant is -1
 };
 
 // The color and, for dual-source blending, the source's alpha of each
@@ -48,7 +75,7 @@ struct VSOut {
 // frameH returns the frame point of local p, in homogeneous coordinates.
 float3 frameH(Inst i, float2 p) {
 	return float3(dot(i.transform0.xyz, float3(p, 1.0f)), dot(i.transform1.xyz, float3(p, 1.0f)),
-				  dot(float3(i.transform2.xy, 1.0f), float3(p, 1.0f)));
+				  dot(float3(i.transform2.xy, 1.0f - 2.0f * i.transform2.z), float3(p, 1.0f)));
 }
 
 // globals holds the frame's width and height in pixels, and 1 in z when
@@ -228,7 +255,7 @@ float contCoverage(float2 p, float4 rect, float4 r) {
 // the area of the pixel inside it, near square ones. Negative radii are
 // continuous corners.
 float rectCoverage(float2 p, float4 rect, float4 radii) {
-	if (any(radii < 0.0f)) {
+	if (kContinuous && any(radii < 0.0f)) {
 		return contCoverage(p, rect, -radii);
 	}
 	float2 q = p - rect.xy - rect.zw * 0.5f;
@@ -241,7 +268,7 @@ float rectCoverage(float2 p, float4 rect, float4 radii) {
 
 // Coverage is integrated in device space, matching the CPU compositor.
 float localValue(float2 p, float4 rect, float4 r) {
-	if (!any(r < 0.0f))
+	if (!kContinuous || !any(r < 0.0f))
 		return sdRoundRect(p, rect, r);
 	r = abs(r);
 	ContCorner c[4] = {contCorner(r.x, r.y, r.w, rect.z, rect.w), contCorner(r.y, r.x, r.z, rect.z, rect.w),
@@ -258,10 +285,18 @@ struct Frame {
 };
 Frame frameOf(VSOut v, Inst i) {
 	Frame f;
+	if (!kTransformed || i.transform0.w < 0.5f) {
+		// Not transformed: the frame point is the interpolated one, and
+		// nothing reads the map back.
+		f.s = v.world.xy / v.world.z;
+		f.c0 = f.c1 = f.c2 = float3(0.0f);
+		f.persp = false;
+		return f;
+	}
 	f.persp = any(i.transform2.xy != 0.0f);
 	// In perspective, the pixel's center, as interpolating drifts.
 	f.s = f.persp ? v.pos.xy : v.world.xy / v.world.z;
-	float3 r0 = i.transform0.xyz, r1 = i.transform1.xyz, r2 = float3(i.transform2.xy, 1.0f);
+	float3 r0 = i.transform0.xyz, r1 = i.transform1.xyz, r2 = float3(i.transform2.xy, 1.0f - 2.0f * i.transform2.z);
 	f.c0 = cross(r1, r2);
 	f.c1 = cross(r2, r0);
 	f.c2 = cross(r0, r1);
@@ -273,7 +308,7 @@ float2 localOf(Frame f, float2 s) {
 	return q.xy / q.z;
 }
 float localCoverage(float2 p, float4 rect, float4 radii, float affine, Frame fr) {
-	if (affine < 0.5f)
+	if (!kTransformed || affine < 0.5f)
 		return rectCoverage(p, rect, radii);
 	float2 dx = dfdx(p), dy = dfdy(p);
 	if (fr.persp) {
@@ -311,6 +346,8 @@ float localCoverage(float2 p, float4 rect, float4 radii, float affine, Frame fr)
 	return n / 16.0f;
 }
 float clipCoverage(VSOut v, Inst i, texture2d<float> mask, sampler samp) {
+	if (i.transform1.w > 2.5f)
+		return 1.0f; // the builder found the clip's rectangle to hold the whole quad
 	Frame fr = frameOf(v, i);
 	float2 world = fr.s;
 	if (i.transform1.w < 0.5f)
@@ -321,20 +358,42 @@ float clipCoverage(VSOut v, Inst i, texture2d<float> mask, sampler samp) {
 	return mask.sample(samp, (world - i.clip.xy) / i.clip.zw).a;
 }
 float4 sampleLocal(texture2d<float> t, sampler samp, float2 uv, float4 src, float affine) {
-	if (affine > 0.5f) {
+	if (kTransformed && affine > 0.5f) {
 		float2 halfPixel = 0.5f / float2(t.get_width(), t.get_height());
 		uv = clamp(uv, src.xy + halfPixel, src.zw - halfPixel);
 	}
-	return t.sample(samp, uv);
+	// The atlases have one mip level, so level 0 is what implicit sampling
+	// picks; saying so keeps the Radeon Pro 560 from dropping glyph pixels
+	// in batches that join continuous corners with glyphs (#649).
+	return t.sample(samp, uv, level(0.0f));
 }
+
+// sampleImage samples an image held inside src, which is reversed along
+// an axis it flips, so that a part of a sheet shows none of its
+// neighbors; where pixelated is set, as pixel art draws, each texel a
+// square of its color whose edges blend with the next only across the
+// pixel they cross (Ebitengine's FilterPixelated): nearest where it shows
+// at whole multiples of its size, and texels of even widths with smooth
+// edges at any other. dtex is the fwidth of uv, taken where every
+// fragment of the quad takes it.
+float4 sampleImage(texture2d<float> t, sampler samp, float2 uv, float4 src, float pixelated, float2 dtex) {
+	float2 size = float2(t.get_width(), t.get_height());
+	float2 lo = min(src.xy, src.zw), hi = max(src.xy, src.zw);
+	if (pixelated > 0.5f) {
+		float2 tc = uv * size - 0.5f;
+		float2 i = floor(tc);
+		float2 f = saturate((tc - i - 0.5f) / clamp(dtex * size, 1e-5f, 1.0f) + 0.5f);
+		uv = (i + f + 0.5f) / size;
+	}
+	return t.sample(samp, clamp(uv, lo + 0.5f / size, hi - 0.5f / size));
+}
+
+// tint multiplies premultiplied c by straight color t.
+float4 tint(float4 c, float4 t) { return c * float4(t.rgb * t.a, t.a); }
 
 float4 premul(float4 c) { return float4(c.rgb * c.a, c.a); }
 
 float3 unpremul(float4 c) { return c.a > 0.0f ? c.rgb / c.a : float3(0.0f); }
-
-// What follows is the renderer's own; effects (effect.metal) take what is
-// above.
-#ifndef EFFECT
 
 // textCoverage corrects the coverage a of a glyph of straight color c as
 // Direct2D blends text (scene.TextCoverage): it enhances the contrast,
@@ -345,6 +404,10 @@ float textCoverage(float a, float3 c, float contrast, float boost, float4 g) {
 	float f = dot(c, float3(0.25f, 0.5f, 0.25f));
 	return saturate(a + a * (1.0f - a) * ((g.x * f + g.y) * a + (g.z * f + g.w)));
 }
+
+// What follows is the renderer's own; effects (effect.metal) take what is
+// above.
+#ifndef EFFECT
 
 // subpixelCoverage does the same for each subpixel of a subpixel glyph.
 float3 subpixelCoverage(float3 a, float3 c, float contrast, float boost, float4 g) {
@@ -384,7 +447,7 @@ float shadowX(float x, float y, float sigma, float corner, float2 h, bool contin
 float boxShadow(float2 p, float4 rect, float sigma, float4 radii) {
 	float4 r = abs(radii);
 	float corner = max(max(r.x, r.y), max(r.z, r.w));
-	bool continuous = any(radii < 0.0f) && corner > 0.0f;
+	bool continuous = kContinuous && any(radii < 0.0f) && corner > 0.0f;
 	ContCorner cc = contCorner(corner, corner, corner, rect.z, rect.w);
 	float2 h = rect.zw * 0.5f;
 	p -= rect.xy + h;
@@ -436,13 +499,72 @@ float3 fromOklab(float3 lab) {
 						 -0.0041960863f * lms.x - 0.7034186147f * lms.y + 1.7076147010f * lms.z));
 }
 
+// stopsAt returns the color at t of the gradient whose stops stops holds
+// from first, n of them (gpu.Builder.Stops): the first stop's before it,
+// the last's after it, and between two the colors of both mixed,
+// premultiplied, in sRGB, or in Oklab, as internal/raster's stopsAt.
+float4 stopsAt(texture2d<float> stops, float4 c2, float t, bool oklab, bool wide) {
+	int first = int(c2.x), n = int(c2.y);
+	if (n <= 0) {
+		return float4(0.0f);
+	}
+	int k = 2 * first;
+	float4 a = stops.read(uint2(k % 1024, k / 1024)), ap = stops.read(uint2((k + 1) % 1024, (k + 1) / 1024));
+	if (t <= ap.x) {
+		return premul(a);
+	}
+	k = 2 * (first + n - 1);
+	float4 last = stops.read(uint2(k % 1024, k / 1024)), lastp = stops.read(uint2((k + 1) % 1024, (k + 1) / 1024));
+	if (t >= lastp.x) {
+		return premul(last);
+	}
+	float4 b = last, bp = lastp;
+	for (int i = 1; i < n - 1; i++) {
+		k = 2 * (first + i);
+		float4 c = stops.read(uint2(k % 1024, k / 1024)), cp = stops.read(uint2((k + 1) % 1024, (k + 1) / 1024));
+		if (t < cp.x) {
+			b = c;
+			bp = cp;
+			break;
+		}
+		a = c;
+		ap = cp;
+	}
+	float f = saturate((t - ap.x) / max(bp.x - ap.x, 1e-6f));
+	float alpha = mix(a.a, b.a, f);
+	if (!oklab) {
+		return float4(mix(a.rgb * a.a, b.rgb * b.a, f), alpha);
+	}
+	if (alpha <= 0.0f) {
+		return float4(0.0f);
+	}
+	float3 rgb = fromOklab(mix(ap.yzw * a.a, bp.yzw * b.a, f) / alpha);
+	return float4((wide ? rgb : saturate(rgb)) * alpha, alpha);
+}
+
 // paint returns the premultiplied color at p of plain color, a gradient
-// mixed in sRGB (1) or Oklab (2), or stripes (3), as scene.Paint says. In a
-// target that keeps colors outside the sRGB gamut (wide, extended sRGB), an
-// Oklab gradient keeps those its mix has, which others clamp.
-float4 paint(float2 p, float mode, float4 rect, float4 c1, float4 c2, float4 g, bool wide) {
+// mixed in sRGB (1) or Oklab (2), stripes (3), or a gradient of stops,
+// linear (4, 5), conic (6, 7) or radial (8, 9), mixed in sRGB or in
+// Oklab, as scene.Paint says. In a target that keeps colors outside the
+// sRGB gamut (wide, extended sRGB), an Oklab gradient keeps those its mix
+// has, which others clamp.
+float4 paint(float2 p, float mode, float4 rect, float4 c1, float4 c2, float4 g, bool wide, texture2d<float> stops) {
 	if (mode < 0.5f) {
 		return premul(c1);
+	}
+	if (mode > 3.5f) {
+		float t;
+		if (mode < 5.5f) {
+			float2 d = g.zw - g.xy;
+			t = dot(p - g.xy, d) / max(dot(d, d), 0.0001f);
+		} else if (mode < 7.5f) {
+			float2 d = p - g.xy;
+			t = (atan2(d.x, -d.y) - g.z) * 0.15915494309189535f;
+			t -= floor(t);
+		} else {
+			t = length(p - g.xy) / max(g.z, 0.0001f);
+		}
+		return stopsAt(stops, c2, t, mode > 4.5f && mode < 5.5f || mode > 6.5f && mode < 7.5f || mode > 8.5f, wide);
 	}
 	if (mode < 2.5f) {
 		float2 d = g.zw - g.xy;
@@ -510,74 +632,87 @@ float dash(float2 p, float4 rect, float4 w) {
 fragment PSOut ps(VSOut v [[stage_in]], const device Inst *insts [[buffer(0)]],
 				  constant float4 &globals [[buffer(1)]], texture2d<float> maskTex [[texture(0)]],
 				  texture2d<float> colorTex [[texture(1)]], texture2d<float> imageTex [[texture(2)]],
-				  texture2d<float> clipTex [[texture(4)]], sampler samp [[sampler(0)]]) {
+				  texture2d<float> clipTex [[texture(4)]], texture2d<float> stopsTex [[texture(9)]],
+				  sampler samp [[sampler(0)]]) {
 	Inst i = insts[v.inst];
-	Frame fr = frameOf(v, i);
+	float2 dtex = fwidth(v.tex);
 	float kind = i.params.x;
-	bool wide = globals.z > 0.5f;
-	float4 res;
-	float glyphCov = i.transform0.w > 0.5f ? localCoverage(v.p, i.rect, float4(0.0f), 1.0f, fr) : 1.0f;
-	if (kind < 0.5f) {
-		float outer = localCoverage(v.p, i.rect, i.radii, i.transform0.w, fr);
-		res = paint(v.p, i.params.z, i.rect, i.color, i.color2, i.grad, wide) * outer;
-		float4 bw = i.uv; // top, right, bottom, left
-		if (any(bw > 0.0f)) {
-			float4 ir = float4(i.rect.xy + bw.wx, i.rect.zw - bw.yz - bw.wx);
-			float innerCov =
-				(ir.z > 0.0f && ir.w > 0.0f) ? localCoverage(v.p, ir, i.inner, i.transform0.w, fr) : 0.0f;
-			float bc = saturate(outer - innerCov);
-			if (i.params.y > 0.5f) {
-				bc *= dash(v.p, i.rect, bw);
+	// A plain fill (solid, not transformed, no border) is the first case of the
+	// chain below, without what the other kinds need before it.
+	float4 res = float4(0.0f);
+	if (kPlain && (!kGeneral || (kind < 0.5f && i.transform0.w < 0.5f && i.params.z < 0.5f && !any(i.uv > 0.0f)))) {
+		res = premul(i.color) * rectCoverage(v.p, i.rect, i.radii);
+	} else if (kGeneral) {
+		Frame fr = frameOf(v, i);
+		bool wide = globals.z > 0.5f;
+		float glyphCov = kTransformed && i.transform0.w > 0.5f ? localCoverage(v.p, i.rect, float4(0.0f), 1.0f, fr) : 1.0f;
+		if (kFill && kind < 0.5f) {
+			float outer = localCoverage(v.p, i.rect, i.radii, i.transform0.w, fr);
+			// params.y: 1 dashes the border, 2 paints it with the gradient
+			// (the inside with plain color), 3 both.
+			bool borderPaint = i.params.y > 1.5f;
+			float4 pc = paint(v.p, i.params.z, i.rect, i.color, i.color2, i.grad, wide, stopsTex);
+			res = (borderPaint ? premul(i.color) : pc) * outer;
+			float4 bw = i.uv; // top, right, bottom, left
+			if (any(bw > 0.0f)) {
+				float4 ir = float4(i.rect.xy + bw.wx, i.rect.zw - bw.yz - bw.wx);
+				float innerCov =
+					(ir.z > 0.0f && ir.w > 0.0f) ? localCoverage(v.p, ir, i.inner, i.transform0.w, fr) : 0.0f;
+				float bc = saturate(outer - innerCov);
+				float dashed = i.params.y - (borderPaint ? 2.0f : 0.0f);
+				if (dashed > 0.5f) {
+					bc *= dash(v.p, i.rect, bw);
+				}
+				float4 b = (borderPaint ? pc * float4(i.border.rgb * i.border.a, i.border.a) : premul(i.border)) * bc;
+				res = b + res * (1.0f - b.a);
 			}
-			float4 b = premul(i.border) * bc;
-			res = b + res * (1.0f - b.a);
-		}
-	} else if (kind < 1.5f && i.params.y > 0.5f) {
-		// An inner shadow: inside the box, what the hole, blurred, leaves.
-		float sigma = i.params.z;
-		float hole = 0.0f;
-		if (i.uv.z > 0.0f && i.uv.w > 0.0f) {
-			hole = sigma > 0.0f ? boxShadow(v.p, i.uv, sigma, i.inner)
-							   : localCoverage(v.p, i.uv, i.inner, i.transform0.w, fr);
-		}
-		res = premul(i.color) * (localCoverage(v.p, i.rect, i.radii, i.transform0.w, fr) * (1.0f - hole));
-	} else if (kind < 1.5f) {
-		float sigma = i.params.z;
-		float s = sigma > 0.0f ? boxShadow(v.p, i.rect, sigma, i.radii)
-							   : localCoverage(v.p, i.rect, i.radii, i.transform0.w, fr);
-		if (i.uv.z > 0.0f && i.uv.w > 0.0f) {
-			s *= 1.0f - localCoverage(v.p, i.uv, i.inner, i.transform0.w, fr); // outside the box casting it
-		}
-		res = premul(i.color) * s;
-	} else if (kind < 2.5f) {
-		float4 c = paint(v.p, i.params.z, i.rect, i.color, i.color2, i.grad, wide);
-		res = c *
-			  textCoverage(sampleLocal(maskTex, samp, v.tex, i.uv, i.transform0.w).r, unpremul(c), i.inner.x,
-						   i.inner.y, i.radii) *
-			  glyphCov;
-	} else if (kind < 3.5f) {
-		res = sampleLocal(colorTex, samp, v.tex, i.uv, i.transform0.w) * i.color.a * glyphCov;
-	} else if (kind < 4.5f) {
-		res = sampleLocal(imageTex, samp, v.tex, i.uv, i.transform0.w) *
-			  localCoverage(v.p, i.rect, i.radii, i.transform0.w, fr);
-		if (i.params.y > 0.5f) {
-			res.rgb = float3(dot(res.rgb, float3(0.2126f, 0.7152f, 0.0722f)));
-		}
-	} else {
-		float4 c = paint(v.p, i.params.z, i.rect, i.color, i.color2, i.grad, wide);
-		float3 straight = unpremul(c);
-		if (i.transform0.w > 0.5f) {
-			float3 rgb = sampleLocal(colorTex, samp, v.tex, i.uv, 1.0f).rgb;
-			res = c * textCoverage((rgb.r + rgb.g + rgb.b) / 3.0f, straight, i.inner.x, i.inner.y, i.radii) *
+		} else if (kShadow && kind < 1.5f && i.params.y > 0.5f) {
+			// An inner shadow: inside the box, what the hole, blurred, leaves.
+			float sigma = i.params.z;
+			float hole = 0.0f;
+			if (i.uv.z > 0.0f && i.uv.w > 0.0f) {
+				hole = sigma > 0.0f ? boxShadow(v.p, i.uv, sigma, i.inner)
+								   : localCoverage(v.p, i.uv, i.inner, i.transform0.w, fr);
+			}
+			res = premul(i.color) * (localCoverage(v.p, i.rect, i.radii, i.transform0.w, fr) * (1.0f - hole));
+		} else if (kShadow && kind < 1.5f) {
+			float sigma = i.params.z;
+			float s = sigma > 0.0f ? boxShadow(v.p, i.rect, sigma, i.radii)
+								   : localCoverage(v.p, i.rect, i.radii, i.transform0.w, fr);
+			if (i.uv.z > 0.0f && i.uv.w > 0.0f) {
+				s *= 1.0f - localCoverage(v.p, i.uv, i.inner, i.transform0.w, fr); // outside the box casting it
+			}
+			res = premul(i.color) * s;
+		} else if (kGlyph && kind < 2.5f) {
+			float4 c = paint(v.p, i.params.z, i.rect, i.color, i.color2, i.grad, wide, stopsTex);
+			res = c *
+				  textCoverage(sampleLocal(maskTex, samp, v.tex, i.uv, i.transform0.w).r, unpremul(c), i.inner.x,
+							   i.inner.y, i.radii) *
 				  glyphCov;
-			res *= clipCoverage(v, i, clipTex, samp) * i.params.w;
-			return PSOut{res, res.aaaa};
+		} else if (kImage && kind < 3.5f) {
+			res = sampleLocal(colorTex, samp, v.tex, i.uv, i.transform0.w) * i.color.a * glyphCov;
+		} else if (kImage && kind < 4.5f) {
+			res = sampleImage(imageTex, samp, v.tex, i.uv, i.params.z, dtex);
+			if (i.params.y > 0.5f) {
+				res.rgb = float3(dot(res.rgb, float3(0.2126f, 0.7152f, 0.0722f)));
+			}
+			res = tint(res, i.color) * localCoverage(v.p, i.rect, i.radii, i.transform0.w, fr);
+		} else if (kSubpixel) {
+			float4 c = paint(v.p, i.params.z, i.rect, i.color, i.color2, i.grad, wide, stopsTex);
+			float3 straight = unpremul(c);
+			if (kTransformed && i.transform0.w > 0.5f) {
+				float3 rgb = sampleLocal(colorTex, samp, v.tex, i.uv, 1.0f).rgb;
+				res = c * textCoverage((rgb.r + rgb.g + rgb.b) / 3.0f, straight, i.inner.x, i.inner.y, i.radii) *
+					  glyphCov;
+				res *= clipCoverage(v, i, clipTex, samp) * i.params.w;
+				return PSOut{res, res.aaaa};
+			}
+			float3 a = subpixelCoverage(sampleLocal(colorTex, samp, v.tex, i.uv, i.transform0.w).rgb, straight,
+										i.inner.x, i.inner.y, i.radii);
+			float3 w = a * c.a * clipCoverage(v, i, clipTex, samp) * i.params.w;
+			float wa = (w.r + w.g + w.b) / 3.0f;
+			return PSOut{float4(straight * w, wa), float4(w, wa)};
 		}
-		float3 a = subpixelCoverage(sampleLocal(colorTex, samp, v.tex, i.uv, i.transform0.w).rgb, straight,
-									i.inner.x, i.inner.y, i.radii);
-		float3 w = a * c.a * clipCoverage(v, i, clipTex, samp) * i.params.w;
-		float wa = (w.r + w.g + w.b) / 3.0f;
-		return PSOut{float4(straight * w, wa), float4(w, wa)};
 	}
 	float clip = clipCoverage(v, i, clipTex, samp);
 	res *= clip * i.params.w;
@@ -595,7 +730,7 @@ struct Pass {
 	int down;	 // down: the size of the squares averaged
 	int radius;	 // blur: how far it reaches each way
 	float sigma; // blur: its standard deviation, 0 for none
-	float pad;
+	int mode;	 // 1: transparent beyond the area or the texels (gpu.PassClear)
 };
 
 struct PassVSOut {
@@ -610,20 +745,26 @@ vertex PassVSOut passVS(uint vid [[vertex_id]]) {
 }
 
 // down averages the square of the area that texel stands for, repeating
-// the area's last pixels past its far edges.
+// the area's last pixels past its far edges, or, for an image blurred
+// (mode 1), reading them as transparent.
 fragment float4 down(PassVSOut v [[stage_in]], texture2d<float> src [[texture(0)]],
 					 constant Pass &p [[buffer(0)]]) {
 	int2 o = p.origin + int2(v.pos.xy) * p.down;
 	float4 c = float4(0.0f);
 	for (int y = 0; y < p.down; y++) {
 		for (int x = 0; x < p.down; x++) {
-			c += src.read(uint2(min(o + int2(x, y), p.limit) - p.shift));
+			int2 at = o + int2(x, y);
+			if ((p.mode & 1) != 0 && (at.x > p.limit.x || at.y > p.limit.y)) {
+				continue;
+			}
+			c += src.read(uint2(min(at, p.limit) - p.shift));
 		}
 	}
 	return c * (1.0f / float(p.down * p.down));
 }
 
-// blur blurs along a row or a column, clamping at its ends.
+// blur blurs along a row or a column, clamping at its ends, or, for an
+// image blurred (mode 1), transparent beyond them.
 fragment float4 blur(PassVSOut v [[stage_in]], texture2d<float> src [[texture(0)]],
 					 constant Pass &p [[buffer(0)]]) {
 	int2 at = int2(v.pos.xy);
@@ -632,8 +773,12 @@ fragment float4 blur(PassVSOut v [[stage_in]], texture2d<float> src [[texture(0)
 	for (int o = -p.radius; o <= p.radius; o++) {
 		float x = float(o);
 		float w = p.sigma > 0.0f ? exp(-(x * x) / (2.0f * p.sigma * p.sigma)) : 1.0f;
-		c += src.read(uint2(clamp(at + p.dir * o, int2(0), p.limit))) * w;
+		int2 q = at + p.dir * o;
 		sum += w;
+		if ((p.mode & 1) != 0 && (any(q < int2(0)) || any(q > p.limit))) {
+			continue;
+		}
+		c += src.read(uint2(clamp(q, int2(0), p.limit))) * w;
 	}
 	return c / sum;
 }

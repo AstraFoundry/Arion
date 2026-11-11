@@ -22,6 +22,9 @@ MyGo does not copy a whole document on each edit or choose formatting behavior.
 The existing `HandleInput`, `TextCaret`, `TextInput` and `TextArea` APIs remain
 available. `TextCaret` is useful for terminals and other widgets that need a
 candidate-window location but do not provide a text document.
+`InputMethod(false)` turns input methods off for either while keys still
+type text, which then reaches `ReplaceText` with no composition, as a
+modal editor's normal mode wants; browsers cannot turn them off.
 
 The built-in `TextInput` and `TextArea` also implement this client contract.
 Their `*string` bindings publish committed text when the widget builds;
@@ -97,7 +100,7 @@ cursor; its size, appearance and other input behavior are yours.
 | `ReplaceText(range, text)` | Commit text in an explicit range; a nil range means preedit if present, otherwise the selection. Clear preedit according to your editing policy. |
 | `SetMarkedText(range, text, selected)` | Replace preedit, retaining its marked range. `selected` is relative to the newly marked text. |
 | `UnmarkText()` | Clear marked status while retaining document text. Also called when focus is lost, the client changes, or the element is disposed. |
-| `BoundsForRange(range)` | Return element-relative text/caret geometry, the actual range represented, and whether it is available. Return false for unavailable/offscreen text. |
+| `BoundsForRange(range)` | Return element-relative text/caret geometry, the actual range represented, and whether it is available. Return false for unavailable/offscreen text. Scrolling the element into view, as the focus does, shows the caret's bounds rather than its box when they are available. |
 | `IndexForPoint(point)` | Hit-test an element-relative point and return a document offset, or false. |
 
 Ranges count **UTF-16 code units**, matching native text services and GPUI's
@@ -122,6 +125,9 @@ surrounding deletions and preedit/commit callbacks. Windows IMM32 uses bounded
 document-feed/reconversion context and forwards composition and commit ranges.
 Changing the client resets native preedit so a candidate cannot move to a
 newly focused field. The platform callbacks are allocated once at startup.
+Assistive technology edits the client's text too: setting the element's
+value replaces it all, and inserting text replaces the selection, as in a
+`TextInput`.
 
 Keyboard navigation, pointer selection, clipboard policy and Edit-menu
 commands come through `HandleInput`. They belong to your control. This permits
@@ -132,8 +138,10 @@ without overriding behavior built into a framework-owned editor.
 
 `ShapeText(text, font, width)` and `ShapeRichText(spans, font, width)` produce a
 `TextLayout` using Core Text, Pango or DirectWrite. Positive `width` wraps text;
-zero only breaks at newlines. Cache layouts by paragraph or line and replace
-only those affected by an edit.
+zero only breaks at newlines. `Font.LineHeight` sets the height of the lines
+as a multiple of the size, as `Element.LineHeight` does for `Text` (about 1.8
+suits CJK prose); 0 keeps the font's own. Cache layouts by paragraph or line
+and replace only those affected by an edit.
 
 ```go
 layout := ui.ShapeText(paragraph, ui.Font{Size: 16}, availableWidth)
@@ -150,6 +158,70 @@ Layout offsets are UTF-16 too. `Caret` and `IndexAt` snap to whole graphemes;
 of bidi selections. It supplies geometry without inventing a single-range
 selection model or choosing an editor's navigation policy. Size and geometry
 queries are safe from any goroutine; painting is part of a UI frame.
+
+`ShapeRichTextWith` lays spans out as a `TextShape` says, as the
+paragraphs of a rich text editor or of a book:
+
+- `Align` aligns the lines within `Width`: `Start`, `Center` or `End`.
+- `Justify` stretches every line `Width` wraps to `Width`, but the last of
+  each paragraph, widening the spaces between its words and the room
+  after Han characters and kana. `Align` places the last lines, and a line
+  with nothing to widen, as a long word broken across lines. Whitespace
+  ending a line hangs past `Width`, as the layout keeps it.
+- `Indent` moves the text's first line in by that many DIPs from the side
+  its paragraph starts at, and wraps it that much narrower, as CSS's
+  `text-indent`; lines after a newline are not indented.
+- `NoBreakWords` lets a word wider than `Width` overflow it rather than
+  break.
+
+```go
+layout := ui.ShapeRichTextWith(spans, ui.Font{Size: 17, LineHeight: 1.5},
+	ui.TextShape{Width: column, Justify: true, Indent: 17 * 1.2})
+```
+
+The layout does all of this itself, from the lines the system's engine
+breaks, so a paragraph wraps, stretches and indents alike on every
+platform.
+
+A soft hyphen (U+00AD) in any text is a place a line may break at, as
+many EPUBs have them: it shows as a hyphen where a line breaks there, and
+as nothing, taking no room, elsewhere, as in browsers. A line ending with
+one makes room for its hyphen, breaking earlier if it must. MyGo does not
+hyphenate words by itself.
+
+`Lines` returns the lines of a layout, from the top: each one's box
+(`Rect`, its `X` including the alignment and the indent), its baseline,
+ascent and descent, the UTF-16 offsets it holds (`Start` and `End`, a
+newline ending it left out), and whether it reads right to left. A reader
+that paginates finds how many lines of a paragraph fit above a page's
+bottom, and the offset the next page starts at:
+
+```go
+for _, line := range layout.Lines() {
+	if top+line.Rect.Y+line.Rect.H > pageBottom {
+		nextPageStarts = line.Start
+		break
+	}
+}
+```
+
+A span with an `ObjectWidth` makes its object replacement characters
+(U+FFFC) inline objects: boxes of `ObjectWidth`×`ObjectHeight` standing on
+the baseline, `ObjectDescent` more below it, which lines break around and
+which draw nothing; `TextLayout.Objects` gives their boxes, where an
+editor draws its images, a reader its inline images and a math renderer
+its formulas. A span's `BaselineShift` raises its text or its objects
+that many DIPs above the baseline, or lowers them when negative, as
+superscripts and subscripts are: the line makes room for them, and their
+underlines go with them.
+
+```go
+ui.ShapeRichText([]ui.Span{
+	{Text: "as Melville wrote"},
+	{Text: "12", Size: 11, BaselineShift: 6},
+	{Text: ", the whale"},
+}, ui.Font{Size: 17}, column)
+```
 
 For visual navigation, retain `TextCaretPosition`, including its `Affinity`.
 `TextDownstream` chooses the following logical text's edge; `TextUpstream`

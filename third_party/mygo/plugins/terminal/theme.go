@@ -17,6 +17,13 @@ type Theme struct {
 	// opaque, when zero. SelectionText colors the selected text: its own
 	// colors when zero.
 	Selection, SelectionText ui.Color
+	// Search highlights the matches of a search (Terminal.Search) and
+	// SearchText colors their text, as Ghostty's search-background and
+	// search-foreground; SearchSelected and SearchSelectedText the selected
+	// match, as search-selected-background and search-selected-foreground.
+	// Ghostty's colors when zero: a light amber and a light orange, under
+	// black text.
+	Search, SearchText, SearchSelected, SearchSelectedText ui.Color
 	// Palette holds the 16 colors of programs: black, red, green, yellow,
 	// blue, magenta, cyan and white, then their bright kinds.
 	Palette [16]ui.Color

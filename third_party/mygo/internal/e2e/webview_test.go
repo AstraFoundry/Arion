@@ -277,3 +277,201 @@ func TestContentWindowWebViewEditMenu(t *testing.T) {
 		waitForPage(t, v.Page(), "getSelection().toString() === 'hello'")
 	}
 }
+
+// TestContentWindowWebViewScrollToContainer turns the wheel over two web
+// views side by side, each in a scroll container of its own and taller
+// than it, with pages taller still: over the one with ScrollToContainer
+// its container scrolls and its page does not, and over the other one
+// its page scrolls and its container does not.
+func TestContentWindowWebViewScrollToContainer(t *testing.T) {
+	var reader, page *mygo.WebView
+	var readerScroll, pageScroll ui.ScrollState
+	var readerY, pageY atomic.Value // float32: where the containers are
+	readerY.Store(float32(0))
+	pageY.Store(float32(0))
+	w := newWindow(t, mygo.WindowOptions{Title: "Web view wheel", Width: 400, Height: 300, Content: ui.View(func(c *ui.Context) {
+		ui.Row(c).Fill().AlignItems(ui.Stretch).Children(func() {
+			ui.Scroll(c).Grow(1).TrackScroll(&pageScroll).Children(func() {
+				if page != nil {
+					ui.WebView(c, page).Height(600)
+				}
+			})
+			// On the right, where the wheel's point in the web view is
+			// not the same in the window.
+			ui.Scroll(c).Grow(1).TrackScroll(&readerScroll).Children(func() {
+				if reader != nil {
+					ui.WebView(c, reader).Height(600)
+				}
+			})
+		})
+		readerY.Store(readerScroll.Y)
+		pageY.Store(pageScroll.Y)
+	})})
+	r, err := w.NewWebView(mygo.WebViewOptions{ScrollToContainer: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	p, err := w.NewWebView(mygo.WebViewOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	w.Update(func() { reader, page = r, p })
+	// Ready once the page has drawn: a wheel that comes sooner, while its
+	// first frame is still on the way, can find nothing to scroll yet.
+	const tall = `<body style="margin:0;height:3000px"><script>requestAnimationFrame(() => requestAnimationFrame(() => { window.ready = true }))</script></body>`
+	r.Page().LoadHTML(tall, "")
+	p.Page().LoadHTML(tall, "")
+	waitForPage(t, r.Page(), "window.ready")
+	waitForPage(t, p.Page(), "window.ready")
+	container := func(y *atomic.Value) float32 {
+		w.Invalidate()
+		return y.Load().(float32)
+	}
+	scrolled := func(v *mygo.WebView) float64 {
+		y, _ := mygo.EvalAs[float64](v.Page(), "scrollY")
+		return y
+	}
+
+	if !wheel(w, 300, 150) {
+		t.Skip("wheel automation not available on this platform")
+	}
+	eventually(t, "the wheel over the reader to scroll its container", func() bool { return container(&readerY) > 0 })
+	if !wheel(w, 100, 150) {
+		t.Fatal("the second wheel")
+	}
+	eventually(t, "the wheel over the page to scroll the page", func() bool { return scrolled(p) > 0 })
+	if y := scrolled(r); y != 0 {
+		t.Errorf("the reader's page scrolled to %v, want its container to take the wheel", y)
+	}
+	if y := container(&pageY); y != 0 {
+		t.Errorf("the page's container scrolled to %v, want the page to take the wheel", y)
+	}
+}
+
+// TestContentWindowWebViewUnhandledKeys presses keys in the untrusted page
+// of a web view that has the keyboard: those the page leaves unhandled
+// reach the shortcuts of the element around the web view and of the
+// window, as if the web view's element had the focus, while the page
+// keeps those it cancels and those typed into its text field.
+func TestContentWindowWebViewUnhandledKeys(t *testing.T) {
+	var view *mygo.WebView
+	var js, ks, ls, cmdKs, shown atomic.Int32
+	w := newWindow(t, mygo.WindowOptions{Title: "Web view keys", Width: 400, Height: 300, Content: ui.View(func(c *ui.Context) {
+		if c.Shortcut(ui.Cmd, ui.KeyK) {
+			cmdKs.Add(1)
+		}
+		if c.Shortcut(0, ui.KeyL) {
+			ls.Add(1)
+		}
+		ui.Row(c).Fill().AlignItems(ui.Stretch).Children(func() {
+			ui.Text(c, "List").Width(100)
+			reader := ui.Column(c).Grow(1).AlignItems(ui.Stretch).Children(func() {
+				if view != nil {
+					ui.WebView(c, view).Grow(1)
+					shown.Add(1)
+				}
+			})
+			if reader.Shortcut(0, ui.KeyJ) {
+				js.Add(1)
+			}
+			if reader.Shortcut(0, ui.KeyK) {
+				ks.Add(1)
+			}
+		})
+	})})
+	v, err := w.NewWebView(mygo.WebViewOptions{Page: mygo.PageOptions{Untrusted: true}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	w.Update(func() { view = v })
+	v.Page().LoadHTML(`<p>Text to read.</p><input id=i>
+<script>
+addEventListener("keydown", (e) => { if (e.key === "l") { e.preventDefault(); window.took = (window.took || "") + "l"; } });
+window.ready = true;
+</script>`, "")
+	waitForPage(t, v.Page(), "window.ready")
+	count := func(n *atomic.Int32) int32 {
+		w.Invalidate()
+		return n.Load()
+	}
+	// The window learns where a frame showed the web view once it
+	// presented it: the frame after that one has.
+	eventually(t, "two frames showing the web view", func() bool { return count(&shown) >= 2 })
+	w.Focus()
+	v.Focus()
+	waitForPage(t, v.Page(), "document.hasFocus()")
+	press := func(letter byte, cmd bool) {
+		t.Helper()
+		if !pressLetter(w, letter, cmd) {
+			t.Skip("key automation not available on this platform")
+		}
+	}
+
+	press('J', false)
+	eventually(t, "J the page leaves to reach the shortcut around the web view", func() bool { return count(&js) == 1 })
+	press('L', false)
+	waitForPage(t, v.Page(), "window.took === 'l'")
+	press('K', false)
+	eventually(t, "K the page leaves to reach the shortcut around the web view", func() bool { return count(&ks) == 1 })
+	if n := count(&ls); n != 0 {
+		t.Errorf("L, which the page cancels, reached the window's shortcut %d times", n)
+	}
+	press('K', true)
+	eventually(t, "Cmd/Ctrl+K the page leaves to reach the window's shortcut", func() bool { return count(&cmdKs) == 1 })
+
+	if _, err := v.Page().Eval("document.getElementById('i').focus()"); err != nil {
+		t.Fatal(err)
+	}
+	press('J', false)
+	waitForPage(t, v.Page(), "document.getElementById('i').value === 'j'")
+	if _, err := v.Page().Eval("document.getElementById('i').blur()"); err != nil {
+		t.Fatal(err)
+	}
+	press('K', false)
+	eventually(t, "K after the text field to reach the shortcut", func() bool { return count(&ks) == 2 })
+	if n := count(&js); n != 1 {
+		t.Errorf("J typed into the page's text field reached the shortcut too: %d times", n)
+	}
+}
+
+// TestContentWindowWebViewUnhandledKeysInFrame presses a key in a frame of
+// a web view's untrusted page, which the frame leaves unhandled: it
+// reaches the window's shortcut as the page's own keys do.
+func TestContentWindowWebViewUnhandledKeysInFrame(t *testing.T) {
+	var view *mygo.WebView
+	var js, shown atomic.Int32
+	w := newWindow(t, mygo.WindowOptions{Title: "Web view frame keys", Width: 400, Height: 300, Content: ui.View(func(c *ui.Context) {
+		if c.Shortcut(0, ui.KeyJ) {
+			js.Add(1)
+		}
+		if view != nil {
+			ui.WebView(c, view).Fill()
+			shown.Add(1)
+		}
+	})})
+	v, err := w.NewWebView(mygo.WebViewOptions{Page: mygo.PageOptions{Untrusted: true}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	w.Update(func() { view = v })
+	v.Page().LoadHTML(`<p>Outside the frame.</p><iframe srcdoc="<p id=x tabindex=0>In the frame.</p>"></iframe>
+<script>window.ready = true</script>`, "")
+	waitForPage(t, v.Page(), "window.ready && document.querySelector('iframe').contentDocument?.getElementById('x')")
+	eventually(t, "two frames showing the web view", func() bool {
+		w.Invalidate()
+		return shown.Load() >= 2
+	})
+	w.Focus()
+	v.Focus()
+	if _, err := v.Page().Eval("document.querySelector('iframe').contentDocument.getElementById('x').focus()"); err != nil {
+		t.Fatal(err)
+	}
+	waitForPage(t, v.Page(), "document.hasFocus() && document.activeElement.tagName === 'IFRAME'")
+	if !pressLetter(w, 'J', false) {
+		t.Skip("key automation not available on this platform")
+	}
+	eventually(t, "J the frame leaves to reach the window's shortcut", func() bool {
+		w.Invalidate()
+		return js.Load() == 1
+	})
+}

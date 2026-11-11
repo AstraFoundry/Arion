@@ -9,6 +9,7 @@ import (
 	"path"
 	"path/filepath"
 	"slices"
+	"syscall/js"
 	"testing"
 
 	"github.com/egoist/mygo/internal/platform"
@@ -145,5 +146,72 @@ func TestDroppedFiles(t *testing.T) {
 	}
 	if _, err := os.Stat(paths[0]); err == nil {
 		t.Error("the files of the oldest drop stay")
+	}
+}
+
+// TestWebViewAvailable: browsers have no system webview, so the call says
+// so, and an app opens a window of native UI instead of one showing a page
+// it could not show.
+func TestWebViewAvailable(t *testing.T) {
+	if New().WebViewAvailable() {
+		t.Error("WebViewAvailable = true in a browser, which has no webview")
+	}
+}
+
+func TestChord(t *testing.T) {
+	// A DOM pointermove with button (DOM numbering) going down or up while
+	// another is held, and buttons held after it.
+	for _, tc := range []struct {
+		button, buttons int
+		kind            platform.SurfaceEventKind
+		want            int
+		ok              bool
+	}{
+		{-1, 1, 0, 0, false},                      // a move
+		{2, 1 | 2, platform.PointerDown, 1, true}, // the secondary goes down while the primary is held
+		{2, 1, platform.PointerUp, 1, true},       // and up
+		{1, 2 | 4, platform.PointerDown, 2, true}, // the middle while the secondary is held
+		{0, 4, platform.PointerUp, 0, true},       // the primary up while the middle is held
+		{3, 1 | 8, 0, 0, false},                   // a side button
+	} {
+		kind, b, ok := chord(tc.button, tc.buttons)
+		if ok != tc.ok || ok && (kind != tc.kind || b != tc.want) {
+			t.Errorf("chord(%d, %d) = %v, %d, %v; want %v, %d, %v", tc.button, tc.buttons, kind, b, ok, tc.kind, tc.want, tc.ok)
+		}
+	}
+}
+
+func TestDevice(t *testing.T) {
+	// A PointerEvent's pointerType and pressure, which browsers give a
+	// mouse too, and an event of a browser without them.
+	for _, tc := range []struct {
+		props    map[string]any
+		want     platform.PointerKind
+		pressure float64
+	}{
+		{map[string]any{"pointerType": "mouse", "pressure": 0.5}, platform.PointerMouse, 0.5},
+		{map[string]any{"pointerType": "pen", "pressure": 0.75}, platform.PointerPen, 0.75},
+		{map[string]any{"pointerType": "touch", "pressure": 0}, platform.PointerTouch, 0},
+		{map[string]any{}, platform.PointerMouse, 0},
+	} {
+		e := js.Global().Get("Object").New()
+		for k, v := range tc.props {
+			e.Set(k, v)
+		}
+		if k, p := device(e); k != tc.want || p != tc.pressure {
+			t.Errorf("device(%v) = %d, %v; want %d, %v", tc.props, k, p, tc.want, tc.pressure)
+		}
+	}
+}
+
+func TestCursorNames(t *testing.T) {
+	// Every cursor has its CSS name.
+	for c := platform.CursorDefault; c <= platform.CursorNoDrop; c++ {
+		if int(c) >= len(cursors) || cursors[c] == "" {
+			t.Errorf("cursor %d has no CSS name", c)
+		}
+	}
+	if cursors[platform.CursorProgress] != "progress" || cursors[platform.CursorNoDrop] != "no-drop" {
+		t.Errorf("progress is %q, no-drop %q", cursors[platform.CursorProgress], cursors[platform.CursorNoDrop])
 	}
 }

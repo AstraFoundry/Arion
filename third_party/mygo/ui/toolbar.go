@@ -41,7 +41,7 @@ func coreToolbar(c *context, fn func()) *node {
 		fn()
 		more := coreButtonBase(c)
 		styleButton(c, more, false)
-		more.Label("More").Children(func() { chevrons(c) })
+		more.Label(c.texts().More()).Children(func() { chevrons(c) })
 		more.Menu(func(m *Menu) {
 			for i, it := range *items {
 				if it.startsGroup && i > 0 {
@@ -58,8 +58,10 @@ func coreToolbar(c *context, fn func()) *node {
 				rt := c.rt
 				if s := rt.states[it.id]; s != nil {
 					if it.menu {
-						ms := more.st
-						rt.askMenu(s, ms.vx, ms.vy+ms.vh, true)
+						// Below the overflow button, in the next pass,
+						// which builds the menu button again.
+						x, y := more.st.menuCorner()
+						rt.askMenuLater(s, x, y)
 					} else {
 						rt.clickLater = append(rt.clickLater, it.id)
 						rt.consumed = true
@@ -72,13 +74,19 @@ func coreToolbar(c *context, fn func()) *node {
 	return tb
 }
 
-// chevrons draws », of a toolbar's overflow menu.
+// chevrons draws », of a toolbar's overflow menu, or « right to left.
 func chevrons(c *context) {
 	t := c.theme
-	coreBox(c).Size(t.Space(3), t.Space(3)).Shrink(0).Draw(func(p *Painter, r Rect) {
+	e := coreBox(c).Size(t.Space(3), t.Space(3)).Shrink(0)
+	rtl := e.rtl()
+	e.Draw(func(p *Painter, r Rect) {
 		for _, x := range []float32{0.2, 0.5} {
 			var path Path
-			path.MoveTo(r.X+r.W*x, r.Y+r.H*0.25).LineTo(r.X+r.W*(x+0.25), r.Y+r.H*0.5).LineTo(r.X+r.W*x, r.Y+r.H*0.75)
+			if rtl {
+				path.MoveTo(r.X+r.W*(1-x), r.Y+r.H*0.25).LineTo(r.X+r.W*(0.75-x), r.Y+r.H*0.5).LineTo(r.X+r.W*(1-x), r.Y+r.H*0.75)
+			} else {
+				path.MoveTo(r.X+r.W*x, r.Y+r.H*0.25).LineTo(r.X+r.W*(x+0.25), r.Y+r.H*0.5).LineTo(r.X+r.W*x, r.Y+r.H*0.75)
+			}
 			p.StrokePath(&path, 1.5, t.Text)
 		}
 	})
@@ -94,8 +102,9 @@ func (e *node) layoutToolbar(cw float32) {
 			// Laid out again: the room may have grown.
 			ch.flags &^= flagAbsolute | flagInvisible
 			ch.collapsed = false
+			e.forgetIntrinsic()
 		}
-		if ch.flags&flagAbsolute == 0 {
+		if ch.flags&flagAbsolute == 0 && !ch.hidden {
 			kids = append(kids, ch)
 		}
 	}
@@ -129,6 +138,7 @@ func (e *node) layoutToolbar(cw float32) {
 	collapse := func(ch *node) {
 		ch.flags |= flagAbsolute | flagInvisible
 		ch.collapsed = true
+		e.forgetIntrinsic()
 	}
 	// The items of a group of controls, as a toggle group's, are set apart
 	// by separators.

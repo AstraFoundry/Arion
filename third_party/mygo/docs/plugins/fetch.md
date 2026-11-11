@@ -5,7 +5,7 @@ takes the options of the standard `fetch` and returns a standard
 `Response`, but the request leaves from the Go side of the app, so:
 
 - it is not subject to CORS: any server answers, and every response header
-  is readable but `Set-Cookie`, which a `Response` cannot hold;
+  is readable but `Set-Cookie` and `Set-Cookie2`, which the plugin filters;
 - it may set any header, including those the webview forbids, such as
   `Origin`, `Cookie`, `Referer` and `User-Agent`;
 - its body streams to the page as Go reads it, and aborting it cancels the
@@ -138,7 +138,8 @@ try {
 
 ## Options
 
-`fetch.Plugin` makes requests with `http.DefaultClient` and lets pages
+`fetch.Plugin` makes requests through the system's proxy settings, as
+the webview does (see [proxies](../native.md#proxies)), and lets pages
 request any URL. `fetch.New` takes options instead:
 
 ```go
@@ -154,9 +155,12 @@ mygo.Use(fetch.New(fetch.Options{
 
 - `Client` makes the requests, so its `Transport` (proxies, TLS settings),
   `Jar` (cookies kept between requests) and `Timeout` apply, and its
-  `CheckRedirect` limits the redirects followed. `http.DefaultClient`
-  takes its proxy from the environment (`HTTPS_PROXY`, `NO_PROXY`), not
-  from the system's settings.
+  `CheckRedirect` limits the redirects followed. Without one, the
+  client's transport is `netproxy.Transport()`: the proxy of the
+  environment (`HTTPS_PROXY`, `NO_PROXY`) when it names one, otherwise
+  the system's. A client of your own keeps its own `Transport`; give it
+  `netproxy.Transport()`, or set its `Proxy` to `netproxy.Proxy`, for the
+  same proxies.
 - `Allow` sees each request before Go makes it, with its URL, method and
   headers, and decides whether pages may make it: a request it refuses
   rejects with an error. It sees the first request only, not the

@@ -33,7 +33,8 @@ type Getter func(ctx context.Context, url string) (io.ReadCloser, error)
 // GitHubAPI is the GitHub REST API, which tests replace.
 var GitHubAPI = "https://api.github.com"
 
-// Pages of releases that ResolveFeed reads at most, of releasesPerPage.
+// Pages of releases that ResolveFeed and ResolvePrereleaseFeed read at
+// most, of releasesPerPage.
 const (
 	releasesPerPage = 100
 	maxReleasePages = 10
@@ -118,6 +119,88 @@ func latestTagged(ctx context.Context, get Getter, repo, prefix string, include 
 		}
 	}
 	return "", fmt.Errorf("%w in %s tagged %s", ErrNotPublished, repo, prefix)
+}
+
+// ResolvePrereleaseFeed is ResolveFeed for apps that take prereleases
+// too. For a feed of GitHub releases, of the latest release or tagged
+// (TaggedFeed), it returns the manifest of the release with the highest
+// version (Compare) that is not a draft, a prerelease or not, among the
+// releases tagged with the feed's prefix: "v" for the feed of the latest
+// release, mygo build's default tagPrefix. Other feeds are the URL of the
+// manifest, as with ResolveFeed.
+func ResolvePrereleaseFeed(ctx context.Context, feed string, get Getter) (string, error) {
+	repo, prefix, name, ok := parseGitHubFeed(feed)
+	if !ok {
+		if strings.Contains(feed, VersionPlaceholder) {
+			return "", fmt.Errorf("%s is not a feed of GitHub releases", feed)
+		}
+		return feed, nil
+	}
+	tag, err := highestTagged(ctx, get, repo, prefix)
+	if err != nil {
+		return "", err
+	}
+	return "https://github.com/" + repo + "/releases/download/" + url.PathEscape(tag) + "/" + url.PathEscape(name), nil
+}
+
+// parseGitHubFeed returns the repository, the tag prefix and the manifest
+// name of a feed of GitHub releases, tagged or of the latest release.
+func parseGitHubFeed(feed string) (repo, prefix, name string, ok bool) {
+	rest, ok := strings.CutPrefix(feed, "https://github.com/")
+	parts := strings.SplitN(rest, "/", 6)
+	if !ok || len(parts) != 6 || parts[2] != "releases" {
+		return "", "", "", false
+	}
+	name, err := url.PathUnescape(parts[5])
+	if err != nil {
+		return "", "", "", false
+	}
+	switch {
+	case parts[3] == "latest" && parts[4] == "download":
+		prefix = "v"
+	case parts[3] == "download" && strings.HasSuffix(parts[4], VersionPlaceholder):
+		if prefix, err = url.PathUnescape(strings.TrimSuffix(parts[4], VersionPlaceholder)); err != nil {
+			return "", "", "", false
+		}
+	default:
+		return "", "", "", false
+	}
+	return parts[0] + "/" + parts[1], prefix, name, true
+}
+
+// highestTagged returns the tag of the release of repo tagged prefix and
+// the highest version that is not a draft. It reads the pages of releases,
+// newest first, up to the one that holds the newest release that is not a
+// prerelease, the one latestTagged finds: releases listed after it are
+// taken as not newer, so that a repository of many releases still costs
+// one request a check.
+func highestTagged(ctx context.Context, get Getter, repo, prefix string) (string, error) {
+	var best, bestVersion string
+	for page := 1; page <= maxReleasePages; page++ {
+		u := GitHubAPI + "/repos/" + repo + "/releases?per_page=" + strconv.Itoa(releasesPerPage) + "&page=" + strconv.Itoa(page)
+		releases, err := getReleases(ctx, get, u)
+		if err != nil {
+			return "", err
+		}
+		stable := false
+		for _, r := range releases {
+			v, ok := strings.CutPrefix(r.TagName, prefix)
+			if r.Draft || !ok || v == "" || v[0] < '0' || v[0] > '9' {
+				continue
+			}
+			stable = stable || !r.Prerelease
+			if best == "" || Compare(v, bestVersion) > 0 {
+				best, bestVersion = r.TagName, v
+			}
+		}
+		if stable || len(releases) < releasesPerPage {
+			break
+		}
+	}
+	if best == "" {
+		return "", fmt.Errorf("%w in %s tagged %s", ErrNotPublished, repo, prefix)
+	}
+	return best, nil
 }
 
 type release struct {

@@ -5,19 +5,16 @@ package library
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json/v2"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
 	"time"
 
 	"github.com/egoist/mygo"
+	fetch "github.com/egoist/mygo/internal/download"
 )
 
 // nativeLibraries is the format of mygo-plugin.json.
@@ -110,7 +107,8 @@ func cachePath(f nativeFile) (string, error) {
 	return filepath.Join(dir, "mygo", "natives", f.SHA256, f.Name), nil
 }
 
-// download downloads f to path, checking its SHA-256.
+// download downloads f to path, checking its SHA-256, once among the
+// processes that need it at the same time.
 func download(f nativeFile, path string) error {
 	if f.URL == "" || f.SHA256 == "" {
 		return fmt.Errorf("terminal: no download of %s for %s/%s", f.Name, runtime.GOOS, runtime.GOARCH)
@@ -118,61 +116,8 @@ func download(f nativeFile, path string) error {
 	log.Printf("terminal: downloading %s into %s", f.URL, filepath.Dir(path))
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
-	req, err := http.NewRequestWithContext(ctx, "GET", f.URL, nil)
-	if err != nil {
-		return err
-	}
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
+	if err := fetch.Cached(ctx, fetch.File{URL: f.URL, SHA256: f.SHA256}, path); err != nil {
 		return fmt.Errorf("terminal: downloading %s: %w", f.Name, err)
-	}
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("terminal: downloading %s: %s", f.URL, res.Status)
-	}
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		return err
-	}
-	tmp, err := os.CreateTemp(filepath.Dir(path), ".download-*")
-	if err != nil {
-		return err
-	}
-	defer os.Remove(tmp.Name())
-	h := sha256.New()
-	_, err = io.Copy(io.MultiWriter(tmp, h), io.LimitReader(res.Body, 64<<20))
-	if cerr := tmp.Close(); err == nil {
-		err = cerr
-	}
-	if err != nil {
-		return fmt.Errorf("terminal: downloading %s: %w", f.Name, err)
-	}
-	if sum := hex.EncodeToString(h.Sum(nil)); sum != f.SHA256 {
-		return fmt.Errorf("terminal: %s has SHA-256 %s, not %s", f.URL, sum, f.SHA256)
-	}
-	if err := os.Chmod(tmp.Name(), 0o755); err != nil {
-		return err
-	}
-	if err := os.Rename(tmp.Name(), path); err != nil {
-		// Another process downloaded it meanwhile, and may have it loaded,
-		// which Windows won't replace.
-		if sum, serr := fileSHA256(path); serr == nil && sum == f.SHA256 {
-			return nil
-		}
-		return err
 	}
 	return nil
-}
-
-// fileSHA256 returns the SHA-256 of a file, in hex.
-func fileSHA256(path string) (string, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return "", err
-	}
-	defer f.Close()
-	h := sha256.New()
-	if _, err := io.Copy(h, f); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(h.Sum(nil)), nil
 }

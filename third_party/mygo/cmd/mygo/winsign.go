@@ -21,6 +21,19 @@ type Windows struct {
 	// The app must call mygo.HandleNotificationRegistration before bootstrap.
 	Notifications bool `json:"notifications"`
 
+	// DisplayName is the name Windows shows the app by when it is not
+	// name: its Start menu and desktop shortcuts, its entry in Settings >
+	// Apps, the installer's title and messages, and the product name of
+	// the executable's file properties. The executable, the install folder
+	// and the files that name or slug names keep their names, so that an
+	// app named "weather" shows as "天气助手" (default: name).
+	DisplayName string `json:"displayName"`
+	// InstallDirName is the name of the folder the installer installs the
+	// app in, in %LOCALAPPDATA%\Programs, when it is not name, e.g. an ASCII
+	// "ZhiLian" for an app named "智链"; the shortcuts and everything else
+	// Windows shows keep the name. Changing it moves new installs only:
+	// an installed app is updated in its folder (default: name).
+	InstallDirName string `json:"installDirName"`
 	// Certificate is a code signing certificate (.pfx) to sign the
 	// executable, the installer and its uninstaller with, which keeps
 	// SmartScreen from warning users; signing the uninstaller needs NSIS
@@ -35,6 +48,12 @@ type Windows struct {
 	// TimestampURL is the RFC 3161 time stamping server of Certificate
 	// (default http://timestamp.digicert.com).
 	TimestampURL string `json:"timestampUrl"`
+	// InstallerInclude is an NSIS script of the app's own that the
+	// installer includes, e.g. "build/installer.nsh". The macros it
+	// defines among customInit, customInstall and customUnInstall run when
+	// the installer starts, at the end of the install, and in the
+	// uninstall before the app's folder is removed (see nsisHooks).
+	InstallerInclude string `json:"installerInclude"`
 }
 
 func (w *Windows) signs() bool { return w.Certificate != "" || w.SignCommand != "" }

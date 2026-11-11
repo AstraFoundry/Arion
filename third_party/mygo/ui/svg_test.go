@@ -143,6 +143,67 @@ func TestImageOfAnSVG(t *testing.T) {
 	}
 }
 
+// ObjectPosition places a picture where Fit crops it or leaves room
+// around it, an SVG's and a bitmap's alike, as CSS's object-position.
+func TestObjectPosition(t *testing.T) {
+	logo := MustParseSVG([]byte(logoSVG)) // red, green and currentColor, 30×10
+	strip := image.NewRGBA(image.Rect(0, 0, 3, 1))
+	for i, c := range []color.RGBA{{255, 0, 0, 255}, {0, 255, 0, 255}, {0, 0, 255, 255}} {
+		strip.SetRGBA(i, 0, c)
+	}
+	bitmap := NewBitmap(strip)
+	red, green, blue, white := color.RGBA{255, 0, 0, 255}, color.RGBA{0, 255, 0, 255}, color.RGBA{0, 0, 255, 255}, color.RGBA{255, 255, 255, 255}
+	for _, src := range []ImageSource{logo, bitmap} {
+		var x, y float32
+		set := false
+		fit := Cover
+		tt := coreNewTester(func(c *context) {
+			coreColumn(c).Fill().Background(RGB(255, 255, 255)).TextColor(RGB(0, 0, 255)).AlignItems(Start).Children(func() {
+				e := coreImage(c, src).Size(60, 60).Fit(fit).Label("picture")
+				if set {
+					e.ObjectPosition(x, y)
+				}
+			})
+		}, 100, 100)
+		at := func(px, py float32) color.RGBA {
+			r, _ := tt.Find("picture")
+			return tt.Image().RGBAAt(int(r.X+px), int(r.Y+py))
+		}
+		check := func(what string, px, py float32, want color.RGBA) {
+			t.Helper()
+			if c := at(px, py); c != want {
+				t.Errorf("%T, %s: %v at %v, %v, want %v", src, what, c, px, py, want)
+			}
+		}
+		check("covering, in the middle by default", 2, 30, green)
+		set, x, y = true, 0, 0.5
+		tt.Frame()
+		// 180×60, of which the left third shows.
+		check("covering, by the left edge", 2, 30, red)
+		check("covering, by the left edge", 58, 30, red)
+		x = 1
+		tt.Frame()
+		check("covering, by the right edge", 2, 30, blue)
+		check("covering, by the right edge", 58, 30, blue)
+		x = 0.5
+		tt.Frame()
+		check("covering, at 50% 50%", 2, 30, green)
+		// Contained, 60×20, at the top and at the bottom.
+		fit, x, y = Contain, 0.5, 0
+		tt.Frame()
+		check("contained, at the top", 2, 5, red)
+		check("contained, at the top", 2, 50, white)
+		y = 1
+		tt.Frame()
+		check("contained, at the bottom", 2, 55, red)
+		check("contained, at the bottom", 2, 5, white)
+		// Past the edge, clipped to the box.
+		y = 2
+		tt.Frame()
+		check("contained, past the bottom", 2, 55, white)
+	}
+}
+
 func TestPictureFollowsTheTextColor(t *testing.T) {
 	logo := MustParseSVG([]byte(logoSVG))
 	col := RGB(0, 0, 255)

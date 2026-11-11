@@ -18,4 +18,16 @@ The last item is where the user is, which is no link.
 
 ## Accessibility
 
-Assistive technology sees links in a group, which `Label` names.
+Assistive technology sees links in a navigation landmark, which `Label`
+names and screen readers jump to among the window's landmarks, and the
+last item as the current page (`ui.CurrentPage`), which they read as such.
+A trail of your own says the same with `Role(ui.RoleNavigation)` and
+[`Current`](accessibility.md#states):
+
+```go
+ui.Row(c).Gap(6).Role(ui.RoleNavigation).Label("Breadcrumb").Children(func() {
+	ui.Link(c, "Home", "/")
+	ui.Text(c, "/").AccessHidden(true)
+	ui.Text(c, "Settings").Current(ui.CurrentPage)
+})
+```

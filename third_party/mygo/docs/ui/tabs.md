@@ -27,13 +27,14 @@ of view in a toolbar, a [segmented control](segmented.md).
 
 `ui.TabsBase` is a tab list without a look: the `List` holding the tabs,
 whose `Tab`s choose the index, with the arrows moving the choice and the
-focus:
+focus. A tab with `Disabled(true)` cannot be clicked, and the arrows, Home
+and End pass over it:
 
 ```go
 tabs := ui.TabsBase(c, &app.tab, len(names))
 tabs.List.Gap(4).Children(func() {
 	for i, name := range names {
-		tab := tabs.Tab(i).Padding(6, 12).Radius(6)
+		tab := tabs.Tab(i).Padding(6, 12).Radius(6).Disabled(!app.enabled[i])
 		if i == app.tab {
 			tab.Background(t.Surface)
 		}
@@ -47,4 +48,4 @@ See [custom widgets](custom-widgets.md).
 ## Accessibility
 
 Assistive technology sees a tab list of tabs named by their labels, the one
-chosen selected.
+chosen selected, and those disabled disabled.

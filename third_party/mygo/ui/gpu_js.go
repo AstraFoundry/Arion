@@ -18,5 +18,7 @@ func newGPURenderer(n platform.SurfaceNative) (gpuRenderer, error) {
 	if err != nil {
 		return nil, err
 	}
+	// The canvas's drawing buffer keeps what was drawn (gl.NewContext).
+	r.Partial = true
 	return r, nil
 }

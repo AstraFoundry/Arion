@@ -44,12 +44,14 @@ const objectKey = "__mygo"
 
 // NewContext makes the WebGL 2 context of canvas, which draws premultiplied
 // colors without depth, stencil or antialiasing, as frames need: the
-// renderer cuts shapes' edges itself. It fails where the browser has no
-// WebGL 2, or will not make a context for the canvas.
+// renderer cuts shapes' edges itself. Its drawing buffer keeps what was
+// drawn, so that frames draw only what changed (Renderer.Partial). It
+// fails where the browser has no WebGL 2, or will not make a context for
+// the canvas.
 func NewContext(canvas js.Value) (*Context, error) {
 	attrs := map[string]any{
 		"alpha": true, "premultipliedAlpha": true, "antialias": false, "depth": false, "stencil": false,
-		"preserveDrawingBuffer": false, "powerPreference": "default",
+		"preserveDrawingBuffer": true, "powerPreference": "default",
 	}
 	v := canvas.Call("getContext", "webgl2", attrs)
 	if v.IsNull() || v.IsUndefined() {
@@ -93,6 +95,8 @@ func currentContext() uintptr {
 	return cur.id
 }
 
+func hasContext() bool { return cur != nil }
+
 func contextVersion() (version int32, es bool) { return 30, true }
 
 func hasExtension(name string) bool {
@@ -100,6 +104,21 @@ func hasExtension(name string) bool {
 }
 
 func versionString() string { return cur.v.Call("getParameter", glVersion).String() }
+
+// rendererString names the context's renderer: as the browser names it
+// (Firefox, the GPU's, sanitized), or, where that is WebGL's own name
+// (Chrome and Safari), as the GPU's driver does, should the browser tell
+// (WEBGL_debug_renderer_info, which Firefox deprecates).
+func rendererString() string {
+	const unmaskedRenderer = 0x9246
+	name := cur.v.Call("getParameter", glRenderer).String()
+	if name == "WebKit WebGL" && !cur.v.Call("getExtension", "WEBGL_debug_renderer_info").IsNull() {
+		if v := cur.v.Call("getParameter", unmaskedRenderer); v.Type() == js.TypeString {
+			return v.String()
+		}
+	}
+	return name
+}
 
 func call(name string, args ...any) js.Value { return cur.v.Call(name, args...) }
 
@@ -222,6 +241,18 @@ func glGetUniformLocation(program uint32, uniform string) int32 {
 	return int32(len(locations) - 1)
 }
 
+func glGetUniformBlockIndex(program uint32, block string) uint32 {
+	return uint32(call("getUniformBlockIndex", object(program), block).Int())
+}
+
+func glUniformBlockBinding(program, index, binding uint32) {
+	call("uniformBlockBinding", object(program), index, binding)
+}
+
+func glBindBufferBase(target, index, buffer uint32) {
+	call("bindBufferBase", target, index, object(buffer))
+}
+
 func location(l int32) js.Value {
 	if l < 0 || int(l) >= len(locations) {
 		return js.Null()
@@ -233,6 +264,7 @@ func glUniform1i(l, v int32)            { call("uniform1i", location(l), v) }
 func glUniform2f(l int32, x, y float32) { call("uniform2f", location(l), x, y) }
 func glUniform1f(l int32, v float32)    { call("uniform1f", location(l), v) }
 func glUniform2i(l, x, y int32)         { call("uniform2i", location(l), x, y) }
+func glUniform4i(l, x, y, z, w int32)   { call("uniform4i", location(l), x, y, z, w) }
 
 func glCopyTexSubImage2D(target uint32, level, xoff, yoff, x, y, w, h int32) {
 	call("copyTexSubImage2D", target, level, xoff, yoff, x, y, w, h)
@@ -270,11 +302,22 @@ func glTexImage2D(target uint32, level, internalFormat, w, h, border int32, form
 		call("texImage2D", target, level, internalFormat, w, h, border, format, typ, js.Null())
 		return
 	}
-	call("texImage2D", target, level, internalFormat, w, h, border, format, typ, jsBytes(pix, uploadSize(w, h, format)), 0)
+	call("texImage2D", target, level, internalFormat, w, h, border, format, typ, jsPixels(pix, w, h, format, typ), 0)
 }
 
 func glTexSubImage2D(target uint32, level, x, y, w, h int32, format, typ uint32, pix unsafe.Pointer) {
-	call("texSubImage2D", target, level, x, y, w, h, format, typ, jsBytes(pix, uploadSize(w, h, format)), 0)
+	call("texSubImage2D", target, level, x, y, w, h, format, typ, jsPixels(pix, w, h, format, typ), 0)
+}
+
+// jsPixels returns the pixels of an upload as WebGL takes them: bytes, or
+// for floats (glFloat) a Float32Array over them.
+func jsPixels(pix unsafe.Pointer, w, h int32, format, typ uint32) js.Value {
+	n := uploadSize(w, h, format)
+	if typ != glFloat {
+		return jsBytes(pix, n)
+	}
+	b := jsBytes(pix, 4*n)
+	return js.Global().Get("Float32Array").New(b.Get("buffer"), 0, n)
 }
 
 func glTexParameteri(target, param uint32, v int32) { call("texParameteri", target, param, v) }

@@ -1,7 +1,7 @@
 name: Benchmarks
 
 # Every push to main is measured on macOS, Linux and Windows, and the
-# results go to the benchmarks branch, which the website's /benchmarks page
+# results go to the benchmarks branch, which the website's /measures page
 # reads. Started by hand, the workflow measures the commit of its ref input
 # instead, as to fill in history, with this commit's scripts/bench.ts and
 # internal/idlemem.

@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/egoist/mygo/internal/wait"
 )
 
 func TestDownloadEvents(t *testing.T) {
@@ -52,7 +54,7 @@ func TestDownloadEvents(t *testing.T) {
 		if b, _ := os.ReadFile(d.Path); string(b) != `{"ok":true}` {
 			t.Errorf("saved %q", b)
 		}
-	case <-time.After(3 * time.Second):
+	case <-time.After(wait.Guard):
 		t.Fatal("the scheme download did not finish")
 	}
 }

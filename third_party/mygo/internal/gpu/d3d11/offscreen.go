@@ -4,7 +4,9 @@ package d3d11
 
 import (
 	"fmt"
+	"runtime"
 	"syscall"
+	"time"
 	"unsafe"
 
 	"github.com/egoist/mygo/internal/scene"
@@ -44,7 +46,11 @@ func newHiddenWindow(w, h int) (uintptr, error) {
 func destroyWindow(hwnd uintptr) { user32.NewProc("DestroyWindow").Call(hwnd) }
 
 // read copies the back buffer to memory: BGRA rows and their stride.
-func (r *Renderer) read() ([]byte, int, error) {
+func (r *Renderer) read() ([]byte, int, error) { return r.readPart(r.w, r.h) }
+
+// readPart copies the w×h pixels at the top left of the back buffer to
+// memory, as read.
+func (r *Renderer) readPart(w, h int) ([]byte, int, error) {
 	var back, staging uintptr
 	if hr := call(r.swapChain, scGetBuffer, 0, uintptr(unsafe.Pointer(&iidID3D11Texture2D)), uintptr(unsafe.Pointer(&back))); failed(hr) {
 		return nil, 0, fmt.Errorf("d3d11: no back buffer: %#x", uint32(hr))
@@ -63,9 +69,85 @@ func (r *Renderer) read() ([]byte, int, error) {
 		return nil, 0, fmt.Errorf("d3d11: cannot map: %#x", uint32(hr))
 	}
 	defer call(r.ctx, ctxUnmap, staging, 0)
-	pix := make([]byte, r.w*r.h*4)
-	for y := range r.h {
-		copy(pix[y*r.w*4:], unsafe.Slice((*byte)(ptr(m.Data+uintptr(y)*uintptr(m.RowPitch))), r.w*4))
+	pix := make([]byte, w*h*4)
+	for y := range h {
+		copy(pix[y*w*4:], unsafe.Slice((*byte)(ptr(m.Data+uintptr(y)*uintptr(m.RowPitch))), w*4))
 	}
-	return pix, r.w * 4, nil
+	return pix, w * 4, nil
+}
+
+// Offscreen draws scenes into a window that never shows, timing each on
+// the GPU, for measurements (BenchmarkStressFrameGPU).
+type Offscreen struct {
+	r                *Renderer
+	hwnd             uintptr
+	disjoint, t0, t1 uintptr
+}
+
+// NewOffscreen returns an Offscreen drawing frames of w×h pixels.
+func NewOffscreen(w, h int) (*Offscreen, error) {
+	hwnd, err := newHiddenWindow(w, h)
+	if err != nil {
+		return nil, err
+	}
+	r, err := New(hwnd)
+	if err != nil {
+		destroyWindow(hwnd)
+		return nil, err
+	}
+	o := &Offscreen{r: r, hwnd: hwnd}
+	const queryTimestamp, queryTimestampDisjoint = 2, 3
+	for _, q := range []struct {
+		kind uint32
+		out  *uintptr
+	}{{queryTimestampDisjoint, &o.disjoint}, {queryTimestamp, &o.t0}, {queryTimestamp, &o.t1}} {
+		desc := [2]uint32{q.kind, 0}
+		if hr := call(r.device, devCreateQuery, uintptr(unsafe.Pointer(&desc)), uintptr(unsafe.Pointer(q.out))); failed(hr) {
+			o.Release()
+			return nil, fmt.Errorf("d3d11: cannot create a query: %#x", uint32(hr))
+		}
+	}
+	return o, nil
+}
+
+// Render draws s whole and returns the time the GPU spent drawing it, once
+// it is done.
+func (o *Offscreen) Render(s *scene.Scene) (time.Duration, error) {
+	ctx := o.r.ctx
+	call(ctx, ctxBegin, o.disjoint)
+	call(ctx, ctxEnd, o.t0)
+	if err := o.r.draw(s); err != nil {
+		return 0, err
+	}
+	call(ctx, ctxEnd, o.t1)
+	call(ctx, ctxEnd, o.disjoint)
+	call(ctx, ctxFlush)
+	var clock struct {
+		Frequency uint64
+		Disjoint  int32
+		_         int32
+	}
+	var start, end uint64
+	get := func(q uintptr, out unsafe.Pointer, size uintptr) {
+		// S_FALSE, 1, until the GPU gets there.
+		for call(ctx, ctxGetData, q, uintptr(out), size, 0) == 1 {
+			runtime.Gosched()
+		}
+	}
+	get(o.disjoint, unsafe.Pointer(&clock), unsafe.Sizeof(clock))
+	get(o.t0, unsafe.Pointer(&start), 8)
+	get(o.t1, unsafe.Pointer(&end), 8)
+	if clock.Disjoint != 0 || clock.Frequency == 0 {
+		return 0, nil
+	}
+	return time.Duration(float64(end-start) / float64(clock.Frequency) * float64(time.Second)), nil
+}
+
+// Release frees what the Offscreen holds.
+func (o *Offscreen) Release() {
+	free(&o.t1)
+	free(&o.t0)
+	free(&o.disjoint)
+	o.r.Release()
+	destroyWindow(o.hwnd)
 }

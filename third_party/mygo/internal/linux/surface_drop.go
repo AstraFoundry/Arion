@@ -199,10 +199,12 @@ func loadDrops() {
 		if s != nil && s.dragRequest != nil {
 			// GTK_NO_TARGET=1 and USER_CANCELLED=2 are normal no-drop
 			// results. gtk_drag_cancel can also abort with a generic error;
-			// our explicit cancellation must remain a cancellation.
+			// our explicit cancellation must remain a cancellation. Only
+			// USER_CANCELLED (Escape) and ours are Escaped.
 			explicit := s.dragCanceled
 			canceled := explicit || result == 1 || result == 2
 			s.dragCanceled = true
+			s.dragEscaped = s.dragEscaped || result == 2
 			if !canceled && result > 2 {
 				s.dragError = errors.New("mygo: GTK drag failed")
 			}
@@ -232,7 +234,9 @@ func loadDrops() {
 			gdkEventFree(s.lastPointer)
 			s.lastPointer = 0
 		}
-		r.Done(transfer.Result{Operation: op, Canceled: op == transfer.None && s.dragError == nil, Err: s.dragError})
+		p := screen{}.CursorPoint()
+		canceled := op == transfer.None && s.dragError == nil
+		r.Done(transfer.Result{Operation: op, Canceled: canceled, Escaped: canceled && s.dragEscaped, Point: image.Point{X: p.X, Y: p.Y}, Err: s.dragError})
 	})
 	// The app's Done callback owns removal after a successful move.
 	cbSurfaceDragDelete = purego.NewCallback(func(widget, context, data ptr) {})
@@ -334,7 +338,7 @@ func (s *surface) StartDataDrag(r platform.DragRequest) {
 	targets := gtkTargets(append(r.Data.Formats(), platform.DragSessionFormat))
 	list := gtkTargetListNew(unsafe.Pointer(&targets[0]), uint32(len(targets)))
 	defer gtkTargetListUnref(list)
-	s.dragRequest, s.dragError, s.dragCanceled = &r, nil, false
+	s.dragRequest, s.dragError, s.dragCanceled, s.dragEscaped = &r, nil, false, false
 	gtkDataSources[s.area] = s
 	s.dragContext = gtkDragBeginCoordinates(s.area, list, gtkOperations(r.Operations), 1, s.lastPointer, int32(r.X), int32(r.Y))
 	if s.dragContext == 0 {
@@ -358,7 +362,7 @@ func (s *surface) StartDataDrag(r platform.DragRequest) {
 }
 func (s *surface) CancelDataDrag() {
 	if s.dragContext != 0 {
-		s.dragCanceled = true
+		s.dragCanceled, s.dragEscaped = true, true
 		gtkDragCancel(s.dragContext)
 	}
 }

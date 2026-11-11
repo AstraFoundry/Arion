@@ -5,6 +5,7 @@ package mygo
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -36,5 +37,43 @@ func TestWriteTypeScriptBindsNothing(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Dir(out)); !os.IsNotExist(err) {
 		t.Errorf("binding nothing made the directory %s", filepath.Dir(out))
+	}
+}
+
+// TestDocumentServiceTypeScript generates the client of a document
+// service: the content's type and the state. (Without the sources, as in
+// a test binary run elsewhere, parameters are named arg0.)
+func TestDocumentServiceTypeScript(t *testing.T) {
+	ipc.Lock()
+	services, events := ipc.services, ipc.events
+	ipc.services, ipc.events = nil, nil
+	ipc.Unlock()
+	t.Cleanup(func() {
+		ipc.Lock()
+		ipc.services, ipc.events = services, events
+		ipc.Unlock()
+	})
+	type Note struct {
+		Title string `json:"title"`
+		Body  string `json:"body"`
+	}
+	ds := &Documents[Note]{}
+	if err := bind("Note", ds.Service(), false); err != nil {
+		t.Fatal(err)
+	}
+	src, err := GenerateTypeScript()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{
+		"content(): Promise<Note>",
+		": Note): Promise<void>",
+		"state(): Promise<DocumentState>",
+		"save(): Promise<void>",
+		"readOnly: boolean",
+	} {
+		if !strings.Contains(string(src), want) {
+			t.Errorf("the client lacks %q:\n%s", want, src)
+		}
 	}
 }

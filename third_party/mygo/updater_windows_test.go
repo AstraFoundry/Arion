@@ -179,7 +179,7 @@ func prepareWindowsUpdate(t *testing.T, source, target string) *PreparedUpdate {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { _, _ = w.Write(archive.Bytes()) }))
 	t.Cleanup(server.Close)
 	manifest := update.Manifest{Version: "2.0.0", URL: server.URL + "/app.tar.gz", Size: int64(archive.Len()), Signature: update.Sign(priv, sum[:])}
-	prepared, err := prepareUpdate(context.Background(), manifest, base64.StdEncoding.EncodeToString(pub), "1.0.0", target, nil)
+	prepared, err := prepareUpdate(context.Background(), httpGet, manifest, base64.StdEncoding.EncodeToString(pub), "1.0.0", target, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

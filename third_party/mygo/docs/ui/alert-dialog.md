@@ -30,6 +30,11 @@ if ui.AlertDialog(c, &app.updating, "Update required", "Restart to finish updati
 }
 ```
 
+The alert grows past its usual width as far as the window allows to keep its
+buttons on one line, with its title and message wrapping to that width. In a
+window too narrow for that the buttons wrap onto more lines, and a label too
+long for the alert ends in an ellipsis.
+
 For a dialog of your own content, use a [dialog](dialog.md); for a choice
 the user can undo, act at once and offer it in a [toast](toast.md).
 

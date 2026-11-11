@@ -3,6 +3,7 @@ package app
 import (
 	"strings"
 	"testing"
+	"time"
 
 	"arion.local/desktop/ui/features/cloud"
 	"arion.local/desktop/ui/pages/settings"
@@ -21,7 +22,7 @@ func TestCloudPages(t *testing.T) {
 	nav := &cloud.Nav{}
 	tt := ui.NewTester(func(c *ui.Context) {
 		ui.Column(c).Gap(8).Padding(16).Children(func() { cloud.Pages(c, store, theme.Resolve(false), nav) })
-	}, 560, 520)
+	}, 560, 760) // tall enough for the failure notice and its action
 	en := copy.For(copy.English)
 	state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected}
 	settle(tt)
@@ -108,7 +109,7 @@ func TestCloudPages(t *testing.T) {
 		t.Fatalf("disconnect: %v", err)
 	}
 	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudAnthropic, Models: []string{}, Failure: runtime.CloudCodeModels}
-	settle(tt)
+	rest(tt, 500*time.Millisecond)
 	if !hasText(tt, en.Text(copy.CloudFailModels)) {
 		t.Fatalf("failure: %q", tt.Texts())
 	}

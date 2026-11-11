@@ -1,6 +1,7 @@
 package raster
 
 import (
+	"math"
 	"runtime"
 
 	"github.com/egoist/mygo/internal/scene"
@@ -15,6 +16,10 @@ type drawer struct {
 	job   bandJob
 	bd    backdrop
 	fx    map[*scene.Effect]scene.EffectPixels
+	// blurred holds, by op, the images of the scene drawn that blur theirs
+	// (blurImages).
+	blurred []*blurredImage
+	fold    scene.TranslationFolder
 }
 
 // pixels returns what draws e on the CPU, made the first time, or nil for
@@ -230,6 +235,75 @@ func (r *renderer) effect(op *scene.Op, px scene.EffectPixels, b *scene.Backdrop
 				continue
 			}
 			blend(p, c, cov)
+		}
+	}
+}
+
+// maskedEffect draws a shader's effect filling mask glyphs (fx.Glyphs) with
+// px, as glyphs draws mask glyphs: each pixel the shader's color times the
+// glyph's coverage, corrected for that color.
+func (r *renderer) maskedEffect(op *scene.Op, fx *scene.EffectOp, px scene.EffectPixels) {
+	atlas := r.s.MaskAtlas
+	if atlas == nil {
+		return
+	}
+	opacity := opacityOf(op.Opacity)
+	text := r.s.Text
+	for _, g := range r.s.Glyphs[fx.Glyphs[0]:fx.Glyphs[1]] {
+		if g.Colored || g.Subpixel {
+			continue
+		}
+		boost := float32(0)
+		if g.Thin {
+			boost = scene.ThinBoost
+		}
+		box := scene.Rect{X: float32(math.Round(float64(g.X))), Y: float32(math.Round(float64(g.Y))), W: float32(g.UW), H: float32(g.VH)}
+		m := op.Transform.Mul(g.Transform)
+		if !m.Set {
+			gx, gy := int(box.X), int(box.Y)
+			x0, y0 := max(gx, r.x0), max(gy, r.y0)
+			x1, y1 := min(gx+int(g.UW), r.x1), min(gy+int(g.VH), r.y1)
+			for y := y0; y < y1; y++ {
+				row := r.dst.Pix[y*r.dst.Stride:]
+				cl, ch := r.clipSolid(y)
+				ay := int(g.V) + y - gy
+				for x := x0; x < x1; x++ {
+					mk := atlas.Pix[ay*atlas.W+int(g.U)+x-gx]
+					if mk == 0 {
+						continue
+					}
+					cov := opacity
+					if x < cl || x >= ch {
+						if cov *= r.clipCoverage(x, y); cov == 0 {
+							continue
+						}
+					}
+					c := px.Color(float32(x)+0.5, float32(y)+0.5, nil)
+					a := scene.TextCoverage(float32(mk)/255, unpremul(c), text.Contrast, boost, text.GammaRatios)
+					blend(row[4*x:4*x+4], c, cov*a)
+				}
+			}
+			continue
+		}
+		inv, ok := m.Inverse()
+		if !ok {
+			continue
+		}
+		shape := newShape(box, [4]float32{})
+		x0, y0, x1, y1 := r.pixelBounds(m.Bounds(box))
+		for y := y0; y < y1; y++ {
+			for x := x0; x < x1; x++ {
+				wx, wy := float32(x)+0.5, float32(y)+0.5
+				cov := r.clipCoverage(x, y) * transformedCoverage(&shape, m, inv, wx, wy) * opacity
+				if cov <= 0 {
+					continue
+				}
+				lx, ly := inv.Point(wx, wy)
+				s := atlasSample(atlas, float32(g.U)+lx-box.X, float32(g.V)+ly-box.Y, int(g.U), int(g.V), int(g.UW), int(g.VH))
+				c := px.Color(lx, ly, nil)
+				a := scene.TextCoverage(s[0], unpremul(c), text.Contrast, boost, text.GammaRatios)
+				blend(r.dst.Pix[y*r.dst.Stride+4*x:][:4], c, cov*a)
+			}
 		}
 	}
 }

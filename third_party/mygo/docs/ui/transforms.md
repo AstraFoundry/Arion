@@ -32,7 +32,23 @@ ui.Box(c).Transform(pose).TransformOrigin(0, 0)
 ```
 
 The zero `Transform` is identity. Setting `Transform` replaces the element's
-previous transform; the convenience methods append to it. Set transforms
+previous transform, `TranslatePercent`'s too; the convenience methods
+append to it.
+
+`TranslatePercent(x, y)` moves an element by percents of its own width and
+height, as CSS's `translate(-50%, -50%)`: of its border box as the frame
+lays it out, so that it is in place from its first frame, without waiting
+for its `Bounds`, and follows its size in the frame it changes. It acts
+after the element's other transforms, wherever it is called among them,
+as CSS's `translate` property does, and before its pose; calls add up. A
+callout centered above the point it points at, whatever its size:
+
+```go
+ui.Box(c).Absolute().Left(at.X).Top(at.Y - 8).TranslatePercent(-50, -100).Children(callout)
+```
+
+A transition's `Motion` and a `Pose` move by percents of the element's
+size too (`XPercent`, `YPercent`). Set transforms
 in the view, before the frame is laid out. `Rotate` on an icon keeps its
 existing behavior of rotating the SVG artwork around its center. To rotate
 an icon's whole border box, use `Transform(ui.Rotation(degrees))`.
@@ -63,12 +79,48 @@ card.Children(func() {
 })
 ```
 
-`Transform` values compose the same way, with `Skewing`, `RotationX`,
+`TranslateZ(z)` moves an element along Z, toward the viewer for positive
+values and away for negative ones, as CSS's `translateZ()`. Seen in
+`Perspective(distance)` after it, it looks `distance/(distance-z)` its
+size, about its origin: 120 DIPs back seen from 800, `800/920` its size.
+Without `Perspective`, a move along Z shows nothing, as in CSS; one as far
+as the viewer, or past it, puts the element behind the viewer, where it
+shows nothing and takes no pointer input. Before a turn, it pushes an
+element out from the axis, as the items of a carousel; after it, it
+lifts the turned element toward the viewer:
+
+```go
+// A carousel: each item out on a ring of 300 DIPs, turned by spin, the
+// ring's center 300 behind the plane so that the item in front shows at
+// its size. Those farther round look smaller, and each hides while the
+// viewer sees its back.
+for i, item := range app.items {
+	angle := spin + float32(i)*360/float32(len(app.items))
+	ring := ui.TranslationZ(300).Then(ui.RotationY(angle)).Then(ui.TranslationZ(-300)).Then(ui.Perspective(800))
+	ui.Box(c).Absolute().Left(200).Top(40).Size(160, 100).Background(item.color).
+		Transform(ring).BackfaceHidden()
+}
+
+// A stack in depth: each card 60 DIPs behind the one in front of it,
+// the farthest drawn first.
+for i := 2; i >= 0; i-- {
+	ui.Box(c).Absolute().Fill().Radius(12).Background(t.Surface).Border(1, t.Border).
+		TranslateZ(-60 * float32(i)).Perspective(800)
+}
+```
+
+Elements moved along Z still draw in their order, not by depth, as each
+flattens into its parent's plane: draw the nearest last.
+
+`Transform` values compose the same way, with `Skewing`, `TranslationZ`,
+`Translation3D(x, y, z)` (CSS's `translate3d()`), `RotationX`,
 `RotationY` and `Perspective`. Each element flattens what its 3D transform
 makes of it into its parent's plane, as CSS's default `transform-style:
 flat`: a parent turning in 3D turns its children's drawing with it.
 `BackfaceHidden` hides an element, and takes it from the pointer, while
-its own 3D transform turns its back to the viewer.
+its own 3D transform turns its back to the viewer: from where the viewer
+sees it in perspective, as browsers have it, so that an item pushed out
+along Z turns its back as it passes the viewer's line of sight.
 
 The pointer, clips, text input and accessibility follow 3D transforms as
 they follow 2D ones, and the renderers draw them in perspective, smooth
@@ -93,7 +145,7 @@ the transformed bounds of their anchors, including during layout transitions.
 
 ## Animating transforms
 
-Transforms take animated values as well as fixed ones: a spring that keeps
+Transforms take animated values as well as fixed ones, Z's included: a spring that keeps
 its velocity, a curve, keyframes, or a value following the pointer (see
 [Motion](motion.md)):
 
@@ -117,8 +169,14 @@ geometry on the GPU. Fills, borders, shadows, images, text, and effects keep
 local coordinates; backdrop reads map back into window coordinates. Metal
 preserves wide-gamut colors under transforms.
 
-Nested rounded or transformed clips use retained coverage masks. Moving
-content under a stationary clip reuses that mask without CPU pixel work.
+Nested rounded or transformed clips use retained coverage masks once
+content inside them is scaled, rotated, skewed or in perspective. Content
+that a transform only moves, such as a label translated by a fraction of a
+pixel, needs no mask: its clips are cut as for content that isn't
+transformed. A clip that reaches into the rounded corners of a clip around
+it, such as a clipped column filling the bottom of a rounded card, uses the
+rounded clip's mask too, whatever its content. Moving content under a
+stationary clip reuses that mask without CPU pixel work.
 Hard clips sharing their content's coordinates, including transformed text
 inputs, are evaluated directly in the fragment shader and reuse their
 ancestor's mask. Changing a complex clip recomputes its coverage; resizing
@@ -128,7 +186,9 @@ The CPU compositor remains the renderer for machines without a GPU and for
 small resting updates. Active transformed motion uses the GPU where one is
 available. Text bitmaps are sampled bilinearly when transformed, and
 transformed text uses grayscale coverage. GPU antialiasing follows the CPU
-renderer in device-pixel coordinates.
+renderer in device-pixel coordinates. To zoom a whole window, sharp, use
+the content's zoom (`Context.SetZoom`, see
+[Windows](windows.md#zoom)) rather than a transform.
 
 The gallery's **Motion** page shows nested transformed editable controls,
 an anchored popover, springs retargeted and thrown, keyframe sequences, and

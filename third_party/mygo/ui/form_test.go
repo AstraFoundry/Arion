@@ -111,6 +111,89 @@ func TestFieldDisabled(t *testing.T) {
 	}
 }
 
+// TestLabelledBy checks that a text the view draws, given to a control
+// with LabelledBy, names the control and takes a click to it, as HTML's
+// <label for> (#1309).
+func TestLabelledBy(t *testing.T) {
+	card, query, size := "", "", "Small"
+	agree, off := false, false
+	var texts = map[string]uint64{}
+	text := func(c *context, s string) *node {
+		l := coreText(c, s)
+		texts[s] = l.id
+		return l
+	}
+	tt := coreNewTester(func(c *context) {
+		coreColumn(c).Gap(12).Children(func() {
+			l := text(c, "Card number")
+			coreTextInput(c, &card).Label("Number").LabelledBy(l)
+			coreRow(c).Gap(8).Children(func() {
+				box := coreCheckbox(c, &agree, "")
+				box.LabelledBy(text(c, "I agree")) // a label after its control
+			})
+			coreRow(c).Gap(8).Children(func() {
+				coreRadio(c, &size, "Small", "")
+				coreRadio(c, &size, "Large", "").LabelledBy(text(c, "Large size"))
+			})
+			coreSearchField(c, &query).LabelledBy(text(c, "Find"))
+			coreCheckbox(c, &off, "").Disabled(true).LabelledBy(text(c, "Off"))
+		})
+	}, 500, 600)
+	clickText := func(s string) {
+		t.Helper()
+		for _, n := range tt.rt.labels {
+			if n.id == texts[s] {
+				tt.ClickAt(n.r.X+n.r.W/2, n.r.Y+n.r.H/2)
+				return
+			}
+		}
+		t.Fatalf("no text %q", s)
+	}
+	tt.send(platform.SurfaceEvent{Kind: platform.AccessibilityOn})
+	tree := tt.h.access
+	// The label names the control, in place of its own Label.
+	if n := accessNode(t, tree, platform.RoleTextField, "Card number"); n.Label != "Card number" {
+		t.Errorf("the input: %+v", n)
+	}
+	accessNode(t, tree, platform.RoleCheckBox, "I agree")
+	accessNode(t, tree, platform.RoleRadio, "Large size")
+	if n := accessNode(t, tree, platform.RoleTextField, "Find"); n.Label != "Find" {
+		t.Errorf("the search field's input: %+v", n)
+	}
+	// A click on the label focuses a text input, and checks a check box
+	// or chooses a radio button.
+	clickText("Card number")
+	if tt.rt.focused == 0 || !tt.Focused("Card number") {
+		t.Fatal("a click on the label did not focus the input")
+	}
+	tt.Type("4242")
+	if card != "4242" {
+		t.Errorf("typed %q", card)
+	}
+	clickText("I agree")
+	if !agree {
+		t.Error("a click on the label did not check the check box")
+	}
+	clickText("I agree")
+	if agree {
+		t.Error("a second click on the label did not uncheck the check box")
+	}
+	clickText("Large size")
+	if size != "Large" {
+		t.Errorf("a click on the label chose %q", size)
+	}
+	clickText("Find")
+	tt.Type("go")
+	if query != "go" {
+		t.Errorf("a click on the label of a search field, then typing, gave %q", query)
+	}
+	// A disabled control takes no click from its label.
+	clickText("Off")
+	if off {
+		t.Error("a click on the label checked a disabled check box")
+	}
+}
+
 func TestFormLayout(t *testing.T) {
 	name, email, city := "", "", ""
 	notify, express := false, false
@@ -119,7 +202,17 @@ func TestFormLayout(t *testing.T) {
 			coreField(c, "Name", func() { coreTextInput(c, &name) })
 			coreField(c, "Email address", func() { coreTextInput(c, &email) }).Description("For receipts.")
 			coreField(c, "Notifications", func() { coreCheckbox(c, &notify, "Send emails") })
-			coreField(c, "Express", func() { coreSwitch(c, &express) })
+			// A description under a control without text leaves its label
+			// level with the control, not with the description.
+			coreField(c, "Express", func() { coreSwitch(c, &express) }).Description("Ships the next day.")
+			// Beside a dot drawn before it, the text of a row lines up
+			// with the label.
+			coreField(c, "Status", func() {
+				coreRow(c).Gap(6).AlignItems(Start).Children(func() {
+					coreBox(c).Width(8).Height(8).Background(RGB(0, 200, 0))
+					coreText(c, "Online")
+				})
+			})
 			coreFieldset(c, "Shipping", func() {
 				coreField(c, "City", func() { coreTextInput(c, &city) })
 			})
@@ -160,6 +253,9 @@ func TestFormLayout(t *testing.T) {
 	sw := box(platform.RoleSwitch, "Express")
 	if l := find("Express"); math.Abs(float64(l.Y+l.H/2)-(sw.Y+sw.H/2)) > 1.5 {
 		t.Errorf("the label's center is at %v, the switch's at %v", l.Y+l.H/2, sw.Y+sw.H/2)
+	}
+	if l, v := find("Status"), find("Online"); !near(float64(l.Y), float64(v.Y)) {
+		t.Errorf("the label is at %v, the text beside the dot at %v", l.Y, v.Y)
 	}
 	// The description sits below its input, in the controls' column.
 	if d := find("For receipts."); !near(float64(d.X), emailIn.X) || float64(d.Y) < emailIn.Y+emailIn.H {

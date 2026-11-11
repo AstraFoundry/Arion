@@ -16,7 +16,7 @@ struct Effect {
 
 float2 framePoint(Effect e, float2 q) {
 	float3 h = float3(dot(e.transform0.xyz, float3(q, 1.0)), dot(e.transform1.xyz, float3(q, 1.0)),
-					  dot(float3(e.transform2.xy, 1.0), float3(q, 1.0)));
+					  dot(float3(e.transform2.xy, 1.0 - 2.0 * e.transform2.z), float3(q, 1.0)));
 	return h.xy / h.z;
 }
 

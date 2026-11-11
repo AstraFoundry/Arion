@@ -169,10 +169,11 @@ func (rt *engine) syncDropFormats() {
 }
 
 // dataPreview snapshots the last scene, resampling the source's visible
-// bounds to DIPs. No GPU readback or native API is needed.
+// bounds to the window's DIPs. No GPU readback or native API is needed.
 func (rt *engine) dataPreview(s *state) (image.Image, image.Point) {
-	_, _, scale := rt.host.size()
-	w, h := min(int(s.vw), 512), min(int(s.vh), 512)
+	_, _, scale := rt.size()
+	z := rt.zoomFactor()
+	w, h := min(int(s.vw*z), 512), min(int(s.vh*z), 512)
 	if w <= 0 || h <= 0 {
 		return nil, image.Point{}
 	}
@@ -182,7 +183,7 @@ func (rt *engine) dataPreview(s *state) (image.Image, image.Point) {
 	img := image.NewRGBA(image.Rect(0, 0, w, h))
 	for y := 0; y < h; y++ {
 		for x := 0; x < w; x++ {
-			px, py := int((s.vx+float32(x))*scale), int((s.vy+float32(y))*scale)
+			px, py := int((s.vx+float32(x)/z)*scale), int((s.vy+float32(y)/z)*scale)
 			if px < 0 || py < 0 || px >= m.W || py >= m.H {
 				continue
 			}
@@ -191,5 +192,5 @@ func (rt *engine) dataPreview(s *state) (image.Image, image.Point) {
 		}
 	}
 	x, y := s.world.Point(s.x+s.pressX, s.y+s.pressY)
-	return img, image.Pt(min(max(int(x-s.vx), 0), w-1), min(max(int(y-s.vy), 0), h-1))
+	return img, image.Pt(min(max(int((x-s.vx)*z), 0), w-1), min(max(int((y-s.vy)*z), 0), h-1))
 }

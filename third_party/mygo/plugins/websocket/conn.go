@@ -157,6 +157,9 @@ func dial(ctx context.Context, client *http.Client, rawURL string, protocols []s
 		return fail("the server answered with a wrong Sec-WebSocket-Accept")
 	}
 	protocol := res.Header.Get("Sec-WebSocket-Protocol")
+	if len(protocols) > 0 && protocol == "" {
+		return fail("the server did not select a requested subprotocol")
+	}
 	if protocol != "" && !slices.Contains(protocols, protocol) {
 		return fail("the server chose subprotocol %q, which was not requested", protocol)
 	}

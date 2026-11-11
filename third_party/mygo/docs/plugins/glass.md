@@ -8,7 +8,9 @@ a bar fades or frosts under ([Scroll edges](#scroll-edges)), and blurs
 what is under an element without the glass, evenly or fading along a
 gradient ([Blur](#blur)). MyGo draws them with the plugin's shaders, on
 the GPU or the CPU, so they look the same on macOS, Windows and Linux. It
-is all Go: no JavaScript package, and nothing to `mygo.Use`.
+is all Go: no JavaScript package, and nothing to `mygo.Use`. The
+`examples/liquid-glass` app shows it: merged panes and an interactive
+button beside a web page under the system's glass.
 
 ```go
 import "github.com/egoist/mygo/plugins/glass"
@@ -60,8 +62,69 @@ if done.Clicked() {
 }
 ```
 
+`Clarity`, from 0 to 1, makes panes as large as sidebars and inspectors
+clearer, the content under them reading through: 0, the default, is
+macOS's material, unchanged; 0.5 blurs up to 5 DIPs rather than 10, maps
+black to 35% in light mode and white to 60% in dark mode, lights the rim
+more and curves the last 48 DIPs; 1 is nearly clear, blurring up to 2
+DIPs and mapping black to 20% in light mode, and black to 10% and white
+to 85% in dark mode. Each half of the range is a straight step between
+those. Panes up to 100 DIPs keep their material whatever the clarity,
+which eases in up to 200 DIPs: `glass.Glass{Clarity: 0.5}`. Clear glass
+barely tones what shows through already; on it, clarity only lights the
+rim and curves the bezel.
+
 In a drawing, `glass.Paint(p, r, radius, g)` paints a pane of glass over
 what the painter painted before it.
+
+
+## Merged panes
+
+`glass.Group` puts a row of elements on one glass surface, as AppKit's
+`NSGlassEffectContainerView` does: panes that nearly touch blend into one,
+with one bezel around the whole surface, and separate when they move
+apart.
+
+```go
+g := glass.NewGroup(c)
+g.Radius = 22
+g.Gap(6).Children(func() {
+	g.Pane(ui.Box(c).Size(76, 44).Center().Children(func() { ui.Text(c, "Cut") }))
+	g.Pane(ui.Box(c).Size(76, 44).Center().Children(func() { ui.Text(c, "Copy") }))
+})
+```
+
+`Merge`, 24 DIPs by default, is how smoothly the panes blend: it bridges
+panes up to about 12 DIPs apart, and 0 keeps them apart. A group holds up
+to 8 panes. The elements are an ordinary row's and keep their own
+backgrounds, borders and hit areas; the glass paints behind them.
+
+## Native glass over a web view
+
+On macOS 26 and later, `Glass{Native: true}` asks for the system's
+`NSGlassEffectView` instead of the shader:
+
+```go
+ui.Row(c).Absolute().Top(0).Left(0).Right(0).Height(60).Radius(18).
+	Material(glass.Glass{Native: true})
+```
+
+The system's glass is placed under the window's content and above a
+`ui.WebView`'s page, where it samples the page, so a toolbar of native UI
+over a web view gets real Liquid Glass, as macOS's own toolbars do.
+Elsewhere, and with Reduce Transparency, the shader draws it, which sees
+none of the page. The native glass samples what is under the surface: a web
+view's page, or the window's material, never the elements that the frame
+itself painted: the content is one surface above the glass. A native pane
+over arbitrary native UI would need the frame drawn in two surfaces, with
+the glass between them, which MyGo does not do; the shader draws those.
+
+## Accessibility
+
+With Reduce Transparency, `Glass`, `Blur` and `ScrollEdge` draw opaque
+surfaces instead of translucent ones: the theme's `Surface` for glass, its
+`Background` for blur and scroll edges. Increase Contrast lights the
+glass's rim more and gives an opaque glass a border.
 
 ## Scroll edges
 
@@ -187,5 +250,5 @@ progressive blur does this for each of its steps, where each shows: on
 the CPU, a strip of 1360×176 pixels blurred by 24 takes 9 ms on an M5
 fading, 1.7 evenly, and on the GPU a few small passes for each step.
 
-Panes are rounded rectangles. They do not merge into each other when
-close, as AppKit's `NSGlassEffectContainerView` does.
+A single material is a rounded rectangle. `glass.Group` merges up to 8
+panes of it, as AppKit's `NSGlassEffectContainerView` does.

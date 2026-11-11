@@ -5,6 +5,8 @@ package mygo
 import (
 	"testing"
 	"time"
+
+	"github.com/egoist/mygo/internal/wait"
 )
 
 // TestLoopInsideQueuedFunction checks that a function on the main thread
@@ -17,7 +19,7 @@ func TestLoopInsideQueuedFunction(t *testing.T) {
 	loop.mu.Lock()
 	first := len(loop.queue) == 0
 	loop.queue = append(loop.queue, func() {
-		for deadline := time.Now().Add(2 * time.Second); time.Now().Before(deadline); {
+		for deadline := time.Now().Add(wait.Guard); time.Now().Before(deadline); {
 			select {
 			case <-done:
 				waited <- true
