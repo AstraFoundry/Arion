@@ -164,7 +164,8 @@ func TestWindowsInstaller(t *testing.T) {
 			t.Errorf("not installed: %s", f)
 		}
 	}
-	// Reject a running app before changing any payload file.
+	// A silent install, as an update runs, quits the running app without
+	// asking and then installs.
 	ready := filepath.Join(t.TempDir(), "ready")
 	running := exec.Command(filepath.Join(install, "Setup Test.exe"), ready)
 	if err := running.Start(); err != nil {
@@ -178,11 +179,16 @@ func TestWindowsInstaller(t *testing.T) {
 	if !fileExists(ready) {
 		t.Fatal("owned app did not start")
 	}
-	if err := exec.Command(setup, "/S", "/D="+install).Run(); err == nil {
-		t.Fatal("installer accepted a running application")
+	exited := make(chan struct{})
+	go func() { _ = running.Wait(); close(exited) }()
+	if out, err := exec.Command(setup, "/S", "/D="+install).CombinedOutput(); err != nil {
+		t.Fatalf("installing over the running app: %v\n%s", err, out)
 	}
-	_ = running.Process.Kill()
-	_ = running.Wait()
+	select {
+	case <-exited:
+	case <-time.After(5 * time.Second):
+		t.Fatal("the silent install left the app running")
+	}
 	unknown := filepath.Join(install, "user-added.txt")
 	if err := os.WriteFile(unknown, []byte("preserve"), 0600); err != nil {
 		t.Fatal(err)
