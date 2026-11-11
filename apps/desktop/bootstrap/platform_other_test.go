@@ -18,6 +18,15 @@ func TestOtherPlatformRefusesInputMethodAndHoldKeys(t *testing.T) {
 	if domain.CodeOf(p.StartHoldKeys(nil, nil)) != domain.CodeTargetUnsupported {
 		t.Fatal("hold key")
 	}
+	if text, _, err := p.ReadSelection(); text != "" || domain.CodeOf(err) != domain.CodeTargetUnsupported {
+		t.Fatal("selection read")
+	}
+	if _, _, _, _, ok := p.SelectionAnchor(); ok {
+		t.Fatal("selection anchor")
+	}
+	if domain.CodeOf(p.StartSelectionWatch(func() {})) != domain.CodeTargetUnsupported {
+		t.Fatal("selection watch")
+	}
 	targets := p.NewTargets(nil, TargetGates{})
 	if _, err := targets.Capture(context.Background(), contracts.Identity{}); domain.CodeOf(err) != domain.CodeTargetUnsupported {
 		t.Fatal(err)

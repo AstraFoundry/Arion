@@ -18,6 +18,8 @@ type windowsPlatform struct{}
 
 func newPlatform() Platform { return windowsPlatform{} }
 
+const selectionReader = true
+
 func configureInputMethodDiagnostics(func(diagnostics.Entry)) {}
 
 func configureClipboardWindow(*mygo.Window)       {}
