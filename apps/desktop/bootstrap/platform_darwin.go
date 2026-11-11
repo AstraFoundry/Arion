@@ -89,6 +89,13 @@ func (darwinPlatform) StartHoldKeys(keys []application.HoldKey, sink func(applic
 	return macos.StartHoldKeys(keys, sink)
 }
 func (darwinPlatform) StopHoldKey() { macos.StopHold() }
+func (darwinPlatform) ReadSelection() (string, bool, error) {
+	return macos.ReadSelectedText()
+}
+func (darwinPlatform) StartSelectionWatch(sink func()) error {
+	return macos.StartSelectionWatch(sink)
+}
+func (darwinPlatform) StopSelectionWatch() { macos.StopSelectionWatch() }
 
 func (p darwinPlatform) NewTargets(_ func() application.Delivery, gates TargetGates) Targets {
 	targets := macos.NewTargets()

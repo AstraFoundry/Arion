@@ -59,6 +59,7 @@ Write an ADR when the decision:
 - [045: Independent clipboard placement and delivery](045-clipboard-placement-and-delivery.md) — optional input geometry and guarded captured-destination paste.
 - [046: Clipboard file access](046-clipboard-file-access.md) — encrypted file-bound grants and scoped native publication.
 - [047: Clipboard file access guidance](047-clipboard-file-access-guidance.md) — explicit capture explanations, system purpose strings and suppressible recovery guidance.
+- [048: Selection action URLs](048-selection-action-urls.md) — fixed Claude and ChatGPT templates, allowlisted schemes, and no shell or keystroke handoff.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

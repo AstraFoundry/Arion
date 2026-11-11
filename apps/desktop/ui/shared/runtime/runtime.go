@@ -22,6 +22,7 @@ type (
 	ErrorCode           = domain.ErrorCode
 	CommitOutcome       = contracts.CommitOutcome
 	Preferences         = application.Preferences
+	SelectionOffer      = application.SelectionOffer
 	Delivery            = application.Delivery
 	UILanguage          = application.UILanguage
 	HoldKey             = application.HoldKey
@@ -557,7 +558,10 @@ type Diagnostics struct{ Phase DiagnosticsPhase }
 // State is everything views read. The composition root mutates it only on
 // the main thread and then invalidates windows.
 type State struct {
-	Clipboard     Clipboard
+	Clipboard Clipboard
+	// Selection is the latest mouse-up offer. Its text stays in memory and
+	// is never written to diagnostics.
+	Selection     SelectionOffer
 	Diagnostics   Diagnostics
 	Version       string
 	Dictation     Dictation
@@ -671,6 +675,12 @@ type Actions interface {
 	// UndoLearned forgets the entry just learned and dismisses its notice.
 	UndoLearned(id string)
 	CopyText(text string) bool
+	// CopySelection writes the current offer with the clipboard writer.
+	CopySelection() error
+	// AddSelectionVocabulary saves the current offer with AddHotword.
+	AddSelectionVocabulary() error
+	// OpenSelection fills one prompt or client action and opens that URL.
+	OpenSelection(actionID, question string) error
 	// ChooseScene keeps scene for SceneTarget's site or app; empty follows
 	// the built-in rules again.
 	ChooseScene(scene domain.Scene)

@@ -24,8 +24,11 @@ const (
 // only exists for an explicit choice among evaluated bundles.
 type Preferences struct {
 	// DeveloperMode is session-only and never restored from disk.
-	DeveloperMode       bool                 `json:"-"`
-	Clipboard           ClipboardPreferences `json:"clipboard"`
+	DeveloperMode bool                 `json:"-"`
+	Clipboard     ClipboardPreferences `json:"clipboard"`
+	// Selection is the global selection popover. Enabled is off until the
+	// user turns it on. Omitempty keeps profiles written before it existed valid.
+	Selection           SelectionPreferences `json:"selection,omitempty"`
 	Version             int                  `json:"version"`
 	UILanguage          UILanguage           `json:"uiLanguage"`
 	OnboardingCompleted bool                 `json:"onboardingCompleted"`
@@ -135,6 +138,7 @@ func DefaultPreferences(platform string) Preferences {
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 		Keyboard:  DefaultKeyboardPreferences(),
 		Clipboard: DefaultClipboardPreferences(),
+		Selection: DefaultSelectionPreferences(),
 	}
 }
 
@@ -212,6 +216,10 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 	if !knownGain(p.MicrophoneGain) {
 		p.MicrophoneGain = defaults.MicrophoneGain
 		repaired = append(repaired, "microphoneGain")
+	}
+	if selection, changed := p.Selection.normalize(); changed {
+		p.Selection = selection
+		repaired = append(repaired, "selection")
 	}
 	if next := p.WithAccountDisplay(p.AccountIssuer, p.AccountSubject, p.AccountName, p.AccountEmail); next.AccountIssuer != p.AccountIssuer || next.AccountSubject != p.AccountSubject || next.AccountName != p.AccountName || next.AccountEmail != p.AccountEmail {
 		p = next
