@@ -435,7 +435,7 @@ func (a *App) restartUpdate() {
 	if p == nil || p.applying || a.updates == nil {
 		return
 	}
-	if p.release != nil && a.state.Update.Failed == arion.UpdateStepRestart {
+	if p.release != nil && a.state.Update.Phase == arion.UpdateRestartFailed {
 		a.relaunchUpdate()
 		return
 	}
@@ -573,12 +573,10 @@ func (a *App) relaunchUpdate() {
 	p := a.updatePolicy
 	p.applying = true
 	a.state.Update.Phase = arion.UpdateReady
-	a.state.Update.Failed = ""
 	mygo.App.RelaunchWithResult(func(accepted bool) {
 		if !accepted {
 			p.applying = false
-			a.state.Update.Phase = arion.UpdateFailed
-			a.state.Update.Failed = arion.UpdateStepRestart
+			a.state.Update.Phase = arion.UpdateRestartFailed
 			a.invalidate()
 		}
 	})

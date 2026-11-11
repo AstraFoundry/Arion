@@ -53,7 +53,7 @@ func TestFailedAcknowledgementRestoresDurableReceiptBeforeRestart(t *testing.T) 
 				t.Fatalf("failed acknowledgement lost receipt: %+v", state)
 			}
 			if failRestore {
-				if !errors.Is(result, mygo.ErrUpdateRecoveryRequired) || !u.blocked || state.Failed != arion.UpdateStepRecovery {
+				if !errors.Is(result, mygo.ErrUpdateRecoveryRequired) || !u.blocked || state.Phase != arion.UpdateRecoveryFailed {
 					t.Fatalf("failed restore not blocked: %v %+v", result, state)
 				}
 			} else {

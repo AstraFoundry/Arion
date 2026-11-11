@@ -531,8 +531,8 @@ func TestUpdateStates(t *testing.T) {
 		{runtime.Update{Phase: runtime.UpdateAvailable, Version: "0.2.0"}, en.UpdateAvailable("0.2.0"), en.Text(copy.UpdateInstall), "install-update"},
 		{runtime.Update{Phase: runtime.UpdateDownloading, Version: "0.2.0", Downloaded: 3 << 20, Total: 12 << 20}, en.Progress(3<<20, 12<<20), "", ""},
 		{runtime.Update{Phase: runtime.UpdateReady, Version: "0.2.0"}, en.Text(copy.UpdateReady), en.Text(copy.UpdateRestart), "restart-update"},
-		{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepCheck}, en.Text(copy.UpdateCheckFailed), en.Text(copy.UpdateCheck), "check-update"},
-		{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepInstall, Version: "0.2.0"}, en.Text(copy.UpdateInstallFailed), en.Text(copy.Retry), "install-update"},
+		{runtime.Update{Phase: runtime.UpdateCheckFailed}, en.Text(copy.UpdateCheckFailed), en.Text(copy.UpdateCheck), "check-update"},
+		{runtime.Update{Phase: runtime.UpdatePrepareFailed, Version: "0.2.0"}, en.Text(copy.UpdatePrepareFailed), en.Text(copy.Retry), "install-update"},
 	} {
 		state.Update = step.update
 		actions.calls = nil
@@ -549,7 +549,7 @@ func TestUpdateStates(t *testing.T) {
 				t.Errorf("%s: click %q: %v %q", step.update.Phase, step.click, err, actions.calls)
 			}
 		}
-		snapshot(t, tt, "settings-about-update-"+string(step.update.Phase)+string(step.update.Failed))
+		snapshot(t, tt, "settings-about-update-"+string(step.update.Phase))
 	}
 	state.Update = runtime.Update{Phase: runtime.UpdateCurrent}
 	settle(tt)

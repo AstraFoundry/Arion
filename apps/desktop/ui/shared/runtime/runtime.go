@@ -458,9 +458,23 @@ const (
 	UpdateApplying UpdatePhase = "applying"
 	// UpdateReady: the new version replaced the app on disk and runs after
 	// a restart.
-	UpdateReady  UpdatePhase = "ready"
-	UpdateFailed UpdatePhase = "failed"
+	UpdateReady UpdatePhase = "ready"
+	// Failures are phases. Install and apply are not failure phases.
+	UpdateCheckFailed    UpdatePhase = "check-failed"
+	UpdatePrepareFailed  UpdatePhase = "prepare-failed"
+	UpdateRestartFailed  UpdatePhase = "restart-failed"
+	UpdateRecoveryFailed UpdatePhase = "recovery-failed"
 )
+
+// IsFailure reports a check, prepare, restart, or recovery failure.
+func (p UpdatePhase) IsFailure() bool {
+	switch p {
+	case UpdateCheckFailed, UpdatePrepareFailed, UpdateRestartFailed, UpdateRecoveryFailed:
+		return true
+	default:
+		return false
+	}
+}
 
 // Update is the newest release known and how far installing it got.
 type Update struct {
@@ -472,8 +486,6 @@ type Update struct {
 	Downloaded, Total int64
 	// Checked is when the release feed last answered.
 	Checked time.Time
-	// Failed is the step that failed while Phase is UpdateFailed.
-	Failed UpdateStep
 	// RestartQueued waits for input and managed writes to finish safely.
 	RestartQueued bool
 	// ReminderVisible is owned by the reminder policy, independent of progress.
@@ -482,25 +494,15 @@ type Update struct {
 	StateError bool
 }
 
-// UpdateStep is a step of updating that can fail.
-type UpdateStep string
-
-const (
-	UpdateStepCheck    UpdateStep = "check"
-	UpdateStepInstall  UpdateStep = "install"
-	UpdateStepPrepare  UpdateStep = "prepare"
-	UpdateStepApply    UpdateStep = "apply"
-	UpdateStepRestart  UpdateStep = "restart"
-	UpdateStepRecovery UpdateStep = "recovery"
-)
-
 // Pending reports a newer version the user has not restarted into yet.
+// A failed check is not an installable release. Prepare, restart, and
+// recovery failures still name that release when a version is known.
 func (u Update) Pending() bool {
 	switch u.Phase {
 	case UpdateAvailable, UpdateDownloading, UpdateStaged, UpdateApplying, UpdateReady:
 		return true
-	case UpdateFailed:
-		return u.Failed != UpdateStepCheck && u.Version != ""
+	case UpdatePrepareFailed, UpdateRestartFailed, UpdateRecoveryFailed:
+		return u.Version != ""
 	default:
 		return false
 	}

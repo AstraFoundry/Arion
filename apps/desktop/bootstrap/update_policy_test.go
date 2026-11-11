@@ -70,7 +70,7 @@ func TestStageMustPersistBeforeItBecomesReady(t *testing.T) {
 	drain()
 	u.install()
 	drain()
-	if s.Phase != arion.UpdateFailed || s.Failed != arion.UpdateStepPrepare || u.prepared != nil {
+	if s.Phase != arion.UpdatePrepareFailed || u.prepared != nil {
 		t.Fatalf("unpersisted stage offered: %+v", s)
 	}
 }
@@ -90,7 +90,7 @@ func TestApplyIsSeparateFromDownloadAndRetryable(t *testing.T) {
 	var result error
 	u.apply(func(err error) { result = err })
 	drain()
-	if result == nil || s.Failed != arion.UpdateStepPrepare || u.prepared != nil {
+	if result == nil || s.Phase != arion.UpdatePrepareFailed || u.prepared != nil {
 		t.Fatalf("failed swap lost retry: %+v", s)
 	}
 	u.install()
@@ -146,12 +146,12 @@ func TestFailedRollbackBlocksFurtherUpdatesAndPreservesJournal(t *testing.T) {
 	stage.err = mygo.ErrUpdateRecoveryRequired
 	u.apply(func(error) {})
 	drain()
-	if s.Failed != arion.UpdateStepRecovery || !u.blocked || stage.discarded != 0 || u.prepared != stage {
+	if s.Phase != arion.UpdateRecoveryFailed || !u.blocked || stage.discarded != 0 || u.prepared != stage {
 		t.Fatalf("recovery bytes not preserved: %+v", s)
 	}
 	u.check(time.Now(), true)
 	u.install()
-	if s.Phase != arion.UpdateFailed || u.due(time.Now().Add(updateInterval)) {
+	if s.Phase != arion.UpdateRecoveryFailed || u.due(time.Now().Add(updateInterval)) {
 		t.Fatal("blocked transaction restarted")
 	}
 }

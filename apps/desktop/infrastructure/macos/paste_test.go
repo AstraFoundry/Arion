@@ -11,6 +11,7 @@ import (
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/pastephase"
 )
 
 type pasteFixture struct {
@@ -28,34 +29,45 @@ func (f pasteFixture) prepare(s string) pasteAttempt { return f.begin(s) }
 
 type fakePasteAttempt struct {
 	onStage, onPost         func() domain.ErrorCode
-	onFinish                func() bool
+	onFinish                func() pastephase.Phase
+	phase                   pastephase.Phase
 	stages, posts, finishes int
 }
 
 func (f *fakePasteAttempt) stage() domain.ErrorCode {
 	f.stages++
+	code := domain.ErrorCode("")
 	if f.onStage != nil {
-		return f.onStage()
+		code = f.onStage()
 	}
-	return ""
+	if code == "" {
+		f.phase = pastephase.Staged
+	}
+	return code
 }
 func (f *fakePasteAttempt) post() domain.ErrorCode {
 	f.posts++
+	code := domain.ErrorCode("")
 	if f.onPost != nil {
-		return f.onPost()
+		code = f.onPost()
 	}
-	return ""
+	if code == "" {
+		f.phase = pastephase.Posted
+	}
+	return code
 }
-func (f *fakePasteAttempt) finish() bool {
+func (f *fakePasteAttempt) finish() pastephase.Phase {
 	f.finishes++
 	if f.onFinish != nil {
-		return f.onFinish()
+		f.phase = f.onFinish()
+		return f.phase
 	}
-	return true
+	f.phase = pastephase.Restored
+	return f.phase
 }
 
 func TestPasteTransactionBoundaries(t *testing.T) {
-	for _, step := range []string{"before-prepare", "during-prepare", "after-stage", "focus-after-stage", "secure-after-stage", "stage-fails", "post-rejects", "posted-unknown", "restore-fails"} {
+	for _, step := range []string{"before-prepare", "during-prepare", "after-stage", "focus-after-stage", "secure-after-stage", "stage-fails", "post-rejects", "posted-unknown", "restore-fails", "left-after-post"} {
 		t.Run(step, func(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
@@ -92,12 +104,21 @@ func TestPasteTransactionBoundaries(t *testing.T) {
 				}
 				return ""
 			}
-			tx.onFinish = func() bool { return step != "restore-fails" }
+			tx.onFinish = func() pastephase.Phase {
+				switch step {
+				case "restore-fails":
+					return pastephase.RestoreFailed
+				case "left-after-post":
+					return pastephase.Left
+				default:
+					return pastephase.Restored
+				}
+			}
 			result, err := commitPaste(ctx, contracts.Identity{}, "中🙂\nline", 0, fixture)
 			if err != nil {
 				t.Fatal(err)
 			}
-			posted := step == "posted-unknown" || step == "restore-fails"
+			posted := step == "posted-unknown" || step == "restore-fails" || step == "left-after-post"
 			if posted {
 				if result.Outcome != contracts.Unknown || tx.posts != 1 {
 					t.Fatalf("posted result %+v, attempts=%d", result, tx.posts)
@@ -111,8 +132,19 @@ func TestPasteTransactionBoundaries(t *testing.T) {
 			if step != "post-rejects" && !posted && tx.posts != 0 {
 				t.Fatalf("unexpected post %d", tx.posts)
 			}
-			if step == "restore-fails" && result.Failure != domain.CodeClipboardRestoreFailed {
-				t.Fatalf("restore failure lost: %+v", result)
+			switch step {
+			case "restore-fails":
+				if result.Failure != domain.CodeClipboardRestoreFailed || tx.phase != pastephase.RestoreFailed || result.Outcome != contracts.Unknown {
+					t.Fatalf("failed restore looked like a successful paste: %+v phase=%s", result, tx.phase)
+				}
+			case "left-after-post":
+				if result.Failure != "" || tx.phase != pastephase.Left || result.Outcome != contracts.Unknown {
+					t.Fatalf("left clipboard: %+v phase=%s", result, tx.phase)
+				}
+			case "posted-unknown":
+				if tx.phase != pastephase.Restored || result.Failure != "" {
+					t.Fatalf("restored paste: %+v phase=%s", result, tx.phase)
+				}
 			}
 		})
 	}
@@ -161,7 +193,7 @@ func TestPasteQueueCancellationAndSerialization(t *testing.T) {
 		if active.Add(1) != 1 {
 			t.Error("overlapping clipboard owners")
 		}
-		return &fakePasteAttempt{onFinish: func() bool { active.Add(-1); return true }}
+		return &fakePasteAttempt{onFinish: func() pastephase.Phase { active.Add(-1); return pastephase.Restored }}
 	}}
 	for i := 0; i < 12; i++ {
 		wg.Add(1)
@@ -210,11 +242,11 @@ func TestCancellationAfterPostPreservesHoldAndCleanup(t *testing.T) {
 	const hold = 20 * time.Millisecond
 	var posted time.Time
 	tx := &fakePasteAttempt{onPost: func() domain.ErrorCode { posted = time.Now(); cancel(); return "" }}
-	tx.onFinish = func() bool {
+	tx.onFinish = func() pastephase.Phase {
 		if time.Since(posted) < hold {
 			t.Error("cancellation shortened clipboard retention")
 		}
-		return true
+		return pastephase.Restored
 	}
 	result, err := commitPaste(ctx, contracts.Identity{}, "text", hold, pasteFixture{begin: func(string) pasteAttempt { return tx }})
 	if err != nil || result.Outcome != contracts.Unknown || result.Failure != "" || tx.posts != 1 || tx.finishes != 1 {
