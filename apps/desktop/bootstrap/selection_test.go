@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"path/filepath"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -81,15 +82,22 @@ func TestSelectionWatchSwitchSecureAndURL(t *testing.T) {
 	app.openSelectionURL = func(raw string) error { opened = raw; return nil }
 	app.prefs.Selection.Clients[0].Enabled = true
 	platform.secure = false
-	if err := (actions{app}).OpenSelection(application.SelectionActionExplain, ""); err != nil {
+	if err := (actions{app}).OpenSelection(application.SelectionActionExplain, "", ""); err != nil {
 		t.Fatal(err)
 	}
-	want, err := app.prefs.Selection.SelectionURL(application.SelectionActionExplain, "SelectionTerm", "")
+	want, err := app.prefs.Selection.SelectionURL(application.SelectionActionExplain, "", "SelectionTerm", "")
 	if err != nil || opened != want || opened == "" {
 		t.Fatalf("opened %s want %s (%v)", opened, want, err)
 	}
+	app.prefs.Selection.Clients[1].Enabled = true
+	if err := (actions{app}).OpenSelection(application.SelectionActionTranslate, application.SelectionClientChatGPT, ""); err != nil {
+		t.Fatal(err)
+	}
+	if want, _ := app.prefs.Selection.SelectionURL(application.SelectionActionTranslate, application.SelectionClientChatGPT, "SelectionTerm", ""); opened != want || !strings.HasPrefix(opened, "codex://") {
+		t.Fatalf("chosen client opened %s", opened)
+	}
 	opened = ""
-	if err := (actions{app}).OpenSelection("missing", ""); !errors.Is(err, application.ErrSelectionAction) || opened != "" {
+	if err := (actions{app}).OpenSelection("missing", "", ""); !errors.Is(err, application.ErrSelectionAction) || opened != "" {
 		t.Fatalf("missing action opened %q: %v", opened, err)
 	}
 }
@@ -143,6 +151,17 @@ func TestSelectionPlacementAndEmptySecure(t *testing.T) {
 	}
 	if got := selectionPlacement(mygo.Rectangle{}, false, mygo.Point{X: 3, Y: 4}); got != (mygo.Rectangle{X: 3, Y: 4}) {
 		t.Fatalf("cursor %+v", got)
+	}
+	popover := mygo.Rectangle{X: 100, Y: 200, Width: 400, Height: 37}
+	for _, inside := range []mygo.Point{{X: 100, Y: 200}, {X: 499, Y: 236}} {
+		if !selectionContains(popover, inside) {
+			t.Fatalf("%+v is on the popover", inside)
+		}
+	}
+	for _, outside := range []mygo.Point{{X: 99, Y: 210}, {X: 500, Y: 210}, {X: 120, Y: 237}} {
+		if selectionContains(popover, outside) {
+			t.Fatalf("%+v is not on the popover", outside)
+		}
 	}
 
 	platform := &selectionPlatform{}

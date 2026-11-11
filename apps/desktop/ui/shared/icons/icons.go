@@ -37,6 +37,7 @@ var (
 	Briefcase         = load("briefcase")
 	Check             = load("check")
 	ChartLine         = load("chart-line")
+	ChevronDown       = load("chevron-down")
 	ChevronLeft       = load("chevron-left")
 	ChevronRight      = load("chevron-right")
 	ExternalLink      = load("external-link")

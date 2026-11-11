@@ -45,10 +45,30 @@ func (a *App) signalSelection() {
 	}
 }
 
+// selectionLoop skips a release over the popover: that click chooses in the
+// popover, and the question field taking the keyboard is not a new selection.
 func (a *App) selectionLoop() {
 	for range a.selectionClicks {
+		if a.pointerOnSelection() {
+			continue
+		}
 		a.applySelectionRead()
 	}
+}
+
+func (a *App) pointerOnSelection() bool {
+	inside := false
+	a.postWait(func() {
+		if a.selectionWin == nil || !a.selectionWin.IsVisible() {
+			return
+		}
+		inside = selectionContains(a.selectionWin.Bounds(), mygo.Screen.CursorScreenPoint())
+	})
+	return inside
+}
+
+func selectionContains(bounds mygo.Rectangle, p mygo.Point) bool {
+	return p.X >= bounds.X && p.Y >= bounds.Y && p.X < bounds.X+bounds.Width && p.Y < bounds.Y+bounds.Height
 }
 
 func (a *App) applySelectionRead() {
@@ -100,17 +120,22 @@ func (a *App) publishSelection(offer application.SelectionOffer, ok bool, anchor
 		a.state.Selection = application.SelectionOffer{}
 		a.dismissSelection()
 	}
-	if a.queueReady == nil {
-		apply()
+	if a.queueReady != nil && !wait {
+		a.post(apply)
 		return
 	}
-	if !wait {
-		a.post(apply)
+	a.postWait(apply)
+}
+
+// postWait runs fn on the UI queue and returns after it ran.
+func (a *App) postWait(fn func()) {
+	if a.queueReady == nil {
+		fn()
 		return
 	}
 	done := make(chan struct{})
 	a.post(func() {
-		apply()
+		fn()
 		close(done)
 	})
 	<-done
@@ -165,7 +190,7 @@ func (x actions) AddSelectionVocabulary() error {
 	})
 }
 
-func (x actions) OpenSelection(actionID, question string) error {
+func (x actions) OpenSelection(actionID, clientID, question string) error {
 	offer, ok := x.a.currentSelection()
 	if !ok {
 		return application.ErrSelectionEmpty
@@ -173,7 +198,7 @@ func (x actions) OpenSelection(actionID, question string) error {
 	if err := x.a.confirmSelectionReadable(); err != nil {
 		return err
 	}
-	raw, err := x.a.preferences().Selection.SelectionURL(actionID, offer.Text, question)
+	raw, err := x.a.preferences().Selection.SelectionURL(actionID, clientID, offer.Text, question)
 	if err != nil {
 		return err
 	}

@@ -10,6 +10,7 @@ import (
 	"arion.local/desktop/ui/pages/settings"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/runtime"
+	"arion.local/desktop/ui/widgets/selectionmenu"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -105,29 +106,56 @@ func offerFor(state *runtime.State, clients ...string) {
 			}
 		}
 	}
-	state.Selection = runtime.SelectionOffer{Text: "Feature-Sliced Design", Actions: state.Preferences.Selection.VisibleActions()}
+	prefs := state.Preferences.Selection
+	state.Selection = runtime.SelectionOffer{Text: "Feature-Sliced Design", Actions: prefs.VisibleActions(), Clients: prefs.EnabledClients()}
 }
 
-func selectionTester(store runtime.Store) *ui.Tester {
+// selectionTester leaves room below the bar for the second menu.
+func selectionTester(store runtime.Store) (*ui.Tester, *int) {
 	page := &selectionpage.Page{}
-	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SelectionWidth, SelectionHeightFor(store)+40)
+	height := new(int)
+	tt := ui.NewTester(func(c *ui.Context) { *height = page.Render(c, store) }, SelectionWidth, 320)
 	settle(tt)
-	return tt
+	return tt, height
 }
 
-func TestSelectionMenu(t *testing.T) {
+// promptTitles are the rows of the second menu, which the bar never shows.
+func promptTitles(messages copy.Catalog) []string {
+	return []string{messages.Text(copy.SelectionTranslate), messages.Text(copy.SelectionExplain), messages.Text(copy.SelectionSummarize),
+		messages.Text(copy.SelectionRewrite), messages.Text(copy.SelectionAsk), messages.Text(copy.SelectionReturn)}
+}
+
+func TestSelectionBar(t *testing.T) {
 	for _, locale := range locales {
 		t.Run(string(locale), func(t *testing.T) {
 			state, actions, store := fixture()
 			state.Preferences.UILanguage = locale
 			offerFor(state, runtime.SelectionClientClaude, runtime.SelectionClientChatGPT)
 			messages := store.Copy()
-			tt := selectionTester(store)
-			expect(t, tt, true, messages.Text(copy.SelectionTranslate), messages.Text(copy.SelectionExplain), messages.Text(copy.SelectionSummarize),
-				messages.Text(copy.SelectionRewrite), messages.Text(copy.SelectionAsk), messages.Text(copy.SelectionAskChatGPT),
-				messages.Text(copy.Copy), messages.Text(copy.SelectionVocabulary), messages.Text(copy.SelectionReturn))
-			snapshot(t, tt, "selection-menu-"+string(locale))
+			tt, height := selectionTester(store)
+			expect(t, tt, true, messages.Text(copy.SelectionClaude), messages.Text(copy.SelectionChatGPT), messages.Text(copy.Copy), messages.Text(copy.SelectionVocabulary))
+			expect(t, tt, false, append(promptTitles(messages), messages.Text(copy.SelectionAskChatGPT))...)
+			if *height != SelectionHeightFor(store) || SelectionHeightFor(store) > 40 || SelectionWidth > 420 {
+				t.Fatalf("bar %dx%d, window height %d", SelectionWidth, SelectionHeightFor(store), *height)
+			}
+			claude, _ := tt.Find(messages.Text(copy.SelectionClaude))
+			vocabulary, _ := tt.Find(messages.Text(copy.SelectionVocabulary))
+			if vocabulary.Y > claude.Y+claude.H || vocabulary.X+vocabulary.W > SelectionWidth {
+				t.Fatalf("bar actions are not one row: %v %v", claude, vocabulary)
+			}
+			snapshot(t, tt, "selection-bar-"+string(locale))
+
+			clicker(t, tt)(messages.Text(copy.SelectionChatGPT))
+			expect(t, tt, true, append(promptTitles(messages), messages.Text(copy.SelectionAskChatGPT))...)
+			menu := *height - SelectionHeightFor(store)
+			if menu <= 0 || menu >= 243 {
+				t.Fatalf("second menu adds %d", menu)
+			}
 			row, _ := tt.Find(messages.Text(copy.SelectionTranslate))
+			if row.X+row.W > selectionmenu.MenuWidth || row.Y < claude.Y+claude.H {
+				t.Fatalf("translate row %v is not in the menu under the bar", row)
+			}
+			snapshot(t, tt, "selection-menu-"+string(locale))
 			glyph, _ := tt.Find(messages.Text(copy.SelectionReturn))
 			explain, _ := tt.Find(messages.Text(copy.SelectionExplain))
 			if glyph.Y < row.Y || glyph.Y+glyph.H > row.Y+row.H+8 || glyph.Y >= explain.Y || glyph.X <= row.X {
@@ -135,8 +163,8 @@ func TestSelectionMenu(t *testing.T) {
 			}
 			tt.Key(0, ui.KeyEnter)
 			settle(tt)
-			if !actions.called("selection-open:" + runtime.SelectionActionTranslate) {
-				t.Fatalf("return did not translate: %v", actions.calls)
+			if !actions.called("selection-open:" + runtime.SelectionClientChatGPT + ":" + runtime.SelectionActionTranslate) {
+				t.Fatalf("return did not translate in ChatGPT: %v", actions.calls)
 			}
 			tt.Key(0, ui.KeyDown)
 			settle(tt)
@@ -145,50 +173,72 @@ func TestSelectionMenu(t *testing.T) {
 			}
 			tt.Key(0, ui.KeyEnter)
 			settle(tt)
-			if !actions.called("selection-open:" + runtime.SelectionActionExplain) {
+			if !actions.called("selection-open:" + runtime.SelectionClientChatGPT + ":" + runtime.SelectionActionExplain) {
 				t.Fatalf("return did not run the highlighted row: %v", actions.calls)
 			}
+
 			actions.calls = nil
 			clicker(t, tt)(messages.Text(copy.SelectionAsk))
+			expect(t, tt, true, promptTitles(messages)[:4]...)
+			if len(actions.calls) != 0 {
+				t.Fatalf("clicking the question field ran %v", actions.calls)
+			}
 			tt.Type("why")
 			tt.Key(0, ui.KeyEnter)
 			settle(tt)
-			if !actions.called("selection-open:"+runtime.SelectionActionAsk+":why") || len(actions.calls) != 1 {
+			if !actions.called("selection-open:"+runtime.SelectionClientChatGPT+":"+runtime.SelectionActionAsk+":why") || len(actions.calls) != 1 {
 				t.Fatalf("question field did not ask: %v", actions.calls)
 			}
+			expect(t, tt, true, messages.Text(copy.SelectionTranslate))
 			clicker(t, tt)(messages.Text(copy.SelectionAskChatGPT))
+			if !actions.called("selection-open:" + runtime.SelectionClientChatGPT + ":" + runtime.SelectionActionAskChatGPT) {
+				t.Fatalf("Ask ChatGPT not called: %v", actions.calls)
+			}
+
+			clicker(t, tt)(messages.Text(copy.SelectionClaude))
+			expect(t, tt, false, messages.Text(copy.SelectionAskChatGPT))
+			clicker(t, tt)(messages.Text(copy.SelectionExplain))
+			if !actions.called("selection-open:" + runtime.SelectionClientClaude + ":" + runtime.SelectionActionExplain) {
+				t.Fatalf("explain did not go to Claude: %v", actions.calls)
+			}
+			clicker(t, tt)(messages.Text(copy.SelectionClaude))
+			expect(t, tt, false, promptTitles(messages)...)
+			if *height != SelectionHeightFor(store) {
+				t.Fatalf("closed menu left height %d", *height)
+			}
+
 			clicker(t, tt)(messages.Text(copy.Copy))
 			clicker(t, tt)(messages.Text(copy.SelectionVocabulary))
-			for _, call := range []string{"selection-open:" + runtime.SelectionActionAskChatGPT, "selection-copy", "selection-vocabulary"} {
+			for _, call := range []string{"selection-copy", "selection-vocabulary"} {
 				if !actions.called(call) {
 					t.Fatalf("%s not called: %v", call, actions.calls)
 				}
 			}
 			for _, call := range actions.calls {
 				if strings.Contains(call, "prefs") {
-					t.Fatal("the menu wrote preferences")
+					t.Fatal("the bar wrote preferences")
 				}
 			}
 		})
 	}
 }
 
-func TestSelectionMenuWithoutClients(t *testing.T) {
+func TestSelectionBarWithoutClients(t *testing.T) {
 	for _, locale := range locales {
 		t.Run(string(locale), func(t *testing.T) {
 			state, actions, store := fixture()
 			state.Preferences.UILanguage = locale
 			offerFor(state)
 			messages := store.Copy()
-			tt := selectionTester(store)
+			tt, _ := selectionTester(store)
 			expect(t, tt, true, messages.Text(copy.Copy), messages.Text(copy.SelectionVocabulary))
-			expect(t, tt, false, messages.Text(copy.SelectionTranslate), messages.Text(copy.SelectionExplain), messages.Text(copy.SelectionSummarize),
-				messages.Text(copy.SelectionRewrite), messages.Text(copy.SelectionAsk), messages.Text(copy.SelectionAskChatGPT), messages.Text(copy.SelectionReturn))
-			snapshot(t, tt, "selection-menu-local-"+string(locale))
+			expect(t, tt, false, append(promptTitles(messages), messages.Text(copy.SelectionAskChatGPT),
+				messages.Text(copy.SelectionClaude), messages.Text(copy.SelectionChatGPT))...)
+			snapshot(t, tt, "selection-bar-local-"+string(locale))
 			tt.Key(0, ui.KeyEnter)
 			settle(tt)
 			if !actions.called("selection-copy") {
-				t.Fatalf("return without prompts did not copy: %v", actions.calls)
+				t.Fatalf("return without a menu did not copy: %v", actions.calls)
 			}
 			actions.selectionError = runtime.ErrVocabularyInvalid
 			clicker(t, tt)(messages.Text(copy.SelectionVocabulary))

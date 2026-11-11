@@ -77,7 +77,7 @@ func assertSelectionCopyHotwordURLAndSwitch(t *testing.T, selected string, readi
 	prefs := application.DefaultSelectionPreferences()
 	prefs.Enabled = true
 	prefs.Clients[0].Enabled = true
-	got, err := prefs.SelectionURL(application.SelectionActionExplain, selected, "")
+	got, err := prefs.SelectionURL(application.SelectionActionExplain, "", selected, "")
 	filled, fillErr := application.FillSelectionTemplate(application.SelectionTemplateClaude, strings.ReplaceAll(application.SelectionPromptExplain, "{{selection}}", selected))
 	if err != nil || fillErr != nil || got != filled || !strings.HasPrefix(got, "claude://claude.ai/new?q=") {
 		t.Fatalf("url %s %v %v", got, err, fillErr)

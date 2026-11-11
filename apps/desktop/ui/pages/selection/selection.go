@@ -1,4 +1,4 @@
-// Package selection is the popover window over another app's selected text.
+// Package selection is the bar window over another app's selected text.
 package selection
 
 import (
@@ -9,11 +9,11 @@ import (
 
 const Width = selectionmenu.Width
 
-// Height sizes the window for the current offer.
-func Height(store runtime.Store) int { return selectionmenu.Height(store.State.Selection.Actions) }
+// Height sizes the window as an offer opens: the bar, with no menu open.
+func Height(runtime.Store) int { return selectionmenu.BarHeight }
 
-// Page keeps the menu's highlight and question.
+// Page keeps the bar's open menu, highlight and question.
 type Page struct{ menu selectionmenu.Menu }
 
-// Render draws the menu and returns the height it needs.
+// Render draws the bar and returns the height it needs.
 func (p *Page) Render(c *ui.Context, store runtime.Store) int { return p.menu.Render(c, store) }
