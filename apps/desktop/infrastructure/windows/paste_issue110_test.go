@@ -18,8 +18,8 @@ func TestIssue110PasteKeysAreNotHoldEvents(t *testing.T) {
 
 func TestIssue110PlanSeparatesControlUpAndSetsScanCodes(t *testing.T) {
 	plan := planPaste([]uint16{vkRMenu, vkLShift, vkLWin, vkRControl, vkV})
-	if pasteHold != 400*time.Millisecond {
-		t.Fatalf("hold %s", pasteHold)
+	if pastePhaseGap != 30*time.Millisecond || pasteInputExtra != 0xA710110 {
+		t.Fatalf("gap %s extra %#x", pastePhaseGap, pasteInputExtra)
 	}
 	if len(plan.Release) != 3 {
 		t.Fatalf("release %+v", plan.Release)
@@ -64,29 +64,33 @@ func TestIssue110RejectedSendLeavesDictatedText(t *testing.T) {
 	}
 }
 
+// A read after the former 400 ms hold still gets the dictated text and is
+// not followed by another paste.
 func TestIssue110LateReadIsNotAnotherPaste(t *testing.T) {
 	late := simulateIssue110(issue110Request{
 		Host: issue110DeferredRead, Held: issue110Held{RightAlt: true}, Injected: true,
-		Dictated: "你好", Previous: "old", ReadAfter: pasteHold + time.Millisecond,
+		Dictated: "你好", Previous: "old", ReadAfter: 401 * time.Millisecond,
 	})
-	if late.Field != "old" || late.Outcome != "unknown" || !late.PostedChord || late.UnicodeEvents != 0 {
+	if late.Field != "你好" || late.Outcome != "unknown" || late.ClipboardLeft != "old" || !late.PostedChord || late.UnicodeEvents != 0 {
 		t.Fatalf("late %+v", late)
 	}
 	inTime := simulateIssue110(issue110Request{
 		Host: issue110DeferredRead, Held: issue110Held{RightAlt: true}, Injected: true,
-		Dictated: "你好", Previous: "old", ReadAfter: pasteHold - time.Millisecond,
+		Dictated: "你好", Previous: "old", ReadAfter: 100 * time.Millisecond,
 	})
-	if inTime.Field != "你好" || inTime.Outcome != "unknown" {
+	if inTime.Field != "你好" || inTime.Outcome != "unknown" || inTime.ClipboardLeft != "old" {
 		t.Fatalf("in time %+v", inTime)
 	}
 }
 
+// A swallowed chord is still one paste. The text stays on the clipboard
+// for the user's own Ctrl+V, and the commit is copied, not pasted.
 func TestIssue110SwallowedChordIsNotRetried(t *testing.T) {
 	got := simulateIssue110(issue110Request{
 		Host: issue110VoiceSwallow, Held: issue110Held{RightAlt: true}, Injected: true,
 		Dictated: "你好", Previous: "old",
 	})
-	if got.Field != "" || got.Outcome != "unknown" || !got.PostedChord || got.ClipboardLeft != "old" || got.UnicodeEvents != 0 {
+	if got.Field != "" || got.Outcome != "copied" || !got.PostedChord || got.ClipboardLeft != "你好" || got.UnicodeEvents != 0 {
 		t.Fatalf("%+v", got)
 	}
 	decision := focusclass.DecideWindows(focusclass.WinObservation{ControlType: focusclass.UIAEdit, ValuePattern: true, TextPattern: true, TextReadOnlyKnown: true})

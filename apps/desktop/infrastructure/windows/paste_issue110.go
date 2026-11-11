@@ -25,7 +25,6 @@ const (
 	vkLWin               = 0x5B
 	vkRWin               = 0x5C
 	vkV                  = 0x56
-	pasteHold            = 400 * time.Millisecond
 	// pastePhaseGap lets the focused app observe a phase before the next
 	// one is queued. It is not the clipboard hold and not another paste.
 	pastePhaseGap = 30 * time.Millisecond
@@ -164,18 +163,25 @@ func (h issue110Held) keys() []uint16 {
 }
 
 // issue110Request is one dictation paste. Injected is false when SendInput
-// does not accept the chord.
+// does not accept the chord. ReadAfter is when issue110DeferredRead reads
+// the board. Unmeasured is a field whose length cannot be read. Touch moves
+// the clipboard sequence while Arion's marker stays; Replace is a newer
+// owner writing Replacement. Zero leaves the board alone.
 type issue110Request struct {
-	Host      issue110Host
-	Held      issue110Held
-	Injected  bool
-	ReadAfter time.Duration
-	Previous  string
-	Dictated  string
+	Host        issue110Host
+	Held        issue110Held
+	Injected    bool
+	ReadAfter   time.Duration
+	Unmeasured  bool
+	Touch       time.Duration
+	Replace     time.Duration
+	Replacement string
+	Previous    string
+	Dictated    string
 }
 
 // issue110Result is the field, the clipboard after the paste returns, and
-// the commit outcome.
+// the commit outcome. Elapsed is when the hold released the board.
 type issue110Result struct {
 	Field         string
 	ClipboardLeft string
@@ -232,9 +238,10 @@ func applyPhase(k *issue110Keys, phase []pasteKey, sample *bool, clean *bool) {
 	}
 }
 
-// simulateIssue110 runs the production plan against one host. A rejected
-// injection leaves the dictated text and does not restore. A posted paste
-// holds, then restores. A swallowed chord is still one posted paste.
+// simulateIssue110 runs the production plan and hold against one host. A
+// rejected injection leaves the dictated text and does not restore. A
+// posted paste is held by holdPaste on a simulated clock. A swallowed chord
+// is still one posted paste and is not retried.
 func simulateIssue110(req issue110Request) issue110Result {
 	plan := planPaste(req.Held.keys())
 	if !req.Injected {
@@ -245,38 +252,58 @@ func simulateIssue110(req issue110Request) issue110Result {
 	applyPhase(keys, plan.Release, &saw, &clean)
 	// The V phase is sampled before Left Ctrl goes up.
 	applyPhase(keys, plan.Chord, &saw, &clean)
-	res := issue110Result{Outcome: "unknown", Elapsed: pasteHold, PostedChord: true, ClipboardLeft: req.Previous}
-	if req.Host == issue110VoiceSwallow {
-		return res
-	}
 	if req.Host == issue110AsyncSample {
 		// Async state after the V phase, still before Ctrl up.
 		clean = keys.control() && !keys.alt() && !keys.shiftOrWin()
 		saw = true
 	}
 	applyPhase(keys, plan.CtrlUp, &saw, &clean)
-	if req.Host == issue110DeferredRead {
-		if !saw || !clean {
-			return res
-		}
-		delay := req.ReadAfter
-		if delay == 0 {
-			delay = pasteHold + time.Millisecond
-		}
-		if delay < pasteHold {
-			res.Field = req.Dictated
-			return res
-		}
-		res.Field = req.Previous
-		return res
+
+	// insert is what the field gains and when; read is a board read.
+	insert, at, read := "", time.Duration(0), false
+	switch {
+	case req.Host == issue110VoiceSwallow:
+	case saw && clean && req.Host == issue110DeferredRead:
+		read, at = true, req.ReadAfter
+	case saw && clean:
+		read = true
+	case saw && req.Host == issue110Composer:
+		insert = "V"
 	}
-	if saw && clean {
-		res.Field = req.Dictated
-		return res
+	var now time.Duration
+	board := func() pasteBoard {
+		switch {
+		case req.Replace > 0 && now >= req.Replace:
+			return boardReplaced
+		case req.Touch > 0 && now >= req.Touch:
+			return boardTouched
+		}
+		return boardOwned
 	}
-	if saw && req.Host == issue110Composer {
-		res.Field = "V"
+	if read && req.Replace > 0 && at >= req.Replace {
+		insert = req.Replacement
+	} else if read {
+		insert = req.Dictated
 	}
+	result := holdPaste(pasteHoldProbe{
+		board:  board,
+		landed: func() bool { return !req.Unmeasured && insert != "" && now >= at },
+		sleep:  func(d time.Duration) { now += d },
+	})
+	res := issue110Result{Outcome: "unknown", Elapsed: now, PostedChord: true}
+	// A read after the hold returned sees whatever the hold left.
+	switch result {
+	case holdRestore:
+		res.ClipboardLeft = req.Previous
+	case holdYield:
+		res.ClipboardLeft = req.Replacement
+	case holdKeep:
+		res.ClipboardLeft, res.Outcome = req.Dictated, "copied"
+	}
+	if read && at > now {
+		insert = res.ClipboardLeft
+	}
+	res.Field = insert
 	return res
 }
 
