@@ -32,6 +32,7 @@ type (
 	CandidateSize       = application.CandidateSize
 	CandidateAppearance = application.CandidateAppearance
 	CandidateAccent     = application.CandidateAccent
+	CandidateTextColor  = application.CandidateTextColor
 	Highlight           = application.Highlight
 	Usage               = domain.Usage
 	UsageLog            = domain.UsageLog
@@ -137,9 +138,10 @@ var GainStops = application.GainStops
 
 // Keyboard choices.
 var (
-	CandidatePageSizes = application.CandidatePageSizes
-	CandidateAccents   = application.CandidateAccents
-	LanguageSwitches   = application.LanguageSwitches
+	CandidatePageSizes  = application.CandidatePageSizes
+	CandidateAccents    = application.CandidateAccents
+	CandidateTextColors = application.CandidateTextColors
+	LanguageSwitches    = application.LanguageSwitches
 )
 
 const (
@@ -163,6 +165,8 @@ const (
 	AccentGreen      = application.AccentGreen
 	AccentGraphite   = application.AccentGraphite
 	AccentCustom     = application.AccentCustom
+	TextBlack        = application.TextBlack
+	TextWhite        = application.TextWhite
 )
 
 const GainStep = application.GainStep
@@ -629,6 +633,8 @@ type Actions interface {
 	UpdatePreferences(func(*Preferences))
 	// SetHoldKey chooses the dictation key.
 	SetHoldKey(key HoldKey)
+	// SetSecondHoldKey chooses the optional second dictation shortcut, or HoldOff to disable it.
+	SetSecondHoldKey(key HoldKey)
 	// SetTranslateKey chooses the translation key, or HoldOff to disable it.
 	SetTranslateKey(key HoldKey)
 	RequestInputMonitoring()

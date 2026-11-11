@@ -20,7 +20,16 @@ import (
 // Width and Height size the ready panel. Optional blocks add only their own space.
 const (
 	Width  = 330
-	Height = 160
+	Height = 152
+)
+
+// footerInset is a footer button's horizontal padding. The footer rows
+// hang out by it so their icons and text line up with the edges of the
+// header and the dictation button, while the hover face keeps its padding.
+// Their taller hit area is trimmed the same way at the top and bottom.
+const (
+	footerInset = 10
+	footerTrim  = 4
 )
 
 // HeightFor follows the visible blocks rather than reserving transcript space.
@@ -33,7 +42,7 @@ func HeightFor(store arion.Store) int {
 		height += 64
 	}
 	if _, ok := update.Notice(store); ok {
-		height += 34
+		height += 30
 	}
 	return height
 }
@@ -66,11 +75,11 @@ func (p *Panel) Render(c *ui.Context, store arion.Store) {
 		// A pending update takes its own line, so a long version never
 		// crowds Settings and Quit off the footer.
 		if label, ok := update.Notice(store); ok {
-			ui.Row(c.Key("update")).Margin(0, 0, -10, 0).Children(func() {
+			ui.Row(c.Key("update")).Margin(-footerTrim, -footerInset, -10, -footerInset).Children(func() {
 				footerButton(c, tokens, icons.Download, label, store.Actions.OpenUpdate)
 			})
 		}
-		ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
+		ui.Row(c).Gap(4).AlignItems(ui.Center).Margin(-footerTrim, -footerInset, -footerTrim, -footerInset).Children(func() {
 			footerButton(c, tokens, icons.Settings, messages.Text(copy.SettingsMenu), store.Actions.OpenSettings)
 			ui.Spacer(c)
 			footerButton(c, tokens, icons.Power, messages.Text(copy.Quit), store.Actions.Quit)
@@ -79,7 +88,7 @@ func (p *Panel) Render(c *ui.Context, store arion.Store) {
 }
 
 func footerButton(c *ui.Context, tokens theme.Tokens, icon *ui.SVG, label string, action func()) {
-	button := ui.ButtonBase(c.Key(label)).Gap(6).Height(30).Padding(0, 10).Radius(8).AlignItems(ui.Center).Shrink(0).TextColor(tokens.Muted)
+	button := ui.ButtonBase(c.Key(label)).Gap(6).Height(30).Padding(0, footerInset).Radius(8).AlignItems(ui.Center).Shrink(0).TextColor(tokens.Muted)
 	kit.Press(button)
 	if button.Hovered() {
 		button.Background(tokens.AccentSoft).TextColor(tokens.Text)

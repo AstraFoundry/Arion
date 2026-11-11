@@ -1,5 +1,7 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { format, localeAlternates, localizePath, parseLocalePath } from "@/shared/i18n";
+import { format, localeAlternates, localizePath, parseLocalePath, LOCALES } from "@/shared/i18n";
 
 describe("locale paths", () => {
   it("prefixes every locale but the default", () => {
@@ -35,6 +37,29 @@ describe("locale paths", () => {
         "x-default": "/privacy/",
       },
     });
+  });
+});
+
+describe("hero demo language", () => {
+  it("types a sentence of its own in each page language", () => {
+    const sentences = LOCALES.map((locale) => {
+      const messages = JSON.parse(
+        readFileSync(path.resolve(`src/shared/i18n/messages/${locale}.json`), "utf8"),
+      ) as { demo: { sentence: string } };
+      return messages.demo.sentence;
+    });
+    expect(new Set(sentences).size).toBe(LOCALES.length);
+  });
+
+  it("embeds each translation's stage recording from that locale's file", () => {
+    for (const locale of LOCALES) {
+      const markdown = readFileSync(path.resolve(`content/blog/arion-0-1-1/${locale}.md`), "utf8");
+      const sources = [...markdown.matchAll(/<embed-frame src="([^"]+)"/g)].map((match) => match[1]);
+      expect(sources.length).toBeGreaterThan(0);
+      for (const source of sources) {
+        expect(source, locale).toContain(`/stage.${locale}.html`);
+      }
+    }
   });
 });
 

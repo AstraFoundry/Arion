@@ -65,14 +65,20 @@ func Hint(c *ui.Context, tokens theme.Tokens, text string) ui.Element {
 // a detail line.
 func TipRow(c *ui.Context, tokens theme.Tokens, title, tip string, control func()) ui.Element {
 	return RowFrame(ui.Row(c)).Gap(16).AlignItems(ui.Center).Children(func() {
-		ui.Row(c).Grow(1).Shrink(1).Gap(6).AlignItems(ui.Center).Children(func() {
-			ui.Text(c, title).FontSize(theme.Body).FontWeight(500).Shrink(1)
-			if tip != "" {
-				Hint(c, tokens, tip)
-			}
-		})
+		TipTitle(c, tokens, title, tip).Grow(1)
 		if control != nil {
 			control()
+		}
+	})
+}
+
+// TipTitle is TipRow's title with its optional Hint, for a row laid out
+// another way.
+func TipTitle(c *ui.Context, tokens theme.Tokens, title, tip string) ui.Element {
+	return ui.Row(c).Shrink(1).Gap(6).AlignItems(ui.Center).Children(func() {
+		ui.Text(c, title).FontSize(theme.Body).FontWeight(500).Shrink(1)
+		if tip != "" {
+			Hint(c, tokens, tip)
 		}
 	})
 }

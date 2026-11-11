@@ -158,8 +158,10 @@ rules are:
    rather than letting it crash on Linux, hang in `await` or answer wrong
    on macOS. Only calls that work before `Init` on every backend (`Locale`,
    packaging info, login items, URL schemes, `IsOnBattery`) do neither.
-2. **Every `platform` method is called on the main thread, and every handler
-   callback runs there.** The backend never needs locks for its own state.
+2. **Platform methods and handler callbacks run on the main thread**, except
+   `Clipboard.WithFileAccess`: this synchronous worker-safe operation touches
+   no clipboard state and holds a local autorelease pool and file scopes only
+   for its callback. The backend never needs locks for its own clipboard state.
 3. **Every public method is safe from any goroutine.** `loop.go` provides:
    - `postMain(fn)` appends to a FIFO queue and calls `Backend.Signal`, which
      makes the backend call `AppHandler.Dispatch` (→ `loop.drain`) on the main

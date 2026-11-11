@@ -1,26 +1,26 @@
-import { History, Keyboard, Languages, PenLine, WifiOff, type LucideIcon } from "lucide-react";
-
 /**
- * The tour's chapters, in reading order. Each id names its copy under
- * `tour.<id>`, its mock and its backdrop crop (scripts/build-assets.mjs).
+ * The highlights, in reading order. Each id names its copy under
+ * `tour.<id>` and its mock.
  */
 export const CHAPTERS = ["offline", "mixed", "learning", "polish", "keyboard"] as const;
 
 export type ChapterId = (typeof CHAPTERS)[number];
 
-export const CHAPTER_ICONS: Record<ChapterId, LucideIcon> = {
-  offline: WifiOff,
-  mixed: Languages,
-  learning: History,
-  polish: PenLine,
-  keyboard: Keyboard,
+/**
+ * Columns each card spans in the three-column grid from `lg` up. Each row
+ * fills three columns: a narrow card beside a wide one, then three narrow.
+ */
+export const CHAPTER_SPANS: Record<ChapterId, 1 | 2> = {
+  offline: 1,
+  mixed: 2,
+  learning: 1,
+  polish: 1,
+  keyboard: 1,
 };
-
-export const backdropSrc = (id: ChapterId) => `/backdrops/tour-${id}-800.webp`;
 
 /**
  * Milliseconds each mock spends in a step before the next; a mock has
- * `length + 1` steps and replays whenever its chapter becomes active.
+ * `length + 1` steps and plays once its card scrolls into view.
  */
 export const MOCK_DELAYS: Record<ChapterId, readonly number[]> = {
   // network on → network off → dictation inserted

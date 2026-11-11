@@ -36,8 +36,9 @@ Three build-time variables, inlined into the bundle (`src/shared/config/env.ts`)
 
 `scripts/build-assets.mjs` derives every image from files already in the repository; nothing is fetched or hotlinked:
 
-- `public/backdrops/flowers-*.webp` and `public/og.jpg` from `assets/backdrops/pink-motion.jpg` ("Pink flowers with motion blur effect" by Raphael Nicolas, Unsplash License). The hero uses this photograph.
-- `public/backdrops/tour-<chapter>-800.webp`, one 4:5 crop per feature-tour chapter. Two chapters crop `gladiolus.jpg`; the other three use their own photograph in `assets/backdrops/`.
+- `public/backdrops/hillside-*.webp`, the hero photograph, from `assets/backdrops/misty-hillside.jpg`.
+- `public/backdrops/coastal-*.webp`, the one photograph behind every feature-tour card, from `assets/backdrops/coastal-blur.jpg`.
+- `public/og.jpg` from `assets/backdrops/pink-motion.jpg`.
 - `public/blog/<slug>/cover.webp`, a 4:3 cover for each post, from the same directory.
 - Every photograph is credited on `/credits/`. These files are separate from the desktop app's backdrop.
 - `public/brand/*.png`, and the mark composited onto `public/og.jpg`, from `apps/desktop/resources/icon.png`; `public/brand/feishu.png` is copied from `apps/desktop/ui/shared/assets/feishu.png` (source and terms in that directory's README).

@@ -138,7 +138,7 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 		a.state.Clipboard.Error = ""
 		a.configureClipboard(before.Clipboard)
 	}
-	if a.clipboard != nil && (next.HoldKey != before.HoldKey || next.TranslateKey != before.TranslateKey) {
+	if a.clipboard != nil && (next.HoldKey != before.HoldKey || next.SecondHoldKey != before.SecondHoldKey || next.TranslateKey != before.TranslateKey) {
 		a.registerClipboardShortcut()
 	}
 	if next.LaunchAtLogin != before.LaunchAtLogin {
@@ -196,12 +196,30 @@ func holdKeyObservable(key application.HoldKey) bool {
 
 // SetHoldKey persists the hold-to-talk key and restarts its listener.
 func (x actions) SetHoldKey(key application.HoldKey) {
-	if !holdKeyObservable(key) || application.HoldKeysConflict(key, x.a.prefs.TranslateKey) || x.a.clipboardKeyConflicts(key) {
+	if !holdKeyObservable(key) || application.HoldKeysConflict(key, x.a.prefs.TranslateKey) || application.HoldKeysConflict(key, x.a.prefs.SecondHoldKey) || x.a.clipboardKeyConflicts(key) {
 		return
 	}
 	x.a.core.Cancel()
 	x.UpdatePreferences(func(p *application.Preferences) {
 		p.ChooseHoldKey(key)
+	})
+	x.a.startHoldKey()
+}
+
+// SetSecondHoldKey persists the optional second dictation shortcut and
+// restarts the listener. HoldOff disables it.
+func (x actions) SetSecondHoldKey(key application.HoldKey) {
+	if key != application.HoldOff {
+		if !holdKeyObservable(key) {
+			return
+		}
+		if application.HoldKeysConflict(key, x.a.prefs.HoldKey) || application.HoldKeysConflict(key, x.a.prefs.TranslateKey) || x.a.clipboardKeyConflicts(key) {
+			return
+		}
+	}
+	x.a.core.Cancel()
+	x.UpdatePreferences(func(p *application.Preferences) {
+		p.ChooseSecondHoldKey(runtime.GOOS, key)
 	})
 	x.a.startHoldKey()
 }
@@ -212,7 +230,7 @@ func (x actions) SetTranslateKey(key application.HoldKey) {
 		if application.DefaultTranslateKey(runtime.GOOS) == "" {
 			return
 		}
-	} else if !holdKeyObservable(key) || application.HoldKeysConflict(key, x.a.prefs.HoldKey) || x.a.clipboardKeyConflicts(key) {
+	} else if !holdKeyObservable(key) || application.HoldKeysConflict(key, x.a.prefs.HoldKey) || application.HoldKeysConflict(key, x.a.prefs.SecondHoldKey) || x.a.clipboardKeyConflicts(key) {
 		return
 	}
 	x.a.core.Cancel()

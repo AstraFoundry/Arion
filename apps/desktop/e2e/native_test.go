@@ -130,9 +130,9 @@ func nonblank(img image.Image) bool {
 }
 
 // Dictating in a fresh profile shows the overlay without taking focus and
-// an explicit failure: PERMISSION_DENIED without Accessibility trust (before
-// any microphone use, DSK-A01), otherwise MODEL_MISSING since no model is
-// provisioned in the isolated profile (DSK-09).
+// an explicit failure: MODEL_MISSING since no model is provisioned in the
+// isolated profile (DSK-09), which is found before the microphone opens; or
+// PERMISSION_DENIED without Accessibility trust (DSK-A01).
 func TestOverlayExplainsFailure(t *testing.T) {
 	var overlay *mygo.Window
 	eventually(t, "overlay created", func() bool { overlay = app.Windows()["overlay"]; return overlay != nil })
@@ -146,9 +146,12 @@ func TestOverlayExplainsFailure(t *testing.T) {
 	eventually(t, "explicit failure "+string(want), func() bool {
 		var failure arion.ErrorCode
 		app.Update(func(s *arion.State) { failure = s.Dictation.Failure })
-		// A headless CI desktop may have no foreground editor: that is an
-		// explicit TARGET_UNSUPPORTED, also before any microphone use.
-		return failure == want || (want == arion.CodeModelMissing && failure == arion.CodeTargetUnsupported)
+		// The model check runs first, so an untrusted profile without a model
+		// reports MODEL_MISSING before it reaches the permission check. A
+		// headless CI desktop may have no foreground editor: that is an
+		// explicit TARGET_UNSUPPORTED.
+		return failure == want || failure == arion.CodeModelMissing ||
+			(want == arion.CodeModelMissing && failure == arion.CodeTargetUnsupported)
 	})
 	eventually(t, "overlay shown", overlay.IsVisible)
 	if overlay.IsFocused() {

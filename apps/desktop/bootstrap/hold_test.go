@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"testing"
+	"time"
 
 	"arion.local/core/application"
 	"arion.local/core/domain"
@@ -148,12 +149,13 @@ func TestChangingShortcutCancelsPreparationBeforeListenerReplacement(t *testing.
 		a.core.Start()
 		(actions{a}).SetHoldKey("ctrl+space")
 		(actions{a}).SetTranslateKey("ctrl+f8")
-		if !a.core.Snapshot().Active || a.prefs.HoldKey != "" || a.prefs.TranslateKey != "" {
+		(actions{a}).SetSecondHoldKey("ctrl+f9")
+		if !a.core.Snapshot().Active || a.prefs.HoldKey != "" || a.prefs.TranslateKey != "" || a.prefs.SecondHoldKey != "" {
 			t.Fatal("unsupported host accepted a shortcut")
 		}
 		return
 	}
-	for _, translate := range []bool{false, true} {
+	for _, which := range []string{"hold", "translate", "second"} {
 		a := readinessApp(t)
 		p := &multiHoldPlatform{}
 		a.platform = p
@@ -166,13 +168,16 @@ func TestChangingShortcutCancelsPreparationBeforeListenerReplacement(t *testing.
 		}
 		// UI state has not received the preparing event yet. Cancellation must
 		// use the coordinator rather than a stale rendered snapshot.
-		if translate {
+		switch which {
+		case "translate":
 			(actions{a}).SetTranslateKey("ctrl+f8")
-		} else {
+		case "second":
+			(actions{a}).SetSecondHoldKey("f8")
+		default:
 			(actions{a}).SetHoldKey("ctrl+space")
 		}
 		if a.core.Snapshot().Active {
-			t.Fatal("old shortcut session survived replacement")
+			t.Fatalf("%s shortcut session survived replacement", which)
 		}
 	}
 }
@@ -232,8 +237,66 @@ func TestShortcutListenerRetryPreservesAssignments(t *testing.T) {
 	if !a.state.Hold.Active || a.state.Hold.Failure != "" || p.starts != 2 {
 		t.Fatal("retry did not recover shared listening")
 	}
-	if a.state.Preferences.HoldKey != before.HoldKey || a.state.Preferences.TranslateKey != before.TranslateKey ||
+	if a.state.Preferences.HoldKey != before.HoldKey || a.state.Preferences.SecondHoldKey != before.SecondHoldKey || a.state.Preferences.TranslateKey != before.TranslateKey ||
 		a.state.Preferences.PreviousTranslateKey != before.PreviousTranslateKey || a.state.Preferences.TranslateLanguage != before.TranslateLanguage {
 		t.Fatal("retry changed shortcut preferences")
+	}
+}
+
+func TestSecondHoldKeyRegistersWithPrimaryAndStartsDictation(t *testing.T) {
+	p := &multiHoldPlatform{}
+	a := readinessApp(t)
+	a.platform = p
+	a.prefStore = settings.Store{Path: filepath.Join(t.TempDir(), "preferences.json")}
+	a.prefs = application.DefaultPreferences(runtime.GOOS)
+	a.prefs.ChooseSecondHoldKey(runtime.GOOS, "f8")
+	a.state.Preferences = a.prefs
+	a.state.Model.State = arion.ModelReady
+	a.startHoldKey()
+	if application.DefaultHoldKey(runtime.GOOS) == "" {
+		(actions{a}).SetSecondHoldKey("f9")
+		if p.starts != 0 || len(p.keys) != 0 || a.state.Preferences.SecondHoldKey == "f9" {
+			t.Fatalf("unsupported host registered a second shortcut: %v %+v", p.keys, a.state.Preferences)
+		}
+		return
+	}
+	want := a.prefs.HoldAssignments()
+	if len(want) != 3 || len(p.keys) != len(want) || p.keys[0] != want[0] || p.keys[1] != "f8" || p.keys[2] != want[2] {
+		t.Fatalf("listener keys %v, want %v", p.keys, want)
+	}
+	a.onHoldKeyEvent("f8", holdkey.Down, time.Now())
+	if !a.state.Hold.Holding || a.isTranslating() || a.core.Snapshot().State != domain.Preparing || a.state.Hold.PressedKey != "f8" {
+		t.Fatal("second shortcut did not start dictation")
+	}
+	a.core.Cancel()
+	a.hold.Reset()
+	a.holdKey = ""
+	a.state.Hold.Holding = false
+	a.onHoldKeyEvent(a.prefs.HoldKey, holdkey.Down, time.Now())
+	if !a.state.Hold.Holding || a.isTranslating() || a.core.Snapshot().State != domain.Preparing {
+		t.Fatal("primary shortcut stopped dictating")
+	}
+	a.core.Cancel()
+	a.hold.Reset()
+	a.holdKey = ""
+	a.state.Hold.Holding = false
+	a.onHoldKeyEvent(a.prefs.TranslateKey, holdkey.Down, time.Now())
+	if !a.isTranslating() || a.core.Snapshot().State != domain.Preparing {
+		t.Fatal("translation shortcut did not translate")
+	}
+	starts := p.starts
+	before := a.state.Preferences
+	(actions{a}).SetSecondHoldKey(before.HoldKey)
+	(actions{a}).SetHoldKey("f8")
+	(actions{a}).SetTranslateKey("f8")
+	if a.state.Preferences.HoldKey != before.HoldKey || a.state.Preferences.SecondHoldKey != "f8" || a.state.Preferences.TranslateKey != before.TranslateKey {
+		t.Fatalf("conflict changed assignments: %+v", a.state.Preferences)
+	}
+	if p.starts != starts {
+		t.Fatal("rejected second shortcut replaced the listener")
+	}
+	(actions{a}).SetSecondHoldKey(application.HoldOff)
+	if a.state.Preferences.SecondHoldKey != application.HoldOff || len(p.keys) != 2 || p.keys[0] != before.HoldKey || p.keys[1] != before.TranslateKey {
+		t.Fatalf("disabling the second shortcut left it listening: %v %+v", p.keys, a.state.Preferences)
 	}
 }

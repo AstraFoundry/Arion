@@ -113,6 +113,10 @@ func (r *recorder) SetHoldKey(key runtime.HoldKey) {
 	r.call("hold:" + string(key))
 	r.state.Preferences.ChooseHoldKey(key)
 }
+func (r *recorder) SetSecondHoldKey(key runtime.HoldKey) {
+	r.call("second-hold:" + string(key))
+	r.state.Preferences.ChooseSecondHoldKey(platform.GOOS, key)
+}
 func (r *recorder) SetTranslateKey(key runtime.HoldKey) {
 	r.call("translate-hold:" + string(key))
 	r.state.Preferences.ChooseTranslateKey(platform.GOOS, key)
@@ -328,8 +332,14 @@ func TestMenuBarPanel(t *testing.T) {
 	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeightFor(store))
 	tt.SetSize(PanelWidth, PanelHeightFor(store))
 	settle(tt)
-	if !hasText(tt, copy.For(copy.English).Text(copy.StatusReady)) {
-		t.Fatalf("idle panel: %q", tt.Texts())
+	// Ready needs no word; the header keeps only the brand and the ? button.
+	for _, key := range []copy.Key{copy.StatusListening, copy.StatusPermission, copy.StatusTranscribing, copy.StatusPreparing, copy.StatusModelFailed} {
+		if hasText(tt, copy.For(copy.English).Text(key)) {
+			t.Fatalf("idle panel shows a state: %q", tt.Texts())
+		}
+	}
+	if _, ok := tt.Find(copy.For(copy.English).Text(copy.FeedbackHelp)); !ok {
+		t.Fatalf("idle panel lacks the feedback button: %q", tt.Texts())
 	}
 	if hasText(tt, copy.For(copy.English).Text(copy.ModelNameGeneric)) {
 		t.Fatalf("ready panel shows the model, which settings owns: %q", tt.Texts())
@@ -1474,7 +1484,7 @@ func TestWindowsKeyboardSettings(t *testing.T) {
 					t.Fatalf("Windows setup missing %s: %q", key, tt.Texts())
 				}
 			}
-			for _, key := range []copy.Key{copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdAccent, copy.KbdEmojiSuggestions, copy.KbdSwitchLanguage} {
+			for _, key := range []copy.Key{copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdTextColor, copy.KbdAccent, copy.KbdEmojiSuggestions, copy.KbdSwitchLanguage} {
 				if !hasText(tt, messages.Text(key)) {
 					t.Fatalf("Windows keyboard setting missing %s", key)
 				}
@@ -1509,6 +1519,9 @@ func TestWindowsKeyboardSettings(t *testing.T) {
 			if state.Preferences.Keyboard.PageSize != 9 {
 				t.Fatalf("Windows page-size preference was not saved: %+v", state.Preferences.Keyboard)
 			}
+			// Leave space below the language picker for its popup.
+			tt.Scroll(SettingsWidth*0.7, SettingsHeight/2, 0, 240)
+			settle(tt)
 			if err := tt.Click(messages.Text(copy.KbdSwitchLanguageKeys)); err != nil {
 				t.Fatal(err)
 			}
@@ -1522,6 +1535,9 @@ func TestWindowsKeyboardSettings(t *testing.T) {
 			}
 			reveal(t, tt, messages.Text(copy.KbdSwitchCapsLockDetail))
 			snapshot(t, tt, "settings-windows-language-switch-caps-"+string(language))
+			// Install sits above the Keys group; scroll back to it.
+			tt.Scroll(SettingsWidth*0.7, SettingsHeight/2, 0, -2400)
+			settle(tt)
 			if err := tt.Click(messages.Text(copy.IMEInstall)); err != nil {
 				t.Fatal(err)
 			}
@@ -1615,6 +1631,34 @@ func TestLanguageSwitchKey(t *testing.T) {
 	}
 }
 
+func TestKeyboardTextColorReturnsToAutomatic(t *testing.T) {
+	state, _, store := fixture()
+	state.InputMethod = runtime.InputMethodSelected
+	state.Preferences.Keyboard.Accent = runtime.AccentGraphite
+	state.Preferences.Keyboard.Appearance = runtime.AppearanceLight
+	state.Preferences.Keyboard.TextColor = runtime.TextWhite
+	messages := store.Copy()
+	page := settings.NewPage()
+	page.Section = settings.Keyboard
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	settle(tt)
+
+	// The manual color matches the light recommendation. Automatic still
+	// needs to clear it so dark mode can choose a different color.
+	white := messages.Text(copy.KbdTextColorWhite)
+	if err := tt.Click(white); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if err := tt.Click(messages.AutomaticTextColor(white)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if k := state.Preferences.Keyboard; k.TextColor != "" || k.ActiveTextColor(true) != runtime.TextBlack {
+		t.Fatalf("automatic text color was not restored: %+v", k)
+	}
+}
+
 func TestKeyboardSettings(t *testing.T) {
 	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
 		t.Run(string(language), func(t *testing.T) {
@@ -1626,7 +1670,7 @@ func TestKeyboardSettings(t *testing.T) {
 			page.Section = settings.Keyboard
 			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 			settle(tt)
-			for _, key := range []copy.Key{copy.IMESelected, copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdAccent,
+			for _, key := range []copy.Key{copy.IMESelected, copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdTextColor, copy.KbdAccent,
 				copy.KbdEmojiSuggestions, copy.KbdSwitchLanguage} {
 				if !hasText(tt, messages.Text(key)) {
 					t.Fatalf("keyboard section missing %s: %q", key, tt.Texts())
@@ -1673,6 +1717,24 @@ func TestKeyboardSettings(t *testing.T) {
 			if state.Preferences.Keyboard.CandidateSize != runtime.CandidateLarge {
 				t.Fatalf("size not chosen: %+v", state.Preferences.Keyboard)
 			}
+			// Highlight text follows the fill's recommendation, black on yellow,
+			// until the user chooses.
+			black, white := messages.Text(copy.KbdTextColorBlack), messages.Text(copy.KbdTextColorWhite)
+			if k := state.Preferences.Keyboard; k.TextColor != "" || !hasText(tt, messages.AutomaticTextColor(black)) {
+				t.Fatalf("text color should recommend black: %+v %q", k, tt.Texts())
+			}
+			if err := tt.Click(messages.AutomaticTextColor(black)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			snapshot(t, tt, "settings-keyboard-text-color-menu-"+string(language))
+			if err := tt.Click(white); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if k := state.Preferences.Keyboard; k.TextColor != runtime.TextWhite || k.Highlight(false).Text != "#ffffff" {
+				t.Fatalf("white text not chosen: %+v", k)
+			}
 			if err := tt.Click(messages.Text(copy.KbdAccentYellow)); err != nil {
 				t.Fatal(err)
 			}
@@ -1684,6 +1746,10 @@ func TestKeyboardSettings(t *testing.T) {
 			settle(tt)
 			if state.Preferences.Keyboard.Accent != runtime.AccentBlue {
 				t.Fatalf("accent not chosen: %+v", state.Preferences.Keyboard)
+			}
+			// A new fill clears the choice and takes its recommendation.
+			if k := state.Preferences.Keyboard; k.TextColor != "" || !hasText(tt, messages.AutomaticTextColor(white)) {
+				t.Fatalf("blue should recommend white: %+v %q", k, tt.Texts())
 			}
 			// Custom starts from the current fill and adds a color well.
 			if err := tt.Click(messages.Text(copy.KbdAccentBlue)); err != nil {

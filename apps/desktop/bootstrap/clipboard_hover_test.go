@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"arion.local/core/domain"
+	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"bytes"
 	"github.com/egoist/mygo"
@@ -33,6 +34,11 @@ func TestClipboardHoverDismissalDropsInFlightImage(t *testing.T) {
 	payload := domain.ClipPayload{Kind: domain.ClipImage, PNG: []byte("invalid image")}
 	item := domain.Clip{ID: payload.ID(), Payload: payload}
 	a.state.Clipboard.Items = []arion.Clip{item}
+	testClipboardHoverDismissal(t, a, item)
+}
+
+func testClipboardHoverDismissal(t *testing.T, a *App, item domain.Clip) {
+	t.Helper()
 	// The window is only an identity sentinel; no native operation may run after dismissal.
 	a.clipboardWin = &mygo.Window{}
 	cc := a.clipboard
@@ -45,6 +51,14 @@ func TestClipboardHoverDismissalDropsInFlightImage(t *testing.T) {
 	}
 	a.dismissClipboardPreview()
 	a.clipboardWin = nil
+	finishClipboardHover(t, a)
+	if cc.previewWindow != nil || cc.previewID != "" || cc.previewLoading || a.resourceJobs.Load() != 0 || a.state.Clipboard.Error != "" {
+		t.Fatal("dismissed preview retained work or published stale failure")
+	}
+}
+
+func finishClipboardHover(t *testing.T, a *App) {
+	t.Helper()
 	select {
 	case <-a.queueReady:
 		a.queueMu.Lock()
@@ -57,7 +71,23 @@ func TestClipboardHoverDismissalDropsInFlightImage(t *testing.T) {
 	case <-time.After(5 * time.Second):
 		t.Fatal("preview worker did not complete")
 	}
-	if cc.previewWindow != nil || cc.previewID != "" || cc.previewLoading || a.resourceJobs.Load() != 0 || a.state.Clipboard.Error != "" {
-		t.Fatal("dismissed preview retained work or published stale failure")
+}
+
+func TestClipboardHoverPreviewFailureIsSilent(t *testing.T) {
+	for _, existing := range []copy.Key{"", copy.ClipboardPreferencesSaveFailed, copy.ClipboardPasteFailed} {
+		t.Run(string(existing), func(t *testing.T) {
+			a := clipboardFixture(t)
+			p := domain.ClipPayload{Kind: domain.ClipImage, PNG: []byte("invalid image")}
+			item := domain.Clip{ID: p.ID(), Payload: p}
+			a.state.Clipboard.Items = []domain.Clip{item}
+			a.state.Clipboard.Error = existing
+			a.clipboardWin = &mygo.Window{}
+			a.clipboard.previewID = item.ID
+			a.prepareClipboardPreview()
+			finishClipboardHover(t, a)
+			if a.clipboard.previewWindow != nil || a.clipboard.previewLoading || a.resourceJobs.Load() != 0 || a.state.Clipboard.Error != existing {
+				t.Fatal("failed hover displayed a window or changed an unrelated error")
+			}
+		})
 	}
 }

@@ -20,7 +20,7 @@ Canonical path: [`.claude/skills/find-simplifications/`](../../.claude/skills/fi
 
 | Skill | Use when |
 |-------|----------|
-| `write-blog-post` | Writing or revising a site blog post, including release and changelog posts across a version range: collecting facts from tags, the changelog, specs and copy catalogs, voice, the three locales, real UI screenshots, credits and checks. |
+| `write-blog-post` | Writing or revising a site blog post, including release and changelog posts across a version range: collecting facts from tags, the changelog, specs and copy catalogs, voice, the three locales, animated mock recordings and real UI renders, credits and checks. |
 
 Canonical path: [`.claude/skills/write-blog-post/`](../../.claude/skills/write-blog-post/) (`SKILL.md`). The format and build rules it builds on stay in [the blog conventions](../frontend/blog.md).
 

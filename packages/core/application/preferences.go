@@ -30,7 +30,11 @@ type Preferences struct {
 	UILanguage          UILanguage           `json:"uiLanguage"`
 	OnboardingCompleted bool                 `json:"onboardingCompleted"`
 	HoldKey             HoldKey              `json:"holdKey"`
-	TranslateKey        HoldKey              `json:"translateKey,omitempty"`
+	// SecondHoldKey is an optional second dictation shortcut. It uses the
+	// same hold and tap gesture as HoldKey and can listen at the same time.
+	// HoldOff disables it. Profiles written before it existed stay off.
+	SecondHoldKey HoldKey `json:"secondHoldKey,omitempty"`
+	TranslateKey  HoldKey `json:"translateKey,omitempty"`
 	// PreviousTranslateKey retains the last assignment while translation is off.
 	PreviousTranslateKey HoldKey                    `json:"previousTranslateKey,omitempty"`
 	TranslateLanguage    domain.TranslationLanguage `json:"translateLanguage,omitempty"`
@@ -125,7 +129,8 @@ const (
 func DefaultPreferences(platform string) Preferences {
 	return Preferences{
 		Version: PreferencesVersion, UILanguage: English, HoldKey: DefaultHoldKey(platform),
-		TranslateKey: DefaultTranslateKey(platform), TranslateLanguage: domain.TargetEnglish,
+		SecondHoldKey: DefaultSecondHoldKey(platform),
+		TranslateKey:  DefaultTranslateKey(platform), TranslateLanguage: domain.TargetEnglish,
 		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, Punctuation: domain.PunctuationSmart, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 		Keyboard:  DefaultKeyboardPreferences(),
@@ -159,6 +164,10 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 		p.HoldKey = defaults.HoldKey
 		repaired = append(repaired, "holdKey")
 	}
+	if !knownSecondHoldKey(platform, p.SecondHoldKey) {
+		p.SecondHoldKey = defaults.SecondHoldKey
+		repaired = append(repaired, "secondHoldKey")
+	}
 	if p.PreviousTranslateKey != "" && (!knownHoldKey(platform, p.PreviousTranslateKey) || p.PreviousTranslateKey == HoldOff) {
 		p.PreviousTranslateKey = ""
 		repaired = append(repaired, "previousTranslateKey")
@@ -170,6 +179,9 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 	if HoldKeysConflict(p.TranslateKey, p.HoldKey) {
 		p.PreviousTranslateKey = p.TranslateKey
 		p.TranslateKey = HoldOff
+	}
+	if HoldKeysConflict(p.SecondHoldKey, p.HoldKey) || HoldKeysConflict(p.SecondHoldKey, p.TranslateKey) {
+		p.SecondHoldKey = defaults.SecondHoldKey
 	}
 	if !p.TranslateLanguage.Known() {
 		p.TranslateLanguage = defaults.TranslateLanguage

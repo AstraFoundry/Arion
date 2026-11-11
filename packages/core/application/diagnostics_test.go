@@ -48,7 +48,7 @@ func TestDiagnosticsObservePipelineBoundaries(t *testing.T) {
 	final := events.wait(t, kindIs(contracts.CommitResultReady))
 	observer.mu.Lock()
 	defer observer.mu.Unlock()
-	want := []ports.DiagnosticStage{ports.DiagnosticTarget, ports.DiagnosticRecognizer, ports.DiagnosticCapture, ports.DiagnosticFinish, ports.DiagnosticCommit}
+	want := []ports.DiagnosticStage{ports.DiagnosticRecognizer, ports.DiagnosticCapture, ports.DiagnosticTarget, ports.DiagnosticFinish, ports.DiagnosticCommit}
 	if len(observer.entries) != len(want) {
 		t.Fatalf("diagnostics %+v", observer.entries)
 	}
@@ -71,7 +71,7 @@ func TestDiagnosticsPreserveTargetFailure(t *testing.T) {
 	events.wait(t, kindIs(contracts.ErrorOccurred))
 	observer.mu.Lock()
 	defer observer.mu.Unlock()
-	if len(observer.entries) != 1 || observer.entries[0].Failure != domain.CodeTargetChanged {
+	if len(observer.entries) != 3 || observer.entries[0].Stage != ports.DiagnosticRecognizer || observer.entries[1].Stage != ports.DiagnosticCapture || observer.entries[2].Stage != ports.DiagnosticTarget || observer.entries[2].Failure != domain.CodeTargetChanged {
 		t.Fatalf("diagnostics %+v", observer.entries)
 	}
 	if target.commits.Load() != 0 {

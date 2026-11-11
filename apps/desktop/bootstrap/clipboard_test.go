@@ -308,8 +308,9 @@ func TestClipboardShortcutConflictsRejectVoiceAssignments(t *testing.T) {
 	a.state.Preferences = a.prefs
 	before := a.prefs
 	actions{a}.SetHoldKey("ctrl+shift+k")
+	actions{a}.SetSecondHoldKey("ctrl+shift+k")
 	actions{a}.SetTranslateKey("ctrl+shift+k")
-	if a.prefs.HoldKey != before.HoldKey || a.prefs.TranslateKey != before.TranslateKey || a.prefs.Clipboard != before.Clipboard {
+	if a.prefs.HoldKey != before.HoldKey || a.prefs.SecondHoldKey != before.SecondHoldKey || a.prefs.TranslateKey != before.TranslateKey || a.prefs.Clipboard != before.Clipboard {
 		t.Fatal("clipboard shortcut was assigned to a voice action")
 	}
 }

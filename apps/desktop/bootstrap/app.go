@@ -42,6 +42,7 @@ import (
 	"arion.local/desktop/internal/center"
 	productnotifications "arion.local/desktop/internal/productnotifications"
 	uiapp "arion.local/desktop/ui/app"
+	"arion.local/desktop/ui/entities/dictation"
 	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/typography"
@@ -686,7 +687,7 @@ func (a *App) apply(e contracts.Event) {
 		if e.Error == "" && e.Outcome != contracts.NotApplied {
 			a.polishNoteTold(d.PolishNote)
 		}
-		d.Pasted = a.core.Snapshot().Mode == domain.ShortcutMode && (runtime.GOOS == "darwin" || a.state.Preferences.Delivery == application.DeliveryClipboard) && e.Outcome != contracts.NotApplied && e.Outcome != contracts.Copied
+		d.Pasted = dictation.ShortcutCommitPasted(a.core.Snapshot().Mode, e.Outcome)
 		setState(e.State)
 	case contracts.ErrorOccurred:
 		if e.Error == domain.CodeSessionBusy {

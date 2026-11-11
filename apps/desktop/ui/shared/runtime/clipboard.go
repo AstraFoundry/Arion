@@ -36,6 +36,9 @@ type ClipboardFile struct {
 type ClipboardMeta struct {
 	Files     []ClipboardFile
 	Thumbnail *ui.Bitmap
+	// ThumbnailRevision tracks the source file state and access credential.
+	// Direct image resources are immutable and use their existing content ID.
+	ThumbnailRevision [32]byte
 }
 
 type Clipboard struct {

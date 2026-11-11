@@ -14,7 +14,7 @@ func TestModifierPrefixGivesPriorityToChord(t *testing.T) {
 				if platform == "windows" {
 					solo, chord = application.HoldRightCtrl, "ctrl+1"
 				}
-				keys := []application.HoldKey{solo, chord}
+				keys := []application.HoldKey{solo, chord, "f8"}
 				if reverse {
 					keys[0], keys[1] = keys[1], keys[0]
 				}

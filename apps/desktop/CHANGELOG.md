@@ -1,3 +1,31 @@
+## 0.1.5
+
+### English
+
+Update for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Add an optional second dictation shortcut in Settings › Dictation.
+- Start capturing speech earlier during dictation setup and keep the end of a long transcript visible in the dictation overlay.
+- Explain why cloud polishing fell back to the original transcript and add an opt-in reasoning setting for models that support it.
+- Choose the highlighted candidate's text color or let Arion recommend a color based on contrast.
+- Keep copied files out of clipboard history until file history is enabled.
+- On Windows, send a clean Ctrl+V when delivering text through the clipboard and label the result as pasted.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable. Model weights download separately. Multi-device sync, Windows edit-learning, clean-machine acceptance, production old-to-new update acceptance, and real-service cloud and translation acceptance remain open. This tag stages the release and opens a GitHub draft; it does not publish the stable update channel. See RELEASE-STATUS.md and SHA256SUMS.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的更新版本。
+
+- 在「设置 › 听写」中可添加第二个听写快捷键。
+- 在听写初始化时更早开始采集语音，并在听写浮窗中持续显示长转写的末尾。
+- 云端润色回退到原始转写时会说明原因，并为支持推理的模型提供可选的推理开关。
+- 可自选高亮候选的文字颜色，也可采用 Arion 根据对比度推荐的颜色。
+- 开启文件历史记录后，复制的文件才会进入剪贴板历史。
+- Windows 通过剪贴板交付文本时会发送独立的 Ctrl+V，并将结果标记为「已粘贴」。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证。Windows 仍无发布者签名。模型权重单独下载。多设备同步、Windows 纠错学习、全新机器验收、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。此标签会暂存发布并创建 GitHub 草稿，不会发布稳定更新渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.4
 
 ### English
