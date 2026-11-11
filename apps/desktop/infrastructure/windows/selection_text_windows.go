@@ -128,7 +128,7 @@ func textSelection(text *historyCOM) (string, bool, error) {
 		return "", false, domain.Fail(domain.CodeTargetUnsupported, "selection unavailable")
 	}
 	defer rng.release()
-	var bstr uintptr
+	var bstr *uint16
 	if !historyOK(rng.call(12, ^uintptr(0), uintptr(unsafe.Pointer(&bstr)))) {
 		freeBSTR(bstr)
 		return "", false, domain.Fail(domain.CodeTargetUnsupported, "selection unavailable")
@@ -136,21 +136,21 @@ func textSelection(text *historyCOM) (string, bool, error) {
 	return bstrString(bstr), false, nil
 }
 
-func bstrString(bstr uintptr) string {
-	if bstr == 0 {
+func bstrString(bstr *uint16) string {
+	if bstr == nil {
 		return ""
 	}
 	defer freeBSTR(bstr)
-	count, _, _ := selectionSysStringLen.Call(bstr)
+	count, _, _ := selectionSysStringLen.Call(uintptr(unsafe.Pointer(bstr)))
 	if count == 0 {
 		return ""
 	}
-	chars := unsafe.Slice((*uint16)(unsafe.Pointer(bstr)), count)
+	chars := unsafe.Slice(bstr, count)
 	return string(utf16.Decode(chars))
 }
 
-func freeBSTR(bstr uintptr) {
-	if bstr != 0 {
-		selectionSysFreeString.Call(bstr)
+func freeBSTR(bstr *uint16) {
+	if bstr != nil {
+		selectionSysFreeString.Call(uintptr(unsafe.Pointer(bstr)))
 	}
 }
