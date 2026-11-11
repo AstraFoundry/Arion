@@ -125,6 +125,15 @@ func Overview(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *St
 			return arrive(c, kit.Stat(c, tokens, s.icon, messages.Text(s.label), unit, figure(c, tokens, state, s.key, s.value, entering, i)), entering, i)
 		}
 	}
+	if total.Sessions == 0 {
+		// Nothing to total yet: the first-run card, and the vocabulary,
+		// which can be filled before the first dictation.
+		ui.Column(c).Gap(gap).Children(func() {
+			arrive(c, first(c, store, tokens, messages), entering, 0)
+			arrive(c, vocabulary(c, tokens, messages, store.State.Vocabulary, editVocabulary), entering, 1)
+		})
+		return
+	}
 	ui.Column(c).Gap(gap).Children(func() {
 		pair(c, stat(0), stat(1))
 		pair(c, stat(2), stat(3))
@@ -232,7 +241,7 @@ func vocabulary(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, entri
 			}
 		})
 		if len(entries) == 0 {
-			kit.Empty(c, tokens, messages.Text(copy.VocabEmpty))
+			kit.EmptyNote(c, tokens, messages.Text(copy.VocabEmptyTitle), messages.Text(copy.VocabEmpty))
 			return
 		}
 		ui.Column(c).Gap(10).Padding(4, 16, 16, 16).Children(func() {
