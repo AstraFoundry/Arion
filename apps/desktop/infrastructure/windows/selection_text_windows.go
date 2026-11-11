@@ -224,12 +224,12 @@ func rangeBounds(rng *historyCOM) (int, int, int, int, bool) {
 	if hr, _, _ := selectionSafeArrayUBound.Call(arr, 1, uintptr(unsafe.Pointer(&upper))); int32(hr) < 0 || int(upper-lower+1) < 4 {
 		return 0, 0, 0, 0, false
 	}
-	var data uintptr
-	if hr, _, _ := selectionSafeArrayAccess.Call(arr, uintptr(unsafe.Pointer(&data))); int32(hr) < 0 || data == 0 {
+	var data *float64
+	if hr, _, _ := selectionSafeArrayAccess.Call(arr, uintptr(unsafe.Pointer(&data))); int32(hr) < 0 || data == nil {
 		return 0, 0, 0, 0, false
 	}
 	defer selectionSafeArrayUnaccess.Call(arr)
-	values := unsafe.Slice((*float64)(unsafe.Pointer(data)), 4)
+	values := unsafe.Slice(data, 4)
 	left, top, width, height := values[0], values[1], values[2], values[3]
 	if width <= 0 || height <= 0 {
 		return 0, 0, 0, 0, false
