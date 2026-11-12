@@ -74,8 +74,12 @@ func TestEmbeddedNativeAdoption(t *testing.T) {
 	if err != nil || !bundle.Adopted {
 		t.Fatalf("adoption: %+v %+v %v", bundle, selection, err)
 	}
-	if Platform() == "darwin-arm64" && bundle.ID != "qwen3-asr-1.7b-gguf-q8" {
-		t.Fatalf("Apple silicon did not select speech.cpp GGUF: %+v", bundle)
+	if bundle.ID != "qwen3-asr-1.7b-gguf-q4k" {
+		t.Fatalf("platform did not select speech.cpp Q4_K: %+v", bundle)
+	}
+	artifact, ok := catalog.Artifact(bundle.Streaming)
+	if !ok || artifact.Files["model"].Member != "Qwen3-ASR-1.7B-Q4_K.gguf" {
+		t.Fatalf("adopted speech artifact is not Q4_K: %+v", artifact.Files)
 	}
 	for _, artifact := range catalog.Artifacts {
 		if artifact.Kind != "qwen3-asr-mlx" && artifact.Kind != "qwen3-asr-gguf" {

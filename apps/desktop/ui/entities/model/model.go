@@ -92,7 +92,7 @@ func PolishPhaseLabel(p runtime.Polish) copy.Key {
 // names never reach the interface.
 var names = map[string]copy.Key{
 	"qwen3-asr-1.7b-mlx-8bit": copy.ModelNameGeneric,
-	"qwen3-asr-1.7b-gguf-q8":  copy.ModelNameGeneric,
+	"qwen3-asr-1.7b-gguf-q4k": copy.ModelNameGeneric,
 }
 
 // NameKey is a bundle's user-facing name.

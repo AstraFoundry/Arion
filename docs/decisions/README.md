@@ -31,7 +31,7 @@ Write an ADR when the decision:
 - [017: Offline Pinyin keyboard in the macOS IMK host](017-offline-pinyin-keyboard.md) — local conversion, independent composition ownership and encrypted learning.
 - [018: Staged GGUF rewriting](018-staged-gguf-rewriting.md) — selected Qwen3.5-2B artifact, two-stage prompts and accepted delivery tradeoff.
 - [019: Update channels served by the Arion center](019-center-update-channels.md) — `stable`/`beta` manifests and downloads from `api.arion.astrafoundry.si`, staged by CI and published from the AstraFoundry admin; supersedes ADR 010's GitHub source.
-- [020: Native Qwen3-ASR workers](020-native-qwen-asr.md) — native speech.cpp Q8_0 with Metal on Apple silicon and CPU/Vulkan on Windows x64, with explicit adoption and separate acceptance; its macOS Intel commitment is superseded by ADR 021.
+- [020: Native Qwen3-ASR workers](020-native-qwen-asr.md) — native speech.cpp Q4_K with Metal on Apple silicon and CPU/Vulkan on Windows x64, with explicit adoption and separate acceptance; its macOS Intel commitment is superseded by ADR 021.
 - [021: Support macOS on Apple silicon only](021-apple-silicon-only-macos.md) — retires Intel macOS product support, CI and future release artifacts; Windows x64 remains in scope.
 - [022: Optional cloud polishing through Republic](022-cloud-polishing.md) — ChatGPT sign-in or an API key per provider, one active provider; amended by ADR 024 for shared context.
 - [023: Final-only polishing](023-final-only-polishing.md) — local and cloud rewriting both run once after the dictation key is released; segmentation stays, and no polished preview is shown during speech.

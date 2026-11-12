@@ -4,7 +4,7 @@ The macOS Intel support commitment below is superseded by [ADR 021](021-apple-si
 
 ## Decision
 
-Use Qwen3-ASR 1.7B as the recognition model. Supported platforms use the pinned speech.cpp implementation with the Q8_0 GGUF checkpoint. Apple silicon enables Metal and Accelerate; Windows x64 uses the source-built CPU worker or the separately verified Vulkan worker. The former Swift MLX affine 8-bit bundle is retained as historical provenance only and is not selectable on a supported platform; its quality and latency evidence does not transfer to speech.cpp.
+Use Qwen3-ASR 1.7B as the recognition model. Supported platforms use the pinned speech.cpp implementation with the Q4_K GGUF checkpoint (`Qwen3-ASR-1.7B-Q4_K.gguf`). This replaces the earlier Q8_0 file in the same repository revision. Apple silicon enables Metal and Accelerate; Windows x64 uses the source-built CPU worker or the separately verified Vulkan worker. The former Swift MLX affine 8-bit bundle is retained as historical provenance only and is not selectable on a supported platform; its quality and latency evidence does not transfer to speech.cpp.
 
 The application packages native executables, shader/runtime resources and dependency notices. It downloads only the platform's pinned model files, outside the application bundle. No Python interpreter, ONNX Runtime, sherpa-onnx, X-ASR model or old inference fallback is shipped. Historical benchmark archives retain their original implementations and results.
 
@@ -22,7 +22,7 @@ speech.cpp maps its per-request `prompt` option through `SPEECH_OPT_PROMPT` to t
 
 ## Adoption and acceptance
 
-The user explicitly adopted the speech.cpp Q8_0 bundle and retired the old stack, including the MLX platform default. A catalog bundle marked `adopted` is the default on its declared platform even before it has production pipeline measurements. This supersedes ADR 004 and MOD-04 for these native bundles only. It does not imply latency, quality, Windows or minimum-OS acceptance. Measured automatic ranking remains available for other catalogs. Known retired model overrides migrate to this platform default; unknown IDs remain explicit errors. Existing model caches are retained until explicit eviction.
+The adopted speech.cpp checkpoint is Q4_K (`qwen3-asr-1.7b-gguf-q4k`). It replaces the earlier Q8_0 bundle (`qwen3-asr-1.7b-gguf-q8`). The user explicitly adopted the speech.cpp bundle and retired the old stack, including the MLX platform default. A catalog bundle marked `adopted` is the default on its declared platform even before it has production pipeline measurements. This supersedes ADR 004 and MOD-04 for these native bundles only. It does not imply latency, quality, Windows or minimum-OS acceptance. Measured automatic ranking remains available for other catalogs. Known retired model overrides, including `qwen3-asr-1.7b-gguf-q8`, migrate to this platform default; unknown IDs remain explicit errors. Existing model caches are retained until explicit eviction.
 
 Completed native-worker and coordinator evaluations are recorded separately. Python MLX compute results are historical evidence, not native-package acceptance. Runtime replacement requires new evidence, including cancellation, stale-result rejection, tail preservation, offline loading and relocation.
 

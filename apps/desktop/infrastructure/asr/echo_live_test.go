@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-// TestLiveSpeechSurvivesHotwords runs the pinned speech.cpp Q8_0 worker. It is
+// TestLiveSpeechSurvivesHotwords runs the pinned speech.cpp Q4_K worker. It is
 // the local check that breath-level audio still reaches the model and that a
 // published transcript is not an ordered copy of the hotword list. Protocol
 // fixtures cover the echo shapes; this test does not claim hotword accuracy.

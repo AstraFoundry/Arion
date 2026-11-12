@@ -74,7 +74,7 @@ func TestWindowsPackagedSpeech(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	artifact, ok := catalog.Artifact("qwen3-asr-1.7b-gguf-q8")
+	artifact, ok := catalog.Artifact("qwen3-asr-1.7b-gguf-q4k")
 	if !ok {
 		t.Fatal("Windows recognition artifact is absent from the catalog")
 	}

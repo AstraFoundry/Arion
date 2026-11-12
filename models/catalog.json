@@ -92,7 +92,7 @@
       "conversion": "Upstream conversion; immutable revision a8379a2e2f9e313c9292cdf1af4055ab56d50d55. Native backend results require separate evaluation."
     },
     {
-      "id": "qwen3-asr-1.7b-gguf-q8",
+      "id": "qwen3-asr-1.7b-gguf-q4k",
       "purpose": "chunked-asr",
       "kind": "qwen3-asr-gguf",
       "runtime": {
@@ -103,8 +103,8 @@
         "format": "files",
         "url": "https://huggingface.co/sakasegawa/Qwen3-ASR-1.7B-GGUF/tree/81e2423d24073cdeeccb5951df16accc89e075a2",
         "release": "81e2423d24073cdeeccb5951df16accc89e075a2",
-        "sha256": "9e8094699c59b25b41ff20fbe35a63952e1b0edd02738f9d0285ad51d78440e8",
-        "sizeBytes": 2176109216,
+        "sha256": "dd9024c4bcdec6770c621f15874da563ca165e6932cd787cd3c3d05b4ebc9248",
+        "sizeBytes": 1159383712,
         "modelCard": "https://huggingface.co/sakasegawa/Qwen3-ASR-1.7B-GGUF",
         "repository": "sakasegawa/Qwen3-ASR-1.7B-GGUF"
       },
@@ -130,15 +130,15 @@
       },
       "files": {
         "model": {
-          "url": "https://huggingface.co/sakasegawa/Qwen3-ASR-1.7B-GGUF/resolve/81e2423d24073cdeeccb5951df16accc89e075a2/Qwen3-ASR-1.7B-Q8_0.gguf",
-          "member": "Qwen3-ASR-1.7B-Q8_0.gguf",
-          "sha256": "5f219b78a1d9c3b9e97da27708b36f8a0bc1bfc1650b541c0a6dbaf87c9a62d0",
-          "sizeBytes": 2176109216
+          "url": "https://huggingface.co/sakasegawa/Qwen3-ASR-1.7B-GGUF/resolve/81e2423d24073cdeeccb5951df16accc89e075a2/Qwen3-ASR-1.7B-Q4_K.gguf",
+          "member": "Qwen3-ASR-1.7B-Q4_K.gguf",
+          "sha256": "38f6f0ca89e51c4adee8313016a580b297f42753829b93fce7e820668bf4c8b7",
+          "sizeBytes": 1159383712
         }
       },
       "latinCase": "natural",
       "punctuation": true,
-      "quantization": "GGUF Q8_0 frontend, encoder, projector and decoder; distinct from MLX affine 8-bit",
+      "quantization": "GGUF Q4_K frontend, encoder, projector and decoder; distinct from MLX affine 8-bit",
       "conversion": "Upstream conversion; immutable revision 81e2423d24073cdeeccb5951df16accc89e075a2. Native backend results require separate evaluation."
     }
   ],
@@ -169,9 +169,9 @@
       "adopted": true
     },
     {
-      "id": "qwen3-asr-1.7b-gguf-q8",
-      "name": "Qwen3-ASR 1.7B GGUF Q8_0",
-      "streaming": "qwen3-asr-1.7b-gguf-q8",
+      "id": "qwen3-asr-1.7b-gguf-q4k",
+      "name": "Qwen3-ASR 1.7B GGUF Q4_K",
+      "streaming": "qwen3-asr-1.7b-gguf-q4k",
       "chunkMs": 20,
       "endpointSilenceMs": 800,
       "evaluations": [],
