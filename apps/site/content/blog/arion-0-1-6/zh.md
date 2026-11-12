@@ -27,7 +27,7 @@ imageAlt: Arion 深色的划词工具条，依次是 Claude、ChatGPT、Copy、A
 
 <embed-frame src="/blog/arion-0-1-6/stage.zh.html#capture" poster="./posters/capture.zh.webp" title="演示：按下快捷键就开口" ratio="16/10" caption="按住右 Option 立刻说话。草稿从第一个字开始，长草稿的末尾始终贴着胶囊的右边缘。模拟录屏，不会采集声音。"></embed-frame>
 
-缺少模型时，会话依然在打开麦克风之前就结束。准备失败或你取消时，排队的音频会直接丢弃、不做识别；目标是密码框时也一样。[^capture]
+缺少模型时，会话依然在打开麦克风之前就结束。准备失败、你取消，或目标是密码框时，排队的音频会直接丢弃。[^capture]
 
 同一次改动还修复了胶囊里的长草稿。中英文混排的长草稿，末尾会逐渐偏离右边缘，原因是 Arion 把单个字符的宽度和整行排版后的宽度混在一起计算。现在草稿末尾会一直贴着边缘。
 
@@ -53,7 +53,7 @@ imageAlt: Arion 深色的划词工具条，依次是 Claude、ChatGPT、Copy、A
 
 <embed-frame src="/blog/arion-0-1-6/stage.zh.html#files" poster="./posters/files.zh.webp" title="演示：打开「记录复制的文件」" ratio="16/10" caption="打开「记录复制的文件」并确认一次。历史只保存复制文件的引用，不会上传文件内容。模拟录屏。"></embed-frame>
 
-开关关闭时，已有的文件记录只是隐藏，不会删除。历史保存的是文件的引用而不是副本，macOS 可能会请求访问这些文件所在的文件夹。感谢 [@gavi102803](https://github.com/gavi102803) 的[这次改动](https://github.com/AstraFoundry/Arion/commit/9fba8413)。[^files]
+开关关闭时，已有的文件记录只是隐藏起来，仍在原处。历史存的是文件引用，因此 macOS 可能会请求访问这些文件所在的文件夹。感谢 [@gavi102803](https://github.com/gavi102803) 的[这次改动](https://github.com/AstraFoundry/Arion/commit/9fba8413)。[^files]
 
 ## Windows 上更干净的 Ctrl+V（0.1.5）
 
@@ -65,9 +65,9 @@ imageAlt: Arion 深色的划词工具条，依次是 Claude、ChatGPT、Copy、A
 
 <embed-frame src="/blog/arion-0-1-6/stage.zh.html#selection" poster="./posters/selection.zh.webp" title="演示：让 Claude 翻译选中的文字" ratio="16/10" caption="选中一句话，停在 Claude 上，选择「翻译成中文」。Claude 应用打开，提示词和选中的文字已经填好，等你发送。模拟录屏，不会向 Claude 发送任何内容。"></embed-frame>
 
-选择一个提示词后，Arion 会通过 `claude://` 打开 Claude，或通过 `codex://` 打开 ChatGPT，在本地对话里预先填好提示词和你选中的文字。发送由你来做，Arion 自己什么也不发。提示词是内置的英文指令，发给 Claude 的内容最多 14,000 个字符。划词操作默认关闭。可以在设置流程新增的最后一步「处理选中的文字」里打开，也可以在「设置 › 通用」里打开，并在那里选择 Claude、ChatGPT 或两者都用。
+选择一个提示词后，Arion 会通过 `claude://` 打开 Claude，或通过 `codex://` 打开 ChatGPT，在本地对话里预先填好提示词和你选中的文字，留给你自己发送。提示词是内置的英文指令，发给 Claude 的内容最多 14,000 个字符。划词操作默认关闭。可以在设置流程新增的最后一步「处理选中的文字」里打开，也可以在「设置 › 通用」里打开，并在那里选择 Claude、ChatGPT 或两者都用。
 
-Arion 读取选中的文字时不碰剪贴板：macOS 上用辅助功能，Windows 上用 UI Automation，从不模拟 Command-C。密码框不会出现工具条，选中的文字也不会写进日志。[^selection]
+选中的文字直接通过 macOS 的辅助功能或 Windows 的 UI Automation 读取，剪贴板保持原样。密码框会跳过工具条，选中的文字只留在内存里。[^selection]
 
 点 X 会打开停用菜单：「停用 1 小时」、在当前网站停用、在当前应用中停用，或「关闭划词操作」。
 
@@ -87,7 +87,7 @@ Arion 读取选中的文字时不碰剪贴板：macOS 上用辅助功能，Windo
 
 <embed-frame src="/blog/arion-0-1-6/stage.zh.html#thumbnails" poster="./posters/thumbnails.zh.webp" title="演示：剪贴板历史里的图片文件" ratio="16/10" caption="按 Command-Shift-V 打开剪贴板历史。复制的 beach.jpg 显示缩略图，指针停在上面显示大图。模拟录屏。"></embed-frame>
 
-这一项仍然是文件引用，选中后粘贴的是文件，和以前一样。读不出来的图片不显示缩略图，也不会报错。[^thumbnails]
+这一项仍然是文件引用，选中后粘贴的是文件，和以前一样。读不出来的图片会保留为普通的文件条目。[^thumbnails]
 
 ## 粘贴会等反应慢的 Windows 应用（0.1.6）
 
@@ -101,14 +101,8 @@ Arion 读取选中的文字时不碰剪贴板：macOS 上用辅助功能，Windo
 
 ## 其他修复（0.1.6）
 
-- 已保存的更新和当前安装的应用对不上时（比如在用磁盘映像重新安装之前就准备好的更新），不会再让听写快捷键和菜单栏按钮失效。Arion 会忘掉它，保持听写可用。[^update]
-- 一切正常时，菜单栏面板不再显示“Ready”；只有 Arion 没准备好时才显示状态。
-
-## 还没做到的事
-
-- 在 Windows 上，Arion 还无法判断选中的文字来自哪个应用或网站，所以停用菜单里没有按网站或按应用停用的选项。
-- Windows 上的粘贴改动已经通过了跨平台测试，但还没有在 Windows 11 的微信、QQ 或飞书里手动验证，所以 [Issue #110](https://github.com/AstraFoundry/Arion/issues/110) 仍然开着。
-- [0.1.1 里列出的未完成事项](/blog/arion-0-1-1/#还没做到的事)依然存在：多设备同步尚未推出，纠错学习只支持 macOS 原生编辑器，不支持 Intel Mac。
+- 已保存的更新和当前安装的应用对不上时（比如在用磁盘映像重新安装之前就准备好的更新），Arion 会直接丢掉这份更新，听写快捷键和菜单栏按钮照常可用。[^update]
+- 菜单栏面板只在 Arion 还没准备好时显示状态，正常时省去了“Ready”。
 
 每个版本的完整说明见[桌面端更新日志](https://github.com/AstraFoundry/Arion/blob/main/apps/desktop/CHANGELOG.md)。遇到问题，可以用「问题反馈」，也可以在 [GitHub Issues](https://github.com/AstraFoundry/Arion/issues) 提交，或者到 [Discord](https://discord.com/invite/72kh465mMm)、[飞书群](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444)找我们。
 
@@ -120,7 +114,7 @@ Arion 读取选中的文字时不碰剪贴板：macOS 上用辅助功能，Windo
 
 [^capture]: [规范 001：桌面输入](https://github.com/AstraFoundry/Arion/blob/main/specs/001-desktop-input.md)（`DSK-08`、`DSK-A01`）与[架构概览](https://github.com/AstraFoundry/Arion/blob/main/docs/project/architecture.md)中的 Start 步骤。
 
-[^polish]: [云端润色](https://github.com/AstraFoundry/Arion/blob/main/docs/project/cloud-polishing.md)。提示只说明问题的类别，从不包含你的文字。
+[^polish]: [云端润色](https://github.com/AstraFoundry/Arion/blob/main/docs/project/cloud-polishing.md)。提示只写明问题的类别，你的文字留在本机。
 
 [^textcolor]: [ADR 017：共享的离线拼音键盘](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/017-offline-pinyin-keyboard.md)。
 

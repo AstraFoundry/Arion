@@ -53,7 +53,7 @@ Settings › Dictation の **Dictation key** の横に **+** が加わりまし�
 
 <embed-frame src="/blog/arion-0-1-6/stage.ja.html#files" poster="./posters/files.ja.webp" title="デモ：Record copied files をオンにする" ratio="16/10" caption="Record copied files をオンにして一度だけ確認します。履歴にはコピーしたファイルへの参照が残り、ファイルの中身はアップロードされません。模擬録画です。"></embed-frame>
 
-スイッチがオフのあいだ、すでにあるファイルの記録は非表示になるだけで、削除はされません。履歴が持つのはファイルのコピーではなく参照で、macOS はファイルのあるフォルダーへのアクセスを求めることがあります。[@gavi102803](https://github.com/gavi102803) さん、[この変更](https://github.com/AstraFoundry/Arion/commit/9fba8413)をありがとうございます。[^files]
+スイッチがオフのあいだ、すでにあるファイルの記録は隠れたままで、もう一度オンにすれば戻ります。履歴が持つのはファイルへの参照なので、macOS はファイルのあるフォルダーへのアクセスを求めることがあります。[@gavi102803](https://github.com/gavi102803) さん、[この変更](https://github.com/AstraFoundry/Arion/commit/9fba8413)をありがとうございます。[^files]
 
 ## Windows の Ctrl+V をすっきり送る（0.1.5）
 
@@ -65,9 +65,9 @@ Settings › Dictation の **Dictation key** の横に **+** が加わりまし�
 
 <embed-frame src="/blog/arion-0-1-6/stage.ja.html#selection" poster="./posters/selection.ja.webp" title="デモ：選択したテキストの説明を Claude に頼む" ratio="16/10" caption="文を選択し、Claude にポインターを置いて Explain を選びます。Claude アプリが開き、プロンプトと選択したテキストが入力済みで、送信を待っています。模擬録画です。Claude には何も送っていません。"></embed-frame>
 
-プロンプトを選ぶと、Arion は `claude://` で Claude を、`codex://` で ChatGPT を開き、ローカルのチャットにプロンプトと選択したテキストを入れておきます。送信するのはあなたで、Arion 自身は何も送りません。プロンプトは組み込みの英語の指示で、Claude に渡す内容は最大 14,000 文字です。選択アクションは既定でオフです。セットアップに加わった最後のステップ **Act on selected text** か、Settings › General でオンにでき、そこで Claude、ChatGPT、またはその両方を選べます。
+プロンプトを選ぶと、Arion は `claude://` で Claude を、`codex://` で ChatGPT を開き、ローカルのチャットにプロンプトと選択したテキストを入れておきます。送信はあなたの手元で行います。プロンプトは組み込みの英語の指示で、Claude に渡す内容は最大 14,000 文字です。選択アクションは既定でオフです。セットアップに加わった最後のステップ **Act on selected text** か、Settings › General でオンにでき、そこで Claude、ChatGPT、またはその両方を選べます。
 
-Arion は選択されたテキストをクリップボードを使わずに読み取ります。macOS ではアクセシビリティ、Windows では UI Automation を使い、Command-C を送ることはありません。パスワード欄ではバーは出ず、選択したテキストはログに書き込まれません。[^selection]
+選択したテキストは macOS のアクセシビリティと Windows の UI Automation から直接読み取り、クリップボードには触れません。パスワード欄は飛ばし、選択したテキストはログに残しません。[^selection]
 
 X を押すと、バーを止めるメニューが開きます。**Disable for 1 hour**、いまのサイトで無効にする、いまのアプリで無効にする、**Turn off selection actions** です。
 
@@ -87,7 +87,7 @@ PNG、JPEG、GIF、WebP、BMP のファイルをコピーすると、クリッ�
 
 <embed-frame src="/blog/arion-0-1-6/stage.ja.html#thumbnails" poster="./posters/thumbnails.ja.webp" title="デモ：クリップボード履歴の画像ファイル" ratio="16/10" caption="Command-Shift-V でクリップボード履歴を開きます。コピーした beach.jpg にサムネイルが付き、ポインターを置くと大きく表示されます。模擬録画です。"></embed-frame>
 
-項目はこれまでどおりファイルへの参照で、選ぶとファイルが貼り付けられます。読み込めない画像にはサムネイルが出ず、エラーも出ません。[^thumbnails]
+項目はこれまでどおりファイルへの参照で、選ぶとファイルが貼り付けられます。読み込めない画像はそのまま通常の項目として残ります。[^thumbnails]
 
 ## 反応の遅い Windows アプリを待って貼り付ける（0.1.6）
 
@@ -101,14 +101,8 @@ WeChat の入力欄からテキストをコピーしたあと、次の音声入�
 
 ## そのほかの修正（0.1.6）
 
-- 保存済みのアップデートがインストール済みのアプリと合わなくなったとき（たとえばディスクイメージから入れ直す前に準備されていたもの）でも、音声入力キーとメニューバーのボタンが効かなくなることはなくなりました。Arion はそれを忘れ、音声入力を使える状態に保ちます。[^update]
-- すべて正常なとき、メニューバーのパネルに「Ready」と表示しなくなりました。状態を表示するのは、Arion の準備ができていないときだけです。
-
-## まだできていないこと
-
-- Windows では、選択したテキストがどのアプリやサイトのものかをまだ判別できないため、無効化のメニューにサイトやアプリの項目はありません。
-- Windows の貼り付けの変更はプラットフォームに依存しないテストを通っていますが、Windows 11 の WeChat、QQ、Feishu ではまだ手で確かめていないため、[Issue #110](https://github.com/AstraFoundry/Arion/issues/110) は開いたままです。
-- [0.1.1 で挙げた未完了の項目](/blog/arion-0-1-1/#まだできていないこと)は引き続き残っています。複数デバイスの同期はまだなく、修正の学習は macOS のネイティブエディターだけで、Intel Mac には対応していません。
+- 保存済みのアップデートがインストール済みのアプリと合わなくなったとき（たとえばディスクイメージから入れ直す前に準備されていたもの）は、そのアップデートを破棄し、音声入力キーとメニューバーのボタンをそのまま使える状態に保ちます。[^update]
+- メニューバーのパネルは準備中のときだけ状態を表示し、通常時の「Ready」は省きました。
 
 各バージョンの詳しい内容は[デスクトップ版の変更履歴](https://github.com/AstraFoundry/Arion/blob/main/apps/desktop/CHANGELOG.md)にあります。問題が起きたら **Report a problem** を使うか、[GitHub Issues](https://github.com/AstraFoundry/Arion/issues) に報告するか、[Discord](https://discord.com/invite/72kh465mMm) や [Feishu](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444) で声をかけてください。
 

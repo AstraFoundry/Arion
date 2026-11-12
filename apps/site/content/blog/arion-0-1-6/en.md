@@ -19,7 +19,7 @@ Settings › Dictation now has a **+** beside **Dictation key**. Click it, press
 
 <embed-frame src="/blog/arion-0-1-6/stage.en.html#shortcut" poster="./posters/shortcut.en.webp" title="Demo: adding a second dictation key" ratio="16/10" caption="Clicking + beside Dictation key and pressing Right Command. Right Option and Right Command now both start dictation. A mock recording."></embed-frame>
 
-You can add one extra key, not more. A key that another shortcut already uses is rejected.[^shortcut]
+You can add one extra key. A key that another shortcut already uses is rejected.[^shortcut]
 
 ## The microphone opens first (0.1.5)
 
@@ -53,7 +53,7 @@ Clipboard history now records copied files only when you turn on **Record copied
 
 <embed-frame src="/blog/arion-0-1-6/stage.en.html#files" poster="./posters/files.en.webp" title="Demo: turning on Record copied files" ratio="16/10" caption="Turning on Record copied files and confirming once. History keeps references to copied files; their contents are not uploaded. A mock recording."></embed-frame>
 
-File records you already had are hidden while the switch is off, not deleted. History keeps references to the files rather than copies, and macOS may ask for access to the folders that hold them. Thanks to [@gavi102803](https://github.com/gavi102803) for [the change](https://github.com/AstraFoundry/Arion/commit/9fba8413).[^files]
+File records you already had stay hidden while the switch is off and return if you turn it back on. History keeps file references, so macOS may ask for access to the folders that hold them. Thanks to [@gavi102803](https://github.com/gavi102803) for [the change](https://github.com/AstraFoundry/Arion/commit/9fba8413).[^files]
 
 ## Cleaner Ctrl+V on Windows (0.1.5)
 
@@ -65,9 +65,9 @@ Select text in any app and a small bar appears beside it, with the assistants yo
 
 <embed-frame src="/blog/arion-0-1-6/stage.en.html#selection" poster="./posters/selection.en.webp" title="Demo: asking Claude to explain selected text" ratio="16/10" caption="Selecting a sentence, resting on Claude and choosing Explain. The Claude app opens with the prompt and the selection filled in, ready to send. A mock recording: nothing is sent to Claude."></embed-frame>
 
-Choosing a prompt opens Claude through `claude://` or ChatGPT through `codex://`, which prefill a local chat with the prompt and your selection. You send it from there; Arion sends nothing itself. The prompts are built-in English instructions, and a Claude request is capped at 14,000 characters. Selection actions are off by default. Turn them on at the new last step of setup, **Act on selected text**, or under Settings › General, where you also choose Claude, ChatGPT or both.
+Choosing a prompt opens Claude through `claude://` or ChatGPT through `codex://`, which prefill a local chat with the prompt and your selection and leave sending to you. The prompts are built-in English instructions, and a Claude request is capped at 14,000 characters. Selection actions are off by default. Turn them on at the new last step of setup, **Act on selected text**, or under Settings › General, where you also choose Claude, ChatGPT or both.
 
-Arion reads the selection without touching the clipboard: through Accessibility on macOS and UI Automation on Windows, never by posting Command-C. Password fields produce no bar, and the selected text is not written to the logs.[^selection]
+The selection comes directly from Accessibility on macOS and UI Automation on Windows, leaving your clipboard untouched. Password fields are skipped, and the selected text stays out of the logs.[^selection]
 
 The X opens a menu to stop the bar: **Disable for 1 hour**, on the current site, in the current app, or **Turn off selection actions**.
 
@@ -87,7 +87,7 @@ A copied PNG, JPEG, GIF, WebP or BMP file now shows a thumbnail beside its name 
 
 <embed-frame src="/blog/arion-0-1-6/stage.en.html#thumbnails" poster="./posters/thumbnails.en.webp" title="Demo: an image file in clipboard history" ratio="16/10" caption="Opening clipboard history with Command-Shift-V. The copied beach.jpg shows its thumbnail, and resting on it shows the image larger. A mock recording."></embed-frame>
 
-The entry is still a file reference: choosing it pastes the file, as before. An image that cannot be read shows no thumbnail and no error.[^thumbnails]
+The entry is still a file reference: choosing it pastes the file, as before. An unreadable image stays a plain file row.[^thumbnails]
 
 ## Paste waits for slow Windows apps (0.1.6)
 
@@ -101,14 +101,8 @@ After you copied text from a WeChat input box, the next dictation could fail wit
 
 ## Smaller fixes (0.1.6)
 
-- A saved update that no longer matches the installed app, for example one prepared before you installed Arion again from the disk image, no longer stops the dictation key and the menu bar button from working. Arion forgets it and keeps dictation available.[^update]
-- The menu bar panel no longer says "Ready" when everything is fine; it shows a state only when Arion is not ready.
-
-## What isn't there yet
-
-- On Windows, Arion cannot tell yet which app or site a selection came from, so the disable menu there has no site or app row.
-- The Windows paste changes have passed portable tests but have not been tried by hand in WeChat, QQ or Feishu on Windows 11, so [issue #110](https://github.com/AstraFoundry/Arion/issues/110) stays open.
-- Everything listed in [0.1.1's open items](/blog/arion-0-1-1/#what-isnt-there-yet) still applies: no multi-device sync, edit learning only in native macOS editors, and no Intel Mac support.
+- Saved updates that do not match the installed app, such as one staged before reinstalling from the disk image, are discarded instead of leaving the dictation key and the menu bar button unresponsive.[^update]
+- The menu bar panel omits "Ready" and shows a state only while Arion is still getting ready.
 
 The full notes for each version are in the [desktop changelog](https://github.com/AstraFoundry/Arion/blob/main/apps/desktop/CHANGELOG.md). If something breaks, use **Report a problem**, open a [GitHub issue](https://github.com/AstraFoundry/Arion/issues), or find us on [Discord](https://discord.com/invite/72kh465mMm) or [Feishu](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=e05vef49-cce2-404f-9740-2fb99d17d444).
 
