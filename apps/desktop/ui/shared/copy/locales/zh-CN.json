@@ -764,5 +764,19 @@
   "FormatSelectionDisableApp": "在 {app} 中停用",
   "SelectionTurnOff": "关闭划词操作",
   "OnbSelectionTitle": "处理选中的文字",
-  "OnbSelectionBody": "在任意应用中选中文字，即可翻译、解释或询问助手。也可以保持关闭。"
+  "OnbSelectionBody": "在任意应用中选中文字，即可翻译、解释或询问助手。也可以保持关闭。",
+  "WhatsNewTitle": "新功能",
+  "AboutWhatsNew": "查看新功能",
+  "FormatWhatsNewVersion": "{version} 新增",
+  "WhatsNewNext": "下一个",
+  "WhatsNewPrevious": "上一个",
+  "WhatsNewSelectionTitle": "选中文字，交给 Claude 或 ChatGPT",
+  "WhatsNewSelectionBody": "在任意应用中选中文字，下方会出现操作条。选择提示词即可解释、翻译、总结或改写。在「设置 › 通用」中开启划词操作。",
+  "WhatsNewSelectionLabel": "选中的文字下方出现操作条，并带着提示词打开 Claude",
+  "WhatsNewVocabularyTitle": "在读到的地方把术语加入词库",
+  "WhatsNewVocabularyBody": "选中名称或术语，在同一操作条上点击「加入词库」。下次听写到它时，Arion 会按这个写法输出。",
+  "WhatsNewVocabularyLabel": "在文档中选中的术语通过下方的操作条加入 Arion 词库",
+  "WhatsNewDemoPhrase": "retrieval-augmented generation",
+  "WhatsNewDemoPrompt": "Explain this: retrieval-augmented generation",
+  "WhatsNewDemoTerm": "pgvector"
 }

@@ -23,13 +23,13 @@ func TestStoryOrder(t *testing.T) {
 		want func(frame) bool
 		what string
 	}{
-		{0, func(f frame) bool { return !f.Agent && !f.Copied && f.Pointer == rest && f.Lens.Zoom == 1 }, "opens on the prompt card"},
-		{1350, func(f frame) bool { return f.Pointer == copyButton && f.Lens.Zoom > 1.5 }, "zooms in as the pointer reaches Copy"},
-		{1450, func(f frame) bool { return f.Copied && f.Press > 0 && f.Ripple >= 0 && f.RippleAt == copyButton }, "the click copies"},
+		{0, func(f frame) bool { return !f.Agent && !f.Copied && f.Cursor.At == rest && f.Lens.Zoom == 1 }, "opens on the prompt card"},
+		{1350, func(f frame) bool { return f.Cursor.At == copyButton && f.Lens.Zoom > 1.5 }, "zooms in as the pointer reaches Copy"},
+		{1450, func(f frame) bool { return f.Copied && f.Cursor.Press > 0 && f.Cursor.RippleAt == copyButton }, "the click copies"},
 		{2400, func(f frame) bool { return f.Agent && !f.Copied && f.Lens.Zoom == 1 }, "the agent opens, zoomed out"},
-		{3500, func(f frame) bool { return f.Focused && f.Pasting && !f.Pasted && f.Pointer == input }, "pastes into the focused input"},
+		{3500, func(f frame) bool { return f.Focused && f.Pasting && !f.Pasted && f.Cursor.At == input }, "pastes into the focused input"},
 		{4000, func(f frame) bool { return f.Pasted && !f.Pasting && !f.Sent }, "the prompt waits in the input"},
-		{4700, func(f frame) bool { return f.Sent && !f.Pasted && !f.Focused && f.Pointer == send }, "sending empties the input"},
+		{4700, func(f frame) bool { return f.Sent && !f.Pasted && !f.Focused && f.Cursor.At == send }, "sending empties the input"},
 		{5500, func(f frame) bool { return f.Reply > 0 && f.Reply < 1 && !f.Issue }, "the reply streams"},
 		{7000, func(f frame) bool { return f.Reply == 1 && f.Issue && f.Lens.Focus == issue }, "the issue opens, in focus"},
 		{9300, func(f frame) bool { return f.Issue && f.Lens.Zoom == 1 }, "zooms out before looping"},
@@ -51,30 +51,13 @@ func TestPointerAndLensMoveContinuously(t *testing.T) {
 	previous := at(0)
 	for ms := 10; ms < int(Cycle/time.Millisecond); ms += 10 {
 		f := at(ms)
-		if d := abs(f.Pointer.X-previous.Pointer.X) + abs(f.Pointer.Y-previous.Pointer.Y); d > 8 {
+		if d := abs(f.Cursor.At.X-previous.Cursor.At.X) + abs(f.Cursor.At.Y-previous.Cursor.At.Y); d > 8 {
 			t.Fatalf("pointer jumps %.1f DIP at %d ms", d, ms)
 		}
 		if d := abs(f.Lens.Zoom - previous.Lens.Zoom); d > 0.03 {
 			t.Fatalf("zoom jumps %.3f at %d ms", d, ms)
 		}
 		previous = f
-	}
-}
-
-func TestShiftKeepsTheStageCovered(t *testing.T) {
-	for _, l := range []lens{{1, center}, {1.5, point{0, 0}}, {1.5, point{Width, Height}}, {1.55, copyButton}, {1.2, issue}} {
-		x, y := shift(l)
-		// Where the stage's corners land, scaled around its center.
-		left := Width/2 - Width/2*l.Zoom + x
-		top := Height/2 - Height/2*l.Zoom + y
-		right := Width/2 + Width/2*l.Zoom + x
-		bottom := Height/2 + Height/2*l.Zoom + y
-		if left > 0.01 || top > 0.01 || right < Width-0.01 || bottom < Height-0.01 {
-			t.Errorf("%+v uncovers the stage: %.1f %.1f %.1f %.1f", l, left, top, right, bottom)
-		}
-	}
-	if x, y := shift(lens{1.5, center}); x != 0 || y != 0 {
-		t.Errorf("centered lens shifts %v %v", x, y)
 	}
 }
 

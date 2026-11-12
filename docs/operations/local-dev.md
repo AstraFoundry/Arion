@@ -118,6 +118,8 @@ The profile is `ARION_DATA_DIR` when explicitly set, otherwise the platform's de
 
 To replay onboarding only, run `make reset desktop onboarding`, then reopen the release. For development onboarding, set `ARION_DATA_DIR` to the `Arion Dev` profile before running that command, then reopen the development bundle. This existing command sets only `onboardingCompleted` to `false`, saving a uniquely named `preferences.json.<id>.bak` beside the preferences first. Other profile and system state stays intact. Missing preferences or an already reset flag require no change; invalid JSON fails without mutation. `ARION_DATA_DIR` selects its profile. Without Make, run `node scripts/reset-desktop-onboarding.mjs` for onboarding, or `node scripts/reset-desktop.mjs keep-models --dry-run` to preview a full reset; omit `--dry-run` to execute.
 
+To see the post-update What's new dialog again, open Settings › About › **See what's new**. To replay the automatic presentation, quit Arion, remove `whatsNewSeen` from the profile's `preferences.json` (or set it to an older version) and reopen it; the dialog lists every release after that version ([ADR 050](../decisions/050-release-highlights.md)).
+
 The table lists release locations. Development application data and credentials use the separate `Arion Dev` namespace described above; installed keyboard data remains release-owned.
 
 | Data | macOS | Windows |

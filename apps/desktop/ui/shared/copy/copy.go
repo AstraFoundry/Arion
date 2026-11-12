@@ -790,4 +790,21 @@ const (
 	FormatSelectionDisableSite  Key = "FormatSelectionDisableSite"
 	FormatSelectionDisableApp   Key = "FormatSelectionDisableApp"
 	OnbSelectionBody            Key = "OnbSelectionBody"
+
+	// What's new: the release highlights dialog, its slides and the mock
+	// copy their recordings show.
+	WhatsNewTitle           Key = "WhatsNewTitle"
+	AboutWhatsNew           Key = "AboutWhatsNew"
+	WhatsNewNext            Key = "WhatsNewNext"
+	WhatsNewPrevious        Key = "WhatsNewPrevious"
+	WhatsNewSelectionTitle  Key = "WhatsNewSelectionTitle"
+	WhatsNewSelectionBody   Key = "WhatsNewSelectionBody"
+	WhatsNewSelectionLabel  Key = "WhatsNewSelectionLabel"
+	WhatsNewVocabularyTitle Key = "WhatsNewVocabularyTitle"
+	WhatsNewVocabularyBody  Key = "WhatsNewVocabularyBody"
+	WhatsNewVocabularyLabel Key = "WhatsNewVocabularyLabel"
+	WhatsNewDemoPhrase      Key = "WhatsNewDemoPhrase"
+	WhatsNewDemoPrompt      Key = "WhatsNewDemoPrompt"
+	WhatsNewDemoTerm        Key = "WhatsNewDemoTerm"
+	FormatWhatsNewVersion   Key = "FormatWhatsNewVersion"
 )

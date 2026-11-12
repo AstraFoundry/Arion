@@ -5,6 +5,7 @@ package settings
 import (
 	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/entities/model"
+	releases "arion.local/desktop/ui/entities/whatsnew"
 	"arion.local/desktop/ui/features/clipboard"
 	"arion.local/desktop/ui/features/cloud"
 	"arion.local/desktop/ui/features/contributors"
@@ -22,6 +23,7 @@ import (
 	"arion.local/desktop/ui/features/update"
 	"arion.local/desktop/ui/features/usagesharing"
 	"arion.local/desktop/ui/features/vocabulary"
+	"arion.local/desktop/ui/features/whatsnew"
 	"arion.local/desktop/ui/shared/assets"
 	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
@@ -89,6 +91,8 @@ type Page struct {
 	// shown is the section drawn last, so entering one can replay its
 	// entrance.
 	shown string
+	// whatsNew presents a release's highlights over the window.
+	whatsNew whatsnew.Dialog
 }
 
 func NewPage() *Page { return &Page{Section: Overview} }
@@ -163,6 +167,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			})
 		})
 	})
+	p.whatsNew.Render(c, store, tokens)
 	// After the build: a scoped theme resets the root's background.
 	if c.Vibrancy() {
 		c.Root().Background(ui.Transparent)
@@ -194,6 +199,7 @@ func (p *Page) Close(store runtime.Store) {
 	}
 	// The window opens again with its section's entrance.
 	p.shown = ""
+	p.whatsNew.Reset()
 	if p.monitoring {
 		p.monitoring = false
 		store.Actions.StopLevelMonitor()
@@ -318,6 +324,13 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 					ui.Text(c, messages.Text(copy.Title)).FontSize(theme.Heading).FontWeight(600)
 					p.developer.Version(c, store, tokens)
 				})
+				// Offered once a release this version includes has highlights.
+				if len(releases.Latest(store.State.Version)) > 0 {
+					ui.Spacer(c)
+					if kit.Button(c.Key("whats-new"), tokens, kit.Outline, messages.Text(copy.AboutWhatsNew), true).Clicked() {
+						store.Actions.ShowWhatsNew()
+					}
+				}
 			})
 		})
 		update.Card(c, store, tokens)

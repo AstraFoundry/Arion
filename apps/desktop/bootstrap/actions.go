@@ -474,7 +474,8 @@ func (x actions) RemoveReplacement(id string) {
 
 func (x actions) CompleteOnboarding() {
 	a := x.a
-	x.UpdatePreferences(func(p *application.Preferences) { p.OnboardingCompleted = true })
+	// A new profile starts on this version: its highlights are not news.
+	x.UpdatePreferences(func(p *application.Preferences) { p.OnboardingCompleted, p.WhatsNewSeen = true, a.version })
 	if a.onboarding != nil {
 		a.onboarding.Close()
 	}

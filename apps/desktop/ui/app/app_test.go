@@ -57,15 +57,22 @@ func (r *recorder) StopLevelMonitor()          { r.call("monitor-stop") }
 func (r *recorder) CopyText(text string) bool  { r.call("copy:" + text); return true }
 func (r *recorder) OpenSettings()              { r.call("settings") }
 func (r *recorder) OpenFeedback()              { r.call("feedback") }
-func (r *recorder) CompleteOnboarding()        { r.call("complete") }
-func (r *recorder) CancelSignIn()              { r.call("cancel-sign-in") }
-func (r *recorder) RefreshAccount()            { r.call("refresh-account") }
-func (r *recorder) SignOut()                   { r.call("sign-out") }
-func (r *recorder) JoinHostedSyncWaitlist()    { r.call("join-waitlist") }
-func (r *recorder) CheckStoredAccount()        { r.call("check-stored") }
-func (r *recorder) SignInChatGPT()             { r.call("cloud-sign-in") }
-func (r *recorder) CancelCloud()               { r.call("cloud-cancel") }
-func (r *recorder) DisconnectCloud()           { r.call("cloud-disconnect") }
+func (r *recorder) ShowWhatsNew()              { r.call("whats-new") }
+func (r *recorder) DismissWhatsNew() {
+	r.call("whats-new-dismiss")
+	if r.state != nil {
+		r.state.WhatsNew.Slides = nil
+	}
+}
+func (r *recorder) CompleteOnboarding()     { r.call("complete") }
+func (r *recorder) CancelSignIn()           { r.call("cancel-sign-in") }
+func (r *recorder) RefreshAccount()         { r.call("refresh-account") }
+func (r *recorder) SignOut()                { r.call("sign-out") }
+func (r *recorder) JoinHostedSyncWaitlist() { r.call("join-waitlist") }
+func (r *recorder) CheckStoredAccount()     { r.call("check-stored") }
+func (r *recorder) SignInChatGPT()          { r.call("cloud-sign-in") }
+func (r *recorder) CancelCloud()            { r.call("cloud-cancel") }
+func (r *recorder) DisconnectCloud()        { r.call("cloud-disconnect") }
 func (r *recorder) ActivateCloud(provider string) {
 	r.call("cloud-activate:" + provider)
 }

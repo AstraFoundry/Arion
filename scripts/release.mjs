@@ -4,7 +4,7 @@ import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkRelease, checkReleaseChangelog, digest, githubAssetName, platformAssets, platformsForRelease, releaseMatrix, releaseStatus, stagedRecord, stagedRecordKey, stagingSettings, stagingUploads } from './lib/release.mjs';
+import { checkRelease, checkReleaseChangelog, checkReleaseHighlights, digest, githubAssetName, platformAssets, platformsForRelease, releaseMatrix, releaseStatus, stagedRecord, stagedRecordKey, stagingSettings, stagingUploads } from './lib/release.mjs';
 import { releaseRebuildPlan } from './lib/release-rebuild.mjs';
 import { checkOfficialCenter } from './lib/center-profile.mjs';
 import { macosSigningSettings } from './lib/desktop-signing.mjs';
@@ -17,6 +17,7 @@ if (operation === 'matrix') {
   console.log(JSON.stringify(releaseMatrix(config)));
 } else if (operation === 'check') {
   checkReleaseChangelog(config.version, readFileSync(path.join(root, 'apps/desktop/CHANGELOG.md'), 'utf8'));
+  checkReleaseHighlights(config.version, readFileSync(path.join(root, 'apps/desktop/ui/entities/whatsnew/releases.json'), 'utf8'));
   checkOfficialCenter({ ...process.env, ARION_OFFICIAL_RELEASE: '1' });
   checkRelease(config, process.env.GITHUB_REF_NAME, process.env.MYGO_UPDATER_PRIVATE_KEY);
   const signing = macosSigningSettings(process.env);
