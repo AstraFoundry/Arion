@@ -780,6 +780,14 @@ const (
 	SelectionReturn        Key = "SelectionReturn"
 	SelectionFailed        Key = "SelectionFailed"
 	SelectionOpenFailed    Key = "SelectionOpenFailed"
+	SelectionDisableMenu   Key = "SelectionDisableMenu"
+	SelectionPauseHour     Key = "SelectionPauseHour"
+	SelectionTurnOff       Key = "SelectionTurnOff"
 	OnbSelectionTitle      Key = "OnbSelectionTitle"
-	OnbSelectionBody       Key = "OnbSelectionBody"
+
+	FormatSelectionPauseHours   Key = "FormatSelectionPauseHours"
+	FormatSelectionPauseMinutes Key = "FormatSelectionPauseMinutes"
+	FormatSelectionDisableSite  Key = "FormatSelectionDisableSite"
+	FormatSelectionDisableApp   Key = "FormatSelectionDisableApp"
+	OnbSelectionBody            Key = "OnbSelectionBody"
 )

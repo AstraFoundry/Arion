@@ -1,6 +1,9 @@
 package bootstrap
 
 import (
+	"strings"
+	"time"
+
 	"arion.local/core/application"
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/urlopen"
@@ -45,8 +48,9 @@ func (a *App) signalSelection() {
 	}
 }
 
-// selectionLoop skips a release over the popover: that click chooses in the
-// popover, and the question field taking the keyboard is not a new selection.
+// selectionLoop skips a release over the bar or a popup beside it: that
+// click chooses in the bar, and the question field taking the keyboard is
+// not a new selection.
 func (a *App) selectionLoop() {
 	for range a.selectionClicks {
 		if a.pointerOnSelection() {
@@ -59,10 +63,17 @@ func (a *App) selectionLoop() {
 func (a *App) pointerOnSelection() bool {
 	inside := false
 	a.postWait(func() {
-		if a.selectionWin == nil || !a.selectionWin.IsVisible() {
+		windows := a.selectionWindows()
+		if len(windows) == 0 || !a.selectionWin.IsVisible() {
 			return
 		}
-		inside = selectionContains(a.selectionWin.Bounds(), mygo.Screen.CursorScreenPoint())
+		cursor := mygo.Screen.CursorScreenPoint()
+		for _, window := range windows {
+			if window.IsVisible() && selectionContains(window.Bounds(), cursor) {
+				inside = true
+				return
+			}
+		}
 	})
 	return inside
 }
@@ -72,7 +83,7 @@ func selectionContains(bounds mygo.Rectangle, p mygo.Point) bool {
 }
 
 func (a *App) applySelectionRead() {
-	offer, ok, err := application.OfferAfterMouseUp(a.preferences().Selection, a.readSelection)
+	offer, ok, err := application.OfferAfterMouseUp(a.preferences().Selection, time.Now(), a.readSourcedSelection)
 	if err != nil {
 		if domain.CodeOf(err) == domain.CodePermissionDenied {
 			a.record("selection_watch", err)
@@ -100,6 +111,16 @@ func (a *App) readSelection() (application.SelectionReading, error) {
 		return application.SelectionReading{}, err
 	}
 	return application.SelectionReading{Text: text, Secure: secure}, nil
+}
+
+// readSourcedSelection is readSelection with the app and site of a
+// selection the bar may be offered for.
+func (a *App) readSourcedSelection() (application.SelectionReading, error) {
+	reading, err := a.readSelection()
+	if err == nil && !reading.Secure && strings.TrimSpace(reading.Text) != "" {
+		reading.Source = a.platform.SelectionSource()
+	}
+	return reading, err
 }
 
 func (a *App) publishSelection(offer application.SelectionOffer, ok bool, anchor mygo.Rectangle, hasAnchor bool, wait bool) {
@@ -203,6 +224,27 @@ func (x actions) OpenSelection(actionID, clientID, question string) error {
 		return err
 	}
 	return x.a.selectionOpener()(raw)
+}
+
+// DisableSelection saves the scope for the current offer's source and
+// dismisses the bar; turning the master switch off stops the watch too.
+func (x actions) DisableSelection(scope string) error {
+	offer, ok := x.a.currentSelection()
+	if !ok {
+		return application.ErrSelectionEmpty
+	}
+	now := time.Now()
+	probe := x.a.preferences().Selection
+	if err := probe.Disable(scope, offer.Source, now); err != nil {
+		return err
+	}
+	x.UpdatePreferences(func(p *application.Preferences) { _ = p.Selection.Disable(scope, offer.Source, now) })
+	saved := x.a.preferences().Selection
+	if saved.Enabled && !saved.Paused(now) && !saved.DisabledFor(offer.Source) {
+		return application.ErrSelectionAction
+	}
+	x.a.publishSelection(application.SelectionOffer{}, false, mygo.Rectangle{}, false, false)
+	return nil
 }
 
 func (a *App) selectionOpener() func(string) error {

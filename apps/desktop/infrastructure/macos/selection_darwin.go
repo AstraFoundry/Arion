@@ -108,6 +108,22 @@ func ReadSelectedText() (string, bool, error) {
 	return "", false, domain.Fail(domain.CodeTargetUnsupported, "selection unreadable")
 }
 
+// SelectionSource names the frontmost app, by bundle identifier and display
+// name, and the http(s) host of the page holding its focus, for disabling
+// the selection bar there. It reads no field text and no host of a secure
+// field; each value is empty when unknown.
+func SelectionSource() (app, name, site string) {
+	pid := C.arion_frontmost_pid()
+	if pid <= 0 || int(pid) == os.Getpid() {
+		return "", "", ""
+	}
+	var native C.arion_target
+	if C.arion_peek_target(pid, &native, 1) != C.ARION_TARGET_OK {
+		return "", "", ""
+	}
+	return C.GoString(&native.bundle[0]), C.GoString(&native.app_name[0]), C.GoString(&native.site[0])
+}
+
 // SelectedTextAnchor is the focused selection's screen rectangle in points,
 // from the text field or the web area ReadSelectedText reads. It reads
 // geometry only. A secure field and a missing rectangle return ok false.

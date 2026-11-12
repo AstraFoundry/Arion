@@ -756,6 +756,13 @@
   "SelectionReturn": "回车键",
   "SelectionFailed": "无法完成此操作",
   "SelectionOpenFailed": "无法打开助手",
+  "SelectionDisableMenu": "停用选项",
+  "SelectionPauseHour": "停用 1 小时",
+  "FormatSelectionPauseHours": "停用 {count} 小时",
+  "FormatSelectionPauseMinutes": "停用 {count} 分钟",
+  "FormatSelectionDisableSite": "在 {site} 停用",
+  "FormatSelectionDisableApp": "在 {app} 中停用",
+  "SelectionTurnOff": "关闭划词操作",
   "OnbSelectionTitle": "处理选中的文字",
   "OnbSelectionBody": "在任意应用中选中文字，即可翻译、解释或询问助手。也可以保持关闭。"
 }

@@ -11,6 +11,7 @@ import (
 
 	"arion.local/core/application"
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/settings"
 	"arion.local/desktop/infrastructure/vocabulary"
 	"github.com/egoist/mygo"
 )
@@ -25,6 +26,7 @@ type selectionPlatform struct {
 	stopped    int
 	sink       func()
 	startError error
+	source     application.SelectionSource
 }
 
 func (p *selectionPlatform) ReadSelection() (string, bool, error) {
@@ -32,6 +34,9 @@ func (p *selectionPlatform) ReadSelection() (string, bool, error) {
 	return p.text, p.secure, p.readErr
 }
 func (p *selectionPlatform) SelectionAnchor() (int, int, int, int, bool) { return 0, 0, 0, 0, false }
+func (p *selectionPlatform) SelectionSource() application.SelectionSource {
+	return p.source
+}
 func (p *selectionPlatform) StartSelectionWatch(sink func()) error {
 	p.started++
 	p.sink = sink
@@ -99,6 +104,47 @@ func TestSelectionWatchSwitchSecureAndURL(t *testing.T) {
 	opened = ""
 	if err := (actions{app}).OpenSelection("missing", "", ""); !errors.Is(err, application.ErrSelectionAction) || opened != "" {
 		t.Fatalf("missing action opened %q: %v", opened, err)
+	}
+}
+
+func TestSelectionDisableFromBar(t *testing.T) {
+	safari := application.SelectionSource{App: "com.apple.Safari", AppName: "Safari", Site: "example.com"}
+	platform := &selectionPlatform{text: "SelectionTerm", source: safari}
+	app := &App{platform: platform, prefStore: settings.Store{Path: filepath.Join(t.TempDir(), "preferences.json")}}
+	app.prefs = application.DefaultPreferences("linux")
+	app.prefs.Selection.Enabled = true
+	app.state.Preferences = app.prefs
+	app.syncSelectionWatch(false, true)
+	platform.sink()
+	waitSelection(t, func() bool {
+		offer, ok := app.currentSelection()
+		return ok && offer.Source == safari
+	})
+	if err := (actions{app}).DisableSelection(application.SelectionDisableApp); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := app.currentSelection(); ok || len(app.preferences().Selection.DisabledApps) != 1 {
+		t.Fatalf("disable in app kept the offer or saved %+v", app.preferences().Selection)
+	}
+	platform.sink()
+	waitSelection(t, func() bool { return platform.reads.Load() == 2 })
+	if _, ok := app.currentSelection(); ok {
+		t.Fatal("the disabled app was offered again")
+	}
+	platform.source = application.SelectionSource{App: "com.apple.TextEdit"}
+	platform.sink()
+	waitSelection(t, func() bool { _, ok := app.currentSelection(); return ok })
+	if err := (actions{app}).DisableSelection(application.SelectionDisableSite); !errors.Is(err, application.ErrSelectionScope) {
+		t.Fatalf("site without a host: %v", err)
+	}
+	if err := (actions{app}).DisableSelection(application.SelectionDisablePause); err != nil || !app.preferences().Selection.Paused(time.Now()) {
+		t.Fatalf("pause %v %+v", err, app.preferences().Selection)
+	}
+	reads := platform.reads.Load()
+	platform.sink()
+	time.Sleep(50 * time.Millisecond)
+	if platform.reads.Load() != reads {
+		t.Fatal("a paused bar read the selection")
 	}
 }
 

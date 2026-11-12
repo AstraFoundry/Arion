@@ -18,3 +18,8 @@ func (r *recorder) OpenSelection(actionID, clientID, question string) error {
 	r.call(call)
 	return r.selectionError
 }
+
+func (r *recorder) DisableSelection(scope string) error {
+	r.call("selection-disable:" + scope)
+	return r.selectionError
+}

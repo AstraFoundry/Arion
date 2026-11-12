@@ -102,9 +102,12 @@ type Platform interface {
 	// rectangle in DIPs and reads geometry only; ok is false when the
 	// rectangle is unavailable, including for a secure field.
 	// StartSelectionWatch observes mouse-up only while the selection
-	// switch is on; its sink must not block or read.
+	// switch is on; its sink must not block or read. SelectionSource names
+	// the app and the page host the selection is in, to disable the bar
+	// there, and reads no text.
 	ReadSelection() (text string, secure bool, err error)
 	SelectionAnchor() (x, y, width, height int, ok bool)
+	SelectionSource() application.SelectionSource
 	StartSelectionWatch(sink func()) error
 	StopSelectionWatch()
 	NewTargets(delivery func() application.Delivery, gates TargetGates) Targets

@@ -24,6 +24,7 @@ type (
 	Preferences         = application.Preferences
 	SelectionOffer      = application.SelectionOffer
 	SelectionAction     = application.SelectionAction
+	SelectionSource     = application.SelectionSource
 	Delivery            = application.Delivery
 	UILanguage          = application.UILanguage
 	HoldKey             = application.HoldKey
@@ -132,6 +133,11 @@ const (
 	SelectionActionVocabulary = application.SelectionActionVocabulary
 	SelectionClientClaude     = application.SelectionClientClaude
 	SelectionClientChatGPT    = application.SelectionClientChatGPT
+	SelectionDisablePause     = application.SelectionDisablePause
+	SelectionDisableApp       = application.SelectionDisableApp
+	SelectionDisableSite      = application.SelectionDisableSite
+	SelectionDisableAll       = application.SelectionDisableAll
+	SelectionPause            = application.SelectionPause
 )
 
 // DefaultSelectionPreferences is off, with both clients present and disabled.
@@ -712,6 +718,9 @@ type Actions interface {
 	// OpenSelection fills one prompt or client action for clientID, or the
 	// default client when it is empty, and opens that URL.
 	OpenSelection(actionID, clientID, question string) error
+	// DisableSelection stops the bar as a SelectionDisable scope says, for
+	// the current offer's app or site, and dismisses it.
+	DisableSelection(scope string) error
 	// ChooseScene keeps scene for SceneTarget's site or app; empty follows
 	// the built-in rules again.
 	ChooseScene(scene domain.Scene)

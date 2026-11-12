@@ -100,21 +100,64 @@ func Feedback(store runtime.Store) View {
 	return View{Content: view(func(c *ui.Context) { page.Render(c, store) }).WithClipboardWriter(func(text string) { store.Actions.CopyText(text) }), Close: func() {}}
 }
 
-const SelectionWidth = selection.Width
+// SelectionWidth is the selection bar's width as it opens, before the bar
+// has measured itself. SelectionHeight is the bar window's height, which
+// its menus do not change: each shows in a popup window beside it,
+// SelectionGap away.
+const (
+	SelectionWidth  = selection.Width
+	SelectionHeight = selection.Height
+	SelectionGap    = selection.Gap
+)
 
-// SelectionHeightFor sizes the selection popover for the current offer.
-func SelectionHeightFor(store runtime.Store) int { return selection.Height(store) }
+// SelectionPopup is the menu or failure line the selection bar shows in a
+// window beside it.
+type SelectionPopup = selection.Popup
 
-// Selection is the popover over another app's selected text. resize
-// receives the height the menu needs, which grows with a failure line.
-func Selection(store runtime.Store, resize func(int)) View {
+// SelectionViews are the selection bar's window and the popup windows
+// beside it, which share its menus.
+type SelectionViews struct {
+	// Bar is the bar's window.
+	Bar View
+	// Popup is a window for the popup key. above reports whether the
+	// window opened above the bar; gone runs once the bar wants another
+	// popup and this one has left, when its window may close.
+	Popup func(key string, above func() bool, gone func()) View
+	// Dismiss closes the popup key that the system closed, as on a press
+	// on the control that opened it.
+	Dismiss func(key string)
+}
+
+// Selection is the bar over another app's selected text. After each frame
+// of the bar or a popup, sync receives the bar's width (0 before it has
+// been laid out), the popup it wants and a revision that changes whenever
+// what the bar or a popup shows changes.
+func Selection(store runtime.Store, sync func(width int, popup SelectionPopup, revision int)) SelectionViews {
 	page := &selection.Page{}
-	return View{Content: view(func(c *ui.Context) {
-		height := page.Render(c, store)
-		if resize != nil {
-			resize(height)
+	report := func() {
+		if sync != nil {
+			sync(page.Width(), page.Want(), page.Revision())
 		}
-	}), Close: func() {}}
+	}
+	return SelectionViews{
+		Bar: View{Content: view(func(c *ui.Context) {
+			page.Render(c, store)
+			report()
+		}), Close: func() {}},
+		Popup: func(key string, above func() bool, gone func()) View {
+			surface := &selection.Surface{Key: key}
+			left := false
+			return View{Content: view(func(c *ui.Context) {
+				surface.Above = above()
+				if page.RenderPopup(c, store, surface) && !left {
+					left = true
+					gone()
+				}
+				report()
+			}), Close: func() {}}
+		},
+		Dismiss: page.Dismiss,
+	}
 }
 
 // GuideHeightFor sizes each System Settings guide for its content.

@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"arion.local/core/application"
 	"arion.local/core/domain"
@@ -84,7 +85,7 @@ func assertSelectionCopyHotwordURLAndSwitch(t *testing.T, selected string, readi
 	}
 
 	reads := 0
-	_, ok, err := application.OfferAfterMouseUp(application.DefaultSelectionPreferences(), func() (application.SelectionReading, error) {
+	_, ok, err := application.OfferAfterMouseUp(application.DefaultSelectionPreferences(), time.Now(), func() (application.SelectionReading, error) {
 		reads++
 		return reading, nil
 	})
@@ -113,7 +114,7 @@ func assertSecureSelectionRefused(t *testing.T, reading application.SelectionRea
 	}
 	prefs := application.DefaultSelectionPreferences()
 	prefs.Enabled = true
-	_, ok, err := application.OfferAfterMouseUp(prefs, func() (application.SelectionReading, error) { return reading, nil })
+	_, ok, err := application.OfferAfterMouseUp(prefs, time.Now(), func() (application.SelectionReading, error) { return reading, nil })
 	if ok || err != nil {
 		t.Fatal("secure field produced an offer")
 	}
@@ -172,7 +173,7 @@ func exerciseSelectionPopover(t *testing.T, selected string) {
 	var height int
 	app.Update(func(*arion.State) {
 		text = app.Store().State.Selection.Text
-		height = uiapp.SelectionHeightFor(app.Store())
+		height = uiapp.SelectionHeight
 		for _, action := range app.Store().State.Selection.Actions {
 			ids = append(ids, action.ID)
 		}
@@ -180,7 +181,7 @@ func exerciseSelectionPopover(t *testing.T, selected string) {
 	if text != selected || !sameIDs(ids, selectionActionIDs()) {
 		t.Fatalf("popover %q %v", text, ids)
 	}
-	if width, got := window.ContentSize(); width != uiapp.SelectionWidth || got != height {
+	if width, got := window.ContentSize(); width <= 0 || got != height {
 		t.Fatalf("popover size %d,%d", width, got)
 	}
 	var copyErr error
