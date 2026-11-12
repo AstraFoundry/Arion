@@ -7,7 +7,6 @@ category: announcement
 tags: [リリース, 変更履歴, 音声入力, 選択アクション, クリップボード]
 image: ./cover.webp
 imageAlt: Arion の暗い色の選択バー。Claude、ChatGPT、Copy、Add to vocabulary と X が並ぶ。その下の Claude のメニューには Translate to Chinese、Explain、Summarize key points、Rewrite、Ask a custom question… がある
-draft: true
 ---
 
 [Arion 0.1.4](/blog/arion-0-1-4/) のあと、Apple シリコン搭載の Mac と Windows x64 向けに 0.1.5 と 0.1.6 の2つのアップデートを出しました。0.1.5 は2つ目の音声入力キーを追加し、マイクを早く開くようにし、整文が使えなかった理由を伝え、候補の文字色を固定できるようにし、コピーしたファイルの記録をオプトインにしました。0.1.6 は選択アクション、初回の Overview、クリップボード履歴の画像サムネイルを追加し、反応の遅い Windows アプリと、macOS で WeChat からコピーしたあとの貼り付けを修正しました。

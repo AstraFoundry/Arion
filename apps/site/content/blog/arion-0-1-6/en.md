@@ -7,7 +7,6 @@ category: announcement
 tags: [release, changelog, dictation, selection actions, clipboard]
 image: ./cover.webp
 imageAlt: Arion's dark selection bar with Claude, ChatGPT, Copy, Add to vocabulary and an X. Below it, Claude's menu lists Translate to Chinese, Explain, Summarize key points, Rewrite and Ask a custom question…
-draft: true
 ---
 
 0.1.5 and 0.1.6 are the two updates since [Arion 0.1.4](/blog/arion-0-1-4/), for Apple silicon Macs and Windows x64. 0.1.5 adds a second dictation key, opens the microphone sooner, explains polishing fallbacks, lets you pin the candidate text color and makes copied files an opt-in. 0.1.6 adds selection actions, a first-run overview and image thumbnails in clipboard history, and fixes paste in slow Windows apps and after copying from WeChat on macOS.
