@@ -18,8 +18,10 @@ function Shell({ children }: { children: ReactNode }) {
       >
         {copy.common.skipToContent}
       </a>
-      <SiteHeader />
-      <main id="main">{children}</main>
+      <div className="relative z-10 overflow-clip rounded-b-[2rem] border-b border-border bg-background shadow-5 sm:rounded-b-[3rem]">
+        <SiteHeader />
+        <main id="main">{children}</main>
+      </div>
       <SiteFooter />
     </RootProviders>
   );
