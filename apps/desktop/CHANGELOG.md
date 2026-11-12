@@ -1,3 +1,33 @@
+## 0.1.6
+
+### English
+
+Update for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Select text and choose a prompt for Claude or ChatGPT, copy it, or add it to vocabulary. Selection actions stay off until you turn them on, and the bar can be turned off for an hour, a site, an app, or altogether.
+- Until the first dictation, Overview shows the key to hold. Settings, the menu bar panel and setup use flat cards.
+- Show a thumbnail for a copied PNG, JPEG, GIF, WebP or BMP file in clipboard history.
+- On Windows, wait for a slow app to read a pasted dictation, and leave the text on the clipboard when it does not arrive.
+- On macOS, paste after copying from WeChat when the clipboard includes types macOS cannot read.
+- Keep dictation available when a saved update no longer matches the installed app.
+- Show a menu bar state only when Arion is not ready.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable. Model weights download separately. Multi-device sync, Windows edit-learning, clean-machine acceptance, production old-to-new update acceptance, and real-service cloud and translation acceptance remain open. This tag stages the release and opens a GitHub draft; it does not publish the stable update channel. See RELEASE-STATUS.md and SHA256SUMS.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的更新版本。
+
+- 选中文字后，可交给 Claude 或 ChatGPT、复制，或加入词库。划词操作默认关闭，也可按一小时、网站、应用或完全关闭工具条。
+- 第一次听写之前，概览页显示要按住的按键。设置、菜单栏面板和初始设置使用扁平卡片。
+- 剪贴板历史为复制的 PNG、JPEG、GIF、WebP 或 BMP 文件显示缩略图。
+- Windows 会等待反应较慢的应用读取粘贴的听写内容；若没有写入，则把文字留在剪贴板上。
+- 在 macOS 上，从微信复制后仍可粘贴，即使剪贴板包含 macOS 无法读取的类型。
+- 已保存的更新与当前安装不一致时，听写仍然可用。
+- 菜单栏只在 Arion 未就绪时显示状态。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证。Windows 仍无发布者签名。模型权重单独下载。多设备同步、Windows 纠错学习、全新机器验收、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。此标签会暂存发布并创建 GitHub 草稿，不会发布稳定更新渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.5
 
 ### English
