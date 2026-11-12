@@ -14,7 +14,7 @@ import { HeroStage } from "./hero-stage";
 export function Hero() {
   const copy = useCopy();
   return (
-    <section className="pt-10">
+    <section className="pt-[clamp(2.5rem,10svh,7rem)]">
       <Container size="wide" className="flex flex-col items-start">
         <TextReveal
           as="h1"
@@ -24,11 +24,11 @@ export function Hero() {
           yOffset="24%"
           className="max-w-4xl text-balance font-display text-[length:var(--hero-title-size)] leading-[0.98] font-normal tracking-[-0.03em]"
         />
-        <Reveal delay={0.35} className="mt-4.5 flex flex-col items-start">
-          <p className="max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
+        <Reveal delay={0.35} className="mt-6 flex flex-col items-start sm:mt-7">
+          <p className="max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground sm:max-w-2xl sm:text-xl">
             {copy.hero.lead}
           </p>
-          <div className="mt-7.5 flex flex-wrap items-center gap-3">
+          <div className="mt-9 flex flex-wrap items-center gap-3">
             <LinkButton href={downloadHref} size="lg">
               {copy.common.downloadLong}
             </LinkButton>
@@ -36,7 +36,7 @@ export function Hero() {
               {copy.common.viewSource}
             </LinkButton>
           </div>
-          <p className="mt-4 text-sm text-muted-foreground">
+          <p className="mt-5 text-sm text-muted-foreground">
             {format(copy.hero.note, {
               license: siteConfig.license,
               macos: siteConfig.minimumMacOS,
@@ -45,7 +45,7 @@ export function Hero() {
         </Reveal>
       </Container>
 
-      <div className="mt-10">
+      <div className="mt-[clamp(2.5rem,8svh,5.5rem)]">
         <HeroStage />
       </div>
     </section>
