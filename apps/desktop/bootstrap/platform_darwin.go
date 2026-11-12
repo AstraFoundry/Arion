@@ -97,6 +97,10 @@ func (darwinPlatform) ReadSelection() (string, bool, error) {
 func (darwinPlatform) SelectionAnchor() (int, int, int, int, bool) {
 	return macos.SelectedTextAnchor()
 }
+func (darwinPlatform) SelectionSource() application.SelectionSource {
+	app, name, site := macos.SelectionSource()
+	return application.SelectionSource{App: app, AppName: name, Site: site}
+}
 func (darwinPlatform) StartSelectionWatch(sink func()) error {
 	return macos.StartSelectionWatch(sink)
 }

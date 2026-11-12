@@ -233,6 +233,29 @@ func (c Catalog) UpdateAvailable(version string) string {
 	return c.format(FormatUpdateAvailable, "version", version)
 }
 
+// SelectionPause names the selection bar's pause: whole hours where d is
+// some, otherwise minutes.
+func (c Catalog) SelectionPause(d time.Duration) string {
+	minutes := int(d / time.Minute)
+	switch {
+	case minutes == 60:
+		return c.Text(SelectionPauseHour)
+	case minutes > 0 && minutes%60 == 0:
+		return c.format(FormatSelectionPauseHours, "count", strconv.Itoa(minutes/60))
+	}
+	return c.format(FormatSelectionPauseMinutes, "count", strconv.Itoa(minutes))
+}
+
+// SelectionDisableSite and SelectionDisableApp name the disable menu's
+// rows for the page host and the app the selection is in.
+func (c Catalog) SelectionDisableSite(site string) string {
+	return c.format(FormatSelectionDisableSite, "site", site)
+}
+
+func (c Catalog) SelectionDisableApp(app string) string {
+	return c.format(FormatSelectionDisableApp, "app", app)
+}
+
 // MoreContributors counts the contributors a stack of avatars leaves out.
 func (c Catalog) MoreContributors(n int) string {
 	return c.format(FormatMoreContributors, "count", strconv.Itoa(n))

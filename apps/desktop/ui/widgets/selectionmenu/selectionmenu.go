@@ -1,33 +1,37 @@
 // Package selectionmenu is the bar shown over text selected in another app:
-// one row of the enabled assistants, copy and vocabulary. Choosing an
-// assistant opens a second, smaller menu beneath the bar with the prompt
-// rows, the question field and that assistant's own actions. It renders the
-// actions it is given; the backend filters them, fills and opens URLs, and
-// writes the vocabulary.
+// one row of the enabled assistants, copy and vocabulary, ending in an X
+// that opens the disable menu. Choosing an assistant opens a second,
+// smaller menu beneath the bar with the prompt rows, the question field and
+// that assistant's own actions. It renders the actions it is given; the
+// backend filters them, fills and opens URLs, writes the vocabulary and
+// saves how the bar is disabled.
 package selectionmenu
 
 import (
 	"errors"
+	"math"
 	"strings"
+	"time"
 
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
+	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
 	"github.com/egoist/mygo/ui"
 )
 
-// Width and BarHeight size the bar, and the window while no menu is open:
-// one row, as tall as a toolbar, wide enough for the English labels of both
-// assistants, copy and vocabulary. Bar buttons do not shrink, so a longer
-// label shows past the bar rather than being cut. MenuWidth is the second
-// menu's width.
+// Width is the window's width before any bar has been laid out; from then
+// on the window is as wide as the bar, an open menu or a failure line,
+// whichever is widest. BarHeight is the bar's height, and the window's while
+// no menu is open. Bar buttons do not shrink. MenuWidth is both menus' width.
 const (
 	Width     = 400
 	BarHeight = 37
 	MenuWidth = 224
 
 	barPadding = 4
+	barBorder  = 1
 	toolHeight = BarHeight - 2*barPadding
 	menuRow    = 26
 	menuPad    = 4
@@ -36,15 +40,37 @@ const (
 	notice     = 24
 )
 
-// Menu keeps the open assistant, the highlight and the question between
-// frames. A new offer resets them.
+// menuExit is how long a closing menu takes to leave. The window keeps the
+// menu's size meanwhile, so the menu is not cut off as it goes.
+const menuExit = 160 * time.Millisecond
+
+// menuMotion brings a menu down from the bar, scaling up from the corner
+// beneath the control that opened it, and sends it back up as it closes.
+var menuMotion = ui.ElementTransition{
+	Animation:    &theme.Pop,
+	Enter:        &ui.Motion{Y: -6, Scale: 0.96},
+	Exit:         &ui.Motion{Y: -4, Scale: 0.98},
+	ExitDuration: menuExit,
+	ExitEase:     ui.EaseIn,
+}
+
+// Menu keeps the open assistant or disable menu, the highlight, the
+// question and the measured widths between frames. A new offer resets the
+// menus.
 type Menu struct {
 	Question  string
 	client    string
+	disabling bool
 	highlight int
 	refocus   bool
 	offer     string
 	failure   copy.Key
+
+	barWidth    int
+	noticeWidth int
+	heldWidth   int
+	heldHeight  int
+	release     time.Time
 }
 
 type layout struct {
@@ -98,7 +124,34 @@ func (l layout) menuHeight(client string) int {
 	if l.ask != nil {
 		rows++
 	}
+	return menuHeight(rows)
+}
+
+func menuHeight(rows int) int {
 	return 2*menuPad + rows*menuRow + max(0, rows-1)*menuGap
+}
+
+// disableScope is one row of the disable menu.
+type disableScope struct {
+	scope string
+	label string
+}
+
+// disableScopes lists the disable menu: the pause, the page's site and the
+// app when the reader named them, then the master switch.
+func disableScopes(messages copy.Catalog, source runtime.SelectionSource) []disableScope {
+	scopes := []disableScope{{runtime.SelectionDisablePause, messages.SelectionPause(runtime.SelectionPause)}}
+	if source.Site != "" {
+		scopes = append(scopes, disableScope{runtime.SelectionDisableSite, messages.SelectionDisableSite(source.Site)})
+	}
+	if source.App != "" {
+		name := source.AppName
+		if name == "" {
+			name = source.App
+		}
+		scopes = append(scopes, disableScope{runtime.SelectionDisableApp, messages.SelectionDisableApp(name)})
+	}
+	return append(scopes, disableScope{runtime.SelectionDisableAll, messages.Text(copy.SelectionTurnOff)})
 }
 
 // title names a built-in action; unknown ids have no title and are not drawn.
@@ -142,12 +195,14 @@ func clientIcon(id string) *ui.SVG {
 }
 
 // Render draws the current offer, dark in either appearance, and returns
-// the window height it needs: the bar, the open menu and a failure line.
-func (m *Menu) Render(c *ui.Context, store runtime.Store) int {
+// the window size it needs: the bar, the open menu and a failure line. The
+// width is 0 in the frame before the bar has been laid out, when the
+// window keeps its width.
+func (m *Menu) Render(c *ui.Context, store runtime.Store) (width, height int) {
 	messages := store.Copy()
 	offer := store.State.Selection
 	if offer.Text != m.offer {
-		m.offer, m.Question, m.client, m.highlight, m.failure = offer.Text, "", "", 0, ""
+		m.offer, m.Question, m.client, m.disabling, m.highlight, m.failure = offer.Text, "", "", false, 0, ""
 	}
 	l := split(offer.Actions)
 	var clients []string
@@ -160,6 +215,7 @@ func (m *Menu) Render(c *ui.Context, store runtime.Store) int {
 		m.client = ""
 	}
 	open := m.client != ""
+	scopes := disableScopes(messages, offer.Source)
 	m.highlight = max(0, min(m.highlight, len(l.prompts)-1))
 	tokens := theme.Apply(c)
 	outer := c.Theme()
@@ -170,19 +226,25 @@ func (m *Menu) Render(c *ui.Context, store runtime.Store) int {
 	c.SetTheme(&scoped)
 	ui.Column(c).Fill().Gap(stackGap).AlignItems(ui.Start).TextColor(tokens.PillText).Children(func() {
 		m.bar(c, store, tokens, messages, l, clients)
-		if open {
+		switch {
+		case open:
 			m.menu(c, store, tokens, messages, l)
+		case m.disabling:
+			m.disableMenu(c, store, tokens, scopes)
 		}
 		if m.failure != "" {
-			ui.Text(c, messages.Text(m.failure)).FontSize(theme.Caption).TextColor(tokens.PillMuted).Height(notice).Padding(4, 10).
-				Radius(theme.RadiusMD).Background(tokens.PillSurface).SingleLine()
+			ui.Row(c.Key("failure")).Transition(ui.ElementTransition{Animation: &theme.Pop, Enter: &ui.Motion{Y: -4}}).Children(func() {
+				line := ui.Text(c, messages.Text(m.failure)).FontSize(theme.Caption).TextColor(tokens.PillMuted).Height(notice).Padding(4, 10).
+					Radius(theme.RadiusMD).Background(tokens.PillSurface).SingleLine().Shrink(0)
+				m.noticeWidth = rightEdge(line.LayoutBounds())
+			})
 		}
 	})
 	c.SetTheme(outer)
 	c.Root().Background(ui.Transparent)
 	switch {
-	case open && c.Shortcut(0, ui.KeyEscape):
-		m.client = ""
+	case (open || m.disabling) && c.Shortcut(0, ui.KeyEscape):
+		m.client, m.disabling = "", false
 	case open && len(l.prompts) > 0 && c.Shortcut(0, ui.KeyDown):
 		m.highlight, m.refocus = min(m.highlight+1, len(l.prompts)-1), true
 	case open && len(l.prompts) > 0 && c.Shortcut(0, ui.KeyUp):
@@ -191,18 +253,49 @@ func (m *Menu) Render(c *ui.Context, store runtime.Store) int {
 		switch {
 		case open && len(l.prompts) > 0:
 			m.run(store, l.prompts[m.highlight])
-		case !open && l.copy != nil:
+		case !open && !m.disabling && l.copy != nil:
 			m.run(store, *l.copy)
 		}
 	}
-	height := BarHeight
-	if m.client != "" {
-		height += stackGap + l.menuHeight(m.client)
+	width, height = m.barWidth, BarHeight
+	switch {
+	case m.client != "":
+		width, height = max(width, MenuWidth), height+stackGap+l.menuHeight(m.client)
+	case m.disabling:
+		width, height = max(width, MenuWidth), height+stackGap+menuHeight(len(scopes))
 	}
 	if m.failure != "" {
-		height += stackGap + notice
+		width, height = max(width, m.noticeWidth), height+stackGap+notice
 	}
-	return height
+	return m.hold(c, width, height)
+}
+
+// hold keeps the window at the size of a menu that is closing until its
+// exit has finished, then lets it shrink to size.
+func (m *Menu) hold(c *ui.Context, width, height int) (int, int) {
+	if width >= m.heldWidth && height >= m.heldHeight {
+		m.heldWidth, m.heldHeight, m.release = width, height, time.Time{}
+		return width, height
+	}
+	now := c.Now()
+	if m.release.IsZero() {
+		m.release = now.Add(menuExit)
+	}
+	if !now.Before(m.release) {
+		m.heldWidth, m.heldHeight, m.release = width, height, time.Time{}
+		return width, height
+	}
+	c.AnimationFrame()
+	return max(width, m.heldWidth), max(height, m.heldHeight)
+}
+
+// rightEdge is the window width that shows all of r, a box laid out from
+// the window's left edge.
+func rightEdge(r ui.Rect) int {
+	if r.W <= 0 {
+		return 0
+	}
+	return int(math.Ceil(float64(r.X + r.W)))
 }
 
 func contains(list []string, id string) bool {
@@ -215,21 +308,22 @@ func contains(list []string, id string) bool {
 }
 
 // bar is the first surface: the assistants, which open the second menu,
-// then copy and vocabulary, which act at once.
+// copy and vocabulary, which act at once, and the X, which opens the
+// disable menu. It is as wide as its buttons.
 func (m *Menu) bar(c *ui.Context, store runtime.Store, tokens theme.Tokens, messages copy.Catalog, l layout, clients []string) {
-	ui.Row(c).Width(Width).Height(BarHeight).Padding(barPadding).Gap(2).AlignItems(ui.Center).Radius(theme.RadiusLG).
-		Background(tokens.PillSurface).Border(1, tokens.PillBorder).Children(func() {
+	ui.Row(c).Height(BarHeight).Padding(barPadding).Gap(2).AlignItems(ui.Center).Radius(theme.RadiusLG).
+		Background(tokens.PillSurface).Border(barBorder, tokens.PillBorder).Children(func() {
 		for _, id := range clients {
 			if m.clientButton(c, tokens, messages, id) {
 				if m.client == id {
 					m.client = ""
 				} else {
-					m.client, m.highlight, m.failure = id, 0, ""
+					m.client, m.disabling, m.highlight, m.failure = id, false, 0, ""
 				}
 			}
 		}
 		if len(clients) > 0 && (l.copy != nil || l.vocab != nil) {
-			ui.Box(c).Width(1).Height(16).Margin(0, 3).Background(tokens.PillBorder)
+			divider(c, tokens)
 		}
 		if l.copy != nil && m.tool(c, tokens, messages, *l.copy, icons.Copy) {
 			m.run(store, *l.copy)
@@ -237,7 +331,29 @@ func (m *Menu) bar(c *ui.Context, store runtime.Store, tokens theme.Tokens, mess
 		if l.vocab != nil && m.tool(c, tokens, messages, *l.vocab, icons.BookOpen) {
 			m.run(store, *l.vocab)
 		}
+		divider(c, tokens)
+		x := m.closeButton(c, tokens, messages)
+		if x.Clicked() {
+			m.disabling = !m.disabling
+			if m.disabling {
+				m.client, m.failure = "", ""
+			}
+		}
+		if end := rightEdge(x.LayoutBounds()); end > 0 {
+			m.barWidth = end + barPadding + barBorder
+		}
 	})
+}
+
+func divider(c *ui.Context, tokens theme.Tokens) {
+	ui.Box(c).Width(1).Height(16).Margin(0, 3).Shrink(0).Background(tokens.PillBorder)
+}
+
+// feel gives a bar or menu button its motion: the hover and chosen fills
+// fade, and the button sinks a little while pressed.
+func feel(button ui.Element) {
+	button.Transition(ui.ElementTransition{Colors: true, Animation: &theme.Quick})
+	kit.Press(button)
 }
 
 func (m *Menu) clientButton(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, id string) bool {
@@ -251,10 +367,15 @@ func (m *Menu) clientButton(c *ui.Context, tokens theme.Tokens, messages copy.Ca
 	case button.Hovered():
 		button.Background(tokens.PillText.Alpha(0.08))
 	}
+	feel(button)
 	button.Children(func() {
 		ui.Icon(c, clientIcon(id)).FontSize(14).TextColor(tokens.PillText)
 		ui.Text(c, name).FontSize(theme.Caption).FontWeight(500).TextColor(tokens.PillText).SingleLine()
-		ui.Icon(c, icons.ChevronDown).FontSize(12).TextColor(tokens.PillMuted)
+		turn := float32(0)
+		if chosen {
+			turn = 180
+		}
+		ui.Icon(c, icons.ChevronDown).FontSize(12).TextColor(tokens.PillMuted).AnimatePose(ui.Pose{Rotate: turn}, theme.Disclosure)
 	})
 	return button.Clicked()
 }
@@ -267,6 +388,7 @@ func (m *Menu) tool(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, a
 	if button.Hovered() {
 		button.Background(tokens.PillText.Alpha(0.08))
 	}
+	feel(button)
 	button.Children(func() {
 		ui.Icon(c, icon).FontSize(14).TextColor(tokens.PillMuted)
 		ui.Text(c, name).FontSize(theme.Caption).FontWeight(500).TextColor(tokens.PillText).SingleLine()
@@ -274,11 +396,28 @@ func (m *Menu) tool(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, a
 	return button.Clicked()
 }
 
+// closeButton is the X at the bar's trailing edge.
+func (m *Menu) closeButton(c *ui.Context, tokens theme.Tokens, messages copy.Catalog) ui.Element {
+	button := ui.ButtonBase(c.Key("disable")).Size(toolHeight, toolHeight).Radius(theme.RadiusMD).Justify(ui.Center).
+		AlignItems(ui.Center).Shrink(0).Label(messages.Text(copy.SelectionDisableMenu)).Selected(m.disabling)
+	switch {
+	case m.disabling:
+		button.Background(tokens.PillText.Alpha(0.14))
+	case button.Hovered():
+		button.Background(tokens.PillText.Alpha(0.08))
+	}
+	feel(button)
+	button.Children(func() {
+		ui.Icon(c, icons.X).FontSize(13).TextColor(tokens.PillMuted)
+	})
+	return button
+}
+
 // menu is the second surface for the chosen assistant. Clicking the
 // question field only focuses it; submitting it asks.
 func (m *Menu) menu(c *ui.Context, store runtime.Store, tokens theme.Tokens, messages copy.Catalog, l layout) {
-	ui.Column(c).Width(MenuWidth).Padding(menuPad).Gap(menuGap).Radius(theme.RadiusLG).Background(tokens.PillSurface).
-		Border(1, tokens.PillBorder).Children(func() {
+	ui.Column(c.Key("menu-"+m.client)).Width(MenuWidth).Padding(menuPad).Gap(menuGap).Radius(theme.RadiusLG).Background(tokens.PillSurface).
+		Border(1, tokens.PillBorder).TransformOrigin(0, 0).Transition(menuMotion).Children(func() {
 		for i, action := range l.prompts {
 			if m.row(c, tokens, messages, action, i == m.highlight) {
 				m.highlight = i
@@ -291,6 +430,28 @@ func (m *Menu) menu(c *ui.Context, store runtime.Store, tokens theme.Tokens, mes
 		for _, action := range l.own(m.client) {
 			if m.row(c, tokens, messages, action, false) {
 				m.run(store, action)
+			}
+		}
+	})
+}
+
+// disableMenu opens under the X, at the bar's trailing edge. Choosing a
+// row disables the bar as it says; the backend then dismisses it.
+func (m *Menu) disableMenu(c *ui.Context, store runtime.Store, tokens theme.Tokens, scopes []disableScope) {
+	ui.Column(c.Key("menu-disable")).Width(MenuWidth).AlignSelf(ui.End).Padding(menuPad).Gap(menuGap).Radius(theme.RadiusLG).
+		Background(tokens.PillSurface).Border(1, tokens.PillBorder).TransformOrigin(1, 0).Transition(menuMotion).Children(func() {
+		for _, scope := range scopes {
+			button := ui.ButtonBase(c.Key("disable-"+scope.scope)).Height(menuRow).Padding(0, 8).Radius(theme.RadiusMD).
+				Justify(ui.Start).AlignItems(ui.Center).Label(scope.label)
+			if button.Hovered() {
+				button.Background(tokens.PillText.Alpha(0.08))
+			}
+			feel(button)
+			button.Children(func() {
+				ui.Text(c, scope.label).FontSize(theme.Caption).TextColor(tokens.PillText).SingleLine().Grow(1).Shrink(1)
+			})
+			if button.Clicked() {
+				m.disable(store, scope.scope)
 			}
 		}
 	})
@@ -316,6 +477,7 @@ func (m *Menu) row(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, ac
 	case button.Hovered():
 		button.Background(tokens.PillText.Alpha(0.08))
 	}
+	feel(button)
 	button.Children(func() {
 		ui.Text(c, name).FontSize(theme.Caption).TextColor(ink).SingleLine().Grow(1).Shrink(1)
 		if highlighted {
@@ -349,6 +511,14 @@ func (m *Menu) run(store runtime.Store, action runtime.SelectionAction) {
 		err = store.Actions.AddSelectionVocabulary()
 	}
 	m.failure = failure(action, err)
+}
+
+func (m *Menu) disable(store runtime.Store, scope string) {
+	if err := store.Actions.DisableSelection(scope); err != nil {
+		m.failure = copy.SelectionFailed
+		return
+	}
+	m.disabling = false
 }
 
 func failure(action runtime.SelectionAction, err error) copy.Key {

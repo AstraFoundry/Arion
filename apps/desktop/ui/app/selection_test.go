@@ -1,8 +1,13 @@
 package app
 
 import (
+	"bytes"
+	"errors"
+	"fmt"
+	"image/png"
 	"strings"
 	"testing"
+	"time"
 
 	"arion.local/desktop/ui/features/selection"
 	"arion.local/desktop/ui/pages/onboarding"
@@ -110,13 +115,33 @@ func offerFor(state *runtime.State, clients ...string) {
 	state.Selection = runtime.SelectionOffer{Text: "Feature-Sliced Design", Actions: prefs.VisibleActions(), Clients: prefs.EnabledClients()}
 }
 
-// selectionTester leaves room below the bar for the second menu.
+// selectionTester leaves room below the bar for the second menu. It
+// reports the height the page asks for.
 func selectionTester(store runtime.Store) (*ui.Tester, *int) {
-	page := &selectionpage.Page{}
-	height := new(int)
-	tt := ui.NewTester(func(c *ui.Context) { *height = page.Render(c, store) }, SelectionWidth, 320)
-	settle(tt)
+	tt, _, height := sizedSelectionTester(store)
 	return tt, height
+}
+
+// sizedSelectionTester also reports the width the page asks for, and
+// takes that width as the window does once the bar has measured itself.
+func sizedSelectionTester(store runtime.Store) (*ui.Tester, *int, *int) {
+	page := &selectionpage.Page{}
+	width, height := new(int), new(int)
+	tt := ui.NewTester(func(c *ui.Context) { *width, *height = page.Render(c, store) }, SelectionWidth, 320)
+	settle(tt)
+	tt.SetSize(*width, 320)
+	settle(tt)
+	return tt, width, height
+}
+
+// barEnd is the right edge of the bar's last control, the X.
+func barEnd(t *testing.T, tt *ui.Tester, messages copy.Catalog) ui.Rect {
+	t.Helper()
+	x, ok := tt.Find(messages.Text(copy.SelectionDisableMenu))
+	if !ok {
+		t.Fatalf("no X on the bar: %q", tt.Texts())
+	}
+	return x
 }
 
 // promptTitles are the rows of the second menu, which the bar never shows.
@@ -132,16 +157,20 @@ func TestSelectionBar(t *testing.T) {
 			state.Preferences.UILanguage = locale
 			offerFor(state, runtime.SelectionClientClaude, runtime.SelectionClientChatGPT)
 			messages := store.Copy()
-			tt, height := selectionTester(store)
+			tt, width, height := sizedSelectionTester(store)
 			expect(t, tt, true, messages.Text(copy.SelectionClaude), messages.Text(copy.SelectionChatGPT), messages.Text(copy.Copy), messages.Text(copy.SelectionVocabulary))
 			expect(t, tt, false, append(promptTitles(messages), messages.Text(copy.SelectionAskChatGPT))...)
-			if *height != SelectionHeightFor(store) || SelectionHeightFor(store) > 40 || SelectionWidth > 420 {
-				t.Fatalf("bar %dx%d, window height %d", SelectionWidth, SelectionHeightFor(store), *height)
+			if *height != SelectionHeightFor(store) || SelectionHeightFor(store) > 40 || *width > 480 {
+				t.Fatalf("bar %dx%d, window height %d", *width, SelectionHeightFor(store), *height)
 			}
 			claude, _ := tt.Find(messages.Text(copy.SelectionClaude))
 			vocabulary, _ := tt.Find(messages.Text(copy.SelectionVocabulary))
-			if vocabulary.Y > claude.Y+claude.H || vocabulary.X+vocabulary.W > SelectionWidth {
-				t.Fatalf("bar actions are not one row: %v %v", claude, vocabulary)
+			x := barEnd(t, tt, messages)
+			if vocabulary.Y > claude.Y+claude.H || x.Y > claude.Y+claude.H || vocabulary.X+vocabulary.W > x.X {
+				t.Fatalf("bar actions are not one row ending in the X: %v %v %v", claude, vocabulary, x)
+			}
+			if gap := float32(*width) - (x.X + x.W); gap < 4 || gap > 6 {
+				t.Fatalf("window %d leaves %.1f DIPs after the X at %v", *width, gap, x)
 			}
 			snapshot(t, tt, "selection-bar-"+string(locale))
 
@@ -221,6 +250,136 @@ func TestSelectionBar(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSelectionDisableMenu(t *testing.T) {
+	for _, locale := range locales {
+		t.Run(string(locale), func(t *testing.T) {
+			state, actions, store := fixture()
+			state.Preferences.UILanguage = locale
+			offerFor(state, runtime.SelectionClientClaude)
+			state.Selection.Source = runtime.SelectionSource{App: "com.apple.Safari", AppName: "Safari", Site: "example.com"}
+			messages := store.Copy()
+			tt, width, height := sizedSelectionTester(store)
+			pause := messages.SelectionPause(runtime.SelectionPause)
+			rows := []string{pause, messages.SelectionDisableSite("example.com"), messages.SelectionDisableApp("Safari"), messages.Text(copy.SelectionTurnOff)}
+			expect(t, tt, false, rows...)
+			x := barEnd(t, tt, messages)
+			clicker(t, tt)(messages.Text(copy.SelectionDisableMenu))
+			expect(t, tt, true, rows...)
+			expect(t, tt, false, messages.Text(copy.SelectionTranslate))
+			first, _ := tt.Find(pause)
+			last, _ := tt.Find(messages.Text(copy.SelectionTurnOff))
+			if first.Y < x.Y+x.H || last.Y <= first.Y || first.X+first.W > float32(*width) || first.X < float32(*width)-selectionmenu.MenuWidth {
+				t.Fatalf("disable rows %v %v are not under the X %v in a window %d wide", first, last, x, *width)
+			}
+			if *height <= SelectionHeightFor(store) {
+				t.Fatalf("disable menu left the window %d tall", *height)
+			}
+			snapshot(t, tt, "selection-disable-"+string(locale))
+
+			tt.Key(0, ui.KeyEscape)
+			settle(tt)
+			expect(t, tt, false, rows...)
+			clicker(t, tt)(messages.Text(copy.SelectionClaude))
+			clicker(t, tt)(messages.Text(copy.SelectionDisableMenu))
+			expect(t, tt, false, messages.Text(copy.SelectionTranslate))
+			for i, scope := range []string{runtime.SelectionDisablePause, runtime.SelectionDisableSite, runtime.SelectionDisableApp, runtime.SelectionDisableAll} {
+				if i > 0 {
+					clicker(t, tt)(messages.Text(copy.SelectionDisableMenu))
+				}
+				clicker(t, tt)(rows[i])
+				if !actions.called("selection-disable:" + scope) {
+					t.Fatalf("%s did not disable %s: %v", rows[i], scope, actions.calls)
+				}
+				expect(t, tt, false, rows...)
+			}
+			for _, call := range actions.calls {
+				if strings.Contains(call, "prefs") {
+					t.Fatal("the bar wrote preferences")
+				}
+			}
+
+			actions.selectionError = errors.New("preferences not saved")
+			clicker(t, tt)(messages.Text(copy.SelectionDisableMenu))
+			clicker(t, tt)(pause)
+			expect(t, tt, true, messages.Text(copy.SelectionFailed))
+		})
+	}
+}
+
+func TestSelectionDisableMenuWithoutSource(t *testing.T) {
+	state, _, store := fixture()
+	offerFor(state)
+	messages := store.Copy()
+	tt, _, _ := sizedSelectionTester(store)
+	clicker(t, tt)(messages.Text(copy.SelectionDisableMenu))
+	expect(t, tt, true, messages.SelectionPause(runtime.SelectionPause), messages.Text(copy.SelectionTurnOff))
+	for _, text := range tt.Texts() {
+		if strings.HasPrefix(text, "Disable on") || strings.HasPrefix(text, "Disable in") {
+			t.Fatalf("an unnamed source offered %q", text)
+		}
+	}
+	snapshot(t, tt, "selection-disable-local-en")
+}
+
+// TestSelectionMenuMotion: a menu comes in over its first frames, and the
+// window keeps its height while a closing menu leaves.
+func TestSelectionMenuMotion(t *testing.T) {
+	state, _, store := fixture()
+	offerFor(state, runtime.SelectionClientChatGPT)
+	messages := store.Copy()
+	tt, _, height := sizedSelectionTester(store)
+	if err := tt.Click(messages.Text(copy.SelectionChatGPT)); err != nil {
+		t.Fatal(err)
+	}
+	open := *height
+	var entering [][]byte
+	for i := 0; i < 4; i++ {
+		rest(tt, 40*time.Millisecond)
+		entering = append(entering, pixels(t, tt))
+		snapshot(t, tt, fmt.Sprintf("selection-menu-enter-%dms", 40*(i+1)))
+	}
+	settle(tt)
+	settled := pixels(t, tt)
+	if bytes.Equal(entering[0], settled) || bytes.Equal(entering[0], entering[1]) {
+		t.Fatal("the menu appeared at once instead of coming in")
+	}
+	if *height != open {
+		t.Fatalf("the menu did not settle at %d (window %d)", open, *height)
+	}
+
+	if err := tt.Click(messages.Text(copy.SelectionChatGPT)); err != nil {
+		t.Fatal(err)
+	}
+	for i := 0; i < 3; i++ {
+		rest(tt, 40*time.Millisecond)
+		if *height != open {
+			t.Fatalf("the window shrank to %d after %d ms, cutting off the leaving menu", *height, 40*(i+1))
+		}
+		snapshot(t, tt, fmt.Sprintf("selection-menu-exit-%dms", 40*(i+1)))
+	}
+	settle(tt)
+	if *height != SelectionHeightFor(store) {
+		t.Fatalf("closed menu left height %d", *height)
+	}
+
+	if err := tt.Click(messages.Text(copy.SelectionDisableMenu)); err != nil {
+		t.Fatal(err)
+	}
+	for i := 0; i < 3; i++ {
+		rest(tt, 40*time.Millisecond)
+		snapshot(t, tt, fmt.Sprintf("selection-disable-enter-%dms", 40*(i+1)))
+	}
+}
+
+func pixels(t *testing.T, tt *ui.Tester) []byte {
+	t.Helper()
+	var buffer bytes.Buffer
+	if err := png.Encode(&buffer, tt.Image()); err != nil {
+		t.Fatal(err)
+	}
+	return buffer.Bytes()
 }
 
 func TestSelectionBarWithoutClients(t *testing.T) {

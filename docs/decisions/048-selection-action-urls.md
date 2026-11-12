@@ -1,6 +1,6 @@
 # ADR 048: Selection action URLs
 
-Status: Accepted. Backend contract for [011](../../specs/011-selection-actions.md). The popover, onboarding page, and settings card are SEL-06 and SEL-07.
+Status: Accepted. Backend contract for [011](../../specs/011-selection-actions.md). The popover, onboarding page, and settings card are SEL-06 and SEL-07; the disable menu is SEL-08.
 
 ## Context
 

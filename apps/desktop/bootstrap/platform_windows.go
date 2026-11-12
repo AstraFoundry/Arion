@@ -59,6 +59,12 @@ func (windowsPlatform) ReadSelection() (string, bool, error) {
 func (windowsPlatform) SelectionAnchor() (int, int, int, int, bool) {
 	return windows.SelectedTextAnchor()
 }
+
+// SelectionSource: the Windows reader does not name the app or page yet,
+// so the bar offers only the pause and the master switch there.
+func (windowsPlatform) SelectionSource() application.SelectionSource {
+	return application.SelectionSource{}
+}
 func (windowsPlatform) StartSelectionWatch(sink func()) error {
 	return windows.StartSelectionWatch(sink)
 }

@@ -55,6 +55,9 @@ func (otherPlatform) ReadSelection() (string, bool, error) {
 	return "", false, domain.Fail(domain.CodeTargetUnsupported, "selection")
 }
 func (otherPlatform) SelectionAnchor() (int, int, int, int, bool) { return 0, 0, 0, 0, false }
+func (otherPlatform) SelectionSource() application.SelectionSource {
+	return application.SelectionSource{}
+}
 func (otherPlatform) StartSelectionWatch(func()) error {
 	return domain.Fail(domain.CodeTargetUnsupported, "selection")
 }

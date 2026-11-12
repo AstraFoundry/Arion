@@ -155,6 +155,7 @@ type App struct {
 	selectionStarted sync.Once
 	selectionWin     *mygo.Window
 	selectionAnchor  mygo.Rectangle
+	selectionWidth   int
 	selectionHeight  int
 	openSelectionURL func(string) error
 	holdKey          application.HoldKey

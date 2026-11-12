@@ -2,7 +2,9 @@ package application
 
 import (
 	"errors"
+	"slices"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"arion.local/core/domain"
@@ -41,6 +43,18 @@ const (
 	SelectionPlaceholderAsk    = "{{question}}"
 )
 
+// Ways to stop the bar from its disable menu: for SelectionPause, in the
+// app or on the site it was offered over, or by the master switch.
+const (
+	SelectionDisablePause = "pause"
+	SelectionDisableApp   = "app"
+	SelectionDisableSite  = "site"
+	SelectionDisableAll   = "all"
+)
+
+// SelectionPause is how long SelectionDisablePause hides the bar.
+const SelectionPause = 60 * time.Minute
+
 // ClaudeQueryLimit is the documented Claude prefill cap, in Unicode
 // characters of the query value before URL encoding.
 const ClaudeQueryLimit = 14000
@@ -63,6 +77,9 @@ var (
 	ErrSelectionAction = errors.New("selection action is unavailable")
 	// ErrSelectionEmpty is a mouse-up with no selected text.
 	ErrSelectionEmpty = errors.New("selection is empty")
+	// ErrSelectionScope is a disable scope the offer cannot name: an
+	// unknown scope, or an app or site the reader did not identify.
+	ErrSelectionScope = errors.New("selection disable scope is unavailable")
 )
 
 // SelectionPreferences is the global selection popover. The zero Enabled
@@ -72,6 +89,12 @@ type SelectionPreferences struct {
 	Clients []SelectionClient `json:"clients,omitempty"`
 	// Actions nil means the built-in list.
 	Actions []SelectionAction `json:"actions,omitempty"`
+	// PausedUntil, in Unix seconds, hides the bar until then.
+	PausedUntil int64 `json:"pausedUntil,omitempty"`
+	// DisabledApps are app identifiers, and DisabledSites web hosts, where
+	// the bar is not offered.
+	DisabledApps  []string `json:"disabledApps,omitempty"`
+	DisabledSites []string `json:"disabledSites,omitempty"`
 }
 
 // SelectionClient is one summon target. Template is the built-in URL; a
@@ -97,15 +120,27 @@ type SelectionAction struct {
 type SelectionReading struct {
 	Text   string
 	Secure bool
+	Source SelectionSource
+}
+
+// SelectionSource is where a selection was made: the app's identifier
+// (a bundle identifier on macOS) and display name, and the http(s) host of
+// the page holding it. Each is empty when the reader cannot tell.
+type SelectionSource struct {
+	App     string
+	AppName string
+	Site    string
 }
 
 // SelectionOffer is the in-memory popover input. It is absent when the
-// master switch is off, the field is secure, or nothing is selected.
-// Clients are the enabled client ids, in built-in order.
+// master switch is off, the bar is paused or disabled for its source, the
+// field is secure, or nothing is selected. Clients are the enabled client
+// ids, in built-in order.
 type SelectionOffer struct {
 	Text    string
 	Actions []SelectionAction
 	Clients []string
+	Source  SelectionSource
 }
 
 // DefaultSelectionPreferences is off, with both clients present and disabled.
@@ -449,21 +484,63 @@ func truncateRunes(text string, limit int) string {
 }
 
 // OfferAfterMouseUp reads the focused selection only while the master
-// switch is on. A secure field or an empty selection produces no offer.
+// switch is on and the bar is not paused at now. A secure field, an empty
+// selection, or an app or site the bar is disabled for produces no offer.
 // The selected text is not retained in that case, and a read error is
 // returned without an offer.
-func OfferAfterMouseUp(prefs SelectionPreferences, read func() (SelectionReading, error)) (SelectionOffer, bool, error) {
-	if !prefs.Enabled || read == nil {
+func OfferAfterMouseUp(prefs SelectionPreferences, now time.Time, read func() (SelectionReading, error)) (SelectionOffer, bool, error) {
+	if !prefs.Enabled || prefs.Paused(now) || read == nil {
 		return SelectionOffer{}, false, nil
 	}
 	reading, err := read()
 	if err != nil {
 		return SelectionOffer{}, false, err
 	}
-	if reading.Secure || strings.TrimSpace(reading.Text) == "" {
+	if reading.Secure || strings.TrimSpace(reading.Text) == "" || prefs.DisabledFor(reading.Source) {
 		return SelectionOffer{}, false, nil
 	}
-	return SelectionOffer{Text: reading.Text, Actions: prefs.VisibleActions(), Clients: prefs.EnabledClients()}, true, nil
+	return SelectionOffer{Text: reading.Text, Actions: prefs.VisibleActions(), Clients: prefs.EnabledClients(), Source: reading.Source}, true, nil
+}
+
+// Paused reports whether SelectionDisablePause still hides the bar at now.
+// A zero PausedUntil was never paused.
+func (p SelectionPreferences) Paused(now time.Time) bool {
+	return p.PausedUntil != 0 && p.PausedUntil > now.Unix()
+}
+
+// DisabledFor reports whether the bar is disabled in source's app or on
+// its site.
+func (p SelectionPreferences) DisabledFor(source SelectionSource) bool {
+	return source.App != "" && slices.Contains(p.DisabledApps, source.App) ||
+		source.Site != "" && slices.Contains(p.DisabledSites, source.Site)
+}
+
+// Disable stops the bar as scope says: for SelectionPause from now, in
+// source's app or on its site, or by turning the master switch off.
+func (p *SelectionPreferences) Disable(scope string, source SelectionSource, now time.Time) error {
+	switch scope {
+	case SelectionDisablePause:
+		p.PausedUntil = now.Add(SelectionPause).Unix()
+	case SelectionDisableApp:
+		if source.App == "" {
+			return ErrSelectionScope
+		}
+		if !slices.Contains(p.DisabledApps, source.App) {
+			p.DisabledApps = append(slices.Clip(p.DisabledApps), source.App)
+		}
+	case SelectionDisableSite:
+		if source.Site == "" {
+			return ErrSelectionScope
+		}
+		if !slices.Contains(p.DisabledSites, source.Site) {
+			p.DisabledSites = append(slices.Clip(p.DisabledSites), source.Site)
+		}
+	case SelectionDisableAll:
+		p.Enabled = false
+	default:
+		return ErrSelectionScope
+	}
+	return nil
 }
 
 // CopySelection writes text with the existing clipboard writer. A secure

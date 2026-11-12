@@ -756,6 +756,13 @@
   "SelectionReturn": "Return",
   "SelectionFailed": "This action could not be completed",
   "SelectionOpenFailed": "The assistant could not be opened",
+  "SelectionDisableMenu": "Disable options",
+  "SelectionPauseHour": "Disable for 1 hour",
+  "FormatSelectionPauseHours": "Disable for {count} hours",
+  "FormatSelectionPauseMinutes": "Disable for {count} minutes",
+  "FormatSelectionDisableSite": "Disable on {site}",
+  "FormatSelectionDisableApp": "Disable in {app}",
+  "SelectionTurnOff": "Turn off selection actions",
   "OnbSelectionTitle": "Act on selected text",
   "OnbSelectionBody": "Select text in any app to translate it, explain it or ask an assistant. You can leave this off."
 }

@@ -100,19 +100,22 @@ func Feedback(store runtime.Store) View {
 	return View{Content: view(func(c *ui.Context) { page.Render(c, store) }).WithClipboardWriter(func(text string) { store.Actions.CopyText(text) }), Close: func() {}}
 }
 
+// SelectionWidth is the selection popover's width as it opens, before the
+// bar has measured itself.
 const SelectionWidth = selection.Width
 
 // SelectionHeightFor sizes the selection popover for the current offer.
 func SelectionHeightFor(store runtime.Store) int { return selection.Height(store) }
 
 // Selection is the popover over another app's selected text. resize
-// receives the height the menu needs, which grows with a failure line.
-func Selection(store runtime.Store, resize func(int)) View {
+// receives the size the bar and its open menu need: as wide as the bar,
+// and taller with a menu or a failure line.
+func Selection(store runtime.Store, resize func(width, height int)) View {
 	page := &selection.Page{}
 	return View{Content: view(func(c *ui.Context) {
-		height := page.Render(c, store)
+		width, height := page.Render(c, store)
 		if resize != nil {
-			resize(height)
+			resize(width, height)
 		}
 	}), Close: func() {}}
 }

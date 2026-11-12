@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 	"testing"
+	"time"
 	"unicode/utf8"
 
 	"arion.local/core/domain"
@@ -174,7 +175,7 @@ func TestSelectionURLChosenClient(t *testing.T) {
 	if _, err := prefs.Selection.SelectionURL(SelectionActionExplain, SelectionClientChatGPT, "hello", ""); !errors.Is(err, ErrSelectionClient) {
 		t.Fatalf("disabled chosen client: %v", err)
 	}
-	offer, ok, err := OfferAfterMouseUp(prefs.Selection, func() (SelectionReading, error) { return SelectionReading{Text: "hello"}, nil })
+	offer, ok, err := OfferAfterMouseUp(prefs.Selection, time.Time{}, func() (SelectionReading, error) { return SelectionReading{Text: "hello"}, nil })
 	if !ok || err != nil || len(offer.Clients) != 1 || offer.Clients[0] != SelectionClientClaude {
 		t.Fatalf("offer clients %+v %v %v", offer, ok, err)
 	}
@@ -187,11 +188,11 @@ func TestSelectionMouseUpSwitchSecureCopyAndHotword(t *testing.T) {
 		reads++
 		return SelectionReading{Text: "SelectionTerm"}, nil
 	}
-	if _, ok, err := OfferAfterMouseUp(prefs.Selection, read); ok || err != nil || reads != 0 {
+	if _, ok, err := OfferAfterMouseUp(prefs.Selection, time.Time{}, read); ok || err != nil || reads != 0 {
 		t.Fatalf("switch off offered a selection: %v %v reads=%d", ok, err, reads)
 	}
 	prefs.Selection.Enabled = true
-	offer, ok, err := OfferAfterMouseUp(prefs.Selection, read)
+	offer, ok, err := OfferAfterMouseUp(prefs.Selection, time.Time{}, read)
 	if err != nil || !ok || offer.Text != "SelectionTerm" || reads != 1 {
 		t.Fatalf("offer %+v %v %v", offer, ok, err)
 	}
@@ -213,7 +214,7 @@ func TestSelectionMouseUpSwitchSecureCopyAndHotword(t *testing.T) {
 	if err := AddSelectionHotword(secure, func(text string) error { added = text; return nil }); domain.CodeOf(err) != domain.CodeSecureFieldBlocked || added != "" {
 		t.Fatalf("secure hotword %q %v", added, err)
 	}
-	if _, ok, err := OfferAfterMouseUp(prefs.Selection, func() (SelectionReading, error) { return secure, nil }); ok || err != nil {
+	if _, ok, err := OfferAfterMouseUp(prefs.Selection, time.Time{}, func() (SelectionReading, error) { return secure, nil }); ok || err != nil {
 		t.Fatal("secure field produced an offer")
 	}
 	if err := CopySelection(SelectionReading{Text: "SelectionTerm"}, func(text string) error { wrote = text; return nil }); err != nil || wrote != "SelectionTerm" {
@@ -221,6 +222,70 @@ func TestSelectionMouseUpSwitchSecureCopyAndHotword(t *testing.T) {
 	}
 	if err := AddSelectionHotword(SelectionReading{Text: "SelectionTerm"}, func(text string) error { added = text; return nil }); err != nil || added != "SelectionTerm" {
 		t.Fatalf("hotword %q %v", added, err)
+	}
+}
+
+func TestSelectionDisableScopes(t *testing.T) {
+	prefs := DefaultPreferences("darwin").Selection
+	prefs.Enabled = true
+	now := time.Unix(1_800_000_000, 0)
+	safari := SelectionSource{App: "com.apple.Safari", AppName: "Safari", Site: "example.com"}
+	reads := 0
+	read := func() (SelectionReading, error) {
+		reads++
+		return SelectionReading{Text: "SelectionTerm", Source: safari}, nil
+	}
+	if offer, ok, err := OfferAfterMouseUp(prefs, now, read); !ok || err != nil || offer.Source != safari {
+		t.Fatalf("offer %+v %v %v", offer, ok, err)
+	}
+
+	paused := prefs
+	if err := paused.Disable(SelectionDisablePause, safari, now); err != nil || paused.PausedUntil != now.Add(60*time.Minute).Unix() {
+		t.Fatalf("pause until %d: %v", paused.PausedUntil, err)
+	}
+	reads = 0
+	if _, ok, _ := OfferAfterMouseUp(paused, now.Add(59*time.Minute), read); ok || reads != 0 {
+		t.Fatalf("paused bar offered, reads=%d", reads)
+	}
+	if _, ok, _ := OfferAfterMouseUp(paused, now.Add(60*time.Minute), read); !ok {
+		t.Fatal("the pause did not end after an hour")
+	}
+
+	inApp := prefs
+	if err := inApp.Disable(SelectionDisableApp, safari, now); err != nil || len(inApp.DisabledApps) != 1 {
+		t.Fatalf("disable in app %+v: %v", inApp.DisabledApps, err)
+	}
+	_ = inApp.Disable(SelectionDisableApp, safari, now)
+	if len(inApp.DisabledApps) != 1 || len(prefs.DisabledApps) != 0 {
+		t.Fatalf("disabled apps %+v, original %+v", inApp.DisabledApps, prefs.DisabledApps)
+	}
+	if _, ok, _ := OfferAfterMouseUp(inApp, now, read); ok {
+		t.Fatal("disabled app offered")
+	}
+	other := func() (SelectionReading, error) {
+		return SelectionReading{Text: "SelectionTerm", Source: SelectionSource{App: "com.apple.TextEdit"}}, nil
+	}
+	if _, ok, _ := OfferAfterMouseUp(inApp, now, other); !ok {
+		t.Fatal("another app lost the bar")
+	}
+
+	onSite := prefs
+	if err := onSite.Disable(SelectionDisableSite, safari, now); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok, _ := OfferAfterMouseUp(onSite, now, read); ok || len(onSite.DisabledApps) != 0 {
+		t.Fatal("disabled site offered")
+	}
+
+	off := prefs
+	if err := off.Disable(SelectionDisableAll, safari, now); err != nil || off.Enabled {
+		t.Fatalf("turn off %+v: %v", off, err)
+	}
+	for _, scope := range []string{SelectionDisableApp, SelectionDisableSite, "forever"} {
+		unknown := prefs
+		if err := unknown.Disable(scope, SelectionSource{}, now); !errors.Is(err, ErrSelectionScope) {
+			t.Fatalf("%s without a source: %v", scope, err)
+		}
 	}
 }
 
