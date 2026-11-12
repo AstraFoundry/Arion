@@ -18,7 +18,7 @@ function Shell({ children }: { children: ReactNode }) {
       >
         {copy.common.skipToContent}
       </a>
-      <div className="relative z-10 overflow-clip border-b border-border bg-background shadow-4">
+      <div className="relative z-10 overflow-clip bg-background shadow-[0_18px_40px_-18px_rgb(20_18_14/0.16)]">
         <SiteHeader />
         <main id="main">{children}</main>
       </div>

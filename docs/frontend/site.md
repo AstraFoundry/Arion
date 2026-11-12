@@ -57,7 +57,7 @@ Cards alternate between two rows that drift in opposite directions; each track h
 
 ## Footer
 
-The header and `main` sit on a page sheet (`LocaleRootLayout`): the background color with square corners, a bottom border and `shadow-4`, layered above the footer. `site-footer` is as tall as its content, on the `muted` token (one step darker than the page in light mode), with the link columns and the copyright line. It is `sticky` to the viewport bottom beneath the sheet, so the sheet slides off to uncover a stationary layer; a footer taller than the viewport reveals from its bottom edge and scrolls normally once fully in place.
+The header and `main` sit on a page sheet (`LocaleRootLayout`): the background color with square corners and one soft blurred shadow (no border and no hard offset layer, so the edge does not read as a dark line), layered above the footer. `site-footer` is as tall as its content, on the `muted` token (one step darker than the page in light mode), with the link columns and the copyright line. It is `sticky` to the viewport bottom beneath the sheet, so the sheet slides off to uncover a stationary layer; a footer taller than the viewport reveals from its bottom edge and scrolls normally once fully in place.
 
 ## Blog
 
