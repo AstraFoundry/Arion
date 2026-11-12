@@ -35,7 +35,7 @@ Route files only set the locale and render a page from `src/pages`. Imports poin
 
 ## Hero
 
-`hero` is one left-aligned column on the header's left edge: the headline, then the lead, the download and source buttons and the license note under it, at every width. All copy and controls stay outside the art.
+`hero` is one left-aligned column on the header's left edge: the headline, then the lead, the download and source buttons and the license note under it, at every width. The space above the headline and between the column and the stage scales with viewport height (`clamp` on `svh`), so short screens keep the opening card in view; the gaps inside the column are fixed steps. All copy and controls stay outside the art.
 
 Below it, `HeroStage` is a 200svh track with a sticky, viewport-tall stage (a size container) holding the hillside photograph (`public/backdrops/hillside-*.webp`) with the demo floating on it. The photograph fills a 3:2 box that covers the stage from its top edge. The first screen shows the whole stage as a card under the copy, with the top half of the demo's window on the photograph and its lower part cut off by the card's bottom edge. As the reader scrolls, the card's bottom edge stays at the bottom of the viewport while its top rises with the page, and its gutter and corners shrink until it fills the viewport; then it sticks while the demo rises to rest, and holds before the page moves on. `HeroStage` measures the track, the stage and the demo to place these frames. Under reduced motion it shows the final frame; the static HTML carries an opening card and motion values move to the measured frame, so hydration never meets a differing attribute.
 
