@@ -7,7 +7,6 @@ category: announcement
 tags: [发布, 更新日志, 语音输入, 划词操作, 剪贴板]
 image: ./cover.webp
 imageAlt: Arion 深色的划词工具条，依次是 Claude、ChatGPT、Copy、Add to vocabulary 和一个 X。下方 Claude 的菜单列出 Translate to Chinese、Explain、Summarize key points、Rewrite 和 Ask a custom question…
-draft: true
 ---
 
 [Arion 0.1.4](/blog/arion-0-1-4/) 之后，我们为 Apple 芯片 Mac 和 Windows x64 发了 0.1.5 和 0.1.6 两个更新。0.1.5 支持第二个听写按键，麦克风打开得更早，润色回退时会说明原因，候选文字颜色可以固定，复制的文件改为主动开启才记录。0.1.6 新增划词操作、首次使用的概览页和剪贴板历史里的图片缩略图，并修复了 Windows 上反应慢的应用和 macOS 上从微信复制后的粘贴问题。
