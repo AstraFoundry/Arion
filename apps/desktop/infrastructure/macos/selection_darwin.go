@@ -3,12 +3,14 @@
 package macos
 
 /*
+#include <stdlib.h>
 #include "native.h"
 #include "selection.h"
 */
 import "C"
 
 import (
+	"os"
 	"sync"
 	"unsafe"
 
@@ -58,48 +60,66 @@ func StopSelectionWatch() {
 	selectionWatch.Unlock()
 }
 
-// ReadSelectedText returns the focused field's Accessibility selection.
-// A secure field returns no text. The text is not logged.
-func ReadSelectedText() (string, bool, error) {
-	var native C.arion_target
-	switch C.arion_capture_target(&native, 0) {
-	case C.ARION_TARGET_UNTRUSTED:
-		return "", false, domain.Fail(domain.CodePermissionDenied, "accessibility")
-	case C.ARION_TARGET_NONE:
-		return "", false, nil
-	case C.ARION_TARGET_OK:
-	default:
-		return "", false, domain.Fail(domain.CodeTargetUnsupported, "selection unavailable")
+// selectionFocus is the frontmost app's focused element. It is read from
+// that app rather than system-wide: the popover is a nonactivating panel
+// that takes the keyboard for its question field, and Arion never owns the
+// selection it shows. The caller releases a non-nil element.
+func selectionFocus() (element unsafe.Pointer, secure bool, err error) {
+	if C.arion_ax_trusted(0) != 1 {
+		return nil, false, domain.Fail(domain.CodePermissionDenied, "accessibility")
 	}
-	defer C.arion_release(native.element)
-	defer C.arion_release(native.selection)
-	if native.secure_input == 1 || C.GoString(&native.subrole[0]) == "AXSecureTextField" {
-		return "", true, nil
+	pid := C.arion_frontmost_pid()
+	if pid <= 0 || int(pid) == os.Getpid() {
+		return nil, false, nil
 	}
-	if native.element == nil {
-		return "", false, nil
+	var native C.int
+	element = C.arion_history_focus(pid, &native, nil, nil)
+	if native == 1 {
+		C.arion_release(element)
+		return nil, true, nil
 	}
-	_, _, selected, ok := cursorContextSelection(unsafe.Pointer(native.element), selectionReadMax)
-	if !ok {
-		return "", false, domain.Fail(domain.CodeTargetUnsupported, "selection unreadable")
-	}
-	return selected, false, nil
+	return element, false, nil
 }
 
-// SelectedTextAnchor is the focused selection's screen rectangle in points.
-// It reads geometry only. A secure field and a missing rectangle return ok false.
+// ReadSelectedText returns the focused selection: a text field's
+// Accessibility selection, otherwise the selected page text of the web
+// area around the focus. A secure field returns no text. The text is not
+// logged.
+func ReadSelectedText() (string, bool, error) {
+	element, secure, err := selectionFocus()
+	if err != nil || secure || element == nil {
+		return "", secure, err
+	}
+	defer C.arion_release(element)
+	_, _, selected, field := cursorContextSelection(element, selectionReadMax)
+	if field && selected != "" {
+		return selected, false, nil
+	}
+	var text *C.char
+	switch C.arion_web_selection(element, C.long(selectionReadMax), &text) {
+	case C.ARION_WEB_OK:
+		defer C.free(unsafe.Pointer(text))
+		return C.GoString(text), false, nil
+	case C.ARION_WEB_NONE:
+		if field {
+			return "", false, nil
+		}
+	}
+	return "", false, domain.Fail(domain.CodeTargetUnsupported, "selection unreadable")
+}
+
+// SelectedTextAnchor is the focused selection's screen rectangle in points,
+// from the text field or the web area ReadSelectedText reads. It reads
+// geometry only. A secure field and a missing rectangle return ok false.
 func SelectedTextAnchor() (x, y, width, height int, ok bool) {
-	var native C.arion_target
-	if C.arion_capture_target(&native, 0) != C.ARION_TARGET_OK {
+	element, secure, err := selectionFocus()
+	if err != nil || secure || element == nil {
 		return 0, 0, 0, 0, false
 	}
-	defer C.arion_release(native.element)
-	defer C.arion_release(native.selection)
-	if native.secure_input == 1 || C.GoString(&native.subrole[0]) == "AXSecureTextField" || native.element == nil {
-		return 0, 0, 0, 0, false
-	}
+	defer C.arion_release(element)
 	var left, top, w, h C.double
-	if C.arion_history_anchor(native.element, &left, &top, &w, &h) != 1 {
+	if C.arion_history_anchor(element, &left, &top, &w, &h) != 1 &&
+		C.arion_web_selection_bounds(element, &left, &top, &w, &h) != 1 {
 		return 0, 0, 0, 0, false
 	}
 	return int(left), int(top), int(w), int(h), true

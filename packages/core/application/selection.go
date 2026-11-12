@@ -101,9 +101,11 @@ type SelectionReading struct {
 
 // SelectionOffer is the in-memory popover input. It is absent when the
 // master switch is off, the field is secure, or nothing is selected.
+// Clients are the enabled client ids, in built-in order.
 type SelectionOffer struct {
 	Text    string
 	Actions []SelectionAction
+	Clients []string
 }
 
 // DefaultSelectionPreferences is off, with both clients present and disabled.
@@ -266,6 +268,17 @@ func (p SelectionPreferences) VisibleActions() []SelectionAction {
 	return out
 }
 
+// EnabledClients lists the enabled built-in client ids. Claude precedes ChatGPT.
+func (p SelectionPreferences) EnabledClients() []string {
+	var out []string
+	for _, builtin := range builtinSelectionClients() {
+		if _, ok := p.enabledClient(builtin.ID); ok {
+			out = append(out, builtin.ID)
+		}
+	}
+	return out
+}
+
 // defaultClient is the first enabled built-in client. Claude precedes ChatGPT.
 func (p SelectionPreferences) defaultClient() (SelectionClient, bool) {
 	for _, builtin := range builtinSelectionClients() {
@@ -290,8 +303,10 @@ func (p SelectionPreferences) enabledClient(id string) (SelectionClient, bool) {
 	return SelectionClient{}, false
 }
 
-// SelectionURL fills the action's built-in template. It does not open the URL.
-func (p SelectionPreferences) SelectionURL(actionID, selection, question string) (string, error) {
+// SelectionURL fills the action's built-in template. A prompt goes to
+// clientID, or to the default client when clientID is empty; a client
+// action goes only to its own client. It does not open the URL.
+func (p SelectionPreferences) SelectionURL(actionID, clientID, selection, question string) (string, error) {
 	action, ok := findSelectionAction(p.ResolvedActions(), actionID)
 	if !ok || !action.Enabled {
 		return "", ErrSelectionAction
@@ -301,7 +316,11 @@ func (p SelectionPreferences) SelectionURL(actionID, selection, question string)
 	switch action.Kind {
 	case SelectionKindPrompt:
 		var has bool
-		client, has = p.defaultClient()
+		if clientID == "" {
+			client, has = p.defaultClient()
+		} else {
+			client, has = p.enabledClient(clientID)
+		}
 		if !has {
 			return "", ErrSelectionClient
 		}
@@ -311,6 +330,9 @@ func (p SelectionPreferences) SelectionURL(actionID, selection, question string)
 		}
 		text = filled
 	case SelectionKindClient:
+		if clientID != "" && clientID != action.ClientID {
+			return "", ErrSelectionAction
+		}
 		var has bool
 		client, has = p.enabledClient(action.ClientID)
 		if !has {
@@ -441,7 +463,7 @@ func OfferAfterMouseUp(prefs SelectionPreferences, read func() (SelectionReading
 	if reading.Secure || strings.TrimSpace(reading.Text) == "" {
 		return SelectionOffer{}, false, nil
 	}
-	return SelectionOffer{Text: reading.Text, Actions: prefs.VisibleActions()}, true, nil
+	return SelectionOffer{Text: reading.Text, Actions: prefs.VisibleActions(), Clients: prefs.EnabledClients()}, true, nil
 }
 
 // CopySelection writes text with the existing clipboard writer. A secure

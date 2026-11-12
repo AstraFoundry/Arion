@@ -10,11 +10,11 @@ func (r *recorder) AddSelectionVocabulary() error {
 	return r.selectionError
 }
 
-func (r *recorder) OpenSelection(actionID, question string) error {
+func (r *recorder) OpenSelection(actionID, clientID, question string) error {
+	call := "selection-open:" + clientID + ":" + actionID
 	if question != "" {
-		r.call("selection-open:" + actionID + ":" + question)
-		return r.selectionError
+		call += ":" + question
 	}
-	r.call("selection-open:" + actionID)
+	r.call(call)
 	return r.selectionError
 }

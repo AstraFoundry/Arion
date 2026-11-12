@@ -81,7 +81,7 @@ func TestSelectionURLEncodingCapSchemeAndMissingClient(t *testing.T) {
 	prefs.Selection.Enabled = true
 	prefs.Selection.Clients[0].Enabled = true
 	raw := "a b&中文?"
-	got, err := prefs.Selection.SelectionURL(SelectionActionExplain, raw, "")
+	got, err := prefs.Selection.SelectionURL(SelectionActionExplain, "", raw, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -93,7 +93,7 @@ func TestSelectionURLEncodingCapSchemeAndMissingClient(t *testing.T) {
 		t.Fatalf("encoded query %q in %s", query, got)
 	}
 	long := strings.Repeat("á", ClaudeQueryLimit+25)
-	capped, err := prefs.Selection.SelectionURL(SelectionActionExplain, long, "")
+	capped, err := prefs.Selection.SelectionURL(SelectionActionExplain, "", long, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -103,7 +103,7 @@ func TestSelectionURLEncodingCapSchemeAndMissingClient(t *testing.T) {
 	}
 	prefs.Selection.Clients[0].Enabled = false
 	prefs.Selection.Clients[1].Enabled = true
-	chat, err := prefs.Selection.SelectionURL(SelectionActionAskChatGPT, long, "")
+	chat, err := prefs.Selection.SelectionURL(SelectionActionAskChatGPT, "", long, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -133,14 +133,50 @@ func TestSelectionURLEncodingCapSchemeAndMissingClient(t *testing.T) {
 		t.Fatalf("https %s %v", allowed, err)
 	}
 	prefs.Selection.Clients[1].Enabled = false
-	if _, err := prefs.Selection.SelectionURL(SelectionActionTranslate, "hello", ""); !errors.Is(err, ErrSelectionClient) {
+	if _, err := prefs.Selection.SelectionURL(SelectionActionTranslate, "", "hello", ""); !errors.Is(err, ErrSelectionClient) {
 		t.Fatalf("missing client: %v", err)
 	}
-	if _, err := prefs.Selection.SelectionURL(SelectionActionAskChatGPT, "hello", ""); !errors.Is(err, ErrSelectionClient) {
+	if _, err := prefs.Selection.SelectionURL(SelectionActionAskChatGPT, "", "hello", ""); !errors.Is(err, ErrSelectionClient) {
 		t.Fatalf("disabled chatgpt: %v", err)
 	}
-	if _, err := prefs.Selection.SelectionURL("missing", "hello", ""); !errors.Is(err, ErrSelectionAction) {
+	if _, err := prefs.Selection.SelectionURL("missing", "", "hello", ""); !errors.Is(err, ErrSelectionAction) {
 		t.Fatalf("missing action: %v", err)
+	}
+}
+
+func TestSelectionURLChosenClient(t *testing.T) {
+	prefs := DefaultPreferences("darwin")
+	prefs.Selection.Enabled = true
+	for i := range prefs.Selection.Clients {
+		prefs.Selection.Clients[i].Enabled = true
+	}
+	if got := prefs.Selection.EnabledClients(); len(got) != 2 || got[0] != SelectionClientClaude || got[1] != SelectionClientChatGPT {
+		t.Fatalf("enabled clients %v", got)
+	}
+	chat, err := prefs.Selection.SelectionURL(SelectionActionTranslate, SelectionClientChatGPT, "hello", "")
+	if err != nil || !strings.HasPrefix(chat, "codex://new?prompt=") {
+		t.Fatalf("translate in chatgpt %s %v", chat, err)
+	}
+	if got := mustSelectionQuery(t, chat, "prompt"); got != strings.ReplaceAll(SelectionPromptTranslate, "{{selection}}", "hello") {
+		t.Fatalf("prompt %q", got)
+	}
+	asked, err := prefs.Selection.SelectionURL(SelectionActionAsk, SelectionClientClaude, "hello", "why")
+	if err != nil || mustSelectionQuery(t, asked, "q") != "why\n\nhello" {
+		t.Fatalf("ask in claude %s %v", asked, err)
+	}
+	if _, err := prefs.Selection.SelectionURL(SelectionActionAskChatGPT, SelectionClientClaude, "hello", ""); !errors.Is(err, ErrSelectionAction) {
+		t.Fatalf("chatgpt action sent to claude: %v", err)
+	}
+	if _, err := prefs.Selection.SelectionURL(SelectionActionExplain, "doubao", "hello", ""); !errors.Is(err, ErrSelectionClient) {
+		t.Fatalf("unknown client: %v", err)
+	}
+	prefs.Selection.Clients[1].Enabled = false
+	if _, err := prefs.Selection.SelectionURL(SelectionActionExplain, SelectionClientChatGPT, "hello", ""); !errors.Is(err, ErrSelectionClient) {
+		t.Fatalf("disabled chosen client: %v", err)
+	}
+	offer, ok, err := OfferAfterMouseUp(prefs.Selection, func() (SelectionReading, error) { return SelectionReading{Text: "hello"}, nil })
+	if !ok || err != nil || len(offer.Clients) != 1 || offer.Clients[0] != SelectionClientClaude {
+		t.Fatalf("offer clients %+v %v %v", offer, ok, err)
 	}
 }
 

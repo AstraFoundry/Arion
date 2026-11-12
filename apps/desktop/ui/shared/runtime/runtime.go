@@ -709,8 +709,9 @@ type Actions interface {
 	CopySelection() error
 	// AddSelectionVocabulary saves the current offer with AddHotword.
 	AddSelectionVocabulary() error
-	// OpenSelection fills one prompt or client action and opens that URL.
-	OpenSelection(actionID, question string) error
+	// OpenSelection fills one prompt or client action for clientID, or the
+	// default client when it is empty, and opens that URL.
+	OpenSelection(actionID, clientID, question string) error
 	// ChooseScene keeps scene for SceneTarget's site or app; empty follows
 	// the built-in rules again.
 	ChooseScene(scene domain.Scene)
