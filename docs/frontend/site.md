@@ -57,7 +57,7 @@ Cards alternate between two rows that drift in opposite directions; each track h
 
 ## Footer
 
-The header and `main` sit on a page sheet (`LocaleRootLayout`): the background color with rounded bottom corners and a shadow, layered above the footer. `site-footer` is at least one viewport tall on the dark substrate, with the link columns, an oversized `aria-hidden` wordmark and the copyright line. The footer clips its content with `clip-path`, and where the content fits (the `footer-pinned` variant in `globals.css`: at least 48rem wide and 36rem tall, or at least 52rem tall) the content is fixed to the viewport bottom, so the sheet slides off a stationary layer and the footer fills the viewport at the end of the page. Shorter viewports scroll the footer normally. Where the browser supports scroll-driven animations and motion is not reduced, the content rises and scales into place on the footer's view timeline as the sheet uncovers it.
+The header and `main` sit on a page sheet (`LocaleRootLayout`): the background color with square corners and one soft blurred shadow (no border and no hard offset layer, so the edge does not read as a dark line), layered above the footer. `site-footer` is as tall as its content, on the `muted` token (one step darker than the page in light mode), with the link columns and the copyright line. It is `sticky` to the viewport bottom beneath the sheet, so the sheet slides off to uncover a stationary layer; a footer taller than the viewport reveals from its bottom edge and scrolls normally once fully in place.
 
 ## Blog
 
