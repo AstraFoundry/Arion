@@ -4,9 +4,21 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { archiveName, checkReleaseChangelog, digest, installerName, platformAssets, platformsForRelease, releaseMatrix, stagedRecord, stagingSettings, stagingUploads } from './release.mjs';
+import { archiveName, checkReleaseChangelog, checkReleaseHighlights, digest, installerName, platformAssets, platformsForRelease, releaseMatrix, stagedRecord, stagingSettings, stagingUploads } from './release.mjs';
 
 const fixture = JSON.parse(readFileSync(new URL('../../packages/contracts/releases/staged-release-v1.json', import.meta.url), 'utf8'));
+
+test('release preflight requires a what\'s new entry for the version', () => {
+  const catalog = releases => JSON.stringify({ releases });
+  assert.throws(() => checkReleaseHighlights('0.1.7', catalog([{ version: '0.1.6', slides: ['a'] }])), /requires a "0.1.7" entry/);
+  assert.throws(() => checkReleaseHighlights('0.1.7', catalog([{ version: '0.1.7' }])), /slides or a skip reason/);
+  assert.throws(() => checkReleaseHighlights('0.1.7', catalog([{ version: '0.1.7', skip: ' ' }])), /slides or a skip reason/);
+  assert.throws(() => checkReleaseHighlights('0.1.7', catalog([{ version: '0.1.7', slides: ['a'], skip: 'x' }])), /not both/);
+  assert.doesNotThrow(() => checkReleaseHighlights('0.1.7', catalog([{ version: '0.1.7', skip: 'Fixes only.' }])));
+  assert.doesNotThrow(() => checkReleaseHighlights('0.1.7', catalog([{ version: '0.1.7', slides: ['a'] }])));
+  const config = JSON.parse(readFileSync(new URL('../../apps/desktop/desktop.json', import.meta.url), 'utf8'));
+  assert.doesNotThrow(() => checkReleaseHighlights(config.version, readFileSync(new URL('../../apps/desktop/ui/entities/whatsnew/releases.json', import.meta.url), 'utf8')));
+});
 
 test('release preflight rejects a changelog left at the previous version', () => {
   assert.throws(() => checkReleaseChangelog('0.1.0-alpha.6', '## 0.1.0-alpha.5\n\n- Previous release\n'), /CHANGELOG.md requires/);

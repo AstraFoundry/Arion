@@ -105,6 +105,10 @@ type Preferences struct {
 	AccountSubject string `json:"accountSubject,omitempty"`
 	AccountName    string `json:"accountName,omitempty"`
 	AccountEmail   string `json:"accountEmail,omitempty"`
+	// WhatsNewSeen is the app version whose release highlights this profile
+	// last finished or skipped; onboarding records the version it completed
+	// on. Profiles written before it existed load empty: they have seen none.
+	WhatsNewSeen string `json:"whatsNewSeen,omitempty"`
 }
 
 // PolishEngine selects where polishing runs.

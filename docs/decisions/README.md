@@ -61,6 +61,7 @@ Write an ADR when the decision:
 - [047: Clipboard file access guidance](047-clipboard-file-access-guidance.md) — explicit capture explanations, system purpose strings and suppressible recovery guidance.
 - [048: Selection action URLs](048-selection-action-urls.md) — fixed Claude and ChatGPT templates, allowlisted schemes, and no shell or keystroke handoff.
 - [049: Sunbeam from its MyGo package, with flat and raised materials](049-sunbeam-package-and-materials.md) — tokens from `github.com/AstraFoundry/design/packages/mygo`; flat window chrome, raised popovers and tooltips.
+- [050: Release highlights after an update](050-release-highlights.md) — a per-release catalog of user-visible highlights, a dialog over Settings across every crossed version, and a release preflight that requires an entry or a skip reason.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

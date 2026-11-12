@@ -569,6 +569,23 @@ type SceneTarget struct {
 	Hints   domain.SceneHints
 }
 
+// WhatsNewSlide is one highlight of a release and the version that
+// introduced it. ID names its scene and copy in features/whatsnew.
+type WhatsNewSlide struct {
+	ID      string
+	Version string
+}
+
+// WhatsNew is the highlights Settings presents over itself: after an
+// update, those of every release since the one last seen, or the newest
+// release's when About asks for them. Empty shows nothing.
+type WhatsNew struct {
+	Slides []WhatsNewSlide
+	// Seq increases each time Slides is set, so the dialog starts each
+	// presentation at its first slide.
+	Seq int
+}
+
 // SettingsFocus asks the settings window to show a section. Seq increases
 // with each request, so a page applies each one once.
 type SettingsFocus struct {
@@ -629,6 +646,9 @@ type State struct {
 	TrayHint                TrayHint
 	Update                  Update
 	UpdateNotifications     UpdateNotifications
+	// WhatsNew is what the running version added since this profile last
+	// saw the highlights.
+	WhatsNew WhatsNew
 	// Focus is the settings section last asked for from outside settings.
 	Focus SettingsFocus
 	// MonitorLevels feed the microphone test meter, newest last.
@@ -740,6 +760,11 @@ type Actions interface {
 	CancelUpdateRestart()
 	// LaterUpdate defers this channel/version/phase for the reminder period.
 	LaterUpdate()
+	// ShowWhatsNew presents the newest release's highlights again.
+	ShowWhatsNew()
+	// DismissWhatsNew closes the highlights, finished or skipped, and
+	// remembers the running version as seen.
+	DismissWhatsNew()
 	// DismissUpdateReminder suppresses this reminder until the update view opens.
 	DismissUpdateReminder()
 	// ExportDiagnostics saves a local content-free ZIP through the system chooser.

@@ -764,5 +764,19 @@
   "FormatSelectionDisableApp": "Disable in {app}",
   "SelectionTurnOff": "Turn off selection actions",
   "OnbSelectionTitle": "Act on selected text",
-  "OnbSelectionBody": "Select text in any app to translate it, explain it or ask an assistant. You can leave this off."
+  "OnbSelectionBody": "Select text in any app to translate it, explain it or ask an assistant. You can leave this off.",
+  "WhatsNewTitle": "What's new",
+  "AboutWhatsNew": "See what's new",
+  "FormatWhatsNewVersion": "New in {version}",
+  "WhatsNewNext": "Next",
+  "WhatsNewPrevious": "Previous",
+  "WhatsNewSelectionTitle": "Send selected text to Claude or ChatGPT",
+  "WhatsNewSelectionBody": "Select text in any app and a bar appears under it. Pick a prompt to explain, translate, summarize or rewrite it. Turn on Selection actions in Settings › General.",
+  "WhatsNewSelectionLabel": "A bar appears under selected text and opens Claude with a prompt about it",
+  "WhatsNewVocabularyTitle": "Add a term to your vocabulary where you read it",
+  "WhatsNewVocabularyBody": "Select a name or a term and choose Add to vocabulary on the same bar. Arion spells it that way the next time you dictate it.",
+  "WhatsNewVocabularyLabel": "A term selected in a document is added to Arion's vocabulary from the bar under it",
+  "WhatsNewDemoPhrase": "retrieval-augmented generation",
+  "WhatsNewDemoPrompt": "Explain this: retrieval-augmented generation",
+  "WhatsNewDemoTerm": "pgvector"
 }

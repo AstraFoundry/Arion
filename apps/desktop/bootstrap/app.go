@@ -573,6 +573,7 @@ func (a *App) ready() {
 	if !a.state.Preferences.OnboardingCompleted && !a.opts.SkipOnboarding {
 		a.openOnboarding()
 	} else if !a.scripted() {
+		a.presentWhatsNew(whatsNewOnLaunch(a.state.Preferences, a.version, false))
 		// One turn later, so a notification that launched this process can
 		// claim the window before Settings opens on its own.
 		a.presentSettingsAfterLaunch()
