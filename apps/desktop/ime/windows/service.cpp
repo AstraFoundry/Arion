@@ -425,7 +425,8 @@ public:
         if (message.op==L"keyboard_ranked") {
             if (target!=context || !focused || message.activation!=activation || !session.empty()) return S_FALSE;
             mutating=true; HRESULT result=typing->applyRanking(cookie,message); mutating=false;
-            if (result==S_OK) queueLayout(); return result;
+            if (result==S_OK) queueLayout();
+            return result;
         }
         if (target != context || !focused || message.activation != activation || session.empty() || message.session != session) return S_FALSE;
         if (message.op == L"mark" && message.revision != revision) return S_FALSE;
