@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Mock recordings for the "Arion 0.1.5 to 0.1.6" post (ja copy).
+      The hash picks the scene: #shortcut, #capture, #polish, #textcolor,
+      #files, #selection, #disable or #thumbnails.
+      Illustrations only: nothing is recorded, no model runs and no provider or
+      assistant is contacted. Arion's labels come from the desktop copy
+      catalogs. Loaded in a sandboxed frame; follows the system color scheme.
+      Engine: stage.js.
+    -->
+    <link rel="stylesheet" href="stage.css" />
+    <script>
+      window.ARION_COPY = {
+        "menu": [
+          "ファイル",
+          "編集",
+          "表示",
+          "ウインドウ"
+        ],
+        "clock": "木 10:00",
+        "keys": {
+          "enter": "↩",
+          "clipboard": [
+            "⌘",
+            "⇧",
+            "V"
+          ],
+          "second": "Right ⌘"
+        },
+        "ui": {
+          "nav": [
+            "Overview",
+            "General",
+            "Dictation",
+            "Keyboard",
+            "Microphone",
+            "Speech & Polish",
+            "Vocabulary",
+            "Clipboard",
+            "About"
+          ],
+          "settingsTitle": "Arion Settings",
+          "pasted": "Pasted",
+          "shortcut": {
+            "title": "Dictation",
+            "label": "Dictation key",
+            "first": "Right Option",
+            "second": "Right Command",
+            "recording": "Press a new shortcut"
+          },
+          "polish": {
+            "noteTitle": "Model needs reasoning",
+            "noteHint": "Allow it in Settings › Speech & Polish",
+            "cloudTitle": "Cloud model",
+            "inUse": "In use",
+            "keyLabel": "API key",
+            "disconnect": "Disconnect",
+            "modelLabel": "Model",
+            "reasoning": "Allow reasoning when required"
+          },
+          "keyboard": {
+            "title": "Keyboard",
+            "group": "Candidates",
+            "pageSize": "Candidates per page",
+            "size": "Candidate size",
+            "sizeValue": "Medium",
+            "appearance": "Appearance",
+            "appearanceValue": "Match system",
+            "textColor": "Text color",
+            "black": "Black",
+            "white": "White",
+            "automatic": "Automatic ({value})",
+            "accent": "Highlight color",
+            "accents": [
+              [
+                "Yellow",
+                "#FFCC00",
+                "black"
+              ],
+              [
+                "Orange",
+                "#FF9500",
+                "black"
+              ],
+              [
+                "Red",
+                "#FF3B30",
+                "white"
+              ],
+              [
+                "Pink",
+                "#FF2D55",
+                "white"
+              ],
+              [
+                "Purple",
+                "#AF52DE",
+                "white"
+              ],
+              [
+                "Blue",
+                "#007AFF",
+                "white"
+              ],
+              [
+                "Green",
+                "#34C759",
+                "black"
+              ],
+              [
+                "Graphite",
+                "#8E8E93",
+                "black"
+              ]
+            ],
+            "pick": 4
+          },
+          "files": {
+            "title": "Clipboard",
+            "history": "Clipboard history",
+            "shortcut": "History shortcut",
+            "size": "History size",
+            "sizeValue": "200 items",
+            "record": "Record copied files",
+            "confirmTitle": "Add files to clipboard history?",
+            "explanation": "Keep references to copied files so you can select and paste them later. File contents are not uploaded.",
+            "mac": "macOS may request access to the folders containing these files. Review Arion’s access in System Settings → Privacy & Security → Files and Folders.",
+            "cancel": "Cancel",
+            "confirm": "Enable file history"
+          },
+          "selection": {
+            "claude": "Claude",
+            "chatgpt": "ChatGPT",
+            "copy": "Copy",
+            "vocabulary": "Add to vocabulary",
+            "prompts": [
+              "Translate to Chinese",
+              "Explain",
+              "Summarize key points",
+              "Rewrite"
+            ],
+            "ask": "Ask a custom question…",
+            "pause": "Disable for 1 hour",
+            "site": "Disable on {site}",
+            "app": "Disable in {app}",
+            "off": "Turn off selection actions"
+          },
+          "clipboard": {
+            "label": "Clipboard"
+          }
+        },
+        "chat": {
+          "app": "チームチャット",
+          "channels": [
+            "# リリース",
+            "# デザイン",
+            "# フィードバック"
+          ],
+          "thread": [
+            {
+              "who": "Lena",
+              "text": "木曜の段取りをまとめてもらえますか？"
+            }
+          ],
+          "me": "自分",
+          "composer": "# リリース へのメッセージ",
+          "key": "Right Option",
+          "partials": [
+            "まず",
+            "まず 10 時に Mei と draft を確認して",
+            "まず 10 時に Mei と draft を確認して、",
+            "まず 10 時に Mei と draft を確認して、Figma のリンクを Berlin チームに",
+            "まず 10 時に Mei と draft を確認して、Figma のリンクを Berlin チームに送り、昼までに金曜の meeting room を予約します。"
+          ],
+          "final": "まず 10 時に Mei と draft を確認して、Figma のリンクを Berlin チームに送り、昼までに金曜の meeting room を予約します。",
+          "short": [
+            "今夜",
+            "今夜リリースします"
+          ],
+          "shortFinal": "今夜リリースします"
+        },
+        "notes": {
+          "shortcut": {
+            "k": "音声入力キー",
+            "note": "どちらでも音声入力を始められます"
+          },
+          "capture": {
+            "k": "マイク",
+            "note": "先に開き、準備中の発話も残します"
+          },
+          "polish": {
+            "k": "次に拒否されたら",
+            "note": "minimal、次に low の推論で再試行"
+          },
+          "files": {
+            "k": "既定",
+            "note": "オフ（既存のプロファイルも同じ）"
+          },
+          "selection": {
+            "k": "開く URL",
+            "note": "未送信"
+          },
+          "disable": {
+            "k": "docs.example.com",
+            "note": "ここでは表示しません"
+          }
+        },
+        "pinyin": "nihao",
+        "candidates": [
+          "你好",
+          "你",
+          "拟",
+          "尼",
+          "泥"
+        ],
+        "article": {
+          "host": "docs.example.com",
+          "browser": "Safari",
+          "heading": "Local-first software",
+          "before": "Local-first apps treat the network as optional. ",
+          "selected": "The primary copy of your data stays on your own device",
+          "after": ", and a server, when there is one, only helps you sync it.",
+          "second": "Sync is an extra that you can turn on later."
+        },
+        "pick": 1,
+        "prompts": [
+          "Translate the following text into Simplified Chinese:",
+          "Explain the following text:",
+          "Summarize the key points of the following text:",
+          "Rewrite the following text:"
+        ],
+        "claude": {
+          "app": "Claude",
+          "placeholder": "Reply to Claude…"
+        },
+        "doc": {
+          "app": "メモ",
+          "title": "旅行メモ",
+          "lines": [
+            "1 日目：海沿いの道、約 12 km。"
+          ],
+          "before": "アルバム用の写真："
+        },
+        "rows": [
+          {
+            "kind": "image",
+            "text": "beach.jpg",
+            "tag": "JPG"
+          },
+          {
+            "kind": "file",
+            "text": "旅程",
+            "tag": "PDF"
+          },
+          {
+            "kind": "text",
+            "text": "9 時に港で集合"
+          }
+        ]
+      };
+    </script>
+    <script src="stage.js" defer></script>
+  </head>
+  <body></body>
+</html>
