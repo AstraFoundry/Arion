@@ -173,7 +173,7 @@ func exerciseSelectionPopover(t *testing.T, selected string) {
 	var height int
 	app.Update(func(*arion.State) {
 		text = app.Store().State.Selection.Text
-		height = uiapp.SelectionHeightFor(app.Store())
+		height = uiapp.SelectionHeight
 		for _, action := range app.Store().State.Selection.Actions {
 			ids = append(ids, action.ID)
 		}

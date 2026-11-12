@@ -48,8 +48,9 @@ func (a *App) signalSelection() {
 	}
 }
 
-// selectionLoop skips a release over the popover: that click chooses in the
-// popover, and the question field taking the keyboard is not a new selection.
+// selectionLoop skips a release over the bar or a popup beside it: that
+// click chooses in the bar, and the question field taking the keyboard is
+// not a new selection.
 func (a *App) selectionLoop() {
 	for range a.selectionClicks {
 		if a.pointerOnSelection() {
@@ -62,10 +63,17 @@ func (a *App) selectionLoop() {
 func (a *App) pointerOnSelection() bool {
 	inside := false
 	a.postWait(func() {
-		if a.selectionWin == nil || !a.selectionWin.IsVisible() {
+		windows := a.selectionWindows()
+		if len(windows) == 0 || !a.selectionWin.IsVisible() {
 			return
 		}
-		inside = selectionContains(a.selectionWin.Bounds(), mygo.Screen.CursorScreenPoint())
+		cursor := mygo.Screen.CursorScreenPoint()
+		for _, window := range windows {
+			if window.IsVisible() && selectionContains(window.Bounds(), cursor) {
+				inside = true
+				return
+			}
+		}
 	})
 	return inside
 }

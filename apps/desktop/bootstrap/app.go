@@ -156,10 +156,14 @@ type App struct {
 	selectionWin     *mygo.Window
 	selectionAnchor  mygo.Rectangle
 	selectionWidth   int
-	selectionHeight  int
-	openSelectionURL func(string) error
-	holdKey          application.HoldKey
-	holdPending      *deferredHold
+	// selectionViews draws the bar and its popups; selectionPopups are the
+	// popup windows open beside the bar, the one it wants last.
+	selectionViews    uiapp.SelectionViews
+	selectionPopups   []*selectionPopup
+	selectionRevision int
+	openSelectionURL  func(string) error
+	holdKey           application.HoldKey
+	holdPending       *deferredHold
 
 	// Snapshot read by worker goroutines (correction policy, delivery).
 	snapshot    sync.Mutex
