@@ -19,6 +19,15 @@ export const CHAPTER_SPANS: Record<ChapterId, 1 | 2> = {
 };
 
 /**
+ * Desktop rows, in reading order. Each row's spans sum to three columns.
+ * Below `lg` every chapter is its own row.
+ */
+export const DESKTOP_ROWS: readonly (readonly ChapterId[])[] = [
+  ["offline", "mixed"],
+  ["learning", "polish", "keyboard"],
+];
+
+/**
  * Milliseconds each mock spends in a step before the next; a mock has
  * `length + 1` steps and plays once its card scrolls into view.
  */
