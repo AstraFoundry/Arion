@@ -43,9 +43,12 @@ type Generate func(context.Context, prompt.ChatRequest, bool) (engine.Result, er
 // selector receives earlier recognition and approved spelling candidates.
 func (p *Pipeline) Run(ctx context.Context, req engine.Request, generate Generate) (engine.Result, error) {
 	if strings.Contains(req.Text, "<|") || strings.Contains(req.Text, "|>") {
-		return engine.Result{}, engine.ErrControlInput
+		return engine.Result{}, domain.WithDiagnostic(domain.CodeRewriteRejected, domain.PhasePreparation, domain.ReasonRewriteControlInput, engine.ErrControlInput)
 	}
 	if ctx.Err() != nil {
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return engine.Result{}, domain.WithDiagnostic(domain.CodeRewriteTimeout, domain.PhasePreparation, domain.ReasonRewriteTimeout, ctx.Err())
+		}
 		return engine.Result{Cancelled: true}, nil
 	}
 	cleanup := domain.CleanSpeech(req.Text)
@@ -81,7 +84,7 @@ func (p *Pipeline) Run(ctx context.Context, req engine.Request, generate Generat
 	}
 	forced, allAmbiguous, err := forcedAmbiguousSelection(prepared)
 	if err != nil {
-		return result, err
+		return result, domain.WithDiagnostic(domain.CodeRewriteRejected, domain.PhasePreparation, domain.ReasonRewritePreparation, err)
 	}
 	if allAmbiguous {
 		edited = forced
@@ -89,15 +92,21 @@ func (p *Pipeline) Run(ctx context.Context, req engine.Request, generate Generat
 		out, err := generate(ctx, p.recipe.Selection(prepared), req.Prefill)
 		if err != nil {
 			if ctx.Err() != nil {
+				if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+					return result, domain.WithDiagnostic(domain.CodeRewriteTimeout, domain.PhaseSelection, domain.ReasonRewriteTimeout, ctx.Err())
+				}
 				result.Cancelled = true
 				return result, nil
 			}
-			return result, err
+			return result, domain.WithPhase(domain.PhaseSelection, err)
 		}
 		add(out)
 		if out.Truncated || out.Cancelled {
 			result.Truncated, result.Cancelled = out.Truncated, out.Cancelled
-			return result, errors.New("incomplete spelling selection")
+			if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+				return result, domain.WithDiagnostic(domain.CodeRewriteTimeout, domain.PhaseSelection, domain.ReasonRewriteTimeout, ctx.Err())
+			}
+			return result, domain.WithDiagnostic(domain.CodeRewriteRejected, domain.PhaseSelection, domain.ReasonRewriteTruncated, errors.New("incomplete spelling selection"))
 		}
 		if !req.Prefill {
 			edited, err = domain.ApplySpellingChoices(out.Text, prepared)
@@ -107,6 +116,9 @@ func (p *Pipeline) Run(ctx context.Context, req engine.Request, generate Generat
 		}
 	}
 	if ctx.Err() != nil {
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return result, domain.WithDiagnostic(domain.CodeRewriteTimeout, domain.PhaseFormatting, domain.ReasonRewriteTimeout, ctx.Err())
+		}
 		result.Cancelled = true
 		return result, nil
 	}
@@ -117,25 +129,34 @@ func (p *Pipeline) Run(ctx context.Context, req engine.Request, generate Generat
 		request, err = p.recipe.Format(edited, req.Scene, req.Punctuation, c)
 	}
 	if err != nil {
-		return result, err
+		return result, domain.WithDiagnostic(domain.CodeRewriteRejected, domain.PhaseFormatting, domain.ReasonRewritePromptBuild, err)
 	}
 	out, err := generate(ctx, request, req.Prefill)
 	if err != nil {
 		if ctx.Err() != nil {
+			if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+				return result, domain.WithDiagnostic(domain.CodeRewriteTimeout, domain.PhaseFormatting, domain.ReasonRewriteTimeout, ctx.Err())
+			}
 			result.Cancelled = true
 			return result, nil
 		}
-		return result, err
+		return result, domain.WithPhase(domain.PhaseFormatting, err)
 	}
 	add(out)
 	if out.Truncated || out.Cancelled {
 		result.Truncated, result.Cancelled = out.Truncated, out.Cancelled
-		return result, errors.New("incomplete formatting")
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return result, domain.WithDiagnostic(domain.CodeRewriteTimeout, domain.PhaseFormatting, domain.ReasonRewriteTimeout, ctx.Err())
+		}
+		return result, domain.WithDiagnostic(domain.CodeRewriteRejected, domain.PhaseFormatting, domain.ReasonRewriteTruncated, errors.New("incomplete formatting"))
 	}
 	if !req.Prefill {
 		result.Text = strings.TrimSpace(out.Text)
 	}
-	result.Cancelled = ctx.Err() != nil
+	result.Cancelled = ctx.Err() != nil && !errors.Is(ctx.Err(), context.DeadlineExceeded)
+	if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+		return result, domain.WithDiagnostic(domain.CodeRewriteTimeout, domain.PhaseFormatting, domain.ReasonRewriteTimeout, ctx.Err())
+	}
 	return result, nil
 }
 

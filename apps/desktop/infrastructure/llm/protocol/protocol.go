@@ -52,9 +52,11 @@ type Request struct {
 
 // Response is one line on the worker's stdout, answering Request.ID.
 type Response struct {
-	ID    uint64 `json:"id"`
-	OK    bool   `json:"ok"`
-	Error string `json:"error,omitempty"`
+	ID            uint64 `json:"id"`
+	OK            bool   `json:"ok"`
+	Error         string `json:"error,omitempty"`
+	FailurePhase  string `json:"failurePhase,omitempty"`
+	FailureReason string `json:"failureReason,omitempty"`
 	// Load.
 	LoadMs       float64 `json:"loadMs,omitempty"`
 	PromptID     string  `json:"promptId,omitempty"`
