@@ -178,7 +178,7 @@ func (s *Service) enable(ctx context.Context, download bool) error {
 	switch {
 	case s.status.State == Unsupported:
 		s.mu.Unlock()
-		return domain.Fail(domain.CodeModelUnsupported, "rewrite runtime not bundled for this platform")
+		return domain.WithDiagnostic(domain.CodeModelUnsupported, domain.PhaseSetup, domain.ReasonWorkerUnsupported, domain.Fail(domain.CodeModelUnsupported, "rewrite runtime not bundled for this platform"))
 	case s.client != nil && s.client.Alive():
 		s.mu.Unlock()
 		return nil
@@ -289,7 +289,7 @@ func (s *Service) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.
 		s.mu.Unlock()
 	}
 	if c == nil {
-		return ports.RewriteResult{}, domain.Fail(domain.CodeModelMissing, "rewrite model not running")
+		return ports.RewriteResult{}, domain.WithDiagnostic(domain.CodeModelMissing, domain.PhaseSetup, domain.ReasonWorkerMissing, domain.Fail(domain.CodeModelMissing, "rewrite model not running"))
 	}
 	result, err := c.Rewrite(ctx, req)
 	s.observeWorkerFailure(c, err)

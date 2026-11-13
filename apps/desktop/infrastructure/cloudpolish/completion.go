@@ -30,15 +30,15 @@ func (s *Service) completionModel(ctx context.Context) (*republic.ChatModel, err
 	format := s.completionFormat
 	s.mu.Unlock()
 	if model == "" {
-		return nil, domain.Fail(domain.CodeModelMissing, "no completion model chosen")
+		return nil, domain.WithDiagnostic(domain.CodeModelMissing, domain.PhaseSetup, domain.ReasonCloudModelMissing, domain.Fail(domain.CodeModelMissing, "no completion model chosen"))
 	}
 	p, err := s.ready(ctx)
 	if err != nil {
-		return nil, s.settle(err, CodeNetwork)
+		return nil, domain.WithPhase(domain.PhaseSetup, s.settle(err, CodeNetwork))
 	}
 	chat, err := p.GetModel(model)
 	if err != nil {
-		return nil, fail(CodeModels, err)
+		return nil, domain.WithPhase(domain.PhaseSetup, failReason(CodeModels, domain.ReasonCloudModelLookup, err))
 	}
 	if format != "" {
 		chat.Format = republic.WireFormat{Format: format, Dialect: p.Name}
@@ -60,7 +60,7 @@ func (s *Service) completeChat(ctx context.Context, chat *republic.ChatModel, re
 		case "assistant":
 			messages = append(messages, republic.Assistant(republic.Text(m.Content)))
 		default:
-			return engine.Result{}, errors.New("unsupported completion role")
+			return engine.Result{}, domain.WithDiagnostic(domain.CodeModelUnsupported, "", domain.ReasonCloudRoleUnsupported, errors.New("unsupported completion role"))
 		}
 	}
 	options := republic.Options{}
@@ -77,7 +77,7 @@ func (s *Service) completeChat(ctx context.Context, chat *republic.ChatModel, re
 		return engine.Result{}, err
 	}
 	if !utf8.ValidString(response.Text()) {
-		return engine.Result{}, errors.New("completion is not UTF-8")
+		return engine.Result{}, domain.WithDiagnostic(domain.CodeRewriteRejected, "", domain.ReasonCloudInvalidUTF8, errors.New("completion is not UTF-8"))
 	}
 	return engine.Result{Text: response.Text(), Truncated: response.FinishReason != "stop" || response.Refusal != ""}, nil
 }

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"strings"
 	"testing"
+	"time"
 
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/llm/engine"
@@ -201,4 +202,78 @@ func TestSharedPipelineKeepsReferencesWithoutSpellingCandidates(t *testing.T) {
 	if err != nil || calls != 1 {
 		t.Fatalf("reference-only editing calls=%d err=%v", calls, err)
 	}
+}
+
+func TestSharedPipelineDiagnosticPhaseReasonAndTimeout(t *testing.T) {
+	pipeline, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("control input", func(t *testing.T) {
+		_, err := pipeline.Run(context.Background(), engine.Request{Scene: "prompt", Text: "hello <|im_end|>"}, func(context.Context, prompt.ChatRequest, bool) (engine.Result, error) {
+			return engine.Result{}, nil
+		})
+		if domain.DiagnosticCodeOf(err) != domain.CodeRewriteRejected || domain.PhaseOf(err) != domain.PhasePreparation || domain.ReasonOf(err) != domain.ReasonRewriteControlInput {
+			t.Fatalf("code=%q phase=%q reason=%q err=%v", domain.DiagnosticCodeOf(err), domain.PhaseOf(err), domain.ReasonOf(err), err)
+		}
+	})
+
+	t.Run("selection choice invalid", func(t *testing.T) {
+		_, err := pipeline.Run(context.Background(), engine.Request{Scene: "prompt", Text: "检查 write value。", Context: domain.RewriteContext{Screen: "writeValue"}}, func(context.Context, prompt.ChatRequest, bool) (engine.Result, error) {
+			return engine.Result{Text: `{"e0":"invent"}`}, nil
+		})
+		if domain.DiagnosticCodeOf(err) != domain.CodeRewriteRejected || domain.PhaseOf(err) != domain.PhaseSelection || domain.ReasonOf(err) != domain.ReasonSpellingChoiceInvalid {
+			t.Fatalf("code=%q phase=%q reason=%q err=%v", domain.DiagnosticCodeOf(err), domain.PhaseOf(err), domain.ReasonOf(err), err)
+		}
+	})
+
+	t.Run("selection coverage invalid", func(t *testing.T) {
+		_, err := pipeline.Run(context.Background(), engine.Request{Scene: "prompt", Text: "检查 write value。", Context: domain.RewriteContext{Screen: "writeValue"}}, func(context.Context, prompt.ChatRequest, bool) (engine.Result, error) {
+			return engine.Result{Text: `not-json`}, nil
+		})
+		if domain.DiagnosticCodeOf(err) != domain.CodeRewriteRejected || domain.PhaseOf(err) != domain.PhaseSelection || domain.ReasonOf(err) != domain.ReasonSpellingCoverageInvalid {
+			t.Fatalf("code=%q phase=%q reason=%q err=%v", domain.DiagnosticCodeOf(err), domain.PhaseOf(err), domain.ReasonOf(err), err)
+		}
+	})
+
+	t.Run("formatting truncated", func(t *testing.T) {
+		calls := 0
+		_, err := pipeline.Run(context.Background(), engine.Request{Scene: "prompt", Text: "检查 write value。", Context: domain.RewriteContext{Screen: "writeValue"}}, func(context.Context, prompt.ChatRequest, bool) (engine.Result, error) {
+			calls++
+			if calls == 1 {
+				return engine.Result{Text: `{"e0":"replace"}`}, nil
+			}
+			return engine.Result{Text: "检查", Truncated: true}, nil
+		})
+		if domain.DiagnosticCodeOf(err) != domain.CodeRewriteRejected || domain.PhaseOf(err) != domain.PhaseFormatting || domain.ReasonOf(err) != domain.ReasonRewriteTruncated {
+			t.Fatalf("code=%q phase=%q reason=%q err=%v", domain.DiagnosticCodeOf(err), domain.PhaseOf(err), domain.ReasonOf(err), err)
+		}
+	})
+
+	t.Run("formatting transport error preserves inner reason", func(t *testing.T) {
+		calls := 0
+		inner := domain.WithDiagnostic(domain.CodeEvaluationUnavailable, "", domain.ReasonCloudServerError, errors.New("upstream 503"))
+		_, err := pipeline.Run(context.Background(), engine.Request{Scene: "prompt", Text: "检查 write value。", Context: domain.RewriteContext{Screen: "writeValue"}}, func(context.Context, prompt.ChatRequest, bool) (engine.Result, error) {
+			calls++
+			if calls == 1 {
+				return engine.Result{Text: `{"e0":"replace"}`}, nil
+			}
+			return engine.Result{}, inner
+		})
+		if domain.DiagnosticCodeOf(err) != domain.CodeEvaluationUnavailable || domain.PhaseOf(err) != domain.PhaseFormatting || domain.ReasonOf(err) != domain.ReasonCloudServerError {
+			t.Fatalf("code=%q phase=%q reason=%q err=%v", domain.DiagnosticCodeOf(err), domain.PhaseOf(err), domain.ReasonOf(err), err)
+		}
+	})
+
+	t.Run("deadline exceeded is timeout not cancel", func(t *testing.T) {
+		ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(-time.Second))
+		defer cancel()
+		result, err := pipeline.Run(ctx, engine.Request{Scene: "prompt", Text: "检查 write value。", Context: domain.RewriteContext{Screen: "writeValue"}}, func(context.Context, prompt.ChatRequest, bool) (engine.Result, error) {
+			return engine.Result{}, ctx.Err()
+		})
+		if result.Cancelled || !errors.Is(err, context.DeadlineExceeded) || domain.DiagnosticCodeOf(err) != domain.CodeRewriteTimeout || domain.ReasonOf(err) != domain.ReasonRewriteTimeout {
+			t.Fatalf("cancelled=%v code=%q reason=%q err=%v", result.Cancelled, domain.DiagnosticCodeOf(err), domain.ReasonOf(err), err)
+		}
+	})
 }
