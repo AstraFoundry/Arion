@@ -195,7 +195,7 @@ func (r *recorder) called(name string) bool {
 func fixture() (*runtime.State, *recorder, runtime.Store) {
 	recommended := runtime.Bundle{ID: "qwen3-asr-1.7b-mlx-8bit", Evaluated: true, Recommended: true,
 		ErrorRates: map[string]float64{"zh": 0.041, "en": 0.052, "mixed": 0.087}, ReviewP95Ms: 312, SizeBytes: 270 << 20}
-	other := runtime.Bundle{ID: "qwen3-asr-1.7b-gguf-q8", Evaluated: true,
+	other := runtime.Bundle{ID: "qwen3-asr-1.7b-gguf-q4k", Evaluated: true,
 		ErrorRates: map[string]float64{"zh": 0.06, "en": 0.07, "mixed": 0.11}, ReviewP95Ms: 41, SizeBytes: 134 << 20}
 	state := &runtime.State{
 		Version:     "0.1.0",

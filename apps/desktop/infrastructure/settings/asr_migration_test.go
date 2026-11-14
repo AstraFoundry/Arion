@@ -7,7 +7,7 @@ import (
 )
 
 func TestRetiredASROverrideMigration(t *testing.T) {
-	for _, id := range []string{"xasr-160-xasr-final", "xasr-160-qwen3asr-17-final", "qwen3-asr-1.7b-mlx-8bit", "unknown-model"} {
+	for _, id := range []string{"xasr-160-xasr-final", "xasr-160-qwen3asr-17-final", "qwen3-asr-1.7b-mlx-8bit", "qwen3-asr-1.7b-gguf-q8", "unknown-model"} {
 		path := filepath.Join(t.TempDir(), "preferences.json")
 		if err := os.WriteFile(path, []byte(`{"modelOverride":"`+id+`"}`), 0600); err != nil {
 			t.Fatal(err)
@@ -16,7 +16,7 @@ func TestRetiredASROverrideMigration(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		retired := id == "xasr-160-xasr-final" || id == "xasr-160-qwen3asr-17-final" || id == "qwen3-asr-1.7b-mlx-8bit"
+		retired := id == "xasr-160-xasr-final" || id == "xasr-160-qwen3asr-17-final" || id == "qwen3-asr-1.7b-mlx-8bit" || id == "qwen3-asr-1.7b-gguf-q8"
 		if retired && prefs.ModelOverride != "" {
 			t.Fatalf("retired override retained: %s", id)
 		}
