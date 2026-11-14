@@ -731,22 +731,31 @@ func (p *downloadProgress) Write(b []byte) (int, error) {
 	return len(b), nil
 }
 
-// nsisNotifications makes registration failure visible and preserves installed
-// files when cleanup fails, so uninstall can be retried with the owned sender.
+// nsisNotifications runs the per-user notification helper. Install aborts when
+// registration fails, so the failure stays visible and no Add/Remove Programs
+// entry is written for a sender that did not register. Uninstall still runs
+// the helper, then clears the error and continues: leftover toast history or
+// the HKCU activator key must not block shortcut, uninstall-key, or file
+// removal.
 func nsisNotifications(c *Config, exe string) (install, uninstall string) {
 	if !c.Windows.Notifications {
 		return "", ""
 	}
-	command := func(flag, label string) string {
-		return `  ClearErrors
-  ExecWait '"$INSTDIR\` + nsisEscape(exe) + `" ` + flag + `' $0
-  IfErrors ` + label + `_failed
-  IntCmp $0 0 ` + label + `_done
-  ` + label + `_failed:
+	quoted := `'"$INSTDIR\` + nsisEscape(exe) + `" `
+	install = `  ClearErrors
+  ExecWait ` + quoted + `--mygo-register-notifications' $0
+  IfErrors notify_install_failed
+  IntCmp $0 0 notify_install_done
+  notify_install_failed:
     SetErrorLevel 1
     Abort "Native notification registration failed. Close the application and retry setup."
-  ` + label + `_done:
+  notify_install_done:
 `
-	}
-	return command("--mygo-register-notifications", "notify_install"), command("--mygo-unregister-notifications", "notify_uninstall")
+	// ExecWait sets the error flag when the helper cannot be launched, and a
+	// non-zero exit is not a reason to stop. Clear it so later uninstall steps
+	// are not skipped.
+	uninstall = `  ExecWait ` + quoted + `--mygo-unregister-notifications' $0
+  ClearErrors
+`
+	return install, uninstall
 }
