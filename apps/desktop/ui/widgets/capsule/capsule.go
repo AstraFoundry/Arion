@@ -135,7 +135,7 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, s *State) {
 				case dictation.Preparing, dictation.Listening:
 					listening(c, state, tokens, s)
 				case dictation.Transcribing, dictation.Polishing, dictation.Reviewing, dictation.Inserting:
-					transcribing(c, d, tokens, store.Copy(), s)
+					transcribing(c, d, state.Preferences.ShowDraft, tokens, store.Copy(), s)
 				case dictation.Done:
 					outcome(c, d, tokens, store.Copy())
 				case dictation.Failed:
@@ -179,6 +179,10 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, s *Stat
 	// One slot holds the draft once speech arrives, and until then how to
 	// finish: a key and a few words, as Doubao's 「松手结束」.
 	if text := dictation.Text(d); text != "" {
+		if !state.Preferences.ShowDraft {
+			wordCount(c, tokens, s, d.SessionID, messages.PillWords(runtime.CountWords(text)))
+			return
+		}
 		draft(c, tokens, s, d.SessionID, s.Typing.Update(d.SessionID, text, d.Final != "", c.Now()), tokens.PillText)
 		return
 	}
@@ -315,10 +319,17 @@ func advance(c *ui.Context, r rune) float32 {
 	return w
 }
 
-func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog, s *State) {
+// wordCount stands in for a hidden draft. It holds the text slot at its
+// widest in session, so the pill does not narrow as the count changes.
+func wordCount(c *ui.Context, tokens theme.Tokens, s *State, session, label string) {
+	w, _ := c.MeasureText(0, ui.Span{Text: label, Font: typography.Family, Size: theme.Body})
+	ui.Text(c, label).FontSize(theme.Body).TextColor(tokens.PillMuted).SingleLine().MinWidth(s.widen(session, w+1))
+}
+
+func transcribing(c *ui.Context, d runtime.Dictation, showDraft bool, tokens theme.Tokens, messages copy.Catalog, s *State) {
 	// Recognition has ended: the rest of the draft drains at full speed.
 	frame := dictation.Frame{Text: messages.Text(copy.PillTranscribing)}
-	if text := dictation.Text(d); text != "" {
+	if text := dictation.Text(d); text != "" && showDraft {
 		frame = s.Typing.Update(d.SessionID, text, true, c.Now())
 	}
 	draft(c, tokens, s, d.SessionID, frame, tokens.PillMuted)

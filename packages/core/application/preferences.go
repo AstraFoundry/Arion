@@ -43,8 +43,12 @@ type Preferences struct {
 	TranslateLanguage    domain.TranslationLanguage `json:"translateLanguage,omitempty"`
 	Delivery             Delivery                   `json:"delivery"`
 	Sounds               bool                       `json:"sounds"`
-	LaunchAtLogin        bool                       `json:"launchAtLogin"`
-	Microphone           string                     `json:"microphone"`
+	// ShowDraft shows the recognized text in the pill while dictating; off,
+	// the pill shows a word count instead. Profiles written before it
+	// existed load the default.
+	ShowDraft     bool   `json:"showDraft"`
+	LaunchAtLogin bool   `json:"launchAtLogin"`
+	Microphone    string `json:"microphone"`
 	// MicrophoneGain is one of GainStops' decibels; profiles written before
 	// it existed load 0 dB, the device's own level.
 	MicrophoneGain int    `json:"microphoneGain"`
@@ -134,7 +138,7 @@ func DefaultPreferences(platform string) Preferences {
 		Version: PreferencesVersion, UILanguage: English, HoldKey: DefaultHoldKey(platform),
 		SecondHoldKey: DefaultSecondHoldKey(platform),
 		TranslateKey:  DefaultTranslateKey(platform), TranslateLanguage: domain.TargetEnglish,
-		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, Punctuation: domain.PunctuationSmart, Sounds: true, CheckUpdates: true, MatchApp: true,
+		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, Punctuation: domain.PunctuationSmart, Sounds: true, ShowDraft: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 		Keyboard:  DefaultKeyboardPreferences(),
 		Clipboard: DefaultClipboardPreferences(),
