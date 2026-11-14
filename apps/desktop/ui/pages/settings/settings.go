@@ -242,6 +242,13 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 					store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Sounds = sounds })
 				}
 			})
+			kit.Divider(c, tokens)
+			showDraft := prefs.ShowDraft
+			kit.TipRow(c, tokens, messages.Text(copy.ShowDraft), messages.Text(copy.ShowDraftDetail), func() {
+				if ui.Switch(c.Key("show-draft"), &showDraft).Label(messages.Text(copy.ShowDraft)).Changed() {
+					store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.ShowDraft = showDraft })
+				}
+			})
 		})
 		kit.Card(c.Key("selection-settings"), tokens).Children(func() { selection.Settings(c, store, tokens) })
 	case Dictation:

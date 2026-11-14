@@ -151,6 +151,9 @@ var TranslationLanguages = domain.TranslationLanguages
 // DayKey names the local calendar day of t, as UsageDay.Date does.
 func DayKey(t time.Time) string { return domain.DayKey(t) }
 
+// CountWords counts text as usage statistics do.
+func CountWords(text string) int { return domain.CountWords(text) }
+
 // DefaultHoldKey is a platform's first-run dictation key.
 func DefaultHoldKey(platform string) HoldKey { return application.DefaultHoldKey(platform) }
 
