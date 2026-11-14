@@ -125,9 +125,11 @@ registered process receives warm activation; a cold process queues activation
 until application listeners can handle it. A bounded singleton relay handles
 the startup race where another process owns the lock before registering COM.
 Uninstall clears the owned sender's history before removing its shortcut and
-COM registration. Registration/removal failures abort setup visibly. Portable
-executables without registration return an explicit capability error. There is
-no balloon fallback and no Windows App SDK runtime deployment dependency.
+COM registration. Only install registration failure aborts setup. Uninstall
+still runs the helper, then continues, so shortcut, uninstall-key, and file
+removal proceed. Portable executables without registration return an explicit
+capability error. There is no balloon fallback and no Windows App SDK runtime
+deployment dependency.
 
 Register `App.OnNotificationAction` before `Run` to receive both body activation
 (action `""`) and custom IDs, including notifications from an earlier process.

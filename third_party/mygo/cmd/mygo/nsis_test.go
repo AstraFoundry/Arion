@@ -853,11 +853,27 @@ func TestWindowsSigning(t *testing.T) {
 func TestNotificationInstallerLifecycle(t *testing.T) {
 	c := &Config{Windows: Windows{Notifications: true}}
 	install, uninstall := nsisNotifications(c, "App With Spaces.exe")
-	for _, v := range []struct{ got, flag string }{{install, "--mygo-register-notifications"}, {uninstall, "--mygo-unregister-notifications"}} {
-		for _, want := range []string{`ExecWait '"$INSTDIR\App With Spaces.exe" ` + v.flag, `IfErrors`, `IntCmp $0 0`, `SetErrorLevel 1`, `Abort`} {
-			if !strings.Contains(v.got, want) {
-				t.Errorf("missing %q in %s", want, v.got)
-			}
+	for _, want := range []string{
+		`ExecWait '"$INSTDIR\App With Spaces.exe" --mygo-register-notifications`,
+		`IfErrors`,
+		`IntCmp $0 0`,
+		`SetErrorLevel 1`,
+		`Abort "Native notification registration failed. Close the application and retry setup."`,
+	} {
+		if !strings.Contains(install, want) {
+			t.Errorf("missing %q in install script:\n%s", want, install)
+		}
+	}
+	exec := `ExecWait '"$INSTDIR\App With Spaces.exe" --mygo-unregister-notifications'`
+	if !strings.Contains(uninstall, exec) {
+		t.Fatalf("uninstall does not run the helper:\n%s", uninstall)
+	}
+	if strings.Index(uninstall, exec) > strings.LastIndex(uninstall, "ClearErrors") {
+		t.Fatalf("uninstall must ClearErrors after the helper:\n%s", uninstall)
+	}
+	for _, forbidden := range []string{"SetErrorLevel", "Abort", "IfErrors", "IntCmp"} {
+		if strings.Contains(uninstall, forbidden) {
+			t.Errorf("uninstall must continue after helper failure, found %q in:\n%s", forbidden, uninstall)
 		}
 	}
 	c.Windows.Notifications = false
