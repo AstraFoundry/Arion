@@ -164,7 +164,11 @@ class Typing {
             }
             return 1;
         }
-        if (menu.expanded && (key.symbol==0xff51 || key.symbol==0xff53)) { arion_menu_move(&menu,key.symbol==0xff51?-1:1); return 1; }
+        // Left/Right step the highlight on the collapsed bar and in the grid.
+        // Control, Alt and Win stay with the engine so Control can jump a syllable.
+        if (!(key.modifiers&(4|8|(1<<26))) && (key.symbol==0xff51 || key.symbol==0xff53)) {
+            arion_menu_move(&menu,key.symbol==0xff51?-1:1); return 1;
+        }
         return 0;
     }
     void show() {
@@ -431,7 +435,13 @@ public:
             }
         }
         ArionKeyAction action=arion_key_action(command.key.symbol,command.key.modifiers,ascii);
-        if (command.kind==TypingCommand::Key && action==ARION_KEY_PASS) { cancel(cookie); return S_OK; }
+        if (command.kind==TypingCommand::Key && action==ARION_KEY_PASS) {
+            // Control+Left/Right keep the menu so the navigator can jump a syllable.
+            bool controlArrow=composition && !ascii && menu.count &&
+                (command.key.symbol==0xff51 || command.key.symbol==0xff53) &&
+                (command.key.modifiers&4) && !(command.key.modifiers&(8|(1<<26)));
+            if (!controlArrow) { cancel(cookie); return S_OK; }
+        }
         if (command.kind==TypingCommand::ToggleASCII || command.kind==TypingCommand::ShiftASCII || action==ARION_KEY_TOGGLE_ASCII) {
             if (!available() || !allowed(cookie)) return E_ACCESSDENIED;
             if (command.kind==TypingCommand::ShiftASCII && !ascii && composition) {

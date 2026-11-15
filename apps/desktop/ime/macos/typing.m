@@ -298,9 +298,17 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
         return YES;
     }
     if (action == ARION_KEY_PASS) {
-        [self cancel];
-        self.previousCommit = nil;
-        return NO;
+        // Control+Left/Right keep a visible candidate menu so the navigator can
+        // jump a syllable. Other Control, Option and Command chords still cancel.
+        BOOL controlArrow = self.composing && !self.ascii && _menu.count > 0 &&
+            (event.keyCode == 123 || event.keyCode == 124) &&
+            (flags & NSEventModifierFlagControl) != 0 &&
+            (flags & (NSEventModifierFlagOption | NSEventModifierFlagCommand)) == 0;
+        if (!controlArrow) {
+            [self cancel];
+            self.previousCommit = nil;
+            return NO;
+        }
     }
     if (self.composing && _menu.count > 0 && !self.ascii) {
         NSInteger handled = [self menuKey:event];
@@ -343,11 +351,17 @@ static const char *vocabularyString(id value, NSUInteger maximum) {
     if (character == ' ') { [self choose:_menu.highlight]; return YES; }
     BOOL previous = character == '-' || character == '[' || event.keyCode == 116 || event.keyCode == 126;
     BOOL next = character == '=' || character == ']' || event.keyCode == 121 || event.keyCode == 125;
+    // Left/Right step the highlight on the collapsed bar and in the grid.
+    // Control, Option and Command leave the key for the engine (Control jumps a syllable).
+    NSEventModifierFlags chord = event.modifierFlags & (NSEventModifierFlagControl | NSEventModifierFlagOption | NSEventModifierFlagCommand);
+    if ((event.keyCode == 123 || event.keyCode == 124) && chord == 0) {
+        [self moveInRow:event.keyCode == 123 ? -1 : 1];
+        return YES;
+    }
     if (_menu.expanded) {
         // Rows are pages: move between them; above the first row collapses.
         if (previous) { if (_menu.page == 0) [self setGrid:NO]; else [self turn:-1]; return YES; }
         if (next) { [self turn:1]; return YES; }
-        if (event.keyCode == 123 || event.keyCode == 124) { [self moveInRow:event.keyCode == 123 ? -1 : 1]; return YES; }
         return -1;
     }
     if (previous) { [self turn:-1]; return YES; }
