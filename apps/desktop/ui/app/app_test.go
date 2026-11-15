@@ -200,7 +200,7 @@ func fixture() (*runtime.State, *recorder, runtime.Store) {
 	state := &runtime.State{
 		Version:     "0.1.0",
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
-		Preferences: runtime.Preferences{HoldKey: runtime.DefaultHoldKey(platform.GOOS), Delivery: runtime.DeliveryAutomatic, Sounds: true, CheckUpdates: true,
+		Preferences: runtime.Preferences{HoldKey: runtime.DefaultHoldKey(platform.GOOS), Delivery: runtime.DeliveryAutomatic, Sounds: true, ShowDraft: true, CheckUpdates: true,
 			Keyboard:  runtime.KeyboardPreferences{PageSize: 6, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, Accent: runtime.AccentYellow, EmojiSuggestions: true},
 			Selection: runtime.DefaultSelectionPreferences()},
 		SelectionReader: true,
@@ -1083,6 +1083,54 @@ func TestHoldKeySettingsAndPill(t *testing.T) {
 	settle(pill)
 	if !hasText(pill, en.Text(copy.PillFinishHint)) || !hasText(pill, holdname.Legend(choice)) {
 		t.Fatalf("toggle hint missing after tap: %q", pill.Texts())
+	}
+}
+
+// Hiding the draft: the General switch turns it off, and the pill then
+// shows a word count while listening and never the recognized text.
+func TestHiddenDraftSettingsAndPill(t *testing.T) {
+	state, _, store := fixture()
+	en := copy.For(copy.English)
+	page := settings.NewPage()
+	page.Section = settings.General
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	settle(tt)
+	reveal(t, tt, en.Text(copy.ShowDraft))
+	row, _ := tt.Find(en.Text(copy.ShowDraft))
+	tt.ClickAt(SettingsWidth-32-36, row.Y+row.H/2)
+	settle(tt)
+	if state.Preferences.ShowDraft {
+		t.Fatal("switch did not hide the draft")
+	}
+
+	overlayPage := overlay.NewPage()
+	pill := ui.NewTester(func(c *ui.Context) { overlayPage.Render(c, store) }, OverlayWidth, OverlayHeight)
+	draft := "把这个 PR merge 到 main 分支之前先跑一下 CI"
+	state.Dictation = runtime.Dictation{SessionID: "h", State: runtime.StateCapturing, Levels: levels(40), Draft: draft, Changed: pill.Now()}
+	settle(pill)
+	rest(pill, 1500*time.Millisecond)
+	if hasText(pill, "merge") || !hasText(pill, en.PillWords(runtime.CountWords(draft))) {
+		t.Fatalf("capturing: %q", pill.Texts())
+	}
+	snapshot(t, pill, "overlay-draft-hidden")
+	state.Dictation.State, state.Dictation.Changed = runtime.StateFinalizing, pill.Now()
+	settle(pill)
+	rest(pill, 1500*time.Millisecond)
+	if hasText(pill, "merge") || !hasText(pill, en.Text(copy.PillTranscribing)) {
+		t.Fatalf("finalizing: %q", pill.Texts())
+	}
+	state.Dictation = runtime.Dictation{SessionID: "h", State: runtime.StateCompleted, Outcome: runtime.OutcomeApplied, Changed: pill.Now()}
+	settle(pill)
+	if !hasText(pill, en.Text(copy.PillInserted)) {
+		t.Fatalf("completed: %q", pill.Texts())
+	}
+
+	state.Preferences.ShowDraft = true
+	state.Dictation = runtime.Dictation{SessionID: "s", State: runtime.StateCapturing, Levels: levels(40), Draft: draft, Changed: pill.Now()}
+	settle(pill)
+	rest(pill, 1500*time.Millisecond)
+	if !hasText(pill, "merge") {
+		t.Fatalf("shown draft missing: %q", pill.Texts())
 	}
 }
 

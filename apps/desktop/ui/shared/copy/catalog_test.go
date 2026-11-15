@@ -127,6 +127,7 @@ func TestUsageFormatting(t *testing.T) {
 		{en.Weekday(time.Sunday), "Sun"}, {zh.Weekday(time.Wednesday), "周三"},
 		{en.DayWords(time.Date(2026, 10, 4, 0, 0, 0, 0, time.Local), 1380), "Oct 4: 1,380 words"},
 		{zh.DayWords(time.Date(2026, 1, 14, 0, 0, 0, 0, time.Local), 0), "1月14日：0 字"},
+		{en.PillWords(14), "14 words"}, {zh.PillWords(1200), "已识别 1,200 字"},
 	} {
 		if pair[0] != pair[1] {
 			t.Errorf("got %q, want %q", pair[0], pair[1])

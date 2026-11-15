@@ -328,6 +328,11 @@ func (c Catalog) DayWords(t time.Time, words int) string {
 	return c.format(FormatDayWords, "date", c.MonthDay(t), "words", c.Count(words))
 }
 
+// PillWords states how many words the hidden draft has.
+func (c Catalog) PillWords(words int) string {
+	return c.format(FormatPillWords, "words", c.Count(words))
+}
+
 // UpdateDownloaded distinguishes verified staging from installed resources.
 func (c Catalog) UpdateDownloaded(version string) string {
 	return c.format(FormatUpdateDownloaded, "version", version)
