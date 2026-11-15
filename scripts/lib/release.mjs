@@ -13,6 +13,17 @@ export const digest = bytes => createHash('sha256').update(bytes).digest();
 export function checkReleaseChangelog(version, markdown) {
   if (!markdown.split(/\r?\n/).includes(`## ${version}`)) throw new Error(`CHANGELOG.md requires a "## ${version}" section before release packaging`);
 }
+// What's new: apps/desktop/ui/entities/whatsnew/releases.json lists each
+// release's highlight slides, or why it has none. A release needs its entry,
+// so skipping the highlights is a recorded decision, not an omission. The
+// app's own parser enforces the remaining catalog rules in its tests.
+export function checkReleaseHighlights(version, json) {
+  const release = JSON.parse(json).releases?.find(entry => entry.version === version);
+  if (!release) throw new Error(`releases.json requires a "${version}" entry with highlight slides or a skip reason before release packaging`);
+  const slides = Array.isArray(release.slides) && release.slides.length > 0;
+  const skip = typeof release.skip === 'string' && release.skip.trim() !== '';
+  if (slides === skip) throw new Error(`releases.json "${version}" needs highlight slides or a skip reason, not both`);
+}
 export const githubAssetName = name => name.replaceAll(' ', '.');
 export const releaseStatus = (config, markdown) => markdown.replace(/\]\(([^)]+)\)/g, (link, target) => {
   if (/^(https?:|#)/.test(target)) return link;

@@ -275,6 +275,11 @@ func (c Catalog) UpdateTo(version string) string {
 	return c.format(FormatUpdateTo, "version", version)
 }
 
+// WhatsNewVersion names the release a highlight arrived in.
+func (c Catalog) WhatsNewVersion(version string) string {
+	return c.format(FormatWhatsNewVersion, "version", version)
+}
+
 // DownloadSize states a model's one-time download size.
 func (c Catalog) DownloadSize(n int64) string {
 	return c.format(FormatDownloadSize, "size", c.Bytes(n))

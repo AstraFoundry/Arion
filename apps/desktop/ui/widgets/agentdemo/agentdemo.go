@@ -8,13 +8,13 @@ package agentdemo
 import (
 	goruntime "runtime"
 	"time"
-	"unicode/utf8"
 
 	"arion.local/desktop/ui/shared/assets"
 	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
+	"arion.local/desktop/ui/shared/screencast"
 	"arion.local/desktop/ui/shared/theme"
 	"arion.local/desktop/ui/shared/typography"
 	"github.com/egoist/mygo/ui"
@@ -34,46 +34,43 @@ const (
 	Final = 8000 * time.Millisecond
 )
 
-// point is a position on the stage.
-type point struct{ X, Y float32 }
+type (
+	point = screencast.Point
+	lens  = screencast.Lens
+)
 
-// lens is the camera: how far it zooms in, toward which point.
-type lens struct {
-	Zoom  float32
-	Focus point
-}
+var (
+	pt   = screencast.Pt
+	view = screencast.View
+)
 
-// key holds a value from At milliseconds into the loop, easing from the
-// key before it.
-type key[T any] struct {
-	At    float32
-	Value T
-}
+// key holds value from ms milliseconds into the loop.
+func key[T any](ms float32, value T) screencast.Key[T] { return screencast.At(ms, value) }
 
 // Where things are on the stage: the copy button of the prompt card, the
 // agent's input and send button, and the issue the agent opens.
 var (
-	center     = point{Width / 2, Height / 2}
-	rest       = point{300, 440}
-	copyButton = point{257, 292}
-	input      = point{150, 350}
-	send       = point{286, 356}
-	issue      = point{170, 274}
+	center     = pt(Width/2, Height/2)
+	rest       = pt(300, 440)
+	copyButton = pt(257, 292)
+	input      = pt(150, 350)
+	send       = pt(286, 356)
+	issue      = pt(170, 274)
 )
 
 // The pointer's path and the camera's moves, in milliseconds. Two keys
 // with one value hold it still between them.
 var (
-	pointerKeys = []key[point]{
-		{0, rest}, {500, rest}, {1300, copyButton}, {2500, copyButton}, {3200, input},
-		{3900, input}, {4500, send}, {4800, send}, {5500, rest},
+	pointerKeys = []screencast.Key[point]{
+		key(0, rest), key(500, rest), key(1300, copyButton), key(2500, copyButton), key(3200, input),
+		key(3900, input), key(4500, send), key(4800, send), key(5500, rest),
 	}
-	lensKeys = []key[lens]{
-		{0, lens{1, center}}, {400, lens{1, center}}, {1300, lens{1.55, point{250, 288}}},
-		{1800, lens{1.55, point{250, 288}}}, {2400, lens{1, center}}, {2600, lens{1, center}},
-		{3300, lens{1.22, point{170, 345}}}, {4000, lens{1.22, point{170, 345}}}, {4500, lens{1.22, point{200, 345}}},
-		{4800, lens{1.22, point{200, 345}}}, {5400, lens{1.12, point{170, 240}}}, {6200, lens{1.12, point{170, 240}}},
-		{6900, lens{1.2, issue}}, {8400, lens{1.2, issue}}, {9200, lens{1, center}},
+	lensKeys = []screencast.Key[lens]{
+		key(0, view(1, center)), key(400, view(1, center)), key(1300, view(1.55, pt(250, 288))),
+		key(1800, view(1.55, pt(250, 288))), key(2400, view(1, center)), key(2600, view(1, center)),
+		key(3300, view(1.22, pt(170, 345))), key(4000, view(1.22, pt(170, 345))), key(4500, view(1.22, pt(200, 345))),
+		key(4800, view(1.22, pt(200, 345))), key(5400, view(1.12, pt(170, 240))), key(6200, view(1.12, pt(170, 240))),
+		key(6900, view(1.2, issue)), key(8400, view(1.2, issue)), key(9200, view(1, center)),
 	}
 )
 
@@ -89,8 +86,6 @@ const (
 	replyStart = 5000 * time.Millisecond
 	replyEnd   = 6000 * time.Millisecond
 	issueOpens = 6300 * time.Millisecond
-	press      = 160 * time.Millisecond
-	ripple     = 450 * time.Millisecond
 )
 
 var clicks = []time.Duration{copyClick, inputClick, sendClick}
@@ -99,13 +94,9 @@ var clicks = []time.Duration{copyClick, inputClick, sendClick}
 type frame struct {
 	Agent, Copied, Focused, Pasting, Pasted, Sent, Issue bool
 	// Reply is how much of the agent's answer has streamed in.
-	Reply float32
-	// Press is how far the pointer is pressed, Ripple how far the ring of
-	// the last click has spread (negative without one).
-	Pointer       point
-	Press, Ripple float32
-	RippleAt      point
-	Lens          lens
+	Reply  float32
+	Cursor screencast.Cursor
+	Lens   lens
 }
 
 // frameAt computes the scene at t into the loop.
@@ -119,9 +110,8 @@ func frameAt(t time.Duration) frame {
 		Pasted:  t >= pasted && t < sendClick,
 		Sent:    t >= sendClick,
 		Issue:   t >= issueOpens,
-		Pointer: sample(pointerKeys, t, mixPoint),
-		Lens:    sample(lensKeys, t, mixLens),
-		Ripple:  -1,
+		Cursor:  screencast.CursorAt(pointerKeys, clicks, t),
+		Lens:    screencast.Sample(lensKeys, t, screencast.MixLens),
 	}
 	switch {
 	case t >= replyEnd:
@@ -129,56 +119,7 @@ func frameAt(t time.Duration) frame {
 	case t > replyStart:
 		f.Reply = float32(t-replyStart) / float32(replyEnd-replyStart)
 	}
-	for _, click := range clicks {
-		since := t - click
-		if since < 0 {
-			continue
-		}
-		if since < press {
-			f.Press = 1 - float32(since)/float32(press)
-		}
-		if since < ripple {
-			f.Ripple = float32(since) / float32(ripple)
-			f.RippleAt = sample(pointerKeys, click, mixPoint)
-		}
-	}
 	return f
-}
-
-// sample eases between the keys around t.
-func sample[T any](keys []key[T], at time.Duration, mix func(a, b T, p float32) T) T {
-	t := float32(at) / float32(time.Millisecond)
-	if t <= keys[0].At {
-		return keys[0].Value
-	}
-	for i := 1; i < len(keys); i++ {
-		if t < keys[i].At {
-			from, to := keys[i-1], keys[i]
-			return mix(from.Value, to.Value, ui.EaseInOut((t-from.At)/(to.At-from.At)))
-		}
-	}
-	return keys[len(keys)-1].Value
-}
-
-func lerp(a, b, p float32) float32 { return a + (b-a)*p }
-
-func mixPoint(a, b point, p float32) point { return point{lerp(a.X, b.X, p), lerp(a.Y, b.Y, p)} }
-
-func mixLens(a, b lens, p float32) lens {
-	return lens{lerp(a.Zoom, b.Zoom, p), mixPoint(a.Focus, b.Focus, p)}
-}
-
-// shift is the translation that brings the lens's focus to the middle of
-// the stage scaled around its center, kept so the stage's edges never come
-// into view.
-func shift(l lens) (float32, float32) {
-	axis := func(focus, size float32) float32 {
-		half := size / 2
-		low, high := half/l.Zoom, size-half/l.Zoom
-		focus = min(max(focus, low), high)
-		return (half - focus) * l.Zoom
-	}
-	return axis(l.Focus.X, Width), axis(l.Focus.Y, Height)
 }
 
 // pasteLegend is the paste shortcut on the keycap.
@@ -196,7 +137,7 @@ func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, prompt st
 	// with the issue opened, unzoomed.
 	if c.Preferences().ReduceMotion {
 		f := frameAt(Final)
-		f.Lens = lens{1, center}
+		f.Lens = view(1, center)
 		render(c, tokens, messages, prompt, f)
 		return
 	}
@@ -206,9 +147,8 @@ func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, prompt st
 
 // render draws the scene of f.
 func render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, prompt string, f frame) {
-	x, y := shift(f.Lens)
 	ui.Column(c).Fill().Clip().Background(tokens.Scrim).Role(ui.RoleImage).Label(messages.Text(copy.FeedbackDemoLabel)).Children(func() {
-		ui.Column(c).Absolute().Top(0).Left(0).Size(Width, Height).TransformOrigin(0.5, 0.5).Scale(f.Lens.Zoom, f.Lens.Zoom).Translate(x, y).Children(func() {
+		screencast.Stage(c, Width, Height, f.Lens, func() {
 			ui.Image(c, assets.Backdrop).Absolute().Top(0).Left(0).Right(0).Bottom(0).Fit(ui.Cover)
 			ui.Box(c).Absolute().Top(0).Left(0).Right(0).Height(96).PassThrough().
 				LinearGradient(ui.LinearGradient{From: tokens.Scrim.Alpha(0.4), To: tokens.Scrim.Alpha(0), Angle: 180})
@@ -218,10 +158,10 @@ func render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, prompt st
 				promptCard(c, tokens, messages, prompt, f)
 			}
 			if f.Pasting {
-				kit.Kbd(c.Key("paste"), tokens, pasteLegend(), false).Absolute().Left(f.Pointer.X + 14).Top(f.Pointer.Y + 18).
+				kit.Kbd(c.Key("paste"), tokens, pasteLegend(), false).Absolute().Left(f.Cursor.At.X + 14).Top(f.Cursor.At.Y + 18).
 					Transition(ui.ElementTransition{Animation: &theme.Pop, Enter: &ui.Motion{Scale: 0.8}, Exit: &ui.Motion{Scale: 0.9}})
 			}
-			pointer(c, tokens, f)
+			screencast.Pointer(c, tokens, f.Cursor)
 		})
 	})
 }
@@ -267,7 +207,7 @@ func agent(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, prompt str
 				Background(tokens.Subtle).FontSize(10.5).LineHeight(1.35).MaxLines(3).Ellipsis("…").
 				Transition(ui.ElementTransition{Animation: &theme.Settle, Enter: &ui.Motion{Y: 8}})
 		}
-		if reply := head(messages.Text(copy.FeedbackDemoReply), f.Reply); reply != "" {
+		if reply := screencast.Head(messages.Text(copy.FeedbackDemoReply), f.Reply); reply != "" {
 			ui.Text(c, reply).Absolute().Left(12).Top(104).Width(260).FontSize(theme.Caption).MaxLines(2)
 		}
 		if f.Issue {
@@ -311,23 +251,4 @@ func opened(c *ui.Context, tokens theme.Tokens, messages copy.Catalog) {
 			ui.Text(c, messages.Text(copy.FeedbackDemoIssue)).FontSize(theme.Caption).FontWeight(600).SingleLine().Ellipsis("…")
 		})
 	})
-}
-
-// pointer draws the arrow and the ring a click leaves.
-func pointer(c *ui.Context, tokens theme.Tokens, f frame) {
-	if f.Ripple >= 0 {
-		size := 14 + 22*f.Ripple
-		ui.Box(c).Absolute().Left(f.RippleAt.X-size/2).Top(f.RippleAt.Y-size/2).Size(size, size).Radius(size/2).
-			Border(2, tokens.AccentInk).Opacity(1 - f.Ripple).PassThrough()
-	}
-	scale := 1 - 0.15*f.Press
-	// The arrow's tip sits at (4, 2) of its 20 DIP box.
-	ui.Image(c, icons.Pointer).Absolute().Left(f.Pointer.X-4).Top(f.Pointer.Y-2).Size(20, 20).
-		TransformOrigin(0.2, 0.1).Scale(scale, scale).PassThrough()
-}
-
-// head returns the first fraction of text's runes.
-func head(text string, fraction float32) string {
-	n := int(float32(utf8.RuneCountInString(text)) * fraction)
-	return string([]rune(text)[:n])
 }

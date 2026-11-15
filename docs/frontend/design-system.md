@@ -156,7 +156,7 @@ A dictation committed while the overview shows rolls the figures and reshades th
 
 `widgets/showcase` draws mock UI (another app's editor window and the dictation pill) floating on a photograph from `ui/shared/assets`. Its scenes follow the real flow: `Dictating` loops the draft streaming in the pill and then landing in the editor, `Listening` holds the pill open (with live levels when the microphone is allowed), and `Inserted` shows the outcome.
 
-- Only onboarding (the left pane), Settings › About and the Overview's first-run card use illustrations. Settings › About loops `Dictating`; with Reduce Motion every `Dictating` scene holds the `Inserted` frame.
+- Only onboarding (the left pane), Settings › About, the Overview's first-run card, the feedback window and the What's new dialog use illustrations. Settings › About loops `Dictating`; with Reduce Motion every `Dictating` scene holds the `Inserted` frame.
 - Photos are already soft (motion blur or shallow focus), downscaled to 1000 px at most, under 200 KB, and under the Unsplash License or equivalent. See `ui/shared/assets/README.md`.
 - Settings › About holds, in order: the illustration with name and version, software update (`features/update`), the Privacy group, and the team, source, X account, bug reports and license. Their URLs and proper names live in `ui/shared/config`; only the row titles are copy keys.
 - Mock surfaces are solid with real elevation; no glass panes, glows or tinted gradients. Scrims are ink gradients only where text or controls overlap the photo.
@@ -179,6 +179,15 @@ The Overview's first-run card shows `widgets/usage.Microphone`, drawn live by `u
 - A 4.4 s loop that starts and ends turned away: the microphone faces 62° off to the side with its capsule leaning back 30°. It turns round to face the viewer (0.4–1.6 s, ease in and out) while the capsule tips up to 14° forward (0.7–2.0 s), carried a few degrees past it and back as it settles. The switch slides on and the band lights in the accent (1.8–2.1 s) and goes out (3.0–3.3 s), and the microphone drifts back (3.4–4.4 s). The whole microphone turns, so the screws and switch move with it; the yoke's arms and capsule are painted far to near each frame, and the capsule's pieces from the end facing away. Every value is an eased function of the clock (`micAt`), repainted with `Painter.AnimationFrame` without rebuilding the layout, and a frame equal to the last one is not drawn again. With Reduce Motion it holds the aimed pose.
 - Inks are `iso.InkOf` (shared with the key figure) with outlines mixed 30% toward `Text`, as the figure is small. The band is its one lit part. It is labeled for assistive technology (`UsageFirstFigureLabel`).
 - `go test ./ui/widgets/usage -run Mic` checks the loop's start, end and aimed poses, the overshoot, that nothing jumps between frames, and that both appearances draw; with `ARION_UI_SNAPSHOTS` it saves a frame every 200 ms.
+
+## Release highlights
+
+`features/whatsnew` draws the What's new dialog over Settings ([ADR 050](../decisions/050-release-highlights.md)): a raised panel 560 DIP wide on a 45% scrim, the stage on top and the text and buttons under it. The stage is the photograph with a screen recording of mock UI. In a short window the stage shrinks to as little as 160 DIP and the recording scales with it; the text keeps its size.
+
+- Recordings share `ui/shared/screencast` with the feedback window's `agentdemo`: keyed values eased along a loop, a lens that zooms toward the pointer without uncovering the stage, and the pointer with its click ring. Each loop starts and ends on the same pose. Under Reduce Motion it holds its final frame unzoomed.
+- Mock UI matches the real surfaces it shows (the selection bar's substrate, its menu with the accent highlight, an Arion window on the canvas) and draws only with theme tokens.
+- One slide per highlight. The current slide's dot is the accent's ink and wider; the others are `Text` at 18%. Skip is a ghost button, Previous an outline, Next and Done the primary. The last slide drops Skip.
+- `go test ./ui/features/whatsnew` checks each story's order, that the pointer and zoom never jump, every catalog slide's scene and copy, and the dialog's navigation; with `ARION_UI_SNAPSHOTS` it saves frames of each recording in both appearances.
 
 ## Review
 
