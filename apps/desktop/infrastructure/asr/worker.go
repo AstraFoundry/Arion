@@ -273,6 +273,12 @@ func (e *workerProcess) send(m any) error {
 	return err
 }
 func (e *engine) decode(ctx context.Context, samples []float32, hotwords ...string) (string, error) {
+	return e.decodeDraft(ctx, samples, "", hotwords...)
+}
+
+// decodeDraft recognizes samples. draft is the previous reading of the same
+// uncommitted audio, or empty; it never changes what the request may steer.
+func (e *engine) decodeDraft(ctx context.Context, samples []float32, draft string, hotwords ...string) (string, error) {
 	if err := ctx.Err(); err != nil {
 		return "", err
 	}
@@ -344,7 +350,7 @@ func (e *engine) decode(ctx context.Context, samples []float32, hotwords ...stri
 	if prompt != "" && !p.promptSupported {
 		return "", domain.Fail(domain.CodeModelUnsupported, "native ASR worker does not support hotword context")
 	}
-	text, err := e.complete(ctx, p, samples, prompt)
+	text, err := e.complete(ctx, p, samples, prompt, draft)
 	if err != nil || prompt == "" || !hotwordEcho(text, hotwords) {
 		return text, err
 	}
@@ -354,11 +360,11 @@ func (e *engine) decode(ctx context.Context, samples []float32, hotwords ...stri
 	if err := ctx.Err(); err != nil {
 		return "", err
 	}
-	return e.complete(ctx, p, samples, "")
+	return e.complete(ctx, p, samples, "", draft)
 }
 
-func (e *engine) complete(ctx context.Context, p *workerProcess, samples []float32, prompt string) (string, error) {
-	text, err, retired := p.decode(ctx, samples, e.cancelGrace, prompt)
+func (e *engine) complete(ctx context.Context, p *workerProcess, samples []float32, prompt, draft string) (string, error) {
+	text, err, retired := p.decode(ctx, samples, e.cancelGrace, prompt, draft)
 	if retired {
 		e.mu.Lock()
 		if e.current == p {
@@ -370,7 +376,7 @@ func (e *engine) complete(ctx context.Context, p *workerProcess, samples []float
 	return text, err
 }
 
-func (e *workerProcess) decode(ctx context.Context, samples []float32, cancelGrace time.Duration, prompt string) (string, error, bool) {
+func (e *workerProcess) decode(ctx context.Context, samples []float32, cancelGrace time.Duration, prompt, draft string) (string, error, bool) {
 	select {
 	case <-e.done:
 		return "", domain.Fail(domain.CodeModelUnsupported, "native ASR worker exited"), false
@@ -396,7 +402,13 @@ func (e *workerProcess) decode(ctx context.Context, samples []float32, cancelGra
 	if err := e.send(map[string]any{"type": "chunk", "id": id, "seq": 0, "pcm": base64.StdEncoding.EncodeToString(pcm)}); err != nil {
 		return "", err, false
 	}
-	if err := e.send(map[string]any{"type": "transcribe", "id": id, "sample_rate": 16000, "prompt": prompt}); err != nil {
+	transcribe := map[string]any{"type": "transcribe", "id": id, "sample_rate": 16000, "prompt": prompt}
+	// speech.cpp's `draft` steers nothing: the decoder verifies it several
+	// tokens at a time. The pinned worker takes it; another refuses it loudly.
+	if draft != "" {
+		transcribe["draft"] = draft
+	}
+	if err := e.send(transcribe); err != nil {
 		return "", err, false
 	}
 	select {

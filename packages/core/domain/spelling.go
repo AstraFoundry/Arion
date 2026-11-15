@@ -556,17 +556,17 @@ func (l *SpellingLexicon) prepare(source string, context map[string]string, scen
 func ApplySpellingChoices(raw string, p SpellingPreparation) (string, error) {
 	var choices map[string]string
 	if !utf8.ValidString(raw) || json.Unmarshal([]byte(raw), &choices) != nil || len(choices) != len(p.Hypotheses) {
-		return "", errors.New("invalid spelling-choice coverage")
+		return "", WithDiagnostic(CodeRewriteRejected, PhaseSelection, ReasonSpellingCoverageInvalid, errors.New("invalid spelling-choice coverage"))
 	}
 	source := p.Source
 	for i := len(p.Hypotheses) - 1; i >= 0; i-- {
 		h := p.Hypotheses[i]
 		choice, ok := choices[h.ID]
 		if !ok || (choice != "keep" && choice != "replace") || (choice == "replace" && len(h.Candidates) != 1) {
-			return "", errors.New("invalid spelling-choice value")
+			return "", WithDiagnostic(CodeRewriteRejected, PhaseSelection, ReasonSpellingChoiceInvalid, errors.New("invalid spelling-choice value"))
 		}
 		if h.Start < 0 || h.End > len(source) || h.End < h.Start || source[h.Start:h.End] != h.Source {
-			return "", errors.New("spelling source identity mismatch")
+			return "", WithDiagnostic(CodeRewriteRejected, PhaseSelection, ReasonSpellingSpanMismatch, errors.New("spelling source identity mismatch"))
 		}
 		if choice == "replace" {
 			source = source[:h.Start] + h.Candidates[0] + source[h.End:]

@@ -912,7 +912,7 @@ func (c *Coordinator) publish(r *run, event contracts.Event) {
 }
 
 func codeOr(err error, fallback domain.ErrorCode) domain.ErrorCode {
-	if code := domain.CodeOf(err); code != "" {
+	if code := domain.DiagnosticCodeOf(err); code != "" {
 		return code
 	}
 	return fallback

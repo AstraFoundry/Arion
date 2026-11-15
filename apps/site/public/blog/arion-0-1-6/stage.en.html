@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Mock recordings for the "Arion 0.1.5 to 0.1.6" post (en copy).
+      The hash picks the scene: #shortcut, #capture, #polish, #textcolor,
+      #files, #selection, #disable or #thumbnails.
+      Illustrations only: nothing is recorded, no model runs and no provider or
+      assistant is contacted. Arion's labels come from the desktop copy
+      catalogs. Loaded in a sandboxed frame; follows the system color scheme.
+      Engine: stage.js.
+    -->
+    <link rel="stylesheet" href="stage.css" />
+    <script>
+      window.ARION_COPY = {
+        "menu": [
+          "File",
+          "Edit",
+          "View",
+          "Window"
+        ],
+        "clock": "Thu 10:00",
+        "keys": {
+          "enter": "↩",
+          "clipboard": [
+            "⌘",
+            "⇧",
+            "V"
+          ],
+          "second": "Right ⌘"
+        },
+        "ui": {
+          "nav": [
+            "Overview",
+            "General",
+            "Dictation",
+            "Keyboard",
+            "Microphone",
+            "Speech & Polish",
+            "Vocabulary",
+            "Clipboard",
+            "About"
+          ],
+          "settingsTitle": "Arion Settings",
+          "pasted": "Pasted",
+          "shortcut": {
+            "title": "Dictation",
+            "label": "Dictation key",
+            "first": "Right Option",
+            "second": "Right Command",
+            "recording": "Press a new shortcut"
+          },
+          "polish": {
+            "noteTitle": "Model needs reasoning",
+            "noteHint": "Allow it in Settings › Speech & Polish",
+            "cloudTitle": "Cloud model",
+            "inUse": "In use",
+            "keyLabel": "API key",
+            "disconnect": "Disconnect",
+            "modelLabel": "Model",
+            "reasoning": "Allow reasoning when required"
+          },
+          "keyboard": {
+            "title": "Keyboard",
+            "group": "Candidates",
+            "pageSize": "Candidates per page",
+            "size": "Candidate size",
+            "sizeValue": "Medium",
+            "appearance": "Appearance",
+            "appearanceValue": "Match system",
+            "textColor": "Text color",
+            "black": "Black",
+            "white": "White",
+            "automatic": "Automatic ({value})",
+            "accent": "Highlight color",
+            "accents": [
+              [
+                "Yellow",
+                "#FFCC00",
+                "black"
+              ],
+              [
+                "Orange",
+                "#FF9500",
+                "black"
+              ],
+              [
+                "Red",
+                "#FF3B30",
+                "white"
+              ],
+              [
+                "Pink",
+                "#FF2D55",
+                "white"
+              ],
+              [
+                "Purple",
+                "#AF52DE",
+                "white"
+              ],
+              [
+                "Blue",
+                "#007AFF",
+                "white"
+              ],
+              [
+                "Green",
+                "#34C759",
+                "black"
+              ],
+              [
+                "Graphite",
+                "#8E8E93",
+                "black"
+              ]
+            ],
+            "pick": 4
+          },
+          "files": {
+            "title": "Clipboard",
+            "history": "Clipboard history",
+            "shortcut": "History shortcut",
+            "size": "History size",
+            "sizeValue": "200 items",
+            "record": "Record copied files",
+            "confirmTitle": "Add files to clipboard history?",
+            "explanation": "Keep references to copied files so you can select and paste them later. File contents are not uploaded.",
+            "mac": "macOS may request access to the folders containing these files. Review Arion’s access in System Settings → Privacy & Security → Files and Folders.",
+            "cancel": "Cancel",
+            "confirm": "Enable file history"
+          },
+          "selection": {
+            "claude": "Claude",
+            "chatgpt": "ChatGPT",
+            "copy": "Copy",
+            "vocabulary": "Add to vocabulary",
+            "prompts": [
+              "Translate to Chinese",
+              "Explain",
+              "Summarize key points",
+              "Rewrite"
+            ],
+            "ask": "Ask a custom question…",
+            "pause": "Disable for 1 hour",
+            "site": "Disable on {site}",
+            "app": "Disable in {app}",
+            "off": "Turn off selection actions"
+          },
+          "clipboard": {
+            "label": "Clipboard"
+          }
+        },
+        "chat": {
+          "app": "Team Chat",
+          "channels": [
+            "# release",
+            "# design",
+            "# feedback"
+          ],
+          "thread": [
+            {
+              "who": "Lena",
+              "text": "Can you summarize the plan for Thursday?"
+            }
+          ],
+          "me": "Me",
+          "composer": "Message # release",
+          "key": "Right Option",
+          "partials": [
+            "First we",
+            "First we review the draft with Mei",
+            "First we review the draft with Mei at ten,",
+            "First we review the draft with Mei at ten, then we send the Figma link to the Berlin team",
+            "First we review the draft with Mei at ten, then we send the Figma link to the Berlin team before lunch."
+          ],
+          "final": "First we review the draft with Mei at ten, then we send the Figma link to the Berlin team before lunch.",
+          "short": [
+            "Ship it",
+            "Ship it tonight"
+          ],
+          "shortFinal": "ship it tonight"
+        },
+        "notes": {
+          "shortcut": {
+            "k": "Dictation keys",
+            "note": "Either one starts dictation"
+          },
+          "capture": {
+            "k": "Microphone",
+            "note": "Opens first; speech during setup is kept"
+          },
+          "polish": {
+            "k": "Next refusal",
+            "note": "Retried with minimal, then low reasoning"
+          },
+          "files": {
+            "k": "Default",
+            "note": "Off, including existing profiles"
+          },
+          "selection": {
+            "k": "Opens",
+            "note": "Not sent"
+          },
+          "disable": {
+            "k": "docs.example.com",
+            "note": "No bar here"
+          }
+        },
+        "pinyin": "nihao",
+        "candidates": [
+          "你好",
+          "你",
+          "拟",
+          "尼",
+          "泥"
+        ],
+        "article": {
+          "host": "docs.example.com",
+          "browser": "Safari",
+          "heading": "Local-first software",
+          "before": "Local-first apps treat the network as optional. ",
+          "selected": "The primary copy of your data stays on your own device",
+          "after": ", and a server, when there is one, only helps you sync it.",
+          "second": "Sync is an extra that you can turn on later."
+        },
+        "pick": 1,
+        "prompts": [
+          "Translate the following text into Simplified Chinese:",
+          "Explain the following text:",
+          "Summarize the key points of the following text:",
+          "Rewrite the following text:"
+        ],
+        "claude": {
+          "app": "Claude",
+          "placeholder": "Reply to Claude…"
+        },
+        "doc": {
+          "app": "Notes",
+          "title": "Trip notes",
+          "lines": [
+            "Day 1: coastal path, about 12 km."
+          ],
+          "before": "Photo for the album: "
+        },
+        "rows": [
+          {
+            "kind": "image",
+            "text": "beach.jpg",
+            "tag": "JPG"
+          },
+          {
+            "kind": "file",
+            "text": "Itinerary",
+            "tag": "PDF"
+          },
+          {
+            "kind": "text",
+            "text": "Meet at the harbour at 9"
+          }
+        ]
+      };
+    </script>
+    <script src="stage.js" defer></script>
+  </head>
+  <body></body>
+</html>

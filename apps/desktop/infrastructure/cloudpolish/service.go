@@ -668,7 +668,7 @@ func (s *Service) ready(ctx context.Context) (*republic.Provider, error) {
 		return p, nil
 	}
 	if !c.valid() {
-		return nil, domain.Fail(domain.CodeModelMissing, "no cloud provider connected")
+		return nil, domain.WithDiagnostic(domain.CodeModelMissing, domain.PhaseSetup, domain.ReasonCloudNotConnected, domain.Fail(domain.CodeModelMissing, "no cloud provider connected"))
 	}
 	var auth *republic.TokenAuth
 	if c.Provider == ChatGPT {
@@ -678,19 +678,19 @@ func (s *Service) ready(ctx context.Context) (*republic.Provider, error) {
 		}
 		auth, err = republic.NewCodexAuth(map[string]any{"access_token": tok.AccessToken, "refresh_token": tok.RefreshToken, "id_token": tok.IDToken}, c.AccountID)
 		if err != nil {
-			return nil, fail(CodeRejected, err)
+			return nil, failReason(CodeRejected, domain.ReasonCloudTokenRejected, err)
 		}
 		auth.HTTPClient = s.client
 	}
 	p, err := open(c, auth, s.client, s.base)
 	if err != nil {
-		return nil, fail(CodeRejected, err)
+		return nil, failReason(CodeRejected, domain.ReasonCloudProviderOpen, err)
 	}
 	s.mu.Lock()
 	if s.generation != generation {
 		s.mu.Unlock()
 		_ = p.Close()
-		return nil, fail(CodeCancelled, errors.New("connection replaced"))
+		return nil, failReason(CodeCancelled, domain.ReasonRewriteCancelled, errors.New("connection replaced"))
 	}
 	s.provider, s.auth = p, auth
 	s.mu.Unlock()
@@ -766,7 +766,7 @@ func (s *Service) Ready() bool {
 // supplies only the context sources enabled by the user's preferences.
 func (s *Service) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.RewriteResult, error) {
 	if req.Prefill {
-		return ports.RewriteResult{}, errors.New("cloud prefill is unsupported")
+		return ports.RewriteResult{}, domain.WithDiagnostic(domain.CodeModelUnsupported, domain.PhaseSetup, domain.ReasonCloudPrefillUnsupported, errors.New("cloud prefill is unsupported"))
 	}
 	chat, err := s.completionModel(ctx)
 	if err != nil {
@@ -774,7 +774,7 @@ func (s *Service) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.
 	}
 	pipeline, err := rewrite.Load()
 	if err != nil {
-		return ports.RewriteResult{}, err
+		return ports.RewriteResult{}, domain.WithDiagnostic(domain.CodeModelUnsupported, domain.PhaseSetup, domain.ReasonRewritePipelineLoad, err)
 	}
 	result, err := pipeline.Run(ctx, engine.Request{Text: req.Text, Scene: req.Scene, Punctuation: domain.Punctuation(req.Punctuation), TargetLanguage: domain.TranslationLanguage(req.TargetLanguage), Terms: req.Terms,
 		Context: req.Context, PreviousText: req.PreviousText},
@@ -785,7 +785,7 @@ func (s *Service) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.
 		Truncated: result.Truncated, InputTokens: result.InputTokens, OutputTokens: result.OutputTokens,
 		ReusedTokens: result.ReusedTokens, PrefillMs: result.PrefillMs, DecodeMs: result.DecodeMs}
 	if result.Cancelled {
-		return out, domain.Fail(domain.CodeCancelled, "rewrite cancelled")
+		return out, domain.WithDiagnostic(domain.CodeCancelled, "", domain.ReasonRewriteCancelled, domain.Fail(domain.CodeCancelled, "rewrite cancelled"))
 	}
 	return out, err
 }

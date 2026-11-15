@@ -17,11 +17,32 @@
       "avatarSHA256": "417512a8c78caf5e7c14858360117430def6d74a558d73f523ae6ad550714afc"
     },
     {
+      "login": "cyrus-cai",
+      "name": "Cyrus7",
+      "profileUrl": "https://github.com/cyrus-cai",
+      "avatar": "cyrus-cai.png",
+      "avatarSHA256": "f8cc5b9df59d453ef40d94773d6f58665460d9389fdacf94bfa27e3a1f0b1363"
+    },
+    {
+      "login": "earmer",
+      "name": "Earmer Carey",
+      "profileUrl": "https://github.com/earmer",
+      "avatar": "earmer.jpg",
+      "avatarSHA256": "1df3e49c4e60e3ed184a8bb50dc4a94cedad990fdea365ed2da42958e3f81417"
+    },
+    {
       "login": "gavi102803",
       "name": "gavi102803",
       "profileUrl": "https://github.com/gavi102803",
       "avatar": "gavi102803.jpg",
       "avatarSHA256": "0dd06697713e055ab9ce6fd602e153af01dc555b2a32eacf6ca97de45fe6c3b3"
+    },
+    {
+      "login": "gialoc668",
+      "name": "gialoc668",
+      "profileUrl": "https://github.com/gialoc668",
+      "avatar": "gialoc668.png",
+      "avatarSHA256": "5bdf2e3c5ca4c671e12bc23792dcc56b008326c016badd289d88fc1e7509dc14"
     },
     {
       "login": "hagemon",
@@ -36,6 +57,13 @@
       "profileUrl": "https://github.com/HereOrCode",
       "avatar": "HereOrCode.png",
       "avatarSHA256": "2f654b87b34eb1e41d7ea6323ab3759d5296c4c7883f16944dfe29ca5985ba30"
+    },
+    {
+      "login": "huwan",
+      "name": "Hu Wan",
+      "profileUrl": "https://github.com/huwan",
+      "avatar": "huwan.jpg",
+      "avatarSHA256": "c4594b98f17612b5a0e401a0cb0f5c727988c335c6d8dc239b41cc1a66efdfe7"
     },
     {
       "login": "jackeyzzz12138",

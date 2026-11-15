@@ -98,17 +98,31 @@ func (e Entry) valid() bool {
 	default:
 		return false
 	}
-	switch e.Phase {
-	case "", "downloading", "verifying", "extracting", "ready", "discovery", "enable", "selection", "connection":
-	default:
-		return false
-	}
-	switch e.Reason {
-	case domain.DetailContextWindowNodes, domain.DetailContextWindowDepth, domain.DetailContextWindowText, domain.DetailContextWindowRange, domain.DetailContextWindowFrame, domain.DetailContextWindowEmpty, domain.DetailContextWindowTimeout, "context_window_selected", "completion_phonetic_mismatch", "completion_comparison_rejected", "no_comparable_candidates", "navigation", "input_bounds", "caret_not_at_end", "non_chinese", "stale_revision", "ranking_disabled", "freeze", "invalid_request", "superseded", "delivery_failed", "proposal_sent", "proposal_applied", "context_target", "context_capture", "context_read", "context_marked_mismatch", "context_bounds", "", "idle", "focus_lost", "cleared", "next_dictation", "max_time", "abandoned", "no_baseline":
-	default:
+	if !validPhase(e.Phase) || !validReason(e.Reason) {
 		return false
 	}
 	return e.QueueDepth >= 0 && e.Reads >= 0 && e.Failures >= 0 && validCode(e.Code) && !e.At.IsZero() && !math.IsNaN(e.DurationMs) && !math.IsInf(e.DurationMs, 0) && e.DurationMs >= 0 && e.Count >= 0
+}
+
+func validPhase(phase string) bool {
+	switch phase {
+	case "", "downloading", "verifying", "extracting", "ready", "discovery", "enable", "selection", "connection",
+		domain.PhaseSetup, domain.PhasePreparation, domain.PhaseFormatting, domain.PhaseWorker:
+		return true
+	}
+	return false
+}
+
+func validReason(reason string) bool {
+	switch reason {
+	case domain.DetailContextWindowNodes, domain.DetailContextWindowDepth, domain.DetailContextWindowText, domain.DetailContextWindowRange, domain.DetailContextWindowFrame, domain.DetailContextWindowEmpty, domain.DetailContextWindowTimeout,
+		"context_window_selected", "completion_phonetic_mismatch", "completion_comparison_rejected", "no_comparable_candidates", "navigation", "input_bounds", "caret_not_at_end", "non_chinese", "stale_revision", "ranking_disabled", "freeze", "invalid_request", "superseded", "delivery_failed", "proposal_sent", "proposal_applied", "context_target", "context_capture", "context_read", "context_marked_mismatch", "context_bounds", "", "idle", "focus_lost", "cleared", "next_dictation", "max_time", "abandoned", "no_baseline",
+		domain.ReasonRewritePipelineLoad, domain.ReasonRewriteControlInput, domain.ReasonRewritePreparation, domain.ReasonRewritePromptBuild, domain.ReasonRewriteTruncated, domain.ReasonRewriteTimeout, domain.ReasonRewriteCancelled, domain.ReasonSpellingCoverageInvalid, domain.ReasonSpellingChoiceInvalid, domain.ReasonSpellingSpanMismatch,
+		domain.ReasonCloudPrefillUnsupported, domain.ReasonCloudModelMissing, domain.ReasonCloudNotConnected, domain.ReasonCloudTokenRejected, domain.ReasonCloudTokenNetwork, domain.ReasonCloudTokenInvalid, domain.ReasonCloudProviderOpen, domain.ReasonCloudModelLookup, domain.ReasonCloudRoleUnsupported, domain.ReasonCloudInvalidUTF8, domain.ReasonCloudReasoningRequired, domain.ReasonCloudRejected, domain.ReasonCloudForbidden, domain.ReasonCloudQuotaExhausted, domain.ReasonCloudRateLimited, domain.ReasonCloudModelNotFound, domain.ReasonCloudBadRequest, domain.ReasonCloudServerError, domain.ReasonCloudConnection, domain.ReasonCloudTimeout, domain.ReasonCloudResponseInvalid, domain.ReasonCloudUnsupported, domain.ReasonCloudNetwork,
+		domain.ReasonWorkerMissing, domain.ReasonWorkerUnsupported, domain.ReasonWorkerStart, domain.ReasonWorkerWrite, domain.ReasonWorkerExited, domain.ReasonWorkerFailed:
+		return true
+	}
+	return false
 }
 
 func validCode(code domain.ErrorCode) bool {
@@ -157,7 +171,22 @@ func Failure(err error) domain.ErrorCode {
 // Observe implements the domain diagnostic port. Core cannot send content.
 func (r *Recorder) Observe(d ports.Diagnostic) {
 	r.Record(Entry{Event: string(d.Stage), Session: d.Identity.SessionID, Generation: d.Identity.Generation,
-		DurationMs: float64(d.Duration.Microseconds()) / 1000, QueueDepth: d.QueueDepth, QueueOverflow: d.QueueOverflow, Outcome: string(d.Verdict), Code: FailureCode(d.Failure)})
+		DurationMs: float64(d.Duration.Microseconds()) / 1000, QueueDepth: d.QueueDepth, QueueOverflow: d.QueueOverflow,
+		Outcome: string(d.Verdict), Code: FailureCode(d.Failure), Phase: DiagnosticPhase(d.Phase), Reason: DiagnosticReason(d.Reason)})
+}
+
+func DiagnosticPhase(phase string) string {
+	if validPhase(phase) {
+		return phase
+	}
+	return ""
+}
+
+func DiagnosticReason(reason string) string {
+	if validReason(reason) {
+		return reason
+	}
+	return ""
 }
 
 func FailureCode(code domain.ErrorCode) domain.ErrorCode {

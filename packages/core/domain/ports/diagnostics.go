@@ -17,6 +17,8 @@ type Diagnostic struct {
 	Stage         DiagnosticStage
 	Duration      time.Duration
 	Failure       domain.ErrorCode
+	Phase         string
+	Reason        string
 }
 
 type DiagnosticStage string

@@ -487,3 +487,50 @@ func TestKeyboardTraceRejectsUnboundedReason(t *testing.T) {
 		t.Fatal("arbitrary trace accepted")
 	}
 }
+
+func TestObservePreservesClosedRewritePhaseAndReasonAndStripsCanaries(t *testing.T) {
+	r := openTest(t)
+	id := contracts.Identity{SessionID: "0123456789abcdef", Generation: 7}
+	r.Observe(ports.Diagnostic{
+		Identity: id,
+		Stage:    ports.DiagnosticRewrite,
+		Duration: 42 * time.Millisecond,
+		Failure:  domain.CodeRewriteRejected,
+		Phase:    domain.PhaseFormatting,
+		Reason:   domain.ReasonCloudRateLimited,
+	})
+	r.Observe(ports.Diagnostic{
+		Identity: id,
+		Stage:    ports.DiagnosticRewrite,
+		Duration: 11 * time.Millisecond,
+		Failure:  domain.ErrorCode("PRIVATE_CODE_CANARY"),
+		Phase:    "PRIVATE_PHASE_CANARY",
+		Reason:   "PRIVATE_REASON_CANARY",
+	})
+	path := filepath.Join(t.TempDir(), "rewrite-diag.zip")
+	if err := r.Export(path, "0.1.6"); err != nil {
+		t.Fatal(err)
+	}
+	files := unzip(t, path)
+	log := string(files["events.0.jsonl"])
+	if strings.Contains(log, "CANARY") {
+		t.Fatalf("canary leaked into log: %s", log)
+	}
+	lines := strings.Split(strings.TrimSpace(log), "\n")
+	if len(lines) != 2 {
+		t.Fatalf("expected 2 entries, got %d: %s", len(lines), log)
+	}
+	var first, second Entry
+	if err := json.Unmarshal([]byte(lines[0]), &first); err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal([]byte(lines[1]), &second); err != nil {
+		t.Fatal(err)
+	}
+	if first.Event != "rewrite_final" || first.Code != domain.CodeRewriteRejected || first.Phase != domain.PhaseFormatting || first.Reason != domain.ReasonCloudRateLimited {
+		t.Fatalf("unexpected closed rewrite entry: %+v", first)
+	}
+	if second.Event != "rewrite_final" || second.Code != domain.CodeContractUnsupported || second.Phase != "" || second.Reason != "" {
+		t.Fatalf("unexpected sanitized entry: %+v", second)
+	}
+}

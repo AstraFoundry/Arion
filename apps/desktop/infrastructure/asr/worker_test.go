@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"testing"
@@ -28,6 +29,7 @@ func TestMain(m *testing.M) {
 		out := json.NewEncoder(os.Stdout)
 		_ = out.Encode(message{Type: "ready", Protocol: 3})
 		counts := map[string]int{}
+		readings := map[string]bool{}
 		in := bufio.NewScanner(os.Stdin)
 		in.Buffer(make([]byte, 64<<10), 4<<20)
 		for in.Scan() {
@@ -39,7 +41,21 @@ func TestMain(m *testing.M) {
 				data, _ := base64.StdEncoding.DecodeString(req["pcm"].(string))
 				counts[id] += len(data) / 2
 			case "transcribe":
-				_ = out.Encode(message{Type: "end", ID: id, Text: strconv.Itoa(counts[id]), Stop: "complete"})
+				// A draft must be one of this worker's own earlier readings.
+				if draft, ok := req["draft"].(string); ok {
+					if !readings[draft] {
+						_ = out.Encode(message{Type: "error", ID: id})
+						break
+					}
+					if log := os.Getenv("ARION_ASR_TEST_DRAFTS"); log != "" {
+						f, _ := os.OpenFile(log, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o600)
+						_, _ = f.WriteString(draft + "\n")
+						_ = f.Close()
+					}
+				}
+				text := strconv.Itoa(counts[id])
+				readings[text] = true
+				_ = out.Encode(message{Type: "end", ID: id, Text: text, Stop: "complete"})
 			case "cancel":
 				_ = out.Encode(message{Type: "cancelled", ID: id})
 			}
@@ -91,10 +107,13 @@ func TestRejectsWrongFormatBeforeAccept(t *testing.T) {
 
 // Long audio and pause boundaries must partition all original samples exactly
 // once, independent of how many replaceable previews complete along the way.
+// Later requests of a segment carry an earlier reading as their draft.
 func TestNativeStableChunksPreserveAllAudio(t *testing.T) {
 	exe, _ := os.Executable()
+	drafts := filepath.Join(t.TempDir(), "drafts")
 	t.Setenv("ARION_ASR_WORKER", exe)
 	t.Setenv("ARION_ASR_TEST_WORKER", "1")
+	t.Setenv("ARION_ASR_TEST_DRAFTS", drafts)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	stream, err := LoadStreamingContext(ctx, Spec{Kind: QwenMLX, SampleRate: 16000, EndpointSilence: 0.8, Directory: t.TempDir()})
@@ -119,10 +138,22 @@ func TestNativeStableChunksPreserveAllAudio(t *testing.T) {
 		if err = r.Accept(ctx, contracts.Frame{SampleRate: 16000, Channels: 1, Samples: samples}); err != nil {
 			t.Fatal(err)
 		}
+		// Let the first one-second preview finish so the segment has a reading.
+		if i == 49 {
+			for partial, _ := r.Partial(ctx); partial.Tail == ""; partial, _ = r.Partial(ctx) {
+				if ctx.Err() != nil {
+					t.Fatal("first preview did not complete")
+				}
+				time.Sleep(time.Millisecond)
+			}
+		}
 	}
 	draft, err := r.Finish(ctx)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if sent, _ := os.ReadFile(drafts); len(sent) == 0 {
+		t.Fatal("no request carried an earlier reading as its draft")
 	}
 	got := 0
 	for _, count := range strings.Fields(draft.Text) {

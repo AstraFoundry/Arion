@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Mock recordings for the "Arion 0.1.5 to 0.1.6" post (zh copy).
+      The hash picks the scene: #shortcut, #capture, #polish, #textcolor,
+      #files, #selection, #disable or #thumbnails.
+      Illustrations only: nothing is recorded, no model runs and no provider or
+      assistant is contacted. Arion's labels come from the desktop copy
+      catalogs. Loaded in a sandboxed frame; follows the system color scheme.
+      Engine: stage.js.
+    -->
+    <link rel="stylesheet" href="stage.css" />
+    <script>
+      window.ARION_COPY = {
+        "menu": [
+          "文件",
+          "编辑",
+          "显示",
+          "窗口"
+        ],
+        "clock": "周四 10:00",
+        "keys": {
+          "enter": "↩",
+          "clipboard": [
+            "⌘",
+            "⇧",
+            "V"
+          ],
+          "second": "右 ⌘"
+        },
+        "ui": {
+          "nav": [
+            "概览",
+            "通用",
+            "听写",
+            "键盘",
+            "麦克风",
+            "识别与润色",
+            "词汇",
+            "剪贴板",
+            "关于"
+          ],
+          "settingsTitle": "Arion 设置",
+          "pasted": "已粘贴",
+          "shortcut": {
+            "title": "听写",
+            "label": "听写按键",
+            "first": "右 Option",
+            "second": "右 Command",
+            "recording": "按下新的快捷键"
+          },
+          "polish": {
+            "noteTitle": "模型需要推理",
+            "noteHint": "在设置 › 语音与润色中允许",
+            "cloudTitle": "云端模型",
+            "inUse": "使用中",
+            "keyLabel": "API 密钥",
+            "disconnect": "断开",
+            "modelLabel": "模型",
+            "reasoning": "必要时允许推理"
+          },
+          "keyboard": {
+            "title": "键盘",
+            "group": "候选",
+            "pageSize": "每页候选数",
+            "size": "候选字号",
+            "sizeValue": "中",
+            "appearance": "外观",
+            "appearanceValue": "跟随系统",
+            "textColor": "文字颜色",
+            "black": "黑色",
+            "white": "白色",
+            "automatic": "自动（{value}）",
+            "accent": "高亮颜色",
+            "accents": [
+              [
+                "黄色",
+                "#FFCC00",
+                "black"
+              ],
+              [
+                "橙色",
+                "#FF9500",
+                "black"
+              ],
+              [
+                "红色",
+                "#FF3B30",
+                "white"
+              ],
+              [
+                "粉色",
+                "#FF2D55",
+                "white"
+              ],
+              [
+                "紫色",
+                "#AF52DE",
+                "white"
+              ],
+              [
+                "蓝色",
+                "#007AFF",
+                "white"
+              ],
+              [
+                "绿色",
+                "#34C759",
+                "black"
+              ],
+              [
+                "石墨色",
+                "#8E8E93",
+                "black"
+              ]
+            ],
+            "pick": 4
+          },
+          "files": {
+            "title": "剪贴板",
+            "history": "剪贴板历史",
+            "shortcut": "历史快捷键",
+            "size": "最多保存",
+            "sizeValue": "200 条",
+            "record": "记录复制的文件",
+            "confirmTitle": "将文件加入剪贴板历史？",
+            "explanation": "保留复制的文件引用，以便之后从历史中选择并粘贴。文件内容不会上传。",
+            "mac": "macOS 可能申请访问文件所在的文件夹。可在“系统设置 → 隐私与安全性 → 文件与文件夹”中查看 Arion 的访问权限。",
+            "cancel": "取消",
+            "confirm": "开启文件记录"
+          },
+          "selection": {
+            "claude": "Claude",
+            "chatgpt": "ChatGPT",
+            "copy": "复制",
+            "vocabulary": "加入词库",
+            "prompts": [
+              "翻译成中文",
+              "解释",
+              "总结要点",
+              "润色改写"
+            ],
+            "ask": "自定义提问…",
+            "pause": "停用 1 小时",
+            "site": "在 {site} 停用",
+            "app": "在 {app} 中停用",
+            "off": "关闭划词操作"
+          },
+          "clipboard": {
+            "label": "剪贴板"
+          }
+        },
+        "chat": {
+          "app": "团队群聊",
+          "channels": [
+            "# 发布",
+            "# 设计",
+            "# 反馈"
+          ],
+          "thread": [
+            {
+              "who": "林娜",
+              "text": "周四的安排能简单说一下吗？"
+            }
+          ],
+          "me": "我",
+          "composer": "发送到 # 发布",
+          "key": "右 Option",
+          "partials": [
+            "先和",
+            "先和 Mei 十点过一遍 draft",
+            "先和 Mei 十点过一遍 draft，然后把 Figma 链接",
+            "先和 Mei 十点过一遍 draft，然后把 Figma 链接发给 Berlin 团队",
+            "先和 Mei 十点过一遍 draft，然后把 Figma 链接发给 Berlin 团队，午饭前订好周五的 meeting room。"
+          ],
+          "final": "先和 Mei 十点过一遍 draft，然后把 Figma 链接发给 Berlin 团队，午饭前订好周五的 meeting room。",
+          "short": [
+            "今晚",
+            "今晚发版"
+          ],
+          "shortFinal": "今晚发版"
+        },
+        "notes": {
+          "shortcut": {
+            "k": "听写按键",
+            "note": "任意一个都能开始听写"
+          },
+          "capture": {
+            "k": "麦克风",
+            "note": "先打开，准备期间说的话会保留"
+          },
+          "polish": {
+            "k": "再被拒绝时",
+            "note": "先用 minimal，再用 low 推理重试"
+          },
+          "files": {
+            "k": "默认",
+            "note": "关闭，已有的配置也一样"
+          },
+          "selection": {
+            "k": "打开",
+            "note": "未发送"
+          },
+          "disable": {
+            "k": "docs.example.com",
+            "note": "这里不再弹出"
+          }
+        },
+        "pinyin": "nihao",
+        "candidates": [
+          "你好",
+          "你",
+          "拟",
+          "尼",
+          "泥"
+        ],
+        "article": {
+          "host": "docs.example.com",
+          "browser": "Safari",
+          "heading": "Local-first software",
+          "before": "Local-first apps treat the network as optional. ",
+          "selected": "The primary copy of your data stays on your own device",
+          "after": ", and a server, when there is one, only helps you sync it.",
+          "second": "Sync is an extra that you can turn on later."
+        },
+        "pick": 0,
+        "prompts": [
+          "Translate the following text into Simplified Chinese:",
+          "Explain the following text:",
+          "Summarize the key points of the following text:",
+          "Rewrite the following text:"
+        ],
+        "claude": {
+          "app": "Claude",
+          "placeholder": "Reply to Claude…"
+        },
+        "doc": {
+          "app": "备忘录",
+          "title": "旅行笔记",
+          "lines": [
+            "第一天：海边步道，约 12 公里。"
+          ],
+          "before": "相册用的照片："
+        },
+        "rows": [
+          {
+            "kind": "image",
+            "text": "beach.jpg",
+            "tag": "JPG"
+          },
+          {
+            "kind": "file",
+            "text": "行程",
+            "tag": "PDF"
+          },
+          {
+            "kind": "text",
+            "text": "早上 9 点港口见"
+          }
+        ]
+      };
+    </script>
+    <script src="stage.js" defer></script>
+  </head>
+  <body></body>
+</html>

@@ -59,7 +59,7 @@ Settings → About keeps automatic checking and automatic verified downloading a
 
 Update progress distinguishes downloading, verified staging (installation pending restart), protected applying, and installed/ready to relaunch. A queued manual restart can be canceled before applying begins. Failures are the phases check-failed, prepare-failed, restart-failed, and recovery-failed. A failed check or preparation retries that action. A failed restart retries the relaunch. Recovery offers Quit and reinstall instructions and never another swap. Install and apply are not failure phases. Failed reminder-state persistence is visible and pauses automatic reminders.
 
-After an update restart, Settings presents the highlights of every release since the one the profile last saw, and About › **See what's new** reopens the newest ([What's new](design-system.md#release-highlights), DSK-24).
+After an update restart, Settings presents the highlights of every release since the one the profile last saw, and About › **See what's new** reopens the newest ([What's new](design-system.md#release-highlights), DSK-25).
 
 The separate `updatereminder` page composes `features/update.Reminder` in a bootstrap-owned nonactivating window after input ends. Policy owns its visibility. It exposes View update, Later and Dismiss; it never downloads, installs or restarts directly. The tray/menu entry stays available independently of notification permission and transient reminder suppression.
 

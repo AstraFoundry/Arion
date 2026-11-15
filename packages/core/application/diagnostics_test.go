@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 	"testing"
+	"time"
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
@@ -114,6 +115,85 @@ func TestDiagnosticsPreserveRecognizerFinishFailure(t *testing.T) {
 			}
 			if finishes != 1 || target.commits.Load() != 0 {
 				t.Fatalf("finish count %d; commit count %d", finishes, target.commits.Load())
+			}
+		})
+	}
+}
+
+type failingDiagnosticRewriter struct {
+	err   error
+	block chan struct{}
+}
+
+func (f failingDiagnosticRewriter) Rewrite(ctx context.Context, _ ports.RewriteRequest) (ports.RewriteResult, error) {
+	if f.block != nil {
+		<-ctx.Done()
+		return ports.RewriteResult{}, domain.WithDiagnostic(domain.CodeRewriteTimeout, domain.PhaseFormatting, domain.ReasonRewriteTimeout, ctx.Err())
+	}
+	return ports.RewriteResult{}, f.err
+}
+
+func (failingDiagnosticRewriter) End(contracts.Identity) {}
+
+func TestDiagnosticsPreserveRewriteFailurePhaseAndReason(t *testing.T) {
+	cases := []struct {
+		name       string
+		rewriter   ports.Rewriter
+		timeout    time.Duration
+		wantCode   domain.ErrorCode
+		wantPhase  string
+		wantReason string
+	}{
+		{
+			name:       "coded phase and reason",
+			rewriter:   failingDiagnosticRewriter{err: domain.WithDiagnostic(domain.CodeEvaluationUnavailable, domain.PhaseSelection, domain.ReasonCloudServerError, nil)},
+			timeout:    time.Second,
+			wantCode:   domain.CodeEvaluationUnavailable,
+			wantPhase:  domain.PhaseSelection,
+			wantReason: domain.ReasonCloudServerError,
+		},
+		{
+			name:       "deadline exceeded",
+			rewriter:   failingDiagnosticRewriter{block: make(chan struct{})},
+			timeout:    20 * time.Millisecond,
+			wantCode:   domain.CodeRewriteTimeout,
+			wantPhase:  domain.PhaseFormatting,
+			wantReason: domain.ReasonRewriteTimeout,
+		},
+		{
+			name:       "uncoded fallback",
+			rewriter:   failingDiagnosticRewriter{err: context.Canceled},
+			timeout:    time.Second,
+			wantCode:   domain.CodeCancelled,
+			wantPhase:  "",
+			wantReason: domain.ReasonRewriteCancelled,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			c, audio, events, _, _ := liveSetup(t, []string{"你好"}, nil, RewritePolicy{Enabled: true, Scene: "chat", Timeout: tc.timeout})
+			c.deps.Rewriter = tc.rewriter
+			observer := &diagnosticRecorder{}
+			c.deps.Diagnostics = observer
+			c.Start()
+			events.wait(t, stateIs(domain.Capturing))
+			audio.push(1, 0.2)
+			c.Stop()
+			events.wait(t, kindIs(contracts.CommitResultReady))
+			observer.mu.Lock()
+			defer observer.mu.Unlock()
+			var got *ports.Diagnostic
+			for i := range observer.entries {
+				if observer.entries[i].Stage == ports.DiagnosticRewrite {
+					e := observer.entries[i]
+					got = &e
+				}
+			}
+			if got == nil {
+				t.Fatal("missing rewrite diagnostic")
+			}
+			if got.Failure != tc.wantCode || got.Phase != tc.wantPhase || got.Reason != tc.wantReason {
+				t.Fatalf("got %+v, want code=%q phase=%q reason=%q", *got, tc.wantCode, tc.wantPhase, tc.wantReason)
 			}
 		})
 	}

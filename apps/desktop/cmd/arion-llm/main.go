@@ -181,4 +181,11 @@ func (w *worker) close() {
 	}
 }
 
-func fail(err error) protocol.Response { return protocol.Response{OK: false, Error: err.Error()} }
+func fail(err error) protocol.Response {
+	return protocol.Response{
+		OK:            false,
+		Error:         err.Error(),
+		FailurePhase:  domain.PhaseOf(err),
+		FailureReason: domain.ReasonOf(err),
+	}
+}

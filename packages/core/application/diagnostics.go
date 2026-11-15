@@ -21,7 +21,7 @@ func (c *Coordinator) diagnostic(r *run, stage ports.DiagnosticStage, start time
 	if c.deps.Diagnostics == nil {
 		return
 	}
-	code := domain.CodeOf(err)
+	code := domain.DiagnosticCodeOf(err)
 	if errors.Is(err, context.Canceled) {
 		code = domain.CodeCancelled
 	}
@@ -31,5 +31,23 @@ func (c *Coordinator) diagnostic(r *run, stage ports.DiagnosticStage, start time
 	if err != nil && code == "" {
 		code = domain.CodeContractUnsupported
 	}
-	c.deps.Diagnostics.Observe(ports.Diagnostic{Identity: r.identity, Stage: stage, Duration: time.Since(start), Failure: code})
+	var phase, reason string
+	if err != nil {
+		phase = domain.PhaseOf(err)
+		reason = domain.ReasonOf(err)
+		if errors.Is(err, context.DeadlineExceeded) && reason == "" {
+			reason = domain.ReasonRewriteTimeout
+		}
+		if errors.Is(err, context.Canceled) && reason == "" {
+			reason = domain.ReasonRewriteCancelled
+		}
+	}
+	c.deps.Diagnostics.Observe(ports.Diagnostic{
+		Identity: r.identity,
+		Stage:    stage,
+		Duration: time.Since(start),
+		Failure:  code,
+		Phase:    phase,
+		Reason:   reason,
+	})
 }

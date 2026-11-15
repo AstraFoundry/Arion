@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"arion.local/core/domain"
 	"arion.local/desktop/internal/oauthloopback"
 )
 
@@ -118,24 +119,24 @@ func tokenRequest(ctx context.Context, issuer string, client *http.Client, form 
 	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, issuer+"/oauth/token", strings.NewReader(form.Encode()))
 	if err != nil {
-		return tokens{}, fail(CodeSignIn, err)
+		return tokens{}, failReason(CodeSignIn, domain.ReasonCloudTokenInvalid, err)
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Accept", "application/json")
 	res, err := client.Do(req)
 	if err != nil {
-		return tokens{}, fail(CodeNetwork, err)
+		return tokens{}, failReason(CodeNetwork, domain.ReasonCloudTokenNetwork, err)
 	}
 	defer res.Body.Close()
 	if res.StatusCode == http.StatusBadRequest || res.StatusCode == http.StatusUnauthorized || res.StatusCode == http.StatusForbidden {
-		return tokens{}, fail(CodeRejected, fmt.Errorf("token endpoint HTTP %d", res.StatusCode))
+		return tokens{}, failReason(CodeRejected, domain.ReasonCloudTokenRejected, fmt.Errorf("token endpoint HTTP %d", res.StatusCode))
 	}
 	if res.StatusCode >= 300 {
-		return tokens{}, fail(CodeNetwork, fmt.Errorf("token endpoint HTTP %d", res.StatusCode))
+		return tokens{}, failReason(CodeNetwork, domain.ReasonCloudTokenNetwork, fmt.Errorf("token endpoint HTTP %d", res.StatusCode))
 	}
 	var tok tokens
 	if err := json.NewDecoder(res.Body).Decode(&tok); err != nil || tok.AccessToken == "" {
-		return tokens{}, fail(CodeSignIn, fmt.Errorf("token response without an access token"))
+		return tokens{}, failReason(CodeSignIn, domain.ReasonCloudTokenInvalid, fmt.Errorf("token response without an access token"))
 	}
 	return tok, nil
 }

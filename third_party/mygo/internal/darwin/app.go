@@ -286,10 +286,10 @@ func registerAppDelegate() {
 			aem := send(class("NSAppleEventManager"), "sharedAppleEventManager")
 			send(aem, "setEventHandler:andSelector:forEventClass:andEventID:", uintptr(self),
 				uintptr(sel("mygoHandleQuitEvent:withReplyEvent:")), kCoreEventClass, kAEQuitApplication)
-			theBackend.openedAtLogin = launchedAsLoginItem()
 		}),
 		method("applicationDidFinishLaunching:", func(self id, _ objc.SEL, n id) {
 			b := theBackend
+			b.openedAtLogin = launchedAsLoginItem()
 			if send(b.app, "activationPolicy") == nsApplicationActivationPolicyRegular {
 				// Plain executables (go run) do not come to the front on
 				// their own.

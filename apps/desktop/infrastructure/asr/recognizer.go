@@ -129,9 +129,12 @@ func (s *session) preview() {
 			n = len(SplitAtQuiet(s.samples, s.rate, 20)[0])
 		}
 		samples := append([]float32(nil), s.samples[:n]...)
+		// The tail is the latest reading of this uncommitted segment's start;
+		// a commit clears it, so a draft never crosses segments or sessions.
+		draft := s.tail
 		s.mu.Unlock()
 		start := time.Now()
-		text, err := s.engine.decode(s.ctx, samples, s.hotwords...)
+		text, err := s.engine.decodeDraft(s.ctx, samples, draft, s.hotwords...)
 		elapsed := time.Since(start)
 		s.mu.Lock()
 		s.compute += elapsed
@@ -202,9 +205,14 @@ func (s *session) Finish(ctx context.Context) (contracts.Draft, error) {
 	}
 	if s.decoded != len(s.samples) {
 		var parts []string
-		for _, samples := range SplitAtQuiet(s.samples, s.rate, 25) {
+		for i, samples := range SplitAtQuiet(s.samples, s.rate, 25) {
+			// Only the first part starts where the last preview's reading starts.
+			draft := ""
+			if i == 0 {
+				draft = s.tail
+			}
 			start := time.Now()
-			text, err := s.engine.decode(ctx, samples, s.hotwords...)
+			text, err := s.engine.decodeDraft(ctx, samples, draft, s.hotwords...)
 			s.compute += time.Since(start)
 			if err != nil {
 				return contracts.Draft{}, err

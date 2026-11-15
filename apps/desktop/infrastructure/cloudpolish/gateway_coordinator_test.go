@@ -2,7 +2,11 @@ package cloudpolish
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -12,6 +16,7 @@ import (
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
+	"arion.local/desktop/infrastructure/diagnostics"
 )
 
 // Only OS capture, recognition and editor insertion are synthetic. Scheduling,
@@ -187,5 +192,78 @@ func TestOpenAIGatewayCoordinatorFailureDelivery(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestOpenAIGatewayCoordinatorDiagnosticPhaseAndReason(t *testing.T) {
+	for _, tc := range []struct {
+		name       string
+		mode       string
+		stage      int
+		wantCode   domain.ErrorCode
+		wantPhase  string
+		wantReason string
+	}{
+		{"400 bad request stage 1", "400", 1, domain.CodeRewriteRejected, domain.PhaseSelection, domain.ReasonCloudBadRequest},
+		{"400 bad request stage 2", "400", 2, domain.CodeRewriteRejected, domain.PhaseFormatting, domain.ReasonCloudBadRequest},
+		{"truncated stage 2", "truncated", 2, domain.CodeRewriteRejected, domain.PhaseFormatting, domain.ReasonRewriteTruncated},
+		{"invalid choice stage 1", "invalid-choice", 1, domain.CodeRewriteRejected, domain.PhaseSelection, domain.ReasonSpellingChoiceInvalid},
+		{"timeout stage 2", "block", 2, domain.CodeRewriteTimeout, domain.PhaseFormatting, domain.ReasonRewriteTimeout},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			_, s := newGateway(t, "chat", tc.mode, tc.stage)
+			dir := t.TempDir()
+			rec, err := diagnostics.Open(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			audio, editor := &gatewayAudio{}, &gatewayEditor{}
+			policy := application.RewritePolicy{Enabled: true, Scene: "prompt", Terms: []string{"writeValue"}, Timeout: 200 * time.Millisecond}
+			c, err := application.NewCoordinator(application.Dependencies{
+				NewID:       func() string { return "0123456789abcdef" },
+				Diagnostics: rec,
+				Audio:       audio,
+				Recognizers: gatewayRecognition{},
+				Targets:     editor,
+				Input:       editor,
+				Rewriter:    s,
+			}, application.Options{AutoCommit: true, Rewrite: func() application.RewritePolicy { return policy }})
+			if err != nil {
+				t.Fatal(err)
+			}
+			events := make(chan contracts.Event, 128)
+			unsubscribe := c.Subscribe(func(e contracts.Event) { events <- e })
+			defer func() { c.Cancel(); unsubscribe() }()
+			c.Start()
+			gatewayWait(t, events, func(e contracts.Event) bool { return e.State == domain.Capturing })
+			audio.push()
+			gatewayWait(t, events, func(e contracts.Event) bool { return e.Kind == contracts.DraftReplaced })
+			c.Stop()
+			gatewayWait(t, events, func(e contracts.Event) bool { return e.Kind == contracts.CommitResultReady })
+			if err := rec.Close(); err != nil {
+				t.Fatal(err)
+			}
+			raw, err := os.ReadFile(filepath.Join(dir, "events.0.jsonl"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			var got *diagnostics.Entry
+			for _, line := range strings.Split(strings.TrimSpace(string(raw)), "\n") {
+				var entry diagnostics.Entry
+				if err := json.Unmarshal([]byte(line), &entry); err != nil {
+					t.Fatal(err)
+				}
+				if entry.Event == "rewrite_final" {
+					e := entry
+					got = &e
+				}
+			}
+			if got == nil {
+				t.Fatalf("missing rewrite_final in %s", string(raw))
+			}
+			if got.Code != tc.wantCode || got.Phase != tc.wantPhase || got.Reason != tc.wantReason {
+				t.Fatalf("got code=%q phase=%q reason=%q, want code=%q phase=%q reason=%q", got.Code, got.Phase, got.Reason, tc.wantCode, tc.wantPhase, tc.wantReason)
+			}
+		})
 	}
 }

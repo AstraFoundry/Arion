@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"os/exec"
 	"strconv"
@@ -71,7 +72,7 @@ func Start(ctx context.Context, config Config, diag io.Writer) (*Client, LoadInf
 	}
 	process, err := subprocess.Start(cmd)
 	if err != nil {
-		return nil, LoadInfo{}, domain.Fail(domain.CodeModelUnsupported, "llm worker start")
+		return nil, LoadInfo{}, domain.WithDiagnostic(domain.CodeModelUnsupported, domain.PhaseWorker, domain.ReasonWorkerStart, domain.Fail(domain.CodeModelUnsupported, "llm worker start"))
 	}
 	c := &Client{cmd: cmd, process: process, stdin: stdin, pending: map[uint64]chan protocol.Response{}, done: make(chan struct{})}
 	go c.read(stdout)
@@ -103,7 +104,7 @@ func (c *Client) read(stdout io.Reader) {
 	_ = c.cmd.Wait()
 	c.process.Stop()
 	c.mu.Lock()
-	c.dead = domain.Fail(domain.CodeModelUnsupported, "llm worker exited")
+	c.dead = domain.WithDiagnostic(domain.CodeModelUnsupported, domain.PhaseWorker, domain.ReasonWorkerExited, domain.Fail(domain.CodeModelUnsupported, "llm worker exited"))
 	for id, ch := range c.pending {
 		close(ch)
 		delete(c.pending, id)
@@ -137,20 +138,31 @@ func (c *Client) call(ctx context.Context, req protocol.Request) (protocol.Respo
 	c.pending[req.ID] = ch
 	c.mu.Unlock()
 	if err := c.send(req); err != nil {
-		return protocol.Response{}, domain.Fail(domain.CodeModelUnsupported, "llm worker write")
+		return protocol.Response{}, domain.WithDiagnostic(domain.CodeModelUnsupported, domain.PhaseWorker, domain.ReasonWorkerWrite, domain.Fail(domain.CodeModelUnsupported, "llm worker write"))
 	}
 	select {
 	case response, ok := <-ch:
 		if !ok {
-			return protocol.Response{}, domain.Fail(domain.CodeModelUnsupported, "llm worker exited")
+			return protocol.Response{}, domain.WithDiagnostic(domain.CodeModelUnsupported, domain.PhaseWorker, domain.ReasonWorkerExited, domain.Fail(domain.CodeModelUnsupported, "llm worker exited"))
 		}
 		if !response.OK {
-			return response, domain.Fail(domain.CodeModelUnsupported, response.Error)
+			phase := response.FailurePhase
+			if phase == "" {
+				phase = domain.PhaseWorker
+			}
+			reason := response.FailureReason
+			if reason == "" {
+				reason = domain.ReasonWorkerFailed
+			}
+			return response, domain.WithDiagnostic(domain.CodeModelUnsupported, phase, reason, domain.Fail(domain.CodeModelUnsupported, response.Error))
 		}
 		return response, nil
 	case <-ctx.Done():
 		_ = c.send(protocol.Request{Op: protocol.OpCancel, Target: req.ID})
-		return protocol.Response{}, domain.Fail(domain.CodeCancelled, "rewrite cancelled")
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return protocol.Response{}, domain.WithDiagnostic(domain.CodeCancelled, domain.PhaseWorker, domain.ReasonRewriteTimeout, errors.Join(domain.Fail(domain.CodeCancelled, "rewrite cancelled"), ctx.Err()))
+		}
+		return protocol.Response{}, domain.WithDiagnostic(domain.CodeCancelled, domain.PhaseWorker, domain.ReasonRewriteCancelled, domain.Fail(domain.CodeCancelled, "rewrite cancelled"))
 	}
 }
 
