@@ -23,6 +23,8 @@ Local-first voice dictation and Pinyin input for macOS and Windows, built with [
   <a href="package.json"><img src="https://img.shields.io/badge/pnpm-10.33.0-F69220?logo=pnpm&logoColor=white" alt="pnpm 10.33.0" style="display: inline-block; margin: 2px;" /></a>
 </p>
 
+![Yellow cassette with a waveform](docs/readme/cassette.png)
+
 ![Arion voice dictation in action](docs/readme/demo.gif)
 
 </div>

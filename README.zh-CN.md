@@ -21,6 +21,8 @@
   <a href="package.json"><img src="https://img.shields.io/badge/pnpm-10.33.0-F69220?logo=pnpm&logoColor=white" alt="pnpm 10.33.0" style="display: inline-block; margin: 2px;" /></a>
 </p>
 
+![带波形的黄色磁带](docs/readme/cassette.png)
+
 ![Arion 语音听写实际运行效果](docs/readme/demo.gif)
 
 </div>
