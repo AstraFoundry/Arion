@@ -779,6 +779,10 @@
   "WhatsNewVocabularyTitle": "在读到的地方把术语加入词库",
   "WhatsNewVocabularyBody": "选中名称或术语，在同一操作条上点击「加入词库」。下次听写到它时，Arion 会按这个写法输出。",
   "WhatsNewVocabularyLabel": "在文档中选中的术语通过下方的操作条加入 Arion 词库",
+  "WhatsNewDraftTitle": "听写时隐藏说的话",
+  "WhatsNewDraftBody": "在「设置 › 通用」中关闭「显示说的话」。听写时，药丸显示已识别的字数，而不是识别出的文字。松开后显示「正在转写…」，直到出结果。写入的内容不变。",
+  "WhatsNewDraftLabel": "关闭「显示说的话」后，药丸显示字数，而不是识别出的文字",
+  "WhatsNewDraftPhrase": "Thursday's quarterly review",
   "WhatsNewDemoPhrase": "retrieval-augmented generation",
   "WhatsNewDemoPrompt": "Explain this: retrieval-augmented generation",
   "WhatsNewDemoTerm": "pgvector"

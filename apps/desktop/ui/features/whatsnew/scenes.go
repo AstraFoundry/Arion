@@ -6,6 +6,7 @@ import (
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
+	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/screencast"
 	"arion.local/desktop/ui/shared/theme"
 	"github.com/egoist/mygo/ui"
@@ -43,6 +44,10 @@ var scenes = map[string]scene{
 	"selection-vocabulary": {
 		title: copy.WhatsNewVocabularyTitle, body: copy.WhatsNewVocabularyBody, label: copy.WhatsNewVocabularyLabel,
 		cycle: termCycle, final: termFinal, draw: drawTerm,
+	},
+	"hidden-draft": {
+		title: copy.WhatsNewDraftTitle, body: copy.WhatsNewDraftBody, label: copy.WhatsNewDraftLabel,
+		cycle: draftCycle, final: draftFinal, draw: drawDraft,
 	},
 }
 
@@ -486,5 +491,102 @@ func vocabulary(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, added
 				row(func() { ui.Box(c).Size(width, 6).Radius(3).Background(tokens.Hairline) })
 			}
 		})
+	})
+}
+
+// Scene: turn off Show what you say. The pill then counts words instead of
+// showing the recognized text. The switch stays on until the click.
+const (
+	draftCycle = 8600 * time.Millisecond
+	draftFinal = 5600 * time.Millisecond
+
+	draftClick   = 1700 * time.Millisecond
+	draftKnobEnd = draftClick + 140*time.Millisecond
+	draftHidden  = 2000 * time.Millisecond
+
+	cardLeft, cardTop     float32 = 70, 28
+	cardWidth, cardHeight float32 = 420, 64
+	switchW, switchH      float32 = 36, 20
+	switchLeft                    = cardLeft + cardWidth - 16 - switchW
+	switchTop                     = cardTop + (cardHeight-switchH)/2
+
+	pillLeft, pillTop float32 = 100, 168
+	pillWidth         float32 = 360
+)
+
+var (
+	switchAt = pt(switchLeft+switchW/2, switchTop+switchH/2)
+	pillAt   = pt(pillLeft+pillWidth/2, pillTop+22)
+
+	draftPointer = []screencast.Key[point]{
+		key(0, rest), key(300, rest), key(1600, switchAt), key(2200, switchAt),
+		key(4000, pillAt), key(6800, pillAt), key(8200, rest), key(8600, rest),
+	}
+	draftLens = []screencast.Key[lens]{
+		key(0, view(1, center)), key(400, view(1, center)), key(1600, view(1.16, pt(300, 88))), key(2400, view(1.16, pt(300, 88))),
+		key(3400, view(1.24, pt(280, 190))), key(6800, view(1.24, pt(280, 190))), key(8200, view(1, center)), key(8600, view(1, center)),
+	}
+	draftClicks = []time.Duration{draftClick}
+)
+
+// draftFrame is the hidden-draft scene at one moment. Knob is 1 while the
+// switch is on and 0 when it has finished turning off.
+type draftFrame struct {
+	Knob   float32
+	Shown  float32
+	Hidden bool
+	Cursor screencast.Cursor
+	Lens   lens
+}
+
+func draftAt(t time.Duration) draftFrame {
+	t %= draftCycle
+	knob := float32(1)
+	if t >= draftClick {
+		knob = 1 - span(t, draftClick, draftKnobEnd)
+	}
+	return draftFrame{
+		Knob:   knob,
+		Shown:  span(t, 0, 1400*time.Millisecond),
+		Hidden: t >= draftHidden,
+		Cursor: screencast.CursorAt(draftPointer, draftClicks, t),
+		Lens:   screencast.Sample(draftLens, t, screencast.MixLens),
+	}
+}
+
+func drawDraft(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, t time.Duration, still bool) {
+	f := draftAt(t)
+	if still {
+		f.Lens = view(1, center)
+	}
+	phrase := messages.Text(copy.WhatsNewDraftPhrase)
+	screencast.Stage(c, Width, StageHeight, f.Lens, func() {
+		card := ui.Column(c).Absolute().Left(cardLeft).Top(cardTop).Size(cardWidth, cardHeight).Radius(theme.RadiusXL).
+			Background(tokens.Card).Border(1, tokens.CardBorder)
+		kit.Raise(card, tokens, kit.Floating).Children(func() {
+			ui.Row(c).Height(cardHeight).Padding(0, 16).AlignItems(ui.Center).Children(func() {
+				ui.Text(c, messages.Text(copy.ShowDraft)).FontSize(theme.Body).FontWeight(500).SingleLine()
+			})
+		})
+		track := ui.Box(c).Absolute().Left(switchLeft).Top(switchTop).Size(switchW, switchH).Radius(switchH / 2)
+		off := tokens.CardBorder.Mix(tokens.Text, 0.15)
+		if f.Knob > 0 {
+			track.Background(off.Mix(tokens.Accent, f.Knob))
+		} else {
+			track.Background(off)
+		}
+		knob := float32(2)
+		ui.Box(c).Absolute().Left(switchLeft+knob+f.Knob*(switchW-switchH)).Top(switchTop+knob).
+			Size(switchH-2*knob, switchH-2*knob).Radius((switchH - 2*knob) / 2).Background(tokens.OnFill)
+		pill := kit.Pill(c.Key("pill"), tokens).Absolute().Left(pillLeft).Top(pillTop).Width(pillWidth)
+		pill.Children(func() {
+			ui.Icon(c, icons.AudioLines).FontSize(16).TextColor(tokens.Live)
+			if f.Hidden {
+				ui.Text(c, messages.PillWords(runtime.CountWords(phrase))).FontSize(theme.Body).TextColor(tokens.PillMuted).SingleLine()
+				return
+			}
+			ui.Text(c, screencast.Head(phrase, f.Shown)).FontSize(theme.Body).TextColor(tokens.PillText).SingleLine()
+		})
+		screencast.Pointer(c, tokens, f.Cursor)
 	})
 }
