@@ -112,28 +112,49 @@ func normalizeLineBreaks(text string) string {
 // into the captured editor exactly once.
 func TestWindowsInsertsIntoOwnedEditor(t *testing.T) {
 	editor := startWindowsEditor(t)
+	const text = "Arion 中文 🦊 e\u0301 test"
+	result, targets, token := commitOwnedEditor(t, editor, text)
+	// copied means the adapter left the text on the clipboard: Ctrl+V was
+	// rejected, or the measured field never changed. Sample the recipient
+	// before waiting. When the owned edit is no longer foreground, that is a
+	// lost precondition. One refocus and a new capture still has to land the
+	// same text. A copied outcome while this edit still has focus is not
+	// retried.
+	state := currentEditorFocus()
+	if result.Outcome == contracts.Copied && editor.text() != text && (state.Window != editor.window || state.Control != editor.edit) {
+		t.Logf("owned editor lost focus before the paste landed: window %#x control %#x editor %#x edit %#x changes %d chars %d; refocusing once",
+			state.Window, state.Control, editor.window, editor.edit, editor.changes.Load(), editor.characters.Load())
+		result, targets, token = commitOwnedEditor(t, editor, text)
+		state = currentEditorFocus()
+	}
+	if !within(5*time.Second, func() bool { return editor.text() == text }) {
+		now := currentEditorFocus()
+		t.Fatalf("editor text %q after commit %+v; at commit window %#x control %#x; now window %#x control %#x editor %#x edit %#x changes %d chars %d shift %v",
+			editor.text(), result, state.Window, state.Control, now.Window, now.Control, editor.window, editor.edit, editor.changes.Load(), editor.characters.Load(), shiftDown())
+	}
+	time.Sleep(300 * time.Millisecond)
+	if got := editor.text(); got != text {
+		t.Fatalf("editor text %q", got)
+	}
+	result, err := targets.Commit(context.Background(), contracts.CommitRequest{Identity: identity(), Target: token, SourceRevision: 1, Text: text})
+	if err != nil || result.Outcome != contracts.NotApplied || result.Failure != domain.CodeTargetChanged || editor.text() != text {
+		t.Fatalf("duplicate commit: %+v %v; text %q", result, err, editor.text())
+	}
+}
+
+func commitOwnedEditor(t *testing.T, editor *windowsEditor, text string) (contracts.CommitResult, *windows.Targets, contracts.TargetToken) {
+	t.Helper()
 	editor.focus(t)
 	targets := windows.NewTargets(nil, func() windows.Delivery { return windows.DeliveryAutomatic })
 	snapshot, err := targets.Capture(context.Background(), identity())
 	if err != nil || snapshot.Sensitive {
 		t.Fatalf("capture: %+v %v", snapshot, err)
 	}
-	const text = "Arion 中文 🦊 e\u0301 test"
 	result, err := targets.Commit(context.Background(), contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text})
 	if err != nil || result.Outcome == contracts.NotApplied {
 		t.Fatalf("commit: %+v %v", result, err)
 	}
-	if !within(5*time.Second, func() bool { return editor.text() == text }) {
-		t.Fatalf("editor text %q after commit %+v", editor.text(), result)
-	}
-	time.Sleep(300 * time.Millisecond)
-	if got := editor.text(); got != text {
-		t.Fatalf("editor text %q", got)
-	}
-	result, err = targets.Commit(context.Background(), contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text})
-	if err != nil || result.Outcome != contracts.NotApplied || result.Failure != domain.CodeTargetChanged || editor.text() != text {
-		t.Fatalf("duplicate commit: %+v %v; text %q", result, err, editor.text())
-	}
+	return result, targets, snapshot.Target
 }
 
 // DSK-05/DSK-A04: stale sessions, cancelled commits and secure fields
