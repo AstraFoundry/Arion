@@ -751,22 +751,29 @@ int main(int argc, const char *argv[]) {
         });
         for (BOOL spellingEnabled : {NO, YES}) {
             NSString *mode=spellingEnabled?@"all spelling options":@"spelling options off";
-            run([@"English mid-buffer edit with " stringByAppendingString:mode], @"KBD-A04 KBD-A15", ^{
+            run([@"English highlight arrows and spelling edit with " stringByAppendingString:mode], @"KBD-A03 KBD-A04 KBD-A15", ^{
                 typing.typoCorrection=spellingEnabled;
                 typing.fuzzyPinyin=spellingEnabled?2047:0;
                 type(typing,@"hElXLo");
-                press(typing,@"",123);
-                require(typing.snapshot.selection.location==5,@"Left moves one raw English character");
-                press(typing,@"",123);
-                require(typing.snapshot.selection.location==4,@"second Left reaches the inserted middle letter");
-                press(typing,@"\x7f",51);
-                record(@"delete inserted middle letter",typing,editor);
+                NSString *spelling=typing.snapshot.preedit;
+                NSUInteger caret=typing.snapshot.selection.location;
+                require(typing.snapshot.candidates.count>1 && typing.snapshot.highlighted==0,@"English composition offers a candidate row");
+                require(press(typing,@"",124) && typing.snapshot.highlighted==1 &&
+                        typing.snapshot.selection.location==caret && [typing.snapshot.preedit isEqual:spelling],
+                        @"Right moves the highlight and does not edit the English spelling");
+                require(press(typing,@"",123) && typing.snapshot.highlighted==0 &&
+                        typing.snapshot.selection.location==caret && [typing.snapshot.preedit isEqual:spelling],
+                        @"Left returns to the first English candidate");
+                require(press(typing,@"\x7f",51) && press(typing,@"\x7f",51) && press(typing,@"\x7f",51),
+                        @"Backspace deletes the inserted tail, including X");
+                type(typing,@"Lo");
+                record(@"retyped ending after deleting X",typing,editor);
                 press(typing,@"",119);
                 NSUInteger index=[typing.snapshot.candidates indexOfObject:@"hElLo"];
                 require(index!=NSNotFound,@"edited English candidate preserves explicit mixed case");
                 require([typing select:index revision:typing.revision],@"select edited English identity");
                 require([editor.view.string isEqual:@"hElLo"] && editor.insertions==1 && !typing.composing,
-                        @"middle edit commits exact English once");
+                        @"corrected spelling commits exact English once");
             });
             run([@"Mixed English prefix cancellation with " stringByAppendingString:mode], @"KBD-A03 KBD-A05 KBD-A15", ^{
                 typing.typoCorrection=spellingEnabled;
@@ -1274,6 +1281,97 @@ int main(int argc, const char *argv[]) {
             require([editor.view.string hasSuffix:[ours stringByAppendingString:@"，"]] && editor.insertions == before + 1,
                     @"punctuation commits Arion's highlighted candidate");
         });
+        run(@"collapsed bar arrows move the highlight", @"KBD-A03", ^{
+            ArionCandidatePanel *panel = [ArionCandidatePanel new];
+            NSRect screen = NSScreen.mainScreen.visibleFrame;
+            NSRect caretRect = NSMakeRect(NSMidX(screen), NSMidY(screen), 0, 20);
+            void (^shot)(NSString *) = ^(NSString *name) {
+                ArionKeyboardSnapshot *snapshot = typing.snapshot;
+                [panel showRows:snapshot.rows currentRow:snapshot.currentRow highlighted:snapshot.highlighted
+                      expanded:snapshot.expanded more:snapshot.moreRows revision:typing.revision caretRect:caretRect];
+                savePanel(panel, report, name);
+            };
+            @try {
+                type(typing, @"chovy");
+                require(!typing.snapshot.expanded && typing.snapshot.candidates.count > 1 && typing.snapshot.highlighted == 0,
+                        @"chovy shows a collapsed candidate row");
+                NSString *preedit = typing.snapshot.preedit;
+                NSUInteger caret = typing.snapshot.selection.location;
+                require([preedit isEqual:@"chovy"] && caret == preedit.length, @"chovy is still one unsplit spelling");
+                NSArray *candidates = [typing.snapshot.candidates copy];
+                record(@"chovy collapsed", typing, editor);
+                shot(@"issue120-collapsed-chovy.png");
+                require(press(typing, @"", 124) && typing.snapshot.highlighted == 1 && typing.composing &&
+                        !typing.snapshot.expanded && [typing.snapshot.preedit isEqual:preedit] &&
+                        typing.snapshot.selection.location == caret && [typing.snapshot.candidates isEqual:candidates],
+                        @"Right moves the highlight and does not resegment chovy");
+                record(@"after Right", typing, editor);
+                shot(@"issue120-collapsed-right.png");
+                require(press(typing, @"", 123) && typing.snapshot.highlighted == 0 &&
+                        [typing.snapshot.preedit isEqual:preedit] && typing.snapshot.selection.location == caret,
+                        @"Left returns to the first candidate");
+                require(press(typing, @"", 123) && typing.snapshot.highlighted == 0 &&
+                        [typing.snapshot.preedit isEqual:preedit] && [typing.snapshot.candidates isEqual:candidates],
+                        @"Left at the first candidate stays there and does not reach the engine");
+                [typing cancel];
+                type(typing, @"nihao");
+                require([typing.snapshot.preedit isEqual:@"ni hao"] && typing.snapshot.highlighted == 0 && !typing.snapshot.expanded,
+                        @"nihao shows a syllable space on the collapsed bar");
+                NSString *spaced = typing.snapshot.preedit;
+                NSUInteger spacedCaret = typing.snapshot.selection.location;
+                NSArray *nihao = [typing.snapshot.candidates copy];
+                record(@"nihao collapsed", typing, editor);
+                shot(@"issue120-nihao.png");
+                require(press(typing, @"", 124) && typing.snapshot.highlighted == 1 &&
+                        [typing.snapshot.preedit isEqual:spaced] && typing.snapshot.selection.location == spacedCaret &&
+                        [typing.snapshot.candidates isEqual:nihao],
+                        @"Right moves the nihao highlight and does not remove the syllable space");
+                record(@"nihao after Right", typing, editor);
+                shot(@"issue120-nihao-right.png");
+                require(press(typing, @"", 123) && typing.snapshot.highlighted == 0 && [typing.snapshot.preedit isEqual:spaced],
+                        @"Left restores the first nihao candidate");
+                require([typing handleEvent:key(@"", 123, NSEventModifierFlagControl)] && typing.composing,
+                        @"Control+Left stays inside the composition");
+                require(typing.snapshot.selection.location != spacedCaret || ![typing.snapshot.preedit isEqual:spaced],
+                        @"Control+Left jumps a syllable instead of moving the highlight");
+                record(@"after Control+Left", typing, editor);
+                shot(@"issue120-control-left.png");
+                [typing cancel];
+                type(typing, @"nihao");
+                require(press(typing, @"", 115) && typing.snapshot.selection.location == 0, @"Home moves to the start");
+                NSString *homePreedit = typing.snapshot.preedit;
+                require([typing handleEvent:key(@"", 124, NSEventModifierFlagControl)] && typing.composing,
+                        @"Control+Right stays inside the composition");
+                require(typing.snapshot.selection.location != 0 || ![typing.snapshot.preedit isEqual:homePreedit],
+                        @"Control+Right jumps a syllable instead of moving the highlight");
+                record(@"after Control+Right", typing, editor);
+                shot(@"issue120-control-right.png");
+                [typing cancel];
+                type(typing, @"shi");
+                press(typing, @"=", 24);
+                require(typing.snapshot.expanded && typing.snapshot.highlighted == 0, @"the grid opens on the first candidate");
+                NSString *gridPreedit = typing.snapshot.preedit;
+                NSUInteger gridCaret = typing.snapshot.selection.location;
+                press(typing, @"", 124);
+                require(typing.snapshot.expanded && typing.snapshot.highlighted == 1 &&
+                        [typing.snapshot.preedit isEqual:gridPreedit] && typing.snapshot.selection.location == gridCaret,
+                        @"Right moves within the expanded row");
+                record(@"grid after Right", typing, editor);
+                shot(@"issue120-grid-right.png");
+                press(typing, @"", 123);
+                require(typing.snapshot.expanded && typing.snapshot.highlighted == 0 &&
+                        [typing.snapshot.preedit isEqual:gridPreedit],
+                        @"Left moves back within the expanded row");
+                require([typing handleEvent:key(@"", 123, NSEventModifierFlagControl)] && typing.snapshot.expanded,
+                        @"Control+Left in the grid stays expanded");
+                require(typing.snapshot.selection.location != gridCaret || ![typing.snapshot.preedit isEqual:gridPreedit],
+                        @"Control+Left in the grid jumps a syllable");
+                record(@"grid after Control+Left", typing, editor);
+                shot(@"issue120-grid-control-left.png");
+            } @finally {
+                [panel hide];
+            }
+        });
         run(@"next page opens the expanded grid", @"KBD-A03", ^{
             type(typing, @"shi");
             NSArray *first = typing.snapshot.candidates;
@@ -1428,7 +1526,8 @@ int main(int argc, const char *argv[]) {
             press(typing, @"", 119);
             require(typing.snapshot.selection.location == typing.snapshot.preedit.length, @"End moves engine caret to UTF-16 end");
             record(@"after End", typing, editor);
-            press(typing, @"", 123); record(@"after Left", typing, editor);
+            require([typing handleEvent:key(@"", 123, NSEventModifierFlagControl)], @"Control+Left jumps to the previous syllable");
+            record(@"after Control+Left", typing, editor);
             press(typing, @"\x7f", 51); record(@"after middle Backspace", typing, editor);
             type(typing, @"i"); record(@"after insert", typing, editor);
             require([[typing.snapshot.preedit stringByReplacingOccurrencesOfString:@" " withString:@""] isEqual:@"nihao"], @"edit restores raw Pinyin around syllable cursor");
