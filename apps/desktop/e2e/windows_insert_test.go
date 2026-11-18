@@ -121,19 +121,28 @@ func TestWindowsInsertsIntoOwnedEditor(t *testing.T) {
 	const text = "Arion 中文 🦊 e\u0301 test"
 	result, err := targets.Commit(context.Background(), contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text})
 	if err != nil || result.Outcome == contracts.NotApplied {
-		t.Fatalf("commit: %+v %v", result, err)
+		t.Fatalf("commit: %+v %v; %s", result, err, ownedEditorFocus(editor))
 	}
+	// One commit. A copied outcome that leaves the editor empty, including
+	// after the commit moves focus away, fails here. The test does not
+	// refocus, capture again, or paste on its own.
 	if !within(5*time.Second, func() bool { return editor.text() == text }) {
-		t.Fatalf("editor text %q after commit %+v", editor.text(), result)
+		t.Fatalf("editor text %q after commit %+v; %s", editor.text(), result, ownedEditorFocus(editor))
 	}
 	time.Sleep(300 * time.Millisecond)
 	if got := editor.text(); got != text {
-		t.Fatalf("editor text %q", got)
+		t.Fatalf("editor text %q; %s", got, ownedEditorFocus(editor))
 	}
 	result, err = targets.Commit(context.Background(), contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text})
 	if err != nil || result.Outcome != contracts.NotApplied || result.Failure != domain.CodeTargetChanged || editor.text() != text {
-		t.Fatalf("duplicate commit: %+v %v; text %q", result, err, editor.text())
+		t.Fatalf("duplicate commit: %+v %v; text %q; %s", result, err, editor.text(), ownedEditorFocus(editor))
 	}
+}
+
+func ownedEditorFocus(editor *windowsEditor) string {
+	state := currentEditorFocus()
+	return fmt.Sprintf("focus window %#x control %#x editor %#x edit %#x changes %d chars %d shift %v",
+		state.Window, state.Control, editor.window, editor.edit, editor.changes.Load(), editor.characters.Load(), shiftDown())
 }
 
 // DSK-05/DSK-A04: stale sessions, cancelled commits and secure fields

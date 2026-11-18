@@ -35,6 +35,7 @@ var (
 	procPostMessageW        = user32.NewProc("PostMessageW")
 	procPostQuitMessage     = user32.NewProc("PostQuitMessage")
 	procSetWindowTextW      = user32.NewProc("SetWindowTextW")
+	procGetAsyncKeyState    = user32.NewProc("GetAsyncKeyState")
 	editorSequence          atomic.Uint32
 )
 
@@ -182,6 +183,14 @@ func startWindowsEditor(t *testing.T) *windowsEditor {
 
 func (editor *windowsEditor) focus(t *testing.T) { editor.focusControl(t, editor.edit) }
 
+// shiftDown reports the live Shift key. focusControl taps Shift to satisfy
+// the foreground lock, and a key-up that has not landed yet makes the next
+// Ctrl+V a shifted chord.
+func shiftDown() bool {
+	state, _, _ := procGetAsyncKeyState.Call(vkShift)
+	return state&0x8000 != 0
+}
+
 func (editor *windowsEditor) focusControl(t *testing.T, control uintptr) {
 	t.Helper()
 	runtime.LockOSThread()
@@ -197,14 +206,27 @@ func (editor *windowsEditor) focusControl(t *testing.T, control uintptr) {
 			procSetForegroundWindow.Call(editor.window)
 			procAttachThreadInput.Call(self, current, 0)
 		}
+		if shiftDown() {
+			procKeybdEvent.Call(vkShift, 0, keyUp, 0)
+		}
 		thread, _, _ := procGetWindowThreadPID.Call(editor.window, 0)
 		procAttachThreadInput.Call(self, thread, 1)
 		procSetFocus.Call(control)
 		procAttachThreadInput.Call(self, thread, 0)
 		// A background thread can retain its last focused control. Checking
 		// that control alone does not establish the global input recipient.
-		state := currentEditorFocus()
-		return state.Window == editor.window && state.Control == control
+		// One matching sample is not enough: the runner can take the
+		// foreground back before SendInput. Require the same recipient, with
+		// Shift up, across a second read.
+		held := func() bool {
+			state := currentEditorFocus()
+			return state.Window == editor.window && state.Control == control && !shiftDown()
+		}
+		if !held() {
+			return false
+		}
+		time.Sleep(20 * time.Millisecond)
+		return held()
 	})
 }
 

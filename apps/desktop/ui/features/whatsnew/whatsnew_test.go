@@ -52,10 +52,38 @@ func TestEverySlideHasAScene(t *testing.T) {
 // The recordings place the pointer by the mock phrases' widths, so the
 // phrases are the same text in both languages.
 func TestDemoPhrasesMatchAcrossLocales(t *testing.T) {
-	for _, key := range []copy.Key{copy.WhatsNewDemoPhrase, copy.WhatsNewDemoTerm, copy.WhatsNewDemoPrompt} {
+	for _, key := range []copy.Key{copy.WhatsNewDemoPhrase, copy.WhatsNewDemoTerm, copy.WhatsNewDemoPrompt, copy.WhatsNewDraftPhrase} {
 		if en, zh := copy.For(copy.English).Text(key), copy.For(copy.SimplifiedChinese).Text(key); en != zh {
 			t.Errorf("%s differs: %q and %q", key, en, zh)
 		}
+	}
+}
+
+func TestDraftStoryOrder(t *testing.T) {
+	steps := []struct {
+		ms   int
+		want func(draftFrame) bool
+		what string
+	}{
+		{0, func(f draftFrame) bool {
+			return f.Knob == 1 && !f.Hidden && f.Shown == 0 && f.Cursor.At == rest && f.Lens.Zoom == 1
+		}, "opens with the switch on"},
+		{1650, func(f draftFrame) bool { return f.Knob == 1 && !f.Hidden && f.Shown == 1 && f.Cursor.At == switchAt }, "the pointer rests on the switch before the click"},
+		{1900, func(f draftFrame) bool { return f.Knob == 0 && !f.Hidden }, "the switch has turned off and the words are still there"},
+		{2200, func(f draftFrame) bool { return f.Hidden && f.Knob == 0 }, "the pill counts words instead of showing them"},
+		{5600, func(f draftFrame) bool { return f.Hidden && f.Lens.Zoom > 1.1 && f.Cursor.At == pillAt }, "the count stays in view"},
+		{8400, func(f draftFrame) bool { return f.Hidden && f.Lens.Zoom == 1 && f.Cursor.At == rest }, "the camera returns before the loop"},
+	}
+	for _, step := range steps {
+		if f := draftAt(ms(step.ms)); !step.want(f) {
+			t.Errorf("%d ms: %s: %+v", step.ms, step.what, f)
+		}
+	}
+	if final := draftAt(draftFinal); !final.Hidden || final.Knob != 0 {
+		t.Errorf("final frame %+v", final)
+	}
+	if loop := draftAt(draftCycle + time.Millisecond); loop.Hidden || loop.Knob != 1 || loop.Shown > 0.01 {
+		t.Errorf("the loop starts over: %+v", loop)
 	}
 }
 
@@ -130,6 +158,7 @@ func TestPointersAndLensesMoveContinuously(t *testing.T) {
 	}
 	check("ask", askCycle, func(d time.Duration) (point, lens) { f := askAt(d); return f.Cursor.At, f.Lens })
 	check("term", termCycle, func(d time.Duration) (point, lens) { f := termAt(d); return f.Cursor.At, f.Lens })
+	check("draft", draftCycle, func(d time.Duration) (point, lens) { f := draftAt(d); return f.Cursor.At, f.Lens })
 }
 
 func abs(v float32) float32 {
@@ -267,6 +296,9 @@ func TestFramesRender(t *testing.T) {
 		{"selection-actions", 7000, messages.Text(copy.WhatsNewDemoPrompt)},
 		{"selection-vocabulary", 3000, messages.Text(copy.SelectionVocabulary)},
 		{"selection-vocabulary", 6400, messages.Text(copy.NavVocabulary)},
+		{"hidden-draft", 1600, messages.Text(copy.ShowDraft)},
+		{"hidden-draft", 1600, messages.Text(copy.WhatsNewDraftPhrase)},
+		{"hidden-draft", 5600, messages.PillWords(runtime.CountWords(messages.Text(copy.WhatsNewDraftPhrase)))},
 	} {
 		for _, dark := range []bool{false, true} {
 			s := scenes[step.id]
@@ -280,6 +312,9 @@ func TestFramesRender(t *testing.T) {
 			settle(tt)
 			if !has(tt, step.want) {
 				t.Errorf("%s %d ms: %q missing from %q", step.id, step.ms, step.want, tt.Texts())
+			}
+			if step.id == "hidden-draft" && step.ms == 5600 && has(tt, messages.Text(copy.WhatsNewDraftPhrase)) {
+				t.Errorf("the word count replaces the recognized text: %q", tt.Texts())
 			}
 			save(t, tt, fmt.Sprintf("whatsnew-%s-%05d-dark-%v.png", step.id, step.ms, dark))
 		}
@@ -300,6 +335,37 @@ func TestDialogRendersInBothAppearancesAndSmallWindows(t *testing.T) {
 			t.Errorf("%s: %q", shot.name, tt.Texts())
 		}
 		save(t, tt, "whatsnew-dialog-"+shot.name+".png")
+	}
+}
+
+func TestDraftRecordingInBothLocales(t *testing.T) {
+	scene := scenes["hidden-draft"]
+	for _, locale := range []copy.Locale{copy.English, copy.SimplifiedChinese} {
+		messages := copy.For(locale)
+		phrase := messages.Text(copy.WhatsNewDraftPhrase)
+		count := messages.PillWords(runtime.CountWords(phrase))
+		for _, moment := range []struct {
+			ms           int
+			want, absent string
+		}{
+			{1650, messages.Text(copy.ShowDraft), count},
+			{5600, count, phrase},
+		} {
+			for _, dark := range []bool{false, true} {
+				tt := ui.NewTester(func(c *ui.Context) {
+					tokens := theme.Apply(c)
+					ui.Column(c).Fill().Clip().Background(tokens.Scrim).Children(func() {
+						scene.draw(c, tokens, messages, ms(moment.ms), false)
+					})
+				}, Width, StageHeight)
+				tt.SetDark(dark)
+				settle(tt)
+				if !has(tt, moment.want) || has(tt, moment.absent) {
+					t.Errorf("%s %d ms dark %v: want %q without %q in %q", locale, moment.ms, dark, moment.want, moment.absent, tt.Texts())
+				}
+				save(t, tt, fmt.Sprintf("whatsnew-draft-%s-%d-dark-%v.png", locale, moment.ms, dark))
+			}
+		}
 	}
 }
 

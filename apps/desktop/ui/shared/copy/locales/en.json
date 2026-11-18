@@ -779,6 +779,10 @@
   "WhatsNewVocabularyTitle": "Add a term to your vocabulary where you read it",
   "WhatsNewVocabularyBody": "Select a name or a term and choose Add to vocabulary on the same bar. Arion spells it that way the next time you dictate it.",
   "WhatsNewVocabularyLabel": "A term selected in a document is added to Arion's vocabulary from the bar under it",
+  "WhatsNewDraftTitle": "Hide what you say in the pill",
+  "WhatsNewDraftBody": "Turn off Show what you say in Settings › General. While you dictate, the pill shows how many words it recognized instead of the words. After you release, it says Transcribing… until the result. What gets inserted stays the same.",
+  "WhatsNewDraftLabel": "The Show what you say switch turns off, and the pill shows a word count instead of the recognized text",
+  "WhatsNewDraftPhrase": "Thursday's quarterly review",
   "WhatsNewDemoPhrase": "retrieval-augmented generation",
   "WhatsNewDemoPrompt": "Explain this: retrieval-augmented generation",
   "WhatsNewDemoTerm": "pgvector"

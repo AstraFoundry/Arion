@@ -1,6 +1,10 @@
 {
   "releases": [
     {
+      "version": "0.1.7",
+      "slides": ["hidden-draft"]
+    },
+    {
       "version": "0.1.6",
       "slides": ["selection-actions", "selection-vocabulary"]
     },
