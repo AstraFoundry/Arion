@@ -23,7 +23,11 @@ final class MicButton: UIControl {
         accessibilityLabel = L10n.keyboardDictate
 
         face.isUserInteractionEnabled = false
-        dark.backgroundColor = Palette.substrate
+        // Ink on a light keyboard; on a dark one the raised dark face, which
+        // stays visible where the substrate would disappear.
+        let substrate = SunbeamTokens.Color.substrate.light.uiColor
+        let raised = SunbeamTokens.Color.raisedFaceFrom.dark.uiColor
+        dark.backgroundColor = UIColor { $0.userInterfaceStyle == .dark ? raised : substrate }
         dark.isUserInteractionEnabled = false
         dark.alpha = 0
         mark.color = Palette.primaryForeground

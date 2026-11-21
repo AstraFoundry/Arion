@@ -312,7 +312,9 @@ private fun MicButton(
         contentAlignment = Alignment.Center,
     ) {
         if (dark) {
-            Box(Modifier.size(72.dp).clip(CircleShape).background(c.substrate))
+            // Ink on a light keyboard; on a dark one the raised dark face, which
+            // stays visible where the substrate would disappear.
+            Box(Modifier.size(72.dp).clip(CircleShape).background(if (c.dark) Brush.verticalGradient(listOf(c.raisedFaceFrom, c.raisedFaceTo)) else Brush.linearGradient(listOf(c.substrate, c.substrate))))
         } else {
             // The raised primary face, drawn without its own touch handling so
             // this button's gestures receive every touch.
