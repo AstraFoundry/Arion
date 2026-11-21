@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<input-method xmlns:android="http://schemas.android.com/apk/res/android"
+    android:settingsActivity="si.astrafoundry.arion.ui.MainActivity"
+    android:supportsSwitchingToNextInputMethod="true">
+    <subtype
+        android:imeSubtypeMode="voice"
+        android:imeSubtypeLocale="en_US"
+        android:languageTag="en-US"
+        android:label="@string/android_ime_label" />
+    <subtype
+        android:imeSubtypeMode="voice"
+        android:imeSubtypeLocale="zh_CN"
+        android:languageTag="zh-CN"
+        android:label="@string/android_ime_label" />
+</input-method>

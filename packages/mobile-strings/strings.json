@@ -69,6 +69,7 @@
     "onboarding.keyboard.open": { "en": "Open Settings", "zh-Hans": "打开设置" },
     "onboarding.try.title": { "en": "Try it", "zh-Hans": "试一试" },
     "onboarding.try.body": { "en": "Switch to Arion with the globe key, tap the microphone and speak.", "zh-Hans": "用地球键切换到 Arion，点按麦克风后说话。" },
+    "onboarding.try.bodyAndroid": { "en": "Tap the field, then the microphone on the Arion keyboard, and speak.", "zh-Hans": "点按输入框，再点按 Arion 键盘上的麦克风，然后说话。" },
     "onboarding.try.placeholder": { "en": "Your words appear here", "zh-Hans": "你说的话会出现在这里" },
     "onboarding.finish": { "en": "Done", "zh-Hans": "完成" },
     "onboarding.skip": { "en": "Not now", "zh-Hans": "以后再说" },

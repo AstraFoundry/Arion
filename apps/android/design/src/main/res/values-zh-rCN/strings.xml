@@ -54,6 +54,7 @@
     <string name="onboarding_microphone_title" formatted="false">允许使用麦克风</string>
     <string name="onboarding_skip" formatted="false">以后再说</string>
     <string name="onboarding_try_body" formatted="false">用地球键切换到 Arion，点按麦克风后说话。</string>
+    <string name="onboarding_try_body_android" formatted="false">点按输入框，再点按 Arion 键盘上的麦克风，然后说话。</string>
     <string name="onboarding_try_placeholder" formatted="false">你说的话会出现在这里</string>
     <string name="onboarding_try_title" formatted="false">试一试</string>
     <string name="onboarding_welcome_body" formatted="false">Arion 在任何应用里把语音变成干净的文字。识别和润色都在这台设备上完成。</string>
@@ -111,6 +112,6 @@
     <string name="target_ko" formatted="false">韩语</string>
     <string name="target_pt" formatted="false">葡萄牙语</string>
     <string name="target_ru" formatted="false">俄语</string>
-    <string name="target_zh_c_n" formatted="false">简体中文</string>
-    <string name="target_zh_t_w" formatted="false">繁体中文</string>
+    <string name="target_zh_cn" formatted="false">简体中文</string>
+    <string name="target_zh_tw" formatted="false">繁体中文</string>
 </resources>

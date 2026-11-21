@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sunbeam background, for the window before Compose draws. -->
+    <color name="arion_background">#FFFAF8F5</color>
+</resources>

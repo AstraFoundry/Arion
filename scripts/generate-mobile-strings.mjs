@@ -39,7 +39,7 @@ function positional(key, language, marker) {
     .replace(/\{([a-z][a-zA-Z0-9]*)\}/g, (_, name) => `%${order.indexOf(name) + 1}$${marker}`);
 }
 const identifier = key => key.split('.').map((part, index) => index ? part[0].toUpperCase() + part.slice(1) : part).join('');
-const androidName = key => key.replace(/\./g, '_').replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+const androidName = key => key.replace(/\./g, '_').replace(/[A-Z]+/g, letters => `_${letters.toLowerCase()}`);
 
 function xcstrings() {
   const strings = {};

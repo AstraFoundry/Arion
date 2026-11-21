@@ -904,6 +904,23 @@
         }
       }
     },
+    "onboarding.try.bodyAndroid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap the field, then the microphone on the Arion keyboard, and speak."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "点按输入框，再点按 Arion 键盘上的麦克风，然后说话。"
+          }
+        }
+      }
+    },
     "onboarding.try.placeholder": {
       "extractionState": "manual",
       "localizations": {

@@ -54,6 +54,7 @@
     <string name="onboarding_microphone_title" formatted="false">Allow the microphone</string>
     <string name="onboarding_skip" formatted="false">Not now</string>
     <string name="onboarding_try_body" formatted="false">Switch to Arion with the globe key, tap the microphone and speak.</string>
+    <string name="onboarding_try_body_android" formatted="false">Tap the field, then the microphone on the Arion keyboard, and speak.</string>
     <string name="onboarding_try_placeholder" formatted="false">Your words appear here</string>
     <string name="onboarding_try_title" formatted="false">Try it</string>
     <string name="onboarding_welcome_body" formatted="false">Arion turns your voice into clean text in any app. Speech is recognized and polished on this device.</string>
@@ -111,6 +112,6 @@
     <string name="target_ko" formatted="false">Korean</string>
     <string name="target_pt" formatted="false">Portuguese</string>
     <string name="target_ru" formatted="false">Russian</string>
-    <string name="target_zh_c_n" formatted="false">Simplified Chinese</string>
-    <string name="target_zh_t_w" formatted="false">Traditional Chinese</string>
+    <string name="target_zh_cn" formatted="false">Simplified Chinese</string>
+    <string name="target_zh_tw" formatted="false">Traditional Chinese</string>
 </resources>

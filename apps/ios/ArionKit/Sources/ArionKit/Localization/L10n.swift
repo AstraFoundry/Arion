@@ -57,6 +57,7 @@ public enum L10n {
     public static var onboardingMicrophoneTitle: String { lookup("onboarding.microphone.title") }
     public static var onboardingSkip: String { lookup("onboarding.skip") }
     public static var onboardingTryBody: String { lookup("onboarding.try.body") }
+    public static var onboardingTryBodyAndroid: String { lookup("onboarding.try.bodyAndroid") }
     public static var onboardingTryPlaceholder: String { lookup("onboarding.try.placeholder") }
     public static var onboardingTryTitle: String { lookup("onboarding.try.title") }
     public static var onboardingWelcomeBody: String { lookup("onboarding.welcome.body") }
