@@ -161,6 +161,12 @@ Create a todo file for long tasks and mark items with `[ ]` / `[x]`. Clean up wh
 - Imported competitor strings are static evidence, not verified execution. Preserve evidence limitations.
 - Use Go package exports as FSD public APIs; the TypeScript examples in frontend docs are illustrative only.
 
+## Arion mobile conventions
+
+- iOS (`apps/ios`, UIKit) and Android (`apps/android`, Kotlin/Compose) are native apps ([ADR 051](docs/decisions/051-native-mobile-keyboards.md)). Recognition and polishing stay on the device; never add a cloud path.
+- Mobile copy lives only in `packages/mobile-strings/strings.json`; Sunbeam tokens come from `pnpm mobile:generate`. Do not edit generated catalogs or token files.
+- Polishing and translation use the desktop's `format.json` recipe unchanged; port request building, not prompt text.
+
 ## Project automation
 
 Use pnpm exactly as pinned in `package.json`; install with the frozen lockfile. Common workflows belong in Makefile and portable Node entry points. Native tests require their actual target OS. Reusable benchmark corpora, exact fixtures, per-case outputs, failed attempts and reproduction sources belong under `benchmarks/` in the private `AstraFoundry/Arion-evaluation` Git repository, with original bytes, provenance and hashes. Public product tests retain small licensed fixtures in package `testdata` and use the public `tools/driver` contract. Keep weights, runtime environments, caches, personal recordings and unfinished execution in `.workspace/`; never substitute mock output for inference evidence. Follow the [repository split](docs/project/repository-split.md) and the private repository README for archive verification and report replay. Read [008 Evaluation](specs/008-evaluation.md) before changing experiments or drivers.

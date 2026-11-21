@@ -207,7 +207,7 @@ func main() {
 		if *check {
 			got, err := os.ReadFile(path)
 			if err != nil || !bytes.Equal(got, want) {
-				fmt.Fprintf(os.Stderr, "%s is out of date; run pnpm mobile:tokens\n", rel)
+				fmt.Fprintf(os.Stderr, "%s is out of date; run pnpm mobile:generate\n", rel)
 				stale = true
 			}
 			continue

@@ -1,5 +1,5 @@
 {
-  "$description": "User-facing copy of the iOS and Android apps. Each key holds English (the default) and Simplified Chinese. Placeholders are {name}. pnpm mobile:strings writes the platform catalogs.",
+  "$description": "User-facing copy of the iOS and Android apps. Each key holds English (the default) and Simplified Chinese. Placeholders are {name}. pnpm mobile:generate writes the platform catalogs.",
   "strings": {
     "app.name": { "en": "Arion", "zh-Hans": "Arion" },
 

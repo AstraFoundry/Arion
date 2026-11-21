@@ -50,6 +50,8 @@
 | --- | --- | --- |
 | **macOS** | Apple silicon (`arm64`) | 完整支持菜单栏听写、Metal 加速的 `speech.cpp` 语音识别、本地 GGUF 润色与 `ArionInput.app` 输入法宿主（不支持 Intel macOS，[ADR 021](docs/decisions/021-apple-silicon-only-macos.md)） |
 | **Windows** | 64 位 (`x64` / `amd64`) | 早期预览版，支持原生 `speech.cpp` 语音识别、本地 GGUF 润色与 `ArionTSF.dll` 输入法宿主 |
+| **iOS** | iPhone，iOS 26 | 开发中：语音键盘，识别与润色均在设备上完成（[移动端](docs/project/mobile.md)） |
+| **Android** | Android 13+ | 开发中：语音输入法，识别与润色均在设备上完成（[移动端](docs/project/mobile.md)） |
 
 详细的里程碑进展与发布验收门禁请参阅[发布状态](docs/operations/release-status.md)、[代理交接文档](docs/project/agent-handoff.md)与[验证报告](docs/quality/validation.md)。
 

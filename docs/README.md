@@ -4,6 +4,7 @@ This directory documents how this project is built, organized, and evolved by ag
 
 ## Product implementation
 
+- [Mobile apps](project/mobile.md) — iOS keyboard extension and Android input method.
 - [Clipboard history](project/clipboard.md) — opt-in local resource history and internal-write isolation.
 
 - [Specifications](../specs/README.md) — normative workflows and acceptance IDs.

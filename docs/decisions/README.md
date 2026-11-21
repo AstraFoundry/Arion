@@ -62,6 +62,7 @@ Write an ADR when the decision:
 - [048: Selection action URLs](048-selection-action-urls.md) — fixed Claude and ChatGPT templates, allowlisted schemes, and no shell or keystroke handoff.
 - [049: Sunbeam from its MyGo package, with flat and raised materials](049-sunbeam-package-and-materials.md) — tokens from `github.com/AstraFoundry/design/packages/mygo`; flat window chrome, raised popovers and tooltips.
 - [050: Release highlights after an update](050-release-highlights.md) — a per-release catalog of user-visible highlights, a dialog over Settings across every crossed version, and a release preflight that requires an entry or a skip reason.
+- [051: Native iOS and Android voice keyboards](051-native-mobile-keyboards.md) — UIKit keyboard extension and Kotlin input method, on-device recognition and polishing with the shared recipe, WebKit microphone capture in the iOS keyboard, generated Sunbeam tokens and one mobile string catalog.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

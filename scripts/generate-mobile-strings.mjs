@@ -99,7 +99,7 @@ for (const [relative, text] of outputs) {
     let current = null;
     try { current = await readFile(file, 'utf8'); } catch (error) { if (error.code !== 'ENOENT') throw error; }
     if (current !== text) {
-      console.error(`${relative} is out of date; run pnpm mobile:strings`);
+      console.error(`${relative} is out of date; run pnpm mobile:generate`);
       stale = true;
     }
     continue;

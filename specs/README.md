@@ -15,10 +15,11 @@ These documents are normative for implementation. Research recommendations requi
 | [009 Contextual rewriting](009-contextual-rewrite.md) | Optional local scene-aware rewrite candidates, preservation and evaluation gates |
 | [010 Clipboard history](010-clipboard.md) | Opt-in local resource history, file references, internal-write exclusion and native paste |
 | [011 Selection actions](011-selection-actions.md) | Selection preferences, allowlisted client URLs, mouse-up popover, copy, and hotword save |
+| [012 Mobile input](012-mobile-input.md) | iOS keyboard extension and Android input method: dictation gestures, drafts, on-device recognition and polishing |
 
 ## Product choices
 
-Both input modes are selectable by the user. Self-hosting is the sync priority. macOS on Apple silicon and Windows x64 are P0; Intel macOS is unsupported for future releases ([ADR 021](../docs/decisions/021-apple-silicon-only-macos.md)); iOS and Android are P2 future targets. macOS IME work includes offline Simplified Chinese full-Pinyin typing, candidate selection/editing and encrypted learning alongside voice composition ([ADR 017](../docs/decisions/017-offline-pinyin-keyboard.md)); implementation and native acceptance remain required.
+Both input modes are selectable by the user. Self-hosting is the sync priority. macOS on Apple silicon and Windows x64 are P0; Intel macOS is unsupported for future releases ([ADR 021](../docs/decisions/021-apple-silicon-only-macos.md)); iOS and Android have native voice keyboards ([ADR 051](../docs/decisions/051-native-mobile-keyboards.md), [012](012-mobile-input.md)). macOS IME work includes offline Simplified Chinese full-Pinyin typing, candidate selection/editing and encrypted learning alongside voice composition ([ADR 017](../docs/decisions/017-offline-pinyin-keyboard.md)); implementation and native acceptance remain required.
 
 Jev-style local candidate ranking is explicitly requested. [Research](../docs/research/on-device-speech.md) identifies TypeSafe Jev and independent local implementations. Evaluate Laya Multilingual Choice first; the adapter contract remains model-independent.
 

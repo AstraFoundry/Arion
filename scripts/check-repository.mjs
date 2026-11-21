@@ -10,7 +10,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [];
 const files = [];
 const trees = ['docs', 'specs', 'apps', 'packages', 'services', 'models', 'deploy', 'tools', 'tests', 'scripts'];
-const ignored = new Set(['build', 'dist', 'node_modules', '.git', '.next', 'out', '.mygo']);
+const ignored = new Set(['build', 'dist', 'node_modules', '.git', '.next', 'out', '.mygo', '.gradle', '.kotlin', '.swiftpm', '.build', 'Arion.xcodeproj']);
 const generated = new Set(['apps/desktop/resources']);
 
 async function walk(relative) {

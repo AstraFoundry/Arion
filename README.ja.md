@@ -50,6 +50,8 @@
 | --- | --- | --- |
 | **macOS** | Apple silicon (`arm64`) | メニューバー音声入力、ネイティブ MLX 音声認識、ローカル GGUF 推敲、`ArionInput.app` IMK ホストが動作（Intel macOS はサポート対象外、[ADR 021](docs/decisions/021-apple-silicon-only-macos.md)） |
 | **Windows** | 64-bit (`x64` / `amd64`) | 初期プレビュー版：ネイティブ `speech.cpp` 音声認識、ローカル GGUF 推敲、`ArionTSF.dll` IME ホストに対応 |
+| **iOS** | iPhone、iOS 26 | 開発中：音声キーボード。認識と推敲はデバイス上で実行（[モバイルアプリ](docs/project/mobile.md)） |
+| **Android** | Android 13+ | 開発中：音声入力メソッド。認識と推敲はデバイス上で実行（[モバイルアプリ](docs/project/mobile.md)） |
 
 マイルストーンの進捗と未完了のリリースゲートについては、[リリースステータス](docs/operations/release-status.md)、[エージェントハンドオフ](docs/project/agent-handoff.md)、および[検証レポート](docs/quality/validation.md)を参照してください。
 
