@@ -61,7 +61,9 @@ public final class DictationSession {
     /// Starts listening. The caller has checked Full Access.
     public func start(language: String, vocabulary: [String]) {
         guard !phase.isActive else { return }
-        guard AVAudioApplication.shared.recordPermission == .granted else {
+        // The extension may not see the app's grant; only a denial is certain,
+        // and WebKit reports any other refusal when capture starts.
+        guard AVAudioApplication.shared.recordPermission != .denied else {
             phase = .failed(.microphoneDenied)
             return
         }
@@ -166,7 +168,8 @@ public final class DictationSession {
             guard reason != "stopped", phase.isActive, !finishing else { return }
             generation = generation.next()
             recognizer.cancel()
-            phase = .failed(.captureEnded)
+            // getUserMedia rejects a refused microphone with NotAllowedError.
+            phase = .failed(reason.contains("NotAllowedError") ? .microphoneDenied : .captureEnded)
         }
     }
 }

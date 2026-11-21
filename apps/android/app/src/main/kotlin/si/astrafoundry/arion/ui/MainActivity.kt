@@ -254,7 +254,8 @@ private fun Home(preferences: Preferences, open: (Screen) -> Unit) {
         }
         Section(footer = footer) {
             SettingRow(stringResource(R.string.settings_polish), trailing = {
-                Toggle(polishing, enabled = availability != ModelAvailability.Unavailable) {
+                // Without a model the switch shows off; the saved choice returns with one.
+                Toggle(polishing && availability != ModelAvailability.Unavailable, enabled = availability != ModelAvailability.Unavailable) {
                     polishing = it
                     preferences.polishingEnabled = it
                     if (it && availability == ModelAvailability.Downloadable) scope.launch { runCatching { model.download() }; availability = model.availability() }
