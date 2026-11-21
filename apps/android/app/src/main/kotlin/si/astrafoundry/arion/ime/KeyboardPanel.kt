@@ -39,6 +39,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.pointer.pointerInput
@@ -118,6 +121,8 @@ fun KeyboardPanel(state: PanelState, actions: PanelActions, labels: PanelLabels)
                 .padding(horizontal = 6.dp, vertical = 6.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+          // On tablets and unfolded phones the keys keep a phone's reach.
+          Column(Modifier.widthIn(max = 640.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             // The recognized text, or a short notice; drafts never reach the editor.
             val draft = when (phase) {
                 is DictationPhase.Listening -> phase.draft
@@ -200,6 +205,7 @@ fun KeyboardPanel(state: PanelState, actions: PanelActions, labels: PanelLabels)
                     Text(state.returnLabel, style = Sunbeam.type.label, color = ink)
                 }
             }
+          }
         }
     }
 }
@@ -308,7 +314,13 @@ private fun MicButton(
         if (dark) {
             Box(Modifier.size(72.dp).clip(CircleShape).background(c.substrate))
         } else {
-            Face(FaceKind.Primary, onClick = {}, enabled = false, shape = CircleShape, modifier = Modifier.size(72.dp)) { }
+            // The raised primary face, drawn without its own touch handling so
+            // this button's gestures receive every touch.
+            Box(
+                Modifier.size(72.dp).shadow(2.dp, CircleShape, ambientColor = c.raisedPrimaryEdge, spotColor = c.raisedPrimaryEdge)
+                    .clip(CircleShape).background(Brush.verticalGradient(listOf(c.raisedPrimaryFrom, c.raisedPrimaryTo)))
+                    .border(androidx.compose.ui.unit.Dp.Hairline, c.raisedPrimaryEdge, CircleShape),
+            )
         }
         VoiceMark(
             color = if (dark) c.primary else c.primaryForeground,

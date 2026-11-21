@@ -60,15 +60,21 @@ final class OnboardingViewController: UIViewController {
             self.content.arrangedSubviews.forEach { $0.removeFromSuperview() }
             self.build(step)
         }
+        let focus = { if step == .practice { self.practiceField?.becomeFirstResponder() } }
         guard animated, !UIAccessibility.isReduceMotionEnabled else {
             build()
+            DispatchQueue.main.async(execute: focus)
             return
         }
-        UIView.transition(with: content, duration: 0.24, options: [.transitionCrossDissolve, .allowUserInteraction], animations: build)
+        UIView.transition(with: content, duration: 0.24, options: [.transitionCrossDissolve, .allowUserInteraction], animations: build) { _ in focus() }
     }
 
     private func build(_ step: Step) {
-        secondary.isHidden = true
+        var showsSecondary = false
+        defer {
+            // A stack view miscounts repeated isHidden writes inside animations.
+            if secondary.isHidden == showsSecondary { secondary.isHidden = !showsSecondary }
+        }
         switch step {
         case .welcome:
             content.addArrangedSubview(AppMark())
@@ -89,7 +95,7 @@ final class OnboardingViewController: UIViewController {
             addBody(L10n.onboardingKeyboardFullAccessNote, muted: true, style: .bodySmall)
             primary.title = openedSettings ? L10n.onboardingContinue : L10n.onboardingKeyboardOpen
             secondary.title = L10n.onboardingContinue
-            secondary.isHidden = openedSettings
+            showsSecondary = !openedSettings
         case .practice:
             addTitle(L10n.onboardingTryTitle)
             addBody(L10n.onboardingTryBody)
@@ -99,7 +105,6 @@ final class OnboardingViewController: UIViewController {
             content.addArrangedSubview(field)
             practiceField = field.textView
             primary.title = L10n.onboardingFinish
-            DispatchQueue.main.async { field.textView.becomeFirstResponder() }
         }
     }
 

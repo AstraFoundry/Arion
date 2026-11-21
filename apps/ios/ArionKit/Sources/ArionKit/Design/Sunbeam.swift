@@ -136,9 +136,11 @@ public final class FaceButton: UIControl {
             stack.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 16),
             heightAnchor.constraint(greaterThanOrEqualToConstant: 44),
         ])
+        // Observers do not run inside the initializer, so draw explicitly.
         defer {
             self.title = title
             self.symbol = symbol
+            drawSymbol()
         }
         isAccessibilityElement = true
         accessibilityTraits = .button
@@ -162,14 +164,14 @@ public final class FaceButton: UIControl {
     }
 
     /// The button's SF Symbol; nil hides it.
-    public var symbol: String? {
-        didSet {
-            iconView.image = symbol.map { UIImage(systemName: $0, withConfiguration: UIImage.SymbolConfiguration(pointSize: symbolSize, weight: .medium)) } ?? nil
-            iconView.isHidden = symbol == nil
-        }
-    }
+    public var symbol: String? { didSet { drawSymbol() } }
 
-    public var symbolSize: CGFloat = 17 { didSet { let s = symbol; symbol = s } }
+    public var symbolSize: CGFloat = 17 { didSet { drawSymbol() } }
+
+    private func drawSymbol() {
+        iconView.image = symbol.map { UIImage(systemName: $0, withConfiguration: UIImage.SymbolConfiguration(pointSize: symbolSize, weight: .medium)) } ?? nil
+        iconView.isHidden = symbol == nil
+    }
 
     public override var isHighlighted: Bool {
         didSet {

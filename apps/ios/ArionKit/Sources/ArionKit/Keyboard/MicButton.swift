@@ -1,9 +1,10 @@
-import ArionKit
+
 import UIKit
 
 /// The keyboard's one primary control, drawn as the app icon: Sunbeam's raised
 /// yellow face with the voice mark. Listening it turns to the substrate ink
 /// and its bars follow the voice; finishing, the bars rest and dim.
+@MainActor
 final class MicButton: UIControl {
     enum Look: Equatable { case idle, listening, working }
 

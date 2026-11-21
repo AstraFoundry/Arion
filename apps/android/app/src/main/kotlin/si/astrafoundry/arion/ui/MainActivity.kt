@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -83,7 +84,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SunbeamTheme {
-                Box(Modifier.fillMaxSize().background(Sunbeam.colors.background)) { App() }
+                // Wide screens keep a readable column, as on a phone.
+                Box(Modifier.fillMaxSize().background(Sunbeam.colors.background), contentAlignment = androidx.compose.ui.Alignment.TopCenter) {
+                    Box(Modifier.widthIn(max = 600.dp)) { App() }
+                }
             }
         }
     }

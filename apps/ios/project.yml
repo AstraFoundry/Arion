@@ -81,7 +81,7 @@ targets:
           NSExtensionAttributes:
             IsASCIICapable: false
             PrefersRightToLeft: false
-            PrimaryLanguage: mul
+            PrimaryLanguage: en-US
             RequestsOpenAccess: true
     settings:
       base:
@@ -97,6 +97,17 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
+  ArionUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: ArionUITests
+    dependencies:
+      - target: Arion
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Arion
 schemes:
   Arion:
     build:
@@ -104,4 +115,4 @@ schemes:
         Arion: all
         ArionKeyboard: all
     test:
-      targets: [ArionKitTests]
+      targets: [ArionKitTests, ArionUITests]

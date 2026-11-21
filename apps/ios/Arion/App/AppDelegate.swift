@@ -17,6 +17,15 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: scene)
         // Sunbeam checks and switches in ink; yellow is reserved for the one primary action.
         window.tintColor = Palette.foreground
+        #if DEBUG
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "-keyboardPreview"), index + 1 < arguments.count {
+            window.rootViewController = KeyboardPreviewController(state: arguments[index + 1])
+            window.makeKeyAndVisible()
+            self.window = window
+            return
+        }
+        #endif
         let home = UINavigationController(rootViewController: HomeViewController())
         home.navigationBar.prefersLargeTitles = true
         window.rootViewController = home

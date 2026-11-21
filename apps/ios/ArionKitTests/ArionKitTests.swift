@@ -112,3 +112,13 @@ final class WebMicrophoneTests: XCTestCase {
         XCTAssertNil(WebMicrophone.buffer(from: Data()))
     }
 }
+
+final class TextJoiningTests: XCTestCase {
+    func testSpacesBetweenLatinWords() {
+        XCTAssertEqual(TextJoining.joining("world", after: "hello"), " world")
+        XCTAssertEqual(TextJoining.joining("world", after: "hello "), "world")
+        XCTAssertEqual(TextJoining.joining("世界", after: "你好"), "世界")
+        XCTAssertEqual(TextJoining.joining("Next", after: "Done."), " Next")
+        XCTAssertEqual(TextJoining.joining("hi", after: nil), "hi")
+    }
+}

@@ -38,7 +38,8 @@ fun VoiceMark(color: Color, modifier: Modifier = Modifier, level: Float = 0f, ti
             var height = tallest * h
             if (animated > 0f) {
                 val wobble = (sin(tick * 0.9f + index * 1.7f) + 1f) / 2f
-                height = max(width, tallest * (0.25f + 0.75f * animated * (0.55f + 0.45f * wobble)))
+                // The mark keeps its silhouette and breathes with the voice.
+                height = max(width, tallest * h * (0.45f + 0.55f * animated * (0.4f + 0.6f * wobble) + 0.25f * animated))
             }
             drawRoundRect(color, Offset(x, (size.height - height) / 2), Size(width, height), CornerRadius(width / 2))
             x += width + gap

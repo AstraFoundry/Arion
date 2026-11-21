@@ -69,7 +69,8 @@ public final class VoiceMark: UIView {
             if level > 0 {
                 // Each bar moves on its own phase so speech reads as motion.
                 let wobble = (sin(phase + CGFloat(index) * 1.7) + 1) / 2
-                height = max(width, tallest * (0.25 + 0.75 * level * (0.55 + 0.45 * wobble)))
+                // The mark keeps its silhouette and breathes with the voice.
+                height = max(width, tallest * Self.heights[index] * (0.45 + 0.55 * level * (0.4 + 0.6 * wobble) + 0.25 * level))
             }
             bar.frame = CGRect(x: x, y: (bounds.height - height) / 2, width: width, height: height)
             bar.cornerRadius = width / 2
