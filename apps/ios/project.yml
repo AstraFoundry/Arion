@@ -1,0 +1,107 @@
+name: Arion
+options:
+  bundleIdPrefix: si.astrafoundry
+  deploymentTarget:
+    iOS: "26.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+settings:
+  base:
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "6.0"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    TARGETED_DEVICE_FAMILY: "1"
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+packages:
+  ArionKit:
+    path: ArionKit
+targets:
+  Arion:
+    type: application
+    platform: iOS
+    sources:
+      - path: Arion
+      - path: Resources
+    dependencies:
+      - package: ArionKit
+      - target: ArionKeyboard
+        embed: true
+    entitlements:
+      path: Arion/Arion.entitlements
+      properties:
+        com.apple.security.application-groups: [group.si.astrafoundry.arion]
+    info:
+      path: Arion/Info.plist
+      properties:
+        CFBundleDisplayName: Arion
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, zh-Hans]
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneConfigurationName: Default
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        NSMicrophoneUsageDescription: Arion listens only while you dictate, and recognizes speech on this iPhone.
+        NSSpeechRecognitionUsageDescription: Arion recognizes your speech on this iPhone.
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: si.astrafoundry.arion.ios
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        INFOPLIST_KEY_CFBundleDisplayName: Arion
+  ArionKeyboard:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: ArionKeyboard
+    dependencies:
+      - package: ArionKit
+    entitlements:
+      path: ArionKeyboard/ArionKeyboard.entitlements
+      properties:
+        com.apple.security.application-groups: [group.si.astrafoundry.arion]
+    info:
+      path: ArionKeyboard/Info.plist
+      properties:
+        CFBundleDisplayName: Arion
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, zh-Hans]
+        NSMicrophoneUsageDescription: Arion listens only while you dictate, and recognizes speech on this iPhone.
+        NSSpeechRecognitionUsageDescription: Arion recognizes your speech on this iPhone.
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.keyboard-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).KeyboardViewController
+          NSExtensionAttributes:
+            IsASCIICapable: false
+            PrefersRightToLeft: false
+            PrimaryLanguage: mul
+            RequestsOpenAccess: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: si.astrafoundry.arion.ios.keyboard
+        APPLICATION_EXTENSION_API_ONLY: YES
+  ArionKitTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: ArionKitTests
+    dependencies:
+      - package: ArionKit
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  Arion:
+    build:
+      targets:
+        Arion: all
+        ArionKeyboard: all
+    test:
+      targets: [ArionKitTests]
