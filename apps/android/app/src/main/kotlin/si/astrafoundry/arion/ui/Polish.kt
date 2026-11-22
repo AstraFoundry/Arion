@@ -100,12 +100,13 @@ fun providerIcon(provider: CloudProvider): ArionIcon = when (provider) {
 fun cloudSummary(state: CloudState): String? =
     state.active?.let { listOfNotNull(providerName(it.provider), it.model).joinToString(" · ") }
 
+/** What only this option needs said: why this device cannot polish, or the cloud model in use. */
 @Composable
-private fun choiceDetail(choice: PolishChoice, availability: ModelAvailability?, cloud: CloudState): String = when (choice) {
-    PolishChoice.Off -> stringResource(R.string.polish_off_detail)
-    PolishChoice.Cloud -> cloudSummary(cloud) ?: stringResource(R.string.polish_cloud_detail)
+private fun choiceDetail(choice: PolishChoice, availability: ModelAvailability?, cloud: CloudState): String? = when (choice) {
+    PolishChoice.Off -> null
+    PolishChoice.Cloud -> cloudSummary(cloud)
     PolishChoice.Device -> when (availability) {
-        ModelAvailability.Available, null -> stringResource(R.string.polish_device_detail)
+        ModelAvailability.Available, null -> null
         ModelAvailability.Downloadable, ModelAvailability.Downloading -> stringResource(R.string.settings_polish_android_downloading)
         ModelAvailability.Unavailable -> stringResource(R.string.settings_polish_android_unavailable)
     }
@@ -150,7 +151,7 @@ fun PolishScreen(preferences: Preferences, availability: ModelAvailability?, clo
         PolishChoice.entries.forEachIndexed { index, option ->
             if (index > 0) HorizontalDivider(Modifier.padding(start = 16.dp), thickness = Dp.Hairline, color = Sunbeam.colors.border)
             val enabled = option != PolishChoice.Device || availability != ModelAvailability.Unavailable
-            RadioRow(stringResource(option.title), if (option == PolishChoice.Cloud) stringResource(R.string.polish_cloud_detail) else choiceDetail(option, availability, cloud),
+            RadioRow(stringResource(option.title), if (option == PolishChoice.Cloud) null else choiceDetail(option, availability, cloud),
                 option == choice, enabled) {
                 choice = option
                 option.apply(preferences)

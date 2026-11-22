@@ -45,7 +45,6 @@ final class LanguagesViewController: SettingsListController {
     init() { super.init(title: L10n.settingsLanguages) }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { DictationLanguage.all.count }
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? { L10n.settingsLanguagesFooter }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let language = DictationLanguage.all[indexPath.row]
@@ -114,9 +113,6 @@ final class VocabularyViewController: SettingsListController, UITextFieldDelegat
 
     override func numberOfSections(in tableView: UITableView) -> Int { 2 }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { section == 0 ? 1 : terms.count }
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        section == 0 ? L10n.settingsVocabularyFooter : nil
-    }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard indexPath.section == 0 else { return cell(terms[indexPath.row]) }

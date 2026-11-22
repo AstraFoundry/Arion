@@ -362,7 +362,6 @@ private fun Onboarding(
                         }
                         Step.Microphone -> {
                             Heading(stringResource(R.string.onboarding_microphone_title))
-                            Body(stringResource(R.string.onboarding_microphone_body))
                         }
                         Step.Enable -> {
                             Heading(stringResource(R.string.android_onboarding_enable_title))
@@ -376,7 +375,6 @@ private fun Onboarding(
                         }
                         Step.Polish -> {
                             Heading(stringResource(R.string.onboarding_polish_title))
-                            Body(stringResource(R.string.onboarding_polish_body))
                             Spacer(Modifier.height(12.dp))
                             PolishChoices(polish, availability, cloudState) { polish = it }
                         }
@@ -481,7 +479,7 @@ private fun DictationHome(preferences: Preferences, open: (Screen) -> Unit) {
     val resumes = onResumeCount()
     val status = remember(resumes) { keyboardStatus(context) }
     TabPage(stringResource(R.string.tab_dictation)) {
-        Section(footer = stringResource(R.string.settings_translate_footer)) {
+        Section {
             SettingRow(stringResource(R.string.settings_languages), preferences.languages.joinToString(" · ") { languageMark(context, it) }, icon = ArionIcon.Globe, onClick = { open(Screen.Languages) })
             SettingRow(stringResource(R.string.settings_translate_into), targetName(context, preferences.translationTarget), icon = ArionIcon.Languages, divider = true, onClick = { open(Screen.Target) })
         }
@@ -514,7 +512,7 @@ private fun Detail(title: String, back: () -> Unit, content: @Composable () -> U
 private fun Languages(preferences: Preferences) {
     val context = LocalContext.current
     var selected by remember { mutableStateOf(preferences.languages) }
-    Section(footer = stringResource(R.string.settings_languages_footer)) {
+    Section {
         DictationLanguage.all.forEachIndexed { index, tag ->
             SettingRow(languageName(context, tag), divider = index > 0, onClick = {
                 val next = if (tag in selected) (selected - tag).ifEmpty { selected } else selected + tag
@@ -546,7 +544,7 @@ private fun VocabularyList() {
     var terms by remember { mutableStateOf(runCatching { vocabulary.terms() }.getOrDefault(emptyList())) }
     var draft by remember { mutableStateOf("") }
     val c = Sunbeam.colors
-    Section(footer = stringResource(R.string.settings_vocabulary_footer)) {
+    Section {
         Box(Modifier.fillMaxWidth().padding(16.dp)) {
             if (draft.isEmpty()) Text(stringResource(R.string.settings_vocabulary_add), style = Sunbeam.type.body, color = c.faint)
             BasicTextField(draft, { draft = it }, singleLine = true,

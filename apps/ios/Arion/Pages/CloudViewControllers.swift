@@ -22,7 +22,7 @@ final class PolishViewController: SettingsListController {
             return cell
         }
         let choice = PolishChoice.allCases[indexPath.row]
-        let cell = cell(choice.title, secondary: choice == .cloud ? L10n.polishCloudDetail : choice.detail, checked: PolishChoice.current(preferences) == choice)
+        let cell = cell(choice.title, secondary: choice == .cloud ? nil : choice.detail, checked: PolishChoice.current(preferences) == choice)
         if !choice.available {
             cell.selectionStyle = .none
             cell.contentView.alpha = 0.45

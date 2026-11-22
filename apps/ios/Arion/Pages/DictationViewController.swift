@@ -42,7 +42,7 @@ final class DictationViewController: UITableViewController {
 
     @objc private func refresh() {
         sections = [
-            Section(title: nil, rows: [.languages, .target, .model], footer: L10n.settingsTranslateFooter),
+            Section(title: nil, rows: [.languages, .target, .model], footer: nil),
             Section(title: L10n.settingsSectionKeyboard, rows: [.keyboard], footer: nil),
         ]
         tableView.reloadData()

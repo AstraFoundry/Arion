@@ -365,9 +365,7 @@ private fun FirstRun() {
     Card(padding = 20.dp) {
         Text(stringResource(R.string.overview_first_title), style = Sunbeam.type.title, color = c.foreground)
         Text(stringResource(R.string.overview_first_prompt), style = Sunbeam.type.title, color = c.mutedForeground)
-        Spacer(Modifier.height(16.dp))
-        Text(stringResource(R.string.overview_first_body), style = Sunbeam.type.bodySmall, color = c.mutedForeground)
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(20.dp))
         PracticeField(stringResource(R.string.overview_first_hint), height = 112.dp, fill = c.background)
     }
 }
@@ -382,8 +380,7 @@ private fun VocabularyCard(terms: List<String>, edit: () -> Unit) {
         }
         Spacer(Modifier.height(10.dp))
         if (terms.isEmpty()) {
-            Text(stringResource(R.string.overview_vocabulary_empty_title), style = Sunbeam.type.bodySmall, color = c.foreground)
-            Text(stringResource(R.string.overview_vocabulary_empty), style = Sunbeam.type.bodySmall, color = c.mutedForeground)
+            Text(stringResource(R.string.overview_vocabulary_empty_title), style = Sunbeam.type.bodySmall, color = c.mutedForeground)
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 terms.takeLast(5).reversed().forEach { Text(it, style = Sunbeam.type.body, color = c.foreground, maxLines = 1) }

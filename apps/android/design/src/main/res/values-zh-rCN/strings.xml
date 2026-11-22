@@ -43,7 +43,7 @@
     <string name="android_failure_recognizer" formatted="false">这台手机没有设备端语音识别。</string>
     <string name="android_ime_label" formatted="false">Arion 语音</string>
     <string name="android_onboarding_enable_body" formatted="false">在键盘列表中打开 Arion 语音。</string>
-    <string name="android_onboarding_enable_note" formatted="false">启用任何键盘时，Android 都会显示提醒。Arion 会把你输入和说出的内容保留在这台手机上。</string>
+    <string name="android_onboarding_enable_note" formatted="false">Android 对每个键盘都会显示同样的提示。</string>
     <string name="android_onboarding_enable_open" formatted="false">打开键盘列表</string>
     <string name="android_onboarding_enable_title" formatted="false">启用键盘</string>
     <string name="android_onboarding_select_body" formatted="false">将 Arion 语音设为当前使用的键盘。</string>
@@ -98,17 +98,15 @@
     <string name="onboarding_back" formatted="false">返回</string>
     <string name="onboarding_continue" formatted="false">继续</string>
     <string name="onboarding_finish" formatted="false">完成</string>
-    <string name="onboarding_keyboard_full_access_note" formatted="false">完全访问让键盘可以使用麦克风。音频不会离开这台设备。</string>
+    <string name="onboarding_keyboard_full_access_note" formatted="false">完全访问让键盘可以使用麦克风。</string>
     <string name="onboarding_keyboard_open" formatted="false">打开设置</string>
     <string name="onboarding_keyboard_step1" formatted="false">打开“键盘”</string>
     <string name="onboarding_keyboard_step2" formatted="false">打开 Arion</string>
     <string name="onboarding_keyboard_step3" formatted="false">打开“允许完全访问”</string>
     <string name="onboarding_keyboard_title" formatted="false">添加键盘</string>
     <string name="onboarding_microphone_allow" formatted="false">允许</string>
-    <string name="onboarding_microphone_body" formatted="false">Arion 只在你听写时收音。</string>
     <string name="onboarding_microphone_denied" formatted="false">Arion 的麦克风权限已关闭，请在“设置”中打开。</string>
     <string name="onboarding_microphone_title" formatted="false">允许使用麦克风</string>
-    <string name="onboarding_polish_body" formatted="false">去掉语气词，只保留你想说的。之后可在设置中更改。</string>
     <string name="onboarding_polish_title" formatted="false">润色你说的话</string>
     <string name="onboarding_progress">第 %1$s 步，共 %2$s 步</string>
     <string name="onboarding_skip" formatted="false">以后再说</string>
@@ -117,11 +115,10 @@
     <string name="onboarding_try_body_android" formatted="false">点按输入框，再点按 Arion 键盘上的麦克风，然后说话。</string>
     <string name="onboarding_try_placeholder" formatted="false">你说的话会出现在这里</string>
     <string name="onboarding_try_title" formatted="false">试一试</string>
-    <string name="onboarding_welcome_body" formatted="false">Arion 在任何应用里把语音变成干净的文字。语音识别在这台设备上完成。</string>
+    <string name="onboarding_welcome_body" formatted="false">Arion 在任何应用里把语音变成干净的文字。</string>
     <string name="onboarding_welcome_title" formatted="false">开口，就成文。</string>
     <string name="overview_activity" formatted="false">每日字数</string>
     <string name="overview_day_words">%1$s：%2$s 字</string>
-    <string name="overview_first_body" formatted="false">开始听写后，说话时长、字数和润色场景会汇总在这里。</string>
     <string name="overview_first_hint" formatted="false">在任意应用中切换到 Arion 键盘，点按麦克风</string>
     <string name="overview_first_prompt" formatted="false">说出第一句话吧。</string>
     <string name="overview_first_title" formatted="false">还没有听写记录。</string>
@@ -138,15 +135,11 @@
     <string name="overview_unpolished" formatted="false">未润色</string>
     <string name="overview_vocabulary" formatted="false">词汇</string>
     <string name="overview_vocabulary_edit" formatted="false">管理</string>
-    <string name="overview_vocabulary_empty" formatted="false">添加常用人名或术语，按你的习惯书写。</string>
     <string name="overview_vocabulary_empty_title" formatted="false">还没有词条。</string>
     <string name="overview_words" formatted="false">听写字数</string>
     <string name="polish_cloud" formatted="false">云端</string>
-    <string name="polish_cloud_detail" formatted="false">使用你自己的 API 密钥</string>
     <string name="polish_device" formatted="false">本机</string>
-    <string name="polish_device_detail" formatted="false">在本机自动清理语气词、重复和口头改口</string>
     <string name="polish_off" formatted="false">不润色</string>
-    <string name="polish_off_detail" formatted="false">按识别结果原样输入</string>
     <string name="polish_title" formatted="false">润色</string>
     <string name="return_continue" formatted="false">继续</string>
     <string name="return_default" formatted="false">换行</string>
@@ -167,14 +160,13 @@
     <string name="settings_history_copy" formatted="false">复制</string>
     <string name="settings_history_delete" formatted="false">删除</string>
     <string name="settings_history_empty" formatted="false">暂无记录</string>
-    <string name="settings_history_footer" formatted="false">在这台设备上保留最近 100 条听写。关闭后会清除。</string>
+    <string name="settings_history_footer" formatted="false">关闭后会清除已保留的内容。</string>
     <string name="settings_history_keep" formatted="false">保留历史</string>
     <string name="settings_history_original" formatted="false">原文</string>
     <string name="settings_keyboard_ready" formatted="false">已就绪</string>
     <string name="settings_keyboard_set_up" formatted="false">设置</string>
     <string name="settings_keyboard_setup" formatted="false">键盘设置</string>
     <string name="settings_languages" formatted="false">语言</string>
-    <string name="settings_languages_footer" formatted="false">选择多种语言时，点按语言键切换。</string>
     <string name="settings_model" formatted="false">语音模型</string>
     <string name="settings_model_download" formatted="false">下载</string>
     <string name="settings_model_downloading" formatted="false">正在下载</string>
@@ -189,12 +181,10 @@
     <string name="settings_section_dictation" formatted="false">听写</string>
     <string name="settings_section_keyboard" formatted="false">键盘</string>
     <string name="settings_section_memory" formatted="false">记忆</string>
-    <string name="settings_translate_footer" formatted="false">听写时点按翻译键，插入译文。</string>
     <string name="settings_translate_into" formatted="false">翻译成</string>
     <string name="settings_version" formatted="false">版本</string>
     <string name="settings_vocabulary" formatted="false">词汇</string>
     <string name="settings_vocabulary_add" formatted="false">添加词汇</string>
-    <string name="settings_vocabulary_footer" formatted="false">添加的人名和术语会被识别，并按原样保留。</string>
     <string name="tab_account" formatted="false">账号</string>
     <string name="tab_dictation" formatted="false">听写</string>
     <string name="tab_overview" formatted="false">概览</string>

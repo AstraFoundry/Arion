@@ -25,14 +25,15 @@ enum PolishChoice: CaseIterable {
         }
     }
 
-    /// The option's detail; for this device, why it cannot run when it can't.
-    var detail: String {
+    /// What only this option needs said: why this device cannot polish, or
+    /// the cloud model in use. Nothing otherwise.
+    var detail: String? {
         switch self {
-        case .off: L10n.polishOffDetail
-        case .cloud: Self.cloudSummary ?? L10n.polishCloudDetail
+        case .off: nil
+        case .cloud: Self.cloudSummary
         case .device:
             switch OnDeviceModel.availability {
-            case .available: L10n.polishDeviceDetail
+            case .available: nil
             case .turnedOff: L10n.settingsPolishTurnedOff
             case .unsupportedDevice: L10n.settingsPolishUnsupported
             case .preparing: L10n.settingsPolishPreparing
@@ -91,10 +92,11 @@ final class RadioRow: UIControl {
     private let title = UILabel(style: .body)
     private let detail = UILabel(style: .caption, color: Palette.mutedForeground)
 
-    init(title text: String, detail note: String) {
+    init(title text: String, detail note: String?) {
         super.init(frame: .zero)
         title.text = text
         detail.text = note
+        detail.isHidden = note == nil
         let labels = UIStackView(arrangedSubviews: [title, detail])
         labels.axis = .vertical
         labels.spacing = 2

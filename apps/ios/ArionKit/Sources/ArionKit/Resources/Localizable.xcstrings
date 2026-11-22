@@ -721,13 +721,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Android shows a notice for every keyboard you turn on. Arion keeps what you type and say on this phone."
+            "value": "Android shows the same notice for every keyboard."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "启用任何键盘时，Android 都会显示提醒。Arion 会把你输入和说出的内容保留在这台手机上。"
+            "value": "Android 对每个键盘都会显示同样的提示。"
           }
         }
       }
@@ -1658,13 +1658,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Full Access lets the keyboard use the microphone. Audio never leaves this device."
+            "value": "Full Access lets the keyboard use the microphone."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "完全访问让键盘可以使用麦克风。音频不会离开这台设备。"
+            "value": "完全访问让键盘可以使用麦克风。"
           }
         }
       }
@@ -1771,23 +1771,6 @@
         }
       }
     },
-    "onboarding.microphone.body": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Arion listens only while you dictate."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Arion 只在你听写时收音。"
-          }
-        }
-      }
-    },
     "onboarding.microphone.denied": {
       "extractionState": "manual",
       "localizations": {
@@ -1818,23 +1801,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "允许使用麦克风"
-          }
-        }
-      }
-    },
-    "onboarding.polish.body": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Remove fillers and keep only what you meant. You can change this later in Settings."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "去掉语气词，只保留你想说的。之后可在设置中更改。"
           }
         }
       }
@@ -1981,13 +1947,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Arion turns your voice into clean text in any app. Speech is recognized on this device."
+            "value": "Arion turns your voice into clean text in any app."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Arion 在任何应用里把语音变成干净的文字。语音识别在这台设备上完成。"
+            "value": "Arion 在任何应用里把语音变成干净的文字。"
           }
         }
       }
@@ -2039,23 +2005,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@：%2$@ 字"
-          }
-        }
-      }
-    },
-    "overview.first.body": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Speaking time, words and polishing scenes add up here as you dictate."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "开始听写后，说话时长、字数和润色场景会汇总在这里。"
           }
         }
       }
@@ -2332,23 +2281,6 @@
         }
       }
     },
-    "overview.vocabularyEmpty": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add names and terms Arion should spell your way."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "添加常用人名或术语，按你的习惯书写。"
-          }
-        }
-      }
-    },
     "overview.vocabularyEmptyTitle": {
       "extractionState": "manual",
       "localizations": {
@@ -2400,23 +2332,6 @@
         }
       }
     },
-    "polish.cloudDetail": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your own API key"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "使用你自己的 API 密钥"
-          }
-        }
-      }
-    },
     "polish.device": {
       "extractionState": "manual",
       "localizations": {
@@ -2434,23 +2349,6 @@
         }
       }
     },
-    "polish.deviceDetail": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cleans up fillers, repeats and self-corrections on this device"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "在本机自动清理语气词、重复和口头改口"
-          }
-        }
-      }
-    },
     "polish.off": {
       "extractionState": "manual",
       "localizations": {
@@ -2464,23 +2362,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "不润色"
-          }
-        }
-      }
-    },
-    "polish.offDetail": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Insert the text as recognized"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "按识别结果原样输入"
           }
         }
       }
@@ -2831,13 +2712,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keeps your last 100 dictations on this device. Turning it off erases them."
+            "value": "Turning it off erases what is kept."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "在这台设备上保留最近 100 条听写。关闭后会清除。"
+            "value": "关闭后会清除已保留的内容。"
           }
         }
       }
@@ -2940,23 +2821,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "语言"
-          }
-        }
-      }
-    },
-    "settings.languages.footer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "With more than one, tap the language key to switch."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "选择多种语言时，点按语言键切换。"
           }
         }
       }
@@ -3199,23 +3063,6 @@
         }
       }
     },
-    "settings.translate.footer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "While dictating, tap the translate key to insert a translation instead."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "听写时点按翻译键，插入译文。"
-          }
-        }
-      }
-    },
     "settings.translateInto": {
       "extractionState": "manual",
       "localizations": {
@@ -3280,23 +3127,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "添加词汇"
-          }
-        }
-      }
-    },
-    "settings.vocabulary.footer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Names and terms you add are recognized and kept as written."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "添加的人名和术语会被识别，并按原样保留。"
           }
         }
       }

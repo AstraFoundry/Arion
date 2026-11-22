@@ -413,11 +413,7 @@ final class FirstRunCard: Card {
         prompt.text = L10n.overviewFirstPrompt
         stack.addArrangedSubview(title)
         stack.addArrangedSubview(prompt)
-        stack.setCustomSpacing(16, after: prompt)
-        let body = UILabel(style: .bodySmall, color: Palette.mutedForeground)
-        body.text = L10n.overviewFirstBody
-        stack.addArrangedSubview(body)
-        stack.setCustomSpacing(16, after: body)
+        stack.setCustomSpacing(20, after: prompt)
         let field = PracticeField(placeholder: L10n.overviewFirstHint)
         field.backgroundColor = Palette.background
         field.heightAnchor.constraint(equalToConstant: 112).isActive = true
@@ -439,13 +435,9 @@ final class VocabularyCard: Card {
         button.setContentHuggingPriority(.required, for: .horizontal)
         header(L10n.overviewVocabulary, trailing: button)
         if terms.isEmpty {
-            let empty = UILabel(style: .bodySmall)
+            let empty = UILabel(style: .bodySmall, color: Palette.mutedForeground)
             empty.text = L10n.overviewVocabularyEmptyTitle
-            let detail = UILabel(style: .bodySmall, color: Palette.mutedForeground)
-            detail.text = L10n.overviewVocabularyEmpty
             stack.addArrangedSubview(empty)
-            stack.setCustomSpacing(2, after: empty)
-            stack.addArrangedSubview(detail)
             return
         }
         for term in terms.suffix(5).reversed() {

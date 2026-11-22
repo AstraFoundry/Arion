@@ -43,7 +43,7 @@
     <string name="android_failure_recognizer" formatted="false">This phone has no on-device speech recognizer.</string>
     <string name="android_ime_label" formatted="false">Arion Voice</string>
     <string name="android_onboarding_enable_body" formatted="false">Turn on Arion Voice in the list of keyboards.</string>
-    <string name="android_onboarding_enable_note" formatted="false">Android shows a notice for every keyboard you turn on. Arion keeps what you type and say on this phone.</string>
+    <string name="android_onboarding_enable_note" formatted="false">Android shows the same notice for every keyboard.</string>
     <string name="android_onboarding_enable_open" formatted="false">Open keyboard list</string>
     <string name="android_onboarding_enable_title" formatted="false">Turn on the keyboard</string>
     <string name="android_onboarding_select_body" formatted="false">Choose Arion Voice as the keyboard you’re using.</string>
@@ -98,17 +98,15 @@
     <string name="onboarding_back" formatted="false">Back</string>
     <string name="onboarding_continue" formatted="false">Continue</string>
     <string name="onboarding_finish" formatted="false">Done</string>
-    <string name="onboarding_keyboard_full_access_note" formatted="false">Full Access lets the keyboard use the microphone. Audio never leaves this device.</string>
+    <string name="onboarding_keyboard_full_access_note" formatted="false">Full Access lets the keyboard use the microphone.</string>
     <string name="onboarding_keyboard_open" formatted="false">Open Settings</string>
     <string name="onboarding_keyboard_step1" formatted="false">Open Keyboards</string>
     <string name="onboarding_keyboard_step2" formatted="false">Turn on Arion</string>
     <string name="onboarding_keyboard_step3" formatted="false">Turn on Allow Full Access</string>
     <string name="onboarding_keyboard_title" formatted="false">Add the keyboard</string>
     <string name="onboarding_microphone_allow" formatted="false">Allow</string>
-    <string name="onboarding_microphone_body" formatted="false">Arion listens only while you dictate.</string>
     <string name="onboarding_microphone_denied" formatted="false">The microphone is off for Arion. Turn it on in Settings.</string>
     <string name="onboarding_microphone_title" formatted="false">Allow the microphone</string>
-    <string name="onboarding_polish_body" formatted="false">Remove fillers and keep only what you meant. You can change this later in Settings.</string>
     <string name="onboarding_polish_title" formatted="false">Polish what you say</string>
     <string name="onboarding_progress">Step %1$s of %2$s</string>
     <string name="onboarding_skip" formatted="false">Not now</string>
@@ -117,11 +115,10 @@
     <string name="onboarding_try_body_android" formatted="false">Tap the field, then the microphone on the Arion keyboard, and speak.</string>
     <string name="onboarding_try_placeholder" formatted="false">Your words appear here</string>
     <string name="onboarding_try_title" formatted="false">Try it</string>
-    <string name="onboarding_welcome_body" formatted="false">Arion turns your voice into clean text in any app. Speech is recognized on this device.</string>
+    <string name="onboarding_welcome_body" formatted="false">Arion turns your voice into clean text in any app.</string>
     <string name="onboarding_welcome_title" formatted="false">Speak, and it’s written.</string>
     <string name="overview_activity" formatted="false">Daily words</string>
     <string name="overview_day_words">%1$s: %2$s words</string>
-    <string name="overview_first_body" formatted="false">Speaking time, words and polishing scenes add up here as you dictate.</string>
     <string name="overview_first_hint" formatted="false">Switch to Arion in any app and tap the microphone</string>
     <string name="overview_first_prompt" formatted="false">Say your first sentence.</string>
     <string name="overview_first_title" formatted="false">No dictations yet.</string>
@@ -138,15 +135,11 @@
     <string name="overview_unpolished" formatted="false">Not polished</string>
     <string name="overview_vocabulary" formatted="false">Vocabulary</string>
     <string name="overview_vocabulary_edit" formatted="false">Edit</string>
-    <string name="overview_vocabulary_empty" formatted="false">Add names and terms Arion should spell your way.</string>
     <string name="overview_vocabulary_empty_title" formatted="false">No terms yet.</string>
     <string name="overview_words" formatted="false">Words dictated</string>
     <string name="polish_cloud" formatted="false">Cloud</string>
-    <string name="polish_cloud_detail" formatted="false">Your own API key</string>
     <string name="polish_device" formatted="false">This device</string>
-    <string name="polish_device_detail" formatted="false">Cleans up fillers, repeats and self-corrections on this device</string>
     <string name="polish_off" formatted="false">Off</string>
-    <string name="polish_off_detail" formatted="false">Insert the text as recognized</string>
     <string name="polish_title" formatted="false">Polish</string>
     <string name="return_continue" formatted="false">continue</string>
     <string name="return_default" formatted="false">return</string>
@@ -167,14 +160,13 @@
     <string name="settings_history_copy" formatted="false">Copy</string>
     <string name="settings_history_delete" formatted="false">Delete</string>
     <string name="settings_history_empty" formatted="false">Nothing kept yet</string>
-    <string name="settings_history_footer" formatted="false">Keeps your last 100 dictations on this device. Turning it off erases them.</string>
+    <string name="settings_history_footer" formatted="false">Turning it off erases what is kept.</string>
     <string name="settings_history_keep" formatted="false">Keep history</string>
     <string name="settings_history_original" formatted="false">Original</string>
     <string name="settings_keyboard_ready" formatted="false">Ready</string>
     <string name="settings_keyboard_set_up" formatted="false">Set up</string>
     <string name="settings_keyboard_setup" formatted="false">Keyboard setup</string>
     <string name="settings_languages" formatted="false">Languages</string>
-    <string name="settings_languages_footer" formatted="false">With more than one, tap the language key to switch.</string>
     <string name="settings_model" formatted="false">Speech model</string>
     <string name="settings_model_download" formatted="false">Download</string>
     <string name="settings_model_downloading" formatted="false">Downloading</string>
@@ -189,12 +181,10 @@
     <string name="settings_section_dictation" formatted="false">Dictation</string>
     <string name="settings_section_keyboard" formatted="false">Keyboard</string>
     <string name="settings_section_memory" formatted="false">Memory</string>
-    <string name="settings_translate_footer" formatted="false">While dictating, tap the translate key to insert a translation instead.</string>
     <string name="settings_translate_into" formatted="false">Translate into</string>
     <string name="settings_version" formatted="false">Version</string>
     <string name="settings_vocabulary" formatted="false">Vocabulary</string>
     <string name="settings_vocabulary_add" formatted="false">Add a word</string>
-    <string name="settings_vocabulary_footer" formatted="false">Names and terms you add are recognized and kept as written.</string>
     <string name="tab_account" formatted="false">Account</string>
     <string name="tab_dictation" formatted="false">Dictation</string>
     <string name="tab_overview" formatted="false">Overview</string>

@@ -108,10 +108,8 @@ public enum L10n {
     public static var onboardingKeyboardStep3: String { lookup("onboarding.keyboard.step3") }
     public static var onboardingKeyboardTitle: String { lookup("onboarding.keyboard.title") }
     public static var onboardingMicrophoneAllow: String { lookup("onboarding.microphone.allow") }
-    public static var onboardingMicrophoneBody: String { lookup("onboarding.microphone.body") }
     public static var onboardingMicrophoneDenied: String { lookup("onboarding.microphone.denied") }
     public static var onboardingMicrophoneTitle: String { lookup("onboarding.microphone.title") }
-    public static var onboardingPolishBody: String { lookup("onboarding.polish.body") }
     public static var onboardingPolishTitle: String { lookup("onboarding.polish.title") }
     public static func onboardingProgress(current: String, total: String) -> String { format("onboarding.progress", current, total) }
     public static var onboardingSkip: String { lookup("onboarding.skip") }
@@ -124,7 +122,6 @@ public enum L10n {
     public static var onboardingWelcomeTitle: String { lookup("onboarding.welcome.title") }
     public static var overviewActivity: String { lookup("overview.activity") }
     public static func overviewDayWords(date: String, words: String) -> String { format("overview.dayWords", date, words) }
-    public static var overviewFirstBody: String { lookup("overview.first.body") }
     public static var overviewFirstHint: String { lookup("overview.first.hint") }
     public static var overviewFirstPrompt: String { lookup("overview.first.prompt") }
     public static var overviewFirstTitle: String { lookup("overview.first.title") }
@@ -141,15 +138,11 @@ public enum L10n {
     public static var overviewUnpolished: String { lookup("overview.unpolished") }
     public static var overviewVocabulary: String { lookup("overview.vocabulary") }
     public static var overviewVocabularyEdit: String { lookup("overview.vocabularyEdit") }
-    public static var overviewVocabularyEmpty: String { lookup("overview.vocabularyEmpty") }
     public static var overviewVocabularyEmptyTitle: String { lookup("overview.vocabularyEmptyTitle") }
     public static var overviewWords: String { lookup("overview.words") }
     public static var polishCloud: String { lookup("polish.cloud") }
-    public static var polishCloudDetail: String { lookup("polish.cloudDetail") }
     public static var polishDevice: String { lookup("polish.device") }
-    public static var polishDeviceDetail: String { lookup("polish.deviceDetail") }
     public static var polishOff: String { lookup("polish.off") }
-    public static var polishOffDetail: String { lookup("polish.offDetail") }
     public static var polishTitle: String { lookup("polish.title") }
     public static var returnContinue: String { lookup("return.continue") }
     public static var returnDefault: String { lookup("return.default") }
@@ -177,7 +170,6 @@ public enum L10n {
     public static var settingsKeyboardSetUp: String { lookup("settings.keyboard.setUp") }
     public static var settingsKeyboardSetup: String { lookup("settings.keyboard.setup") }
     public static var settingsLanguages: String { lookup("settings.languages") }
-    public static var settingsLanguagesFooter: String { lookup("settings.languages.footer") }
     public static var settingsModel: String { lookup("settings.model") }
     public static var settingsModelDownload: String { lookup("settings.model.download") }
     public static var settingsModelDownloading: String { lookup("settings.model.downloading") }
@@ -192,12 +184,10 @@ public enum L10n {
     public static var settingsSectionDictation: String { lookup("settings.section.dictation") }
     public static var settingsSectionKeyboard: String { lookup("settings.section.keyboard") }
     public static var settingsSectionMemory: String { lookup("settings.section.memory") }
-    public static var settingsTranslateFooter: String { lookup("settings.translate.footer") }
     public static var settingsTranslateInto: String { lookup("settings.translateInto") }
     public static var settingsVersion: String { lookup("settings.version") }
     public static var settingsVocabulary: String { lookup("settings.vocabulary") }
     public static var settingsVocabularyAdd: String { lookup("settings.vocabulary.add") }
-    public static var settingsVocabularyFooter: String { lookup("settings.vocabulary.footer") }
     public static var tabAccount: String { lookup("tab.account") }
     public static var tabDictation: String { lookup("tab.dictation") }
     public static var tabOverview: String { lookup("tab.overview") }

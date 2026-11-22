@@ -141,7 +141,7 @@ final class OnboardingViewController: UIViewController {
             }
         case .microphone:
             addTitle(L10n.onboardingMicrophoneTitle)
-            addBody(Permissions.microphoneDenied ? L10n.onboardingMicrophoneDenied : L10n.onboardingMicrophoneBody)
+            if Permissions.microphoneDenied { addBody(L10n.onboardingMicrophoneDenied) }
             primary.title = Permissions.microphoneDenied ? L10n.onboardingKeyboardOpen : L10n.onboardingMicrophoneAllow
         case .keyboard:
             addTitle(L10n.onboardingKeyboardTitle)
@@ -155,7 +155,6 @@ final class OnboardingViewController: UIViewController {
             showsSecondary = !openedSettings
         case .polish:
             addTitle(L10n.onboardingPolishTitle)
-            addBody(L10n.onboardingPolishBody)
             content.setCustomSpacing(24, after: content.arrangedSubviews.last!)
             let card = PolishChoiceCard(selected: polish)
             card.onChoose = { [weak self] in self?.polish = $0 }
