@@ -145,14 +145,15 @@ final class OnboardingViewController: UIViewController {
             primary.title = Permissions.microphoneDenied ? L10n.onboardingKeyboardOpen : L10n.onboardingMicrophoneAllow
         case .keyboard:
             addTitle(L10n.onboardingKeyboardTitle)
-            for (index, text) in [L10n.onboardingKeyboardStep1, L10n.onboardingKeyboardStep2, L10n.onboardingKeyboardStep3].enumerated() {
-                content.addArrangedSubview(StepRow(number: index + 1, text: text))
-            }
-            content.setCustomSpacing(20, after: content.arrangedSubviews.last!)
-            addBody(L10n.onboardingKeyboardFullAccessNote, muted: true, style: .bodySmall)
+            // The steps are on Arion's page in Settings (Settings.bundle),
+            // where the user follows them; this step only sends them there.
+            addBody(L10n.onboardingKeyboardBody)
+            content.setCustomSpacing(28, after: content.arrangedSubviews.last!)
+            content.addArrangedSubview(SettingsPreview())
+            // Back from Settings, continuing comes first; Settings stays one tap away.
             primary.title = openedSettings ? L10n.onboardingContinue : L10n.onboardingKeyboardOpen
-            secondary.title = L10n.onboardingContinue
-            showsSecondary = !openedSettings
+            secondary.title = openedSettings ? L10n.onboardingKeyboardOpen : L10n.onboardingContinue
+            showsSecondary = true
         case .polish:
             addTitle(L10n.onboardingPolishTitle)
             content.setCustomSpacing(24, after: content.arrangedSubviews.last!)
@@ -283,6 +284,7 @@ final class OnboardingViewController: UIViewController {
     @objc private func secondaryTapped() {
         switch step {
         case .welcome: move(to: .microphone)
+        case .keyboard where openedSettings: openSettings()
         default: move(to: .polish)
         }
     }
@@ -384,39 +386,6 @@ final class AppMark: UIView {
             mark.heightAnchor.constraint(equalToConstant: 34),
         ])
         isAccessibilityElement = false
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
-}
-
-/// A numbered instruction.
-final class StepRow: UIView {
-    init(number: Int, text: String) {
-        super.init(frame: .zero)
-        let badge = UILabel(style: .label, color: Palette.foreground)
-        badge.text = String(number)
-        badge.textAlignment = .center
-        badge.backgroundColor = Palette.secondary
-        badge.layer.cornerRadius = 14
-        badge.layer.cornerCurve = .continuous
-        badge.clipsToBounds = true
-        let label = UILabel(style: .body)
-        label.text = text
-        addSubview(badge)
-        addSubview(label)
-        NSLayoutConstraint.activate([
-            badge.widthAnchor.constraint(equalToConstant: 28),
-            badge.heightAnchor.constraint(equalToConstant: 28),
-            badge.leadingAnchor.constraint(equalTo: leadingAnchor),
-            badge.centerYAnchor.constraint(equalTo: label.centerYAnchor),
-            label.leadingAnchor.constraint(equalTo: badge.trailingAnchor, constant: 14),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor),
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 6),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6),
-        ])
-        isAccessibilityElement = true
-        accessibilityLabel = "\(number). \(text)"
     }
 
     @available(*, unavailable)

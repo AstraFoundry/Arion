@@ -1652,19 +1652,19 @@
         }
       }
     },
-    "onboarding.keyboard.fullAccessNote": {
+    "onboarding.keyboard.body": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Full Access lets the keyboard use the microphone."
+            "value": "The steps are on Arion’s page in Settings."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "完全访问让键盘可以使用麦克风。"
+            "value": "步骤就在「设置」里的 Arion 页面上。"
           }
         }
       }
@@ -1686,53 +1686,36 @@
         }
       }
     },
-    "onboarding.keyboard.step1": {
+    "onboarding.keyboard.previewFullAccess": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open Keyboards"
+            "value": "Allow Full Access"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "打开“键盘”"
+            "value": "允许完全访问"
           }
         }
       }
     },
-    "onboarding.keyboard.step2": {
+    "onboarding.keyboard.previewKeyboards": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Turn on Arion"
+            "value": "Keyboards"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "打开 Arion"
-          }
-        }
-      }
-    },
-    "onboarding.keyboard.step3": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Turn on Allow Full Access"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "打开“允许完全访问”"
+            "value": "键盘"
           }
         }
       }

@@ -101,11 +101,10 @@ public enum L10n {
     public static var onboardingBack: String { lookup("onboarding.back") }
     public static var onboardingContinue: String { lookup("onboarding.continue") }
     public static var onboardingFinish: String { lookup("onboarding.finish") }
-    public static var onboardingKeyboardFullAccessNote: String { lookup("onboarding.keyboard.fullAccessNote") }
+    public static var onboardingKeyboardBody: String { lookup("onboarding.keyboard.body") }
     public static var onboardingKeyboardOpen: String { lookup("onboarding.keyboard.open") }
-    public static var onboardingKeyboardStep1: String { lookup("onboarding.keyboard.step1") }
-    public static var onboardingKeyboardStep2: String { lookup("onboarding.keyboard.step2") }
-    public static var onboardingKeyboardStep3: String { lookup("onboarding.keyboard.step3") }
+    public static var onboardingKeyboardPreviewFullAccess: String { lookup("onboarding.keyboard.previewFullAccess") }
+    public static var onboardingKeyboardPreviewKeyboards: String { lookup("onboarding.keyboard.previewKeyboards") }
     public static var onboardingKeyboardTitle: String { lookup("onboarding.keyboard.title") }
     public static var onboardingMicrophoneAllow: String { lookup("onboarding.microphone.allow") }
     public static var onboardingMicrophoneDenied: String { lookup("onboarding.microphone.denied") }

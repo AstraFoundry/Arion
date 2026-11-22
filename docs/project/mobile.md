@@ -52,6 +52,7 @@ Both apps have five tabs, the sections of the desktop's Settings window that app
 - **Vocabulary**: the terms, with history behind the history button.
 - **Account** signs in to AstraFoundry with the mobile public clients `arion-ios` and `arion-android` and the redirect `arion://auth/callback` (`ASWebAuthenticationSession`; the Android browser and `AuthCallbackActivity`). Signed in, it shows the profile, the usage-sharing switch, the account portal and Sign out; the app version follows. The refresh token is in the keychain, or encrypted with an Android Keystore key; consent and the daily usage report follow the desktop ([account sign-in](account-signin.md)).
 - **Cloud model** lists the API-key providers with their marks; connecting lists models before saving and starts on the fast tier, as the desktop ([cloud polishing](cloud-polishing.md)). iOS keys are in a keychain group the keyboard shares.
+- **The Settings app page (iOS).** `apps/ios/Arion/Settings.bundle` puts the setup steps on Arion's page in the Settings app, under the system's Keyboards row: turn on Arion, Allow Full Access for the microphone, and what to do when the Keyboards row is missing (close Settings from the app switcher and reopen it). Its `Root.plist` and `Root.strings` are generated from the `iosSettings.*` keys of the string catalog. Onboarding's keyboard step says where the steps are, shows the two switches turning on (`SettingsPreview`, system switches with localized labels), opens the page, and keeps it one tap away after returning ([competitor keyboard setup](../research/competitor-keyboard-setup.md)).
 - **Onboarding** shows its progress and a back control: welcome with sign-in, the terms box (checked) and the usage box (unchecked), or Continue locally; microphone; keyboard (Android: enable, then select); polishing, which opens the provider pages when Cloud has no model; practice.
 
 ## Interaction
@@ -85,6 +86,7 @@ Not verified:
 - The iOS keyboard inside a real editor. The simulator's Settings did not list the extension under Add New Keyboard during automation; enabling it on a device or through the Settings UI by hand remains open.
 - WebKit capture on a device. Every competitor studied switches to its app to record instead ([mobile voice keyboards](../research/mobile-voice-keyboards.md)), so this is the first device check.
 - Foundation Models and Gemini Nano polishing, whether ML Kit refuses inference from an input method, and Chinese polishing through the Prompt API, which publishes no language list (see ADR 051).
+- Arion's page in the Settings app: the simulator's Settings did not list the app during automation, so the Settings bundle is verified as packaged and valid (`plutil`), not as displayed.
 - Sign-in, consent and usage reporting against astrafoundry.si: `arion-ios` and `arion-android` are not registered with the `arion://auth/callback` redirect yet. Cloud polishing against real providers (no keys were used), and usage recorded by the keyboard from a real dictation.
 - Hardware: no physical iPhone or Android phone, and no vphone guest (vphone Launchpad is installed; host setup is pending the owner).
 
