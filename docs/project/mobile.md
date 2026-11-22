@@ -69,7 +69,8 @@ Not verified:
 
 - Speech end to end with a live microphone on either platform. The headless emulator had no host microphone, and the simulator test ran without the keyboard enabled.
 - The iOS keyboard inside a real editor. The simulator's Settings did not list the extension under Add New Keyboard during automation; enabling it on a device or through the Settings UI by hand remains open.
-- WebKit capture on a device, Foundation Models and Gemini Nano polishing, and whether ML Kit refuses inference from an input method (see ADR 051).
+- WebKit capture on a device. Every competitor studied switches to its app to record instead ([mobile voice keyboards](../research/mobile-voice-keyboards.md)), so this is the first device check.
+- Foundation Models and Gemini Nano polishing, whether ML Kit refuses inference from an input method, and Chinese polishing through the Prompt API, which publishes no language list (see ADR 051).
 - Hardware: no physical iPhone or Android phone, and no vphone guest (vphone Launchpad is installed; host setup is pending the owner).
 
 ## Not on mobile

@@ -25,6 +25,7 @@ Arion's product scope kept mobile to portable contracts. Users dictate on phones
 - The keyboard UI and the domain rules exist twice, in Swift and Kotlin. The rules ported are small (spacing, delivery validation, request building) and tested on both sides against the same recipe file; the speech-cleanup spans, contextual spelling selection, scene detection from app identity and edit learning are not ported.
 - Recognition and polishing quality depend on the OS version, the device and its downloaded models, and cannot be pinned or evaluated like the desktop's bundles. Polishing is available only where Apple Intelligence or Gemini Nano is.
 - ML Kit's GenAI APIs serve only the foreground app. An input method serves another app in front, so Android polishing may be refused on every device; the keyboard then inserts the rule-corrected text and says so. This is an open device verification.
+- Every iOS voice keyboard studied (Typeless, Wispr Flow, Willow, Superwhisper) opens its containing app to record, and two say Apple requires it ([mobile voice keyboards](../research/mobile-voice-keyboards.md)). If WebKit capture fails on current devices, the fallback is that same app switch; it has not been built.
 - The hidden web view adds WebKit's capture path to the iOS keyboard's failure modes (content-process termination, audio-session interruption); each ends the dictation with an explicit failure.
 - Account, sync, cloud polishing, clipboard history, selection actions and the desktop's typing keyboards are not on mobile.
 
@@ -40,3 +41,4 @@ Arion's product scope kept mobile to portable contracts. Users dictate on phones
 - [012 Mobile input](../../specs/012-mobile-input.md)
 - [Mobile apps](../project/mobile.md)
 - [Typeless iOS keyboard evidence](../research/typeless-ios-keyboard.md)
+- [Mobile voice keyboards](../research/mobile-voice-keyboards.md)

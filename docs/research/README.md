@@ -11,6 +11,7 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Typeless](typeless.md) — installed Electron artifact and audio/context/delivery surfaces.
 - [Doubao](doubao.md) — installed native IMK artifact, online/offline ASR and composition surfaces.
 - [Typeless iOS keyboard](typeless-ios-keyboard.md) — App Store IPA keyboard declaration, React Native keyboard bundle, in-app recording signals and tap/hold gesture strings.
+- [Mobile voice keyboards](mobile-voice-keyboards.md) — Wispr Flow, Willow and Superwhisper iOS keyboards, Android recognizer and ML Kit foreground limits, and competitor Android voice input.
 - [Doubao iOS](doubao-ios.md) — App Store IPA voice/keyboard split, permission and account synchronization declarations, native typing engine and FairPlay evidence limits.
 - [UX reference](ux-reference.md) — Typeless and Doubao IME onboarding, menu bar presence, settings structure, floating dictation surface, model management and insertion observations, kept apart from Arion design choices.
 - [Chatterfly](chatterfly.md) — installer payload and native scenario-aware post-processing paths.
