@@ -26,7 +26,6 @@
     <string name="account_privacy" formatted="false">Privacy Policy</string>
     <string name="account_restoring" formatted="false">Restoring your account automatically.</string>
     <string name="account_sign_in" formatted="false">Sign in</string>
-    <string name="account_sign_in_detail" formatted="false">Optional. Dictation works without an account.</string>
     <string name="account_sign_in_title" formatted="false">Sign in to AstraFoundry</string>
     <string name="account_sign_out" formatted="false">Sign out</string>
     <string name="account_signed_in" formatted="false">Signed in</string>
@@ -37,7 +36,6 @@
     <string name="account_usage_agree" formatted="false">Send usage data to help improve Arion</string>
     <string name="account_usage_data" formatted="false">usage data</string>
     <string name="account_usage_share" formatted="false">Share data to join the product improvement program</string>
-    <string name="account_usage_share_detail" formatted="false">Daily dictation count, speaking time and words. Never audio or text.</string>
     <string name="account_waiting" formatted="false">Finish signing in in your browser, then return to Arion.</string>
     <string name="android_failure_busy" formatted="false">The recognizer is busy. Try again.</string>
     <string name="android_failure_microphone" formatted="false">Open Arion to allow the microphone.</string>
@@ -55,7 +53,7 @@
     <string name="cloud_anthropic_compatible" formatted="false">Anthropic compatible</string>
     <string name="cloud_api_keys" formatted="false">API keys</string>
     <string name="cloud_base_url" formatted="false">Base URL</string>
-    <string name="cloud_base_urlplaceholder" formatted="false">https://example.com/v1</string>
+    <string name="cloud_base_url_placeholder" formatted="false">https://example.com/v1</string>
     <string name="cloud_connect" formatted="false">Connect</string>
     <string name="cloud_disconnect" formatted="false">Disconnect</string>
     <string name="cloud_fail_address" formatted="false">Enter an http or https address.</string>
@@ -87,14 +85,10 @@
     <string name="keyboard_delete" formatted="false">Delete</string>
     <string name="keyboard_dictate" formatted="false">Dictate</string>
     <string name="keyboard_done" formatted="false">Done</string>
-    <string name="keyboard_hold_hint" formatted="false">Release to finish</string>
     <string name="keyboard_language">Dictation language: %1$s</string>
-    <string name="keyboard_listening" formatted="false">Listening</string>
     <string name="keyboard_next_keyboard" formatted="false">Next keyboard</string>
-    <string name="keyboard_polishing" formatted="false">Polishing</string>
     <string name="keyboard_space" formatted="false">space</string>
     <string name="keyboard_translate">Translate into %1$s</string>
-    <string name="keyboard_translating" formatted="false">Translating</string>
     <string name="language_mark_chinese" formatted="false">中</string>
     <string name="language_mark_english" formatted="false">EN</string>
     <string name="language_name_chinese" formatted="false">Chinese (Simplified)</string>
@@ -153,7 +147,6 @@
     <string name="polish_device_detail" formatted="false">Cleans up fillers, repeats and self-corrections on this device</string>
     <string name="polish_off" formatted="false">Off</string>
     <string name="polish_off_detail" formatted="false">Insert the text as recognized</string>
-    <string name="polish_runs_on" formatted="false">Runs on</string>
     <string name="polish_title" formatted="false">Polish</string>
     <string name="return_continue" formatted="false">continue</string>
     <string name="return_default" formatted="false">return</string>
@@ -190,7 +183,6 @@
     <string name="settings_polish" formatted="false">Polish</string>
     <string name="settings_polish_android_downloading" formatted="false">The on-device model is downloading.</string>
     <string name="settings_polish_android_unavailable" formatted="false">This phone has no on-device model for polishing. Text is inserted as recognized.</string>
-    <string name="settings_polish_footer" formatted="false">Fixes punctuation, slips and repeated words with the on-device model. Your meaning and voice stay.</string>
     <string name="settings_polish_preparing" formatted="false">The on-device model is getting ready.</string>
     <string name="settings_polish_turned_off" formatted="false">Turn on Apple Intelligence in Settings to polish.</string>
     <string name="settings_polish_unsupported" formatted="false">This iPhone can’t run the on-device model. Text is inserted as recognized.</string>
@@ -202,7 +194,6 @@
     <string name="settings_version" formatted="false">Version</string>
     <string name="settings_vocabulary" formatted="false">Vocabulary</string>
     <string name="settings_vocabulary_add" formatted="false">Add a word</string>
-    <string name="settings_vocabulary_empty" formatted="false">No words yet</string>
     <string name="settings_vocabulary_footer" formatted="false">Names and terms you add are recognized and kept as written.</string>
     <string name="tab_overview" formatted="false">Overview</string>
     <string name="tab_settings" formatted="false">Settings</string>

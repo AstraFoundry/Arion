@@ -1,5 +1,8 @@
 package si.astrafoundry.arion.ime
 
+import si.astrafoundry.arion.design.ArionIcon
+import si.astrafoundry.arion.design.IconView
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -22,11 +25,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Backspace
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Language
-import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -153,7 +151,7 @@ fun KeyboardPanel(state: PanelState, actions: PanelActions, labels: PanelLabels)
                 Box(Modifier.size(56.dp, 44.dp).onGloballyPositioned { leadingBounds = it.boundsInRoot() }) {
                     when {
                         listening || working -> SideKey(labels.cancel, highlighted = holdTarget == HoldTarget.Cancel, onClick = actions::leading) { ink ->
-                            Icon(Icons.Outlined.Close, null, tint = ink)
+                            IconView(ArionIcon.X, 20.dp, ink)
                         }
                         state.languageMark != null -> SideKey(state.languageLabel, onClick = actions::leading) { ink ->
                             Text(state.languageMark, style = Sunbeam.type.label, color = ink)
@@ -181,10 +179,10 @@ fun KeyboardPanel(state: PanelState, actions: PanelActions, labels: PanelLabels)
                 Box(Modifier.size(56.dp, 44.dp).onGloballyPositioned { trailingBounds = it.boundsInRoot() }) {
                     when {
                         listening -> SideKey(state.translateLabel, highlighted = holdTarget == HoldTarget.Translate, onClick = actions::translate) { ink ->
-                            Icon(Icons.Outlined.Translate, null, tint = ink)
+                            IconView(ArionIcon.Languages, 20.dp, ink)
                         }
                         !working -> RepeatKey(labels.delete, onRepeat = actions::delete) { ink ->
-                            Icon(Icons.AutoMirrored.Outlined.Backspace, null, tint = ink)
+                            IconView(ArionIcon.Delete, 20.dp, ink)
                         }
                     }
                 }
@@ -197,7 +195,7 @@ fun KeyboardPanel(state: PanelState, actions: PanelActions, labels: PanelLabels)
                     Face(FaceKind.Secondary, onClick = actions::switchKeyboard, shape = keyShape, contentDescription = labels.nextKeyboard,
                         modifier = Modifier.width(48.dp).height(44.dp).semantics { contentDescription = labels.nextKeyboard }
                             .pointerInput(Unit) { awaitEachGesture { awaitFirstDown(); val long = withTimeoutOrNull(viewConfiguration.longPressTimeoutMillis) { waitForUpOrCancellation() }; if (long == null) actions.pickKeyboard() } }) { ink ->
-                        Icon(Icons.Outlined.Language, null, tint = ink)
+                        IconView(ArionIcon.Globe, 20.dp, ink)
                     }
                 }
                 SpaceBar(labels.space, actions, Modifier.weight(1f), keyShape)

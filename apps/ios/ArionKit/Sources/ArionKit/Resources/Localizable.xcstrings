@@ -426,23 +426,6 @@
         }
       }
     },
-    "account.signInDetail": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Optional. Dictation works without an account."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "可选。不登录也能正常听写。"
-          }
-        }
-      }
-    },
     "account.signInTitle": {
       "extractionState": "manual",
       "localizations": {
@@ -609,23 +592,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "共享数据以参与产品改进计划"
-          }
-        }
-      }
-    },
-    "account.usageShareDetail": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Daily dictation count, speaking time and words. Never audio or text."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "每天的听写次数、说话时长和字数，不包括音频和文字。"
           }
         }
       }
@@ -1465,23 +1431,6 @@
       },
       "comment": "Accessibility name of the microphone button while listening."
     },
-    "keyboard.holdHint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Release to finish"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "松开完成"
-          }
-        }
-      }
-    },
     "keyboard.language": {
       "extractionState": "manual",
       "localizations": {
@@ -1499,23 +1448,6 @@
         }
       }
     },
-    "keyboard.listening": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listening"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "正在听"
-          }
-        }
-      }
-    },
     "keyboard.nextKeyboard": {
       "extractionState": "manual",
       "localizations": {
@@ -1529,23 +1461,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "切换键盘"
-          }
-        }
-      }
-    },
-    "keyboard.polishing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Polishing"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "正在润色"
           }
         }
       }
@@ -1580,23 +1495,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "翻译成%1$@"
-          }
-        }
-      }
-    },
-    "keyboard.translating": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Translating"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "正在翻译"
           }
         }
       }
@@ -2587,23 +2485,6 @@
         }
       }
     },
-    "polish.runsOn": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Runs on"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "运行于"
-          }
-        }
-      }
-    },
     "polish.title": {
       "extractionState": "manual",
       "localizations": {
@@ -3216,23 +3097,6 @@
         }
       }
     },
-    "settings.polish.footer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fixes punctuation, slips and repeated words with the on-device model. Your meaning and voice stay."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "用设备上的模型修正标点、口误和重复，保留你的意思和语气。"
-          }
-        }
-      }
-    },
     "settings.polish.preparing": {
       "extractionState": "manual",
       "localizations": {
@@ -3416,23 +3280,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "添加词汇"
-          }
-        }
-      }
-    },
-    "settings.vocabulary.empty": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No words yet"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "还没有词汇"
           }
         }
       }

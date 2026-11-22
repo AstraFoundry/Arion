@@ -29,7 +29,6 @@ public enum L10n {
     public static var accountPrivacy: String { lookup("account.privacy") }
     public static var accountRestoring: String { lookup("account.restoring") }
     public static var accountSignIn: String { lookup("account.signIn") }
-    public static var accountSignInDetail: String { lookup("account.signInDetail") }
     public static var accountSignInTitle: String { lookup("account.signInTitle") }
     public static var accountSignOut: String { lookup("account.signOut") }
     public static var accountSignedIn: String { lookup("account.signedIn") }
@@ -40,7 +39,6 @@ public enum L10n {
     public static var accountUsageAgree: String { lookup("account.usageAgree") }
     public static var accountUsageData: String { lookup("account.usageData") }
     public static var accountUsageShare: String { lookup("account.usageShare") }
-    public static var accountUsageShareDetail: String { lookup("account.usageShareDetail") }
     public static var accountWaiting: String { lookup("account.waiting") }
     public static var androidFailureBusy: String { lookup("android.failure.busy") }
     public static var androidFailureMicrophone: String { lookup("android.failure.microphone") }
@@ -90,14 +88,10 @@ public enum L10n {
     public static var keyboardDelete: String { lookup("keyboard.delete") }
     public static var keyboardDictate: String { lookup("keyboard.dictate") }
     public static var keyboardDone: String { lookup("keyboard.done") }
-    public static var keyboardHoldHint: String { lookup("keyboard.holdHint") }
     public static func keyboardLanguage(language: String) -> String { format("keyboard.language", language) }
-    public static var keyboardListening: String { lookup("keyboard.listening") }
     public static var keyboardNextKeyboard: String { lookup("keyboard.nextKeyboard") }
-    public static var keyboardPolishing: String { lookup("keyboard.polishing") }
     public static var keyboardSpace: String { lookup("keyboard.space") }
     public static func keyboardTranslate(language: String) -> String { format("keyboard.translate", language) }
-    public static var keyboardTranslating: String { lookup("keyboard.translating") }
     public static var languageMarkChinese: String { lookup("language.mark.chinese") }
     public static var languageMarkEnglish: String { lookup("language.mark.english") }
     public static var languageNameChinese: String { lookup("language.name.chinese") }
@@ -156,7 +150,6 @@ public enum L10n {
     public static var polishDeviceDetail: String { lookup("polish.deviceDetail") }
     public static var polishOff: String { lookup("polish.off") }
     public static var polishOffDetail: String { lookup("polish.offDetail") }
-    public static var polishRunsOn: String { lookup("polish.runsOn") }
     public static var polishTitle: String { lookup("polish.title") }
     public static var returnContinue: String { lookup("return.continue") }
     public static var returnDefault: String { lookup("return.default") }
@@ -193,7 +186,6 @@ public enum L10n {
     public static var settingsPolish: String { lookup("settings.polish") }
     public static var settingsPolishAndroidDownloading: String { lookup("settings.polish.androidDownloading") }
     public static var settingsPolishAndroidUnavailable: String { lookup("settings.polish.androidUnavailable") }
-    public static var settingsPolishFooter: String { lookup("settings.polish.footer") }
     public static var settingsPolishPreparing: String { lookup("settings.polish.preparing") }
     public static var settingsPolishTurnedOff: String { lookup("settings.polish.turnedOff") }
     public static var settingsPolishUnsupported: String { lookup("settings.polish.unsupported") }
@@ -205,7 +197,6 @@ public enum L10n {
     public static var settingsVersion: String { lookup("settings.version") }
     public static var settingsVocabulary: String { lookup("settings.vocabulary") }
     public static var settingsVocabularyAdd: String { lookup("settings.vocabulary.add") }
-    public static var settingsVocabularyEmpty: String { lookup("settings.vocabulary.empty") }
     public static var settingsVocabularyFooter: String { lookup("settings.vocabulary.footer") }
     public static var tabOverview: String { lookup("tab.overview") }
     public static var tabSettings: String { lookup("tab.settings") }

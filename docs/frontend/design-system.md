@@ -98,6 +98,7 @@ The iOS and Android apps use the same tokens through generated files: `apps/desk
 - Switches and checks are ink; the one yellow element on a screen is its primary action or the microphone.
 - Text uses the system typeface at Sunbeam's sizes and scales with the platform's text size; headlines use the system serif in place of Fraunces.
 - `VoiceMark` draws the app icon's bars; the microphone's bars follow the voice while listening.
+- Icons are the desktop's: Lucide, the LobeHub provider marks, and the Google and GitHub marks, generated from SVG by `pnpm mobile:generate` ([mobile icons](../../packages/mobile-icons/README.md)); no SF Symbols, Material icons or hand-drawn icons. They sit on a fixed square frame, 18 points in settings rows and 14 in Overview cards, in text ink or the muted ink.
 
 ## Primitives (`ui/shared/kit`)
 

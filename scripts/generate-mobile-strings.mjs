@@ -39,7 +39,8 @@ function positional(key, language, marker) {
     .replace(/\{([a-z][a-zA-Z0-9]*)\}/g, (_, name) => `%${order.indexOf(name) + 1}$${marker}`);
 }
 const identifier = key => key.split('.').map((part, index) => index ? part[0].toUpperCase() + part.slice(1) : part).join('');
-const androidName = key => key.replace(/\./g, '_').replace(/[A-Z]+/g, letters => `_${letters.toLowerCase()}`);
+// baseURLPlaceholder -> base_url_placeholder: an acronym ends before a capitalized word.
+const androidName = key => key.replace(/\./g, '_').replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2').replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
 
 function xcstrings() {
   const strings = {};

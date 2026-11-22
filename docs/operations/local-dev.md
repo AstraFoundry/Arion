@@ -153,7 +153,7 @@ SYNC-11 selects AstraFoundry as the standard packaged center and build-time `ARI
 
 ## Mobile apps
 
-The iOS and Android apps are described in [mobile apps](../project/mobile.md). Their tokens and copy are generated; edit `packages/mobile-strings/strings.json` or the pinned Sunbeam module, then regenerate:
+The iOS and Android apps are described in [mobile apps](../project/mobile.md). Their tokens, copy and icons are generated; edit `packages/mobile-strings/strings.json`, `packages/mobile-icons/icons.json` or the pinned Sunbeam module, then regenerate:
 
 ```bash
 pnpm mobile:generate

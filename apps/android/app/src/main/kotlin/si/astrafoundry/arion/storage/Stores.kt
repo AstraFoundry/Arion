@@ -9,16 +9,21 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.KSerializer
 import si.astrafoundry.arion.core.DictationLanguage
+import si.astrafoundry.arion.core.PolishEngine
 import si.astrafoundry.arion.core.TranslationTarget
 
 /** The user's dictation preferences. The app and the keyboard share one process. */
 class Preferences(context: Context) {
     private val store = context.getSharedPreferences("arion", Context.MODE_PRIVATE)
 
-    /** Polishing with the on-device model is on by default and never leaves the phone. */
+    /** Polishing is on by default: on the device, or with the cloud model the user connected. */
     var polishingEnabled: Boolean
         get() = store.getBoolean("polishing.enabled", true)
         set(value) = store.edit().putBoolean("polishing.enabled", value).apply()
+
+    var polishEngine: PolishEngine
+        get() = PolishEngine.entries.firstOrNull { it.id == store.getString("polishing.engine", null) } ?: PolishEngine.Device
+        set(value) = store.edit().putString("polishing.engine", value.id).apply()
 
     /** Recognition languages the language key cycles through. */
     var languages: List<String>

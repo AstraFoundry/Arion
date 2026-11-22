@@ -15,7 +15,11 @@ import si.astrafoundry.arion.core.DictationPhase
 import si.astrafoundry.arion.core.Draft
 import si.astrafoundry.arion.core.RewriteRecipe
 import si.astrafoundry.arion.core.Scene
+import si.astrafoundry.arion.cloud.CloudService
+import si.astrafoundry.arion.core.PolishEngine
+import si.astrafoundry.arion.core.RewriteRequest
 import si.astrafoundry.arion.polish.ModelAvailability
+import si.astrafoundry.arion.usage.UsageLedger
 import si.astrafoundry.arion.polish.OnDeviceModel
 import si.astrafoundry.arion.speech.OnDeviceRecognizer
 import si.astrafoundry.arion.storage.Preferences
@@ -33,6 +37,10 @@ class DictationController(
 ) {
     private val recognizer = OnDeviceRecognizer(context, ContextCompat.getMainExecutor(context))
     private val model = OnDeviceModel()
+    private val cloud = CloudService.get(context)
+    private val usage = UsageLedger(context)
+    /** When listening began, for the day's listening time. */
+    private var listeningSince = 0L
     private val recipe: RewriteRecipe? = runCatching {
         context.assets.open("format.json").bufferedReader().use { RewriteRecipe(it.readText()) }
     }.getOrNull()
@@ -56,7 +64,10 @@ class DictationController(
         _phase.value = DictationPhase.Starting
         recognizer.start(language, vocabulary, object : OnDeviceRecognizer.Listener {
             override fun onReady() {
-                if (current == generation && _phase.value == DictationPhase.Starting) _phase.value = DictationPhase.Listening(draft, 0f)
+                if (current == generation && _phase.value == DictationPhase.Starting) {
+                    listeningSince = System.currentTimeMillis()
+                    _phase.value = DictationPhase.Listening(draft, 0f)
+                }
             }
 
             override fun onDraft(draft: Draft) {
@@ -109,13 +120,26 @@ class DictationController(
             return
         }
         val intent = intent
+        val listened = if (listeningSince > 0) System.currentTimeMillis() - listeningSince else 0L
+        listeningSince = 0L
         finishing = scope.launch {
             val delivery = produce(source, intent)
             if (current != generation) return@launch
             _phase.value = DictationPhase.Idle
             deliver(delivery)
+            // Numbers and the scene only; the text is counted, never kept (005).
+            val polished = delivery.outcome == Delivery.Outcome.Polished || delivery.outcome == Delivery.Outcome.Translated
+            runCatching { usage.record(listened, delivery.text, if (polished) scene else null) }
         }
     }
+
+    /** Whether the chosen engine can run: a connected cloud model, or Gemini Nano on this device. */
+    private suspend fun engineReady(): Boolean =
+        if (preferences.polishEngine == PolishEngine.Cloud) cloud.ready else model.availability() == ModelAvailability.Available
+
+    /** Runs a request on the chosen engine. The cloud receives only the rule-corrected transcript and the recipe. */
+    private suspend fun run(request: RewriteRequest): String =
+        if (preferences.polishEngine == PolishEngine.Cloud) cloud.run(request) else model.run(request)
 
     private suspend fun produce(source: String, intent: DictationIntent): Delivery {
         when (intent) {
@@ -123,18 +147,18 @@ class DictationController(
                 val request = recipe?.translate(source, scene, intent.target)
                     ?: return Delivery(source, source, Delivery.Outcome.TranslationUnavailable)
                 _phase.value = DictationPhase.Polishing(Draft(source), translating = true)
-                return runCatching { model.run(request) }
+                return runCatching { run(request) }
                     .map { Delivery(it, source, Delivery.Outcome.Translated) }
                     .getOrElse { Delivery(source, source, Delivery.Outcome.TranslationUnavailable) }
             }
             DictationIntent.Dictate -> {
                 if (!preferences.polishingEnabled) return Delivery(source, source, Delivery.Outcome.Cleaned)
                 val recipe = recipe
-                if (recipe == null || model.availability() != ModelAvailability.Available) {
+                if (recipe == null || !engineReady()) {
                     return Delivery(source, source, Delivery.Outcome.PolishUnavailable)
                 }
                 _phase.value = DictationPhase.Polishing(Draft(source), translating = false)
-                return runCatching { model.run(recipe.polish(source, scene)) }
+                return runCatching { run(recipe.polish(source, scene)) }
                     .map { Delivery(it, source, Delivery.Outcome.Polished) }
                     .getOrElse { Delivery(source, source, Delivery.Outcome.PolishUnavailable) }
             }

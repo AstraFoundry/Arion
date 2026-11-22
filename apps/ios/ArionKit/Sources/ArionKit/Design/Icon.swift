@@ -9,6 +9,7 @@ public enum Icon: String, CaseIterable, Sendable {
     case chartLine
     case check
     case chevronLeft
+    case chevronRight
     case chevronsUpDown
     case circle
     case circleCheck

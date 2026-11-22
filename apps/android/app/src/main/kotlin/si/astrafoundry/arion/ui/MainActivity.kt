@@ -1,5 +1,8 @@
 package si.astrafoundry.arion.ui
 
+import si.astrafoundry.arion.design.ArionIcon
+import si.astrafoundry.arion.design.IconView
+
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -14,6 +17,31 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import si.astrafoundry.arion.account.AccountService
+import si.astrafoundry.arion.cloud.CloudService
+import si.astrafoundry.arion.core.AccountPhase
+import si.astrafoundry.arion.core.AccountServing
+import si.astrafoundry.arion.core.AccountState
+import si.astrafoundry.arion.core.CloudProvider
+import si.astrafoundry.arion.core.CloudServing
+import si.astrafoundry.arion.core.CloudState
+import si.astrafoundry.arion.usage.UsageLedger
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -36,9 +64,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -93,7 +118,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private enum class Screen { Onboarding, Home, Languages, Target, Vocabulary, History }
+private enum class Screen { Onboarding, Overview, Settings, Account, Polish, Cloud, CloudProvider, CloudModels, Languages, Target, Vocabulary, History }
+
+/** The screen a detail page returns to. */
+private fun Screen.parent(): Screen = when (this) {
+    Screen.Cloud -> Screen.Polish
+    Screen.CloudProvider, Screen.CloudModels -> Screen.Cloud
+    Screen.Vocabulary -> Screen.Overview
+    else -> Screen.Settings
+}
 
 /** Whether Arion is among the enabled keyboards, and whether it is the current one. */
 private data class KeyboardStatus(val enabled: Boolean, val selected: Boolean)
@@ -109,16 +142,82 @@ private fun keyboardStatus(context: Context): KeyboardStatus {
 private fun App() {
     val context = LocalContext.current
     val preferences = remember { Preferences(context) }
-    var screen by remember { mutableStateOf(if (preferences.onboardingCompleted) Screen.Home else Screen.Onboarding) }
-    BackHandler(screen != Screen.Home && screen != Screen.Onboarding) { screen = Screen.Home }
-    AnimatedContent(screen, transitionSpec = { fadeIn() togetherWith fadeOut() }, label = "screen") { current ->
-        when (current) {
-            Screen.Onboarding -> Onboarding(preferences) { preferences.onboardingCompleted = true; screen = Screen.Home }
-            Screen.Home -> Home(preferences) { screen = it }
-            Screen.Languages -> Detail(stringResource(R.string.settings_languages), { screen = Screen.Home }) { Languages(preferences) }
-            Screen.Target -> Detail(stringResource(R.string.settings_translate_into), { screen = Screen.Home }) { Target(preferences) }
-            Screen.Vocabulary -> Detail(stringResource(R.string.settings_vocabulary), { screen = Screen.Home }) { VocabularyList() }
-            Screen.History -> Detail(stringResource(R.string.settings_history), { screen = Screen.Home }) { HistoryList(preferences) }
+    val account = remember { AccountService.get(context) }
+    val cloud = remember { CloudService.get(context) }
+    val accountState by account.state.collectAsState()
+    val cloudState by cloud.state.collectAsState()
+    var screen by rememberSaveable { mutableStateOf(if (preferences.onboardingCompleted) Screen.Overview else Screen.Onboarding) }
+    var provider by rememberSaveable { mutableStateOf(CloudProvider.OpenAI) }
+    var tab by rememberSaveable { mutableStateOf(Screen.Overview) }
+    // Vocabulary opened from the Overview returns there; from Settings, to Settings.
+    var vocabularyFrom by rememberSaveable { mutableStateOf(Screen.Overview) }
+    LaunchedEffect(Unit) { account.restore() }
+    val resumes = onResumeCount()
+    LaunchedEffect(resumes) { account.reportUsage() }
+    val top = screen == Screen.Overview || screen == Screen.Settings || screen == Screen.Onboarding
+    BackHandler(!top) { screen = if (screen == Screen.Vocabulary) vocabularyFrom else screen.parent() }
+    val back = { screen = if (screen == Screen.Vocabulary) vocabularyFrom else screen.parent() }
+    Column(Modifier.fillMaxSize()) {
+        Box(Modifier.weight(1f)) {
+            AnimatedContent(screen, transitionSpec = { fadeIn() togetherWith fadeOut() }, label = "screen") { current ->
+                when (current) {
+                    Screen.Onboarding -> Onboarding(preferences, account, accountState, cloud, cloudState) {
+                        preferences.onboardingCompleted = true
+                        screen = Screen.Overview
+                    }
+                    Screen.Overview -> Column(Modifier.fillMaxSize().safeDrawingPadding()) {
+                        val terms = remember(resumes) { runCatching { Vocabulary(context).terms() }.getOrDefault(emptyList()) }
+                        Overview(remember { UsageLedger(context) }, resumes, terms) { vocabularyFrom = Screen.Overview; screen = Screen.Vocabulary }
+                    }
+                    Screen.Settings -> SettingsHome(preferences, accountState, cloudState) {
+                        if (it == Screen.Vocabulary) vocabularyFrom = Screen.Settings
+                        screen = it
+                    }
+                    Screen.Account -> Detail(stringResource(R.string.account_title), back) { AccountScreen(account, accountState) }
+                    Screen.Polish -> Detail(stringResource(R.string.polish_title), back) {
+                        val model = remember { OnDeviceModel() }
+                        var availability by remember { mutableStateOf<ModelAvailability?>(null) }
+                        val scope = rememberCoroutineScope()
+                        LaunchedEffect(resumes) { availability = model.availability() }
+                        PolishScreen(preferences, availability, cloudState, openCloud = { screen = Screen.Cloud }) {
+                            scope.launch { runCatching { model.download() }; availability = model.availability() }
+                        }
+                    }
+                    Screen.Cloud -> Detail(stringResource(R.string.cloud_title), back) {
+                        CloudScreen(cloud, cloudState, openProvider = { provider = it; screen = Screen.CloudProvider }, openModels = { screen = Screen.CloudModels })
+                    }
+                    Screen.CloudProvider -> Detail(providerName(provider), back) { CloudProviderScreen(cloud, provider) { screen = Screen.Cloud } }
+                    Screen.CloudModels -> Detail(stringResource(R.string.cloud_model), back) { CloudModelsScreen(cloud, cloudState) { screen = Screen.Cloud } }
+                    Screen.Languages -> Detail(stringResource(R.string.settings_languages), back) { Languages(preferences) }
+                    Screen.Target -> Detail(stringResource(R.string.settings_translate_into), back) { Target(preferences) }
+                    Screen.Vocabulary -> Detail(stringResource(R.string.settings_vocabulary), back) { VocabularyList() }
+                    Screen.History -> Detail(stringResource(R.string.settings_history), back) { HistoryList(preferences) }
+                }
+            }
+        }
+        if (screen == Screen.Overview || screen == Screen.Settings) {
+            Tabs(screen) { tab = it; screen = it }
+        }
+    }
+}
+
+/** The two top-level pages, as a flat bar in Sunbeam ink. */
+@Composable
+private fun Tabs(selected: Screen, choose: (Screen) -> Unit) {
+    val c = Sunbeam.colors
+    NavigationBar(containerColor = c.background, tonalElevation = 0.dp) {
+        listOf(
+            Triple(Screen.Overview, ArionIcon.ChartLine, R.string.tab_overview),
+            Triple(Screen.Settings, ArionIcon.Settings, R.string.tab_settings),
+        ).forEach { (screen, icon, label) ->
+            NavigationBarItem(
+                selected = selected == screen, onClick = { choose(screen) },
+                icon = { IconView(icon, 22.dp, if (selected == screen) Sunbeam.colors.foreground else Sunbeam.colors.mutedForeground) }, label = { Text(stringResource(label), style = Sunbeam.type.caption) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = c.foreground, selectedTextColor = c.foreground, indicatorColor = c.secondary,
+                    unselectedIconColor = c.mutedForeground, unselectedTextColor = c.mutedForeground,
+                ),
+            )
         }
     }
 }
@@ -132,13 +231,27 @@ private fun onResumeCount(): Int {
     return count
 }
 
-private enum class Step { Welcome, Microphone, Enable, Select, Practice }
+private enum class Step { Welcome, Microphone, Enable, Select, Polish, Practice }
 
 @Composable
-private fun Onboarding(preferences: Preferences, done: () -> Unit) {
+private fun Onboarding(
+    preferences: Preferences,
+    account: AccountServing,
+    accountState: AccountState,
+    cloud: CloudServing,
+    cloudState: CloudState,
+    done: () -> Unit,
+) {
     val context = LocalContext.current
     val resumes = onResumeCount()
-    var step by remember { mutableStateOf(Step.Welcome) }
+    var step by rememberSaveable { mutableStateOf(Step.Welcome) }
+    var terms by rememberSaveable { mutableStateOf(true) }
+    var shareUsage by rememberSaveable { mutableStateOf(false) }
+    var polish by rememberSaveable { mutableStateOf(PolishChoice.current(preferences)) }
+    var cloudSetup by rememberSaveable { mutableStateOf<String?>(null) }
+    val model = remember { OnDeviceModel() }
+    var availability by remember { mutableStateOf<ModelAvailability?>(null) }
+    LaunchedEffect(resumes) { availability = model.availability() }
     val micGranted = remember(resumes, step) { context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED }
     val status = remember(resumes, step) { keyboardStatus(context) }
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -147,11 +260,56 @@ private fun Onboarding(preferences: Preferences, done: () -> Unit) {
     // Steps already satisfied are skipped when the user comes back from Settings.
     LaunchedEffect(resumes, step) {
         if (step == Step.Enable && status.enabled) step = Step.Select
-        if (step == Step.Select && status.selected) step = Step.Practice
+        if (step == Step.Select && status.selected) step = Step.Polish
+    }
+    val previous = Step.entries.getOrNull(step.ordinal - 1)
+    BackHandler(previous != null || cloudSetup != null) {
+        when {
+            cloudSetup == "provider" -> cloudSetup = "list"
+            cloudSetup != null -> cloudSetup = null
+            previous != null -> step = previous
+        }
+    }
+    // Choosing Cloud opens the provider pages inside the step; connecting one moves on.
+    if (cloudSetup != null) {
+        var provider by rememberSaveable { mutableStateOf(CloudProvider.OpenAI) }
+        val finish = { cloudSetup = null; step = Step.Practice }
+        Column(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
+            Row(Modifier.fillMaxWidth().padding(start = 8.dp, end = 16.dp, top = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { cloudSetup = if (cloudSetup == "provider") "list" else null }) {
+                    IconView(ArionIcon.ChevronLeft, 24.dp, contentDescription = stringResource(R.string.onboarding_back))
+                }
+                Spacer(Modifier.weight(1f))
+                Face(FaceKind.Plain, onClick = finish) { ink -> Text(stringResource(R.string.onboarding_skip_cloud), style = Sunbeam.type.label, color = ink, modifier = Modifier.padding(horizontal = 12.dp)) }
+            }
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                if (cloudSetup == "provider") {
+                    Text(providerName(provider), style = Sunbeam.type.title, color = Sunbeam.colors.foreground, modifier = Modifier.padding(start = 24.dp, bottom = 8.dp))
+                    CloudProviderScreen(cloud, provider) { if (cloud.state.value.active?.model != null) finish() else cloudSetup = "list" }
+                } else {
+                    Text(stringResource(R.string.cloud_title), style = Sunbeam.type.title, color = Sunbeam.colors.foreground, modifier = Modifier.padding(start = 32.dp, bottom = 8.dp))
+                    CloudScreen(cloud, cloudState, openProvider = { provider = it; cloudSetup = "provider" }, openModels = {}, connected = finish)
+                }
+            }
+        }
+        return
     }
     Column(Modifier.fillMaxSize().safeDrawingPadding().imePadding().padding(horizontal = 24.dp)) {
-        Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(top = 56.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            AnimatedContent(step, transitionSpec = { fadeIn() togetherWith fadeOut() }, label = "step") { current ->
+        Row(Modifier.fillMaxWidth().height(48.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(40.dp), contentAlignment = Alignment.CenterStart) {
+                if (previous != null) {
+                    IconButton(onClick = { step = previous }, modifier = Modifier.offset(x = (-12).dp)) {
+                        IconView(ArionIcon.ChevronLeft, 24.dp, contentDescription = stringResource(R.string.onboarding_back))
+                    }
+                }
+            }
+            StepProgress(step.ordinal, Step.entries.size, Modifier.weight(1f))
+        }
+        Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(top = 24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            AnimatedContent(step, transitionSpec = {
+                val forward = targetState.ordinal > initialState.ordinal
+                (slideInHorizontally { if (forward) it / 8 else -it / 8 } + fadeIn()) togetherWith fadeOut()
+            }, label = "step") { current ->
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     when (current) {
                         Step.Welcome -> {
@@ -159,6 +317,27 @@ private fun Onboarding(preferences: Preferences, done: () -> Unit) {
                             Spacer(Modifier.height(16.dp))
                             Heading(stringResource(R.string.onboarding_welcome_title), headline = true)
                             Body(stringResource(R.string.onboarding_welcome_body))
+                            Spacer(Modifier.height(20.dp))
+                            if (accountState.signedIn || accountState.phase == AccountPhase.Restoring) {
+                                AccountRowCompact(accountState)
+                            } else {
+                                Text(stringResource(R.string.account_sign_in_title), style = Sunbeam.type.label, color = Sunbeam.colors.foreground)
+                                if (accountState.phase == AccountPhase.SigningIn) {
+                                    Body(stringResource(R.string.account_waiting), muted = true)
+                                    OutlineButton(stringResource(R.string.account_cancel), null) { account.cancel() }
+                                } else {
+                                    SignInMethods(enabled = terms) { account.signIn(shareUsage) }
+                                    Spacer(Modifier.height(4.dp))
+                                    ConsentRow(stringResource(R.string.account_terms_accept), listOf(
+                                        stringResource(R.string.account_terms) to SiteLinks.terms,
+                                        stringResource(R.string.account_privacy) to SiteLinks.privacy,
+                                    ), terms) { terms = it }
+                                    ConsentRow(stringResource(R.string.account_usage_agree), listOf(
+                                        stringResource(R.string.account_usage_data) to SiteLinks.usageData,
+                                    ), shareUsage) { shareUsage = it }
+                                }
+                                accountState.failure?.let { Text(stringResource(failureText(it)), style = Sunbeam.type.caption, color = Sunbeam.colors.danger) }
+                            }
                         }
                         Step.Microphone -> {
                             Heading(stringResource(R.string.onboarding_microphone_title))
@@ -174,6 +353,12 @@ private fun Onboarding(preferences: Preferences, done: () -> Unit) {
                             Heading(stringResource(R.string.android_onboarding_select_title))
                             Body(stringResource(R.string.android_onboarding_select_body))
                         }
+                        Step.Polish -> {
+                            Heading(stringResource(R.string.onboarding_polish_title))
+                            Body(stringResource(R.string.onboarding_polish_body))
+                            Spacer(Modifier.height(12.dp))
+                            PolishChoices(polish, availability, cloudState) { polish = it }
+                        }
                         Step.Practice -> {
                             Heading(stringResource(R.string.onboarding_try_title))
                             Body(stringResource(R.string.onboarding_try_body_android))
@@ -184,38 +369,78 @@ private fun Onboarding(preferences: Preferences, done: () -> Unit) {
                 }
             }
         }
-        val label = when (step) {
-            Step.Welcome -> stringResource(R.string.onboarding_continue)
-            Step.Microphone -> stringResource(R.string.onboarding_microphone_allow)
-            Step.Enable -> stringResource(R.string.android_onboarding_enable_open)
-            Step.Select -> stringResource(R.string.android_onboarding_select_open)
-            Step.Practice -> stringResource(R.string.onboarding_finish)
+        // Signed out, the welcome step continues without an account in a quiet button.
+        val local = step == Step.Welcome && !accountState.signedIn && accountState.phase != AccountPhase.Restoring
+        val label = when {
+            local -> stringResource(R.string.account_continue_locally)
+            step == Step.Welcome || step == Step.Polish -> stringResource(R.string.onboarding_continue)
+            step == Step.Microphone -> stringResource(R.string.onboarding_microphone_allow)
+            step == Step.Enable -> stringResource(R.string.android_onboarding_enable_open)
+            step == Step.Select -> stringResource(R.string.android_onboarding_select_open)
+            else -> stringResource(R.string.onboarding_finish)
         }
-        Face(FaceKind.Primary, onClick = {
+        Face(if (local) FaceKind.Plain else FaceKind.Primary, onClick = {
             when (step) {
                 Step.Welcome -> step = if (micGranted) Step.Enable else Step.Microphone
                 Step.Microphone -> permission.launch(Manifest.permission.RECORD_AUDIO)
                 Step.Enable -> context.startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
                 Step.Select -> context.getSystemService(InputMethodManager::class.java).showInputMethodPicker()
+                Step.Polish -> {
+                    polish.apply(preferences)
+                    if (polish == PolishChoice.Device && availability == ModelAvailability.Downloadable) {
+                        CoroutineScope(Dispatchers.Default).launch { runCatching { model.download() } }
+                    }
+                    if (polish == PolishChoice.Cloud && cloudState.active?.model == null) cloudSetup = "list" else step = Step.Practice
+                }
                 Step.Practice -> done()
             }
-        }, contentDescription = label, modifier = Modifier.fillMaxWidth().height(52.dp).padding(bottom = 0.dp)) { ink ->
-            Text(label, style = Sunbeam.type.label, color = ink)
+        }, contentDescription = label, modifier = Modifier.fillMaxWidth().height(52.dp)) { ink ->
+            Text(label, style = Sunbeam.type.label, color = if (local) Sunbeam.colors.mutedForeground else ink)
         }
         Spacer(Modifier.height(16.dp))
     }
 }
 
+/** Segments for the steps of a flow; the current and earlier ones in ink. */
 @Composable
-private fun PracticeField(placeholder: String, autofocus: Boolean = false, bordered: Boolean = true) {
+private fun StepProgress(current: Int, total: Int, modifier: Modifier = Modifier) {
+    val c = Sunbeam.colors
+    val description = stringResource(R.string.onboarding_progress, "${current + 1}", "$total")
+    Row(modifier.semantics { contentDescription = description }, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        repeat(total) { index ->
+            val color by animateColorAsState(if (index <= current) c.foreground else c.border, label = "segment")
+            Box(Modifier.weight(1f).height(4.dp).background(color, RoundedCornerShape(2.dp)))
+        }
+    }
+}
+
+/** The signed-in account on the welcome step. */
+@Composable
+private fun AccountRowCompact(state: AccountState) {
+    val c = Sunbeam.colors
+    Card(padding = 14.dp) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Avatar(state.profile, 40.dp)
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text(state.profile?.let { it.name.ifEmpty { it.email } }.orEmpty(), style = Sunbeam.type.body, color = c.foreground)
+                Text(stringResource(if (state.phase == AccountPhase.Restoring) R.string.account_restoring else R.string.account_signed_in),
+                    style = Sunbeam.type.caption, color = c.mutedForeground)
+            }
+        }
+    }
+}
+
+@Composable
+fun PracticeField(placeholder: String, autofocus: Boolean = false, height: Dp = 140.dp, fill: Color? = null) {
     val c = Sunbeam.colors
     var text by remember { mutableStateOf("") }
     val focus = remember { FocusRequester() }
     LaunchedEffect(autofocus) { if (autofocus) focus.requestFocus() }
     val shape = RoundedCornerShape(18.dp)
     Box(
-        Modifier.fillMaxWidth().height(140.dp)
-            .then(if (bordered) Modifier.background(c.card, shape).border(androidx.compose.ui.unit.Dp.Hairline, c.border, shape) else Modifier)
+        Modifier.fillMaxWidth().height(height)
+            .background(fill ?: c.card, shape).border(androidx.compose.ui.unit.Dp.Hairline, c.border, shape)
             .padding(16.dp),
     ) {
         if (text.isEmpty()) Text(placeholder, style = Sunbeam.type.body, color = c.faint)
@@ -229,52 +454,39 @@ private fun PracticeField(placeholder: String, autofocus: Boolean = false, borde
 }
 
 @Composable
-private fun Home(preferences: Preferences, open: (Screen) -> Unit) {
+private fun SettingsHome(preferences: Preferences, accountState: AccountState, cloudState: CloudState, open: (Screen) -> Unit) {
     val context = LocalContext.current
     val resumes = onResumeCount()
-    val scope = rememberCoroutineScope()
-    val model = remember { OnDeviceModel() }
-    var availability by remember { mutableStateOf<ModelAvailability?>(null) }
-    var polishing by remember { mutableStateOf(preferences.polishingEnabled) }
     val status = remember(resumes) { keyboardStatus(context) }
     val vocabularyCount = remember(resumes) { runCatching { Vocabulary(context).terms().size }.getOrDefault(0) }
-    LaunchedEffect(resumes) { availability = model.availability() }
+    val polish = remember(resumes, cloudState) { PolishChoice.current(preferences) }
     Column(Modifier.fillMaxSize().safeDrawingPadding().verticalScroll(rememberScrollState())) {
-        Text(stringResource(R.string.app_name), style = Sunbeam.type.headline, color = Sunbeam.colors.foreground,
-            modifier = Modifier.padding(start = 32.dp, top = 24.dp, bottom = 8.dp))
-        Section { PracticeField(stringResource(R.string.home_practice), bordered = false) }
+        PageTitle(stringResource(R.string.tab_settings))
+        AccountRow(accountState) { open(Screen.Account) }
         Section(stringResource(R.string.settings_section_dictation), stringResource(R.string.settings_translate_footer)) {
-            SettingRow(stringResource(R.string.settings_languages), preferences.languages.joinToString(", ") { languageName(context, it) }, onClick = { open(Screen.Languages) })
-            SettingRow(stringResource(R.string.settings_translate_into), targetName(context, preferences.translationTarget), divider = true, onClick = { open(Screen.Target) })
+            SettingRow(stringResource(R.string.settings_languages), preferences.languages.joinToString(" · ") { languageMark(context, it) }, icon = ArionIcon.Globe, onClick = { open(Screen.Languages) })
+            SettingRow(stringResource(R.string.settings_translate_into), targetName(context, preferences.translationTarget), icon = ArionIcon.Languages, divider = true, onClick = { open(Screen.Target) })
         }
-        val footer = when (availability) {
-            ModelAvailability.Available, null -> stringResource(R.string.settings_polish_footer)
-            ModelAvailability.Downloadable, ModelAvailability.Downloading -> stringResource(R.string.settings_polish_android_downloading)
-            ModelAvailability.Unavailable -> stringResource(R.string.settings_polish_android_unavailable)
-        }
-        Section(footer = footer) {
-            SettingRow(stringResource(R.string.settings_polish), trailing = {
-                // Without a model the switch shows off; the saved choice returns with one.
-                Toggle(polishing && availability != ModelAvailability.Unavailable, enabled = availability != ModelAvailability.Unavailable) {
-                    polishing = it
-                    preferences.polishingEnabled = it
-                    if (it && availability == ModelAvailability.Downloadable) scope.launch { runCatching { model.download() }; availability = model.availability() }
-                }
-            })
+        Section {
+            val value = if (polish == PolishChoice.Cloud) cloudSummary(cloudState) ?: stringResource(R.string.cloud_not_connected) else stringResource(polish.title)
+            SettingRow(stringResource(R.string.settings_polish), value, icon = ArionIcon.Sparkles, onClick = { open(Screen.Polish) })
         }
         Section(stringResource(R.string.settings_section_memory)) {
-            SettingRow(stringResource(R.string.settings_vocabulary), vocabularyCount.toString(), onClick = { open(Screen.Vocabulary) })
-            SettingRow(stringResource(R.string.settings_history), divider = true, onClick = { open(Screen.History) })
+            SettingRow(stringResource(R.string.settings_vocabulary), vocabularyCount.toString(), icon = ArionIcon.BookOpen, onClick = { open(Screen.Vocabulary) })
+            SettingRow(stringResource(R.string.settings_history), icon = ArionIcon.History, divider = true, onClick = { open(Screen.History) })
         }
         Section(stringResource(R.string.settings_section_keyboard)) {
             val ready = status.enabled
             SettingRow(stringResource(R.string.settings_keyboard_setup), stringResource(if (ready) R.string.settings_keyboard_ready else R.string.settings_keyboard_set_up),
-                valueEmphasis = !ready, onClick = { context.startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)) })
-            SettingRow(stringResource(R.string.settings_version), context.packageManager.getPackageInfo(context.packageName, 0).versionName, divider = true)
+                icon = ArionIcon.Keyboard, valueEmphasis = !ready, onClick = { context.startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)) })
+            SettingRow(stringResource(R.string.settings_version), context.packageManager.getPackageInfo(context.packageName, 0).versionName, icon = ArionIcon.Info, divider = true)
         }
         Spacer(Modifier.height(24.dp))
     }
 }
+
+private fun languageMark(context: Context, tag: String) =
+    context.getString(if (tag == DictationLanguage.CHINESE) R.string.language_mark_chinese else R.string.language_mark_english)
 
 private fun languageName(context: Context, tag: String) =
     context.getString(if (tag == DictationLanguage.CHINESE) R.string.language_name_chinese else R.string.language_name_english)
@@ -283,7 +495,7 @@ private fun languageName(context: Context, tag: String) =
 private fun Detail(title: String, back: () -> Unit, content: @Composable () -> Unit) {
     Column(Modifier.fillMaxSize().safeDrawingPadding().imePadding().verticalScroll(rememberScrollState())) {
         IconButton(onClick = back, modifier = Modifier.padding(start = 8.dp, top = 4.dp)) {
-            Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.keyboard_cancel), tint = Sunbeam.colors.foreground)
+            IconView(ArionIcon.ChevronLeft, 24.dp, contentDescription = stringResource(R.string.onboarding_back))
         }
         Text(title, style = Sunbeam.type.title, color = Sunbeam.colors.foreground, modifier = Modifier.padding(start = 32.dp, bottom = 8.dp))
         content()
@@ -344,7 +556,7 @@ private fun VocabularyList() {
             terms.forEachIndexed { index, term ->
                 SettingRow(term, divider = index > 0, trailing = {
                     IconButton(onClick = { runCatching { vocabulary.remove(term) }; terms = vocabulary.terms() }) {
-                        Icon(Icons.Outlined.Close, stringResource(R.string.settings_history_delete), tint = c.mutedForeground)
+                        IconView(ArionIcon.X, 18.dp, c.mutedForeground, stringResource(R.string.settings_history_delete))
                     }
                 })
             }
@@ -381,7 +593,7 @@ private fun HistoryList(preferences: Preferences) {
                     clipboard.setPrimaryClip(android.content.ClipData.newPlainText(null, entry.text))
                 }, trailing = {
                     IconButton(onClick = { runCatching { history.remove(entry.id) }; entries = history.entries() }) {
-                        Icon(Icons.Outlined.Close, stringResource(R.string.settings_history_delete), tint = Sunbeam.colors.mutedForeground)
+                        IconView(ArionIcon.X, 18.dp, Sunbeam.colors.mutedForeground, stringResource(R.string.settings_history_delete))
                     }
                 })
             }

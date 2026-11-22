@@ -1,5 +1,8 @@
 package si.astrafoundry.arion.ui
 
+import si.astrafoundry.arion.design.ArionIcon
+import si.astrafoundry.arion.design.IconView
+
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,9 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
@@ -79,33 +79,39 @@ fun Section(title: String? = null, footer: String? = null, content: @Composable 
 fun SettingRow(
     label: String,
     value: String? = null,
+    icon: ArionIcon? = null,
     divider: Boolean = false,
     valueEmphasis: Boolean = false,
     onClick: (() -> Unit)? = null,
     trailing: @Composable (() -> Unit)? = null,
 ) {
     val c = Sunbeam.colors
-    if (divider) HorizontalDivider(Modifier.padding(start = 16.dp), thickness = Dp.Hairline, color = c.border)
+    // A row with an icon starts its divider at the text, as the system lists do.
+    if (divider) HorizontalDivider(Modifier.padding(start = if (icon != null) 48.dp else 16.dp), thickness = Dp.Hairline, color = c.border)
     Row(
         Modifier.fillMaxWidth().heightIn(min = 52.dp)
             .then(if (onClick != null) Modifier.clickable(role = Role.Button, onClick = onClick) else Modifier)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (icon != null) {
+            IconView(icon, 18.dp)
+            Spacer(Modifier.width(14.dp))
+        }
         Text(label, style = Sunbeam.type.body, color = c.foreground, modifier = Modifier.weight(1f).padding(vertical = 12.dp))
         if (value != null) {
             Text(value, style = Sunbeam.type.body, color = if (valueEmphasis) c.foreground else c.mutedForeground, maxLines = 1)
         }
         when {
             trailing != null -> { Spacer(Modifier.width(8.dp)); trailing() }
-            onClick != null -> Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null, tint = c.faint, modifier = Modifier.padding(start = 4.dp))
+            onClick != null -> IconView(ArionIcon.ChevronRight, 16.dp, c.faint, modifier = Modifier.padding(start = 4.dp))
         }
     }
 }
 
 @Composable
 fun Check(visible: Boolean) {
-    if (visible) Icon(Icons.Outlined.Check, null, tint = Sunbeam.colors.foreground, modifier = Modifier.size(20.dp))
+    if (visible) IconView(ArionIcon.Check, 18.dp)
 }
 
 @Composable

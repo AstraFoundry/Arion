@@ -168,7 +168,7 @@ final class HeatmapView: UIView {
         visible.sort()
         let scale = traitCollection.displayScale
         let caption = UIFont.systemFont(ofSize: 11)
-        func label(_ text: String, x: CGFloat, y: CGFloat) {
+        func label(_ text: String, x: CGFloat, y: CGFloat, trailing: Bool = false) {
             let layer = CATextLayer()
             layer.string = text
             layer.font = caption
@@ -176,13 +176,14 @@ final class HeatmapView: UIView {
             layer.foregroundColor = Palette.mutedForeground.resolvedColor(with: traitCollection).cgColor
             layer.contentsScale = scale
             let size = (text as NSString).size(withAttributes: [.font: caption])
-            layer.frame = CGRect(x: x, y: y, width: ceil(size.width), height: ceil(size.height))
+            // A weekday ends just before the grid, however wide the card.
+            layer.frame = CGRect(x: trailing ? x - ceil(size.width) : x, y: y, width: ceil(size.width), height: ceil(size.height))
             self.layer.addSublayer(layer)
             labels.append(layer)
         }
         let weekdays = calendar.veryShortWeekdaySymbols
         for day in stride(from: 0, to: 7, by: 2) {
-            label(weekdays[(day + 1) % 7], x: 0, y: Self.monthRow + CGFloat(day) * g.pitch + (g.cell - 13) / 2)
+            label(weekdays[(day + 1) % 7], x: g.x - 6, y: Self.monthRow + CGFloat(day) * g.pitch + (g.cell - 13) / 2, trailing: true)
         }
         let months = calendar.shortMonthSymbols
         var previous = 0

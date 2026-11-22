@@ -3,6 +3,8 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Account sign-in and the cloud model the user connects. Audio never uses the network. -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- The recognizer service the keyboard binds to must be visible to it. -->
     <queries>
@@ -26,6 +28,21 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- The account's browser sign-in returns to arion://auth/callback. -->
+        <activity
+            android:name=".account.AuthCallbackActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="arion" android:host="auth" android:path="/callback" />
             </intent-filter>
         </activity>
 

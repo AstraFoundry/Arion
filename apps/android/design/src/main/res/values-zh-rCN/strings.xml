@@ -26,7 +26,6 @@
     <string name="account_privacy" formatted="false">隐私政策</string>
     <string name="account_restoring" formatted="false">正在自动恢复账号连接。</string>
     <string name="account_sign_in" formatted="false">登录</string>
-    <string name="account_sign_in_detail" formatted="false">可选。不登录也能正常听写。</string>
     <string name="account_sign_in_title" formatted="false">登录 AstraFoundry 账号</string>
     <string name="account_sign_out" formatted="false">退出登录</string>
     <string name="account_signed_in" formatted="false">已登录</string>
@@ -37,7 +36,6 @@
     <string name="account_usage_agree" formatted="false">同意发送使用数据以改进产品</string>
     <string name="account_usage_data" formatted="false">使用数据</string>
     <string name="account_usage_share" formatted="false">共享数据以参与产品改进计划</string>
-    <string name="account_usage_share_detail" formatted="false">每天的听写次数、说话时长和字数，不包括音频和文字。</string>
     <string name="account_waiting" formatted="false">请在浏览器中完成登录，然后回到 Arion。</string>
     <string name="android_failure_busy" formatted="false">识别服务忙，请重试。</string>
     <string name="android_failure_microphone" formatted="false">请打开 Arion 允许使用麦克风。</string>
@@ -55,7 +53,7 @@
     <string name="cloud_anthropic_compatible" formatted="false">Anthropic 兼容</string>
     <string name="cloud_api_keys" formatted="false">API 密钥</string>
     <string name="cloud_base_url" formatted="false">接口地址</string>
-    <string name="cloud_base_urlplaceholder" formatted="false">https://example.com/v1</string>
+    <string name="cloud_base_url_placeholder" formatted="false">https://example.com/v1</string>
     <string name="cloud_connect" formatted="false">连接</string>
     <string name="cloud_disconnect" formatted="false">断开</string>
     <string name="cloud_fail_address" formatted="false">请输入 http 或 https 地址。</string>
@@ -87,14 +85,10 @@
     <string name="keyboard_delete" formatted="false">删除</string>
     <string name="keyboard_dictate" formatted="false">听写</string>
     <string name="keyboard_done" formatted="false">完成</string>
-    <string name="keyboard_hold_hint" formatted="false">松开完成</string>
     <string name="keyboard_language">听写语言：%1$s</string>
-    <string name="keyboard_listening" formatted="false">正在听</string>
     <string name="keyboard_next_keyboard" formatted="false">切换键盘</string>
-    <string name="keyboard_polishing" formatted="false">正在润色</string>
     <string name="keyboard_space" formatted="false">空格</string>
     <string name="keyboard_translate">翻译成%1$s</string>
-    <string name="keyboard_translating" formatted="false">正在翻译</string>
     <string name="language_mark_chinese" formatted="false">中</string>
     <string name="language_mark_english" formatted="false">EN</string>
     <string name="language_name_chinese" formatted="false">简体中文</string>
@@ -153,7 +147,6 @@
     <string name="polish_device_detail" formatted="false">在本机自动清理语气词、重复和口头改口</string>
     <string name="polish_off" formatted="false">不润色</string>
     <string name="polish_off_detail" formatted="false">按识别结果原样输入</string>
-    <string name="polish_runs_on" formatted="false">运行于</string>
     <string name="polish_title" formatted="false">润色</string>
     <string name="return_continue" formatted="false">继续</string>
     <string name="return_default" formatted="false">换行</string>
@@ -190,7 +183,6 @@
     <string name="settings_polish" formatted="false">润色</string>
     <string name="settings_polish_android_downloading" formatted="false">设备端模型正在下载。</string>
     <string name="settings_polish_android_unavailable" formatted="false">这台手机没有可用于润色的设备端模型，文字将按识别结果插入。</string>
-    <string name="settings_polish_footer" formatted="false">用设备上的模型修正标点、口误和重复，保留你的意思和语气。</string>
     <string name="settings_polish_preparing" formatted="false">设备上的模型正在准备。</string>
     <string name="settings_polish_turned_off" formatted="false">在“设置”中打开 Apple 智能后即可润色。</string>
     <string name="settings_polish_unsupported" formatted="false">这台 iPhone 无法运行设备上的模型，文字将按识别结果插入。</string>
@@ -202,7 +194,6 @@
     <string name="settings_version" formatted="false">版本</string>
     <string name="settings_vocabulary" formatted="false">词汇</string>
     <string name="settings_vocabulary_add" formatted="false">添加词汇</string>
-    <string name="settings_vocabulary_empty" formatted="false">还没有词汇</string>
     <string name="settings_vocabulary_footer" formatted="false">添加的人名和术语会被识别，并按原样保留。</string>
     <string name="tab_overview" formatted="false">概览</string>
     <string name="tab_settings" formatted="false">设置</string>
