@@ -16,6 +16,8 @@ final class OnboardingViewController: UIViewController {
     private let primary = FaceButton(kind: .primary)
     private let secondary = FaceButton(kind: .plain)
     private var openedSettings = false
+    private var askedMicrophone = false
+    private lazy var voiceprint = VoiceprintFigure()
     private weak var practiceField: UITextView?
     private var terms = true
     private var shareUsage = false
@@ -144,7 +146,18 @@ final class OnboardingViewController: UIViewController {
         case .microphone:
             addTitle(L10n.onboardingMicrophoneTitle)
             if Permissions.microphoneDenied { addBody(L10n.onboardingMicrophoneDenied) }
-            primary.title = Permissions.microphoneDenied ? L10n.onboardingKeyboardOpen : L10n.onboardingMicrophoneAllow
+            content.setCustomSpacing(24, after: content.arrangedSubviews.last!)
+            content.addArrangedSubview(voiceprint)
+            primary.title = Permissions.microphoneDenied ? L10n.onboardingKeyboardOpen : Permissions.microphoneGranted ? L10n.onboardingContinue : L10n.onboardingMicrophoneAllow
+            // The system asks as soon as the phone has turned into place;
+            // the button stays for when the prompt was dismissed.
+            if Permissions.microphoneUndetermined, !askedMicrophone {
+                askedMicrophone = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
+                    guard let self, self.step == .microphone, Permissions.microphoneUndetermined else { return }
+                    self.requestMicrophone()
+                }
+            }
         case .keyboard:
             addTitle(L10n.onboardingKeyboardTitle)
             // The steps are on Arion's page in Settings (Settings.bundle),
@@ -246,14 +259,7 @@ final class OnboardingViewController: UIViewController {
                 openSettings()
                 return
             }
-            Task {
-                _ = await Permissions.request()
-                // The speech models download while the user adds the keyboard.
-                for language in preferences.languages {
-                    Task.detached { try? await Recognizer.install(language) }
-                }
-                if Permissions.microphoneGranted { move(to: .keyboard) } else { show(.microphone, animated: false) }
-            }
+            requestMicrophone()
         case .keyboard:
             if openedSettings {
                 move(to: .polish)
@@ -280,6 +286,17 @@ final class OnboardingViewController: UIViewController {
             preferences.onboardingCompleted = true
             practiceField?.resignFirstResponder()
             dismiss(animated: true)
+        }
+    }
+
+    private func requestMicrophone() {
+        Task {
+            _ = await Permissions.request()
+            // The speech models download while the user adds the keyboard.
+            for language in preferences.languages {
+                Task.detached { try? await Recognizer.install(language) }
+            }
+            if Permissions.microphoneGranted { move(to: .keyboard) } else { show(.microphone, animated: false) }
         }
     }
 

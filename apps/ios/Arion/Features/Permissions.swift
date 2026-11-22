@@ -6,6 +6,7 @@ import Speech
 enum Permissions {
     static var microphoneGranted: Bool { AVAudioApplication.shared.recordPermission == .granted }
     static var microphoneDenied: Bool { AVAudioApplication.shared.recordPermission == .denied }
+    static var microphoneUndetermined: Bool { AVAudioApplication.shared.recordPermission == .undetermined }
 
     /// Asks for the microphone, then speech recognition.
     static func request() async -> Bool {
