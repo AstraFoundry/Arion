@@ -17,9 +17,17 @@ const keys = Object.keys(catalog.strings).sort();
 // iosSettings.* is the copy of Arion's page in the iOS Settings app; it goes
 // only to the app's Settings.bundle, in this order.
 const settingsKeys = ['iosSettings.setup', 'iosSettings.missingKeyboards'];
-const androidKeys = keys.filter(key => !key.startsWith('iosSettings.'));
-// The iOS app draws the same note in its setup preview, so iOS keeps these keys.
-const appKeys = keys;
+// iosPermission.* is the text of the iOS permission prompts; it goes only to
+// each target's InfoPlist.strings, under these Info.plist keys.
+const permissionKeys = {
+  'iosPermission.microphone': 'NSMicrophoneUsageDescription',
+  'iosPermission.speechRecognition': 'NSSpeechRecognitionUsageDescription',
+};
+const isIOSOnly = key => key.startsWith('iosSettings.') || key.startsWith('iosPermission.');
+const androidKeys = keys.filter(key => !isIOSOnly(key));
+// The iOS app draws the Settings note in its setup preview, so the app keeps
+// the iosSettings keys; the permission text is read only by the system.
+const appKeys = keys.filter(key => !key.startsWith('iosPermission.'));
 for (const key of keys) {
   if (!/^[a-z][a-zA-Z0-9]*(\.[a-z][a-zA-Z0-9]*)+$/.test(key)) errors.push(`${key}: keys are dotted lowerCamel segments`);
   const entry = catalog.strings[key];
@@ -92,6 +100,9 @@ function androidStrings(language) {
   return lines.join('\n');
 }
 
+// A value in a .strings file.
+const escape = value => value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+
 // Settings.bundle: one group per note, its text a footer looked up in Root.strings.
 function settingsPlist() {
   const groups = settingsKeys.map(key => [
@@ -121,8 +132,28 @@ function settingsPlist() {
 }
 
 function settingsStrings(language) {
-  const escape = value => value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
   return [`/* ${header} */`, '', ...settingsKeys.map(key => `"${key}" = "${escape(catalog.strings[key][language])}";`), ''].join('\n');
+}
+
+// InfoPlist.strings: the permission prompts, localized for each target.
+function infoPlistStrings(language) {
+  return [`/* ${header} */`, '', ...Object.entries(permissionKeys).map(([key, name]) => `"${name}" = "${escape(catalog.strings[key][language])}";`), ''].join('\n');
+}
+
+// project.yml carries the English text as each Info.plist's fallback; it must
+// match the catalog.
+const project = await readFile(path.join(root, 'apps/ios/project.yml'), 'utf8');
+for (const [key, name] of Object.entries(permissionKeys)) {
+  const lines = project.split('\n').filter(line => line.trim().startsWith(`${name}:`));
+  const expected = `${name}: ${catalog.strings[key].en}`;
+  if (!lines.length || lines.some(line => line.trim() !== expected)) {
+    console.error(`apps/ios/project.yml: every ${name} must read "${catalog.strings[key].en}" (${key})`);
+    process.exit(1);
+  }
+}
+for (const key of keys.filter(key => key.startsWith('iosPermission.') && !permissionKeys[key])) {
+  console.error(`${key}: not mapped to an Info.plist key`);
+  process.exit(1);
 }
 
 const missing = settingsKeys.filter(key => !catalog.strings[key]);
@@ -136,6 +167,8 @@ const outputs = new Map([
   ['apps/ios/Arion/Settings.bundle/Root.plist', settingsPlist()],
   ['apps/ios/Arion/Settings.bundle/en.lproj/Root.strings', settingsStrings('en')],
   ['apps/ios/Arion/Settings.bundle/zh-Hans.lproj/Root.strings', settingsStrings('zh-Hans')],
+  ...['Arion', 'ArionKeyboard'].flatMap(target => languages.map(language =>
+    [`apps/ios/${target}/${language}.lproj/InfoPlist.strings`, infoPlistStrings(language)])),
   ['apps/ios/ArionKit/Sources/ArionKit/Resources/Localizable.xcstrings', xcstrings()],
   ['apps/ios/ArionKit/Sources/ArionKit/Localization/L10n.swift', swift()],
   ['apps/android/design/src/main/res/values/strings.xml', androidStrings('en')],
