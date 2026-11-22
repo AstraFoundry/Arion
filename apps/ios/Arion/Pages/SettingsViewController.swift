@@ -1,10 +1,11 @@
 import ArionKit
 import UIKit
 
-/// The app's one screen: a field to try the keyboard in, then the settings.
-final class HomeViewController: UITableViewController {
+/// Settings: the account first, as in the system's Settings, then
+/// dictation, polishing, memory and the keyboard.
+final class SettingsViewController: UITableViewController {
     private enum Row {
-        case practice, languages, target, model, polish, vocabulary, history, keyboard, version
+        case account, languages, target, model, polish, vocabulary, history, keyboard, version
     }
 
     private struct Section {
@@ -28,10 +29,11 @@ final class HomeViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = L10n.appName
+        title = L10n.tabSettings
         tableView.backgroundColor = Palette.background
         tableView.keyboardDismissMode = .interactive
         NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(accountChanged), name: .accountChanged, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -41,9 +43,9 @@ final class HomeViewController: UITableViewController {
 
     @objc private func refresh() {
         sections = [
-            Section(title: nil, rows: [.practice], footer: nil),
+            Section(title: nil, rows: [.account], footer: nil),
             Section(title: L10n.settingsSectionDictation, rows: [.languages, .target, .model], footer: L10n.settingsTranslateFooter),
-            Section(title: nil, rows: [.polish], footer: polishFooter),
+            Section(title: nil, rows: [.polish], footer: nil),
             Section(title: L10n.settingsSectionMemory, rows: [.vocabulary, .history], footer: nil),
             Section(title: L10n.settingsSectionKeyboard, rows: [.keyboard, .version], footer: nil),
         ]
@@ -51,14 +53,7 @@ final class HomeViewController: UITableViewController {
         Task { await refreshModels() }
     }
 
-    private var polishFooter: String {
-        switch OnDeviceModel.availability {
-        case .available: L10n.settingsPolishFooter
-        case .turnedOff: L10n.settingsPolishTurnedOff
-        case .unsupportedDevice: L10n.settingsPolishUnsupported
-        case .preparing: L10n.settingsPolishPreparing
-        }
-    }
+    @objc private func accountChanged() { reload(.account) }
 
     private func refreshModels() async {
         for language in preferences.languages where modelState[language] != .downloading {
@@ -92,22 +87,11 @@ final class HomeViewController: UITableViewController {
         content.secondaryTextProperties.font = TextStyle.body.font
         content.secondaryTextProperties.color = Palette.mutedForeground
         switch row {
-        case .practice:
-            let field = PracticeField(placeholder: L10n.homePractice, bordered: false)
-            field.backgroundColor = .clear
-            cell.contentView.addSubview(field)
-            NSLayoutConstraint.activate([
-                field.topAnchor.constraint(equalTo: cell.contentView.topAnchor),
-                field.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor),
-                field.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor),
-                field.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor),
-                field.heightAnchor.constraint(equalToConstant: 120),
-            ])
-            cell.selectionStyle = .none
-            return cell
+        case .account:
+            return AccountCell(state: Services.account.state)
         case .languages:
             content.text = L10n.settingsLanguages
-            content.secondaryText = preferences.languages.map(DictationLanguage.name).joined(separator: ", ")
+            content.secondaryText = preferences.languages.map(DictationLanguage.mark).joined(separator: " · ")
             cell.accessoryType = .disclosureIndicator
         case .target:
             content.text = L10n.settingsTranslateInto
@@ -132,12 +116,9 @@ final class HomeViewController: UITableViewController {
             cell.selectionStyle = states.contains(.missing) || states.contains(.failed) ? .default : .none
         case .polish:
             content.text = L10n.settingsPolish
-            let toggle = UISwitch()
-            toggle.isOn = preferences.polishingEnabled
-            toggle.isEnabled = OnDeviceModel.availability != .unsupportedDevice
-            toggle.addTarget(self, action: #selector(polishChanged(_:)), for: .valueChanged)
-            cell.accessoryView = toggle
-            cell.selectionStyle = .none
+            let choice = PolishChoice.current(preferences)
+            content.secondaryText = choice == .cloud ? (PolishChoice.cloudSummary ?? L10n.cloudNotConnected) : choice.title
+            cell.accessoryType = .disclosureIndicator
         case .vocabulary:
             content.text = L10n.settingsVocabulary
             content.secondaryText = ((try? Vocabulary().terms().count) ?? 0).description
@@ -156,13 +137,33 @@ final class HomeViewController: UITableViewController {
             content.secondaryText = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
             cell.selectionStyle = .none
         }
+        if let icon = Self.icon(row) { RowIcon.apply(icon, to: &content) }
+        // A value stays on the label's line; a long one truncates.
+        content.prefersSideBySideTextAndSecondaryText = true
+        content.secondaryTextProperties.numberOfLines = 1
         cell.contentConfiguration = content
         return cell
+    }
+
+    private static func icon(_ row: Row) -> Icon? {
+        switch row {
+        case .account: nil
+        case .languages: .globe
+        case .target: .languages
+        case .model: .cpu
+        case .polish: .sparkles
+        case .vocabulary: .bookOpen
+        case .history: .history
+        case .keyboard: .keyboard
+        case .version: .info
+        }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch sections[indexPath.section].rows[indexPath.row] {
+        case .account: navigationController?.pushViewController(AccountViewController(), animated: true)
+        case .polish: navigationController?.pushViewController(PolishViewController(), animated: true)
         case .languages: navigationController?.pushViewController(LanguagesViewController(), animated: true)
         case .target: navigationController?.pushViewController(TargetViewController(), animated: true)
         case .vocabulary: navigationController?.pushViewController(VocabularyViewController(), animated: true)
@@ -191,8 +192,47 @@ final class HomeViewController: UITableViewController {
         }
         reload(.model)
     }
+}
 
-    @objc private func polishChanged(_ toggle: UISwitch) {
-        preferences.polishingEnabled = toggle.isOn
+/// The account row: the picture or initials, then the name and email, or
+/// the person glyph and "Sign in" while signed out.
+private final class AccountCell: UITableViewCell {
+    init(state: AccountState) {
+        super.init(style: .default, reuseIdentifier: nil)
+        backgroundColor = Palette.card
+        accessoryType = .disclosureIndicator
+        let avatar = AvatarView(size: 44)
+        let profile = state.phase == .signedOut || state.phase == .signingIn ? nil : state.profile
+        avatar.show(profile)
+        let name = UILabel(style: .body)
+        name.font = .systemFont(ofSize: 17, weight: .semibold)
+        let detail = UILabel(style: .caption, color: Palette.mutedForeground)
+        if let profile {
+            name.text = profile.name.isEmpty ? profile.email : profile.name
+            detail.text = state.phase == .restoring ? L10n.accountRestoring : (profile.name.isEmpty ? L10n.accountSignedIn : profile.email)
+        } else {
+            name.text = L10n.accountSignInTitle
+            detail.isHidden = true
+        }
+        let labels = UIStackView(arrangedSubviews: [name, detail])
+        labels.axis = .vertical
+        labels.spacing = 2
+        let row = UIStackView(arrangedSubviews: [avatar, labels])
+        row.spacing = 14
+        row.alignment = .center
+        row.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(row)
+        NSLayoutConstraint.activate([
+            row.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            row.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            row.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            row.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+        ])
+        isAccessibilityElement = true
+        accessibilityLabel = [name.text, detail.text].compactMap(\.self).joined(separator: ", ")
+        accessibilityTraits = .button
     }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
 }

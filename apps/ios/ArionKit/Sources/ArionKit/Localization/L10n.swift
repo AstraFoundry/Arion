@@ -4,6 +4,44 @@ import Foundation
 
 /// The localized copy of the Arion app and keyboard.
 public enum L10n {
+    public static var accountCancel: String { lookup("account.cancel") }
+    public static var accountContinueEmail: String { lookup("account.continueEmail") }
+    public static var accountContinueGitHub: String { lookup("account.continueGitHub") }
+    public static var accountContinueGoogle: String { lookup("account.continueGoogle") }
+    public static var accountContinueLocally: String { lookup("account.continueLocally") }
+    public static var accountErrorAuthorization: String { lookup("account.error.authorization") }
+    public static var accountErrorDenied: String { lookup("account.error.denied") }
+    public static var accountErrorDiscovery: String { lookup("account.error.discovery") }
+    public static var accountErrorGeneric: String { lookup("account.error.generic") }
+    public static var accountErrorInProgress: String { lookup("account.error.inProgress") }
+    public static var accountErrorRefresh: String { lookup("account.error.refresh") }
+    public static var accountErrorRevokeUnconfirmed: String { lookup("account.error.revokeUnconfirmed") }
+    public static var accountErrorSessionEnded: String { lookup("account.error.sessionEnded") }
+    public static var accountErrorStore: String { lookup("account.error.store") }
+    public static var accountErrorToken: String { lookup("account.error.token") }
+    public static var accountErrorUsageConsent: String { lookup("account.error.usageConsent") }
+    public static var accountPortal: String { lookup("account.portal") }
+    public static var accountPortalConnections: String { lookup("account.portal.connections") }
+    public static var accountPortalData: String { lookup("account.portal.data") }
+    public static var accountPortalProducts: String { lookup("account.portal.products") }
+    public static var accountPortalProfile: String { lookup("account.portal.profile") }
+    public static var accountPortalSecurity: String { lookup("account.portal.security") }
+    public static var accountPrivacy: String { lookup("account.privacy") }
+    public static var accountRestoring: String { lookup("account.restoring") }
+    public static var accountSignIn: String { lookup("account.signIn") }
+    public static var accountSignInDetail: String { lookup("account.signInDetail") }
+    public static var accountSignInTitle: String { lookup("account.signInTitle") }
+    public static var accountSignOut: String { lookup("account.signOut") }
+    public static var accountSignedIn: String { lookup("account.signedIn") }
+    public static var accountTerms: String { lookup("account.terms") }
+    public static var accountTermsAccept: String { lookup("account.termsAccept") }
+    public static var accountTermsNotice: String { lookup("account.termsNotice") }
+    public static var accountTitle: String { lookup("account.title") }
+    public static var accountUsageAgree: String { lookup("account.usageAgree") }
+    public static var accountUsageData: String { lookup("account.usageData") }
+    public static var accountUsageShare: String { lookup("account.usageShare") }
+    public static var accountUsageShareDetail: String { lookup("account.usageShareDetail") }
+    public static var accountWaiting: String { lookup("account.waiting") }
     public static var androidFailureBusy: String { lookup("android.failure.busy") }
     public static var androidFailureMicrophone: String { lookup("android.failure.microphone") }
     public static var androidFailureNetwork: String { lookup("android.failure.network") }
@@ -17,6 +55,29 @@ public enum L10n {
     public static var androidOnboardingSelectOpen: String { lookup("android.onboarding.select.open") }
     public static var androidOnboardingSelectTitle: String { lookup("android.onboarding.select.title") }
     public static var appName: String { lookup("app.name") }
+    public static var cloudAnthropicCompatible: String { lookup("cloud.anthropicCompatible") }
+    public static var cloudApiKeys: String { lookup("cloud.apiKeys") }
+    public static var cloudBaseURL: String { lookup("cloud.baseURL") }
+    public static var cloudBaseURLPlaceholder: String { lookup("cloud.baseURLPlaceholder") }
+    public static var cloudConnect: String { lookup("cloud.connect") }
+    public static var cloudDisconnect: String { lookup("cloud.disconnect") }
+    public static var cloudFailAddress: String { lookup("cloud.fail.address") }
+    public static var cloudFailModels: String { lookup("cloud.fail.models") }
+    public static var cloudFailNetwork: String { lookup("cloud.fail.network") }
+    public static var cloudFailRejected: String { lookup("cloud.fail.rejected") }
+    public static var cloudFailStore: String { lookup("cloud.fail.store") }
+    public static var cloudFooter: String { lookup("cloud.footer") }
+    public static var cloudInUse: String { lookup("cloud.inUse") }
+    public static var cloudKey: String { lookup("cloud.key") }
+    public static var cloudKeyPlaceholder: String { lookup("cloud.keyPlaceholder") }
+    public static var cloudModel: String { lookup("cloud.model") }
+    public static var cloudModelPlaceholder: String { lookup("cloud.modelPlaceholder") }
+    public static var cloudNotConnected: String { lookup("cloud.notConnected") }
+    public static var cloudOpenaiCompatible: String { lookup("cloud.openaiCompatible") }
+    public static var cloudRetry: String { lookup("cloud.retry") }
+    public static var cloudSaved: String { lookup("cloud.saved") }
+    public static var cloudTitle: String { lookup("cloud.title") }
+    public static var cloudUse: String { lookup("cloud.use") }
     public static var failureCapture: String { lookup("failure.capture") }
     public static var failureFullAccess: String { lookup("failure.fullAccess") }
     public static var failureInstalling: String { lookup("failure.installing") }
@@ -43,6 +104,7 @@ public enum L10n {
     public static var languageNameEnglish: String { lookup("language.name.english") }
     public static var noticeUnpolished: String { lookup("notice.unpolished") }
     public static var noticeUntranslated: String { lookup("notice.untranslated") }
+    public static var onboardingBack: String { lookup("onboarding.back") }
     public static var onboardingContinue: String { lookup("onboarding.continue") }
     public static var onboardingFinish: String { lookup("onboarding.finish") }
     public static var onboardingKeyboardFullAccessNote: String { lookup("onboarding.keyboard.fullAccessNote") }
@@ -55,13 +117,47 @@ public enum L10n {
     public static var onboardingMicrophoneBody: String { lookup("onboarding.microphone.body") }
     public static var onboardingMicrophoneDenied: String { lookup("onboarding.microphone.denied") }
     public static var onboardingMicrophoneTitle: String { lookup("onboarding.microphone.title") }
+    public static var onboardingPolishBody: String { lookup("onboarding.polish.body") }
+    public static var onboardingPolishTitle: String { lookup("onboarding.polish.title") }
+    public static func onboardingProgress(current: String, total: String) -> String { format("onboarding.progress", current, total) }
     public static var onboardingSkip: String { lookup("onboarding.skip") }
+    public static var onboardingSkipCloud: String { lookup("onboarding.skip.cloud") }
     public static var onboardingTryBody: String { lookup("onboarding.try.body") }
     public static var onboardingTryBodyAndroid: String { lookup("onboarding.try.bodyAndroid") }
     public static var onboardingTryPlaceholder: String { lookup("onboarding.try.placeholder") }
     public static var onboardingTryTitle: String { lookup("onboarding.try.title") }
     public static var onboardingWelcomeBody: String { lookup("onboarding.welcome.body") }
     public static var onboardingWelcomeTitle: String { lookup("onboarding.welcome.title") }
+    public static var overviewActivity: String { lookup("overview.activity") }
+    public static func overviewDayWords(date: String, words: String) -> String { format("overview.dayWords", date, words) }
+    public static var overviewFirstBody: String { lookup("overview.first.body") }
+    public static var overviewFirstHint: String { lookup("overview.first.hint") }
+    public static var overviewFirstPrompt: String { lookup("overview.first.prompt") }
+    public static var overviewFirstTitle: String { lookup("overview.first.title") }
+    public static var overviewLess: String { lookup("overview.less") }
+    public static var overviewMore: String { lookup("overview.more") }
+    public static var overviewPolished: String { lookup("overview.polished") }
+    public static var overviewRangeAll: String { lookup("overview.range.all") }
+    public static var overviewRangeToday: String { lookup("overview.range.today") }
+    public static var overviewRangeWeek: String { lookup("overview.range.week") }
+    public static var overviewScenes: String { lookup("overview.scenes") }
+    public static var overviewScenesEmpty: String { lookup("overview.scenesEmpty") }
+    public static var overviewSpeechTime: String { lookup("overview.speechTime") }
+    public static var overviewSpeed: String { lookup("overview.speed") }
+    public static var overviewUnpolished: String { lookup("overview.unpolished") }
+    public static var overviewVocabulary: String { lookup("overview.vocabulary") }
+    public static var overviewVocabularyEdit: String { lookup("overview.vocabularyEdit") }
+    public static var overviewVocabularyEmpty: String { lookup("overview.vocabularyEmpty") }
+    public static var overviewVocabularyEmptyTitle: String { lookup("overview.vocabularyEmptyTitle") }
+    public static var overviewWords: String { lookup("overview.words") }
+    public static var polishCloud: String { lookup("polish.cloud") }
+    public static var polishCloudDetail: String { lookup("polish.cloudDetail") }
+    public static var polishDevice: String { lookup("polish.device") }
+    public static var polishDeviceDetail: String { lookup("polish.deviceDetail") }
+    public static var polishOff: String { lookup("polish.off") }
+    public static var polishOffDetail: String { lookup("polish.offDetail") }
+    public static var polishRunsOn: String { lookup("polish.runsOn") }
+    public static var polishTitle: String { lookup("polish.title") }
     public static var returnContinue: String { lookup("return.continue") }
     public static var returnDefault: String { lookup("return.default") }
     public static var returnDone: String { lookup("return.done") }
@@ -71,6 +167,12 @@ public enum L10n {
     public static var returnRoute: String { lookup("return.route") }
     public static var returnSearch: String { lookup("return.search") }
     public static var returnSend: String { lookup("return.send") }
+    public static var sceneChat: String { lookup("scene.chat") }
+    public static var sceneEmail: String { lookup("scene.email") }
+    public static var sceneList: String { lookup("scene.list") }
+    public static var scenePrompt: String { lookup("scene.prompt") }
+    public static var sceneSearch: String { lookup("scene.search") }
+    public static var sceneWork: String { lookup("scene.work") }
     public static var settingsHistory: String { lookup("settings.history") }
     public static var settingsHistoryCopy: String { lookup("settings.history.copy") }
     public static var settingsHistoryDelete: String { lookup("settings.history.delete") }
@@ -105,6 +207,8 @@ public enum L10n {
     public static var settingsVocabularyAdd: String { lookup("settings.vocabulary.add") }
     public static var settingsVocabularyEmpty: String { lookup("settings.vocabulary.empty") }
     public static var settingsVocabularyFooter: String { lookup("settings.vocabulary.footer") }
+    public static var tabOverview: String { lookup("tab.overview") }
+    public static var tabSettings: String { lookup("tab.settings") }
     public static var targetAr: String { lookup("target.ar") }
     public static var targetDe: String { lookup("target.de") }
     public static var targetEn: String { lookup("target.en") }
@@ -117,6 +221,11 @@ public enum L10n {
     public static var targetRu: String { lookup("target.ru") }
     public static var targetZhCN: String { lookup("target.zhCN") }
     public static var targetZhTW: String { lookup("target.zhTW") }
+    public static var unitHours: String { lookup("unit.hours") }
+    public static var unitMinutes: String { lookup("unit.minutes") }
+    public static var unitSeconds: String { lookup("unit.seconds") }
+    public static var unitWords: String { lookup("unit.words") }
+    public static var unitWordsPerMinute: String { lookup("unit.wordsPerMinute") }
 
     private static func lookup(_ key: String) -> String {
         Bundle.module.localizedString(forKey: key, value: nil, table: nil)

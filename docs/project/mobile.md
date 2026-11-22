@@ -75,4 +75,4 @@ Not verified:
 
 ## Not on mobile
 
-Account and sync, cloud polishing, clipboard history, selection actions, the desktop's typing keyboards (Pinyin), contextual spelling selection, speech-cleanup spans, scene detection by app, and edit learning.
+Sync, the ChatGPT subscription sign-in, clipboard history, selection actions, the desktop's typing keyboards (Pinyin), contextual spelling selection, speech-cleanup spans, scene detection by app, and edit learning.

@@ -1,6 +1,6 @@
 # ADR 051: Native iOS and Android voice keyboards
 
-Status: Accepted. Changes the mobile scope of [ADR 021](021-apple-silicon-only-macos.md) and the [product scope](../project/README.md): iOS and Android apps now exist. The desktop decisions stand.
+Status: Accepted; amended by [ADR 052](052-mobile-account-overview-cloud.md) (account, Overview, cloud polishing). Changes the mobile scope of [ADR 021](021-apple-silicon-only-macos.md) and the [product scope](../project/README.md): iOS and Android apps now exist. The desktop decisions stand.
 
 ## Context
 

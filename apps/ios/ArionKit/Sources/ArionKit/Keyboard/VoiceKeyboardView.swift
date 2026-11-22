@@ -26,7 +26,7 @@ public final class VoiceKeyboardView: UIView {
     public weak var delegate: VoiceKeyboardViewDelegate?
 
     /// The globe key; the controller routes it to the system's keyboard list.
-    public let globe = FaceButton(kind: .secondary, material: .raised, symbol: "globe")
+    public let globe = FaceButton(kind: .secondary, material: .raised, icon: .globe)
     private let draftLabel = UILabel(style: .body)
     private let mic = MicButton()
     private let leading = FaceButton(kind: .plain, material: .raised)
@@ -68,7 +68,7 @@ public final class VoiceKeyboardView: UIView {
 
         for side in [leading, trailing] {
             side.cornerRadius = 22
-            side.symbolSize = 19
+            side.iconSize = 20
             side.widthAnchor.constraint(equalToConstant: 56).isActive = true
             side.heightAnchor.constraint(equalToConstant: 44).isActive = true
         }
@@ -137,8 +137,8 @@ public final class VoiceKeyboardView: UIView {
         switch phase {
         case .idle, .failed:
             mic.show(.idle)
-            configure(leading, symbol: nil, title: languageMark, label: L10n.keyboardLanguage(language: languageName))
-            configure(trailing, symbol: "delete.left", title: nil, label: L10n.keyboardDelete)
+            configure(leading, icon: nil, title: languageMark, label: L10n.keyboardLanguage(language: languageName))
+            configure(trailing, icon: .delete, title: nil, label: L10n.keyboardDelete)
             if case .failed(let failure) = phase {
                 showNotice(Self.message(failure), autoClear: false)
             } else if noticeTask == nil {
@@ -155,7 +155,7 @@ public final class VoiceKeyboardView: UIView {
             showDraft(draft)
         case .finishing(let draft), .polishing(let draft):
             mic.show(.working)
-            configure(leading, symbol: "xmark", title: nil, label: L10n.keyboardCancel)
+            configure(leading, icon: .x, title: nil, label: L10n.keyboardCancel)
             trailing.isHidden = true
             showDraft(draft)
         }
@@ -163,14 +163,14 @@ public final class VoiceKeyboardView: UIView {
     }
 
     private func setCancelAndTranslate() {
-        configure(leading, symbol: "xmark", title: nil, label: L10n.keyboardCancel)
-        configure(trailing, symbol: "translate", title: nil, label: L10n.keyboardTranslate(language: translationName))
+        configure(leading, icon: .x, title: nil, label: L10n.keyboardCancel)
+        configure(trailing, icon: .languages, title: nil, label: L10n.keyboardTranslate(language: translationName))
     }
 
-    private func configure(_ button: FaceButton, symbol: String?, title: String?, label: String) {
-        let hidden = symbol == nil && title == nil
+    private func configure(_ button: FaceButton, icon: Icon?, title: String?, label: String) {
+        let hidden = icon == nil && title == nil
         if button.isHidden != hidden { button.isHidden = hidden }
-        button.symbol = symbol
+        button.icon = icon
         button.title = title
         button.accessibilityLabel = label
     }

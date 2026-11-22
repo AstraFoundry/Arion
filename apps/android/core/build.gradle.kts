@@ -15,6 +15,7 @@ kotlin {
 
 dependencies {
     implementation(libs.serialization.json)
+    api(libs.coroutines.core)
     testImplementation(libs.junit)
 }
 

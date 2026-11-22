@@ -19,7 +19,7 @@ class SettingsListController: UITableViewController {
         tableView.backgroundColor = Palette.background
     }
 
-    func cell(_ text: String, secondary: String? = nil, checked: Bool = false) -> UITableViewCell {
+    func cell(_ text: String, secondary: String? = nil, checked: Bool = false, icon: Icon? = nil) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
         cell.backgroundColor = Palette.card
         var content = UIListContentConfiguration.subtitleCell()
@@ -27,10 +27,15 @@ class SettingsListController: UITableViewController {
         content.textProperties.font = TextStyle.body.font
         content.textProperties.color = Palette.foreground
         content.secondaryText = secondary
+        if let icon { RowIcon.apply(icon, to: &content) }
         content.secondaryTextProperties.font = TextStyle.caption.font
         content.secondaryTextProperties.color = Palette.mutedForeground
         cell.contentConfiguration = content
-        cell.accessoryType = checked ? .checkmark : .none
+        if checked {
+            let mark = UIImageView(image: Icon.check.image(size: 18))
+            mark.tintColor = Palette.foreground
+            cell.accessoryView = mark
+        }
         return cell
     }
 }
@@ -213,15 +218,15 @@ final class HistoryViewController: SettingsListController {
         guard indexPath.section == 1, indexPath.row < entries.count else { return nil }
         let entry = entries[indexPath.row]
         return UIContextMenuConfiguration(actionProvider: { _ in
-            var actions = [UIAction(title: L10n.settingsHistoryCopy, image: UIImage(systemName: "doc.on.doc")) { _ in
+            var actions = [UIAction(title: L10n.settingsHistoryCopy, image: Icon.copy.image(size: 20)) { _ in
                 UIPasteboard.general.string = entry.text
             }]
             if let original = entry.original {
-                actions.append(UIAction(title: L10n.settingsHistoryOriginal, image: UIImage(systemName: "text.quote")) { _ in
+                actions.append(UIAction(title: L10n.settingsHistoryOriginal, image: Icon.history.image(size: 20)) { _ in
                     UIPasteboard.general.string = original
                 })
             }
-            actions.append(UIAction(title: L10n.settingsHistoryDelete, image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+            actions.append(UIAction(title: L10n.settingsHistoryDelete, image: Icon.trash.image(size: 20), attributes: .destructive) { [weak self] _ in
                 try? self?.history.remove(entry.id)
                 self?.entries.removeAll { $0.id == entry.id }
                 self?.tableView.reloadData()

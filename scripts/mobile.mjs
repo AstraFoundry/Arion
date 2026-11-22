@@ -27,10 +27,12 @@ switch (command) {
   case 'generate':
     run('go', ['run', './cmd/arion-mobile-tokens'], desktop);
     run('node', ['scripts/generate-mobile-strings.mjs']);
+    run('node', ['scripts/generate-mobile-icons.mjs']);
     break;
   case 'check':
     run('go', ['run', './cmd/arion-mobile-tokens', '-check'], desktop);
     run('node', ['scripts/generate-mobile-strings.mjs', '--check']);
+    run('node', ['scripts/generate-mobile-icons.mjs', '--check']);
     break;
   case 'ios-test':
     run('xcodegen', ['generate', '--quiet'], ios);

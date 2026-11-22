@@ -110,7 +110,7 @@ public final class FaceButton: UIControl {
     public let titleLabel = UILabel(style: .label)
     public let iconView = UIImageView()
 
-    public init(kind: Kind, material: Material = .flat, title: String? = nil, symbol: String? = nil) {
+    public init(kind: Kind, material: Material = .flat, title: String? = nil, icon: Icon? = nil) {
         self.kind = kind
         self.material = material
         super.init(frame: .zero)
@@ -121,7 +121,10 @@ public final class FaceButton: UIControl {
         if material == .raised { layer.addSublayer(highlight) }
         titleLabel.numberOfLines = 1
         titleLabel.textAlignment = .center
-        iconView.contentMode = .center
+        iconView.contentMode = .scaleAspectFit
+        iconSide = iconView.widthAnchor.constraint(equalToConstant: 20)
+        iconSide.isActive = true
+        iconView.heightAnchor.constraint(equalTo: iconView.widthAnchor).isActive = true
         stack.axis = .horizontal
         stack.spacing = 6
         stack.alignment = .center
@@ -139,8 +142,8 @@ public final class FaceButton: UIControl {
         // Observers do not run inside the initializer, so draw explicitly.
         defer {
             self.title = title
-            self.symbol = symbol
-            drawSymbol()
+            self.icon = icon
+            drawIcon()
         }
         isAccessibilityElement = true
         accessibilityTraits = .button
@@ -163,14 +166,16 @@ public final class FaceButton: UIControl {
         }
     }
 
-    /// The button's SF Symbol; nil hides it.
-    public var symbol: String? { didSet { drawSymbol() } }
+    /// The button's icon; nil hides it.
+    public var icon: Icon? { didSet { drawIcon() } }
 
-    public var symbolSize: CGFloat = 17 { didSet { drawSymbol() } }
+    /// The side of the icon's square frame.
+    public var iconSize: CGFloat = 20 { didSet { iconSide.constant = iconSize } }
+    private var iconSide: NSLayoutConstraint!
 
-    private func drawSymbol() {
-        iconView.image = symbol.map { UIImage(systemName: $0, withConfiguration: UIImage.SymbolConfiguration(pointSize: symbolSize, weight: .medium)) } ?? nil
-        iconView.isHidden = symbol == nil
+    private func drawIcon() {
+        iconView.image = icon?.image
+        iconView.isHidden = icon == nil
     }
 
     public override var isHighlighted: Bool {

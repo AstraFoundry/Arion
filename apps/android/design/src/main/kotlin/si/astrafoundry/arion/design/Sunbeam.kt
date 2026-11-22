@@ -62,6 +62,8 @@ data class SunbeamColors(
     val border: Color,
     val faint: Color,
     val danger: Color,
+    /** The accent's ink: deep yellow for text and the busiest heatmap days. */
+    val accentForeground: Color,
     val flatFace: Color,
     val flatFacePressed: Color,
     val raisedFaceFrom: Color,
@@ -94,6 +96,7 @@ private fun colors(dark: Boolean): SunbeamColors {
         border = c.border.pick(),
         faint = c.faint.pick(),
         danger = c.danger.pick(),
+        accentForeground = c.accentForeground.pick(),
         flatFace = c.flatFace.pick(),
         flatFacePressed = c.flatFacePressed.pick(),
         raisedFaceFrom = c.raisedFaceFrom.pick(),

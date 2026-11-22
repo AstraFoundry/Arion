@@ -27,17 +27,32 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
         #endif
-        let home = UINavigationController(rootViewController: HomeViewController())
-        home.navigationBar.prefersLargeTitles = true
-        // The large title shares the onboarding headline's serif.
-        home.navigationBar.largeTitleTextAttributes = [.font: TextStyle.headline.font, .foregroundColor: Palette.foreground]
-        window.rootViewController = home
+        let tabs = UITabBarController()
+        tabs.viewControllers = [
+            Self.tab(OverviewViewController(), title: L10n.tabOverview, icon: .chartLine),
+            Self.tab(SettingsViewController(), title: L10n.tabSettings, icon: .settings),
+        ]
+        window.rootViewController = tabs
         window.makeKeyAndVisible()
         self.window = window
+        Services.start(window: window)
         if !preferences.onboardingCompleted || ProcessInfo.processInfo.arguments.contains("-onboarding") {
             let onboarding = OnboardingViewController()
             onboarding.modalPresentationStyle = .fullScreen
-            home.present(onboarding, animated: false)
+            tabs.present(onboarding, animated: false)
         }
+    }
+
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        Services.account.reportUsage()
+    }
+
+    private static func tab(_ root: UIViewController, title: String, icon: Icon) -> UINavigationController {
+        let navigation = UINavigationController(rootViewController: root)
+        navigation.navigationBar.prefersLargeTitles = true
+        // Large titles share the onboarding headline's serif.
+        navigation.navigationBar.largeTitleTextAttributes = [.font: TextStyle.headline.font, .foregroundColor: Palette.foreground]
+        navigation.tabBarItem = UITabBarItem(title: title, image: icon.image(size: 24), selectedImage: nil)
+        return navigation
     }
 }

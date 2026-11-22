@@ -163,7 +163,7 @@ Create a todo file for long tasks and mark items with `[ ]` / `[x]`. Clean up wh
 
 ## Arion mobile conventions
 
-- iOS (`apps/ios`, UIKit) and Android (`apps/android`, Kotlin/Compose) are native apps ([ADR 051](docs/decisions/051-native-mobile-keyboards.md)). Recognition and polishing stay on the device; never add a cloud path.
+- iOS (`apps/ios`, UIKit) and Android (`apps/android`, Kotlin/Compose) are native apps ([ADR 051](docs/decisions/051-native-mobile-keyboards.md)). Recognition stays on the device; polishing goes to the cloud only when the user connects a provider ([ADR 052](docs/decisions/052-mobile-account-overview-cloud.md)).
 - Mobile copy lives only in `packages/mobile-strings/strings.json`; Sunbeam tokens come from `pnpm mobile:generate`. Do not edit generated catalogs or token files.
 - Polishing and translation use the desktop's `format.json` recipe unchanged; port request building, not prompt text.
 

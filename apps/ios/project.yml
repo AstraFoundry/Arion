@@ -33,6 +33,7 @@ targets:
       path: Arion/Arion.entitlements
       properties:
         com.apple.security.application-groups: [group.si.astrafoundry.arion]
+        keychain-access-groups: [$(AppIdentifierPrefix)si.astrafoundry.arion.shared]
     info:
       path: Arion/Info.plist
       properties:
@@ -51,6 +52,10 @@ targets:
         NSMicrophoneUsageDescription: Arion listens only while you dictate, and recognizes speech on this iPhone.
         NSSpeechRecognitionUsageDescription: Arion recognizes your speech on this iPhone.
         ITSAppUsesNonExemptEncryption: false
+        # The account's sign-in returns to arion://auth/callback.
+        CFBundleURLTypes:
+          - CFBundleURLName: si.astrafoundry.arion.auth
+            CFBundleURLSchemes: [arion]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: si.astrafoundry.arion.ios
@@ -67,6 +72,7 @@ targets:
       path: ArionKeyboard/ArionKeyboard.entitlements
       properties:
         com.apple.security.application-groups: [group.si.astrafoundry.arion]
+        keychain-access-groups: [$(AppIdentifierPrefix)si.astrafoundry.arion.shared]
     info:
       path: ArionKeyboard/Info.plist
       properties:

@@ -6,5 +6,9 @@
 	<array>
 		<string>group.si.astrafoundry.arion</string>
 	</array>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)si.astrafoundry.arion.shared</string>
+	</array>
 </dict>
 </plist>

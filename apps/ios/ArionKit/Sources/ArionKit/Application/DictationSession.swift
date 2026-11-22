@@ -36,6 +36,7 @@ public final class DictationSession {
     private let microphone: WebMicrophone
     private let recognizer = Recognizer()
     private let model = OnDeviceModel()
+    private let cloud = CloudModel()
     private let recipe: RewriteRecipe?
     private let preferences: Preferences
     private var generation = DictationGeneration(0)
@@ -136,7 +137,7 @@ public final class DictationSession {
                 return Delivery(text: source, source: source, outcome: .translationUnavailable)
             }
             phase = .polishing(Draft(finalized: source))
-            if let text = try? await model.run(request) {
+            if let text = try? await run(request) {
                 return Delivery(text: text, source: source, outcome: .translated)
             }
             return Delivery(text: source, source: source, outcome: .translationUnavailable)
@@ -144,15 +145,27 @@ public final class DictationSession {
             guard preferences.polishingEnabled else {
                 return Delivery(text: source, source: source, outcome: .cleaned)
             }
-            guard let recipe, OnDeviceModel.availability == .available else {
+            guard let recipe, engineReady else {
                 return Delivery(text: source, source: source, outcome: .polishUnavailable)
             }
             phase = .polishing(Draft(finalized: source))
-            if let text = try? await model.run(recipe.polish(source, scene: scene)) {
+            if let text = try? await run(recipe.polish(source, scene: scene)) {
                 return Delivery(text: text, source: source, outcome: .polished)
             }
             return Delivery(text: source, source: source, outcome: .polishUnavailable)
         }
+    }
+
+    /// Whether the chosen engine can run: a connected cloud model, or Apple
+    /// Intelligence on this device.
+    private var engineReady: Bool {
+        preferences.polishEngine == .cloud ? CloudModel.ready : OnDeviceModel.availability == .available
+    }
+
+    /// Runs a request on the chosen engine. The cloud receives only the
+    /// rule-corrected transcript and the recipe.
+    private func run(_ request: RewriteRequest) async throws -> String {
+        preferences.polishEngine == .cloud ? try await cloud.run(request) : try await model.run(request)
     }
 
     private func receive(_ event: WebMicrophone.Event) {

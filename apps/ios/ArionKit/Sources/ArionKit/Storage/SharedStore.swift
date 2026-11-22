@@ -27,6 +27,7 @@ public final class Preferences: @unchecked Sendable {
 
     private enum Key {
         static let polishing = "polishing.enabled"
+        static let engine = "polishing.engine"
         static let languages = "dictation.languages"
         static let language = "dictation.language"
         static let history = "history.enabled"
@@ -35,11 +36,18 @@ public final class Preferences: @unchecked Sendable {
         static let onboarded = "onboarding.completed"
     }
 
-    /// Polishing with the on-device model is on by default; it runs only when
-    /// Apple Intelligence is available and never leaves the device.
+    /// Polishing is on by default. On this device it runs only when Apple
+    /// Intelligence is available; in the cloud only with a connected model.
     public var polishingEnabled: Bool {
         get { defaults.object(forKey: Key.polishing) as? Bool ?? true }
         set { defaults.set(newValue, forKey: Key.polishing) }
+    }
+
+    /// Where polishing and translation run: this device by default, or the
+    /// cloud model the user connected.
+    public var polishEngine: PolishEngine {
+        get { defaults.string(forKey: Key.engine).flatMap(PolishEngine.init(rawValue:)) ?? .device }
+        set { defaults.set(newValue.rawValue, forKey: Key.engine) }
     }
 
     /// Recognition languages the keyboard cycles through, as BCP 47 identifiers.

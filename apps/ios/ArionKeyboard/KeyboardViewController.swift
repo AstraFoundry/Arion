@@ -8,6 +8,9 @@ final class KeyboardViewController: UIInputViewController {
     private lazy var microphone = WebMicrophone()
     private lazy var session = DictationSession(microphone: microphone, preferences: preferences)
     private let keyboard = VoiceKeyboardView()
+    private let usage = UsageLedger()
+    /// When the microphone started listening, for the day's listening time.
+    private var listeningSince: Date?
 
     override func loadView() {
         view = KeyboardInputView(frame: .zero, inputViewStyle: .keyboard)
@@ -25,7 +28,12 @@ final class KeyboardViewController: UIInputViewController {
             keyboard.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             keyboard.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
-        session.onPhase = { [weak self] phase in self?.keyboard.render(phase) }
+        session.onPhase = { [weak self] phase in
+            guard let self else { return }
+            if case .listening = phase, self.listeningSince == nil { self.listeningSince = .now }
+            if phase == .starting { self.listeningSince = nil }
+            self.keyboard.render(phase)
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -92,9 +100,14 @@ final class KeyboardViewController: UIInputViewController {
 
     private func end(_ intent: DictationIntent) {
         let scene = scene
+        let listened = listeningSince.map { Int64(Date.now.timeIntervalSince($0) * 1000) } ?? 0
+        listeningSince = nil
         Task {
             guard let delivery = await session.finish(intent: intent, scene: scene) else { return }
             insert(delivery)
+            // Numbers and the scene only; the text is counted, never kept (005).
+            let polished = delivery.outcome == .polished || delivery.outcome == .translated
+            try? usage.record(speechMs: listened, text: delivery.text, scene: polished ? scene : nil)
         }
     }
 
@@ -104,7 +117,7 @@ final class KeyboardViewController: UIInputViewController {
             try? History().record(HistoryEntry(text: delivery.text, original: delivery.source))
         }
         switch delivery.outcome {
-        case .polishUnavailable where preferences.polishingEnabled && OnDeviceModel.availability == .available:
+        case .polishUnavailable where preferences.polishingEnabled && (preferences.polishEngine == .cloud || OnDeviceModel.availability == .available):
             keyboard.showNotice(L10n.noticeUnpolished, autoClear: true)
         case .translationUnavailable:
             keyboard.showNotice(L10n.noticeUntranslated, autoClear: true)
