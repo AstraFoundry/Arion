@@ -28,6 +28,19 @@ The note means the user does not have to remember the app's instructions after t
 | Doubao | Lottie files in `OimeUIAssets.bundle`: `setting_lottie`, `full_access_guide_lottie`, `switch_lottie`, `reboot_lottie`, `guide_microphone` (light and dark) | Embedded screenshots of the real Settings pages (Settings › Apps › Doubao, the Keyboards page with the keyboard and Allow Full Access switches), animated, 2–4 s |
 | WeChat | GIFs in `res/image`: `fullaccess_guide`, `notfound_guide`, `voiceinput_microphone_guide` (light and dark) | Tapping Keyboards, turning on the keyboard, then Allow Full Access; for a missing keyboard, restarting the phone |
 
+## How far an app can link into Settings
+
+Tried from a test app on the iOS 26.4 simulator, with the Settings app's log:
+
+| Link | Result |
+| --- | --- |
+| `UIApplication.openSettingsURLString` | Settings receives `settings-navigation://com.apple.Settings.Apps/<bundle ID>`: the app's page |
+| `App-Prefs:root=General&path=Keyboard/KEYBOARDS` and other `App-Prefs:` paths | Opens, but Settings rewrites every `App-Prefs:x` to `settings-navigation://com.apple.Settings.Apps/x`, so General › Keyboard is no longer reachable |
+| `App-Prefs:<bundle ID>/KEYBOARDS`, `App-Prefs:<bundle ID>&path=KEYBOARDS` | Rewritten to the app's page; the path after the bundle ID is dropped |
+| `settings-navigation://…` | Refused: an app cannot open it |
+
+The deepest an app can link is its own page in Settings, where the Keyboards row is. Neither competitor declares a Settings scheme, and both put a note on that page telling the user to tap Keyboards, which fits the same limit. `App-Prefs:` is also not a public scheme, so Arion uses the public link.
+
 ## Keyboard declaration
 
 | | Doubao | WeChat | Arion |
