@@ -157,6 +157,14 @@ import UIKit
 public enum Icon: String, CaseIterable, Sendable {
 ${all.map(([name]) => `    case ${camel(name)}`).join("\n")}
 
+    /// Brand marks that keep their own colors.
+    public var original: Bool {
+        switch self {
+${manifest.original.map((name) => `        case .${camel(name)}: true`).join("\n")}
+        default: false
+        }
+    }
+
     /// The icon as a template image (brand marks keep their colors).
     public var image: UIImage {
         guard let image = UIImage(named: rawValue, in: .module, compatibleWith: nil) else {

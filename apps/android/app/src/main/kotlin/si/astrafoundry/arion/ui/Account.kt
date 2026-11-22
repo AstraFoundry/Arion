@@ -174,35 +174,6 @@ fun Avatar(profile: AccountProfile?, size: Dp) {
     }
 }
 
-/** The account row at the top of Settings. */
-@Composable
-fun AccountRow(state: AccountState, onClick: () -> Unit) {
-    val c = Sunbeam.colors
-    val profile = state.profile.takeIf { state.phase != AccountPhase.SignedOut && state.phase != AccountPhase.SigningIn }
-    val name = profile?.let { it.name.ifEmpty { it.email } } ?: stringResource(R.string.account_sign_in_title)
-    val detail = when {
-        profile == null -> null
-        state.phase == AccountPhase.Restoring -> stringResource(R.string.account_restoring)
-        profile.name.isEmpty() -> stringResource(R.string.account_signed_in)
-        else -> profile.email
-    }
-    Section {
-        Row(
-            Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = onClick).padding(horizontal = 16.dp, vertical = 10.dp)
-                .semantics(mergeDescendants = true) { contentDescription = listOfNotNull(name, detail).joinToString(", ") },
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Avatar(profile, 44.dp)
-            Spacer(Modifier.width(14.dp))
-            Column(Modifier.weight(1f)) {
-                Text(name, style = Sunbeam.type.body.copy(fontWeight = FontWeight.SemiBold), color = c.foreground)
-                if (detail != null) Text(detail, style = Sunbeam.type.caption, color = c.mutedForeground)
-            }
-            IconView(ArionIcon.ChevronRight, 16.dp, c.faint)
-        }
-    }
-}
-
 /** The account: sign in, or the profile with usage sharing, the portal and Sign out. */
 @Composable
 fun AccountScreen(account: AccountServing, state: AccountState) {

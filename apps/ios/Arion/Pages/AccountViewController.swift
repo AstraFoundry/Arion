@@ -4,7 +4,7 @@ import UIKit
 /// The AstraFoundry account: sign in, or the profile with usage sharing, the
 /// account portal and Sign out.
 final class AccountViewController: UITableViewController {
-    private enum Row { case share, portal(String, String), signOut }
+    private enum Row { case share, portal(String, String), signOut, version }
 
     private var account: AccountServing { Services.account }
     private var sections: [(title: String?, rows: [Row], footer: String?)] = []
@@ -47,6 +47,7 @@ final class AccountViewController: UITableViewController {
             }
             sections.append((nil, [.signOut], failure))
         }
+        sections.append((nil, [.version], nil))
         layoutHeader()
         tableView.reloadData()
     }
@@ -94,7 +95,7 @@ final class AccountViewController: UITableViewController {
             stack.setCustomSpacing(16, after: stack.arrangedSubviews.last!)
             stack.addArrangedSubview(label)
         }
-        return wrap(stack, insets: UIEdgeInsets(top: 24, left: 20, bottom: 8, right: 20))
+        return wrap(stack, insets: UIEdgeInsets(top: 24, left: 20, bottom: 20, right: 20))
     }
 
     private func profileHeader(_ state: AccountState) -> UIView {
@@ -124,8 +125,9 @@ final class AccountViewController: UITableViewController {
         NSLayoutConstraint.activate([
             stack.topAnchor.constraint(equalTo: header.topAnchor, constant: insets.top),
             stack.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -insets.bottom),
-            stack.leadingAnchor.constraint(equalTo: header.layoutMarginsGuide.leadingAnchor, constant: insets.left - 16),
-            stack.trailingAnchor.constraint(equalTo: header.layoutMarginsGuide.trailingAnchor, constant: 16 - insets.right),
+            // The header lines up with the inset cards below it.
+            stack.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: insets.left),
+            stack.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -insets.right),
         ])
         return header
     }
@@ -161,6 +163,15 @@ final class AccountViewController: UITableViewController {
             let mark = UIImageView(image: Icon.externalLink.image(size: 16))
             mark.tintColor = Palette.faint
             cell.accessoryView = mark
+        case .version:
+            content = UIListContentConfiguration.valueCell()
+            content.text = L10n.settingsVersion
+            content.textProperties.font = TextStyle.body.font
+            content.secondaryText = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+            content.secondaryTextProperties.font = TextStyle.body.font
+            content.secondaryTextProperties.color = Palette.mutedForeground
+            RowIcon.apply(.info, to: &content)
+            cell.selectionStyle = .none
         case .signOut:
             content.text = L10n.accountSignOut
             content.textProperties.color = state.busy ? Palette.faint : Palette.danger

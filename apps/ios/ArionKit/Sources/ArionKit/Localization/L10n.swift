@@ -198,8 +198,11 @@ public enum L10n {
     public static var settingsVocabulary: String { lookup("settings.vocabulary") }
     public static var settingsVocabularyAdd: String { lookup("settings.vocabulary.add") }
     public static var settingsVocabularyFooter: String { lookup("settings.vocabulary.footer") }
+    public static var tabAccount: String { lookup("tab.account") }
+    public static var tabDictation: String { lookup("tab.dictation") }
     public static var tabOverview: String { lookup("tab.overview") }
-    public static var tabSettings: String { lookup("tab.settings") }
+    public static var tabPolish: String { lookup("tab.polish") }
+    public static var tabVocabulary: String { lookup("tab.vocabulary") }
     public static var targetAr: String { lookup("target.ar") }
     public static var targetDe: String { lookup("target.de") }
     public static var targetEn: String { lookup("target.en") }

@@ -104,6 +104,12 @@ final class VocabularyViewController: SettingsListController, UITextFieldDelegat
         field.clearButtonMode = .whileEditing
         field.delegate = self
         terms = (try? vocabulary.terms()) ?? []
+        // History is the other thing Arion remembers; it opens from here.
+        let history = UIBarButtonItem(image: Icon.history.image(size: 22), primaryAction: UIAction { [weak self] _ in
+            self?.navigationController?.pushViewController(HistoryViewController(), animated: true)
+        })
+        history.accessibilityLabel = L10n.settingsHistory
+        navigationItem.rightBarButtonItem = history
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int { 2 }

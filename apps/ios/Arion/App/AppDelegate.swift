@@ -30,7 +30,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabs = UITabBarController()
         tabs.viewControllers = [
             Self.tab(OverviewViewController(), title: L10n.tabOverview, icon: .chartLine),
-            Self.tab(SettingsViewController(), title: L10n.tabSettings, icon: .settings),
+            Self.tab(DictationViewController(), title: L10n.tabDictation, icon: .audioLines),
+            Self.tab(PolishViewController(), title: L10n.tabPolish, icon: .sparkles),
+            Self.tab(VocabularyViewController(), title: L10n.tabVocabulary, icon: .bookOpen),
+            Self.tab(AccountViewController(), title: L10n.tabAccount, icon: .circleUser),
         ]
         window.rootViewController = tabs
         window.makeKeyAndVisible()
@@ -48,6 +51,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     private static func tab(_ root: UIViewController, title: String, icon: Icon) -> UINavigationController {
+        // A tab's root shows its large title; pages it opens use the inline one.
+        root.navigationItem.largeTitleDisplayMode = .always
         let navigation = UINavigationController(rootViewController: root)
         navigation.navigationBar.prefersLargeTitles = true
         // Large titles share the onboarding headline's serif.

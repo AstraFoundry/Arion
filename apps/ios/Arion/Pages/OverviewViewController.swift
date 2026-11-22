@@ -54,7 +54,11 @@ final class OverviewViewController: UIViewController {
         let days = usage.days()
         shown = days
         let terms = (try? Vocabulary().terms()) ?? []
-        let edit = { [weak self] in self?.navigationController?.pushViewController(VocabularyViewController(), animated: true) ?? () }
+        // Editing the vocabulary opens its tab.
+        let edit = { [weak self] in
+            guard let tabs = self?.tabBarController else { return }
+            tabs.selectedIndex = tabs.viewControllers?.firstIndex { ($0 as? UINavigationController)?.viewControllers.first is VocabularyViewController } ?? tabs.selectedIndex
+        }
         let total = usage.total(since: nil)
         guard total.sessions > 0 else {
             let cards = [FirstRunCard(), VocabularyCard(terms: terms, edit: edit)]

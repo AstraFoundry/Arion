@@ -7,7 +7,7 @@ enum RowIcon {
     static let size: CGFloat = 18
 
     static func apply(_ icon: Icon, to content: inout UIListContentConfiguration, color: UIColor = Palette.foreground) {
-        let original = icon.image.renderingMode == .alwaysOriginal || icon == .google
+        let original = icon.original
         content.image = icon.image(size: size)
         content.imageProperties.maximumSize = CGSize(width: size, height: size)
         content.imageProperties.reservedLayoutSize = CGSize(width: size, height: size)

@@ -8,11 +8,11 @@ The iOS keyboard extension and the Android input method, their layout and what h
 | --- | --- |
 | `apps/ios/project.yml` | XcodeGen project: the `Arion` app, the `ArionKeyboard` extension, unit and UI test targets. `Arion.xcodeproj` is generated and not committed |
 | `apps/ios/ArionKit` | Swift package shared by the app and the keyboard: `Design` (Sunbeam tokens, generated `Icon`, `FaceButton`, `VoiceMark`), `Domain` (draft, phases, rules, recipe, validation), `Storage` (App Group preferences, vocabulary, history), `Usage` (`UsageLedger`, word count), `Account` (`AccountService`: OIDC, consent, usage report), `Cloud` (`CloudService`, `CloudModel`), `Capture` (WebKit microphone), `Speech` (on-device recognizer), `Polish` (Foundation Models), `Application` (`DictationSession`), `Keyboard` (`VoiceKeyboardView`), `Localization` |
-| `apps/ios/Arion` | The app: Overview and Settings tabs, the account and cloud pages, stepped onboarding, detail lists |
+| `apps/ios/Arion` | The app: Overview, Dictation, Polish, Vocabulary and Account tabs, the cloud pages, stepped onboarding, detail lists |
 | `apps/ios/ArionKeyboard` | `KeyboardViewController`: connects the keyboard view to the session and the editor |
 | `apps/android/core` | Kotlin/JVM domain: draft, phases, rules, recipe, validation, text joining, usage log and word count, cloud request building and default models, OIDC and consent parsing |
 | `apps/android/design` | Sunbeam for Compose (`SunbeamTheme`, `Face`, `VoiceMark`, `IconView`), the generated icons (`ArionIcon`) and string resources |
-| `apps/android/app` | Activity (onboarding, Overview, Settings, account, cloud), `ArionInputMethodService`, `DictationController`, on-device recognizer and model adapters, `AccountService` with `AuthCallbackActivity`, `CloudService`, `UsageLedger`, Keystore-encrypted `Secrets`, stores |
+| `apps/android/app` | Activity (onboarding and the five tabs), `ArionInputMethodService`, `DictationController`, on-device recognizer and model adapters, `AccountService` with `AuthCallbackActivity`, `CloudService`, `UsageLedger`, Keystore-encrypted `Secrets`, stores |
 | `packages/mobile-strings/strings.json` | All user-facing copy of both apps, English and Simplified Chinese |
 | `packages/mobile-icons` | The icon list and the SVGs the desktop does not vendor; the generated assets come from it ([README](../../packages/mobile-icons/README.md)) |
 
@@ -44,11 +44,13 @@ flowchart LR
 
 ## App
 
-Both apps open on two tabs, as the desktop's Settings window opens on its Overview:
+Both apps have five tabs, the sections of the desktop's Settings window that apply to a phone:
 
 - **Overview** sums the per-day counts the keyboard records after each committed dictation (`UsageLedger`: day, listening time, word count by the desktop's rule, the scene of a polished or translated dictation; never text). Four totals, daily words for up to 26 weeks shaded by rank, words by scene for today, the last 7 days or all time, and the latest vocabulary. Before the first dictation, a first-run card with a field to try the keyboard in.
-- **Settings** starts with the account row, then dictation languages and translation target, the speech model, polishing (Off, This device or Cloud; the cloud model shows its provider mark), vocabulary and history, and the keyboard.
-- **Account** signs in to AstraFoundry with the mobile public clients `arion-ios` and `arion-android` and the redirect `arion://auth/callback` (`ASWebAuthenticationSession`; the Android browser and `AuthCallbackActivity`). Signed in, it shows the profile, the usage-sharing switch, the account portal and Sign out. The refresh token is in the keychain, or encrypted with an Android Keystore key; consent and the daily usage report follow the desktop ([account sign-in](account-signin.md)).
+- **Dictation**: recognition languages, the translation target, the speech model (iOS) and keyboard setup.
+- **Polish**: Off, This device or Cloud; while Cloud is chosen, the cloud model with its provider mark.
+- **Vocabulary**: the terms, with history behind the history button.
+- **Account** signs in to AstraFoundry with the mobile public clients `arion-ios` and `arion-android` and the redirect `arion://auth/callback` (`ASWebAuthenticationSession`; the Android browser and `AuthCallbackActivity`). Signed in, it shows the profile, the usage-sharing switch, the account portal and Sign out; the app version follows. The refresh token is in the keychain, or encrypted with an Android Keystore key; consent and the daily usage report follow the desktop ([account sign-in](account-signin.md)).
 - **Cloud model** lists the API-key providers with their marks; connecting lists models before saving and starts on the fast tier, as the desktop ([cloud polishing](cloud-polishing.md)). iOS keys are in a keychain group the keyboard shares.
 - **Onboarding** shows its progress and a back control: welcome with sign-in, the terms box (checked) and the usage box (unchecked), or Continue locally; microphone; keyboard (Android: enable, then select); polishing, which opens the provider pages when Cloud has no model; practice.
 
@@ -74,8 +76,8 @@ Sunbeam tokens are generated (`pnpm mobile:generate`) from the Sunbeam MyGo pack
 | iOS UI test (`ArionUITests`) | Walks onboarding on the simulator (welcome, microphone, keyboard steps, focused practice field) |
 | iOS keyboard states | Rendered through the development preview (`-keyboardPreview idle|listening|polishing|failed`) |
 | Android unit tests (`pnpm android:test`) | Pass: the same cases as iOS against the same recipe file, plus consent and usage-report answers |
-| Android emulator (Pixel Fold, API 35) | Onboarding advances after enabling and selecting the keyboard; the on-device recognizer starts, listening shows cancel and translate, silence ends with “Didn't catch that.” Welcome with sign-in, Overview with sample counts and Settings render with the generated icons |
-| iOS simulator (iPhone 17 Pro) | Onboarding steps, the cloud provider list and form, Overview (first-run card and with sample counts) and Settings render with the generated icons |
+| Android emulator (Pixel Fold, API 35) | Onboarding advances after enabling and selecting the keyboard; the on-device recognizer starts, listening shows cancel and translate, silence ends with “Didn't catch that.” Welcome with sign-in, the five tabs and Overview with sample counts render with the generated icons |
+| iOS simulator (iPhone 17 Pro) | Onboarding steps, the five tabs, the cloud provider list and form, Overview (first-run card and with sample counts) render with the generated icons |
 
 Not verified:
 

@@ -85,7 +85,7 @@ fun Overview(usage: UsageReading, refresh: Int, terms: List<String>, editVocabul
     val total = remember(refresh) { usage.total(null) }
     var period by rememberSaveable { mutableStateOf(Period.Week) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        PageTitle(stringResource(R.string.tab_overview))
+        PageTitle(stringResource(R.string.tab_overview), start = 0.dp)
         if (total.sessions == 0) {
             Rise(0, refresh) { FirstRun() }
             Rise(1, refresh) { VocabularyCard(terms, editVocabulary) }
@@ -113,9 +113,10 @@ fun Overview(usage: UsageReading, refresh: Int, terms: List<String>, editVocabul
 }
 
 @Composable
-fun PageTitle(text: String) {
+fun PageTitle(text: String, start: Dp = 16.dp) {
+    // A tab's title starts on the left edge of its cards.
     Text(text, style = Sunbeam.type.headline, color = Sunbeam.colors.foreground,
-        modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 4.dp).semantics { heading() })
+        modifier = Modifier.padding(start = start, top = 24.dp, bottom = 4.dp).semantics { heading() })
 }
 
 /** A flat Sunbeam card. */

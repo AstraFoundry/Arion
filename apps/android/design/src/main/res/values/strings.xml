@@ -195,8 +195,11 @@
     <string name="settings_vocabulary" formatted="false">Vocabulary</string>
     <string name="settings_vocabulary_add" formatted="false">Add a word</string>
     <string name="settings_vocabulary_footer" formatted="false">Names and terms you add are recognized and kept as written.</string>
+    <string name="tab_account" formatted="false">Account</string>
+    <string name="tab_dictation" formatted="false">Dictation</string>
     <string name="tab_overview" formatted="false">Overview</string>
-    <string name="tab_settings" formatted="false">Settings</string>
+    <string name="tab_polish" formatted="false">Polish</string>
+    <string name="tab_vocabulary" formatted="false">Vocabulary</string>
     <string name="target_ar" formatted="false">Arabic</string>
     <string name="target_de" formatted="false">German</string>
     <string name="target_en" formatted="false">English</string>

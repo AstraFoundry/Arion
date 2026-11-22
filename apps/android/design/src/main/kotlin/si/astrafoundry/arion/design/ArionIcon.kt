@@ -13,6 +13,7 @@ enum class ArionIcon(val res: Int, val original: Boolean = false) {
     ChevronsUpDown(R.drawable.icon_chevrons_up_down),
     Circle(R.drawable.icon_circle),
     CircleCheck(R.drawable.icon_circle_check),
+    CircleUser(R.drawable.icon_circle_user),
     Clock(R.drawable.icon_clock),
     Code(R.drawable.icon_code),
     Copy(R.drawable.icon_copy),

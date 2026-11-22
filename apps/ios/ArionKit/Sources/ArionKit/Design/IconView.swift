@@ -25,6 +25,6 @@ public extension Icon {
         let rendered = UIGraphicsImageRenderer(size: CGSize(width: size, height: size)).image { _ in
             base.draw(in: CGRect(x: 0, y: 0, width: size, height: size))
         }
-        return rendered.withRenderingMode(base.renderingMode == .alwaysOriginal ? .alwaysOriginal : .alwaysTemplate)
+        return rendered.withRenderingMode(original ? .alwaysOriginal : .alwaysTemplate)
     }
 }

@@ -118,14 +118,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private enum class Screen { Onboarding, Overview, Settings, Account, Polish, Cloud, CloudProvider, CloudModels, Languages, Target, Vocabulary, History }
+private enum class Screen { Onboarding, Overview, Dictation, Polish, Vocabulary, Account, Cloud, CloudProvider, CloudModels, Languages, Target, History }
+
+/** The tabs, as the desktop's Settings sections. */
+private val tabs = listOf(Screen.Overview, Screen.Dictation, Screen.Polish, Screen.Vocabulary, Screen.Account)
 
 /** The screen a detail page returns to. */
 private fun Screen.parent(): Screen = when (this) {
     Screen.Cloud -> Screen.Polish
     Screen.CloudProvider, Screen.CloudModels -> Screen.Cloud
-    Screen.Vocabulary -> Screen.Overview
-    else -> Screen.Settings
+    Screen.History -> Screen.Vocabulary
+    else -> Screen.Dictation
 }
 
 /** Whether Arion is among the enabled keyboards, and whether it is the current one. */
@@ -148,15 +151,12 @@ private fun App() {
     val cloudState by cloud.state.collectAsState()
     var screen by rememberSaveable { mutableStateOf(if (preferences.onboardingCompleted) Screen.Overview else Screen.Onboarding) }
     var provider by rememberSaveable { mutableStateOf(CloudProvider.OpenAI) }
-    var tab by rememberSaveable { mutableStateOf(Screen.Overview) }
-    // Vocabulary opened from the Overview returns there; from Settings, to Settings.
-    var vocabularyFrom by rememberSaveable { mutableStateOf(Screen.Overview) }
     LaunchedEffect(Unit) { account.restore() }
     val resumes = onResumeCount()
     LaunchedEffect(resumes) { account.reportUsage() }
-    val top = screen == Screen.Overview || screen == Screen.Settings || screen == Screen.Onboarding
-    BackHandler(!top) { screen = if (screen == Screen.Vocabulary) vocabularyFrom else screen.parent() }
-    val back = { screen = if (screen == Screen.Vocabulary) vocabularyFrom else screen.parent() }
+    val top = screen in tabs || screen == Screen.Onboarding
+    BackHandler(!top) { screen = screen.parent() }
+    val back = { screen = screen.parent() }
     Column(Modifier.fillMaxSize()) {
         Box(Modifier.weight(1f)) {
             AnimatedContent(screen, transitionSpec = { fadeIn() togetherWith fadeOut() }, label = "screen") { current ->
@@ -167,14 +167,16 @@ private fun App() {
                     }
                     Screen.Overview -> Column(Modifier.fillMaxSize().safeDrawingPadding()) {
                         val terms = remember(resumes) { runCatching { Vocabulary(context).terms() }.getOrDefault(emptyList()) }
-                        Overview(remember { UsageLedger(context) }, resumes, terms) { vocabularyFrom = Screen.Overview; screen = Screen.Vocabulary }
+                        Overview(remember { UsageLedger(context) }, resumes, terms) { screen = Screen.Vocabulary }
                     }
-                    Screen.Settings -> SettingsHome(preferences, accountState, cloudState) {
-                        if (it == Screen.Vocabulary) vocabularyFrom = Screen.Settings
-                        screen = it
+                    Screen.Dictation -> DictationHome(preferences) { screen = it }
+                    Screen.Account -> TabPage(stringResource(R.string.tab_account)) {
+                        AccountScreen(account, accountState)
+                        Section {
+                            SettingRow(stringResource(R.string.settings_version), context.packageManager.getPackageInfo(context.packageName, 0).versionName, icon = ArionIcon.Info)
+                        }
                     }
-                    Screen.Account -> Detail(stringResource(R.string.account_title), back) { AccountScreen(account, accountState) }
-                    Screen.Polish -> Detail(stringResource(R.string.polish_title), back) {
+                    Screen.Polish -> TabPage(stringResource(R.string.tab_polish)) {
                         val model = remember { OnDeviceModel() }
                         var availability by remember { mutableStateOf<ModelAvailability?>(null) }
                         val scope = rememberCoroutineScope()
@@ -190,25 +192,44 @@ private fun App() {
                     Screen.CloudModels -> Detail(stringResource(R.string.cloud_model), back) { CloudModelsScreen(cloud, cloudState) { screen = Screen.Cloud } }
                     Screen.Languages -> Detail(stringResource(R.string.settings_languages), back) { Languages(preferences) }
                     Screen.Target -> Detail(stringResource(R.string.settings_translate_into), back) { Target(preferences) }
-                    Screen.Vocabulary -> Detail(stringResource(R.string.settings_vocabulary), back) { VocabularyList() }
+                    // History is the other thing Arion remembers; it opens from here.
+                    Screen.Vocabulary -> TabPage(stringResource(R.string.tab_vocabulary), action = {
+                        IconButton(onClick = { screen = Screen.History }) {
+                            IconView(ArionIcon.History, 22.dp, contentDescription = stringResource(R.string.settings_history))
+                        }
+                    }) { VocabularyList() }
                     Screen.History -> Detail(stringResource(R.string.settings_history), back) { HistoryList(preferences) }
                 }
             }
         }
-        if (screen == Screen.Overview || screen == Screen.Settings) {
-            Tabs(screen) { tab = it; screen = it }
-        }
+        if (screen in tabs) Tabs(screen) { screen = it }
     }
 }
 
-/** The two top-level pages, as a flat bar in Sunbeam ink. */
+/** A tab's page: its large title, an optional action at the trailing edge, then the content. */
+@Composable
+private fun TabPage(title: String, action: (@Composable () -> Unit)? = null, content: @Composable () -> Unit) {
+    Column(Modifier.fillMaxSize().safeDrawingPadding().imePadding().verticalScroll(rememberScrollState())) {
+        Row(verticalAlignment = Alignment.Bottom) {
+            Box(Modifier.weight(1f)) { PageTitle(title) }
+            if (action != null) Box(Modifier.padding(end = 16.dp, bottom = 4.dp)) { action() }
+        }
+        content()
+        Spacer(Modifier.height(24.dp))
+    }
+}
+
+/** The tabs, as a flat bar in Sunbeam ink. */
 @Composable
 private fun Tabs(selected: Screen, choose: (Screen) -> Unit) {
     val c = Sunbeam.colors
     NavigationBar(containerColor = c.background, tonalElevation = 0.dp) {
         listOf(
             Triple(Screen.Overview, ArionIcon.ChartLine, R.string.tab_overview),
-            Triple(Screen.Settings, ArionIcon.Settings, R.string.tab_settings),
+            Triple(Screen.Dictation, ArionIcon.AudioLines, R.string.tab_dictation),
+            Triple(Screen.Polish, ArionIcon.Sparkles, R.string.tab_polish),
+            Triple(Screen.Vocabulary, ArionIcon.BookOpen, R.string.tab_vocabulary),
+            Triple(Screen.Account, ArionIcon.CircleUser, R.string.tab_account),
         ).forEach { (screen, icon, label) ->
             NavigationBarItem(
                 selected = selected == screen, onClick = { choose(screen) },
@@ -453,35 +474,22 @@ fun PracticeField(placeholder: String, autofocus: Boolean = false, height: Dp = 
     }
 }
 
+/** The Dictation tab: recognition languages, the translation target and the keyboard. */
 @Composable
-private fun SettingsHome(preferences: Preferences, accountState: AccountState, cloudState: CloudState, open: (Screen) -> Unit) {
+private fun DictationHome(preferences: Preferences, open: (Screen) -> Unit) {
     val context = LocalContext.current
     val resumes = onResumeCount()
     val status = remember(resumes) { keyboardStatus(context) }
-    val vocabularyCount = remember(resumes) { runCatching { Vocabulary(context).terms().size }.getOrDefault(0) }
-    val polish = remember(resumes, cloudState) { PolishChoice.current(preferences) }
-    Column(Modifier.fillMaxSize().safeDrawingPadding().verticalScroll(rememberScrollState())) {
-        PageTitle(stringResource(R.string.tab_settings))
-        AccountRow(accountState) { open(Screen.Account) }
-        Section(stringResource(R.string.settings_section_dictation), stringResource(R.string.settings_translate_footer)) {
+    TabPage(stringResource(R.string.tab_dictation)) {
+        Section(footer = stringResource(R.string.settings_translate_footer)) {
             SettingRow(stringResource(R.string.settings_languages), preferences.languages.joinToString(" · ") { languageMark(context, it) }, icon = ArionIcon.Globe, onClick = { open(Screen.Languages) })
             SettingRow(stringResource(R.string.settings_translate_into), targetName(context, preferences.translationTarget), icon = ArionIcon.Languages, divider = true, onClick = { open(Screen.Target) })
-        }
-        Section {
-            val value = if (polish == PolishChoice.Cloud) cloudSummary(cloudState) ?: stringResource(R.string.cloud_not_connected) else stringResource(polish.title)
-            SettingRow(stringResource(R.string.settings_polish), value, icon = ArionIcon.Sparkles, onClick = { open(Screen.Polish) })
-        }
-        Section(stringResource(R.string.settings_section_memory)) {
-            SettingRow(stringResource(R.string.settings_vocabulary), vocabularyCount.toString(), icon = ArionIcon.BookOpen, onClick = { open(Screen.Vocabulary) })
-            SettingRow(stringResource(R.string.settings_history), icon = ArionIcon.History, divider = true, onClick = { open(Screen.History) })
         }
         Section(stringResource(R.string.settings_section_keyboard)) {
             val ready = status.enabled
             SettingRow(stringResource(R.string.settings_keyboard_setup), stringResource(if (ready) R.string.settings_keyboard_ready else R.string.settings_keyboard_set_up),
                 icon = ArionIcon.Keyboard, valueEmphasis = !ready, onClick = { context.startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)) })
-            SettingRow(stringResource(R.string.settings_version), context.packageManager.getPackageInfo(context.packageName, 0).versionName, icon = ArionIcon.Info, divider = true)
         }
-        Spacer(Modifier.height(24.dp))
     }
 }
 

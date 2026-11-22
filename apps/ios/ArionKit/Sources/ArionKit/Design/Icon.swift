@@ -13,6 +13,7 @@ public enum Icon: String, CaseIterable, Sendable {
     case chevronsUpDown
     case circle
     case circleCheck
+    case circleUser
     case clock
     case code
     case copy
@@ -46,6 +47,14 @@ public enum Icon: String, CaseIterable, Sendable {
     case lobeOpenai
     case lobeOpenrouter
     case google
+
+    /// Brand marks that keep their own colors.
+    public var original: Bool {
+        switch self {
+        case .google: true
+        default: false
+        }
+    }
 
     /// The icon as a template image (brand marks keep their colors).
     public var image: UIImage {

@@ -195,8 +195,11 @@
     <string name="settings_vocabulary" formatted="false">词汇</string>
     <string name="settings_vocabulary_add" formatted="false">添加词汇</string>
     <string name="settings_vocabulary_footer" formatted="false">添加的人名和术语会被识别，并按原样保留。</string>
+    <string name="tab_account" formatted="false">账号</string>
+    <string name="tab_dictation" formatted="false">听写</string>
     <string name="tab_overview" formatted="false">概览</string>
-    <string name="tab_settings" formatted="false">设置</string>
+    <string name="tab_polish" formatted="false">润色</string>
+    <string name="tab_vocabulary" formatted="false">词汇</string>
     <string name="target_ar" formatted="false">阿拉伯语</string>
     <string name="target_de" formatted="false">德语</string>
     <string name="target_en" formatted="false">英语</string>
