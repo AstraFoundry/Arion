@@ -87,6 +87,7 @@ Not verified:
 - WebKit capture on a device. Every competitor studied switches to its app to record instead ([mobile voice keyboards](../research/mobile-voice-keyboards.md)), so this is the first device check.
 - Foundation Models and Gemini Nano polishing, whether ML Kit refuses inference from an input method, and Chinese polishing through the Prompt API, which publishes no language list (see ADR 051).
 - The Keyboards row on Arion's Settings page: the simulator shows the page and the Settings bundle note (Settings › Apps › Arion) but not the Keyboards row for the ad-hoc-signed build, so the keyboard cannot be turned on there.
+- Opening Arion's Settings page from onboarding: the app opens `UIApplication.openSettingsURLString`, and the iOS 26.4 simulator's Settings receives it as Apps › Arion but stays on its main page. A minimal app with only a Settings bundle behaves the same there, so the landing page needs a device check.
 - Sign-in, consent and usage reporting against astrafoundry.si: `arion-ios` and `arion-android` are not registered with the `arion://auth/callback` redirect yet. Cloud polishing against real providers (no keys were used), and usage recorded by the keyboard from a real dictation.
 - Hardware: no physical iPhone or Android phone, and no vphone guest (vphone Launchpad is installed; host setup is pending the owner).
 
