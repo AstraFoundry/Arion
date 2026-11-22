@@ -100,8 +100,10 @@
     <string name="onboarding_finish" formatted="false">完成</string>
     <string name="onboarding_keyboard_body" formatted="false">步骤就在「设置」里的 Arion 页面上。</string>
     <string name="onboarding_keyboard_open" formatted="false">打开设置</string>
+    <string name="onboarding_keyboard_preview_apps" formatted="false">App</string>
     <string name="onboarding_keyboard_preview_full_access" formatted="false">允许完全访问</string>
     <string name="onboarding_keyboard_preview_keyboards" formatted="false">键盘</string>
+    <string name="onboarding_keyboard_preview_microphone" formatted="false">麦克风</string>
     <string name="onboarding_keyboard_title" formatted="false">添加键盘</string>
     <string name="onboarding_microphone_allow" formatted="false">允许</string>
     <string name="onboarding_microphone_denied" formatted="false">Arion 的麦克风权限已关闭，请在“设置”中打开。</string>

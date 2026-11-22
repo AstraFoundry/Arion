@@ -100,8 +100,10 @@
     <string name="onboarding_finish" formatted="false">Done</string>
     <string name="onboarding_keyboard_body" formatted="false">The steps are on Arion’s page in Settings.</string>
     <string name="onboarding_keyboard_open" formatted="false">Open Settings</string>
+    <string name="onboarding_keyboard_preview_apps" formatted="false">Apps</string>
     <string name="onboarding_keyboard_preview_full_access" formatted="false">Allow Full Access</string>
     <string name="onboarding_keyboard_preview_keyboards" formatted="false">Keyboards</string>
+    <string name="onboarding_keyboard_preview_microphone" formatted="false">Microphone</string>
     <string name="onboarding_keyboard_title" formatted="false">Add the keyboard</string>
     <string name="onboarding_microphone_allow" formatted="false">Allow</string>
     <string name="onboarding_microphone_denied" formatted="false">The microphone is off for Arion. Turn it on in Settings.</string>

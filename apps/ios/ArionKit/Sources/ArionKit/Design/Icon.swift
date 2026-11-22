@@ -31,6 +31,7 @@ public enum Icon: String, CaseIterable, Sendable {
     case list
     case mail
     case messageCircle
+    case mic
     case search
     case server
     case settings

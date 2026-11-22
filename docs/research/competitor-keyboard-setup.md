@@ -41,11 +41,11 @@ The note means the user does not have to remember the app's instructions after t
 ## Arion design choices
 
 - Arion's page in Settings carries the setup steps under the Keyboards row: turn on Arion, Allow Full Access for the microphone, and what to do when the row is missing. Unlike both competitors, the copy is localized (English and Simplified Chinese) and generated from the mobile string catalog.
-- The onboarding keyboard step says where the steps are and shows the two switches (Arion, Allow Full Access) turning on, drawn with system switches and localized labels rather than screenshots, which go stale with each iOS release.
+- The onboarding keyboard step says where the steps are and, like WeChat's guide, shows the whole path as the Settings app draws it: Arion's page with the note, a tap on Keyboards, then the Arion and Allow Full Access switches. It is drawn with system colors, switches and localized labels rather than screenshots, which go stale with each iOS release and match only one language.
 - The privacy reassurance and the list of Full Access benefits are not repeated: the note states the one reason Arion needs it.
 - Not adopted: restart-the-phone guidance, a second recorder or widget, and Live Activities.
 
 ## Open
 
 - How either competitor detects that the keyboard was added and Full Access granted, and whether onboarding advances by itself; this needs decrypted binaries or a device run.
-- Arion's Settings page was not seen on screen: the simulator's Settings did not list Arion during automation ([mobile apps](../project/mobile.md#verification)).
+- Arion's Settings page shows the note on Settings › Apps › Arion in the simulator, but not the Keyboards row for the ad-hoc-signed build; the full path needs a device run ([mobile apps](../project/mobile.md#verification)).

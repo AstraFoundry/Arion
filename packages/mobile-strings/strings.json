@@ -63,6 +63,8 @@
     "onboarding.keyboard.body": { "en": "The steps are on Arion’s page in Settings.", "zh-Hans": "步骤就在「设置」里的 Arion 页面上。" },
     "onboarding.keyboard.previewKeyboards": { "en": "Keyboards", "zh-Hans": "键盘" },
     "onboarding.keyboard.previewFullAccess": { "en": "Allow Full Access", "zh-Hans": "允许完全访问" },
+    "onboarding.keyboard.previewMicrophone": { "en": "Microphone", "zh-Hans": "麦克风" },
+    "onboarding.keyboard.previewApps": { "en": "Apps", "zh-Hans": "App" },
     "onboarding.keyboard.open": { "en": "Open Settings", "zh-Hans": "打开设置" },
     "onboarding.try.title": { "en": "Try it", "zh-Hans": "试一试" },
     "onboarding.try.body": { "en": "Switch to Arion with the globe key, tap the microphone and speak.", "zh-Hans": "用地球键切换到 Arion，点按麦克风后说话。" },

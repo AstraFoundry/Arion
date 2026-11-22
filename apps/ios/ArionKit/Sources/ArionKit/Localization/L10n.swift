@@ -84,6 +84,8 @@ public enum L10n {
     public static var failureNothingHeard: String { lookup("failure.nothingHeard") }
     public static var failureRecognition: String { lookup("failure.recognition") }
     public static var homePractice: String { lookup("home.practice") }
+    public static var iosSettingsMissingKeyboards: String { lookup("iosSettings.missingKeyboards") }
+    public static var iosSettingsSetup: String { lookup("iosSettings.setup") }
     public static var keyboardCancel: String { lookup("keyboard.cancel") }
     public static var keyboardDelete: String { lookup("keyboard.delete") }
     public static var keyboardDictate: String { lookup("keyboard.dictate") }
@@ -103,8 +105,10 @@ public enum L10n {
     public static var onboardingFinish: String { lookup("onboarding.finish") }
     public static var onboardingKeyboardBody: String { lookup("onboarding.keyboard.body") }
     public static var onboardingKeyboardOpen: String { lookup("onboarding.keyboard.open") }
+    public static var onboardingKeyboardPreviewApps: String { lookup("onboarding.keyboard.previewApps") }
     public static var onboardingKeyboardPreviewFullAccess: String { lookup("onboarding.keyboard.previewFullAccess") }
     public static var onboardingKeyboardPreviewKeyboards: String { lookup("onboarding.keyboard.previewKeyboards") }
+    public static var onboardingKeyboardPreviewMicrophone: String { lookup("onboarding.keyboard.previewMicrophone") }
     public static var onboardingKeyboardTitle: String { lookup("onboarding.keyboard.title") }
     public static var onboardingMicrophoneAllow: String { lookup("onboarding.microphone.allow") }
     public static var onboardingMicrophoneDenied: String { lookup("onboarding.microphone.denied") }

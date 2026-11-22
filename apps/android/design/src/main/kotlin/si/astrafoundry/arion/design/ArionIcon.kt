@@ -31,6 +31,7 @@ enum class ArionIcon(val res: Int, val original: Boolean = false) {
     List(R.drawable.icon_list),
     Mail(R.drawable.icon_mail),
     MessageCircle(R.drawable.icon_message_circle),
+    Mic(R.drawable.icon_mic),
     Search(R.drawable.icon_search),
     Server(R.drawable.icon_server),
     Settings(R.drawable.icon_settings),

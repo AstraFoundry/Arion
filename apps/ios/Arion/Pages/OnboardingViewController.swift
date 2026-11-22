@@ -103,6 +103,8 @@ final class OnboardingViewController: UIViewController {
             self.content.alpha = 0
             self.content.transform = CGAffineTransform(translationX: -20 * direction, y: 0)
         }, completion: { _ in
+            // A later step change owns the content; this one must not draw over it.
+            guard self.step == step else { return }
             build()
             self.scroll.contentOffset = .zero
             self.content.transform = CGAffineTransform(translationX: 28 * direction, y: 0)

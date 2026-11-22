@@ -1361,6 +1361,40 @@
         }
       }
     },
+    "iosSettings.missingKeyboards": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Keyboards above? Close Settings in the app switcher, then open it again."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上方没有「键盘」？在多任务界面关闭「设置」，再重新打开。"
+          }
+        }
+      }
+    },
+    "iosSettings.setup": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. Tap Keyboards and turn on Arion.\n2. Turn on Allow Full Access so the keyboard can use the microphone."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. 点按「键盘」，打开 Arion。\n2. 打开「允许完全访问」，键盘才能使用麦克风。"
+          }
+        }
+      }
+    },
     "keyboard.cancel": {
       "extractionState": "manual",
       "localizations": {
@@ -1686,6 +1720,23 @@
         }
       }
     },
+    "onboarding.keyboard.previewApps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apps"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App"
+          }
+        }
+      }
+    },
     "onboarding.keyboard.previewFullAccess": {
       "extractionState": "manual",
       "localizations": {
@@ -1716,6 +1767,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "键盘"
+          }
+        }
+      }
+    },
+    "onboarding.keyboard.previewMicrophone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Microphone"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "麦克风"
           }
         }
       }

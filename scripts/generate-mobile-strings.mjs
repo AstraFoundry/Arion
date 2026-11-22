@@ -17,7 +17,9 @@ const keys = Object.keys(catalog.strings).sort();
 // iosSettings.* is the copy of Arion's page in the iOS Settings app; it goes
 // only to the app's Settings.bundle, in this order.
 const settingsKeys = ['iosSettings.setup', 'iosSettings.missingKeyboards'];
-const appKeys = keys.filter(key => !key.startsWith('iosSettings.'));
+const androidKeys = keys.filter(key => !key.startsWith('iosSettings.'));
+// The iOS app draws the same note in its setup preview, so iOS keeps these keys.
+const appKeys = keys;
 for (const key of keys) {
   if (!/^[a-z][a-zA-Z0-9]*(\.[a-z][a-zA-Z0-9]*)+$/.test(key)) errors.push(`${key}: keys are dotted lowerCamel segments`);
   const entry = catalog.strings[key];
@@ -81,7 +83,7 @@ function escapeAndroid(value) {
 
 function androidStrings(language) {
   const lines = ['<?xml version="1.0" encoding="utf-8"?>', `<!-- ${header} -->`, '<resources>'];
-  for (const key of appKeys) {
+  for (const key of androidKeys) {
     const formatted = placeholders(key).length > 0;
     const value = formatted ? positional(key, language, 's') : catalog.strings[key][language];
     lines.push(`    <string name="${androidName(key)}"${formatted ? '' : ' formatted="false"'}>${escapeAndroid(value)}</string>`);
