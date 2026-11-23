@@ -223,6 +223,7 @@
     <string name="typing_more_symbols" formatted="false">#+=</string>
     <string name="typing_pinyin" formatted="false">全键盘</string>
     <string name="typing_pinyin9" formatted="false">九键</string>
+    <string name="typing_pinyin_mark" formatted="false">拼</string>
     <string name="typing_separator" formatted="false">分词</string>
     <string name="typing_setting" formatted="false">中文键盘</string>
     <string name="typing_shift" formatted="false">大写</string>

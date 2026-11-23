@@ -223,6 +223,7 @@
     <string name="typing_more_symbols" formatted="false">#+=</string>
     <string name="typing_pinyin" formatted="false">Full keyboard</string>
     <string name="typing_pinyin9" formatted="false">9-key</string>
+    <string name="typing_pinyin_mark" formatted="false">拼</string>
     <string name="typing_separator" formatted="false">Split</string>
     <string name="typing_setting" formatted="false">Chinese keyboard</string>
     <string name="typing_shift" formatted="false">Shift</string>
