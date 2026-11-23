@@ -1,4 +1,5 @@
 @testable import ArionKit
+import AVFAudio
 import XCTest
 
 final class CorrectionRulesTests: XCTestCase {
@@ -172,5 +173,27 @@ final class KeyLayoutTests: XCTestCase {
         XCTAssertEqual(TypingLayout.pinyin.schema, "arion_pinyin")
         XCTAssertEqual(TypingLayout.pinyin9.schema, "arion_pinyin_9key")
         XCTAssertNil(TypingLayout.english.schema)
+    }
+}
+
+@MainActor
+final class MicrophoneGainTests: XCTestCase {
+    func testGainScalesAndClips() throws {
+        let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: WebMicrophone.format, frameCapacity: 3))
+        buffer.frameLength = 3
+        let samples = try XCTUnwrap(buffer.int16ChannelData?[0])
+        samples[0] = 1000; samples[1] = -1000; samples[2] = 30000
+        MicrophoneGain.apply(buffer, decibels: 6)
+        XCTAssertEqual(samples[0], 1995)
+        XCTAssertEqual(samples[1], -1995)
+        XCTAssertEqual(samples[2], 32767, "clips at full scale")
+    }
+
+    func testZeroLeavesAudioUntouched() throws {
+        let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: WebMicrophone.format, frameCapacity: 1))
+        buffer.frameLength = 1
+        buffer.int16ChannelData![0][0] = 1234
+        MicrophoneGain.apply(buffer, decibels: 0)
+        XCTAssertEqual(buffer.int16ChannelData![0][0], 1234)
     }
 }

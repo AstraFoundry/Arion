@@ -161,6 +161,9 @@
     <string name="scene_prompt" formatted="false">编程指令</string>
     <string name="scene_search" formatted="false">搜索</string>
     <string name="scene_work" formatted="false">工作消息</string>
+    <string name="settings_gain" formatted="false">麦克风增益</string>
+    <string name="settings_gain_off" formatted="false">关</string>
+    <string name="settings_gain_value">+%1$s dB</string>
     <string name="settings_history" formatted="false">历史</string>
     <string name="settings_history_copy" formatted="false">复制</string>
     <string name="settings_history_delete" formatted="false">删除</string>

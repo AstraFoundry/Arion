@@ -161,6 +161,9 @@
     <string name="scene_prompt" formatted="false">Coding prompt</string>
     <string name="scene_search" formatted="false">Search</string>
     <string name="scene_work" formatted="false">Work message</string>
+    <string name="settings_gain" formatted="false">Microphone gain</string>
+    <string name="settings_gain_off" formatted="false">Off</string>
+    <string name="settings_gain_value">+%1$s dB</string>
     <string name="settings_history" formatted="false">History</string>
     <string name="settings_history_copy" formatted="false">Copy</string>
     <string name="settings_history_delete" formatted="false">Delete</string>

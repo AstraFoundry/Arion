@@ -85,6 +85,28 @@ final class TargetViewController: SettingsListController {
     }
 }
 
+/// Gain on the voice before recognition, for a quiet microphone or voice.
+final class GainViewController: SettingsListController {
+    static func name(_ decibels: Int) -> String {
+        decibels == 0 ? L10n.settingsGainOff : L10n.settingsGainValue(decibels: String(decibels))
+    }
+
+    init() { super.init(title: L10n.settingsGain) }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { MicrophoneGain.choices.count }
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let decibels = MicrophoneGain.choices[indexPath.row]
+        return cell(Self.name(decibels), checked: preferences.microphoneGain == decibels)
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        preferences.microphoneGain = MicrophoneGain.choices[indexPath.row]
+        tableView.reloadData()
+    }
+}
+
 /// The Pinyin layout the keyboard's 中 key opens. 中/EN is the only toggle
 /// on the keyboard itself, so this choice lives here.
 final class ChineseTypingViewController: SettingsListController {

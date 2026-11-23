@@ -120,6 +120,7 @@ public final class VoiceKeyboardView: UIView {
         center.spacing = 40
 
         typing.accessibilityLabel = L10n.typingKeyboard
+        typing.iconSize = TypingKeyboardView.iconSize
         typing.cornerRadius = SunbeamTokens.Radius.lg
         typing.addAction(UIAction { [weak self] _ in self?.delegate?.keyboardShowTyping() }, for: .touchUpInside)
 
@@ -128,17 +129,20 @@ public final class VoiceKeyboardView: UIView {
         let keys = UIStackView(arrangedSubviews: [typing, globe, space, returnKey])
         keys.axis = .horizontal
         keys.spacing = 6
-        for key in [globe, typing] { KeyboardMetrics.width(key, letters: KeyboardMetrics.functionKey, of: keys).isActive = true }
+        KeyboardMetrics.width(typing, letters: KeyboardMetrics.functionKey, of: keys).isActive = true
+        // Below required: the stack collapses the globe when the device needs none.
+        let globeWidth = KeyboardMetrics.width(globe, letters: KeyboardMetrics.functionKey, of: keys)
+        globeWidth.priority = .required - 1
+        globeWidth.isActive = true
         KeyboardMetrics.width(returnKey, letters: KeyboardMetrics.returnKey, of: keys).isActive = true
 
         for view in [draftLabel, center, keys, dismiss] as [UIView] {
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
         }
-        // On wide screens the keys keep a phone's reach.
-        let keysWidth = keys.widthAnchor.constraint(lessThanOrEqualToConstant: 640)
+        // The row spans the panel like the typing rows, so key widths derived
+        // from it match the typing panel's.
         let keysFill = keys.widthAnchor.constraint(equalTo: widthAnchor, constant: -2 * KeyboardMetrics.sideInset)
-        keysFill.priority = .defaultHigh
         let height = heightAnchor.constraint(equalToConstant: KeyboardMetrics.height)
         height.priority = .defaultHigh
         // The microphone row sits in the middle of the space above the keys;
@@ -159,7 +163,7 @@ public final class VoiceKeyboardView: UIView {
             draftLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -56),
             draftLabel.bottomAnchor.constraint(equalTo: center.topAnchor, constant: -4),
             keys.centerXAnchor.constraint(equalTo: centerXAnchor),
-            keysWidth, keysFill,
+            keysFill,
             keys.heightAnchor.constraint(equalToConstant: KeyboardMetrics.rowHeight),
             keys.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -KeyboardMetrics.bottomInset),
         ])

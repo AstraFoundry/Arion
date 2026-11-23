@@ -35,6 +35,7 @@ public final class Preferences: @unchecked Sendable {
         static let keyboardSeen = "keyboard.lastSeen"
         static let onboarded = "onboarding.completed"
         static let chineseTyping = "typing.chineseLayout"
+        static let gain = "microphone.gainDecibels"
     }
 
     /// Polishing is on by default. On this device it runs only when Apple
@@ -96,6 +97,15 @@ public final class Preferences: @unchecked Sendable {
     public var keyboardLastSeen: Date? {
         get { defaults.object(forKey: Key.keyboardSeen) as? Date }
         set { defaults.set(newValue, forKey: Key.keyboardSeen) }
+    }
+
+    /// Gain on the captured voice in decibels, one of `MicrophoneGain.choices`; 0 by default.
+    public var microphoneGain: Int {
+        get {
+            let stored = defaults.integer(forKey: Key.gain)
+            return MicrophoneGain.choices.contains(stored) ? stored : 0
+        }
+        set { defaults.set(newValue, forKey: Key.gain) }
     }
 
     /// The Pinyin layout the keyboard's 中 key opens: full keyboard by default.

@@ -5,7 +5,7 @@ import UIKit
 /// speech model and the keyboard.
 final class DictationViewController: UITableViewController {
     private enum Row {
-        case languages, target, model, keyboard, chineseTyping
+        case languages, target, model, gain, keyboard, chineseTyping
     }
 
     private struct Section {
@@ -42,7 +42,7 @@ final class DictationViewController: UITableViewController {
 
     @objc private func refresh() {
         sections = [
-            Section(title: nil, rows: [.languages, .target, .model], footer: nil),
+            Section(title: nil, rows: [.languages, .target, .model, .gain], footer: nil),
             Section(title: L10n.settingsSectionKeyboard, rows: [.keyboard, .chineseTyping], footer: nil),
         ]
         tableView.reloadData()
@@ -113,6 +113,10 @@ final class DictationViewController: UITableViewController {
             content.secondaryText = ready ? L10n.settingsKeyboardReady : L10n.settingsKeyboardSetUp
             if !ready { content.secondaryTextProperties.color = Palette.foreground }
             cell.accessoryType = .disclosureIndicator
+        case .gain:
+            content.text = L10n.settingsGain
+            content.secondaryText = GainViewController.name(preferences.microphoneGain)
+            cell.accessoryType = .disclosureIndicator
         case .chineseTyping:
             content.text = L10n.typingSetting
             content.secondaryText = ChineseTypingViewController.name(preferences.chineseTypingLayout)
@@ -133,6 +137,7 @@ final class DictationViewController: UITableViewController {
         case .model: .cpu
         case .keyboard: .keyboard
         case .chineseTyping: .type
+        case .gain: .mic
         }
     }
 
@@ -147,6 +152,7 @@ final class DictationViewController: UITableViewController {
             present(onboarding, animated: true)
         case .model: downloadModels()
         case .chineseTyping: navigationController?.pushViewController(ChineseTypingViewController(), animated: true)
+        case .gain: navigationController?.pushViewController(GainViewController(), animated: true)
         }
     }
 
