@@ -165,8 +165,17 @@ final class KeyLayoutTests: XCTestCase {
     }
 
     func testSymbolsFollowTheScript() {
-        XCTAssertTrue(KeyLayout.symbols(chinese: true).flatMap { $0 }.contains { $0.key == .text("，") })
-        XCTAssertFalse(KeyLayout.symbols(chinese: false).flatMap { $0 }.contains { $0.key == .text("，") })
+        XCTAssertTrue(KeyLayout.symbols(chinese: true, more: false).flatMap { $0 }.contains { $0.key == .text("，") })
+        XCTAssertFalse(KeyLayout.symbols(chinese: false, more: false).flatMap { $0 }.contains { $0.key == .text("，") })
+        for chinese in [false, true] {
+            for more in [false, true] {
+                let rows = KeyLayout.symbols(chinese: chinese, more: more)
+                XCTAssertEqual(rows[0].count, 10)
+                XCTAssertEqual(rows[1].count, 10)
+                XCTAssertEqual(rows[2].first?.key, more ? .symbols : .moreSymbols, "page key on the left")
+                XCTAssertEqual(rows[2].last?.key, .delete, "Delete stays at the right edge")
+            }
+        }
     }
 
     func testChineseLayoutsHaveSchemas() {

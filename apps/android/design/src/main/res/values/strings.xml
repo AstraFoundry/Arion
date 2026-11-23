@@ -220,6 +220,7 @@
     <string name="typing_layout" formatted="false">Chinese or English</string>
     <string name="typing_letters_chinese" formatted="false">Pinyin</string>
     <string name="typing_letters_english" formatted="false">ABC</string>
+    <string name="typing_more_symbols" formatted="false">#+=</string>
     <string name="typing_pinyin" formatted="false">Full keyboard</string>
     <string name="typing_pinyin9" formatted="false">9-key</string>
     <string name="typing_separator" formatted="false">Split</string>

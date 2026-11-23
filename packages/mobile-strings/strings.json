@@ -47,6 +47,7 @@
     "typing.separator": { "en": "Split", "zh-Hans": "分词", "comment": "9-key: separates Pinyin syllables." },
     "typing.confirm": { "en": "Confirm", "zh-Hans": "确认", "comment": "Return key while Pinyin is being typed: inserts the letters as typed." },
     "typing.symbols": { "en": "123", "zh-Hans": "123" },
+    "typing.moreSymbols": { "en": "#+=", "zh-Hans": "#+=" },
     "typing.letters.chinese": { "en": "Pinyin", "zh-Hans": "拼音", "comment": "Back from symbols to the Pinyin letters." },
     "typing.letters.english": { "en": "ABC", "zh-Hans": "ABC", "comment": "Back from symbols to the English letters." },
     "typing.failure.data": { "en": "Typing data is missing. Reinstall Arion.", "zh-Hans": "缺少打字数据，请重新安装 Arion。" },

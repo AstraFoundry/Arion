@@ -220,6 +220,7 @@
     <string name="typing_layout" formatted="false">中英切换</string>
     <string name="typing_letters_chinese" formatted="false">拼音</string>
     <string name="typing_letters_english" formatted="false">ABC</string>
+    <string name="typing_more_symbols" formatted="false">#+=</string>
     <string name="typing_pinyin" formatted="false">全键盘</string>
     <string name="typing_pinyin9" formatted="false">九键</string>
     <string name="typing_separator" formatted="false">分词</string>

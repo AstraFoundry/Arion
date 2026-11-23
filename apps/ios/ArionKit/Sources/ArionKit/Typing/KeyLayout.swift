@@ -12,9 +12,11 @@ public enum TypingKey: Equatable, Sendable {
     case delete
     case space
     case `return`
-    /// Shows the numbers and symbols page.
+    /// Shows the numbers page (123), or returns to it from #+=.
     case symbols
-    /// Back from the symbols page to the letters.
+    /// Shows the second symbols page (#+=).
+    case moreSymbols
+    /// Back from the symbols pages to the letters.
     case letters
     /// Toggles Chinese (the Pinyin layout chosen in settings) and English.
     case layout
@@ -94,13 +96,30 @@ public enum KeyLayout {
     /// 9-key's left column while nothing is composing.
     public static let keypadPunctuation = ["，", "。", "？", "！", "、", "…", "：", "～"]
 
-    /// Digits and the punctuation of the active script.
-    public static func symbols(chinese: Bool) -> [[Key]] {
-        let digits = "1234567890".map { Key(.text(String($0)), label: String($0)) }
-        let middle = (chinese ? ["-", "/", "：", "；", "（", "）", "¥", "@", "“", "”"] : ["-", "/", ":", ";", "(", ")", "$", "@", "\"", "#"])
-            .map { Key(.text($0), label: $0) }
-        let third = (chinese ? ["。", "，", "、", "？", "！", "…"] : [".", ",", "?", "!", "'", "&"])
-            .map { Key(.text($0), label: $0) }
-        return [digits, middle, third + [Key(.delete, width: KeyboardMetrics.shiftKey)]]
+    /// The symbols pages, key for key as the iOS 26 system keyboard draws
+    /// them for English and for Simplified Chinese. The third row keeps the
+    /// page key and Delete at the edges; its punctuation shares the rest.
+    public static func symbols(chinese: Bool, more: Bool) -> [[Key]] {
+        let rows: [[String]]
+        switch (chinese, more) {
+        case (false, false): rows = [Array("1234567890").map(String.init), ["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""], [".", ",", "?", "!", "'"]]
+        case (false, true): rows = [["[", "]", "{", "}", "#", "%", "^", "*", "+", "="], ["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "•"], [".", ",", "?", "!", "'"]]
+        case (true, false): rows = [Array("1234567890").map(String.init), ["-", "/", "：", "；", "（", "）", "¥", "@", "“", "”"], ["。", "，", "、", "？", "！", "."]]
+        case (true, true): rows = [["【", "】", "｛", "｝", "#", "%", "^", "*", "+", "="], ["_", "—", "\\", "|", "～", "《", "》", "$", "&", "·"], ["…", "，", "^_^", "？", "！", "'"]]
+        }
+        let text = { (row: [String]) in row.map { Key(.text($0), label: $0) } }
+        let page = Key(more ? .symbols : .moreSymbols, width: KeyboardMetrics.shiftKey)
+        return [text(rows[0]), text(rows[1]),
+                [page] + rows[2].map { Key(.text($0), label: $0, width: 0) } + [Key(.delete, width: KeyboardMetrics.shiftKey)]]
     }
+
+    /// Long-press alternates, as the system keyboard offers them.
+    public static let alternates: [String: [String]] = [
+        "a": ["à", "á", "â", "ä", "æ", "ã", "å", "ā"], "c": ["ç", "ć", "č"], "e": ["è", "é", "ê", "ë", "ē", "ė", "ę"],
+        "i": ["î", "ï", "í", "ī", "į", "ì"], "l": ["ł"], "n": ["ñ", "ń"], "o": ["ô", "ö", "ò", "ó", "œ", "ø", "ō", "õ"],
+        "s": ["ß", "ś", "š"], "u": ["û", "ü", "ù", "ú", "ū"], "y": ["ÿ"], "z": ["ž", "ź", "ż"],
+        "0": ["°"], "-": ["–", "—", "•"], "/": ["\\"], "$": ["₽", "¥", "€", "¢", "£", "₩"], "&": ["§"],
+        "\"": ["„", "“", "”", "«", "»"], ".": ["…"], "?": ["¿"], "!": ["¡"], "'": ["`", "‘", "’"], "%": ["‰"],
+        "。": ["…"], "，": ["、"], "？": ["¿"], "！": ["¡"], "“": ["「", "『"], "”": ["」", "』"], "¥": ["$", "€", "£"],
+    ]
 }

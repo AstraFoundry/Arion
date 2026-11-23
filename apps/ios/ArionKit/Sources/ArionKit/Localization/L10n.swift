@@ -225,6 +225,7 @@ public enum L10n {
     public static var typingLayout: String { lookup("typing.layout") }
     public static var typingLettersChinese: String { lookup("typing.letters.chinese") }
     public static var typingLettersEnglish: String { lookup("typing.letters.english") }
+    public static var typingMoreSymbols: String { lookup("typing.moreSymbols") }
     public static var typingPinyin: String { lookup("typing.pinyin") }
     public static var typingPinyin9: String { lookup("typing.pinyin9") }
     public static var typingSeparator: String { lookup("typing.separator") }

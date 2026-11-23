@@ -36,7 +36,11 @@ public final class TypingKeyboardView: UIView {
     private var shifted: Bool { shift != .off }
     private var lastShiftTap = Date.distantPast
     private var trackpadAnchor: CGFloat?
-    private var symbolsShown = false
+    /// The symbols page shown: none (letters), 123, or #+=.
+    private enum Page { case letters, numbers, more }
+    private var page = Page.letters
+    private var symbolsShown: Bool { page != .letters }
+    private let alternates = AlternatesPopup()
     private var deleteTimer: Timer?
     private var returnKeys: [FaceButton] = []
     /// Key widths relate keys to the rows stack, so they wait until the row is in it.
@@ -77,7 +81,7 @@ public final class TypingKeyboardView: UIView {
 
     public func select(_ layout: TypingLayout) {
         engine.select(layout)
-        symbolsShown = false
+        page = .letters
         shift = .off
         rebuild()
         delegate?.typingLayoutChanged(layout)
@@ -138,7 +142,7 @@ public final class TypingKeyboardView: UIView {
         returnKeys = []
         let chinese = engine.layout != .english
         if symbolsShown {
-            for row in KeyLayout.symbols(chinese: chinese) { keys.addArrangedSubview(rowView(row)) }
+            for row in KeyLayout.symbols(chinese: chinese, more: page == .more) { keys.addArrangedSubview(rowView(row)) }
         } else if engine.layout == .pinyin9 {
             keys.addArrangedSubview(keypad())
         } else {
@@ -190,12 +194,18 @@ public final class TypingKeyboardView: UIView {
             if key.width > 0 { pendingWidths.append(KeyboardMetrics.width(view, letters: key.width, of: keys)) }
             views.append(view)
         }
-        if row.first?.key == .shift, views.count > 2 {
-            // The system keyboard's third row: Shift and Delete against the
-            // edges, the letters centered between them.
+        if row.last?.key == .delete, views.count > 2 {
+            // The system keyboard's third row: the left key and Delete against
+            // the edges. Letters keep their width, centered; punctuation on the
+            // symbols pages shares the space equally.
             let letters = UIStackView(arrangedSubviews: Array(views[1..<(views.count - 1)]))
             letters.axis = .horizontal
             letters.spacing = KeyboardMetrics.gap
+            if row[1].width == 0 {
+                letters.distribution = .fillEqually
+                for view in [views[0], letters, views[views.count - 1]] { stack.addArrangedSubview(view) }
+                return stack
+            }
             let left = UIView(), right = UIView()
             for view in [views[0], left, letters, right, views[views.count - 1]] { stack.addArrangedSubview(view) }
             stack.spacing = 0
@@ -239,6 +249,11 @@ public final class TypingKeyboardView: UIView {
             button.addTarget(self, action: #selector(deleteDown(_:)), for: .touchDown)
             button.addTarget(self, action: #selector(deleteUp(_:)), for: [.touchUpInside, .touchUpOutside, .touchCancel])
         }
+        if let options = alternatesFor(spec), !options.isEmpty {
+            let hold = UILongPressGestureRecognizer(target: self, action: #selector(alternatesHeld(_:)))
+            hold.minimumPressDuration = 0.4
+            button.addGestureRecognizer(hold)
+        }
         if spec.key == .space {
             // Hold the space bar, then drag to move the caret, as on iOS.
             let hold = UILongPressGestureRecognizer(target: self, action: #selector(trackpad(_:)))
@@ -269,6 +284,7 @@ public final class TypingKeyboardView: UIView {
         case .space: button.title = L10n.keyboardSpace
         case .return: showReturn(on: button)
         case .symbols: button.title = L10n.typingSymbols
+        case .moreSymbols: button.title = L10n.typingMoreSymbols
         case .letters: button.title = engine.layout == .english ? L10n.typingLettersEnglish : L10n.typingLettersChinese
         case .layout:
             button.title = engine.layout == .english ? L10n.typingEnglish : L10n.typingChinese
@@ -343,11 +359,15 @@ public final class TypingKeyboardView: UIView {
                 delegate?.typingReturn()
             }
         case .symbols:
-            symbolsShown = true
+            page = .numbers
+            rebuild()
+            return
+        case .moreSymbols:
+            page = .more
             rebuild()
             return
         case .letters:
-            symbolsShown = false
+            page = .letters
             rebuild()
             return
         case .layout:
@@ -394,6 +414,46 @@ public final class TypingKeyboardView: UIView {
         key.iconImage = nil
         deleteTimer?.invalidate()
         deleteTimer = nil
+    }
+
+    /// The alternates of a key, shifted with it; Pinyin letters compose, so
+    /// only English letters offer accents.
+    private func alternatesFor(_ spec: KeyLayout.Key) -> [String]? {
+        switch spec.key {
+        case .letter(let c) where engine.layout == .english:
+            let list = KeyLayout.alternates[String(c)]
+            return shifted ? list?.map { $0.uppercased() } : list
+        case .text(let text): return KeyLayout.alternates[text]
+        default: return nil
+        }
+    }
+
+    /// Hold a key for its alternates, slide to one and release to insert it,
+    /// as on the system keyboard.
+    @objc private func alternatesHeld(_ gesture: UILongPressGestureRecognizer) {
+        guard let key = gesture.view as? FaceButton else { return }
+        switch gesture.state {
+        case .began:
+            let base = key.title ?? ""
+            let options = (base.count == 1 ? alternatesFor(KeyLayout.Key(.text(base))) : nil)
+                ?? alternatesFor(KeyLayout.Key(.letter(Character(base.lowercased())))) ?? []
+            guard !options.isEmpty else { return }
+            feedback.impactOccurred()
+            alternates.show(options, above: key, in: self)
+            alternates.track(gesture.location(in: alternates))
+        case .changed:
+            alternates.track(gesture.location(in: alternates))
+        case .ended:
+            if let choice = alternates.choice {
+                commitComposition()
+                delegate?.typingInsert(choice)
+                if shift == .once { shift = .off; rebuild() }
+                render()
+            }
+            alternates.dismiss()
+        default:
+            alternates.dismiss()
+        }
     }
 
     /// Trackpad mode: the keys fade, and every 9 points of drag moves the
@@ -584,5 +644,74 @@ public final class KeyboardTopKey: UIButton {
             ? trailingAnchor.constraint(equalTo: panel.trailingAnchor, constant: -KeyboardMetrics.sideInset)
             : leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: KeyboardMetrics.sideInset)
         NSLayoutConstraint.activate([topAnchor.constraint(equalTo: panel.topAnchor, constant: 4), side])
+    }
+}
+
+/// The alternates bubble above a held key; the option under the finger is
+/// highlighted and inserted on release.
+final class AlternatesPopup: UIView {
+    private let row = UIStackView()
+    private var labels: [UILabel] = []
+    private(set) var choice: String?
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = Palette.raisedFaceFrom
+        layer.cornerRadius = 10
+        layer.cornerCurve = .continuous
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.2
+        layer.shadowRadius = 6
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        row.axis = .horizontal
+        row.distribution = .fillEqually
+        row.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(row)
+        NSLayoutConstraint.activate([
+            row.topAnchor.constraint(equalTo: topAnchor, constant: 4),
+            row.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
+            row.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 4),
+            row.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -4),
+        ])
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
+
+    func show(_ options: [String], above key: UIView, in panel: UIView) {
+        labels.forEach { $0.removeFromSuperview() }
+        labels = options.map { text in
+            let label = UILabel()
+            label.text = text
+            label.font = .systemFont(ofSize: 22)
+            label.textAlignment = .center
+            label.textColor = Palette.foreground
+            label.layer.cornerRadius = 6
+            label.layer.masksToBounds = true
+            row.addArrangedSubview(label)
+            return label
+        }
+        let cell: CGFloat = 36
+        let width = cell * CGFloat(options.count) + 8
+        let frame = key.convert(key.bounds, to: panel)
+        let x = min(max(KeyboardMetrics.sideInset, frame.midX - width / 2), panel.bounds.width - KeyboardMetrics.sideInset - width)
+        self.frame = CGRect(x: x, y: frame.minY - 52, width: width, height: 48)
+        panel.addSubview(self)
+        choice = nil
+    }
+
+    /// Highlights the option under the finger (in this view's coordinates).
+    func track(_ point: CGPoint) {
+        guard !labels.isEmpty else { return }
+        let index = max(0, min(labels.count - 1, Int((point.x - 4) / ((bounds.width - 8) / CGFloat(labels.count)))))
+        for (i, label) in labels.enumerated() {
+            label.backgroundColor = i == index ? Palette.primary : .clear
+        }
+        choice = labels[index].text
+    }
+
+    func dismiss() {
+        removeFromSuperview()
+        choice = nil
     }
 }

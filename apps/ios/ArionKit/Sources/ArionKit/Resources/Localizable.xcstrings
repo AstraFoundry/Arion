@@ -3767,6 +3767,23 @@
       },
       "comment": "Back from symbols to the English letters."
     },
+    "typing.moreSymbols": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "#+="
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "#+="
+          }
+        }
+      }
+    },
     "typing.pinyin": {
       "extractionState": "manual",
       "localizations": {
