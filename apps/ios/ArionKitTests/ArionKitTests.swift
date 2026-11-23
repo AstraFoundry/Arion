@@ -222,4 +222,75 @@ final class MicrophoneGainTests: XCTestCase {
         MicrophoneGain.apply(buffer, decibels: 0)
         XCTAssertEqual(buffer.int16ChannelData![0][0], 1234)
     }
+
+    // The typewriter's cases mirror apps/desktop/ui/entities/dictation/typewriter_test.go.
+
+    /// Advances in 16 ms frames until the text is fully shown and faded.
+    private func type(_ w: inout Typewriter, _ session: UUID, _ text: String, final: Bool, from start: TimeInterval) -> (TimeInterval, [Typewriter.Frame]) {
+        var now = start
+        var frames: [Typewriter.Frame] = []
+        for _ in 0..<1000 {
+            let frame = w.update(session: session, text: text, final: final, now: now)
+            frames.append(frame)
+            if !frame.animating { return (now, frames) }
+            now += 0.016
+        }
+        XCTFail("typewriter never settled")
+        return (now, frames)
+    }
+
+    func testTypewriterTypesStreamingTextSmoothly() {
+        var w = Typewriter()
+        let (end, frames) = type(&w, UUID(), "今天下午三点开会", final: false, from: 0)
+        XCTAssertEqual(frames.last?.text, "今天下午三点开会")
+        for i in 1..<frames.count {
+            XCTAssertLessThanOrEqual(frames[i].text.count - frames[i - 1].text.count, 2, "frame \(i) jumped")
+        }
+        XCTAssert((0.2...0.9).contains(end), "eight characters took \(end) s")
+        let first = frames.first { !$0.text.isEmpty }!
+        XCTAssertLessThan(first.opacity.last ?? 1, 1)
+        XCTAssertEqual(frames.last?.opacity, [])
+    }
+
+    func testTypewriterSpringCatchesUpWithBacklog() {
+        var short = Typewriter(), long = Typewriter()
+        let (endShort, _) = type(&short, UUID(), "一二三四五六", final: false, from: 0)
+        let (endLong, _) = type(&long, UUID(), String(repeating: "一二三四五六七八九十", count: 4), final: false, from: 0)
+        XCTAssertLessThan(endLong / 40, endShort / 6)
+    }
+
+    func testTypewriterRevisesInPlaceWithoutRetreating() {
+        var w = Typewriter()
+        let session = UUID()
+        let (now, _) = type(&w, session, "我们明天见面", final: false, from: 0)
+        let revised = w.update(session: session, text: "我们明天再说", final: false, now: now + 0.016)
+        XCTAssertEqual(revised.text, "我们明天再说")
+        XCTAssertEqual(revised.opacity, [])
+        var v = Typewriter()
+        let stream = UUID()
+        var at = 10.0, shown = 0
+        for text in ["今天下午三点", "今天下午三点我们开", "今天下午三点，我们开会", "今天下午 3 点，我们开会讨论", "今天下午3点，我们开会讨论一下"] {
+            for _ in 0..<6 {
+                let count = v.update(session: stream, text: text, final: false, now: at).text.count
+                XCTAssert(count >= shown || count >= text.count, "line retreated on \(text)")
+                shown = count
+                at += 0.016
+            }
+        }
+        XCTAssertEqual(v.update(session: stream, text: "今天", final: false, now: at).text, "今天")
+    }
+
+    func testTypewriterFinalDrainsFastAndSessionResets() {
+        var w = Typewriter()
+        let text = "这是一段比较长的最终识别结果需要尽快显示出来"
+        let (end, _) = type(&w, UUID(), text, final: true, from: 0)
+        XCTAssertLessThanOrEqual(end, Double(text.count) * Typewriter.minInterval + Typewriter.fadeIn + 0.05)
+        XCTAssertLessThanOrEqual(w.update(session: UUID(), text: "好", final: false, now: end).text.count, 1)
+    }
+
+    func testTypewriterKeepsEmojiWhole() {
+        var w = Typewriter()
+        let (_, frames) = type(&w, UUID(), "好👍🏽了", final: false, from: 0)
+        XCTAssert(frames.allSatisfy { "好👍🏽了".hasPrefix($0.text) })
+    }
 }

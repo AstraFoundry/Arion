@@ -46,6 +46,11 @@ public final class VoiceKeyboardView: UIView {
     private var deleteTimer: Timer?
     private var noticeTask: Task<Void, Never>?
     private var spaceAnchor: CGFloat = 0
+    /// Paces the draft as the desktop pill does; one session per dictation.
+    private var typewriter = Typewriter()
+    private var typingSession = UUID()
+    private var typed: (draft: Draft, final: Bool)?
+    private var typingLink: CADisplayLink?
 
     /// The mark of the current language, shown when there is more than one.
     public var languageMark: String? { didSet { render(phase) } }
@@ -168,6 +173,7 @@ public final class VoiceKeyboardView: UIView {
     // MARK: Rendering
 
     public func render(_ phase: DictationPhase) {
+        if phase.isActive, !self.phase.isActive { typingSession = UUID() }
         self.phase = phase
         switch phase {
         case .idle, .failed, .downloading, .downloaded:
@@ -182,22 +188,24 @@ public final class VoiceKeyboardView: UIView {
             case .downloaded:
                 showNotice(L10n.keyboardDownloaded, autoClear: true)
             default:
+                stopTyping()
                 if noticeTask == nil { draftLabel.text = nil }
             }
         case .starting:
             mic.show(.waiting)
             setCancelAndTranslate()
+            stopTyping()
             draftLabel.text = nil
         case .listening(let draft, let level):
             mic.show(.listening)
             mic.setLevel(level)
             setCancelAndTranslate()
-            showDraft(draft)
+            showDraft(draft, final: false)
         case .finishing(let draft), .polishing(let draft):
             if case .polishing = phase { mic.show(.polishing) } else { mic.show(.waiting) }
             configure(leading, icon: .x, title: nil, label: L10n.keyboardCancel)
             configure(trailing, icon: nil, title: nil, label: "")
-            showDraft(draft)
+            showDraft(draft, final: true)
         }
         if holding { highlightHoldTarget() }
     }
@@ -220,18 +228,61 @@ public final class VoiceKeyboardView: UIView {
         button.accessibilityLabel = label
     }
 
-    private func showDraft(_ draft: Draft) {
+    /// Types the draft out through the typewriter; `final` drains the rest
+    /// at full speed once recognition has finished.
+    private func showDraft(_ draft: Draft, final: Bool) {
         noticeTask?.cancel()
         noticeTask = nil
-        let text = NSMutableAttributedString(string: draft.finalized, attributes: [.foregroundColor: Palette.foreground])
-        text.append(NSAttributedString(string: draft.volatile, attributes: [.foregroundColor: Palette.mutedForeground]))
-        draftLabel.attributedText = text
+        typed = (draft, final)
         draftLabel.font = TextStyle.body.font
+        if UIAccessibility.isReduceMotionEnabled {
+            paint(Typewriter.Frame(text: draft.text, opacity: [], animating: false), finalized: draft.finalized.count)
+            return
+        }
+        typeFrame()
+        guard typingLink == nil, typed != nil else { return }
+        let link = CADisplayLink(target: self, selector: #selector(typeFrame))
+        link.add(to: .main, forMode: .common)
+        typingLink = link
+    }
+
+    @objc private func typeFrame() {
+        guard let typed else { return stopTyping() }
+        let frame = typewriter.update(session: typingSession, text: typed.draft.text, final: typed.final, now: CACurrentMediaTime())
+        paint(frame, finalized: typed.draft.finalized.count)
+        if !frame.animating { stopTyping(keep: true) }
+    }
+
+    /// Settled text in ink and the volatile tail muted; new characters fade in.
+    private func paint(_ frame: Typewriter.Frame, finalized: Int) {
+        let characters = Array(frame.text)
+        let fading = characters.count - frame.opacity.count
+        let text = NSMutableAttributedString()
+        func add(_ range: Range<Int>, alpha: Double = 1) {
+            let split = min(max(finalized, range.lowerBound), range.upperBound)
+            for (part, color) in [(range.lowerBound..<split, Palette.foreground), (split..<range.upperBound, Palette.mutedForeground)] where !part.isEmpty {
+                text.append(NSAttributedString(string: String(characters[part]),
+                                               attributes: [.foregroundColor: color.withAlphaComponent(alpha)]))
+            }
+        }
+        add(0..<fading)
+        for (offset, alpha) in frame.opacity.enumerated() {
+            add((fading + offset)..<(fading + offset + 1), alpha: alpha)
+        }
+        draftLabel.attributedText = text
+    }
+
+    /// Stops the typing frames; unless kept, the next draft starts over.
+    private func stopTyping(keep: Bool = false) {
+        typingLink?.invalidate()
+        typingLink = nil
+        if !keep { typed = nil }
     }
 
     /// Shows a short line where the draft goes; a notice clears itself.
     public func showNotice(_ message: String, autoClear: Bool) {
         noticeTask?.cancel()
+        stopTyping()
         draftLabel.attributedText = nil
         draftLabel.text = message
         draftLabel.font = TextStyle.bodySmall.font
