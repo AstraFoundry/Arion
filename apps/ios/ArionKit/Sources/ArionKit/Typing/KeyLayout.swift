@@ -113,7 +113,10 @@ public enum KeyLayout {
                 [page] + rows[2].map { Key(.text($0), label: $0, width: 0) } + [Key(.delete, width: KeyboardMetrics.shiftKey)]]
     }
 
-    /// Long-press alternates, as the system keyboard offers them.
+    /// Long-press alternates, left to right as the iOS 26 Simplified Chinese
+    /// keyboard shows them in its English and Pinyin modes; checked key by
+    /// key in the simulator (docs/research/ios-keyboard-alternates.md). Its
+    /// Pinyin letters have none, so only English letters are listed.
     public static let alternates: [String: [String]] = [
         "a": ["à", "á", "â", "ä", "æ", "ã", "å", "ā"], "c": ["ç", "ć", "č"], "e": ["è", "é", "ê", "ë", "ē", "ė", "ę"],
         "i": ["î", "ï", "í", "ī", "į", "ì"], "l": ["ł"], "n": ["ñ", "ń"], "o": ["ô", "ö", "ò", "ó", "œ", "ø", "ō", "õ"],
