@@ -3820,6 +3820,24 @@
       },
       "comment": "Settings choice: Pinyin on the phone keypad."
     },
+    "typing.pinyinMark": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拼"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拼"
+          }
+        }
+      },
+      "comment": "Faint mark in the space bar's corner while Pinyin is the typing mode, as on the system keyboard."
+    },
     "typing.separator": {
       "extractionState": "manual",
       "localizations": {

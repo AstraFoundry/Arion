@@ -281,7 +281,20 @@ public final class TypingKeyboardView: UIView {
             button.icon = .delete
             button.accessibilityLabel = L10n.keyboardDelete
         case .globe: break
-        case .space: button.title = L10n.keyboardSpace
+        case .space:
+            // As on the system keyboard: no word, a faint mode mark in the corner.
+            button.accessibilityLabel = L10n.keyboardSpace
+            let mark = UILabel()
+            mark.text = engine.layout == .english ? L10n.typingEnglish : L10n.typingPinyinMark
+            mark.font = .systemFont(ofSize: 11)
+            mark.textColor = Palette.mutedForeground
+            mark.isAccessibilityElement = false
+            mark.translatesAutoresizingMaskIntoConstraints = false
+            button.addSubview(mark)
+            NSLayoutConstraint.activate([
+                mark.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -7),
+                mark.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -4),
+            ])
         case .return: showReturn(on: button)
         case .symbols: button.title = L10n.typingSymbols
         case .moreSymbols: button.title = L10n.typingMoreSymbols

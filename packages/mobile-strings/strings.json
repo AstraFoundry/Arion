@@ -42,6 +42,7 @@
     "typing.pinyin": { "en": "Full keyboard", "zh-Hans": "全键盘", "comment": "Settings choice: Pinyin on a QWERTY keyboard." },
     "typing.pinyin9": { "en": "9-key", "zh-Hans": "九键", "comment": "Settings choice: Pinyin on the phone keypad." },
     "typing.setting": { "en": "Chinese keyboard", "zh-Hans": "中文键盘", "comment": "Settings row: which Pinyin layout the keyboard's 中 key opens." },
+    "typing.pinyinMark": { "en": "拼", "zh-Hans": "拼", "comment": "Faint mark in the space bar's corner while Pinyin is the typing mode, as on the system keyboard." },
     "typing.english": { "en": "EN", "zh-Hans": "EN", "comment": "Mark of English typing on the toggle key." },
     "typing.shift": { "en": "Shift", "zh-Hans": "大写" },
     "typing.separator": { "en": "Split", "zh-Hans": "分词", "comment": "9-key: separates Pinyin syllables." },
