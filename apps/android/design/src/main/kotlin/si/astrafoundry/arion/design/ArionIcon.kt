@@ -13,6 +13,7 @@ enum class ArionIcon(val res: Int, val original: Boolean = false) {
     ChevronDown(R.drawable.icon_chevron_down),
     ChevronLeft(R.drawable.icon_chevron_left),
     ChevronRight(R.drawable.icon_chevron_right),
+    ChevronUp(R.drawable.icon_chevron_up),
     ChevronsUpDown(R.drawable.icon_chevrons_up_down),
     Circle(R.drawable.icon_circle),
     CircleCheck(R.drawable.icon_circle_check),

@@ -222,14 +222,18 @@ public enum L10n {
     public static var typingFailureData: String { lookup("typing.failure.data") }
     public static var typingFailureEngine: String { lookup("typing.failure.engine") }
     public static var typingFailureLearning: String { lookup("typing.failure.learning") }
+    public static var typingFewerCandidates: String { lookup("typing.fewerCandidates") }
     public static var typingKeyboard: String { lookup("typing.keyboard") }
     public static var typingLayout: String { lookup("typing.layout") }
     public static var typingLettersChinese: String { lookup("typing.letters.chinese") }
     public static var typingLettersEnglish: String { lookup("typing.letters.english") }
+    public static var typingMoreCandidates: String { lookup("typing.moreCandidates") }
     public static var typingMoreSymbols: String { lookup("typing.moreSymbols") }
+    public static var typingNextPage: String { lookup("typing.nextPage") }
     public static var typingPinyin: String { lookup("typing.pinyin") }
     public static var typingPinyin9: String { lookup("typing.pinyin9") }
     public static var typingPinyinMark: String { lookup("typing.pinyinMark") }
+    public static var typingPreviousPage: String { lookup("typing.previousPage") }
     public static var typingSeparator: String { lookup("typing.separator") }
     public static var typingSetting: String { lookup("typing.setting") }
     public static var typingShift: String { lookup("typing.shift") }

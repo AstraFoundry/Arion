@@ -217,14 +217,18 @@
     <string name="typing_failure_data" formatted="false">Typing data is missing. Reinstall Arion.</string>
     <string name="typing_failure_engine" formatted="false">Typing couldn’t start.</string>
     <string name="typing_failure_learning" formatted="false">Typing can’t open its encrypted learning on this iPhone.</string>
+    <string name="typing_fewer_candidates" formatted="false">Fewer candidates</string>
     <string name="typing_keyboard" formatted="false">Keyboard</string>
     <string name="typing_layout" formatted="false">Chinese or English</string>
     <string name="typing_letters_chinese" formatted="false">Pinyin</string>
     <string name="typing_letters_english" formatted="false">ABC</string>
+    <string name="typing_more_candidates" formatted="false">More candidates</string>
     <string name="typing_more_symbols" formatted="false">#+=</string>
+    <string name="typing_next_page" formatted="false">Next candidates</string>
     <string name="typing_pinyin" formatted="false">Full keyboard</string>
     <string name="typing_pinyin9" formatted="false">9-key</string>
     <string name="typing_pinyin_mark" formatted="false">拼</string>
+    <string name="typing_previous_page" formatted="false">Previous candidates</string>
     <string name="typing_separator" formatted="false">Split</string>
     <string name="typing_setting" formatted="false">Chinese keyboard</string>
     <string name="typing_shift" formatted="false">Shift</string>

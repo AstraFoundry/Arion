@@ -16,7 +16,7 @@ A voice keyboard still needs typing for names, codes and quiet places; switching
 ## Consequences
 
 - The keyboard extension grows by about 9 MB of code and 1.9 MB of data; the iOS build needs `pnpm mobile:rime` first.
-- No sentence model, English completion or expandable candidate grid yet, all of which Typeless has.
+- No sentence model or English completion yet, both of which Typeless has. The expandable candidate grid is described in [mobile](../project/mobile.md).
 - The desktop's macOS learning adapter now uses the shared POSIX provider.
 
 ## Alternatives considered

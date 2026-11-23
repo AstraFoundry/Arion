@@ -217,14 +217,18 @@
     <string name="typing_failure_data" formatted="false">缺少打字数据，请重新安装 Arion。</string>
     <string name="typing_failure_engine" formatted="false">打字功能无法启动。</string>
     <string name="typing_failure_learning" formatted="false">无法在这台 iPhone 上打开加密的输入学习数据。</string>
+    <string name="typing_fewer_candidates" formatted="false">收起候选</string>
     <string name="typing_keyboard" formatted="false">键盘</string>
     <string name="typing_layout" formatted="false">中英切换</string>
     <string name="typing_letters_chinese" formatted="false">拼音</string>
     <string name="typing_letters_english" formatted="false">ABC</string>
+    <string name="typing_more_candidates" formatted="false">更多候选</string>
     <string name="typing_more_symbols" formatted="false">#+=</string>
+    <string name="typing_next_page" formatted="false">下一页候选</string>
     <string name="typing_pinyin" formatted="false">全键盘</string>
     <string name="typing_pinyin9" formatted="false">九键</string>
     <string name="typing_pinyin_mark" formatted="false">拼</string>
+    <string name="typing_previous_page" formatted="false">上一页候选</string>
     <string name="typing_separator" formatted="false">分词</string>
     <string name="typing_setting" formatted="false">中文键盘</string>
     <string name="typing_shift" formatted="false">大写</string>

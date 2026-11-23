@@ -13,6 +13,7 @@ public enum Icon: String, CaseIterable, Sendable {
     case chevronDown
     case chevronLeft
     case chevronRight
+    case chevronUp
     case chevronsUpDown
     case circle
     case circleCheck

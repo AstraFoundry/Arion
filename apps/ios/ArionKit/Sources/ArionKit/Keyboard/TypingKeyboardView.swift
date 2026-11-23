@@ -28,6 +28,10 @@ public final class TypingKeyboardView: UIView {
 
     private let engine: TypingEngine
     private let candidateBar = CandidateBar()
+    /// Every candidate in rows over the keys, opened by the chevron that
+    /// takes the voice key's corner while composing.
+    private let grid = CandidateGrid()
+    private var expanded = false
     private let keys = UIStackView()
     private let syllables = SyllableColumn()
     /// Shift is one-shot; a quick second tap locks capitals, as on iOS.
@@ -66,6 +70,7 @@ public final class TypingKeyboardView: UIView {
     public var returnEnabled = true { didSet { render() } }
     private let dismiss = KeyboardTopKey(icon: .chevronDown, label: L10n.keyboardDismiss)
     private let voice = KeyboardTopKey(icon: .mic, label: L10n.typingVoice)
+    private let expand = KeyboardTopKey(icon: .chevronDown, label: L10n.typingMoreCandidates)
 
     public init(engine: TypingEngine) {
         self.engine = engine
@@ -106,6 +111,16 @@ public final class TypingKeyboardView: UIView {
         globe.iconSize = Self.iconSize
         candidateBar.onChoose = { [weak self] index in self?.choose(index) }
         candidateBar.loadMore = { [weak self] offset in self?.engine.candidates(from: offset, limit: TypingEngine.barCandidates) ?? [] }
+        grid.onChoose = { [weak self] index in self?.choose(index) }
+        grid.loadMore = { [weak self] offset in self?.engine.candidates(from: offset, limit: TypingEngine.barCandidates) ?? [] }
+        grid.setRail(up: railKey(.chevronUp, label: L10n.typingPreviousPage),
+                     down: railKey(.chevronDown, label: L10n.typingNextPage),
+                     delete: keyView(KeyLayout.Key(.delete)))
+        expand.addAction(UIAction { [weak self] _ in
+            guard let self else { return }
+            self.expanded.toggle()
+            self.render()
+        }, for: .touchUpInside)
         syllables.onChoose = { [weak self] syllable in
             self?.engine.chooseSyllable(syllable)
             self?.render()
@@ -113,7 +128,8 @@ public final class TypingKeyboardView: UIView {
         syllables.onPunctuation = { [weak self] text in self?.delegate?.typingInsert(text) }
         keys.axis = .vertical
         keys.spacing = KeyboardMetrics.rowGap
-        for view in [candidateBar, dismiss, voice, keys] as [UIView] {
+        grid.isHidden = true
+        for view in [candidateBar, dismiss, voice, expand, keys, grid] as [UIView] {
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
         }
@@ -130,9 +146,14 @@ public final class TypingKeyboardView: UIView {
             keys.leadingAnchor.constraint(equalTo: leadingAnchor, constant: inset),
             keys.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -inset),
             keys.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -KeyboardMetrics.bottomInset),
+            grid.topAnchor.constraint(equalTo: keys.topAnchor),
+            grid.leadingAnchor.constraint(equalTo: keys.leadingAnchor),
+            grid.trailingAnchor.constraint(equalTo: keys.trailingAnchor),
+            grid.bottomAnchor.constraint(equalTo: keys.bottomAnchor),
         ])
         dismiss.pin(in: self, trailing: false)
         voice.pin(in: self, trailing: true)
+        expand.pin(in: self, trailing: true)
     }
 
     // MARK: Keys
@@ -232,6 +253,18 @@ public final class TypingKeyboardView: UIView {
         stack.spacing = KeyboardMetrics.gap
         stack.distribution = .fillEqually
         return stack
+    }
+
+    /// A raised key with only an icon, for the candidate grid's rail.
+    private func railKey(_ icon: Icon, label: String) -> FaceButton {
+        let button = FaceButton(kind: .secondary, material: .raised, icon: icon)
+        button.sideInset = 0
+        button.minimumFaceHeight = 0
+        button.cornerRadius = 8
+        button.iconSize = Self.iconSize
+        button.accessibilityLabel = label
+        button.addAction(UIAction { [weak self] _ in self?.feedback.impactOccurred() }, for: .touchDown)
+        return button
     }
 
     private func keyView(_ spec: KeyLayout.Key) -> FaceButton {
@@ -495,7 +528,17 @@ public final class TypingKeyboardView: UIView {
 
     private func render() {
         let state = engine.state
-        candidateBar.show(preedit: state.preedit, candidates: state.candidates)
+        let choosing = state.isComposing && !state.candidates.isEmpty
+        if !choosing { expanded = false }
+        // Open, the grid continues from the first candidate; the bar keeps the composition.
+        candidateBar.show(preedit: state.preedit, candidates: expanded ? [] : state.candidates)
+        voice.isHidden = choosing
+        expand.isHidden = !choosing
+        expand.setIcon(expanded ? .chevronUp : .chevronDown,
+                       label: expanded ? L10n.typingFewerCandidates : L10n.typingMoreCandidates)
+        keys.isHidden = expanded
+        grid.isHidden = !expanded
+        if expanded { grid.show(state.candidates) }
         if engine.layout == .pinyin9 { syllables.show(state.syllables, idle: KeyLayout.keypadPunctuation) }
         for key in returnKeys { showReturn(on: key) }
     }
@@ -578,6 +621,158 @@ extension CandidateBar: UIScrollViewDelegate {
     }
 }
 
+/// The expanded candidates: rows of cells a quarter of the width wide, a
+/// longer candidate taking as many quarters as it needs, as Rime frontends
+/// (Hamster, Trime) and Sogou lay them out; Delete stays on the right.
+/// More candidates load as the grid scrolls toward its end.
+final class CandidateGrid: UIView {
+    var onChoose: ((Int) -> Void)?
+    var loadMore: ((Int) -> [String])?
+    private let scroll = CandidateScroll()
+    private let rail = UIView()
+    private var cells: [UIButton] = []
+    private var lines: [UIView] = []
+    private static let columns: CGFloat = 4
+    private static let rowHeight: CGFloat = 48
+    private static let font = UIFont.systemFont(ofSize: 20)
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        scroll.alwaysBounceVertical = true
+        scroll.delaysContentTouches = false
+        scroll.delegate = self
+        for view in [scroll, rail] {
+            view.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(view)
+        }
+        NSLayoutConstraint.activate([
+            scroll.topAnchor.constraint(equalTo: topAnchor),
+            scroll.bottomAnchor.constraint(equalTo: bottomAnchor),
+            scroll.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scroll.trailingAnchor.constraint(equalTo: rail.leadingAnchor, constant: -KeyboardMetrics.gap),
+            rail.topAnchor.constraint(equalTo: topAnchor),
+            rail.bottomAnchor.constraint(equalTo: bottomAnchor),
+            rail.trailingAnchor.constraint(equalTo: trailingAnchor),
+            rail.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.135, constant: -0.9 * KeyboardMetrics.gap * 1.35),
+        ])
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
+
+    /// The right rail: page up and page down, as Rime pages its menu, then
+    /// Delete at the bottom, each one key high.
+    func setRail(up: UIControl, down: UIControl, delete: UIView) {
+        up.addAction(UIAction { [weak self] _ in self?.page(by: -1) }, for: .touchUpInside)
+        down.addAction(UIAction { [weak self] _ in self?.page(by: 1) }, for: .touchUpInside)
+        let stack = UIStackView(arrangedSubviews: [up, down, UIView(), delete])
+        stack.axis = .vertical
+        stack.spacing = KeyboardMetrics.rowGap
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        rail.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: rail.topAnchor),
+            stack.bottomAnchor.constraint(equalTo: rail.bottomAnchor),
+            stack.leadingAnchor.constraint(equalTo: rail.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: rail.trailingAnchor),
+        ] + [up, down, delete].map { $0.heightAnchor.constraint(equalToConstant: KeyboardMetrics.rowHeight) })
+    }
+
+    /// Scrolls a page of whole rows, loading more at the end.
+    private func page(by direction: CGFloat) {
+        let rows = max(1, (scroll.bounds.height / Self.rowHeight).rounded(.down))
+        if direction > 0, let more = loadMore?(cells.count), !more.isEmpty {
+            append(more)
+            place()
+        }
+        let limit = max(0, scroll.contentSize.height - scroll.bounds.height)
+        let target = min(limit, max(0, scroll.contentOffset.y + direction * rows * Self.rowHeight))
+        scroll.setContentOffset(CGPoint(x: 0, y: target), animated: !UIAccessibility.isReduceMotionEnabled)
+    }
+
+    func show(_ candidates: [String]) {
+        cells.forEach { $0.removeFromSuperview() }
+        cells = []
+        append(candidates)
+        scroll.contentOffset = .zero
+        setNeedsLayout()
+    }
+
+    private func append(_ candidates: [String]) {
+        for text in candidates {
+            let index = cells.count
+            let button = UIButton(configuration: .plain())
+            button.configuration?.title = text
+            button.configuration?.baseForegroundColor = Palette.foreground
+            button.configuration?.titleLineBreakMode = .byTruncatingTail
+            button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+                var next = attributes
+                next.font = Self.font
+                return next
+            }
+            button.addAction(UIAction { [weak self] _ in self?.onChoose?(index) }, for: .touchUpInside)
+            scroll.addSubview(button)
+            cells.append(button)
+        }
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        place()
+        // Fill at least two screens so the grid has somewhere to scroll.
+        while scroll.contentSize.height < 2 * scroll.bounds.height, let more = loadMore?(cells.count), !more.isEmpty {
+            append(more)
+            place()
+        }
+    }
+
+    private func place() {
+        let width = scroll.bounds.width
+        guard width > 0 else { return }
+        let unit = width / Self.columns
+        var column: CGFloat = 0
+        var row: CGFloat = 0
+        for cell in cells {
+            let text = cell.configuration?.title ?? ""
+            let needed = (text as NSString).size(withAttributes: [.font: Self.font]).width + 24
+            let span = min(Self.columns, max(1, (needed / unit).rounded(.up)))
+            if column + span > Self.columns {
+                column = 0
+                row += 1
+            }
+            cell.frame = CGRect(x: column * unit, y: row * Self.rowHeight, width: span * unit, height: Self.rowHeight)
+            column += span
+        }
+        let rows = cells.isEmpty ? 0 : Int(row) + 1
+        // A hairline under each row.
+        while lines.count < rows {
+            let line = UIView()
+            line.backgroundColor = Palette.border
+            scroll.addSubview(line)
+            lines.append(line)
+        }
+        for (index, line) in lines.enumerated() {
+            line.isHidden = index >= rows
+            line.frame = CGRect(x: 0, y: CGFloat(index + 1) * Self.rowHeight - 0.5, width: width, height: 0.5)
+        }
+        scroll.contentSize = CGSize(width: width, height: CGFloat(rows) * Self.rowHeight)
+    }
+}
+
+/// Lets a drag that starts on a candidate scroll instead of choosing it.
+final class CandidateScroll: UIScrollView {
+    override func touchesShouldCancel(in view: UIView) -> Bool { true }
+}
+
+extension CandidateGrid: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard !cells.isEmpty, scrollView.contentOffset.y + scrollView.bounds.height > scrollView.contentSize.height - 2 * Self.rowHeight,
+              let more = loadMore?(cells.count), !more.isEmpty else { return }
+        append(more)
+        place()
+    }
+}
+
 /// 9-key's left column: the spellings of the pending digits, or punctuation.
 final class SyllableColumn: UIView {
     var onChoose: ((String) -> Void)?
@@ -650,6 +845,11 @@ public final class KeyboardTopKey: UIButton {
 
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
+
+    func setIcon(_ icon: Icon, label: String) {
+        configuration?.image = icon.image(size: TypingKeyboardView.iconSize)
+        accessibilityLabel = label
+    }
 
     /// Pins the key into a panel's top-left or top-right corner.
     func pin(in panel: UIView, trailing: Bool) {

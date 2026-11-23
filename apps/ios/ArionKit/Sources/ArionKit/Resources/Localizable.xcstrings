@@ -3714,6 +3714,24 @@
         }
       }
     },
+    "typing.fewerCandidates": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fewer candidates"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "收起候选"
+          }
+        }
+      },
+      "comment": "Accessibility name of the chevron that closes the candidate grid."
+    },
     "typing.keyboard": {
       "extractionState": "manual",
       "localizations": {
@@ -3786,6 +3804,24 @@
       },
       "comment": "Back from symbols to the English letters."
     },
+    "typing.moreCandidates": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More candidates"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更多候选"
+          }
+        }
+      },
+      "comment": "Accessibility name of the chevron that opens the candidate grid over the keys."
+    },
     "typing.moreSymbols": {
       "extractionState": "manual",
       "localizations": {
@@ -3802,6 +3838,24 @@
           }
         }
       }
+    },
+    "typing.nextPage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next candidates"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下一页候选"
+          }
+        }
+      },
+      "comment": "Accessibility name of the candidate grid's page-down key."
     },
     "typing.pinyin": {
       "extractionState": "manual",
@@ -3856,6 +3910,24 @@
         }
       },
       "comment": "Faint mark in the space bar's corner while Pinyin is the typing mode, as on the system keyboard."
+    },
+    "typing.previousPage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous candidates"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上一页候选"
+          }
+        }
+      },
+      "comment": "Accessibility name of the candidate grid's page-up key."
     },
     "typing.separator": {
       "extractionState": "manual",
