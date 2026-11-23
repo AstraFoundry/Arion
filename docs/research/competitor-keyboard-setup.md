@@ -61,4 +61,4 @@ The deepest an app can link is its own page in Settings, where the Keyboards row
 ## Open
 
 - How either competitor detects that the keyboard was added and Full Access granted, and whether onboarding advances by itself; this needs decrypted binaries or a device run.
-- Arion's Settings page shows the note on Settings › Apps › Arion in the simulator, but not the Keyboards row for the ad-hoc-signed build; the full path needs a device run ([mobile apps](../project/mobile.md#verification)).
+- Arion's Settings page shows the note and the Keyboards row on Settings › Apps › Arion in the simulator. The row was missing while the iOS bundle identifiers started with `si.` ([mobile apps](../project/mobile.md)); a device run is still needed for the whole path.

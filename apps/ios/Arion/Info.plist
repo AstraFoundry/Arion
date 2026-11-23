@@ -27,7 +27,7 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>si.astrafoundry.arion.auth</string>
+			<string>com.astrafoundry.arion.auth</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>arion</string>

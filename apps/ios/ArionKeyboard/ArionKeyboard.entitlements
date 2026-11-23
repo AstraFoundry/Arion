@@ -4,11 +4,11 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.si.astrafoundry.arion</string>
+		<string>group.com.astrafoundry.arion</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)si.astrafoundry.arion.shared</string>
+		<string>$(AppIdentifierPrefix)com.astrafoundry.arion.shared</string>
 	</array>
 </dict>
 </plist>

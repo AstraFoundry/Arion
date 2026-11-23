@@ -161,7 +161,7 @@ pnpm mobile:generate
 
 `pnpm mobile:check` fails when a generated file differs from its source.
 
-iOS needs Xcode 26 and XcodeGen. `pnpm ios:test` generates `apps/ios/Arion.xcodeproj` and runs the ArionKit tests on the simulator named by `ARION_IOS_SIMULATOR` (default `iPhone 17 Pro`). Open the generated project to run the app; the keyboard needs Settings › General › Keyboard › Keyboards › Add New Keyboard › Arion, then Allow Full Access. A debug build launched with `-keyboardPreview idle|listening|polishing|failed` shows the keyboard view without the extension. Signing for a device needs a team with the App Group `group.si.astrafoundry.arion`.
+iOS needs Xcode 26 and XcodeGen. `pnpm ios:test` generates `apps/ios/Arion.xcodeproj` and runs the ArionKit tests on the simulator named by `ARION_IOS_SIMULATOR` (default `iPhone 17 Pro`). Open the generated project to run the app; the keyboard needs Settings › General › Keyboard › Keyboards › Add New Keyboard › Arion, then Allow Full Access. A debug build launched with `-keyboardPreview idle|listening|polishing|failed` shows the keyboard view without the extension. Signing for a device needs a team with the App Group `group.com.astrafoundry.arion`.
 
 Android needs the Android SDK (platform 36) and JDK 17 or later; `apps/android/local.properties` points Gradle at the SDK. `pnpm android:test` runs the core tests and builds the debug app. After installing it, enable the keyboard in onboarding, or with `adb shell ime enable si.astrafoundry.arion/.ime.ArionInputMethodService` and `adb shell ime set …` on an emulator.
 

@@ -4,7 +4,7 @@ import UIKit
 
 extension Notification.Name {
     /// Posted on the main actor whenever the account state changes.
-    static let accountChanged = Notification.Name("si.astrafoundry.arion.accountChanged")
+    static let accountChanged = Notification.Name("com.astrafoundry.arion.accountChanged")
 }
 
 /// The app's long-lived services, created once on the main actor.

@@ -3,7 +3,7 @@ import Foundation
 /// The App Group both the app and the keyboard read. The keyboard can write
 /// to it only with Full Access, so its writes also prove Full Access.
 public enum AppGroup {
-    public static let identifier = "group.si.astrafoundry.arion"
+    public static let identifier = "group.com.astrafoundry.arion"
 
     public static var defaults: UserDefaults {
         guard let defaults = UserDefaults(suiteName: identifier) else {
