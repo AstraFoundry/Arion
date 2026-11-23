@@ -50,6 +50,11 @@ public enum Icon: String, CaseIterable, Sendable {
     case lobeGeminiMono
     case lobeOpenai
     case lobeOpenrouter
+    case arrowBigUpFill
+    case arrowBigUpDashFill
+    case arrowBigUpDashCut
+    case deleteFill
+    case deleteCut
     case google
 
     /// Brand marks that keep their own colors.

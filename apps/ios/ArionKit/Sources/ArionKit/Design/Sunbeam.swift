@@ -102,7 +102,8 @@ public enum Material {
 public final class FaceButton: UIControl {
     public enum Kind { case primary, secondary, plain }
 
-    public let kind: Kind
+    /// Primary is the yellow action; a keyboard's return key changes with the field.
+    public var kind: Kind { didSet { if kind != oldValue { paint() } } }
     public let material: Material
     private let gradient = CAGradientLayer()
     private let highlight = CAShapeLayer()
@@ -192,9 +193,12 @@ public final class FaceButton: UIControl {
     public var iconSize: CGFloat = 20 { didSet { iconSide.constant = iconSize } }
     private var iconSide: NSLayoutConstraint!
 
+    /// An image shown in place of `icon`, such as a key's filled state.
+    public var iconImage: UIImage? { didSet { drawIcon() } }
+
     private func drawIcon() {
-        iconView.image = icon?.image
-        iconView.isHidden = icon == nil
+        iconView.image = iconImage ?? icon?.image
+        iconView.isHidden = icon == nil && iconImage == nil
     }
 
     public override var isHighlighted: Bool {

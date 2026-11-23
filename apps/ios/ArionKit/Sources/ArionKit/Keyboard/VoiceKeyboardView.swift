@@ -56,7 +56,14 @@ public final class VoiceKeyboardView: UIView {
     public var returnTitle: String? { didSet { showReturn() } }
     private let dismiss = KeyboardDismissKey()
 
+    /// False when the field enables return only once it has text and it has none.
+    public var returnEnabled = true { didSet { showReturn() } }
+
+    /// Like the system key: a named action is the yellow key, a new line a
+    /// gray icon, dimmed while the field needs text first.
     private func showReturn() {
+        returnKey.kind = returnTitle == nil ? .secondary : .primary
+        returnKey.isEnabled = returnEnabled
         returnKey.title = returnTitle
         returnKey.icon = returnTitle == nil ? .cornerDownLeft : nil
         returnKey.accessibilityLabel = returnTitle ?? L10n.returnDefault
@@ -121,9 +128,8 @@ public final class VoiceKeyboardView: UIView {
         let keys = UIStackView(arrangedSubviews: [typing, globe, space, returnKey])
         keys.axis = .horizontal
         keys.spacing = 6
-        globe.widthAnchor.constraint(equalToConstant: KeyboardMetrics.switchKeyWidth).isActive = true
-        typing.widthAnchor.constraint(equalToConstant: KeyboardMetrics.switchKeyWidth).isActive = true
-        returnKey.widthAnchor.constraint(equalToConstant: 92).isActive = true
+        for key in [globe, typing] { KeyboardMetrics.width(key, letters: KeyboardMetrics.functionKey, of: keys).isActive = true }
+        KeyboardMetrics.width(returnKey, letters: KeyboardMetrics.returnKey, of: keys).isActive = true
 
         for view in [draftLabel, center, keys, dismiss] as [UIView] {
             view.translatesAutoresizingMaskIntoConstraints = false

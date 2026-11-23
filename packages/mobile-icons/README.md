@@ -5,3 +5,5 @@
 `pnpm mobile:generate` runs `scripts/generate-mobile-icons.mjs`, which writes the iOS asset catalog (`ArionKit/Resources/Icons.xcassets`) with the `Icon` enum, and the Android vector drawables (`design/res/drawable/icon_*.xml`) with the `ArionIcon` enum. `pnpm mobile:check` fails when they differ. Icons are never drawn or converted by hand: add the official SVG and its name here.
 
 Names in `icons` are tinted; names in `original` keep their colors. Views show icons on a fixed square frame (`UIImageView(icon:size:)`, `IconView`), so rows of different icons align.
+
+Names in `filled` also get derived `-fill` (closed outlines filled, open strokes dropped) and `-cut` (only the open strokes) variants for pressed and active keys; the app knocks the cut out of the fill or draws it over it. They come from the same official SVG, so nothing is drawn by hand.

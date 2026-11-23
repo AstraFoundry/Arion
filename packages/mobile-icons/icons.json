@@ -49,6 +49,7 @@
     "lobe-openai",
     "lobe-openrouter"
   ],
+  "filled": ["arrow-big-up", "arrow-big-up-dash", "delete"],
   "original": [
     "google"
   ]

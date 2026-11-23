@@ -15,6 +15,8 @@ public protocol TypingKeyboardViewDelegate: AnyObject {
     func typingShowVoice()
     /// The hide key, top right on both panels.
     func typingDismiss()
+    /// The space bar held and dragged: move the caret, as on the system keyboard.
+    func typingMoveCaret(by offset: Int)
 }
 
 /// Pinyin, 9-key and English typing on the Rime engine (ADR 053). A
@@ -28,10 +30,17 @@ public final class TypingKeyboardView: UIView {
     private let candidateBar = CandidateBar()
     private let keys = UIStackView()
     private let syllables = SyllableColumn()
-    private var shifted = false
+    /// Shift is one-shot; a quick second tap locks capitals, as on iOS.
+    private enum Shift { case off, once, locked }
+    private var shift = Shift.off
+    private var shifted: Bool { shift != .off }
+    private var lastShiftTap = Date.distantPast
+    private var trackpadAnchor: CGFloat?
     private var symbolsShown = false
     private var deleteTimer: Timer?
     private var returnKeys: [FaceButton] = []
+    /// Key widths relate keys to the rows stack, so they wait until the row is in it.
+    private var pendingWidths: [NSLayoutConstraint] = []
     private let feedback = UIImpactFeedbackGenerator(style: .light)
 
     /// The globe key; the controller routes it to the system's keyboard list.
@@ -48,7 +57,9 @@ public final class TypingKeyboardView: UIView {
 
     /// The field's return word (搜索, 发送…), or nil for a plain new line,
     /// which the key shows as an icon.
-    public var returnTitle: String? { didSet { rebuild() } }
+    public var returnTitle: String? { didSet { if returnTitle != oldValue { rebuild() } } }
+    /// False when the field enables return only once it has text and it has none.
+    public var returnEnabled = true { didSet { render() } }
     private let dismiss = KeyboardDismissKey()
 
     public init(engine: TypingEngine) {
@@ -66,7 +77,7 @@ public final class TypingKeyboardView: UIView {
     public func select(_ layout: TypingLayout) {
         engine.select(layout)
         symbolsShown = false
-        shifted = false
+        shift = .off
         rebuild()
         delegate?.typingLayoutChanged(layout)
     }
@@ -92,7 +103,7 @@ public final class TypingKeyboardView: UIView {
         }
         syllables.onPunctuation = { [weak self] text in self?.delegate?.typingInsert(text) }
         keys.axis = .vertical
-        keys.spacing = 10
+        keys.spacing = KeyboardMetrics.rowGap
         for view in [candidateBar, dismiss, keys] as [UIView] {
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
@@ -130,10 +141,12 @@ public final class TypingKeyboardView: UIView {
         }
         let keypadPage = engine.layout == .pinyin9 && !symbolsShown
         keys.addArrangedSubview(rowView(KeyLayout.bottom(symbols: symbolsShown, globe: showsGlobe, keypad: keypadPage)))
+        NSLayoutConstraint.activate(pendingWidths)
+        pendingWidths = []
         // Every row is one key high; the keypad block spans three.
         for view in keys.arrangedSubviews {
             let rows: CGFloat = view === keys.arrangedSubviews.first && keypadPage ? 3 : 1
-            view.heightAnchor.constraint(equalToConstant: rows * KeyboardMetrics.rowHeight + (rows - 1) * keys.spacing).isActive = true
+            view.heightAnchor.constraint(equalToConstant: rows * KeyboardMetrics.rowHeight + (rows - 1) * KeyboardMetrics.rowGap).isActive = true
         }
         render()
     }
@@ -141,7 +154,7 @@ public final class TypingKeyboardView: UIView {
     /// 9-key: syllables or punctuation on the left, the keypad, then delete
     /// over a tall return, as on the system's 9-key keyboard.
     private func keypad() -> UIView {
-        let grid = UIStackView(arrangedSubviews: KeyLayout.keypad.map { rowView($0) })
+        let grid = UIStackView(arrangedSubviews: KeyLayout.keypad.map { gridRow($0) })
         grid.axis = .vertical
         grid.spacing = keys.spacing
         grid.distribution = .fillEqually
@@ -159,41 +172,56 @@ public final class TypingKeyboardView: UIView {
         return row
     }
 
+    /// A row sized like the system keyboard's: keys in letter widths, the
+    /// space bar taking the rest, Shift and Delete at the edges, and a row
+    /// narrower than the keyboard centered.
     private func rowView(_ row: [KeyLayout.Key]) -> UIView {
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.spacing = 6
-        var first: (view: UIView, width: CGFloat)?
+        stack.spacing = KeyboardMetrics.gap
+        var views: [UIView] = []
         for key in row {
             let view: UIView = key.key == .globe ? globe : keyView(key)
-            stack.addArrangedSubview(view)
-            if let fixed = key.fixed {
-                view.widthAnchor.constraint(equalToConstant: fixed).isActive = true
-            } else if let first {
-                view.widthAnchor.constraint(equalTo: first.view.widthAnchor, multiplier: key.width / first.width).isActive = true
-            } else {
-                first = (view, key.width)
-            }
+            if key.width > 0 { pendingWidths.append(KeyboardMetrics.width(view, letters: key.width, of: keys)) }
+            views.append(view)
         }
-        // A shorter row (the second QWERTY row) centers with the first's key width.
-        if row.count == 9, row.allSatisfy({ if case .letter = $0.key { true } else { false } }) {
-            let holder = UIView()
-            stack.translatesAutoresizingMaskIntoConstraints = false
-            holder.addSubview(stack)
-            NSLayoutConstraint.activate([
-                stack.topAnchor.constraint(equalTo: holder.topAnchor),
-                stack.bottomAnchor.constraint(equalTo: holder.bottomAnchor),
-                stack.centerXAnchor.constraint(equalTo: holder.centerXAnchor),
-                stack.widthAnchor.constraint(equalTo: holder.widthAnchor, multiplier: 0.9),
-            ])
-            return holder
+        if row.first?.key == .shift, views.count > 2 {
+            // The system keyboard's third row: Shift and Delete against the
+            // edges, the letters centered between them.
+            let letters = UIStackView(arrangedSubviews: Array(views[1..<(views.count - 1)]))
+            letters.axis = .horizontal
+            letters.spacing = KeyboardMetrics.gap
+            let left = UIView(), right = UIView()
+            for view in [views[0], left, letters, right, views[views.count - 1]] { stack.addArrangedSubview(view) }
+            stack.spacing = 0
+            right.widthAnchor.constraint(equalTo: left.widthAnchor).isActive = true
+            return stack
         }
+        views.forEach { stack.addArrangedSubview($0) }
+        guard !row.contains(where: { $0.width == 0 }) else { return stack }
+        let holder = UIView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        holder.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: holder.topAnchor),
+            stack.bottomAnchor.constraint(equalTo: holder.bottomAnchor),
+            stack.centerXAnchor.constraint(equalTo: holder.centerXAnchor),
+        ])
+        return holder
+    }
+
+    /// The 9-key grid's rows: equal keys filling the grid's width.
+    private func gridRow(_ row: [KeyLayout.Key]) -> UIView {
+        let stack = UIStackView(arrangedSubviews: row.map { keyView($0) })
+        stack.axis = .horizontal
+        stack.spacing = KeyboardMetrics.gap
+        stack.distribution = .fillEqually
         return stack
     }
 
     private func keyView(_ spec: KeyLayout.Key) -> FaceButton {
         if spec.key == .globe { return globe }
-        let button = FaceButton(kind: spec.key == .return ? .primary : .secondary, material: .raised)
+        let button = FaceButton(kind: .secondary, material: .raised)
         button.sideInset = 0
         button.minimumFaceHeight = 0
         button.cornerRadius = 8
@@ -203,8 +231,14 @@ public final class TypingKeyboardView: UIView {
         if spec.key == .return { returnKeys.append(button) }
         button.addAction(UIAction { [weak self] _ in self?.press(spec.key) }, for: .touchUpInside)
         if spec.key == .delete {
-            button.addTarget(self, action: #selector(deleteDown), for: .touchDown)
-            button.addTarget(self, action: #selector(deleteUp), for: [.touchUpInside, .touchUpOutside, .touchCancel])
+            button.addTarget(self, action: #selector(deleteDown(_:)), for: .touchDown)
+            button.addTarget(self, action: #selector(deleteUp(_:)), for: [.touchUpInside, .touchUpOutside, .touchCancel])
+        }
+        if spec.key == .space {
+            // Hold the space bar, then drag to move the caret, as on iOS.
+            let hold = UILongPressGestureRecognizer(target: self, action: #selector(trackpad(_:)))
+            hold.minimumPressDuration = 0.35
+            button.addGestureRecognizer(hold)
         }
         return button
     }
@@ -217,8 +251,12 @@ public final class TypingKeyboardView: UIView {
         case .text(let text): button.title = spec.label ?? text
         case .separator: button.title = spec.label ?? L10n.typingSeparator
         case .shift:
-            button.icon = shifted ? .arrowBigUpDash : .arrowBigUp
+            // Outline when off, filled while on, the barred arrow when locked.
+            let icon: Icon = shift == .locked ? .arrowBigUpDash : .arrowBigUp
+            button.icon = icon
+            button.iconImage = shifted ? KeyGlyph.filled(icon, size: Self.iconSize) : nil
             button.accessibilityLabel = L10n.typingShift
+            button.accessibilityTraits = shifted ? [.button, .selected] : .button
         case .delete:
             button.icon = .delete
             button.accessibilityLabel = L10n.keyboardDelete
@@ -248,10 +286,15 @@ public final class TypingKeyboardView: UIView {
         return .systemFont(ofSize: glyph ? 22 : 17)
     }
 
-    /// While Pinyin composes, return inserts the letters as typed (确认);
-    /// otherwise it shows the field's word, or the new-line icon.
+    /// While Pinyin composes, return inserts the letters as typed (确认).
+    /// Otherwise it follows the field like the system key: a named action
+    /// (发送, 搜索…) is the yellow key, a plain new line a gray icon, and a
+    /// field that needs text first keeps it dimmed until there is some.
     private func showReturn(on button: FaceButton) {
-        let title = engine.state.isComposing ? L10n.typingConfirm : returnTitle
+        let composing = engine.state.isComposing
+        let title = composing ? L10n.typingConfirm : returnTitle
+        button.kind = title == nil ? .secondary : .primary
+        button.isEnabled = composing || returnEnabled
         button.title = title
         button.icon = title == nil ? .cornerDownLeft : nil
         button.accessibilityLabel = title ?? L10n.returnDefault
@@ -271,14 +314,16 @@ public final class TypingKeyboardView: UIView {
                 let character = shifted ? Character(c.uppercased()) : c
                 if let text = engine.type(character), !text.isEmpty { delegate?.typingInsert(text) }
             }
-            if shifted { shifted = false; rebuild() }
+            if shift == .once { shift = .off; rebuild() }
         case .text(let text):
             commitComposition()
             delegate?.typingInsert(text)
         case .separator:
             if engine.state.isComposing { engine.type("'") } else if engine.layout == .pinyin9 { delegate?.typingInsert("，") } else { delegate?.typingInsert("'") }
         case .shift:
-            shifted.toggle()
+            let now = Date()
+            if shift == .once, now.timeIntervalSince(lastShiftTap) < 0.3 { shift = .locked } else { shift = shift == .off ? .once : .off }
+            lastShiftTap = now
             rebuild()
             return
         case .delete, .globe:
@@ -334,7 +379,8 @@ public final class TypingKeyboardView: UIView {
         }
     }
 
-    @objc private func deleteDown() {
+    @objc private func deleteDown(_ key: FaceButton) {
+        key.iconImage = KeyGlyph.filled(.delete, size: Self.iconSize)
         deleteOnce()
         deleteTimer?.invalidate()
         deleteTimer = Timer.scheduledTimer(withTimeInterval: 0.45, repeats: false) { [weak self] _ in
@@ -346,9 +392,34 @@ public final class TypingKeyboardView: UIView {
         }
     }
 
-    @objc private func deleteUp() {
+    @objc private func deleteUp(_ key: FaceButton) {
+        key.iconImage = nil
         deleteTimer?.invalidate()
         deleteTimer = nil
+    }
+
+    /// Trackpad mode: the keys fade, and every 9 points of drag moves the
+    /// caret one character. A composition is inserted first, as on iOS.
+    @objc private func trackpad(_ gesture: UILongPressGestureRecognizer) {
+        let x = gesture.location(in: self).x
+        switch gesture.state {
+        case .began:
+            commitComposition()
+            render()
+            trackpadAnchor = x
+            feedback.impactOccurred()
+            UIView.animate(withDuration: 0.15) { self.keys.alpha = 0.35 }
+        case .changed:
+            guard let anchor = trackpadAnchor else { return }
+            let steps = Int((x - anchor) / 9)
+            if steps != 0 {
+                delegate?.typingMoveCaret(by: steps)
+                trackpadAnchor = anchor + CGFloat(steps) * 9
+            }
+        default:
+            trackpadAnchor = nil
+            UIView.animate(withDuration: 0.15) { self.keys.alpha = 1 }
+        }
     }
 
     private func render() {

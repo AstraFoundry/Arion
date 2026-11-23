@@ -13,13 +13,28 @@ const iosDir = join(root, "apps/ios/ArionKit/Sources/ArionKit/Resources/Icons.xc
 const androidDir = join(root, "apps/android/design/src/main/res/drawable");
 const check = process.argv.includes("--check");
 
-const source = (name) => {
+// Pressed and active keys show a filled icon. It is derived from the official
+// SVG, never drawn: "-fill" fills the closed outlines and drops open strokes;
+// "-cut" keeps only the open strokes, which the app knocks out of the fill.
+const derived = new Map();
+for (const name of manifest.filled ?? []) {
+  const svg = source(name);
+  const elements = [...svg.matchAll(/<path\b[^>]*\/>/g)].map((m) => m[0]);
+  const closed = (el) => /[zZ]\s*"/.test(el);
+  const frame = (body) => svg.replace(/<path\b[\s\S]*<\/svg>/, `${body}\n</svg>`);
+  derived.set(`${name}-fill`, frame(elements.filter(closed).map((el) => el.replace("<path", '<path fill="currentColor"')).join("\n  ")));
+  const open = elements.filter((el) => !closed(el));
+  if (open.length) derived.set(`${name}-cut`, frame(open.join("\n  ")));
+}
+
+function source(name) {
+  if (derived?.has(name)) return derived.get(name);
   for (const dir of sources) {
     const file = join(dir, `${name}.svg`);
     if (existsSync(file)) return readFileSync(file, "utf8");
   }
   throw new Error(`icon ${name} is in neither ${sources.join(" nor ")}`);
-};
+}
 
 const attrs = (text) => Object.fromEntries([...text.matchAll(/([\w:-]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
 const n = (v) => Number.parseFloat(v ?? "0");
@@ -139,7 +154,7 @@ function iosSVG(svg) {
 const camel = (name) => name.replace(/-(\w)/g, (_, c) => c.toUpperCase());
 const files = new Map();
 files.set(join(iosDir, "Contents.json"), `${JSON.stringify({ info: { author: "xcode", version: 1 } }, null, 2)}\n`);
-const all = [...manifest.icons.map((name) => [name, true]), ...manifest.original.map((name) => [name, false])];
+const all = [...manifest.icons.map((name) => [name, true]), ...[...derived.keys()].map((name) => [name, true]), ...manifest.original.map((name) => [name, false])];
 for (const [name, template] of all) {
   const svg = source(name);
   const set = join(iosDir, `${camel(name)}.imageset`);

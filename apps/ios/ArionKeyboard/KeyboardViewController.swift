@@ -122,9 +122,15 @@ final class KeyboardViewController: UIInputViewController {
         }
     }
 
+    /// A field that enables return automatically wants text before it.
+    private var returnEnabled: Bool {
+        textDocumentProxy.enablesReturnKeyAutomatically != true || textDocumentProxy.hasText
+    }
+
     private func refreshTyping() {
         guard let typing else { return }
         typing.returnTitle = Self.returnTitle(textDocumentProxy.returnKeyType)
+        typing.returnEnabled = returnEnabled
         typing.showsGlobe = needsInputModeSwitchKey
         // The app may have changed the setting since the keyboard opened.
         typing.chineseLayout = preferences.chineseTypingLayout
@@ -134,6 +140,7 @@ final class KeyboardViewController: UIInputViewController {
         refreshTyping()
         keyboard.globe.isHidden = !needsInputModeSwitchKey
         keyboard.returnTitle = Self.returnTitle(textDocumentProxy.returnKeyType)
+        keyboard.returnEnabled = returnEnabled
         let languages = preferences.languages
         keyboard.languageMark = languages.count > 1 ? DictationLanguage.mark(preferences.language) : nil
         keyboard.languageName = DictationLanguage.name(preferences.language)
@@ -265,11 +272,15 @@ extension KeyboardViewController: VoiceKeyboardViewDelegate {
 }
 
 extension KeyboardViewController: TypingKeyboardViewDelegate {
-    func typingInsert(_ text: String) { textDocumentProxy.insertText(text) }
+    func typingInsert(_ text: String) {
+        textDocumentProxy.insertText(text)
+        refreshTyping()
+    }
 
     func typingDeleteBackward() {
         guard textDocumentProxy.hasText else { return }
         textDocumentProxy.deleteBackward()
+        refreshTyping()
     }
 
     func typingReturn() { textDocumentProxy.insertText("\n") }
@@ -279,6 +290,8 @@ extension KeyboardViewController: TypingKeyboardViewDelegate {
     func typingShowVoice() { showVoice() }
 
     func typingDismiss() { dismissKeyboard() }
+
+    func typingMoveCaret(by offset: Int) { textDocumentProxy.adjustTextPosition(byCharacterOffset: offset) }
 }
 
 /// The keyboard's root view; it opts in to the system input clicks.

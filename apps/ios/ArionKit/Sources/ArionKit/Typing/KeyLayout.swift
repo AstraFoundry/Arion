@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 /// What a typing key does. Letter keys carry the key Rime receives.
 public enum TypingKey: Equatable, Sendable {
@@ -24,14 +24,27 @@ public enum TypingKey: Equatable, Sendable {
     case globe
 }
 
-/// Sizes both panels share, so switching between voice and typing keeps the
-/// switch key and the bottom row in place.
+/// Sizes both panels share, taken from the iOS 26 system keyboard on a
+/// 402-point iPhone so keys sit where users expect them: 6-point gaps and
+/// margins, letter keys a tenth of the row less the gaps, 42-point rows 12
+/// points apart, Shift and Delete 1.35 letters, the bottom row's small keys
+/// 1.3 letters and Return 2.73. Switching panels keeps every shared key put.
 public enum KeyboardMetrics {
     public static let height: CGFloat = 266
-    public static let switchKeyWidth: CGFloat = 48
-    public static let rowHeight: CGFloat = 44
+    public static let rowHeight: CGFloat = 42
+    public static let rowGap: CGFloat = 12
+    public static let gap: CGFloat = 6
     public static let sideInset: CGFloat = 6
-    public static let bottomInset: CGFloat = 6
+    public static let bottomInset: CGFloat = 8
+
+    /// A key `letters` letter-keys wide in a row of the given width.
+    @MainActor
+    public static func width(_ view: UIView, letters: CGFloat, of row: UIView) -> NSLayoutConstraint {
+        view.widthAnchor.constraint(equalTo: row.widthAnchor, multiplier: 0.1 * letters, constant: -0.9 * gap * letters)
+    }
+    public static let functionKey: CGFloat = 1.3
+    public static let returnKey: CGFloat = 2.73
+    public static let shiftKey: CGFloat = 1.35
 }
 
 /// The rows of each page. Widths are relative; a row fills the keyboard.
@@ -39,15 +52,12 @@ public enum KeyLayout {
     public struct Key: Equatable, Sendable {
         public var key: TypingKey
         public var label: String?
-        /// Relative to the other flexible keys of the row.
+        /// In letter keys (see `KeyboardMetrics`); 0 fills what the row leaves.
         public var width: CGFloat
-        /// A width in points that does not stretch, such as the switch key.
-        public var fixed: CGFloat?
-        public init(_ key: TypingKey, label: String? = nil, width: CGFloat = 1, fixed: CGFloat? = nil) {
+        public init(_ key: TypingKey, label: String? = nil, width: CGFloat = 1) {
             self.key = key
             self.label = label
             self.width = width
-            self.fixed = fixed
         }
     }
 
@@ -58,22 +68,22 @@ public enum KeyLayout {
     /// QWERTY for Pinyin and English, with Shift on the left as on the
     /// system keyboards. In Pinyin a shifted letter is inserted as is.
     public static func qwerty(_ layout: TypingLayout) -> [[Key]] {
-        let third = Key(.shift, width: 1.4)
-        return [
+        [
             letters("qwertyuiop"),
             letters("asdfghjkl"),
-            [third] + letters("zxcvbnm") + [Key(.delete, width: 1.4)],
+            [Key(.shift, width: KeyboardMetrics.shiftKey)] + letters("zxcvbnm") + [Key(.delete, width: KeyboardMetrics.shiftKey)],
         ]
     }
 
     /// The bottom row of every page: the switch key first, at the same place
     /// as on the voice panel, then the page key, 中/EN, space and return.
     public static func bottom(symbols: Bool, globe: Bool, keypad: Bool) -> [Key] {
-        var row = [Key(.voice, fixed: KeyboardMetrics.switchKeyWidth)]
-        if globe { row.append(Key(.globe, fixed: KeyboardMetrics.switchKeyWidth)) }
-        row += [Key(symbols ? .letters : .symbols, width: 1.3), Key(.layout, width: 1.3)]
+        let small = KeyboardMetrics.functionKey
+        var row = [Key(.voice, width: small)]
+        if globe { row.append(Key(.globe, width: small)) }
+        row += [Key(symbols ? .letters : .symbols, width: small), Key(.layout, width: small), Key(.space, width: 0)]
         // 9-key's return is the tall key of its right column.
-        row += keypad ? [Key(.space, width: 6)] : [Key(.space, width: 4), Key(.return, width: 2)]
+        if !keypad { row.append(Key(.return, width: KeyboardMetrics.returnKey)) }
         return row
     }
 
@@ -94,6 +104,6 @@ public enum KeyLayout {
             .map { Key(.text($0), label: $0) }
         let third = (chinese ? ["。", "，", "、", "？", "！", "…"] : [".", ",", "?", "!", "'", "&"])
             .map { Key(.text($0), label: $0) }
-        return [digits, middle, third + [Key(.delete, width: 1.4)]]
+        return [digits, middle, third + [Key(.delete, width: KeyboardMetrics.shiftKey)]]
     }
 }

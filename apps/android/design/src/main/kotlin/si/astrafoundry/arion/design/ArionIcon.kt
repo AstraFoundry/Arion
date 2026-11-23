@@ -50,5 +50,10 @@ enum class ArionIcon(val res: Int, val original: Boolean = false) {
     LobeGeminiMono(R.drawable.icon_lobe_gemini_mono),
     LobeOpenai(R.drawable.icon_lobe_openai),
     LobeOpenrouter(R.drawable.icon_lobe_openrouter),
+    ArrowBigUpFill(R.drawable.icon_arrow_big_up_fill),
+    ArrowBigUpDashFill(R.drawable.icon_arrow_big_up_dash_fill),
+    ArrowBigUpDashCut(R.drawable.icon_arrow_big_up_dash_cut),
+    DeleteFill(R.drawable.icon_delete_fill),
+    DeleteCut(R.drawable.icon_delete_cut),
     Google(R.drawable.icon_google, original = true),
 }
