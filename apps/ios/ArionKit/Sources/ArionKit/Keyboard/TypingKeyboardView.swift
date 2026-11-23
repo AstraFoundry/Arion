@@ -17,6 +17,8 @@ public protocol TypingKeyboardViewDelegate: AnyObject {
     func typingDismiss()
     /// The space bar held and dragged: move the caret, as on the system keyboard.
     func typingMoveCaret(by offset: Int)
+    /// The editor's text before the caret, for English completions.
+    func typingTextBeforeCaret() -> String?
 }
 
 /// Pinyin, 9-key and English typing on the Rime engine (ADR 053). A
@@ -32,6 +34,9 @@ public final class TypingKeyboardView: UIView {
     /// takes the voice key's corner while composing.
     private let grid = CandidateGrid()
     private var expanded = false
+    /// English: the word before the caret and the lexicon's candidates for it.
+    private var englishWord = ""
+    private var englishCandidates: [String] = []
     private let keys = UIStackView()
     private let syllables = SyllableColumn()
     /// Shift is one-shot; a quick second tap locks capitals, as on iOS.
@@ -431,6 +436,16 @@ public final class TypingKeyboardView: UIView {
     }
 
     private func choose(_ index: Int) {
+        if engine.layout == .english {
+            // The chosen word replaces the one typed, then a space, as on the system keyboard.
+            guard englishCandidates.indices.contains(index) else { return }
+            let word = englishCandidates[index]
+            for _ in englishWord { delegate?.typingDeleteBackward() }
+            delegate?.typingInsert(word + " ")
+            engine.confirmEnglish(word)
+            render()
+            return
+        }
         if let text = engine.choose(index), !text.isEmpty { delegate?.typingInsert(text) }
         render()
     }
@@ -440,6 +455,7 @@ public final class TypingKeyboardView: UIView {
             render()
         } else {
             delegate?.typingDeleteBackward()
+            if engine.layout == .english { render() }
         }
     }
 
@@ -526,12 +542,26 @@ public final class TypingKeyboardView: UIView {
         }
     }
 
+    /// The letters before the caret and their candidates: the word as typed
+    /// first, as the system keyboard keeps it, then the lexicon's.
+    private func refreshEnglish() {
+        let before = symbolsShown ? "" : delegate?.typingTextBeforeCaret() ?? ""
+        englishWord = String(before.reversed().prefix { $0.isASCII && $0.isLetter }.reversed())
+        guard !englishWord.isEmpty else { englishCandidates = []; return }
+        englishCandidates = [englishWord] + engine.englishCandidates(for: englishWord).filter { $0 != englishWord }
+    }
+
     private func render() {
         let state = engine.state
         let choosing = state.isComposing && !state.candidates.isEmpty
         if !choosing { expanded = false }
-        // Open, the grid continues from the first candidate; the bar keeps the composition.
-        candidateBar.show(preedit: state.preedit, candidates: expanded ? [] : state.candidates)
+        if engine.layout == .english {
+            refreshEnglish()
+            candidateBar.show(preedit: "", candidates: englishCandidates)
+        } else {
+            // Open, the grid continues from the first candidate; the bar keeps the composition.
+            candidateBar.show(preedit: state.preedit, candidates: expanded ? [] : state.candidates)
+        }
         voice.isHidden = choosing
         expand.isHidden = !choosing
         expand.setIcon(expanded ? .chevronUp : .chevronDown,

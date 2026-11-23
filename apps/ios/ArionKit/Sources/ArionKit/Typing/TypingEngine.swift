@@ -155,6 +155,20 @@ public final class TypingEngine {
         return texts.prefix(count).compactMap { $0.map { String(cString: $0) } }
     }
 
+    /// English: the desktop lexicon's candidates for the word before the
+    /// caret (exact forms, completions, other matches) in the typed case.
+    public func englishCandidates(for word: String, limit: Int = barCandidates) -> [String] {
+        guard !word.isEmpty, limit > 0 else { return [] }
+        var texts = [UnsafePointer<CChar>?](repeating: nil, count: limit)
+        let count = arion_rime_english(word, limit, &texts)
+        return texts.prefix(count).compactMap { $0.map { String(cString: $0) } }
+    }
+
+    /// Records a chosen English word, so its own prefix completes later.
+    public func confirmEnglish(_ word: String) {
+        arion_rime_english_confirm(word)
+    }
+
     @discardableResult
     private func refresh() -> String? {
         var raw = ArionRimeState()

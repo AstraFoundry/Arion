@@ -3,6 +3,7 @@
 #include "english_history.h"
 #include "learning_rime.h"
 #include "menu.h"
+#include <array>
 #include <cstdio>
 #include <stdexcept>
 #include <rime/algo/syllabifier.h>
@@ -203,6 +204,54 @@ class BilingualComponent final : public rime::Translator::Component {
     std::shared_ptr<arion::ime::EnglishHistory> history_;
 };
 }
+namespace {
+// The registered lexicon and history, for hosts whose English layout asks for
+// candidates outside a Rime composition (the phone keyboards).
+std::shared_ptr<const arion::EnglishLexicon> registeredLexicon;
+std::shared_ptr<arion::ime::EnglishHistory> registeredHistory;
+std::vector<std::string> candidateTexts;
+}
+extern "C" size_t arion_english_candidates(const char *word,size_t limit,const char **texts) {
+    candidateTexts.clear();
+    if (!registeredLexicon || !word || !*word || !limit || !texts) return 0;
+    arion::ime::EnglishHistory::Snapshot selected;
+    arion::ime::LearningError error;
+    if (!registeredHistory->snapshot(selected,error)) { arion::ime::reportEncryptedLearningError(error); return 0; }
+    const std::string raw(word);
+    // A familiar exact word leads; otherwise every completion comes before rarer exact forms
+    // (`hel` offers help and hello before Hel). Each in rank order and the typed case.
+    auto matches=registeredLexicon->Query(Fold(raw),arion::EnglishLexicon::Completion::Suggest,selected);
+    std::set<std::string> seen;
+    const auto order=matches.familiar_exact
+        ?std::array<arion::EnglishLexicon::Cursor*,3>{&matches.exact,&matches.suggestions,&matches.lookup}
+        :std::array<arion::EnglishLexicon::Cursor*,3>{&matches.suggestions,&matches.lookup,&matches.exact};
+    for (auto *cursor:order) {
+        while (candidateTexts.size()<limit) {
+            const auto *entry=cursor->Peek();
+            if (!entry) break;
+            auto text=Display(entry->display,raw);
+            cursor->Next();
+            if (seen.insert(text).second) candidateTexts.push_back(std::move(text));
+        }
+    }
+    for (size_t i=0;i<candidateTexts.size();++i) texts[i]=candidateTexts[i].c_str();
+    return candidateTexts.size();
+}
+extern "C" int arion_english_confirm(const char *word) {
+    if (!registeredHistory || !word || !*word) return 0;
+    arion::ime::LearningError error;
+    const auto key=Fold(word);
+    const bool stored=registeredLexicon->Contains(key)?registeredHistory->confirm({key},error):registeredHistory->confirmRaw(word,error);
+    if (!stored) arion::ime::reportEncryptedLearningError(error);
+    return stored?1:0;
+}
+extern "C" void arion_english_unregister(void) {
+    // Releases the selection history's lock, so an engine restarted in the same process can register again.
+    rime::Registry::instance().Unregister("arion_bilingual");
+    registeredHistory.reset();
+    registeredLexicon.reset();
+    candidateTexts.clear();
+}
 extern "C" int arion_english_register(const char *data_directory,char *error,size_t capacity) {
     try {
         if (!data_directory || !rime::Translator::Require("arion_pinyin"))
@@ -216,6 +265,8 @@ extern "C" int arion_english_register(const char *data_directory,char *error,siz
             arion::ime::reportEncryptedLearningError(issue);
             throw std::runtime_error("encrypted English selection history unavailable");
         }
+        registeredLexicon=lexicon;
+        registeredHistory=history;
         rime::Registry::instance().Register("arion_bilingual",new BilingualComponent(std::move(lexicon),std::move(spelling),std::move(history)));
         if (error && capacity) error[0]=0;
         return 1;

@@ -9,14 +9,14 @@ A voice keyboard still needs typing for names, codes and quiet places; switching
 ## Decision
 
 - **Engine.** The phones use the desktop's pinned librime and its correction patch. Its dependencies are built from pinned sources as static libraries; schemas are prebuilt on the build machine. The phone never deploys or downloads typing data.
-- **Layouts.** Full-keyboard Pinyin (`arion_pinyin`), 9-key Pinyin (`arion_pinyin_9key`, digits derived from the same dictionary, learning shared) and English inserted as typed. The keyboard's 中/EN key toggles Chinese and English only; which Chinese layout is a setting in the app.
+- **Layouts.** Full-keyboard Pinyin (`arion_pinyin`), 9-key Pinyin (`arion_pinyin_9key`, digits derived from the same dictionary, learning shared) and English, inserted as typed with the desktop's English lexicon offering completions for the word before the caret. The keyboard's 中/EN key toggles Chinese and English only; which Chinese layout is a setting in the app.
 - **Switching.** The switch is the top-right key of the voice and typing panels, which share one height, so its place is learned once; Wispr Flow puts its microphone there, and the bottom row keeps the system keyboard's 123 first. The keyboard reopens in the last mode.
 - **Learning.** Rime's user dictionary goes through the desktop's encrypted database with a POSIX file provider shared by macOS, iOS and Android. The iOS key is AES-256-GCM in the keychain, device-only, and never recreated over existing learning.
 
 ## Consequences
 
 - The keyboard extension grows by about 9 MB of code and 1.9 MB of data; the iOS build needs `pnpm mobile:rime` first.
-- No sentence model or English completion yet, both of which Typeless has. The expandable candidate grid is described in [mobile](../project/mobile.md).
+- Full-keyboard Pinyin runs the desktop's `arion_pinyin` correcting translator inside its `arion_bilingual` wrapper, with the same English lexicon, admission rules and encrypted English selection history; 9-key stays Chinese only. No sentence model yet, which Typeless has. The expandable candidate grid is described in [mobile](../project/mobile.md).
 - The desktop's macOS learning adapter now uses the shared POSIX provider.
 
 ## Alternatives considered

@@ -11,6 +11,8 @@ import { buildParallelism } from './build-parallelism.mjs';
 import { pinnedFile } from './lib/pinned-file.mjs';
 import { verifiedCorrectionIdentity } from './lib/keyboard-correction-patch.mjs';
 import { buildMacKeyboardRuntime } from './lib/keyboard-macos-runtime.mjs';
+import { englishLexiconFile } from './lib/keyboard-data.mjs';
+import { writeEnglishLexicon } from './lib/keyboard-english.mjs';
 
 if (process.platform !== 'darwin') throw new Error('Staging the mobile Rime engine requires macOS with Xcode.');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -24,6 +26,10 @@ const dataOutput = path.join(root, 'apps/ios/ArionKeyboard/Rime');
 const jobs = String(buildParallelism());
 const digest = value => createHash('sha256').update(value).digest('hex');
 const hash = file => digest(readFileSync(file));
+// The desktop's shared Rime components the phones run: encrypted learning,
+// ranking, the correcting Pinyin translator and the bilingual English one.
+const glue = ['learning.cpp', 'learning_posix.cpp', 'learning_rime.cpp', 'ranking.cpp', 'ranking_unicode.cpp', 'spelling.cpp',
+  'personal_vocabulary.cpp', 'personal_vocabulary_store.cpp', 'english.cpp', 'english_lexicon.cpp', 'english_history.cpp'];
 mkdirSync(work, { recursive: true });
 
 function run(command, args, label, options = {}) {
@@ -72,7 +78,7 @@ function buildSlice(slice, src) {
   const merged = path.join(directory, 'libArionRime.a');
   const identity = digest(JSON.stringify({ slice, mobile, source: desktop.archives.source, patches: desktop.patches,
     recipe, bridge: ['include/arion_rime.h', 'src/arion_rime.cpp'].map(file => hash(path.join(bridge, file))),
-    glue: ['learning.cpp', 'learning_posix.cpp', 'learning_rime.cpp', 'ranking.cpp', 'ranking_unicode.cpp'].map(file => hash(path.join(shared, file))),
+    glue: glue.map(file => hash(path.join(shared, file))),
     sdk: run('xcrun', ['--sdk', slice.sdk, '--show-sdk-version'], `sdk-${name}`).trim() }));
   const marker = path.join(directory, 'identity');
   if (existsSync(marker) && readFileSync(marker, 'utf8') === identity && existsSync(merged)) return merged;
@@ -101,7 +107,7 @@ function buildSlice(slice, src) {
   const objects = [];
   const target = slice.sdk === 'macosx' ? `${slice.architectures[0]}-apple-macos${deploymentTarget(slice)}`
     : `${slice.architectures[0]}-apple-ios${deploymentTarget(slice)}${slice.sdk === 'iphonesimulator' ? '-simulator' : ''}`;
-  for (const file of [...['learning.cpp', 'learning_posix.cpp', 'learning_rime.cpp', 'ranking.cpp', 'ranking_unicode.cpp'].map(f => path.join(shared, f)), path.join(bridge, 'src/arion_rime.cpp')]) {
+  for (const file of [...glue.map(f => path.join(shared, f)), path.join(bridge, 'src/arion_rime.cpp')]) {
     const object = path.join(directory, 'glue', `${path.basename(file, '.cpp')}.o`);
     mkdirSync(path.dirname(object), { recursive: true });
     run('xcrun', ['--sdk', slice.sdk, 'clang++', '-std=c++17', '-O2', '-target', target, '-fvisibility=hidden', '-DRIME_STATIC',
@@ -141,6 +147,8 @@ function stageData(staging) {
     const text = readFileSync(path.join(build, `${schema}.schema.yaml`), 'utf8');
     if (!text.includes('db_class: arion_encrypted_userdb') || !text.includes(`schema_id: ${schema}`)) throw new Error(`Compiled ${schema} lost its encrypted database or identity.`);
   }
+  if (!readFileSync(path.join(build, 'arion_pinyin.schema.yaml'), 'utf8').includes('- arion_bilingual'))
+    throw new Error('Compiled arion_pinyin lost its bilingual translator.');
   // The 9-key syllable list comes from the shipped dictionary itself.
   const syllables = new Set();
   let body = false;
@@ -152,6 +160,17 @@ function stageData(staging) {
   }
   if (syllables.size < 300) throw new Error('Too few Pinyin syllables in the pinned dictionary.');
   writeFileSync(path.join(staging, 'data/arion_syllables.txt'), `${[...syllables].sort().join('\n')}\n`);
+  // The desktop's complete English lexicon from the same pinned sources, which
+  // ship beside it with their notices as on the desktop.
+  const english = path.join(staging, 'english');
+  for (const spec of desktop.files.filter(file => /^licenses\/(esdb|cspell|frequencywords)\//.test(file.to))) {
+    copyFileSync(pinnedFile(spec), path.join(mkdirFor(path.dirname(path.join(english, spec.to))), path.basename(spec.to)));
+    copyFileSync(pinnedFile(spec), path.join(mkdirFor(path.dirname(path.join(staging, spec.to))), path.basename(spec.to)));
+  }
+  mkdirSync(path.join(english, 'data'), { recursive: true });
+  writeEnglishLexicon(english, desktop);
+  renameSync(path.join(english, 'data', englishLexiconFile), path.join(staging, 'data', englishLexiconFile));
+  rmSync(english, { recursive: true });
   rmSync(source, { recursive: true });
   rmSync(user, { recursive: true });
   copyFileSync(path.join(src().boost, 'LICENSE_1_0.txt'), path.join(staging, 'licenses/boost-LICENSE'));

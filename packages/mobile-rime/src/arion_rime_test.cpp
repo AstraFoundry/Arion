@@ -78,6 +78,24 @@ int main(int argc, char **argv) {
     arion_rime_clear(full);
     require(arion_rime_state(full, &state) && std::string(state.input).empty(), "clear drops the composition");
 
+    // English, from the desktop's lexicon: completions in the English layout,
+    // and familiar words mixed into Pinyin as on the desktop.
+    const char *english[30] = {};
+    std::vector<std::string> words;
+    for (size_t i = 0, n = arion_rime_english("hel", 30, english); i < n; ++i) words.push_back(english[i]);
+    require(indexOf(words, "help") >= 0 && indexOf(words, "hello") >= 0, "hel completes to help and hello");
+    require(indexOf(words, "hello") < indexOf(words, "Hel") || indexOf(words, "Hel") < 0, "completions come before a rare exact form");
+    words.clear();
+    for (size_t i = 0, n = arion_rime_english("Hel", 30, english); i < n; ++i) words.push_back(english[i]);
+    require(indexOf(words, "Hello") >= 0, "completions follow the typed capital");
+    require(arion_rime_english_confirm("hello"), "a chosen English word is recorded");
+    type(full, "hello");
+    require(indexOf(candidates(full), "hello") >= 0, "hello is offered in Pinyin");
+    arion_rime_clear(full);
+    type(full, "xin");
+    require(indexOf(candidates(full), "新") >= 0 && indexOf(candidates(full), "新") < 3, "xin keeps Chinese first");
+    arion_rime_clear(full);
+
     ArionRimeSession keypad = arion_rime_open("arion_pinyin_9key");
     require(keypad, "open arion_pinyin_9key");
     type(keypad, "64426");
@@ -118,6 +136,6 @@ int main(int argc, char **argv) {
     arion_rime_stop();
     char error[256] = {0};
     require(arion_rime_reset_learning(vault.c_str(), error, sizeof error), std::string("reset: ") + error);
-    std::cout << "Mobile Rime bridge passed: 26-key, 9-key, syllables, raw commit and encrypted learning.\n";
+    std::cout << "Mobile Rime bridge passed: 26-key, 9-key, syllables, raw commit, English and encrypted learning.\n";
     return 0;
 }

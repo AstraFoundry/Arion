@@ -65,6 +65,13 @@ int arion_rime_state(ArionRimeSession session, ArionRimeState *state);
 size_t arion_rime_candidates(ArionRimeSession session, size_t offset, size_t limit,
                              const char **texts, const char **comments);
 
+// The English layout, which composes nothing: the desktop's English lexicon's
+// candidates for the word before the caret (exact forms, completions, then
+// other matches, in the typed case). Strings stay valid until the next call.
+size_t arion_rime_english(const char *word, size_t limit, const char **texts);
+// Records an English word the user chose, so its own prefix completes later.
+int arion_rime_english_confirm(const char *word);
+
 #ifdef __cplusplus
 }
 #endif

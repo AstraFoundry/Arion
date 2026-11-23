@@ -1,6 +1,8 @@
 #include "arion_rime.h"
 #include "../../../apps/desktop/ime/shared/learning_posix.h"
 #include "../../../apps/desktop/ime/shared/learning_rime.h"
+#include "../../../apps/desktop/ime/shared/english.h"
+#include "../../../apps/desktop/ime/shared/spelling.h"
 #include <rime_api.h>
 #include <algorithm>
 #include <cctype>
@@ -161,6 +163,16 @@ int arion_rime_start(const char *data, const char *user, const char *vault,
         }
     }
     api->initialize(&traits);
+    // The desktop's correcting Pinyin translator and its bilingual wrapper.
+    arion_spelling_register();
+    char english[256] = {0};
+    if (!arion_english_register(data, english, sizeof(english))) {
+        api->finalize();
+        arion_english_unregister();
+        auto cause = encryptedLearningError();
+        report(error, capacity, std::string("english: ") + english + (cause.code ? " (" + cause.operation + ")" : ""));
+        return 0;
+    }
     auto failure = encryptedLearningError();
     if (failure.code) {
         api->finalize();
@@ -185,6 +197,7 @@ void arion_rime_stop(void) {
     std::lock_guard<std::mutex> lock(engineMutex);
     if (!started) return;
     api->finalize();
+    arion_english_unregister();
     started = false;
 }
 
@@ -296,5 +309,15 @@ size_t arion_rime_candidates(ArionRimeSession handle, size_t offset, size_t limi
         if (comments) comments[i] = session->comments[i].c_str();
     }
     return session->texts.size();
+}
+
+size_t arion_rime_english(const char *word, size_t limit, const char **texts) {
+    std::lock_guard<std::mutex> lock(engineMutex);
+    return started ? arion_english_candidates(word, limit, texts) : 0;
+}
+
+int arion_rime_english_confirm(const char *word) {
+    std::lock_guard<std::mutex> lock(engineMutex);
+    return started ? arion_english_confirm(word) : 0;
 }
 }

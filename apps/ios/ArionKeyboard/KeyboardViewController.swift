@@ -28,6 +28,13 @@ final class KeyboardViewController: UIInputViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Declare the height on the root input view before it first appears,
+        // as Apple documents, so hosts that lay out from the first keyboard
+        // frame (Telegram) see the height the panels draw. 999: below the
+        // system's own required constraints.
+        let height = view.heightAnchor.constraint(equalToConstant: KeyboardMetrics.height)
+        height.priority = UILayoutPriority(999)
+        height.isActive = true
         keyboard.translatesAutoresizingMaskIntoConstraints = false
         keyboard.delegate = self
         keyboard.globe.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
@@ -292,6 +299,8 @@ extension KeyboardViewController: TypingKeyboardViewDelegate {
     func typingDismiss() { dismissKeyboard() }
 
     func typingMoveCaret(by offset: Int) { textDocumentProxy.adjustTextPosition(byCharacterOffset: offset) }
+
+    func typingTextBeforeCaret() -> String? { textDocumentProxy.documentContextBeforeInput }
 }
 
 /// The keyboard's root view; it opts in to the system input clicks.
