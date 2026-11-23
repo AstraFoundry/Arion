@@ -86,7 +86,7 @@ if (mode.startsWith('--prepare')) {
   if (!identity.includes(`Identifier=${manifest.identifier}`) || !identity.includes(`TeamIdentifier=${settings.identity.match(/\(([A-Z0-9]{10})\)$/)[1]}`)) throw new Error('Prepared harness signing identity differs from the IMK host.');
   manifest.sourceIdentities = ['keyboard.h', 'keyboard.m', 'learning.h', 'learning.mm', 'learning_crypto.swift',
     '../shared/pinyin.h', '../shared/pinyin.c', '../shared/input.h', '../shared/input.c',
-    '../shared/menu.h', '../shared/menu.c', '../shared/learning.h', '../shared/learning.cpp',
+    '../shared/menu.h', '../shared/menu.c', '../shared/learning.h', '../shared/learning.cpp', '../shared/learning_posix.h', '../shared/learning_posix.cpp',
     '../shared/completion.h', '../shared/completion.cpp', '../shared/emoji.h', '../shared/emoji.cpp', '../shared/english.h', '../shared/english.cpp', '../shared/english_history.cpp', '../shared/english_history.h', '../shared/english_lexicon.cpp', '../shared/english_lexicon.h',
     '../shared/learning_rime.h', '../shared/learning_rime.cpp', '../shared/ranking.h', '../shared/ranking.cpp',
     '../shared/ranking_bridge.h', '../shared/ranking_unicode.h', '../shared/ranking_unicode.cpp',
