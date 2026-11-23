@@ -43,6 +43,7 @@ public final class DictationSession {
     private var draft = Draft()
     private var level: Float = 0
     private var finishing = false
+    private var download: Task<Void, Never>?
     public private(set) var phase: DictationPhase = .idle {
         didSet { onPhase?(phase) }
     }
@@ -61,7 +62,7 @@ public final class DictationSession {
 
     /// Starts listening. The caller has checked Full Access.
     public func start(language: String, vocabulary: [String]) {
-        guard !phase.isActive else { return }
+        guard !phase.isActive, download == nil else { return }
         // The extension may not see the app's grant; only a denial is certain,
         // and WebKit reports any other refusal when capture starts.
         guard AVAudioApplication.shared.recordPermission != .denied else {
@@ -78,12 +79,37 @@ public final class DictationSession {
                 try await recognizer.start(language: language, vocabulary: vocabulary)
                 guard current == generation, phase == .starting else { return }
                 microphone.start()
+            } catch DictationFailure.modelMissing {
+                guard current == generation else { return }
+                downloadModel(language)
             } catch let failure as DictationFailure {
                 guard current == generation else { return }
                 phase = .failed(failure)
             } catch {
                 guard current == generation else { return }
                 phase = .failed(.recognitionFailed)
+            }
+        }
+    }
+
+    /// Asks the system for its model of the language and shows the progress.
+    /// Nothing is captured meanwhile; the next tap after it lands dictates.
+    private func downloadModel(_ language: String) {
+        let current = generation
+        phase = .downloading(0)
+        download = Task { [weak self] in
+            do {
+                try await Recognizer.install(language) { fraction in
+                    guard let self, current == self.generation else { return }
+                    self.phase = .downloading(fraction)
+                }
+                guard let self, current == self.generation else { return }
+                self.download = nil
+                self.phase = .downloaded
+            } catch {
+                guard let self, current == self.generation else { return }
+                self.download = nil
+                self.phase = .failed(error as? DictationFailure ?? .modelDownloadFailed)
             }
         }
     }
@@ -120,6 +146,8 @@ public final class DictationSession {
     public func cancel() {
         generation = generation.next()
         finishing = false
+        download?.cancel()
+        download = nil
         microphone.stop()
         recognizer.cancel()
         phase = .idle
@@ -127,7 +155,10 @@ public final class DictationSession {
 
     /// Clears a shown failure.
     public func dismissFailure() {
-        if case .failed = phase { phase = .idle }
+        switch phase {
+        case .failed, .downloaded: phase = .idle
+        default: break
+        }
     }
 
     private func produce(_ source: String, intent: DictationIntent, scene: Scene, generation current: DictationGeneration) async -> Delivery {

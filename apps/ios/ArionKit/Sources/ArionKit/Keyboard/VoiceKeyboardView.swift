@@ -27,7 +27,7 @@ public final class VoiceKeyboardView: UIView {
 
     /// The globe key; the controller routes it to the system's keyboard list.
     public let globe = FaceButton(kind: .secondary, material: .raised, icon: .globe)
-    private let draftLabel = UILabel(style: .body)
+    private(set) var draftLabel = UILabel(style: .body)
     private let mic = MicButton()
     private let leading = FaceButton(kind: .plain, material: .raised)
     private let trailing = FaceButton(kind: .plain, material: .raised)
@@ -135,14 +135,19 @@ public final class VoiceKeyboardView: UIView {
     public func render(_ phase: DictationPhase) {
         self.phase = phase
         switch phase {
-        case .idle, .failed:
+        case .idle, .failed, .downloading, .downloaded:
             mic.show(.idle)
             configure(leading, icon: nil, title: languageMark, label: L10n.keyboardLanguage(language: languageName))
             configure(trailing, icon: .delete, title: nil, label: L10n.keyboardDelete)
-            if case .failed(let failure) = phase {
+            switch phase {
+            case .failed(let failure):
                 showNotice(Self.message(failure), autoClear: false)
-            } else if noticeTask == nil {
-                draftLabel.text = nil
+            case .downloading(let fraction):
+                showProgress(L10n.keyboardDownloading(language: languageName, percent: fraction.formatted(.percent.precision(.fractionLength(0)))))
+            case .downloaded:
+                showNotice(L10n.keyboardDownloaded, autoClear: true)
+            default:
+                if noticeTask == nil { draftLabel.text = nil }
             }
         case .starting:
             mic.show(.listening)
@@ -204,12 +209,24 @@ public final class VoiceKeyboardView: UIView {
         }
     }
 
+    /// Updates a line that changes often, such as a percentage, without
+    /// announcing every change to VoiceOver.
+    private func showProgress(_ message: String) {
+        let first = draftLabel.text?.isEmpty ?? true
+        if first || noticeTask != nil {
+            showNotice(message, autoClear: false)
+        } else {
+            draftLabel.text = message
+        }
+    }
+
     static func message(_ failure: DictationFailure) -> String {
         switch failure {
         case .fullAccessRequired: L10n.failureFullAccess
         case .microphoneDenied: L10n.failureMicrophone
         case .languageUnavailable: L10n.failureLanguage
-        case .modelInstalling: L10n.failureInstalling
+        case .modelMissing, .modelInstalling: L10n.failureInstalling
+        case .modelDownloadFailed: L10n.failureDownload
         case .captureEnded: L10n.failureCapture
         case .recognitionFailed: L10n.failureRecognition
         case .nothingHeard: L10n.failureNothingHeard

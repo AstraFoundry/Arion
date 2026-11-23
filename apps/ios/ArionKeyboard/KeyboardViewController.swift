@@ -130,9 +130,9 @@ final class KeyboardViewController: UIInputViewController {
 extension KeyboardViewController: VoiceKeyboardViewDelegate {
     func keyboardMicTapped() {
         switch session.phase {
-        case .idle, .failed: begin()
+        case .idle, .failed, .downloaded: begin()
         case .starting, .listening: end(.dictate)
-        case .finishing, .polishing: break
+        case .finishing, .polishing, .downloading: break
         }
     }
 
@@ -151,6 +151,8 @@ extension KeyboardViewController: VoiceKeyboardViewDelegate {
             session.cancel()
             return
         }
+        // The download belongs to the shown language; switching would mislabel it.
+        if case .downloading = session.phase { return }
         let languages = preferences.languages
         guard languages.count > 1, let index = languages.firstIndex(of: preferences.language) else { return }
         preferences.language = languages[(index + 1) % languages.count]

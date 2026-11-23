@@ -17,43 +17,59 @@ public final class Recognizer {
 
     public init() {}
 
-    /// Whether the on-device model for a language is installed.
-    public static func isInstalled(_ language: String) async -> Bool {
-        guard let locale = await DictationTranscriber.supportedLocale(equivalentTo: Locale(identifier: language)) else { return false }
-        let installed = await DictationTranscriber.installedLocales
-        return installed.contains { $0.identifier(.bcp47) == locale.identifier(.bcp47) }
-    }
-
-    /// Downloads the on-device model for a language when it is missing.
-    public static func install(_ language: String) async throws {
-        guard let locale = await DictationTranscriber.supportedLocale(equivalentTo: Locale(identifier: language)) else {
-            throw DictationFailure.languageUnavailable
-        }
-        let module = DictationTranscriber(locale: locale, preset: .progressiveShortDictation)
-        if let request = try await AssetInventory.assetInstallationRequest(supporting: [module]) {
-            try await request.downloadAndInstall()
-        }
-    }
-
-    /// Prepares the model and begins accepting audio.
-    public func start(language: String, vocabulary: [String]) async throws {
-        cancel()
-        guard let locale = await DictationTranscriber.supportedLocale(equivalentTo: Locale(identifier: language)) else {
-            throw DictationFailure.languageUnavailable
-        }
-        guard await Self.isInstalled(language) else {
-            // Begin the download so the next dictation can run, and say so now.
-            Task.detached { try? await Self.install(language) }
-            throw DictationFailure.modelInstalling
-        }
-        let transcriber = DictationTranscriber(
+    /// The transcriber every dictation runs. Asset checks and downloads use
+    /// this same configuration, so "installed" means this one can run.
+    private static func transcriber(_ locale: Locale) -> DictationTranscriber {
+        DictationTranscriber(
             locale: locale,
             contentHints: [.shortForm],
             transcriptionOptions: [.punctuation],
             reportingOptions: [.volatileResults, .frequentFinalization],
             attributeOptions: []
         )
+    }
+
+    private static func locale(_ language: String) async throws -> Locale {
+        guard let locale = await DictationTranscriber.supportedLocale(equivalentTo: Locale(identifier: language)) else {
+            throw DictationFailure.languageUnavailable
+        }
+        return locale
+    }
+
+    /// Whether the system's on-device model for a language is installed for
+    /// this process. The app and the keyboard each hold their own reservation.
+    public static func isInstalled(_ language: String) async -> Bool {
+        guard let locale = try? await locale(language) else { return false }
+        return await AssetInventory.status(forModules: [transcriber(locale)]) == .installed
+    }
+
+    /// Asks the system to download its on-device model for a language when it
+    /// is missing. The model is Apple's; `onProgress` receives the fraction done.
+    public static func install(_ language: String, onProgress: (@MainActor (Double) -> Void)? = nil) async throws {
+        let module = transcriber(try await locale(language))
+        guard let request = try await AssetInventory.assetInstallationRequest(supporting: [module]) else { return }
+        let progress = request.progress
+        let watcher = Task { @MainActor in
+            while !Task.isCancelled {
+                onProgress?(progress.fractionCompleted)
+                try? await Task.sleep(for: .milliseconds(250))
+            }
+        }
+        defer { watcher.cancel() }
+        try await request.downloadAndInstall()
+    }
+
+    /// Prepares the model and begins accepting audio.
+    public func start(language: String, vocabulary: [String]) async throws {
+        cancel()
+        let transcriber = Self.transcriber(try await Self.locale(language))
+        switch await AssetInventory.status(forModules: [transcriber]) {
+        case .installed: break
+        case .unsupported: throw DictationFailure.languageUnavailable
+        default: throw DictationFailure.modelMissing
+        }
         guard let format = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [transcriber], considering: WebMicrophone.format) else {
+            // Installed but not yet usable; downloading again would not help.
             throw DictationFailure.modelInstalling
         }
         targetFormat = format

@@ -77,6 +77,7 @@ public enum L10n {
     public static var cloudTitle: String { lookup("cloud.title") }
     public static var cloudUse: String { lookup("cloud.use") }
     public static var failureCapture: String { lookup("failure.capture") }
+    public static var failureDownload: String { lookup("failure.download") }
     public static var failureFullAccess: String { lookup("failure.fullAccess") }
     public static var failureInstalling: String { lookup("failure.installing") }
     public static var failureLanguage: String { lookup("failure.language") }
@@ -90,6 +91,8 @@ public enum L10n {
     public static var keyboardDelete: String { lookup("keyboard.delete") }
     public static var keyboardDictate: String { lookup("keyboard.dictate") }
     public static var keyboardDone: String { lookup("keyboard.done") }
+    public static var keyboardDownloaded: String { lookup("keyboard.downloaded") }
+    public static func keyboardDownloading(language: String, percent: String) -> String { format("keyboard.downloading", language, percent) }
     public static func keyboardLanguage(language: String) -> String { format("keyboard.language", language) }
     public static var keyboardNextKeyboard: String { lookup("keyboard.nextKeyboard") }
     public static var keyboardSpace: String { lookup("keyboard.space") }

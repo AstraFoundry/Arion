@@ -25,8 +25,13 @@ public enum DictationFailure: Error, Equatable, Sendable {
     case microphoneDenied
     /// The recognizer has no on-device model for the language yet.
     case languageUnavailable
-    /// The on-device model for the language is still downloading.
+    /// The system's on-device model for the language is not installed; the
+    /// session downloads it and shows the progress.
+    case modelMissing
+    /// The system's on-device model for the language is installed but not ready.
     case modelInstalling
+    /// The system could not download its on-device model.
+    case modelDownloadFailed
     /// The microphone stopped: another app took it, or the route ended.
     case captureEnded
     /// The recognizer failed.
@@ -45,6 +50,11 @@ public enum DictationPhase: Equatable, Sendable {
     case finishing(Draft)
     /// The finalized transcript is being polished on device.
     case polishing(Draft)
+    /// The system's model for the language is downloading; the fraction is done.
+    /// Nothing is captured, and the keyboard stays usable.
+    case downloading(Double)
+    /// The model finished downloading; the next tap can dictate.
+    case downloaded
     case failed(DictationFailure)
 
     public var draft: Draft? {

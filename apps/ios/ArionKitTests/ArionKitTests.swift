@@ -122,3 +122,27 @@ final class TextJoiningTests: XCTestCase {
         XCTAssertEqual(TextJoining.joining("hi", after: nil), "hi")
     }
 }
+
+@MainActor
+final class ModelDownloadTests: XCTestCase {
+    func testDownloadPhasesLeaveTheKeyboardIdle() {
+        XCTAssertFalse(DictationPhase.downloading(0.4).isActive)
+        XCTAssertFalse(DictationPhase.downloaded.isActive)
+    }
+
+    func testKeyboardShowsTheSystemDownloadWithItsProgress() {
+        let keyboard = VoiceKeyboardView(frame: .zero)
+        keyboard.languageName = "中文"
+        keyboard.render(.downloading(0.42))
+        let line = keyboard.draftLabel.text ?? ""
+        XCTAssertTrue(line.contains("中文"), line)
+        XCTAssertTrue(line.contains("42"), line)
+        keyboard.render(.downloading(0.9))
+        XCTAssertTrue((keyboard.draftLabel.text ?? "").contains("90"))
+    }
+
+    func testDownloadFailureIsNamed() {
+        XCTAssertEqual(VoiceKeyboardView.message(.modelDownloadFailed), L10n.failureDownload)
+        XCTAssertNotEqual(VoiceKeyboardView.message(.modelDownloadFailed), L10n.failureInstalling)
+    }
+}

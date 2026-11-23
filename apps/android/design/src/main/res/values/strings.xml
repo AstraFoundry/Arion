@@ -74,8 +74,9 @@
     <string name="cloud_title" formatted="false">Cloud model</string>
     <string name="cloud_use" formatted="false">Use</string>
     <string name="failure_capture" formatted="false">The microphone stopped. Another app may be using it.</string>
+    <string name="failure_download" formatted="false">Couldn’t download speech recognition. Check your connection and try again.</string>
     <string name="failure_full_access" formatted="false">Turn on Allow Full Access for Arion in Settings › General › Keyboard › Keyboards.</string>
-    <string name="failure_installing" formatted="false">Downloading the speech model. Try again in a moment.</string>
+    <string name="failure_installing" formatted="false">Speech recognition for this language isn’t ready yet. Try again in a moment.</string>
     <string name="failure_language" formatted="false">This language can’t be dictated on this device.</string>
     <string name="failure_microphone" formatted="false">Open Arion to allow the microphone.</string>
     <string name="failure_nothing_heard" formatted="false">Didn’t catch that.</string>
@@ -85,6 +86,8 @@
     <string name="keyboard_delete" formatted="false">Delete</string>
     <string name="keyboard_dictate" formatted="false">Dictate</string>
     <string name="keyboard_done" formatted="false">Done</string>
+    <string name="keyboard_downloaded" formatted="false">Ready. Tap the mic and speak.</string>
+    <string name="keyboard_downloading">Downloading Apple’s %1$s speech recognition… %2$s</string>
     <string name="keyboard_language">Dictation language: %1$s</string>
     <string name="keyboard_next_keyboard" formatted="false">Next keyboard</string>
     <string name="keyboard_space" formatted="false">space</string>
@@ -168,7 +171,7 @@
     <string name="settings_keyboard_set_up" formatted="false">Set up</string>
     <string name="settings_keyboard_setup" formatted="false">Keyboard setup</string>
     <string name="settings_languages" formatted="false">Languages</string>
-    <string name="settings_model" formatted="false">Speech model</string>
+    <string name="settings_model" formatted="false">Speech recognition</string>
     <string name="settings_model_download" formatted="false">Download</string>
     <string name="settings_model_downloading" formatted="false">Downloading</string>
     <string name="settings_model_failed" formatted="false">Download failed. Try again.</string>

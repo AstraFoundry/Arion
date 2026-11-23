@@ -1242,6 +1242,23 @@
         }
       }
     },
+    "failure.download": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t download speech recognition. Check your connection and try again."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法下载语音识别，请检查网络后重试。"
+          }
+        }
+      }
+    },
     "failure.fullAccess": {
       "extractionState": "manual",
       "localizations": {
@@ -1265,13 +1282,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Downloading the speech model. Try again in a moment."
+            "value": "Speech recognition for this language isn’t ready yet. Try again in a moment."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在下载语音模型，请稍后再试。"
+            "value": "该语言的系统语音识别还没准备好，请稍后再试。"
           }
         }
       }
@@ -1464,6 +1481,40 @@
         }
       },
       "comment": "Accessibility name of the microphone button while listening."
+    },
+    "keyboard.downloaded": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ready. Tap the mic and speak."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已就绪，点按麦克风说话。"
+          }
+        }
+      }
+    },
+    "keyboard.downloading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloading Apple’s %1$@ speech recognition… %2$@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在下载系统的%1$@语音识别… %2$@"
+          }
+        }
+      }
     },
     "keyboard.language": {
       "extractionState": "manual",
@@ -2882,13 +2933,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Speech model"
+            "value": "Speech recognition"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "语音模型"
+            "value": "语音识别"
           }
         }
       }
