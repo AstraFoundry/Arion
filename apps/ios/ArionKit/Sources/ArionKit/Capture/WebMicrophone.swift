@@ -18,8 +18,8 @@ public final class WebMicrophone: NSObject {
 
     public enum Event {
         case started
-        /// A chunk of audio and its RMS level in 0...1.
-        case audio(AVAudioPCMBuffer, level: Float)
+        /// A chunk of audio and its RMS amplitude, full scale 1.
+        case audio(AVAudioPCMBuffer, rms: Float)
         case ended(reason: String)
     }
 
@@ -113,8 +113,8 @@ public final class WebMicrophone: NSObject {
                   let encoded = message["data"] as? String,
                   let data = Data(base64Encoded: encoded),
                   let buffer = Self.buffer(from: data) else { return }
-            let level = (message["rms"] as? NSNumber)?.floatValue ?? 0
-            onEvent?(.audio(buffer, level: min(1, level * 4)))
+            let rms = (message["rms"] as? NSNumber)?.floatValue ?? 0
+            onEvent?(.audio(buffer, rms: rms))
         case "interrupted", "failed":
             finish(reason: "\(type): \(message["reason"] as? String ?? "")")
         default:

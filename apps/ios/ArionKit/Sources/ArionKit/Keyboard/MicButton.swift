@@ -2,11 +2,13 @@
 import UIKit
 
 /// The keyboard's one primary control, drawn as the app icon: Sunbeam's raised
-/// yellow face with the voice mark. Listening it turns to the substrate ink
-/// and its bars follow the voice; finishing, the bars rest and dim.
+/// yellow face with the voice mark. Active it turns to the substrate ink and
+/// the mark moves as the desktop pill's does: its bars follow the voice, fold
+/// into waiting dots while the microphone opens or recognition finishes, and
+/// turn on a circle while the rewrite organizes the text.
 @MainActor
 final class MicButton: UIControl {
-    enum Look: Equatable { case idle, listening, working }
+    enum Look: Equatable { case idle, waiting, listening, polishing }
 
     static let diameter: CGFloat = 72
 
@@ -48,7 +50,7 @@ final class MicButton: UIControl {
             dark.trailingAnchor.constraint(equalTo: trailingAnchor),
             mark.centerXAnchor.constraint(equalTo: centerXAnchor),
             mark.centerYAnchor.constraint(equalTo: centerYAnchor),
-            mark.widthAnchor.constraint(equalToConstant: 36),
+            mark.widthAnchor.constraint(equalToConstant: 40),
             mark.heightAnchor.constraint(equalToConstant: 30),
         ])
     }
@@ -70,35 +72,26 @@ final class MicButton: UIControl {
         guard look != self.look else { return }
         self.look = look
         accessibilityLabel = look == .idle ? L10n.keyboardDictate : L10n.keyboardDone
-        mark.setLevel(0)
+        switch look {
+        case .idle: mark.setMode(.resting)
+        case .waiting: mark.setMode(.waiting)
+        case .listening: mark.setMode(.listening)
+        case .polishing: mark.setMode(.orbiting)
+        }
         let animations = {
             self.face.alpha = look == .idle ? 1 : 0
             self.dark.alpha = look == .idle ? 0 : 1
             self.mark.color = look == .idle ? Palette.primaryForeground : Palette.primary
-            self.mark.alpha = look == .working ? 0.45 : 1
         }
         if UIAccessibility.isReduceMotionEnabled {
             animations()
         } else {
             UIView.animate(withDuration: 0.2, delay: 0, options: [.beginFromCurrentState], animations: animations)
         }
-        if look == .working { pulse() } else { mark.layer.removeAnimation(forKey: "pulse") }
     }
 
     /// Follows the voice level, 0...1.
     func setLevel(_ level: Float) {
-        guard look == .listening else { return }
-        mark.setLevel(max(level, 0.08))
-    }
-
-    private func pulse() {
-        guard !UIAccessibility.isReduceMotionEnabled else { return }
-        let animation = CABasicAnimation(keyPath: "opacity")
-        animation.fromValue = 0.35
-        animation.toValue = 0.8
-        animation.duration = 0.7
-        animation.autoreverses = true
-        animation.repeatCount = .infinity
-        mark.layer.add(animation, forKey: "pulse")
+        mark.setLevel(level)
     }
 }

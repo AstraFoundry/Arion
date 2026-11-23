@@ -185,7 +185,7 @@ public final class VoiceKeyboardView: UIView {
                 if noticeTask == nil { draftLabel.text = nil }
             }
         case .starting:
-            mic.show(.listening)
+            mic.show(.waiting)
             setCancelAndTranslate()
             draftLabel.text = nil
         case .listening(let draft, let level):
@@ -194,9 +194,9 @@ public final class VoiceKeyboardView: UIView {
             setCancelAndTranslate()
             showDraft(draft)
         case .finishing(let draft), .polishing(let draft):
-            mic.show(.working)
+            if case .polishing = phase { mic.show(.polishing) } else { mic.show(.waiting) }
             configure(leading, icon: .x, title: nil, label: L10n.keyboardCancel)
-            trailing.isHidden = true
+            configure(trailing, icon: nil, title: nil, label: "")
             showDraft(draft)
         }
         if holding { highlightHoldTarget() }
@@ -207,9 +207,14 @@ public final class VoiceKeyboardView: UIView {
         configure(trailing, icon: .languages, title: nil, label: L10n.keyboardTranslate(language: translationName))
     }
 
+    /// An empty side button keeps its place in the row, so the microphone
+    /// stays centered through every phase.
     private func configure(_ button: FaceButton, icon: Icon?, title: String?, label: String) {
         let hidden = icon == nil && title == nil
-        if button.isHidden != hidden { button.isHidden = hidden }
+        button.alpha = hidden ? 0 : 1
+        button.isUserInteractionEnabled = !hidden
+        button.accessibilityElementsHidden = hidden
+        button.isAccessibilityElement = !hidden
         button.icon = icon
         button.title = title
         button.accessibilityLabel = label

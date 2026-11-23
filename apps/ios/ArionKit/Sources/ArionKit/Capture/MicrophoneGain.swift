@@ -24,6 +24,14 @@ public enum MicrophoneGain {
 
     public static func factor(decibels: Int) -> Float { Float(pow(10, Double(decibels) / 20)) }
 
+    /// The meter level of an RMS amplitude after gain, as the desktop
+    /// computes it (`Level` in `packages/core/application/dictation.go`):
+    /// -60 dBFS to -10 dBFS fill 0...1, so quiet speech still moves the bars.
+    public static func level(rms: Float, decibels: Int) -> Float {
+        let db = 20 * log10(Double(rms * factor(decibels: decibels)) + 1e-9)
+        return Float(max(0, min(1, (db + 60) / 50)))
+    }
+
     /// Scales 16-bit PCM in place.
     public static func apply(_ buffer: AVAudioPCMBuffer, decibels: Int) {
         guard decibels != 0, let samples = buffer.int16ChannelData?[0] else { return }

@@ -203,10 +203,10 @@ public final class DictationSession {
         switch event {
         case .started:
             if phase == .starting { phase = .listening(draft, level: 0) }
-        case .audio(let buffer, var level):
+        case .audio(let buffer, let rms):
             let gain = preferences.microphoneGain
             MicrophoneGain.apply(buffer, decibels: gain)
-            level = min(1, level * MicrophoneGain.factor(decibels: gain))
+            let level = MicrophoneGain.level(rms: rms, decibels: gain)
             self.level = level
             recognizer.append(buffer)
             if case .listening = phase, !finishing { phase = .listening(draft, level: level) }

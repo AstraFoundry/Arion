@@ -195,6 +195,15 @@ final class MicrophoneGainTests: XCTestCase {
         XCTAssertEqual(MicrophoneGain.nearest(-9).decibels, -6)
     }
 
+    func testLevelMapsDecibelsAsTheDesktop() {
+        // packages/core/application/dictation.go Level: -60 dBFS is 0, -10 dBFS is 1.
+        XCTAssertEqual(MicrophoneGain.level(rms: 0.001, decibels: 0), 0, accuracy: 0.001)
+        XCTAssertEqual(MicrophoneGain.level(rms: 0.0316, decibels: 0), 0.6, accuracy: 0.001)
+        XCTAssertEqual(MicrophoneGain.level(rms: 0.5, decibels: 0), 1)
+        // +6 dB of gain lifts the meter by 6/50.
+        XCTAssertEqual(MicrophoneGain.level(rms: 0.0316, decibels: 6), 0.72, accuracy: 0.002)
+    }
+
     func testGainScalesAndClips() throws {
         let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: WebMicrophone.format, frameCapacity: 3))
         buffer.frameLength = 3
