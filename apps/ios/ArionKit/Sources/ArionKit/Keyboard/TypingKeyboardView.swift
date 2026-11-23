@@ -60,7 +60,8 @@ public final class TypingKeyboardView: UIView {
     public var returnTitle: String? { didSet { if returnTitle != oldValue { rebuild() } } }
     /// False when the field enables return only once it has text and it has none.
     public var returnEnabled = true { didSet { render() } }
-    private let dismiss = KeyboardDismissKey()
+    private let dismiss = KeyboardTopKey(icon: .chevronDown, label: L10n.keyboardDismiss)
+    private let voice = KeyboardTopKey(icon: .mic, label: L10n.typingVoice)
 
     public init(engine: TypingEngine) {
         self.engine = engine
@@ -90,6 +91,10 @@ public final class TypingKeyboardView: UIView {
 
     private func build() {
         dismiss.addAction(UIAction { [weak self] _ in self?.delegate?.typingDismiss() }, for: .touchUpInside)
+        voice.addAction(UIAction { [weak self] _ in
+            self?.commitComposition()
+            self?.delegate?.typingShowVoice()
+        }, for: .touchUpInside)
         globe.accessibilityLabel = L10n.keyboardNextKeyboard
         globe.sideInset = 0
         globe.minimumFaceHeight = 0
@@ -104,7 +109,7 @@ public final class TypingKeyboardView: UIView {
         syllables.onPunctuation = { [weak self] text in self?.delegate?.typingInsert(text) }
         keys.axis = .vertical
         keys.spacing = KeyboardMetrics.rowGap
-        for view in [candidateBar, dismiss, keys] as [UIView] {
+        for view in [candidateBar, dismiss, voice, keys] as [UIView] {
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
         }
@@ -114,16 +119,16 @@ public final class TypingKeyboardView: UIView {
         NSLayoutConstraint.activate([
             height,
             candidateBar.topAnchor.constraint(equalTo: topAnchor, constant: 4),
-            candidateBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: inset),
-            candidateBar.trailingAnchor.constraint(equalTo: dismiss.leadingAnchor, constant: -4),
+            candidateBar.leadingAnchor.constraint(equalTo: dismiss.trailingAnchor, constant: 4),
+            candidateBar.trailingAnchor.constraint(equalTo: voice.leadingAnchor, constant: -4),
             candidateBar.heightAnchor.constraint(equalToConstant: 44),
-            dismiss.centerYAnchor.constraint(equalTo: candidateBar.centerYAnchor),
-            dismiss.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -inset),
             keys.topAnchor.constraint(equalTo: candidateBar.bottomAnchor, constant: 6),
             keys.leadingAnchor.constraint(equalTo: leadingAnchor, constant: inset),
             keys.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -inset),
             keys.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -KeyboardMetrics.bottomInset),
         ])
+        dismiss.pin(in: self, trailing: false)
+        voice.pin(in: self, trailing: true)
     }
 
     // MARK: Keys
@@ -260,9 +265,6 @@ public final class TypingKeyboardView: UIView {
         case .delete:
             button.icon = .delete
             button.accessibilityLabel = L10n.keyboardDelete
-        case .voice:
-            button.icon = .mic
-            button.accessibilityLabel = L10n.typingVoice
         case .globe: break
         case .space: button.title = L10n.keyboardSpace
         case .return: showReturn(on: button)
@@ -328,10 +330,6 @@ public final class TypingKeyboardView: UIView {
             return
         case .delete, .globe:
             break
-        case .voice:
-            commitComposition()
-            delegate?.typingShowVoice()
-            return
         case .space:
             if engine.state.isComposing, !engine.state.candidates.isEmpty {
                 choose(0)
@@ -560,15 +558,16 @@ final class SyllableColumn: UIView {
     }
 }
 
-/// Hides the keyboard: a bare chevron at the top right of both panels.
-public final class KeyboardDismissKey: UIButton {
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+/// A bare icon in the top corners shared by both panels: hide (top left)
+/// and the voice/typing switch (top right), so neither moves between them.
+public final class KeyboardTopKey: UIButton {
+    public init(icon: Icon, label: String) {
+        super.init(frame: .zero)
         var configuration = UIButton.Configuration.plain()
-        configuration.image = Icon.chevronDown.image(size: TypingKeyboardView.iconSize)
+        configuration.image = icon.image(size: TypingKeyboardView.iconSize)
         configuration.baseForegroundColor = Palette.foreground
         self.configuration = configuration
-        accessibilityLabel = L10n.keyboardDismiss
+        accessibilityLabel = label
         translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             widthAnchor.constraint(equalToConstant: 44),
@@ -578,4 +577,12 @@ public final class KeyboardDismissKey: UIButton {
 
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
+
+    /// Pins the key into a panel's top-left or top-right corner.
+    func pin(in panel: UIView, trailing: Bool) {
+        let side = trailing
+            ? trailingAnchor.constraint(equalTo: panel.trailingAnchor, constant: -KeyboardMetrics.sideInset)
+            : leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: KeyboardMetrics.sideInset)
+        NSLayoutConstraint.activate([topAnchor.constraint(equalTo: panel.topAnchor, constant: 4), side])
+    }
 }

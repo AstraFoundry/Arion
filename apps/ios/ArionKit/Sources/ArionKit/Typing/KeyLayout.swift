@@ -18,8 +18,6 @@ public enum TypingKey: Equatable, Sendable {
     case letters
     /// Toggles Chinese (the Pinyin layout chosen in settings) and English.
     case layout
-    /// Back to the microphone; always the bottom-left key, as on the voice panel.
-    case voice
     /// The system's next-keyboard key, when the device needs one.
     case globe
 }
@@ -75,12 +73,11 @@ public enum KeyLayout {
         ]
     }
 
-    /// The bottom row of every page: the switch key first, at the same place
-    /// as on the voice panel, then the page key, 中/EN, space and return.
+    /// The bottom row of every page: the page key, 中/EN, space and return.
     public static func bottom(symbols: Bool, globe: Bool, keypad: Bool) -> [Key] {
         let small = KeyboardMetrics.functionKey
-        var row = [Key(.voice, width: small)]
-        if globe { row.append(Key(.globe, width: small)) }
+        // As on the system keyboard: 123 first; the voice switch is top right.
+        var row: [Key] = globe ? [Key(.globe, width: small)] : []
         row += [Key(symbols ? .letters : .symbols, width: small), Key(.layout, width: small), Key(.space, width: 0)]
         // 9-key's return is the tall key of its right column.
         if !keypad { row.append(Key(.return, width: KeyboardMetrics.returnKey)) }

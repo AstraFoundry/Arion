@@ -31,7 +31,7 @@ public final class VoiceKeyboardView: UIView {
 
     /// The globe key; the controller routes it to the system's keyboard list.
     public let globe = FaceButton(kind: .secondary, material: .raised, icon: .globe)
-    private let typing = FaceButton(kind: .secondary, material: .raised, icon: .keyboard)
+    private let typing = KeyboardTopKey(icon: .keyboard, label: L10n.typingKeyboard)
     private(set) var draftLabel = UILabel(style: .body)
     private let mic = MicButton()
     private let leading = FaceButton(kind: .plain, material: .raised)
@@ -54,7 +54,7 @@ public final class VoiceKeyboardView: UIView {
     /// The field's return word (搜索, 发送…), or nil for a plain new line,
     /// which the key shows as an icon.
     public var returnTitle: String? { didSet { showReturn() } }
-    private let dismiss = KeyboardDismissKey()
+    private let dismiss = KeyboardTopKey(icon: .chevronDown, label: L10n.keyboardDismiss)
 
     /// False when the field enables return only once it has text and it has none.
     public var returnEnabled = true { didSet { showReturn() } }
@@ -119,24 +119,20 @@ public final class VoiceKeyboardView: UIView {
         center.alignment = .center
         center.spacing = 40
 
-        typing.accessibilityLabel = L10n.typingKeyboard
-        typing.iconSize = TypingKeyboardView.iconSize
-        typing.cornerRadius = SunbeamTokens.Radius.lg
         typing.addAction(UIAction { [weak self] _ in self?.delegate?.keyboardShowTyping() }, for: .touchUpInside)
 
-        // The switch key leads the bottom row, where the typing panel has its
-        // own; the two panels share their height so it stays put.
-        let keys = UIStackView(arrangedSubviews: [typing, globe, space, returnKey])
+        // The switch and hide keys sit in the top corners on both panels,
+        // which share their height, so neither moves between them.
+        let keys = UIStackView(arrangedSubviews: [globe, space, returnKey])
         keys.axis = .horizontal
         keys.spacing = 6
-        KeyboardMetrics.width(typing, letters: KeyboardMetrics.functionKey, of: keys).isActive = true
         // Below required: the stack collapses the globe when the device needs none.
         let globeWidth = KeyboardMetrics.width(globe, letters: KeyboardMetrics.functionKey, of: keys)
         globeWidth.priority = .required - 1
         globeWidth.isActive = true
         KeyboardMetrics.width(returnKey, letters: KeyboardMetrics.returnKey, of: keys).isActive = true
 
-        for view in [draftLabel, center, keys, dismiss] as [UIView] {
+        for view in [draftLabel, center, keys, dismiss, typing] as [UIView] {
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
         }
@@ -157,8 +153,6 @@ public final class VoiceKeyboardView: UIView {
             center.centerYAnchor.constraint(equalTo: stage.centerYAnchor),
             draftLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
             // The hide key sits where the typing panel has it.
-            dismiss.topAnchor.constraint(equalTo: topAnchor, constant: 4),
-            dismiss.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -KeyboardMetrics.sideInset),
             draftLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 56),
             draftLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -56),
             draftLabel.bottomAnchor.constraint(equalTo: center.topAnchor, constant: -4),
@@ -167,6 +161,8 @@ public final class VoiceKeyboardView: UIView {
             keys.heightAnchor.constraint(equalToConstant: KeyboardMetrics.rowHeight),
             keys.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -KeyboardMetrics.bottomInset),
         ])
+        dismiss.pin(in: self, trailing: false)
+        typing.pin(in: self, trailing: true)
     }
 
     // MARK: Rendering

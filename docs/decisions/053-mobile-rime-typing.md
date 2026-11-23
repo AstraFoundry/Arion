@@ -10,7 +10,7 @@ A voice keyboard still needs typing for names, codes and quiet places; switching
 
 - **Engine.** The phones use the desktop's pinned librime and its correction patch. Its dependencies are built from pinned sources as static libraries; schemas are prebuilt on the build machine. The phone never deploys or downloads typing data.
 - **Layouts.** Full-keyboard Pinyin (`arion_pinyin`), 9-key Pinyin (`arion_pinyin_9key`, digits derived from the same dictionary, learning shared) and English inserted as typed. The keyboard's 中/EN key toggles Chinese and English only; which Chinese layout is a setting in the app.
-- **Switching.** The switch key is the bottom-left key of the voice and typing panels, which share one height, so its place is learned once. The keyboard reopens in the last mode.
+- **Switching.** The switch is the top-right key of the voice and typing panels, which share one height, so its place is learned once; Wispr Flow puts its microphone there, and the bottom row keeps the system keyboard's 123 first. The keyboard reopens in the last mode.
 - **Learning.** Rime's user dictionary goes through the desktop's encrypted database with a POSIX file provider shared by macOS, iOS and Android. The iOS key is AES-256-GCM in the keychain, device-only, and never recreated over existing learning.
 
 ## Consequences
