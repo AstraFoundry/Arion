@@ -187,6 +187,14 @@ final class KeyLayoutTests: XCTestCase {
 
 @MainActor
 final class MicrophoneGainTests: XCTestCase {
+    func testStopsMatchTheDesktop() {
+        // packages/core/application/gain.go GainStops.
+        XCTAssertEqual(MicrophoneGain.stops.map(\.decibels), [-6, -3, 0, 3, 6, 9, 12])
+        XCTAssertEqual(MicrophoneGain.stops.map(\.centimeters), [15, 21, 30, 42, 60, 85, 120])
+        XCTAssertEqual(MicrophoneGain.nearest(4.4).decibels, 3)
+        XCTAssertEqual(MicrophoneGain.nearest(-9).decibels, -6)
+    }
+
     func testGainScalesAndClips() throws {
         let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: WebMicrophone.format, frameCapacity: 3))
         buffer.frameLength = 3

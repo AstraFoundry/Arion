@@ -99,7 +99,7 @@ public final class Preferences: @unchecked Sendable {
         set { defaults.set(newValue, forKey: Key.keyboardSeen) }
     }
 
-    /// Gain on the captured voice in decibels, one of `MicrophoneGain.choices`; 0 by default.
+    /// Gain on the captured voice in decibels, one of `MicrophoneGain.stops`; 0 by default.
     public var microphoneGain: Int {
         get {
             let stored = defaults.integer(forKey: Key.gain)

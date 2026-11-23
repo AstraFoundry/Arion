@@ -2774,22 +2774,40 @@
         }
       }
     },
-    "settings.gain.off": {
+    "settings.gain.centimeters": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Off"
+            "value": "%1$@ cm"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "关"
+            "value": "%1$@ 厘米"
           }
         }
       }
+    },
+    "settings.gain.stop": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, for about %2$@ away"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@，建议距离约 %2$@"
+          }
+        }
+      },
+      "comment": "Same wording as the desktop's gain slider."
     },
     "settings.gain.value": {
       "extractionState": "manual",
@@ -2797,16 +2815,17 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "+%1$@ dB"
+            "value": "%1$@ dB"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "+%1$@ dB"
+            "value": "%1$@ dB"
           }
         }
-      }
+      },
+      "comment": "A signed gain: +3 dB, 0 dB, -6 dB."
     },
     "settings.history": {
       "extractionState": "manual",

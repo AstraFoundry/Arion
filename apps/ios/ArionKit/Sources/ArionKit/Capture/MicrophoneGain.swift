@@ -3,8 +3,24 @@
 /// Gain applied to the captured voice before recognition, for quiet
 /// microphones or soft speakers. Samples clip at full scale.
 public enum MicrophoneGain {
-    /// The choices the app offers, in decibels; 0 is off.
-    public static let choices: [Int] = [0, 3, 6, 9, 12]
+    /// One setting and the speaking distance it suits.
+    public struct Stop: Equatable, Sendable {
+        public let decibels: Int
+        public let centimeters: Int
+    }
+
+    /// The desktop's stops (`packages/core/application/gain.go`), quietest
+    /// first: speech falls 6 dB per doubling of distance, so each 3 dB step
+    /// suits a distance √2 farther; 0 dB is the device's own level.
+    public static let stops: [Stop] = [(-6, 15), (-3, 21), (0, 30), (3, 42), (6, 60), (9, 85), (12, 120)]
+        .map { Stop(decibels: $0.0, centimeters: $0.1) }
+    public static let step = 3
+    public static var choices: [Int] { stops.map(\.decibels) }
+
+    /// The stop nearest a slider position.
+    public static func nearest(_ value: Float) -> Stop {
+        stops.min { abs(Float($0.decibels) - value) < abs(Float($1.decibels) - value) }!
+    }
 
     public static func factor(decibels: Int) -> Float { Float(pow(10, Double(decibels) / 20)) }
 

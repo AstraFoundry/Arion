@@ -167,7 +167,8 @@ public enum L10n {
     public static var sceneSearch: String { lookup("scene.search") }
     public static var sceneWork: String { lookup("scene.work") }
     public static var settingsGain: String { lookup("settings.gain") }
-    public static var settingsGainOff: String { lookup("settings.gain.off") }
+    public static func settingsGainCentimeters(value: String) -> String { format("settings.gain.centimeters", value) }
+    public static func settingsGainStop(gain: String, distance: String) -> String { format("settings.gain.stop", gain, distance) }
     public static func settingsGainValue(decibels: String) -> String { format("settings.gain.value", decibels) }
     public static var settingsHistory: String { lookup("settings.history") }
     public static var settingsHistoryCopy: String { lookup("settings.history.copy") }

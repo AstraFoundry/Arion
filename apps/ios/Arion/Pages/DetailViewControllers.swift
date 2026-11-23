@@ -86,24 +86,129 @@ final class TargetViewController: SettingsListController {
 }
 
 /// Gain on the voice before recognition, for a quiet microphone or voice.
-final class GainViewController: SettingsListController {
+final class GainViewController: UIViewController {
     static func name(_ decibels: Int) -> String {
-        decibels == 0 ? L10n.settingsGainOff : L10n.settingsGainValue(decibels: String(decibels))
+        L10n.settingsGainValue(decibels: decibels > 0 ? "+\(decibels)" : String(decibels))
     }
 
-    init() { super.init(title: L10n.settingsGain) }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { MicrophoneGain.choices.count }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let decibels = MicrophoneGain.choices[indexPath.row]
-        return cell(Self.name(decibels), checked: preferences.microphoneGain == decibels)
+    static func stop(_ stop: MicrophoneGain.Stop) -> String {
+        L10n.settingsGainStop(gain: name(stop.decibels), distance: L10n.settingsGainCentimeters(value: String(stop.centimeters)))
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        preferences.microphoneGain = MicrophoneGain.choices[indexPath.row]
-        tableView.reloadData()
+    private let preferences = Preferences()
+    private let value = UILabel()
+    private let slider = UISlider()
+    private let ticks = GainTicks()
+    private let feedback = UISelectionFeedbackGenerator()
+
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        title = L10n.settingsGain
+        navigationItem.largeTitleDisplayMode = .never
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = Palette.background
+        let stops = MicrophoneGain.stops
+        slider.minimumValue = Float(stops[0].decibels)
+        slider.maximumValue = Float(stops[stops.count - 1].decibels)
+        slider.value = Float(preferences.microphoneGain)
+        slider.minimumTrackTintColor = Palette.foreground
+        slider.accessibilityLabel = L10n.settingsGain
+        slider.addTarget(self, action: #selector(slid), for: .valueChanged)
+        slider.addTarget(self, action: #selector(settle), for: [.touchUpInside, .touchUpOutside, .touchCancel])
+        value.font = TextStyle.body.font
+        value.textColor = Palette.foreground
+        value.numberOfLines = 0
+
+        let card = UIStackView(arrangedSubviews: [value, slider, ticks])
+        card.axis = .vertical
+        card.spacing = 12
+        card.setCustomSpacing(4, after: slider)
+        card.isLayoutMarginsRelativeArrangement = true
+        card.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 16, trailing: 20)
+        card.backgroundColor = Palette.card
+        card.layer.cornerRadius = 24
+        card.layer.cornerCurve = .continuous
+        card.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(card)
+        NSLayoutConstraint.activate([
+            card.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            card.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+            card.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+        ])
+        ticks.slider = slider
+        show(MicrophoneGain.nearest(slider.value))
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        ticks.setNeedsLayout()
+    }
+
+    /// Steps like the desktop's slider: the value jumps from stop to stop.
+    @objc private func slid() {
+        let stop = MicrophoneGain.nearest(slider.value)
+        slider.value = Float(stop.decibels)
+        guard stop.decibels != preferences.microphoneGain else { return }
+        preferences.microphoneGain = stop.decibels
+        feedback.selectionChanged()
+        show(stop)
+    }
+
+    @objc private func settle() { slider.setValue(Float(preferences.microphoneGain), animated: true) }
+
+    private func show(_ stop: MicrophoneGain.Stop) {
+        value.text = Self.stop(stop)
+        slider.accessibilityValue = value.text
+        ticks.selected = stop.decibels
+    }
+}
+
+/// The speaking distance under each stop, in centimeters as the headline
+/// names them, centered where the slider's thumb sits for that stop.
+private final class GainTicks: UIView {
+    weak var slider: UISlider?
+    private let labels: [UILabel] = MicrophoneGain.stops.map { stop in
+        let label = UILabel()
+        label.text = String(stop.centimeters)
+        label.font = TextStyle.caption.font
+        label.isAccessibilityElement = false
+        return label
+    }
+
+    var selected = 0 { didSet { restyle() } }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        labels.forEach(addSubview)
+        restyle()
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
+
+    override var intrinsicContentSize: CGSize { CGSize(width: UIView.noIntrinsicMetric, height: TextStyle.caption.font.lineHeight) }
+
+    private func restyle() {
+        for (label, stop) in zip(labels, MicrophoneGain.stops) {
+            label.textColor = stop.decibels == selected ? Palette.foreground : Palette.mutedForeground
+        }
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard let slider else { return }
+        let track = slider.trackRect(forBounds: slider.bounds)
+        for (label, stop) in zip(labels, MicrophoneGain.stops) {
+            let thumb = slider.thumbRect(forBounds: slider.bounds, trackRect: track, value: Float(stop.decibels))
+            label.sizeToFit()
+            label.center = CGPoint(x: convert(CGPoint(x: thumb.midX, y: 0), from: slider).x, y: bounds.midY)
+        }
     }
 }
 
