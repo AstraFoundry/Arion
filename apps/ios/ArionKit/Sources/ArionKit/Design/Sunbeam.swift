@@ -105,7 +105,8 @@ public final class FaceButton: UIControl {
     public let kind: Kind
     public let material: Material
     private let gradient = CAGradientLayer()
-    private let highlight = CALayer()
+    private let highlight = CAShapeLayer()
+    private let highlightClip = CAShapeLayer()
     private let stack = UIStackView()
     public let titleLabel = UILabel(style: .label)
     public let iconView = UIImageView()
@@ -118,7 +119,12 @@ public final class FaceButton: UIControl {
         layer.cornerCurve = .continuous
         layer.insertSublayer(gradient, at: 0)
         gradient.cornerCurve = .continuous
-        if material == .raised { layer.addSublayer(highlight) }
+        if material == .raised {
+            highlight.fillColor = nil
+            highlight.fillRule = .evenOdd
+            highlight.mask = highlightClip
+            layer.addSublayer(highlight)
+        }
         titleLabel.numberOfLines = 1
         titleLabel.textAlignment = .center
         iconView.contentMode = .scaleAspectFit
@@ -198,9 +204,17 @@ public final class FaceButton: UIControl {
         layer.cornerRadius = radius
         gradient.frame = bounds
         gradient.cornerRadius = radius
-        highlight.frame = CGRect(x: radius / 2, y: 0, width: max(0, bounds.width - radius), height: 1)
         if material == .raised {
-            layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: radius).cgPath
+            let outline = UIBezierPath(roundedRect: bounds, cornerRadius: radius)
+            layer.shadowPath = outline.cgPath
+            // An inset top highlight: the face minus itself moved down one pixel,
+            // clipped to the face, so it follows the rounded edge.
+            let pixel = 1 / max(traitCollection.displayScale, 1)
+            let rim = UIBezierPath(roundedRect: bounds, cornerRadius: radius)
+            rim.append(UIBezierPath(roundedRect: bounds.offsetBy(dx: 0, dy: pixel), cornerRadius: radius))
+            highlight.frame = bounds
+            highlight.path = rim.cgPath
+            highlightClip.path = outline.cgPath
         }
     }
 
@@ -241,7 +255,7 @@ public final class FaceButton: UIControl {
         if material == .raised && kind != .plain {
             layer.borderWidth = 1 / max(traits.displayScale, 1)
             layer.borderColor = resolve(kind == .primary ? Palette.raisedPrimaryEdge : Palette.raisedEdge)
-            highlight.backgroundColor = resolve(Palette.raisedHighlight)
+            highlight.fillColor = resolve(Palette.raisedHighlight)
             highlight.isHidden = isHighlighted
             let shadow = (traits.userInterfaceStyle == .dark ? SunbeamTokens.Shadow.raisedShadow.dark : SunbeamTokens.Shadow.raisedShadow.light).last
             if let shadow, !isHighlighted {
