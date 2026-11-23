@@ -2,7 +2,8 @@
 import PackageDescription
 
 // Shared by the Arion app and its keyboard extension: Sunbeam design, the
-// localized catalog, dictation domain rules and the app–keyboard bridge.
+// localized catalog, dictation domain rules, the app–keyboard bridge and the
+// Rime typing engine (`pnpm mobile:rime` stages ArionRime.xcframework).
 let package = Package(
     name: "ArionKit",
     defaultLocalization: "en",
@@ -11,6 +12,7 @@ let package = Package(
         .library(name: "ArionKit", targets: ["ArionKit"]),
     ],
     targets: [
-        .target(name: "ArionKit", resources: [.process("Resources")]),
+        .target(name: "ArionKit", dependencies: ["ArionRime"], resources: [.process("Resources")]),
+        .binaryTarget(name: "ArionRime", path: "Frameworks/ArionRime.xcframework"),
     ]
 )

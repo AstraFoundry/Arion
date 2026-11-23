@@ -9,6 +9,16 @@ final class KeyboardViewController: UIInputViewController {
     private lazy var session = DictationSession(microphone: microphone, preferences: preferences)
     private let keyboard = VoiceKeyboardView()
     private let usage = UsageLedger()
+    /// Typing starts the Rime engine the first time it is shown.
+    private var typing: TypingKeyboardView?
+    /// The mode and layout the keyboard reopens in; keyboard-only state, so
+    /// it lives in the extension's own defaults and needs no Full Access.
+    private let memory = UserDefaults.standard
+    private enum Memory {
+        static let typing = "keyboard.typing"
+        /// Whether typing was last in English rather than Chinese.
+        static let english = "typing.english"
+    }
     /// When the microphone started listening, for the day's listening time.
     private var listeningSince: Date?
 
@@ -21,13 +31,7 @@ final class KeyboardViewController: UIInputViewController {
         keyboard.translatesAutoresizingMaskIntoConstraints = false
         keyboard.delegate = self
         keyboard.globe.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-        view.addSubview(keyboard)
-        NSLayoutConstraint.activate([
-            keyboard.topAnchor.constraint(equalTo: view.topAnchor),
-            keyboard.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            keyboard.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            keyboard.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-        ])
+        place(keyboard)
         session.onPhase = { [weak self] phase in
             guard let self else { return }
             if case .listening = phase, self.listeningSince == nil { self.listeningSince = .now }
@@ -43,12 +47,14 @@ final class KeyboardViewController: UIInputViewController {
             preferences.keyboardLastSeen = Date()
         }
         refresh()
+        if memory.bool(forKey: Memory.typing), typing == nil { showTyping() }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         session.cancel()
         microphone.detach()
+        typing?.reset()
     }
 
     override func textDidChange(_ textInput: (any UITextInput)?) {
@@ -56,7 +62,76 @@ final class KeyboardViewController: UIInputViewController {
         refresh()
     }
 
+    override func selectionDidChange(_ textInput: (any UITextInput)?) {
+        super.selectionDidChange(textInput)
+        // The caret moved elsewhere: a pending composition no longer fits.
+        typing?.reset()
+    }
+
+    /// Shows one panel; the other stays built but off screen.
+    private func place(_ panel: UIView) {
+        view.subviews.forEach { $0.removeFromSuperview() }
+        panel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(panel)
+        NSLayoutConstraint.activate([
+            panel.topAnchor.constraint(equalTo: view.topAnchor),
+            panel.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            panel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            panel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+    }
+
+    private func showTyping() {
+        if typing == nil {
+            do {
+                guard let resources = Bundle.main.resourceURL,
+                      let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+                else { throw TypingFailure.dataMissing }
+                try TypingEngine.start(data: resources.appendingPathComponent("Rime/data"), support: support)
+            } catch let failure as TypingFailure {
+                memory.set(false, forKey: Memory.typing)
+                keyboard.showNotice(Self.message(failure), autoClear: false)
+                return
+            } catch {
+                return
+            }
+            let chinese = preferences.chineseTypingLayout
+            let panel = TypingKeyboardView(engine: TypingEngine(layout: memory.bool(forKey: Memory.english) ? .english : chinese))
+            panel.chineseLayout = chinese
+            panel.delegate = self
+            panel.globe.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
+            typing = panel
+        }
+        session.cancel()
+        refreshTyping()
+        place(typing!)
+        memory.set(true, forKey: Memory.typing)
+    }
+
+    private func showVoice() {
+        typing?.reset()
+        place(keyboard)
+        memory.set(false, forKey: Memory.typing)
+    }
+
+    private static func message(_ failure: TypingFailure) -> String {
+        switch failure {
+        case .dataMissing: L10n.typingFailureData
+        case .learningKey: L10n.typingFailureLearning
+        case .engine: L10n.typingFailureEngine
+        }
+    }
+
+    private func refreshTyping() {
+        guard let typing else { return }
+        typing.returnTitle = Self.returnTitle(textDocumentProxy.returnKeyType)
+        typing.showsGlobe = needsInputModeSwitchKey
+        // The app may have changed the setting since the keyboard opened.
+        typing.chineseLayout = preferences.chineseTypingLayout
+    }
+
     private func refresh() {
+        refreshTyping()
         keyboard.globe.isHidden = !needsInputModeSwitchKey
         keyboard.returnTitle = Self.returnTitle(textDocumentProxy.returnKeyType)
         let languages = preferences.languages
@@ -65,7 +140,9 @@ final class KeyboardViewController: UIInputViewController {
         keyboard.translationName = preferences.translationTarget.name
     }
 
-    private static func returnTitle(_ type: UIReturnKeyType?) -> String {
+    /// The return key's word for the field, or nil for a plain new line,
+    /// which both panels draw as an icon.
+    private static func returnTitle(_ type: UIReturnKeyType?) -> String? {
         switch type ?? .default {
         case .go: L10n.returnGo
         case .google, .yahoo, .search: L10n.returnSearch
@@ -75,7 +152,7 @@ final class KeyboardViewController: UIInputViewController {
         case .join: L10n.returnJoin
         case .route: L10n.returnRoute
         case .continue: L10n.returnContinue
-        default: L10n.returnDefault
+        default: nil
         }
     }
 
@@ -181,6 +258,27 @@ extension KeyboardViewController: VoiceKeyboardViewDelegate {
         UIDevice.current.playInputClick()
         textDocumentProxy.insertText("\n")
     }
+
+    func keyboardShowTyping() { showTyping() }
+
+    func keyboardDismiss() { dismissKeyboard() }
+}
+
+extension KeyboardViewController: TypingKeyboardViewDelegate {
+    func typingInsert(_ text: String) { textDocumentProxy.insertText(text) }
+
+    func typingDeleteBackward() {
+        guard textDocumentProxy.hasText else { return }
+        textDocumentProxy.deleteBackward()
+    }
+
+    func typingReturn() { textDocumentProxy.insertText("\n") }
+
+    func typingLayoutChanged(_ layout: TypingLayout) { memory.set(layout == .english, forKey: Memory.english) }
+
+    func typingShowVoice() { showVoice() }
+
+    func typingDismiss() { dismissKeyboard() }
 }
 
 /// The keyboard's root view; it opts in to the system input clicks.

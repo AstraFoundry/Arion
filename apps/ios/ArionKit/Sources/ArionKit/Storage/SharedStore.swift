@@ -34,6 +34,7 @@ public final class Preferences: @unchecked Sendable {
         static let target = "translation.target"
         static let keyboardSeen = "keyboard.lastSeen"
         static let onboarded = "onboarding.completed"
+        static let chineseTyping = "typing.chineseLayout"
     }
 
     /// Polishing is on by default. On this device it runs only when Apple
@@ -95,6 +96,15 @@ public final class Preferences: @unchecked Sendable {
     public var keyboardLastSeen: Date? {
         get { defaults.object(forKey: Key.keyboardSeen) as? Date }
         set { defaults.set(newValue, forKey: Key.keyboardSeen) }
+    }
+
+    /// The Pinyin layout the keyboard's 中 key opens: full keyboard by default.
+    public var chineseTypingLayout: TypingLayout {
+        get {
+            let stored = defaults.string(forKey: Key.chineseTyping).flatMap(TypingLayout.init(rawValue:))
+            return stored == .pinyin9 ? .pinyin9 : .pinyin
+        }
+        set { defaults.set(newValue.rawValue, forKey: Key.chineseTyping) }
     }
 }
 

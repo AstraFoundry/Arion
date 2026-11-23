@@ -1,0 +1,36 @@
+# Arion's 9-key Pinyin for phones (ADR 053): the pinyin_simp dictionary typed
+# with the digits 2-9. Each letter group can also be spelled out, so a syllable
+# chosen from the keyboard's list (letters) mixes with digits still pending.
+# Learning shares the 26-key profile's user dictionary.
+schema:
+  schema_id: arion_pinyin_9key
+  name: Arion Pinyin 9-key
+  version: '1'
+
+__include: pinyin_simp.schema:/
+__patch:
+  engine/translators:
+    - script_translator
+  menu/page_size: 9
+  translator/prism: arion_pinyin_9key
+  translator/user_dict: arion_pinyin
+  translator/db_class: arion_encrypted_userdb
+  translator/enable_user_dict: true
+  translator/enable_correction: false
+  speller/alphabet: zyxwvutsrqponmlkjihgfedcba23456789
+  speller/initials: zyxwvutsrqponmlkjihgfedcba23456789
+  speller/algebra/+:
+    - derive/[abc]/2/
+    - derive/[def]/3/
+    - derive/[ghi]/4/
+    - derive/[jkl]/5/
+    - derive/[mno]/6/
+    - derive/[pqrs]/7/
+    - derive/[tuv]/8/
+    - derive/[wxyz]/9/
+  recognizer/patterns/uppercase: ''
+  reverse_lookup: null
+  recognizer/patterns/reverse_lookup: null
+  recognizer/patterns/punct: null
+  key_binder/import_preset: null
+  key_binder/bindings: []

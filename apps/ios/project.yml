@@ -66,6 +66,11 @@ targets:
     platform: iOS
     sources:
       - path: ArionKeyboard
+        excludes: [Rime]
+      # Staged by `pnpm mobile:rime`: prebuilt schemas keep their build/ layout.
+      - path: ArionKeyboard/Rime
+        type: folder
+        buildPhase: resources
     dependencies:
       - package: ArionKit
     entitlements:

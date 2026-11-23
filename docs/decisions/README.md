@@ -64,6 +64,7 @@ Write an ADR when the decision:
 - [050: Release highlights after an update](050-release-highlights.md) — a per-release catalog of user-visible highlights, a dialog over Settings across every crossed version, and a release preflight that requires an entry or a skip reason.
 - [051: Native iOS and Android voice keyboards](051-native-mobile-keyboards.md) — UIKit keyboard extension and Kotlin input method, on-device recognition and polishing with the shared recipe, WebKit microphone capture in the iOS keyboard, generated Sunbeam tokens and one mobile string catalog.
 - [052: Mobile account, overview and cloud polishing](052-mobile-account-overview-cloud.md) — Overview from per-day counts, AstraFoundry sign-in with mobile public clients, API-key cloud polishing and a stepped onboarding on iOS and Android.
+- [053: Rime typing layouts in the mobile keyboards](053-mobile-rime-typing.md) — 26-key and 9-key Pinyin and English QWERTY on iOS and Android from the pinned librime, swipe between voice and typing, encrypted learning.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

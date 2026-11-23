@@ -12,6 +12,10 @@ public protocol VoiceKeyboardViewDelegate: AnyObject {
     func keyboardSpace()
     func keyboardMoveCaret(by offset: Int)
     func keyboardReturn()
+    /// The keyboard key: switch from the microphone to typing.
+    func keyboardShowTyping()
+    /// The hide key, top right on both panels.
+    func keyboardDismiss()
 }
 
 /// Arion's keyboard: one microphone, the keys a voice keyboard still needs,
@@ -27,6 +31,7 @@ public final class VoiceKeyboardView: UIView {
 
     /// The globe key; the controller routes it to the system's keyboard list.
     public let globe = FaceButton(kind: .secondary, material: .raised, icon: .globe)
+    private let typing = FaceButton(kind: .secondary, material: .raised, icon: .keyboard)
     private(set) var draftLabel = UILabel(style: .body)
     private let mic = MicButton()
     private let leading = FaceButton(kind: .plain, material: .raised)
@@ -46,9 +51,17 @@ public final class VoiceKeyboardView: UIView {
     public var languageMark: String? { didSet { render(phase) } }
     public var languageName = "" { didSet { render(phase) } }
     public var translationName = "" { didSet { render(phase) } }
-    public var returnTitle = L10n.returnDefault { didSet { returnKey.title = returnTitle } }
+    /// The field's return word (搜索, 发送…), or nil for a plain new line,
+    /// which the key shows as an icon.
+    public var returnTitle: String? { didSet { showReturn() } }
+    private let dismiss = KeyboardDismissKey()
 
-    public static let height: CGFloat = 236
+    private func showReturn() {
+        returnKey.title = returnTitle
+        returnKey.icon = returnTitle == nil ? .cornerDownLeft : nil
+        returnKey.accessibilityLabel = returnTitle ?? L10n.returnDefault
+    }
+
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -89,7 +102,8 @@ public final class VoiceKeyboardView: UIView {
         space.cornerRadius = SunbeamTokens.Radius.lg
         space.addTarget(self, action: #selector(spaceTapped), for: .touchUpInside)
         space.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(spaceDragged(_:))))
-        returnKey.title = returnTitle
+        showReturn()
+        dismiss.addAction(UIAction { [weak self] _ in self?.delegate?.keyboardDismiss() }, for: .touchUpInside)
         returnKey.cornerRadius = SunbeamTokens.Radius.lg
         returnKey.addTarget(self, action: #selector(returnTapped), for: .touchUpInside)
 
@@ -98,35 +112,50 @@ public final class VoiceKeyboardView: UIView {
         center.alignment = .center
         center.spacing = 40
 
-        let keys = UIStackView(arrangedSubviews: [globe, space, returnKey])
+        typing.accessibilityLabel = L10n.typingKeyboard
+        typing.cornerRadius = SunbeamTokens.Radius.lg
+        typing.addAction(UIAction { [weak self] _ in self?.delegate?.keyboardShowTyping() }, for: .touchUpInside)
+
+        // The switch key leads the bottom row, where the typing panel has its
+        // own; the two panels share their height so it stays put.
+        let keys = UIStackView(arrangedSubviews: [typing, globe, space, returnKey])
         keys.axis = .horizontal
         keys.spacing = 6
-        globe.widthAnchor.constraint(equalToConstant: 48).isActive = true
+        globe.widthAnchor.constraint(equalToConstant: KeyboardMetrics.switchKeyWidth).isActive = true
+        typing.widthAnchor.constraint(equalToConstant: KeyboardMetrics.switchKeyWidth).isActive = true
         returnKey.widthAnchor.constraint(equalToConstant: 92).isActive = true
 
-        for view in [draftLabel, center, keys] as [UIView] {
+        for view in [draftLabel, center, keys, dismiss] as [UIView] {
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
         }
         // On wide screens the keys keep a phone's reach.
         let keysWidth = keys.widthAnchor.constraint(lessThanOrEqualToConstant: 640)
-        let keysFill = keys.widthAnchor.constraint(equalTo: widthAnchor, constant: -12)
+        let keysFill = keys.widthAnchor.constraint(equalTo: widthAnchor, constant: -2 * KeyboardMetrics.sideInset)
         keysFill.priority = .defaultHigh
-        let height = heightAnchor.constraint(equalToConstant: Self.height)
+        let height = heightAnchor.constraint(equalToConstant: KeyboardMetrics.height)
         height.priority = .defaultHigh
+        // The microphone row sits in the middle of the space above the keys;
+        // the text being recognized fills the band above it.
+        let stage = UILayoutGuide()
+        addLayoutGuide(stage)
         NSLayoutConstraint.activate([
             height,
-            draftLabel.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            draftLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            draftLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            draftLabel.heightAnchor.constraint(equalToConstant: 64),
+            stage.topAnchor.constraint(equalTo: topAnchor),
+            stage.bottomAnchor.constraint(equalTo: keys.topAnchor),
             center.centerXAnchor.constraint(equalTo: centerXAnchor),
-            center.topAnchor.constraint(equalTo: draftLabel.bottomAnchor, constant: 6),
-            keys.topAnchor.constraint(equalTo: center.bottomAnchor, constant: 14),
+            center.centerYAnchor.constraint(equalTo: stage.centerYAnchor),
+            draftLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            // The hide key sits where the typing panel has it.
+            dismiss.topAnchor.constraint(equalTo: topAnchor, constant: 4),
+            dismiss.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -KeyboardMetrics.sideInset),
+            draftLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 56),
+            draftLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -56),
+            draftLabel.bottomAnchor.constraint(equalTo: center.topAnchor, constant: -4),
             keys.centerXAnchor.constraint(equalTo: centerXAnchor),
             keysWidth, keysFill,
-            keys.heightAnchor.constraint(equalToConstant: 44),
-            keys.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6),
+            keys.heightAnchor.constraint(equalToConstant: KeyboardMetrics.rowHeight),
+            keys.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -KeyboardMetrics.bottomInset),
         ])
     }
 

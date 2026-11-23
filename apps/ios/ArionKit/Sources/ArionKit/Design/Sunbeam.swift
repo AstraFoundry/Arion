@@ -142,8 +142,8 @@ public final class FaceButton: UIControl {
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: centerXAnchor),
             stack.centerYAnchor.constraint(equalTo: centerYAnchor),
-            stack.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 16),
-            heightAnchor.constraint(greaterThanOrEqualToConstant: 44),
+            contentInset,
+            minimumHeight,
         ])
         // Observers do not run inside the initializer, so draw explicitly.
         defer {
@@ -161,6 +161,19 @@ public final class FaceButton: UIControl {
     required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
 
     public var cornerRadius: CGFloat? { didSet { setNeedsLayout() } }
+
+    /// The least space between the content and the sides; keyboard keys use less.
+    public var sideInset: CGFloat {
+        get { contentInset.constant }
+        set { contentInset.constant = newValue }
+    }
+    /// The least height; 44 points unless a keyboard row is denser.
+    public var minimumFaceHeight: CGFloat {
+        get { minimumHeight.constant }
+        set { minimumHeight.constant = newValue }
+    }
+    private lazy var contentInset = stack.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 16)
+    private lazy var minimumHeight = heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
 
     /// The button's text; nil hides it.
     public var title: String? {

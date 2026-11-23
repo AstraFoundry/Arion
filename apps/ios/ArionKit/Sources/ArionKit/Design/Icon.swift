@@ -3,11 +3,14 @@ import UIKit
 
 /// The apps' icons, generated from the vendored Lucide, LobeHub and brand SVGs.
 public enum Icon: String, CaseIterable, Sendable {
+    case arrowBigUp
+    case arrowBigUpDash
     case audioLines
     case bookOpen
     case briefcase
     case chartLine
     case check
+    case chevronDown
     case chevronLeft
     case chevronRight
     case chevronsUpDown

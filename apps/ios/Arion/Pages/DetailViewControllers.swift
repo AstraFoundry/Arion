@@ -85,6 +85,31 @@ final class TargetViewController: SettingsListController {
     }
 }
 
+/// The Pinyin layout the keyboard's 中 key opens. 中/EN is the only toggle
+/// on the keyboard itself, so this choice lives here.
+final class ChineseTypingViewController: SettingsListController {
+    private static let choices: [TypingLayout] = [.pinyin, .pinyin9]
+
+    static func name(_ layout: TypingLayout) -> String {
+        layout == .pinyin9 ? L10n.typingPinyin9 : L10n.typingPinyin
+    }
+
+    init() { super.init(title: L10n.typingSetting) }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { Self.choices.count }
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let layout = Self.choices[indexPath.row]
+        return cell(Self.name(layout), checked: preferences.chineseTypingLayout == layout)
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        preferences.chineseTypingLayout = Self.choices[indexPath.row]
+        tableView.reloadData()
+    }
+}
+
 /// Words to recognize and keep as written.
 final class VocabularyViewController: SettingsListController, UITextFieldDelegate {
     private let vocabulary = Vocabulary()

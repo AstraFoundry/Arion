@@ -1,0 +1,25 @@
+# Arion's offline Simplified Chinese full-Pinyin profile for phones (ADR 053).
+# Adapts the Apache-2.0 pinyin_simp schema identified in keyboard-runtime.json.
+# The desktop profile's English and Emoji components are not on mobile; the
+# keyboard inserts punctuation itself.
+schema:
+  schema_id: arion_pinyin
+  name: Arion Pinyin
+  version: '1'
+
+__include: pinyin_simp.schema:/
+__patch:
+  engine/translators:
+    - script_translator
+  menu/page_size: 9
+  translator/user_dict: arion_pinyin
+  translator/db_class: arion_encrypted_userdb
+  translator/enable_user_dict: true
+  translator/enable_correction: true
+  speller/alphabet: zyxwvutsrqponmlkjihgfedcba
+  recognizer/patterns/uppercase: ''
+  reverse_lookup: null
+  recognizer/patterns/reverse_lookup: null
+  recognizer/patterns/punct: null
+  key_binder/import_preset: null
+  key_binder/bindings: []

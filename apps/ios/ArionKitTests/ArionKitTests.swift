@@ -146,3 +146,31 @@ final class ModelDownloadTests: XCTestCase {
         XCTAssertNotEqual(VoiceKeyboardView.message(.modelDownloadFailed), L10n.failureInstalling)
     }
 }
+
+final class KeyLayoutTests: XCTestCase {
+    func testQwertyRowsByLayout() {
+        let pinyin = KeyLayout.qwerty(.pinyin)
+        XCTAssertEqual(pinyin.map(\.count), [10, 9, 9])
+        XCTAssertEqual(pinyin[2].first?.key, .shift, "Shift sits on the left, as on the system keyboards")
+        XCTAssertEqual(KeyLayout.qwerty(.english)[2].first?.key, .shift)
+        XCTAssertEqual(pinyin[2].last?.key, .delete)
+    }
+
+    func testKeypadCoversEveryLetterOnce() {
+        let groups = KeyLayout.keypad.flatMap { $0 }.compactMap { key -> String? in
+            if case .letter = key.key { return key.label } else { return nil }
+        }
+        XCTAssertEqual(groups.joined().lowercased().sorted(), Array("abcdefghijklmnopqrstuvwxyz"))
+    }
+
+    func testSymbolsFollowTheScript() {
+        XCTAssertTrue(KeyLayout.symbols(chinese: true).flatMap { $0 }.contains { $0.key == .text("，") })
+        XCTAssertFalse(KeyLayout.symbols(chinese: false).flatMap { $0 }.contains { $0.key == .text("，") })
+    }
+
+    func testChineseLayoutsHaveSchemas() {
+        XCTAssertEqual(TypingLayout.pinyin.schema, "arion_pinyin")
+        XCTAssertEqual(TypingLayout.pinyin9.schema, "arion_pinyin_9key")
+        XCTAssertNil(TypingLayout.english.schema)
+    }
+}

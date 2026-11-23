@@ -90,6 +90,7 @@ public enum L10n {
     public static var keyboardCancel: String { lookup("keyboard.cancel") }
     public static var keyboardDelete: String { lookup("keyboard.delete") }
     public static var keyboardDictate: String { lookup("keyboard.dictate") }
+    public static var keyboardDismiss: String { lookup("keyboard.dismiss") }
     public static var keyboardDone: String { lookup("keyboard.done") }
     public static var keyboardDownloaded: String { lookup("keyboard.downloaded") }
     public static func keyboardDownloading(language: String, percent: String) -> String { format("keyboard.downloading", language, percent) }
@@ -211,6 +212,23 @@ public enum L10n {
     public static var targetRu: String { lookup("target.ru") }
     public static var targetZhCN: String { lookup("target.zhCN") }
     public static var targetZhTW: String { lookup("target.zhTW") }
+    public static var typingChinese: String { lookup("typing.chinese") }
+    public static var typingConfirm: String { lookup("typing.confirm") }
+    public static var typingEnglish: String { lookup("typing.english") }
+    public static var typingFailureData: String { lookup("typing.failure.data") }
+    public static var typingFailureEngine: String { lookup("typing.failure.engine") }
+    public static var typingFailureLearning: String { lookup("typing.failure.learning") }
+    public static var typingKeyboard: String { lookup("typing.keyboard") }
+    public static var typingLayout: String { lookup("typing.layout") }
+    public static var typingLettersChinese: String { lookup("typing.letters.chinese") }
+    public static var typingLettersEnglish: String { lookup("typing.letters.english") }
+    public static var typingPinyin: String { lookup("typing.pinyin") }
+    public static var typingPinyin9: String { lookup("typing.pinyin9") }
+    public static var typingSeparator: String { lookup("typing.separator") }
+    public static var typingSetting: String { lookup("typing.setting") }
+    public static var typingShift: String { lookup("typing.shift") }
+    public static var typingSymbols: String { lookup("typing.symbols") }
+    public static var typingVoice: String { lookup("typing.voice") }
     public static var unitHours: String { lookup("unit.hours") }
     public static var unitMinutes: String { lookup("unit.minutes") }
     public static var unitSeconds: String { lookup("unit.seconds") }

@@ -3,11 +3,14 @@ package si.astrafoundry.arion.design
 
 /** The apps' icons, generated from the vendored Lucide, LobeHub and brand SVGs. */
 enum class ArionIcon(val res: Int, val original: Boolean = false) {
+    ArrowBigUp(R.drawable.icon_arrow_big_up),
+    ArrowBigUpDash(R.drawable.icon_arrow_big_up_dash),
     AudioLines(R.drawable.icon_audio_lines),
     BookOpen(R.drawable.icon_book_open),
     Briefcase(R.drawable.icon_briefcase),
     ChartLine(R.drawable.icon_chart_line),
     Check(R.drawable.icon_check),
+    ChevronDown(R.drawable.icon_chevron_down),
     ChevronLeft(R.drawable.icon_chevron_left),
     ChevronRight(R.drawable.icon_chevron_right),
     ChevronsUpDown(R.drawable.icon_chevrons_up_down),

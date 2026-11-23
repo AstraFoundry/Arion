@@ -85,6 +85,7 @@
     <string name="keyboard_cancel" formatted="false">Cancel</string>
     <string name="keyboard_delete" formatted="false">Delete</string>
     <string name="keyboard_dictate" formatted="false">Dictate</string>
+    <string name="keyboard_dismiss" formatted="false">Hide keyboard</string>
     <string name="keyboard_done" formatted="false">Done</string>
     <string name="keyboard_downloaded" formatted="false">Ready. Tap the mic and speak.</string>
     <string name="keyboard_downloading">Downloading Apple’s %1$s speech recognition… %2$s</string>
@@ -206,6 +207,23 @@
     <string name="target_ru" formatted="false">Russian</string>
     <string name="target_zh_cn" formatted="false">Simplified Chinese</string>
     <string name="target_zh_tw" formatted="false">Traditional Chinese</string>
+    <string name="typing_chinese" formatted="false">中</string>
+    <string name="typing_confirm" formatted="false">Confirm</string>
+    <string name="typing_english" formatted="false">EN</string>
+    <string name="typing_failure_data" formatted="false">Typing data is missing. Reinstall Arion.</string>
+    <string name="typing_failure_engine" formatted="false">Typing couldn’t start.</string>
+    <string name="typing_failure_learning" formatted="false">Typing can’t open its encrypted learning on this iPhone.</string>
+    <string name="typing_keyboard" formatted="false">Keyboard</string>
+    <string name="typing_layout" formatted="false">Chinese or English</string>
+    <string name="typing_letters_chinese" formatted="false">Pinyin</string>
+    <string name="typing_letters_english" formatted="false">ABC</string>
+    <string name="typing_pinyin" formatted="false">Full keyboard</string>
+    <string name="typing_pinyin9" formatted="false">9-key</string>
+    <string name="typing_separator" formatted="false">Split</string>
+    <string name="typing_setting" formatted="false">Chinese keyboard</string>
+    <string name="typing_shift" formatted="false">Shift</string>
+    <string name="typing_symbols" formatted="false">123</string>
+    <string name="typing_voice" formatted="false">Voice</string>
     <string name="unit_hours" formatted="false">h</string>
     <string name="unit_minutes" formatted="false">min</string>
     <string name="unit_seconds" formatted="false">s</string>

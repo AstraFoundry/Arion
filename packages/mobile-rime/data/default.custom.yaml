@@ -1,0 +1,7 @@
+# Restrict deployment and schema switching to Arion's reviewed phone profiles.
+patch:
+  schema_list:
+    - schema: arion_pinyin
+    - schema: arion_pinyin_9key
+  menu/page_size: 9
+  switcher/hotkeys: []

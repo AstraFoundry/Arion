@@ -11,7 +11,7 @@ const errors = [];
 const files = [];
 const trees = ['docs', 'specs', 'apps', 'packages', 'services', 'models', 'deploy', 'tools', 'tests', 'scripts'];
 const ignored = new Set(['build', 'dist', 'node_modules', '.git', '.next', 'out', '.mygo', '.gradle', '.kotlin', '.swiftpm', '.build', 'Arion.xcodeproj']);
-const generated = new Set(['apps/desktop/resources']);
+const generated = new Set(['apps/desktop/resources', 'apps/ios/ArionKeyboard/Rime', 'apps/ios/ArionKit/Frameworks']);
 
 async function walk(relative) {
   for (const entry of await readdir(path.join(root, relative), { withFileTypes: true })) {
