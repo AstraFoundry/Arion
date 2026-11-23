@@ -165,7 +165,11 @@ public final class WebMicrophone: NSObject {
       stop = cleanup;
       try {
         try { if (session) session.type = 'play-and-record'; } catch (_) {}
-        stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+        // Raw, hands-free capture: call processing (echo cancellation, noise
+        // suppression, automatic gain) tunes the microphone for a phone held
+        // to the ear and treats a voice from across the desk as noise.
+        // Nothing plays while recording, and the gain setting sets the level.
+        stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
         if (stopping) { stream.getTracks().forEach(t => t.stop()); return; }
         stream.getAudioTracks()[0].onended = () => interrupted('track-ended');
         context = new AudioContext({ latencyHint: 'interactive' });
