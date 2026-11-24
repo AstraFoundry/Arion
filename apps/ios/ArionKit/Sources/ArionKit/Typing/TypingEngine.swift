@@ -22,6 +22,30 @@ public enum TypingLayout: String, CaseIterable, Sendable {
     }
 }
 
+/// The desktop's fuzzy pronunciation pairs, in its bit order
+/// (`apps/desktop/ime/shared/spelling_options.h`).
+public enum FuzzyPair: Int, CaseIterable, Sendable {
+    case zZh, cCh, sSh, nL, fH, rL, anAng, enEng, inIng, ianIang, uanUang
+}
+
+/// What the typing engine does beyond plain Pinyin, set in the app.
+public struct TypingOptions: Equatable, Sendable {
+    /// Candidates for missing, extra, swapped or nearby keys (full keyboard).
+    public var typoCorrection = false
+    /// Fuzzy pronunciations accepted (full keyboard).
+    public var fuzzy: Set<FuzzyPair> = []
+    /// Next-word suggestions after a commit (librime-predict).
+    public var prediction = true
+    public init(typoCorrection: Bool = false, fuzzy: Set<FuzzyPair> = [], prediction: Bool = true) {
+        self.typoCorrection = typoCorrection
+        self.fuzzy = fuzzy
+        self.prediction = prediction
+    }
+
+    public var fuzzyMask: UInt32 { fuzzy.reduce(0) { $0 | 1 << UInt32($1.rawValue) } }
+    public static func fuzzy(mask: UInt32) -> Set<FuzzyPair> { Set(FuzzyPair.allCases.filter { mask & 1 << UInt32($0.rawValue) != 0 }) }
+}
+
 /// Why typing could not start. The keyboard says so; it never types without
 /// the engine or learns in plaintext.
 public enum TypingFailure: Error, Equatable, Sendable {
@@ -40,6 +64,8 @@ public struct TypingState: Equatable, Sendable {
     public var syllables: [String] = []
     public var candidates: [String] = []
     public var isComposing: Bool { !input.isEmpty }
+    /// Next-word suggestions after a commit, with nothing typed.
+    public var isPredicting: Bool { input.isEmpty && !candidates.isEmpty }
     public init() {}
 }
 
@@ -50,6 +76,9 @@ public final class TypingEngine {
     public private(set) var state = TypingState()
     private var session: ArionRimeSession = 0
     public private(set) var layout: TypingLayout
+    public var options = TypingOptions() {
+        didSet { if options != oldValue { applyOptions() } }
+    }
     /// How many candidates the bar shows before the expanded list.
     public static let barCandidates = 30
 
@@ -103,6 +132,20 @@ public final class TypingEngine {
         session = 0
         state = TypingState()
         if let schema = layout.schema { session = arion_rime_open(schema) }
+        applyOptions()
+    }
+
+    private func applyOptions() {
+        guard session != 0 else { return }
+        arion_rime_options(session, options.typoCorrection ? 1 : 0, options.fuzzyMask, options.prediction ? 1 : 0)
+        refresh()
+    }
+
+    /// Hides next-word suggestions, when the keyboard inserts text itself.
+    public func dismissPrediction() {
+        guard session != 0, state.isPredicting else { return }
+        arion_rime_dismiss(session)
+        refresh()
     }
 
     /// Feeds a key; returns text to insert now. English never composes.
@@ -194,7 +237,8 @@ public final class TypingEngine {
         if let syllables = raw.syllables {
             next.syllables = (0..<raw.syllableCount).compactMap { syllables[$0].map { String(cString: $0) } }
         }
-        if next.isComposing { next.candidates = candidates(from: 0, limit: Self.barCandidates) }
+        // Composing, the candidates; right after a commit, predictions.
+        next.candidates = candidates(from: 0, limit: Self.barCandidates)
         state = next
         return commit
     }

@@ -10,7 +10,18 @@ schema:
 
 __include: pinyin_simp.schema:/
 __patch:
+  # Next-word prediction (联想) after a commit: librime-predict with the
+  # rime-predict-zh Simplified data (GPL-3.0), configured as that data's
+  # README documents; the keyboard turns the switch off in settings.
+  engine/processors/@before 0: predictor
+  switches/+:
+    - { name: prediction, states: [ Off, On ], reset: 1 }
+  predictor:
+    db: predict.db
+    max_candidates: 30
+    max_iterations: 0
   engine/translators:
+    - predict_translator
     - arion_bilingual
   menu/page_size: 9
   translator/user_dict: arion_pinyin

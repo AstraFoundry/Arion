@@ -141,6 +141,7 @@ final class KeyboardViewController: UIInputViewController {
         typing.showsGlobe = needsInputModeSwitchKey
         // The app may have changed the setting since the keyboard opened.
         typing.chineseLayout = preferences.chineseTypingLayout
+        typing.options = preferences.typingOptions
     }
 
     private func refresh() {

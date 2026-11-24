@@ -218,6 +218,19 @@
     <string name="typing_failure_engine" formatted="false">Typing couldn’t start.</string>
     <string name="typing_failure_learning" formatted="false">Typing can’t open its encrypted learning on this iPhone.</string>
     <string name="typing_fewer_candidates" formatted="false">Fewer candidates</string>
+    <string name="typing_fuzzy" formatted="false">Fuzzy pronunciation</string>
+    <string name="typing_fuzzy_an_ang" formatted="false">an / ang</string>
+    <string name="typing_fuzzy_c_ch" formatted="false">c / ch</string>
+    <string name="typing_fuzzy_en_eng" formatted="false">en / eng</string>
+    <string name="typing_fuzzy_fh" formatted="false">f / h</string>
+    <string name="typing_fuzzy_footer" formatted="false">Correction and fuzzy pronunciation apply to the full keyboard.</string>
+    <string name="typing_fuzzy_ian_iang" formatted="false">ian / iang</string>
+    <string name="typing_fuzzy_in_ing" formatted="false">in / ing</string>
+    <string name="typing_fuzzy_nl" formatted="false">n / l</string>
+    <string name="typing_fuzzy_rl" formatted="false">r / l</string>
+    <string name="typing_fuzzy_s_sh" formatted="false">s / sh</string>
+    <string name="typing_fuzzy_uan_uang" formatted="false">uan / uang</string>
+    <string name="typing_fuzzy_z_zh" formatted="false">z / zh</string>
     <string name="typing_keyboard" formatted="false">Keyboard</string>
     <string name="typing_layout" formatted="false">Chinese or English</string>
     <string name="typing_letters_chinese" formatted="false">Pinyin</string>
@@ -228,11 +241,15 @@
     <string name="typing_pinyin" formatted="false">Full keyboard</string>
     <string name="typing_pinyin9" formatted="false">9-key</string>
     <string name="typing_pinyin_mark" formatted="false">拼</string>
+    <string name="typing_prediction" formatted="false">Next-word suggestions</string>
+    <string name="typing_prediction_detail" formatted="false">After you choose a word, suggests the words that often follow it.</string>
     <string name="typing_previous_page" formatted="false">Previous candidates</string>
     <string name="typing_separator" formatted="false">Split</string>
     <string name="typing_setting" formatted="false">Chinese keyboard</string>
     <string name="typing_shift" formatted="false">Shift</string>
     <string name="typing_symbols" formatted="false">123</string>
+    <string name="typing_typo_correction" formatted="false">Typing correction</string>
+    <string name="typing_typo_correction_detail" formatted="false">Offers candidates for missing, extra, swapped or nearby keys.</string>
     <string name="typing_voice" formatted="false">Voice</string>
     <string name="unit_hours" formatted="false">h</string>
     <string name="unit_minutes" formatted="false">min</string>

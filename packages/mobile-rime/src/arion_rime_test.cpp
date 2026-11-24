@@ -96,6 +96,40 @@ int main(int argc, char **argv) {
     require(indexOf(candidates(full), "新") >= 0 && indexOf(candidates(full), "新") < 3, "xin keeps Chinese first");
     arion_rime_clear(full);
 
+    // Fuzzy Pinyin: the desktop's z/zh pair (bit 0) lets zong find 中.
+    type(full, "zongguo");
+    require(indexOf(candidates(full, 60), "中国") < 0, "zongguo is not 中国 without fuzzy pairs");
+    arion_rime_clear(full);
+    arion_rime_options(full, 0, 1u << 0, 1);
+    type(full, "zongguo");
+    require(indexOf(candidates(full, 60), "中国") >= 0, "z/zh makes zongguo offer 中国");
+    arion_rime_clear(full);
+    arion_rime_options(full, 0, 0, 1);
+
+    // Next-word prediction (librime-predict): after 我, the bar offers 们.
+    type(full, "wo");
+    require(arion_rime_select(full, static_cast<size_t>(indexOf(candidates(full), "我"))) && commitOf(full) == "我", "commit 我");
+    require(arion_rime_state(full, &state) && std::string(state.input).empty(), "nothing composes after a commit");
+    auto predicted = candidates(full);
+    require(indexOf(predicted, "们") >= 0, "我 predicts 们");
+    require(arion_rime_select(full, static_cast<size_t>(indexOf(predicted, "们"))) && commitOf(full) == "们", "a prediction commits");
+    arion_rime_dismiss(full);
+    require(candidates(full).empty(), "dismiss hides predictions");
+    arion_rime_options(full, 0, 0, 0);
+    type(full, "wo");
+    require(arion_rime_select(full, static_cast<size_t>(indexOf(candidates(full), "我"))) && commitOf(full) == "我", "commit 我 again");
+    require(candidates(full).empty(), "prediction off offers nothing");
+    arion_rime_options(full, 0, 0, 1);
+
+    // Automatic phrase learning (librime Memory): two chosen parts of one
+    // composition become a phrase the next time.
+    type(full, "zhenshi");
+    require(arion_rime_select(full, static_cast<size_t>(indexOf(candidates(full, 120), "针"))), "choose 针 for zhen");
+    require(arion_rime_select(full, static_cast<size_t>(indexOf(candidates(full, 120), "矢"))) && commitOf(full) == "针矢", "choose 矢 for shi");
+    type(full, "zhenshi");
+    require(indexOf(candidates(full), "针矢") == 0, "针矢 is learned as a phrase");
+    arion_rime_clear(full);
+
     ArionRimeSession keypad = arion_rime_open("arion_pinyin_9key");
     require(keypad, "open arion_pinyin_9key");
     type(keypad, "64426");
@@ -132,10 +166,13 @@ int main(int argc, char **argv) {
     type(full, "shi");
     long after = indexOf(candidates(full, 60), learned);
     require(after >= 0 && after < chosen, "learning survives a restart");
+    arion_rime_clear(full);
+    type(full, "zhenshi");
+    require(indexOf(candidates(full), "针矢") == 0, "a learned phrase survives a restart");
     arion_rime_close(full);
     arion_rime_stop();
     char error[256] = {0};
     require(arion_rime_reset_learning(vault.c_str(), error, sizeof error), std::string("reset: ") + error);
-    std::cout << "Mobile Rime bridge passed: 26-key, 9-key, syllables, raw commit, English and encrypted learning.\n";
+    std::cout << "Mobile Rime bridge passed: 26-key, 9-key, syllables, raw commit, English, fuzzy Pinyin, prediction, phrase and encrypted learning.\n";
     return 0;
 }

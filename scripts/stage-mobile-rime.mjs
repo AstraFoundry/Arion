@@ -44,7 +44,7 @@ const extract = (archive, to) => { mkdirSync(to, { recursive: true }); run('tar'
 
 // Sources are extracted once per pin; the engine gets the desktop's patch.
 function sources() {
-  const directory = path.join(work, 'sources', digest(JSON.stringify([desktop.archives.source, desktop.patches, mobile.dependencies])).slice(0, 16));
+  const directory = path.join(work, 'sources', digest(JSON.stringify([desktop.archives.source, desktop.patches, mobile.dependencies, mobile.plugins])).slice(0, 16));
   const engine = path.join(directory, `librime-${desktop.engine.commit}`);
   if (!existsSync(path.join(directory, 'ready'))) {
     rmSync(directory, { recursive: true, force: true });
@@ -52,6 +52,7 @@ function sources() {
     const spelling = path.join(engine, 'src/rime/algo/syllabifier.cc');
     writeFileSync(spelling, verifiedCorrectionIdentity(readFileSync(spelling, 'utf8'), desktop.patches.correctionIdentity));
     for (const spec of Object.values(mobile.dependencies)) extract(pinnedFile(spec), directory);
+    for (const spec of Object.values(mobile.plugins)) extract(pinnedFile(spec), directory);
     const boost = path.join(directory, 'boost');
     mkdirSync(boost);
     run('tar', ['-xf', pinnedFile(desktop.archives.boost), '-C', boost, 'boost_1_89_0/boost', 'boost_1_89_0/LICENSE_1_0.txt'], 'extract-boost');
@@ -107,8 +108,14 @@ function buildSlice(slice, src) {
   const objects = [];
   const target = slice.sdk === 'macosx' ? `${slice.architectures[0]}-apple-macos${deploymentTarget(slice)}`
     : `${slice.architectures[0]}-apple-ios${deploymentTarget(slice)}${slice.sdk === 'iphonesimulator' ? '-simulator' : ''}`;
-  for (const file of [...glue.map(f => path.join(shared, f)), path.join(bridge, 'src/arion_rime.cpp')]) {
-    const object = path.join(directory, 'glue', `${path.basename(file, '.cpp')}.o`);
+  // Rime plugins compile into the bridge like the glue; arion_rime.cpp
+  // requires their modules so the static link keeps them.
+  const plugins = Object.values(mobile.plugins).flatMap(spec => {
+    const sources = path.join(src.directory, spec.root, 'src');
+    return readdirSync(sources).filter(name => name.endsWith('.cc')).sort().map(name => path.join(sources, name));
+  });
+  for (const file of [...glue.map(f => path.join(shared, f)), ...plugins, path.join(bridge, 'src/arion_rime.cpp')]) {
+    const object = path.join(directory, 'glue', `${path.basename(file).replace(/\.(cpp|cc)$/, '')}.o`);
     mkdirSync(path.dirname(object), { recursive: true });
     run('xcrun', ['--sdk', slice.sdk, 'clang++', '-std=c++17', '-O2', '-target', target, '-fvisibility=hidden', '-DRIME_STATIC',
       '-I', path.join(bridge, 'include'), '-I', path.join(directory, 'rime-config'), '-I', path.join(src.engine, 'src'), '-I', path.join(src.engine, 'include'),
@@ -149,6 +156,10 @@ function stageData(staging) {
   }
   if (!readFileSync(path.join(build, 'arion_pinyin.schema.yaml'), 'utf8').includes('- arion_bilingual'))
     throw new Error('Compiled arion_pinyin lost its bilingual translator.');
+  for (const schema of ['arion_pinyin', 'arion_pinyin_9key']) {
+    const text = readFileSync(path.join(build, `${schema}.schema.yaml`), 'utf8');
+    if (!text.includes('- predictor') || !text.includes('- predict_translator')) throw new Error(`Compiled ${schema} lost its predictor.`);
+  }
   // The 9-key syllable list comes from the shipped dictionary itself.
   const syllables = new Set();
   let body = false;
@@ -171,6 +182,13 @@ function stageData(staging) {
   writeEnglishLexicon(english, desktop);
   renameSync(path.join(english, 'data', englishLexiconFile), path.join(staging, 'data', englishLexiconFile));
   rmSync(english, { recursive: true });
+  // librime-predict's next-word data and the notices of both.
+  for (const spec of Object.values(mobile.data)) {
+    copyFileSync(pinnedFile(spec), path.join(staging, 'data', spec.to));
+    for (const notice of spec.notices) copyFileSync(pinnedFile(notice), path.join(mkdirFor(path.dirname(path.join(staging, notice.to))), path.basename(notice.to)));
+  }
+  for (const spec of Object.values(mobile.plugins))
+    copyFileSync(path.join(src().directory, spec.root, 'LICENSE'), path.join(mkdirFor(path.join(staging, 'licenses')), `librime-${spec.module}-LICENSE`));
   rmSync(source, { recursive: true });
   rmSync(user, { recursive: true });
   copyFileSync(path.join(src().boost, 'LICENSE_1_0.txt'), path.join(staging, 'licenses/boost-LICENSE'));

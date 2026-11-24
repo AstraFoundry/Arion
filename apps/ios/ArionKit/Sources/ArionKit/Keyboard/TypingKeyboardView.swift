@@ -109,6 +109,16 @@ public final class TypingKeyboardView: UIView {
     }
 
     /// Ends a composition without inserting it, e.g. when the field changes.
+    /// Typo correction, fuzzy pairs and prediction, from the app's settings.
+    public var options: TypingOptions {
+        get { engine.options }
+        set {
+            guard newValue != engine.options else { return }
+            engine.options = newValue
+            render()
+        }
+    }
+
     public func reset() {
         engine.clear()
         render()
@@ -142,7 +152,7 @@ public final class TypingKeyboardView: UIView {
             self?.engine.chooseSyllable(syllable)
             self?.render()
         }
-        syllables.onPunctuation = { [weak self] text in self?.delegate?.typingInsert(text) }
+        syllables.onPunctuation = { [weak self] text in self?.insert(text) }
         keys.axis = .vertical
         keys.spacing = KeyboardMetrics.rowGap
         grid.isHidden = true
@@ -467,7 +477,7 @@ public final class TypingKeyboardView: UIView {
             if shifted, engine.layout == .pinyin {
                 // A capital in Pinyin is inserted as is, after what was composing.
                 commitComposition()
-                delegate?.typingInsert(c.uppercased())
+                insert(c.uppercased())
             } else {
                 let character = shifted ? Character(c.uppercased()) : c
                 if let text = engine.type(character), !text.isEmpty { delegate?.typingInsert(text) }
@@ -475,9 +485,9 @@ public final class TypingKeyboardView: UIView {
             if shift == .once { shift = .off; rebuild() }
         case .text(let text):
             commitComposition()
-            delegate?.typingInsert(text)
+            insert(text)
         case .separator:
-            if engine.state.isComposing { engine.type("'") } else if engine.layout == .pinyin9 { delegate?.typingInsert("，") } else { delegate?.typingInsert("'") }
+            if engine.state.isComposing { engine.type("'") } else { insert(engine.layout == .pinyin9 ? "，" : "'") }
         case .shift:
             let now = Date()
             if shift == .once, now.timeIntervalSince(lastShiftTap) < 0.3 { shift = .locked } else { shift = shift == .off ? .once : .off }
@@ -491,11 +501,12 @@ public final class TypingKeyboardView: UIView {
                 choose(0)
                 return
             }
-            delegate?.typingInsert(" ")
+            insert(" ")
         case .return:
             if engine.state.isComposing {
                 if let raw = engine.commitRaw() { delegate?.typingInsert(raw) }
             } else {
+                engine.dismissPrediction()
                 delegate?.typingReturn()
             }
         case .symbols:
@@ -516,6 +527,14 @@ public final class TypingKeyboardView: UIView {
             select(engine.layout == .english ? chineseLayout : .english)
             return
         }
+        render()
+    }
+
+    /// Text the keyboard inserts itself, not committed by the engine: next-word
+    /// suggestions no longer follow what was typed.
+    private func insert(_ text: String) {
+        engine.dismissPrediction()
+        delegate?.typingInsert(text)
         render()
     }
 
@@ -543,6 +562,7 @@ public final class TypingKeyboardView: UIView {
         if engine.backspace() {
             render()
         } else {
+            engine.dismissPrediction()
             delegate?.typingDeleteBackward()
             if engine.layout == .english { render() }
         }
@@ -597,7 +617,7 @@ public final class TypingKeyboardView: UIView {
         case .ended:
             if let choice = alternates.choice {
                 commitComposition()
-                delegate?.typingInsert(choice)
+                insert(choice)
                 if shift == .once { shift = .off; rebuild() }
                 render()
             }
@@ -653,7 +673,7 @@ public final class TypingKeyboardView: UIView {
         let state = engine.state
         let choosing = state.isComposing && !state.candidates.isEmpty
         if !choosing { expanded = false }
-        defer { showDismiss(!choosing && englishCandidates.isEmpty) }
+        defer { showDismiss(state.candidates.isEmpty && englishCandidates.isEmpty) }
         if engine.layout == .english {
             refreshEnglish()
             candidateBar.show(preedit: "", candidates: englishCandidates)

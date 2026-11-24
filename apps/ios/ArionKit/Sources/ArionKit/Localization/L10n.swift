@@ -223,6 +223,19 @@ public enum L10n {
     public static var typingFailureEngine: String { lookup("typing.failure.engine") }
     public static var typingFailureLearning: String { lookup("typing.failure.learning") }
     public static var typingFewerCandidates: String { lookup("typing.fewerCandidates") }
+    public static var typingFuzzy: String { lookup("typing.fuzzy") }
+    public static var typingFuzzyAnAng: String { lookup("typing.fuzzyAnAng") }
+    public static var typingFuzzyCCh: String { lookup("typing.fuzzyCCh") }
+    public static var typingFuzzyEnEng: String { lookup("typing.fuzzyEnEng") }
+    public static var typingFuzzyFH: String { lookup("typing.fuzzyFH") }
+    public static var typingFuzzyFooter: String { lookup("typing.fuzzyFooter") }
+    public static var typingFuzzyIanIang: String { lookup("typing.fuzzyIanIang") }
+    public static var typingFuzzyInIng: String { lookup("typing.fuzzyInIng") }
+    public static var typingFuzzyNL: String { lookup("typing.fuzzyNL") }
+    public static var typingFuzzyRL: String { lookup("typing.fuzzyRL") }
+    public static var typingFuzzySSh: String { lookup("typing.fuzzySSh") }
+    public static var typingFuzzyUanUang: String { lookup("typing.fuzzyUanUang") }
+    public static var typingFuzzyZZh: String { lookup("typing.fuzzyZZh") }
     public static var typingKeyboard: String { lookup("typing.keyboard") }
     public static var typingLayout: String { lookup("typing.layout") }
     public static var typingLettersChinese: String { lookup("typing.letters.chinese") }
@@ -233,11 +246,15 @@ public enum L10n {
     public static var typingPinyin: String { lookup("typing.pinyin") }
     public static var typingPinyin9: String { lookup("typing.pinyin9") }
     public static var typingPinyinMark: String { lookup("typing.pinyinMark") }
+    public static var typingPrediction: String { lookup("typing.prediction") }
+    public static var typingPredictionDetail: String { lookup("typing.predictionDetail") }
     public static var typingPreviousPage: String { lookup("typing.previousPage") }
     public static var typingSeparator: String { lookup("typing.separator") }
     public static var typingSetting: String { lookup("typing.setting") }
     public static var typingShift: String { lookup("typing.shift") }
     public static var typingSymbols: String { lookup("typing.symbols") }
+    public static var typingTypoCorrection: String { lookup("typing.typoCorrection") }
+    public static var typingTypoCorrectionDetail: String { lookup("typing.typoCorrectionDetail") }
     public static var typingVoice: String { lookup("typing.voice") }
     public static var unitHours: String { lookup("unit.hours") }
     public static var unitMinutes: String { lookup("unit.minutes") }

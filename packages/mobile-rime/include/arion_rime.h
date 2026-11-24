@@ -46,7 +46,17 @@ int arion_rime_select(ArionRimeSession session, size_t index);
 // Commits the raw input as typed (the return key while composing).
 int arion_rime_commit_raw(ArionRimeSession session);
 void arion_rime_clear(ArionRimeSession session);
+// Hides next-word predictions (librime-predict) until the next commit, e.g.
+// when the keyboard inserts text the engine did not commit.
+void arion_rime_dismiss(ArionRimeSession session);
+// The desktop's typo correction and fuzzy pairs (spelling_options.h bit
+// order: z/zh c/ch s/sh n/l f/h r/l an/ang en/eng in/ing ian/iang uan/uang)
+// for the full-keyboard Pinyin translator, and next-word prediction.
+void arion_rime_options(ArionRimeSession session, int typo, uint32_t fuzzy, int prediction);
 
+// After a commit the candidates may be next-word predictions with an empty
+// input. The first page is reordered by the previous commit (the desktop's
+// context ranking) and indices passed to arion_rime_select follow it.
 // The session's state after the last call. Strings stay valid until the next
 // call on the same session. `commit` is the text to insert now, if any; it
 // is handed out once.

@@ -331,4 +331,13 @@ final class MicrophoneGainTests: XCTestCase {
         XCTAssertFalse(spelling.continues("zho'g"))
         XCTAssertFalse(spelling.continues("i"))
     }
+
+    func testTypingOptionsKeepTheDesktopsFuzzyBits() {
+        // apps/desktop/ime/shared/spelling_options.h: z/zh is bit 0, uan/uang bit 10.
+        let options = TypingOptions(fuzzy: [.zZh, .uanUang])
+        XCTAssertEqual(options.fuzzyMask, 1 | 1 << 10)
+        XCTAssertEqual(TypingOptions.fuzzy(mask: options.fuzzyMask), [.zZh, .uanUang])
+        XCTAssertTrue(TypingOptions().prediction)
+        XCTAssertFalse(TypingOptions().typoCorrection)
+    }
 }

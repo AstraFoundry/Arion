@@ -212,28 +212,92 @@ private final class GainTicks: UIView {
     }
 }
 
-/// The Pinyin layout the keyboard's 中 key opens. 中/EN is the only toggle
-/// on the keyboard itself, so this choice lives here.
+/// Typing settings: the Pinyin layout the keyboard's 中 key opens (中/EN is
+/// the only toggle on the keyboard itself), next-word suggestions, and the
+/// desktop's typo correction and fuzzy pronunciation pairs.
 final class ChineseTypingViewController: SettingsListController {
     private static let choices: [TypingLayout] = [.pinyin, .pinyin9]
+    private enum Section: Int, CaseIterable { case layout, engine, fuzzy }
 
     static func name(_ layout: TypingLayout) -> String {
         layout == .pinyin9 ? L10n.typingPinyin9 : L10n.typingPinyin
     }
 
+    static func name(_ pair: FuzzyPair) -> String {
+        switch pair {
+        case .zZh: L10n.typingFuzzyZZh
+        case .cCh: L10n.typingFuzzyCCh
+        case .sSh: L10n.typingFuzzySSh
+        case .nL: L10n.typingFuzzyNL
+        case .fH: L10n.typingFuzzyFH
+        case .rL: L10n.typingFuzzyRL
+        case .anAng: L10n.typingFuzzyAnAng
+        case .enEng: L10n.typingFuzzyEnEng
+        case .inIng: L10n.typingFuzzyInIng
+        case .ianIang: L10n.typingFuzzyIanIang
+        case .uanUang: L10n.typingFuzzyUanUang
+        }
+    }
+
     init() { super.init(title: L10n.typingSetting) }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { Self.choices.count }
+    override func numberOfSections(in tableView: UITableView) -> Int { Section.allCases.count }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch Section(rawValue: section)! {
+        case .layout: Self.choices.count
+        case .engine: 2
+        case .fuzzy: FuzzyPair.allCases.count
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        Section(rawValue: section) == .fuzzy ? L10n.typingFuzzy : nil
+    }
+
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        Section(rawValue: section) == .fuzzy ? L10n.typingFuzzyFooter : nil
+    }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let layout = Self.choices[indexPath.row]
-        return cell(Self.name(layout), checked: preferences.chineseTypingLayout == layout)
+        let options = preferences.typingOptions
+        switch Section(rawValue: indexPath.section)! {
+        case .layout:
+            let layout = Self.choices[indexPath.row]
+            return cell(Self.name(layout), checked: preferences.chineseTypingLayout == layout)
+        case .engine:
+            return indexPath.row == 0
+                ? toggle(L10n.typingPrediction, detail: L10n.typingPredictionDetail, isOn: options.prediction) { $0.prediction = $1 }
+                : toggle(L10n.typingTypoCorrection, detail: L10n.typingTypoCorrectionDetail, isOn: options.typoCorrection) { $0.typoCorrection = $1 }
+        case .fuzzy:
+            let pair = FuzzyPair.allCases[indexPath.row]
+            return toggle(Self.name(pair), isOn: options.fuzzy.contains(pair)) { options, on in
+                if on { options.fuzzy.insert(pair) } else { options.fuzzy.remove(pair) }
+            }
+        }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        guard Section(rawValue: indexPath.section) == .layout else { return }
         preferences.chineseTypingLayout = Self.choices[indexPath.row]
         tableView.reloadData()
+    }
+
+    private func toggle(_ text: String, detail: String? = nil, isOn: Bool,
+                        change: @escaping (inout TypingOptions, Bool) -> Void) -> UITableViewCell {
+        let cell = cell(text, secondary: detail)
+        let toggle = UISwitch()
+        toggle.isOn = isOn
+        toggle.addAction(UIAction { [weak self] action in
+            guard let self, let toggle = action.sender as? UISwitch else { return }
+            var options = self.preferences.typingOptions
+            change(&options, toggle.isOn)
+            self.preferences.typingOptions = options
+        }, for: .valueChanged)
+        cell.accessoryView = toggle
+        cell.selectionStyle = .none
+        return cell
     }
 }
 

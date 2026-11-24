@@ -3732,6 +3732,228 @@
       },
       "comment": "Accessibility name of the chevron that closes the candidate grid."
     },
+    "typing.fuzzy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fuzzy pronunciation"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模糊音"
+          }
+        }
+      },
+      "comment": "Settings section of fuzzy Pinyin pairs, as the desktop names it."
+    },
+    "typing.fuzzyAnAng": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "an / ang"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "an / ang"
+          }
+        }
+      }
+    },
+    "typing.fuzzyCCh": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "c / ch"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "c / ch"
+          }
+        }
+      }
+    },
+    "typing.fuzzyEnEng": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "en / eng"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "en / eng"
+          }
+        }
+      }
+    },
+    "typing.fuzzyFH": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "f / h"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "f / h"
+          }
+        }
+      }
+    },
+    "typing.fuzzyFooter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Correction and fuzzy pronunciation apply to the full keyboard."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "纠错和模糊音用于全键盘。"
+          }
+        }
+      }
+    },
+    "typing.fuzzyIanIang": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ian / iang"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ian / iang"
+          }
+        }
+      }
+    },
+    "typing.fuzzyInIng": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in / ing"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in / ing"
+          }
+        }
+      }
+    },
+    "typing.fuzzyNL": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "n / l"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "n / l"
+          }
+        }
+      }
+    },
+    "typing.fuzzyRL": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "r / l"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "r / l"
+          }
+        }
+      }
+    },
+    "typing.fuzzySSh": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s / sh"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s / sh"
+          }
+        }
+      }
+    },
+    "typing.fuzzyUanUang": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "uan / uang"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "uan / uang"
+          }
+        }
+      }
+    },
+    "typing.fuzzyZZh": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "z / zh"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "z / zh"
+          }
+        }
+      }
+    },
     "typing.keyboard": {
       "extractionState": "manual",
       "localizations": {
@@ -3911,6 +4133,41 @@
       },
       "comment": "Faint mark in the space bar's corner while Pinyin is the typing mode, as on the system keyboard."
     },
+    "typing.prediction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next-word suggestions"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "联想"
+          }
+        }
+      },
+      "comment": "Settings switch: after a word is chosen, the candidate bar suggests what often follows (librime-predict)."
+    },
+    "typing.predictionDetail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After you choose a word, suggests the words that often follow it."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选词后推荐常接在后面的字词。"
+          }
+        }
+      }
+    },
     "typing.previousPage": {
       "extractionState": "manual",
       "localizations": {
@@ -3995,6 +4252,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "123"
+          }
+        }
+      }
+    },
+    "typing.typoCorrection": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typing correction"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "误拼纠错"
+          }
+        }
+      },
+      "comment": "Settings switch, as the desktop names it."
+    },
+    "typing.typoCorrectionDetail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offers candidates for missing, extra, swapped or nearby keys."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "为漏键、多键、换位或邻键误触提供候选。"
           }
         }
       }

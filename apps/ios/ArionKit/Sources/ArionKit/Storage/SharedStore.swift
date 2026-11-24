@@ -36,6 +36,9 @@ public final class Preferences: @unchecked Sendable {
         static let onboarded = "onboarding.completed"
         static let chineseTyping = "typing.chineseLayout"
         static let gain = "microphone.gainDecibels"
+        static let typo = "typing.typoCorrection"
+        static let fuzzy = "typing.fuzzyPairs"
+        static let prediction = "typing.prediction"
     }
 
     /// Polishing is on by default. On this device it runs only when Apple
@@ -106,6 +109,20 @@ public final class Preferences: @unchecked Sendable {
             return MicrophoneGain.choices.contains(stored) ? stored : 0
         }
         set { defaults.set(newValue, forKey: Key.gain) }
+    }
+
+    /// Typo correction and fuzzy pairs off, prediction on, by default.
+    public var typingOptions: TypingOptions {
+        get {
+            TypingOptions(typoCorrection: defaults.bool(forKey: Key.typo),
+                          fuzzy: TypingOptions.fuzzy(mask: UInt32(truncatingIfNeeded: defaults.integer(forKey: Key.fuzzy))),
+                          prediction: defaults.object(forKey: Key.prediction) as? Bool ?? true)
+        }
+        set {
+            defaults.set(newValue.typoCorrection, forKey: Key.typo)
+            defaults.set(Int(newValue.fuzzyMask), forKey: Key.fuzzy)
+            defaults.set(newValue.prediction, forKey: Key.prediction)
+        }
     }
 
     /// The Pinyin layout the keyboard's 中 key opens: full keyboard by default.

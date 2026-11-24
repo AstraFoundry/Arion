@@ -218,6 +218,19 @@
     <string name="typing_failure_engine" formatted="false">打字功能无法启动。</string>
     <string name="typing_failure_learning" formatted="false">无法在这台 iPhone 上打开加密的输入学习数据。</string>
     <string name="typing_fewer_candidates" formatted="false">收起候选</string>
+    <string name="typing_fuzzy" formatted="false">模糊音</string>
+    <string name="typing_fuzzy_an_ang" formatted="false">an / ang</string>
+    <string name="typing_fuzzy_c_ch" formatted="false">c / ch</string>
+    <string name="typing_fuzzy_en_eng" formatted="false">en / eng</string>
+    <string name="typing_fuzzy_fh" formatted="false">f / h</string>
+    <string name="typing_fuzzy_footer" formatted="false">纠错和模糊音用于全键盘。</string>
+    <string name="typing_fuzzy_ian_iang" formatted="false">ian / iang</string>
+    <string name="typing_fuzzy_in_ing" formatted="false">in / ing</string>
+    <string name="typing_fuzzy_nl" formatted="false">n / l</string>
+    <string name="typing_fuzzy_rl" formatted="false">r / l</string>
+    <string name="typing_fuzzy_s_sh" formatted="false">s / sh</string>
+    <string name="typing_fuzzy_uan_uang" formatted="false">uan / uang</string>
+    <string name="typing_fuzzy_z_zh" formatted="false">z / zh</string>
     <string name="typing_keyboard" formatted="false">键盘</string>
     <string name="typing_layout" formatted="false">中英切换</string>
     <string name="typing_letters_chinese" formatted="false">拼音</string>
@@ -228,11 +241,15 @@
     <string name="typing_pinyin" formatted="false">全键盘</string>
     <string name="typing_pinyin9" formatted="false">九键</string>
     <string name="typing_pinyin_mark" formatted="false">拼</string>
+    <string name="typing_prediction" formatted="false">联想</string>
+    <string name="typing_prediction_detail" formatted="false">选词后推荐常接在后面的字词。</string>
     <string name="typing_previous_page" formatted="false">上一页候选</string>
     <string name="typing_separator" formatted="false">分词</string>
     <string name="typing_setting" formatted="false">中文键盘</string>
     <string name="typing_shift" formatted="false">大写</string>
     <string name="typing_symbols" formatted="false">123</string>
+    <string name="typing_typo_correction" formatted="false">误拼纠错</string>
+    <string name="typing_typo_correction_detail" formatted="false">为漏键、多键、换位或邻键误触提供候选。</string>
     <string name="typing_voice" formatted="false">语音</string>
     <string name="unit_hours" formatted="false">小时</string>
     <string name="unit_minutes" formatted="false">分钟</string>
