@@ -54,12 +54,17 @@ public final class TypingEngine {
     public static let barCandidates = 30
 
     nonisolated(unsafe) private static var started = false
+    /// The shipped syllables, for judging whether a letter continues Pinyin.
+    nonisolated(unsafe) private static var spelling: PinyinSpelling?
 
     /// Starts the process-wide engine once; later calls return at once.
     public static func start(data: URL, support: URL) throws(TypingFailure) {
         if started { return }
         let build = data.appendingPathComponent("build/arion_pinyin.schema.yaml")
         guard FileManager.default.fileExists(atPath: build.path) else { throw .dataMissing }
+        guard let list = try? String(contentsOf: data.appendingPathComponent("arion_syllables.txt"), encoding: .utf8)
+        else { throw .dataMissing }
+        let spelling = PinyinSpelling(syllables: list.split(separator: "\n").map(String.init))
         let user = support.appendingPathComponent("Rime", isDirectory: true)
         let vault = user.appendingPathComponent("learning", isDirectory: true)
         do {
@@ -73,6 +78,7 @@ public final class TypingEngine {
         var reason = [CChar](repeating: 0, count: 256)
         let ok = arion_rime_start(data.path, user.path, vault.path, &cipher, &reason, reason.count)
         guard ok == 1 else { throw .engine(String(cString: reason)) }
+        Self.spelling = spelling
         started = true
     }
 
@@ -153,6 +159,14 @@ public final class TypingEngine {
         var texts = [UnsafePointer<CChar>?](repeating: nil, count: limit)
         let count = arion_rime_candidates(session, offset, limit, &texts, nil)
         return texts.prefix(count).compactMap { $0.map { String(cString: $0) } }
+    }
+
+    /// Whether a letter continues the full-keyboard Pinyin composition after
+    /// `pending` letters not yet typed; nil where it cannot tell (9-key, or
+    /// English, which the keyboard judges from the word before the caret).
+    public func continues(_ letter: Character, after pending: String = "") -> Bool? {
+        guard layout == .pinyin, let spelling = Self.spelling else { return nil }
+        return spelling.continues(state.input + pending + String(letter))
     }
 
     /// English: the desktop lexicon's candidates for the word before the

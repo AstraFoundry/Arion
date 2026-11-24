@@ -85,6 +85,7 @@ public final class VoiceKeyboardView: UIView {
     required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
 
     private func build() {
+        backgroundColor = KeyboardMetrics.touchableBackground
         draftLabel.textAlignment = .center
         draftLabel.numberOfLines = 3
         draftLabel.lineBreakMode = .byTruncatingHead

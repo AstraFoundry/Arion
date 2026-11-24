@@ -39,6 +39,13 @@ public final class TypingKeyboardView: UIView {
     private var englishCandidates: [String] = []
     /// The candidate bar starts after the hide key while idle, and at the
     /// edge once candidates replace it, as the Rime frontends' toolbars do.
+    /// Every key on the page, for routing touches that miss a key's face.
+    private var targets: [(button: FaceButton, key: TypingKey)] = []
+    /// A character key pressed and not yet released. When the next finger
+    /// lands it is typed at once, so fast overlapping taps keep their order
+    /// (rollover, as fcitx5-ios and FlorisBoard do); its release is then skipped.
+    private var pending: (button: FaceButton, key: TypingKey)?
+    private var flushed: Set<ObjectIdentifier> = []
     private var barAfterDismiss: NSLayoutConstraint!
     private var barAtEdge: NSLayoutConstraint!
     private let keys = UIStackView()
@@ -108,6 +115,7 @@ public final class TypingKeyboardView: UIView {
     }
 
     private func build() {
+        backgroundColor = KeyboardMetrics.touchableBackground
         dismiss.addAction(UIAction { [weak self] _ in self?.delegate?.typingDismiss() }, for: .touchUpInside)
         voice.addAction(UIAction { [weak self] _ in
             self?.commitComposition()
@@ -172,6 +180,9 @@ public final class TypingKeyboardView: UIView {
     private func rebuild() {
         keys.arrangedSubviews.forEach { $0.removeFromSuperview() }
         returnKeys = []
+        targets = []
+        pending = nil
+        flushed = []
         let chinese = engine.layout != .english
         if symbolsShown {
             for row in KeyLayout.symbols(chinese: chinese, more: page == .more) { keys.addArrangedSubview(rowView(row)) }
@@ -279,7 +290,10 @@ public final class TypingKeyboardView: UIView {
     }
 
     private func keyView(_ spec: KeyLayout.Key) -> FaceButton {
-        if spec.key == .globe { return globe }
+        if spec.key == .globe {
+            targets.append((globe, .globe))
+            return globe
+        }
         let button = FaceButton(kind: .secondary, material: .raised)
         button.sideInset = 0
         button.minimumFaceHeight = 0
@@ -288,7 +302,16 @@ public final class TypingKeyboardView: UIView {
         configure(button, spec)
         button.titleLabel.font = Self.font(for: spec.key, title: button.title)
         if spec.key == .return { returnKeys.append(button) }
-        button.addAction(UIAction { [weak self] _ in self?.press(spec.key) }, for: .touchUpInside)
+        targets.append((button, spec.key))
+        button.addAction(UIAction { [weak self, weak button] _ in
+            if let self, let button { self.keyDown(button, spec.key) }
+        }, for: .touchDown)
+        button.addAction(UIAction { [weak self, weak button] _ in
+            if let self, let button { self.keyUp(button, spec.key) }
+        }, for: .touchUpInside)
+        button.addAction(UIAction { [weak self, weak button] _ in
+            if let self, let button { self.keyAbandoned(button) }
+        }, for: [.touchUpOutside, .touchCancel])
         if spec.key == .delete {
             button.addTarget(self, action: #selector(deleteDown(_:)), for: .touchDown)
             button.addTarget(self, action: #selector(deleteUp(_:)), for: [.touchUpInside, .touchUpOutside, .touchCancel])
@@ -376,9 +399,69 @@ public final class TypingKeyboardView: UIView {
         button.titleLabel.font = Self.font(for: .return, title: title)
     }
 
-    private func press(_ key: TypingKey) {
+    /// Feedback on touch-down, as the system keyboard gives it; the key types
+    /// on release, or when the next finger lands.
+    private func keyDown(_ button: FaceButton, _ key: TypingKey) {
         feedback.impactOccurred()
         UIDevice.current.playInputClick()
+        guard key.isCharacter else { return }
+        if let held = pending, held.button !== button {
+            flushed.insert(ObjectIdentifier(held.button))
+            press(held.key)
+        }
+        pending = (button, key)
+    }
+
+    private func keyUp(_ button: FaceButton, _ key: TypingKey) {
+        if flushed.remove(ObjectIdentifier(button)) != nil { return }
+        if pending?.button === button { pending = nil }
+        press(key)
+    }
+
+    private func keyAbandoned(_ button: FaceButton) {
+        flushed.remove(ObjectIdentifier(button))
+        if pending?.button === button { pending = nil }
+    }
+
+    // MARK: Touch targets
+
+    /// A touch between keys, beside the outer keys or below the last row goes
+    /// to its key (KeyTargets); one near a boundary may go to the neighbor
+    /// whose letter continues what is being typed.
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hit = super.hitTest(point, with: event)
+        guard !keys.isHidden, !targets.isEmpty, point.y >= keys.frame.minY - KeyboardMetrics.rowGap / 2 else { return hit }
+        if let hit, hit !== self, hit !== keys, !targets.contains(where: { $0.button === hit }),
+           hit is UIControl || hit.isDescendant(of: syllables) || hit.isDescendant(of: alternates) {
+            return hit
+        }
+        let judged = !symbolsShown && engine.layout != .pinyin9
+        let areas = targets.map { target -> KeyTargets.Key in
+            var letter: Character?
+            if judged, case .letter(let c) = target.key { letter = Character(c.lowercased()) }
+            return KeyTargets.Key(frame: target.button.convert(target.button.bounds, to: self), letter: letter)
+        }
+        guard let index = KeyTargets.resolve(point, in: areas, continues: continues) else { return hit }
+        return targets[index].button
+    }
+
+    /// Whether a letter continues the word being typed, counting a key still
+    /// held; nil where nothing can tell (a first or second English letter).
+    private func continues(_ letter: Character) -> Bool? {
+        var held = ""
+        if case .letter(let c)? = pending?.key { held = String(c) }
+        switch engine.layout {
+        case .pinyin:
+            return shifted ? nil : engine.continues(letter, after: held)
+        case .english:
+            let word = englishWord + held + String(letter)
+            return word.count < 3 ? nil : !engine.englishCandidates(for: word, limit: 1).isEmpty
+        case .pinyin9:
+            return nil
+        }
+    }
+
+    private func press(_ key: TypingKey) {
         switch key {
         case .letter(let c):
             if shifted, engine.layout == .pinyin {

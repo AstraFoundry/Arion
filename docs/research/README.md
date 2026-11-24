@@ -12,6 +12,7 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Doubao](doubao.md) — installed native IMK artifact, online/offline ASR and composition surfaces.
 - [Typeless iOS keyboard](typeless-ios-keyboard.md) — App Store IPA keyboard declaration, React Native keyboard bundle, in-app recording signals and tap/hold gesture strings.
 - [Typeless mobile typing](typeless-mobile-typing.md) — Rime engine, Pinyin and 9-key schemas, layout setting and swipe copy in the 2.11.0 iOS and Android keyboards.
+- [Keyboard touch targets](keyboard-touch-targets.md) — how the system keyboard (Apple's hit-region patent), Rime frontends and open-source keyboards decide which key a touch presses, and Arion's nearest-key, next-letter bias and rollover rules.
 - [iOS keyboard long-press alternates](ios-keyboard-alternates.md) — what the system Simplified Chinese keyboard offers when a key is held, recorded key by key; the source of `KeyLayout.alternates`.
 - [Competitor keyboard setup on iOS](competitor-keyboard-setup.md) — Doubao and WeChat input methods' Settings-app notes and animated guides behind Arion's Settings page and setup preview.
 - [Mobile voice keyboards](mobile-voice-keyboards.md) — Wispr Flow, Willow and Superwhisper iOS keyboards, Android recognizer and ML Kit foreground limits, and competitor Android voice input.

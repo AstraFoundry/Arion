@@ -22,6 +22,14 @@ public enum TypingKey: Equatable, Sendable {
     case layout
     /// The system's next-keyboard key, when the device needs one.
     case globe
+
+    /// Keys that type text, which a following key may type before release.
+    public var isCharacter: Bool {
+        switch self {
+        case .letter, .text: true
+        default: false
+        }
+    }
 }
 
 /// Sizes both panels share, taken from the iOS 26 system keyboard on a
@@ -42,6 +50,10 @@ public enum KeyboardMetrics {
     public static func width(_ view: UIView, letters: CGFloat, of row: UIView) -> NSLayoutConstraint {
         view.widthAnchor.constraint(equalTo: row.widthAnchor, multiplier: 0.1 * letters, constant: -0.9 * gap * letters)
     }
+    /// A panel's fill. The system drops touches on a keyboard's fully clear
+    /// pixels, so gaps between keys and bare icon keys would miss taps; this
+    /// is too faint to see (KeyboardKit's clearInteractable does the same).
+    public static let touchableBackground = UIColor(white: 0.5, alpha: 0.01)
     public static let functionKey: CGFloat = 1.3
     public static let returnKey: CGFloat = 2.73
     public static let shiftKey: CGFloat = 1.35

@@ -293,4 +293,42 @@ final class MicrophoneGainTests: XCTestCase {
         let (_, frames) = type(&w, UUID(), "好👍🏽了", final: false, from: 0)
         XCTAssert(frames.allSatisfy { "好👍🏽了".hasPrefix($0.text) })
     }
+
+    // MARK: Key targets
+
+    /// Three 30-point keys 6 points apart, as one row of the keyboard.
+    private let row: [KeyTargets.Key] = [
+        .init(frame: CGRect(x: 0, y: 0, width: 30, height: 42), letter: "d"),
+        .init(frame: CGRect(x: 36, y: 0, width: 30, height: 42), letter: "f"),
+        .init(frame: CGRect(x: 72, y: 0, width: 30, height: 42), letter: "g"),
+    ]
+
+    func testTouchesBetweenAndBesideKeysGoToTheNearestKey() {
+        XCTAssertEqual(KeyTargets.resolve(CGPoint(x: 32, y: 20), in: row) { _ in nil }, 0)
+        XCTAssertEqual(KeyTargets.resolve(CGPoint(x: 34, y: 20), in: row) { _ in nil }, 1)
+        XCTAssertEqual(KeyTargets.resolve(CGPoint(x: 110, y: 20), in: row) { _ in nil }, 2)
+        XCTAssertEqual(KeyTargets.resolve(CGPoint(x: 50, y: 50), in: row) { _ in nil }, 1)
+    }
+
+    func testANearBoundaryTouchGoesToTheLetterThatContinues() {
+        // Apple's example: after GO, a touch on F's edge toward D types D.
+        let onlyD: (Character) -> Bool? = { $0 == "d" }
+        XCTAssertEqual(KeyTargets.resolve(CGPoint(x: 38, y: 20), in: row, continues: onlyD), 0)
+        // Deep inside F, geometry wins.
+        XCTAssertEqual(KeyTargets.resolve(CGPoint(x: 51, y: 20), in: row, continues: onlyD), 1)
+        // Nothing known: geometry wins at the edge too.
+        XCTAssertEqual(KeyTargets.resolve(CGPoint(x: 38, y: 20), in: row) { _ in nil }, 1)
+        // Both continue: geometry wins.
+        XCTAssertEqual(KeyTargets.resolve(CGPoint(x: 38, y: 20), in: row) { _ in true }, 1)
+    }
+
+    func testPinyinSpellingFollowsSyllables() {
+        let spelling = PinyinSpelling(syllables: ["a", "ni", "hao", "zhong", "guo", "xian", "xi", "an", "e"])
+        XCTAssertTrue(spelling.continues("nih"))
+        XCTAssertTrue(spelling.continues("zhongg"))
+        XCTAssertTrue(spelling.continues("xi'an"))
+        XCTAssertFalse(spelling.continues("nq"))
+        XCTAssertFalse(spelling.continues("zho'g"))
+        XCTAssertFalse(spelling.continues("i"))
+    }
 }
