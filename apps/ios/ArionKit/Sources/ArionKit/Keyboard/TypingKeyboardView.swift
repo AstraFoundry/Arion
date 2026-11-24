@@ -37,6 +37,10 @@ public final class TypingKeyboardView: UIView {
     /// English: the word before the caret and the lexicon's candidates for it.
     private var englishWord = ""
     private var englishCandidates: [String] = []
+    /// The candidate bar starts after the hide key while idle, and at the
+    /// edge once candidates replace it, as the Rime frontends' toolbars do.
+    private var barAfterDismiss: NSLayoutConstraint!
+    private var barAtEdge: NSLayoutConstraint!
     private let keys = UIStackView()
     private let syllables = SyllableColumn()
     /// Shift is one-shot; a quick second tap locks capitals, as on iOS.
@@ -144,7 +148,6 @@ public final class TypingKeyboardView: UIView {
         NSLayoutConstraint.activate([
             height,
             candidateBar.topAnchor.constraint(equalTo: topAnchor, constant: 4),
-            candidateBar.leadingAnchor.constraint(equalTo: dismiss.trailingAnchor, constant: 4),
             candidateBar.trailingAnchor.constraint(equalTo: voice.leadingAnchor, constant: -4),
             candidateBar.heightAnchor.constraint(equalToConstant: 44),
             keys.topAnchor.constraint(equalTo: candidateBar.bottomAnchor, constant: 6),
@@ -156,6 +159,9 @@ public final class TypingKeyboardView: UIView {
             grid.trailingAnchor.constraint(equalTo: keys.trailingAnchor),
             grid.bottomAnchor.constraint(equalTo: keys.bottomAnchor),
         ])
+        barAfterDismiss = candidateBar.leadingAnchor.constraint(equalTo: dismiss.trailingAnchor, constant: 4)
+        barAtEdge = candidateBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: inset)
+        barAfterDismiss.isActive = true
         dismiss.pin(in: self, trailing: false)
         voice.pin(in: self, trailing: true)
         expand.pin(in: self, trailing: true)
@@ -542,6 +548,15 @@ public final class TypingKeyboardView: UIView {
         }
     }
 
+    /// The hide key only while nothing offers candidates; the bar takes its place.
+    private func showDismiss(_ shown: Bool) {
+        guard dismiss.isHidden == shown else { return }
+        dismiss.isHidden = !shown
+        barAfterDismiss.isActive = false
+        barAtEdge.isActive = false
+        (shown ? barAfterDismiss : barAtEdge).isActive = true
+    }
+
     /// The letters before the caret and their candidates: the word as typed
     /// first, as the system keyboard keeps it, then the lexicon's.
     private func refreshEnglish() {
@@ -555,10 +570,13 @@ public final class TypingKeyboardView: UIView {
         let state = engine.state
         let choosing = state.isComposing && !state.candidates.isEmpty
         if !choosing { expanded = false }
+        defer { showDismiss(!choosing && englishCandidates.isEmpty) }
         if engine.layout == .english {
             refreshEnglish()
             candidateBar.show(preedit: "", candidates: englishCandidates)
         } else {
+            englishWord = ""
+            englishCandidates = []
             // Open, the grid continues from the first candidate; the bar keeps the composition.
             candidateBar.show(preedit: state.preedit, candidates: expanded ? [] : state.candidates)
         }

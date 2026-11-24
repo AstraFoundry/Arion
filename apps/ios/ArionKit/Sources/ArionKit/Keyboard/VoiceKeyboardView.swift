@@ -207,6 +207,8 @@ public final class VoiceKeyboardView: UIView {
             configure(trailing, icon: nil, title: nil, label: "")
             showDraft(draft, final: true)
         }
+        // The hide key only at rest: recording and transcription have cancel.
+        dismiss.isHidden = phase.isActive
         if holding { highlightHoldTarget() }
     }
 
