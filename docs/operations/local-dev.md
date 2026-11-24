@@ -151,6 +151,20 @@ Run `go mod tidy` in the module whose imports changed and retain `go.sum`. Keep 
 
 SYNC-11 selects AstraFoundry as the standard packaged center and build-time `ARION_CENTER_*` overrides for source builds. The [center profile contract](../project/central-sync-design.md#distribution-and-build-time-center-profile) is validated and compiled by `desktop-command.mjs` for both build and dev. Omit all center variables for the standard profile; empty/unknown/incomplete overrides fail. A packaged app ignores runtime center ENV. Enrollment and outbox remain pending, so this configures destinations and account behavior rather than delivering an integrated sync client. Desktop build variables are public configuration and separate from the relay's secret-bearing deployment `ARION_SYNC_*` variables.
 
+## Mobile apps
+
+The iOS and Android apps are described in [mobile apps](../project/mobile.md). Their tokens, copy and icons are generated; edit `packages/mobile-strings/strings.json`, `packages/mobile-icons/icons.json` or the pinned Sunbeam module, then regenerate:
+
+```bash
+pnpm mobile:generate
+```
+
+`pnpm mobile:check` fails when a generated file differs from its source.
+
+iOS needs Xcode 26 and XcodeGen. `pnpm ios:test` generates `apps/ios/Arion.xcodeproj` and runs the ArionKit tests on the simulator named by `ARION_IOS_SIMULATOR` (default `iPhone 17 Pro`). Open the generated project to run the app; the keyboard needs Settings › General › Keyboard › Keyboards › Add New Keyboard › Arion, then Allow Full Access. A debug build launched with `-keyboardPreview idle|listening|polishing|failed` shows the keyboard view without the extension. Signing for a device needs a team with the App Group `group.com.astrafoundry.arion`.
+
+Android needs the Android SDK (platform 36) and JDK 17 or later; `apps/android/local.properties` points Gradle at the SDK. `pnpm android:test` runs the core tests and builds the debug app. After installing it, enable the keyboard in onboarding, or with `adb shell ime enable si.astrafoundry.arion/.ime.ArionInputMethodService` and `adb shell ime set …` on an emulator.
+
 ## Troubleshooting
 
 - Standalone Shift switching: duplicate modifier notifications from Codex/Cursor preserve the original short-press deadline and switch once on release. Another physical key/modifier or a long hold still cancels the switch; Shift+Space remains available.

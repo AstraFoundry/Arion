@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "scope": "Static librime for the iOS keyboard extension and the Android input method (ADR 053). The engine source, Boost headers, Rime data files and the correction patch come from scripts/keyboard-runtime.json; this file pins the dependency sources the desktop takes prebuilt. It also pins the librime-predict plugin compiled into the bridge and its next-word data.",
+  "dependencies": {
+    "leveldb": {
+      "url": "https://codeload.github.com/google/leveldb/tar.gz/99b3c03b3284f5886f9ef9a4ef703d57373e61be",
+      "sha256": "bc87b9bbc5674c91246a89813355e78401759761342cc049e1c3d56350a8a9d1",
+      "sizeBytes": 243094,
+      "root": "leveldb-99b3c03b3284f5886f9ef9a4ef703d57373e61be",
+      "license": "BSD-3-Clause",
+      "options": ["-DLEVELDB_BUILD_BENCHMARKS=OFF", "-DLEVELDB_BUILD_TESTS=OFF", "-DLEVELDB_INSTALL=ON"]
+    },
+    "marisa": {
+      "url": "https://codeload.github.com/s-yata/marisa-trie/tar.gz/3e87d53b78e15f2f43783d5e376561a8c9722051",
+      "sha256": "c24516edc43be8049ef4e23e50a574d4670036fe3595c49c0f01d4d87ce58f57",
+      "sizeBytes": 212943,
+      "root": "marisa-trie-3e87d53b78e15f2f43783d5e376561a8c9722051",
+      "license": "BSD-2-Clause OR LGPL-2.1-or-later",
+      "options": ["-DBUILD_TESTING=OFF", "-DENABLE_TOOLS=OFF"]
+    },
+    "yaml-cpp": {
+      "url": "https://codeload.github.com/jbeder/yaml-cpp/tar.gz/2f86d13775d119edbb69af52e5f566fd65c6953b",
+      "sha256": "923b2298148581b14ef21d9ce29d83eca102ff671a547dfdbd227245a199bcd8",
+      "sizeBytes": 1050633,
+      "root": "yaml-cpp-2f86d13775d119edbb69af52e5f566fd65c6953b",
+      "license": "MIT",
+      "options": ["-DYAML_CPP_BUILD_CONTRIB=OFF", "-DYAML_CPP_BUILD_TESTS=OFF", "-DYAML_CPP_BUILD_TOOLS=OFF"]
+    },
+    "opencc": {
+      "url": "https://codeload.github.com/BYVoid/OpenCC/tar.gz/556ed22496d650bd0b13b6c163be9814637970ae",
+      "sha256": "2792fc0944359c5d099bd79e08bfffce250bf3760aa0ec306e975cc58314482a",
+      "sizeBytes": 3424904,
+      "root": "OpenCC-556ed22496d650bd0b13b6c163be9814637970ae",
+      "license": "Apache-2.0",
+      "options": ["-DUSE_SYSTEM_MARISA=ON", "-DCMAKE_MACOSX_BUNDLE=OFF"],
+      "target": "libopencc",
+      "installDirectory": "src"
+    }
+  },
+  "plugins": {
+    "predict": {
+      "url": "https://codeload.github.com/rime/librime-predict/tar.gz/920bd41ebf6f9bf6855d14fbe80212e54e749791",
+      "sha256": "38b2f32254e1a35ac04dba376bc8999915c8fbdb35be489bffdf09079983400c",
+      "sizeBytes": 9790,
+      "root": "librime-predict-920bd41ebf6f9bf6855d14fbe80212e54e749791",
+      "license": "BSD-3-Clause",
+      "module": "predict"
+    }
+  },
+  "data": {
+    "predict": {
+      "url": "https://raw.githubusercontent.com/kenspc/rime-predict-zh/bfacc145f10f1ed748c32907818857934e88804a/dist/predict-zhs.db",
+      "sha256": "76ab50e0fac3d2df0143ab4469e8b20ae73223450c3cf33d8a18e9815525e36e",
+      "sizeBytes": 535360,
+      "to": "predict.db",
+      "license": "GPL-3.0-only",
+      "notices": [
+        {
+          "url": "https://raw.githubusercontent.com/kenspc/rime-predict-zh/bfacc145f10f1ed748c32907818857934e88804a/LICENSE",
+          "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+          "sizeBytes": 35147,
+          "to": "licenses/rime-predict-zh/LICENSE"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kenspc/rime-predict-zh/bfacc145f10f1ed748c32907818857934e88804a/README.md",
+          "sha256": "20e642b0e3dc1df2e698880f056c1009795f621822af4e90a449e1d4e55d675a",
+          "sizeBytes": 20003,
+          "to": "licenses/rime-predict-zh/README.md"
+        }
+      ]
+    }
+  },
+  "ios": {
+    "deploymentTarget": "26.0",
+    "slices": [
+      { "sdk": "iphoneos", "architectures": ["arm64"] },
+      { "sdk": "iphonesimulator", "architectures": ["arm64"] }
+    ]
+  }
+}

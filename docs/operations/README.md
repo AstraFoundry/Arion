@@ -19,7 +19,7 @@ Use `make build <component>` with exactly one component per invocation:
 | `make build desktop` | Native app and installer for the current host; configured ENV enables macOS signing/notarization and signed updates |
 | `make build site` | Static marketing site in `apps/site/out` |
 
-Both dispatch through `scripts/build.mjs`, also used by desktop CI. Missing, unsupported or extra components fail before building. Mobile and server builds are not registered yet. `make site-deploy` uses the same site build before deployment. The former `desktop-build` and `site-build` targets have been removed.
+Both dispatch through `scripts/build.mjs`, also used by desktop CI. Missing, unsupported or extra components fail before building. Server builds are not registered yet; mobile apps build and test through `pnpm ios:test` and `pnpm android:test` ([local development](local-dev.md#mobile-apps)). `make site-deploy` uses the same site build before deployment. The former `desktop-build` and `site-build` targets have been removed.
 
 The foundation uses Node 24 and pinned pnpm 10.33.0 for workspace/check/driver tooling. `packages/core` declares Go 1.25.7 and `models` declares Go 1.25. The sync relay, updates service, and MyGo desktop declare Go 1.27.1. `go.work` and those modules select the patched `go1.27.3` toolchain for standard-library security fixes. Portable CI and native CI both install Go 1.27.3, and the service images build with that same toolchain. A newer toolchain still enforces each module's language version. Go automatic toolchain selection may download `go1.27.3` when a local `go` binary is older. Native shell compilation is distinct from functional speech/IME support.
 

@@ -90,3 +90,7 @@ __pycache__/
 # Staged local fast-ranking worker and Cargo build output.
 /apps/desktop/resources/*/keyboard-ranker/
 /apps/desktop/runtime/keyboard-ranker/target/
+
+# Staged mobile Rime engine and prebuilt data (pnpm mobile:rime).
+/apps/ios/ArionKit/Frameworks/
+/apps/ios/ArionKeyboard/Rime/

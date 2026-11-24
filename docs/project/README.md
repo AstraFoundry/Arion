@@ -1,6 +1,6 @@
 # Arion product
 
-Arion is a voice input product with a native Go desktop shell. macOS on Apple silicon and Windows x64 are the supported implementation targets ([ADR 021](../decisions/021-apple-silicon-only-macos.md)); mobile work must preserve portable contracts without creating mobile apps yet.
+Arion is a voice input product with a native Go desktop shell. macOS on Apple silicon and Windows x64 are the supported implementation targets ([ADR 021](../decisions/021-apple-silicon-only-macos.md)); iOS and Android have native voice keyboards ([ADR 051](../decisions/051-native-mobile-keyboards.md), [mobile apps](mobile.md)).
 
 ## Confirmed scope
 
@@ -19,7 +19,7 @@ Language coverage and latency are evaluation targets, not measured product claim
 
 ## Explicit boundaries
 
-Raw microphone audio stays on the device. Temporary foreign-window context stays local unless the user selects cloud polishing with its source switch enabled ([ADR 024](../decisions/024-shared-polishing-pipeline.md)). Persisting dictation history is separately opt-in and is not in the initial sync scope. Candidate sorting must not introduce unseen text or overwrite committed content. Offline Simplified Chinese full-Pinyin typing is in scope in the macOS IMK host and the Windows TSF host ([ADR 017](../decisions/017-offline-pinyin-keyboard.md), [ADR 028](../decisions/028-windows-keyboard-host-admission.md)); the native implementations and isolated engine/AppKit/storage checks are complete, while system input-source acceptance remains open. Cloud recognition, voice chat, autonomous commands, additional keyboard schemes and mobile keyboard extensions require their own scope decision.
+Raw microphone audio stays on the device. Temporary foreign-window context stays local unless the user selects cloud polishing with its source switch enabled ([ADR 024](../decisions/024-shared-polishing-pipeline.md)). Persisting dictation history is separately opt-in and is not in the initial sync scope. Candidate sorting must not introduce unseen text or overwrite committed content. Offline Simplified Chinese full-Pinyin typing is in scope in the macOS IMK host and the Windows TSF host ([ADR 017](../decisions/017-offline-pinyin-keyboard.md), [ADR 028](../decisions/028-windows-keyboard-host-admission.md)); the native implementations and isolated engine/AppKit/storage checks are complete, while system input-source acceptance remains open. Cloud recognition, voice chat, autonomous commands, and additional keyboard schemes require their own scope decision. The mobile keyboards recognize on the device and polish on the device or with a cloud model the user connects ([012](../../specs/012-mobile-input.md)).
 
 Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the proposed independent local Choice implementation; exact checkpoint, native conversion and candidate accuracy require evaluation.
 
@@ -39,6 +39,8 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 | Marketing site | Next.js static export, React 19, Tailwind v4, next-intl en/zh/ja; Cloudflare Workers static assets ([ADR 016](../decisions/016-marketing-site.md)) | Implemented in `apps/site`; vendored Sunbeam/beUI until `@astrafoundry/design` is published |
 | Cryptography | Go standard library AES-GCM; Keychain/DPAPI keys | Local values only; key exchange for sync pending |
 | Cloud polishing | Republic providers: ChatGPT sign-in, an API key per fixed provider (OpenAI, Anthropic, Google Gemini, DeepSeek, OpenRouter), or a base URL and API key for an OpenAI-compatible or Anthropic-compatible endpoint; one provider is active and the others keep their keys; shared staged polishing with enabled context | Optional, explicit engine choice ([ADR 022](../decisions/022-cloud-polishing.md), [cloud polishing](cloud-polishing.md)); real-service verification open |
+| iOS | UIKit app and keyboard extension, iOS 26; WebKit microphone capture, Speech `DictationTranscriber`, Foundation Models ([ADR 051](../decisions/051-native-mobile-keyboards.md)) | Unit tests and simulator onboarding pass; device dictation and keyboard-in-editor acceptance open ([mobile apps](mobile.md#verification)) |
+| Android | Kotlin/Compose app and input method, Android 13+; on-device `SpeechRecognizer`, ML Kit Prompt API | Unit tests and emulator setup/recognizer start pass; live speech and Gemini Nano polishing open |
 | Account sign-in | Public OIDC client `arion-desktop`, loopback PKCE, refresh token in Keychain or Credential Manager | Service, onboarding step and Settings › Account implemented ([account sign-in](account-signin.md)); device enrollment open |
 
 See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), [public and private ownership](repository-split.md), [account sign-in](account-signin.md), [cloud polishing](cloud-polishing.md), and [agent handoff](agent-handoff.md).
@@ -50,5 +52,7 @@ See [specs](../../specs/README.md), [research](../research/README.md), [reposito
 [Product notifications](product-notifications.md) describes signed-in, OS-authorized account notices, bounded authenticated catchup and current-server action authorization.
 
 [Dictation shortcuts](dictation-shortcuts.md) describes custom combinations, platform keys, conflicts and their implementation history.
+
+[Mobile apps](mobile.md) describes the iOS and Android keyboards, their shared recipe and tokens, and what has been verified.
 
 [Agent-assisted feedback](agent-feedback.md) describes the Report a problem window, its entry points and the feedback skill a coding agent follows.

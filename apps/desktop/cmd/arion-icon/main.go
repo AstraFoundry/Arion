@@ -103,7 +103,44 @@ func write(path string, img image.Image) {
 	}
 }
 
+// mobileIcon writes the full-bleed square iOS and Android mask themselves:
+// the desktop tile's interior scaled to the whole canvas, without the
+// squircle, margin or transparency. The mark keeps a little more room than on
+// the desktop tile, because the platform masks cut deeper into the corners.
+func mobileIcon(path string) {
+	img := image.NewNRGBA(image.Rect(0, 0, size, size))
+	const room = 1.16
+	inner := (size - 2*margin) * room
+	for py := 0; py < size; py++ {
+		for px := 0; px < size; px++ {
+			var r, g, b float64
+			for sy := 0; sy < samples; sy++ {
+				for sx := 0; sx < samples; sx++ {
+					x := float64(px) + (float64(sx)+0.5)/samples
+					y := float64(py) + (float64(sy)+0.5)/samples
+					dx, dy := size/2+(x-size/2)*inner/size, size/2+(y-size/2)*inner/size
+					if bar(dx, dy) {
+						r, g, b = r+21, g+18, b+15
+						continue
+					}
+					t := y / size
+					r += 255 - 4*t
+					g += 214 - 18*t
+					b += 46 - 46*t
+				}
+			}
+			n := float64(samples * samples)
+			img.Set(px, py, color.NRGBA{R: uint8(r / n), G: uint8(g / n), B: uint8(b / n), A: 255})
+		}
+	}
+	write(path, img)
+}
+
 func main() {
+	if len(os.Args) == 3 && os.Args[1] == "-mobile" {
+		mobileIcon(os.Args[2])
+		return
+	}
 	if len(os.Args) == 4 && os.Args[1] == "-menu" {
 		pixels, err := strconv.Atoi(os.Args[2])
 		if err != nil || pixels <= 0 {

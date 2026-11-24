@@ -1,0 +1,37 @@
+# Arion's offline Simplified Chinese full-Pinyin profile for phones (ADR 053).
+# Adapts the Apache-2.0 pinyin_simp schema identified in keyboard-runtime.json.
+# English words mix in through the desktop's arion_bilingual translator and
+# lexicon, as on the desktop. Emoji are not on mobile; the keyboard inserts
+# punctuation itself.
+schema:
+  schema_id: arion_pinyin
+  name: Arion Pinyin
+  version: '1'
+
+__include: pinyin_simp.schema:/
+__patch:
+  # Next-word prediction (联想) after a commit: librime-predict with the
+  # rime-predict-zh Simplified data (GPL-3.0), configured as that data's
+  # README documents; the keyboard turns the switch off in settings.
+  engine/processors/@before 0: predictor
+  switches/+:
+    - { name: prediction, states: [ Off, On ], reset: 1 }
+  predictor:
+    db: predict.db
+    max_candidates: 30
+    max_iterations: 0
+  engine/translators:
+    - predict_translator
+    - arion_bilingual
+  menu/page_size: 9
+  translator/user_dict: arion_pinyin
+  translator/db_class: arion_encrypted_userdb
+  translator/enable_user_dict: true
+  translator/enable_correction: true
+  speller/alphabet: zyxwvutsrqponmlkjihgfedcba
+  recognizer/patterns/uppercase: ''
+  reverse_lookup: null
+  recognizer/patterns/reverse_lookup: null
+  recognizer/patterns/punct: null
+  key_binder/import_preset: null
+  key_binder/bindings: []

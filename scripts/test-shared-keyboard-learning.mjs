@@ -23,7 +23,7 @@ mkdirSync(profile);
 const reportPath = path.join(directory, 'report.json');
 const digest = file => createHash('sha256').update(readFileSync(file)).digest('hex');
 const identity = file => { const bytes = readFileSync(file); return { sizeBytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex') }; };
-const files = ['learning.h', 'learning.cpp', 'learning_windows.cpp', 'learning_rime.h', 'learning_rime.cpp', 'learning_test.cpp', 'learning_rime_test.cpp', 'learning_multiprocess_test.cpp', 'pinyin.c', 'pinyin.h',
+const files = ['learning.h', 'learning.cpp', 'learning_windows.cpp', 'learning_posix.h', 'learning_posix.cpp', 'learning_posix_test.cpp', 'learning_rime.h', 'learning_rime.cpp', 'learning_test.cpp', 'learning_rime_test.cpp', 'learning_multiprocess_test.cpp', 'pinyin.c', 'pinyin.h',
   'english.h', 'english.cpp', 'english_history.h', 'english_history.cpp', 'english_history_test.h', 'english_lexicon.h', 'english_lexicon.cpp', 'emoji.h', 'emoji.cpp', 'emoji_data.h',
   'ranking.h', 'ranking.cpp', 'ranking_bridge.h', 'ranking_unicode.h', 'ranking_unicode.cpp', 'ranking_unicode_data.h', 'ranking_test.cpp',
   'ranking_unicode_sources.json', 'ranking_unicode_LICENSE.txt', 'ranking_unicode_generate.py'];
@@ -135,6 +135,10 @@ try {
     verifyWindowsPEDependencies([options]);
     run('actual-atomic-mode-persistence-and-crossprocess-options', options, [path.join(profile, 'native-options')], { env: isolatedEnv, timeout: 60000 });
   } else {
+    const posix = compile('posix-learning', ['learning.cpp', 'learning_posix.cpp', 'learning_posix_test.cpp']);
+    const posixProfile = path.join(profile, 'posix');
+    mkdirSync(posixProfile);
+    run('posix-provider-envelope-leases-and-atomic-replace', posix, [posixProfile], { env: isolatedEnv });
     report.remainingNativeGates = ['node scripts/test-keyboard-learning.mjs', 'node scripts/test-keyboard-input.mjs'];
   }
   report.binaries = binaries;

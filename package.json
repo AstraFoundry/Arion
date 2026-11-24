@@ -37,7 +37,12 @@
     "keyboard:vocabulary:check": "node scripts/test-ime-publisher.mjs --vocabulary",
     "keyboard:verify": "node scripts/verify-keyboard-bundle.mjs",
     "keyboard:shared:check": "node scripts/check-shared-keyboard.mjs",
-    "keyboard:windows:check": "node scripts/check-windows-keyboard.mjs"
+    "keyboard:windows:check": "node scripts/check-windows-keyboard.mjs",
+    "mobile:generate": "node scripts/mobile.mjs generate",
+    "mobile:check": "node scripts/mobile.mjs check",
+    "mobile:rime": "node scripts/stage-mobile-rime.mjs",
+    "ios:test": "node scripts/mobile.mjs ios-test",
+    "android:test": "node scripts/mobile.mjs android-test"
   },
   "engines": {
     "node": ">=20.0.0"

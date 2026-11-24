@@ -1,6 +1,7 @@
 #import "learning.h"
 #import <Security/Security.h>
 #include "../shared/learning_rime.h"
+#include "../shared/learning_posix.h"
 #include <cerrno>
 #include <cstring>
 #include <fcntl.h>
@@ -21,94 +22,31 @@ bool fail(NSInteger code) {
     lastError=[NSError errorWithDomain:@"si.astrafoundry.arion.keyboard.learning" code:code userInfo:nil];
     return false;
 }
-bool failed(LearningError &error,int code,const char *operation) {error={code,operation};return false;}
 NSString *pathOf(const std::string &path) {return [[NSString alloc] initWithBytes:path.data() length:path.size() encoding:NSUTF8StringEncoding];}
-class FileLocks final : public LearningLock {
-public:
-    std::vector<int> files;
-    ~FileLocks() override {for (int fd:files) {flock(fd,LOCK_UN);close(fd);}}
-};
-class MacProvider final : public LearningProvider {
-    std::string directory_;
+// CryptoKit AES-256-GCM with the Data Protection Keychain key; the shared
+// POSIX provider owns files, leases and the ARIONUD1 envelope.
+class CryptoKitCipher final : public LearningCipher {
     NSData *key_;
-    bool hold(const std::string &file,bool exclusive,FileLocks &held,LearningError &error) {
-        int fd=open(pathOf(file).fileSystemRepresentation,O_RDWR|O_CREAT|O_NOFOLLOW,0600);
-        struct stat info{};
-        if (fd<0) return failed(error,8,"lock open");
-        if (fstat(fd,&info) || !S_ISREG(info.st_mode) || flock(fd,(exclusive?LOCK_EX:LOCK_SH)|LOCK_NB)) {close(fd);return failed(error,8,"lock acquisition");}
-        held.files.push_back(fd);return true;
-    }
-    bool crypt(const std::string &name,const LearningBytes &input,LearningBytes &output,bool encrypt,LearningError &error) {
-        if (key_.length!=32) return failed(error,1,"key unavailable");
-        std::string label="si.astrafoundry.arion.keyboard.userdb.v1/"+name;
+    bool crypt(const std::string &label,const LearningBytes &input,LearningBytes &output,bool encrypt) {
+        if (key_.length!=32) return false;
         void *bytes=nullptr;size_t count=0;
         auto operation=encrypt?arion_learning_seal:arion_learning_open;
-        if (!operation(input.data(),input.size(),key_.bytes,key_.length,label.data(),label.size(),&bytes,&count)) return failed(error,2,"AES-GCM authentication");
+        if (!operation(input.data(),input.size(),key_.bytes,key_.length,label.data(),label.size(),&bytes,&count)) return false;
         const auto *first=static_cast<const uint8_t*>(bytes);output.assign(first,first+count);free(bytes);return true;
     }
 public:
-    MacProvider(NSString *directory,NSData *key):directory_(directory.UTF8String),key_(key) {}
-    const std::string &directory() const override {return directory_;}
-    bool lock(const std::string &file,bool readonly,bool reset,std::unique_ptr<LearningLock> &held,LearningError &error) override {
-        auto locks=std::make_unique<FileLocks>();
-        if (!hold(learningPath(directory_,".learning.lock"),reset,*locks,error) || (!file.empty() && !hold(file+".lock",!readonly,*locks,error))) return false;
-        held=std::move(locks);return true;
-    }
-    bool read(const std::string &file,LearningBytes &bytes,bool &missing,LearningError &error) override {
-        missing=false;int fd=open(pathOf(file).fileSystemRepresentation,O_RDONLY|O_NOFOLLOW);
-        if (fd<0) {if (errno==ENOENT) {missing=true;bytes.clear();return true;}return failed(error,5,"snapshot open");}
-        struct stat info{};
-        if (fstat(fd,&info) || !S_ISREG(info.st_mode) || info.st_size<0 || static_cast<uint64_t>(info.st_size)>maximumLearningSnapshot+64) {close(fd);return failed(error,5,"snapshot size");}
-        LearningBytes next(static_cast<size_t>(info.st_size));size_t offset=0;
-        while (offset<next.size()) {ssize_t count=::read(fd,next.data()+offset,next.size()-offset);if (count<0 && errno==EINTR) continue;if (count<=0) {close(fd);return failed(error,5,"snapshot read");}offset+=count;}
-        if (close(fd)) return failed(error,5,"snapshot close");
-        bytes=std::move(next);return true;
-    }
-    bool writeAtomic(const std::string &file,const LearningBytes &bytes,LearningError &error) override {
-        NSString *destination=pathOf(file),*directory=destination.stringByDeletingLastPathComponent;
-        NSString *temporary=[directory stringByAppendingPathComponent:[@".encrypted-" stringByAppendingString:NSUUID.UUID.UUIDString]];
-        int fd=open(temporary.fileSystemRepresentation,O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0600);
-        if (fd<0) return failed(error,6,"temporary create");
-        size_t offset=0;bool ok=true;
-        while (offset<bytes.size()) {ssize_t count=::write(fd,bytes.data()+offset,bytes.size()-offset);if (count<0 && errno==EINTR) continue;if (count<=0) {ok=false;break;}offset+=count;}
-        if (ok && fsync(fd)) ok=false;
-        if (close(fd)) ok=false;
-        if (ok && rename(temporary.fileSystemRepresentation,destination.fileSystemRepresentation)) ok=false;
-        if (!ok) {unlink(temporary.fileSystemRepresentation);return failed(error,6,"snapshot replace");}
-        int directoryFD=open(directory.fileSystemRepresentation,O_RDONLY|O_DIRECTORY);
-        if (directoryFD<0) return failed(error,6,"vault open");
-        ok=fsync(directoryFD)==0;if (close(directoryFD)) ok=false;
-        return ok || failed(error,6,"vault flush");
-    }
-    bool remove(const std::string &file,LearningError &error) override {
-        NSString *path=pathOf(file);
-        if (unlink(path.fileSystemRepresentation) && errno!=ENOENT) return failed(error,5,"snapshot remove");
-        NSString *directory=path.stringByDeletingLastPathComponent;int fd=open(directory.fileSystemRepresentation,O_RDONLY|O_DIRECTORY);
-        if (fd<0) return failed(error,5,"vault open");
-        bool ok=fsync(fd)==0;if (close(fd)) ok=false;return ok || failed(error,5,"vault flush");
-    }
-    bool files(std::vector<std::string> &names,LearningError &error) override {
-        NSArray<NSString *> *files=[NSFileManager.defaultManager contentsOfDirectoryAtPath:pathOf(directory_) error:nil];
-        if (!files) return failed(error,5,"vault enumeration");
-        names.clear();for (NSString *file in files) {const char *value=file.UTF8String;if (!value) return failed(error,9,"snapshot path");names.emplace_back(value);}return true;
-    }
-    bool seal(const std::string &name,const LearningBytes &plain,LearningBytes &sealed,LearningError &error) override {
-        LearningBytes encrypted;if (!crypt(name,plain,encrypted,true,error)) return false;
-        sealed={'A','R','I','O','N','U','D','1'};sealed.insert(sealed.end(),encrypted.begin(),encrypted.end());return true;
-    }
-    bool unseal(const std::string &name,const LearningBytes &sealed,LearningBytes &plain,LearningError &error) override {
-        if (sealed.size()<36 || sealed.size()>maximumLearningSnapshot+36 || std::memcmp(sealed.data(),"ARIONUD1",8)) return failed(error,4,"snapshot envelope");
-        return crypt(name,LearningBytes(sealed.begin()+8,sealed.end()),plain,false,error);
-    }
+    explicit CryptoKitCipher(NSData *key):key_(key) {}
+    bool seal(const std::string &label,const LearningBytes &plain,LearningBytes &sealed) override {return crypt(label,plain,sealed,true);}
+    bool open(const std::string &label,const LearningBytes &sealed,LearningBytes &plain) override {return crypt(label,sealed,plain,false);}
 };
+std::shared_ptr<LearningProvider> macProvider(NSString *directory,NSData *key) {
+    return makePosixLearningProvider(directory.UTF8String,key?std::make_shared<CryptoKitCipher>(key):nullptr,"si.astrafoundry.arion.keyboard.userdb.v1/");
+}
 // The vault directory is reserved for learning data. Any non-lock entry can
 // contain a snapshot, encrypted export or interrupted atomic write; none may
 // silently authorize creating a replacement for a lost Keychain key.
 bool hasVaultData(NSArray<NSString *> *files) {
-    for (NSString *file in files) {
-        if (![file isEqual:@".learning.lock"] && ![file hasSuffix:@".arion-userdb.lock"] &&
-            ![file isEqual:@".DS_Store"]) return true;
-    }
+    for (NSString *file in files) if (learningVaultEntryIsData(file.UTF8String)) return true;
     return false;
 }
 
@@ -194,7 +132,7 @@ BOOL ArionRegisterEncryptedLearning(NSString *directory,NSError **error) {
     NSData *key=keychainKey(!hasVaultData(files));
     if (!key) {if (error) *error=ArionEncryptedLearningError();return NO;}
     LearningError failure;
-    if (!registerEncryptedLearning(std::make_shared<MacProvider>(directory,key),failure)) {fail(failure.code);if (error) *error=ArionEncryptedLearningError();return NO;}
+    if (!registerEncryptedLearning(macProvider(directory,key),failure)) {fail(failure.code);if (error) *error=ArionEncryptedLearningError();return NO;}
     {std::lock_guard<std::mutex> lock(errorMutex);lastError=nil;}
     return YES;
 }
@@ -225,7 +163,7 @@ BOOL ArionContextStoreApply(ArionContextStore *store,NSDictionary<NSString *,id>
 void ArionContextStoreClose(ArionContextStore *store) {delete store;}
 BOOL ArionResetEncryptedLearning(NSString *directory,NSError **error) {
     LearningError failure;
-    if (!resetLearningVault(std::make_shared<MacProvider>(directory,nil),failure)) {fail(failure.code);if (error) *error=ArionEncryptedLearningError();return NO;}
+    if (!resetLearningVault(macProvider(directory,nil),failure)) {fail(failure.code);if (error) *error=ArionEncryptedLearningError();return NO;}
     {std::lock_guard<std::mutex> lock(errorMutex);lastError=nil;}
     clearEncryptedLearningError();return YES;
 }
@@ -236,11 +174,11 @@ BOOL ArionRegisterTestEncryptedLearning(NSString *directory,NSData *key,NSError 
     if (key.length!=32) {fail(1);if (error) *error=ArionEncryptedLearningError();return NO;}
     if (![NSFileManager.defaultManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:@{NSFilePosixPermissions:@0700} error:error]) return NO;
     LearningError failure;
-    if (!registerEncryptedLearning(std::make_shared<MacProvider>(directory,key),failure)) {fail(failure.code);if (error) *error=ArionEncryptedLearningError();return NO;}
+    if (!registerEncryptedLearning(macProvider(directory,key),failure)) {fail(failure.code);if (error) *error=ArionEncryptedLearningError();return NO;}
     {std::lock_guard<std::mutex> lock(errorMutex);lastError=nil;}
     return YES;
 }
 rime::Db *ArionLearningTestDatabase(NSString *file,NSString *name,NSData *key) {
-    return makeEncryptedRimeDatabase(std::make_shared<MacProvider>(file.stringByDeletingLastPathComponent,key),file.UTF8String,name.UTF8String);
+    return makeEncryptedRimeDatabase(macProvider(file.stringByDeletingLastPathComponent,key),file.UTF8String,name.UTF8String);
 }
 #endif

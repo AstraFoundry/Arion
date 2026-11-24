@@ -90,6 +90,16 @@ Material follows the layer, not the component: the same `kit.Button` is flat in 
 
 The macOS consent guide is a whole window floating over System Settings: its card fills a flyout whose system shadow is the elevation, so it draws no `kit.Raise` or border of its own. Its app tile nests at `RadiusCard − padding`.
 
+## Mobile
+
+The iOS and Android apps use the same tokens through generated files: `apps/desktop/cmd/arion-mobile-tokens` reads the Sunbeam package pinned in `apps/desktop/go.mod` and writes `SunbeamTokens.swift` and `SunbeamTokens.kt` ([ADR 051](../decisions/051-native-mobile-keyboards.md)). Each platform maps them once: `ArionKit/Design/Sunbeam.swift` (UIKit dynamic colors, `FaceButton`, `TextStyle`) and `design/Sunbeam.kt` (`SunbeamTheme`, `Face`, `Layer`).
+
+- App pages and cards are flat. The keyboard floats above the app, so its keys are raised.
+- Switches and checks are ink; the one yellow element on a screen is its primary action or the microphone.
+- Text uses the system typeface at Sunbeam's sizes and scales with the platform's text size; headlines use the system serif in place of Fraunces.
+- `VoiceMark` draws the app icon's bars; the microphone's bars follow the voice while listening.
+- Icons are the desktop's: Lucide, the LobeHub provider marks, and the Google and GitHub marks, generated from SVG by `pnpm mobile:generate` ([mobile icons](../../packages/mobile-icons/README.md)); no SF Symbols, Material icons or hand-drawn icons. They sit on a fixed square frame, 18 points in settings rows and 14 in Overview cards, in text ink or the muted ink.
+
 ## Primitives (`ui/shared/kit`)
 
 | Primitive | Anatomy |

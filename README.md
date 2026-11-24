@@ -52,6 +52,8 @@ Cloud dictation tools require sending raw microphone audio and window context to
 | --- | --- | --- |
 | **macOS** | Apple silicon (`arm64`) | Working menu bar dictation app, Metal-accelerated `speech.cpp` ASR, local GGUF polishing, and `ArionInput.app` IMK host (Intel macOS is unsupported, [ADR 021](docs/decisions/021-apple-silicon-only-macos.md)) |
 | **Windows** | 64-bit (`x64` / `amd64`) | Early preview with native `speech.cpp` ASR, local GGUF polishing, and `ArionTSF.dll` IME host |
+| **iOS** | iPhone, iOS 26 | Development: voice keyboard with on-device recognition and polishing ([Mobile apps](docs/project/mobile.md)) |
+| **Android** | Android 13+ | Development: voice input method with on-device recognition and polishing ([Mobile apps](docs/project/mobile.md)) |
 
 See [Release Status](docs/operations/release-status.md), [Agent Handoff](docs/project/agent-handoff.md), and [Validation Report](docs/quality/validation.md) for current milestone progress and open release gates.
 
